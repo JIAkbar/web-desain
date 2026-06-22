@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nusaflow — Platform Manajemen Tim & Proyek Indonesia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #080808;
+  --bg2: #111111;
+  --bg3: #1A1A1A;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #FAFAFA;
+  --text2: #A0A0A0;
+  --text3: #606060;
+  --violet: #7C3AED;
+  --violet2: #A855F7;
+  --gradient: linear-gradient(135deg, #7C3AED, #EC4899);
+  --gradient2: linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #EC4899 100%);
+  --font-body: 'Instrument Sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+}
+[data-theme="light"] {
+  --bg: #FAFAFA;
+  --bg2: #F4F4F5;
+  --bg3: #E4E4E7;
+  --border: rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.14);
+  --text: #09090B;
+  --text2: #52525B;
+  --text3: #A1A1AA;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
+
+/* ── NAVBAR ── */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 60px;
+  background: rgba(8,8,8,0.8);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+[data-theme="light"] .navbar { background: rgba(250,250,250,0.85); }
+.navbar-logo {
+  display: flex; align-items: center; gap: 0.5rem;
+  text-decoration: none; color: var(--text);
+  font-weight: 700; font-size: 1.1rem; letter-spacing: -0.02em;
+}
+.navbar-logo-icon {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: var(--gradient); display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 700; color: #fff;
+}
+.navbar-nav { display: flex; align-items: center; gap: 1.75rem; list-style: none; }
+.navbar-nav a { text-decoration: none; color: var(--text2); font-size: 0.875rem; font-weight: 500; transition: color 0.2s; }
+.navbar-nav a:hover { color: var(--text); }
+.navbar-actions { display: flex; align-items: center; gap: 0.75rem; }
+.btn-ghost {
+  background: none; border: 1px solid var(--border2); color: var(--text2);
+  padding: 0.45rem 1rem; border-radius: 8px; font-family: var(--font-body);
+  font-size: 0.8rem; font-weight: 500; cursor: pointer; transition: all 0.2s;
+}
+.btn-ghost:hover { color: var(--text); border-color: var(--border2); background: var(--bg3); }
+.btn-primary {
+  background: var(--gradient); color: #fff; border: none;
+  padding: 0.45rem 1rem; border-radius: 8px; font-family: var(--font-body);
+  font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+}
+.btn-primary:hover { opacity: 0.88; }
+.theme-toggle {
+  background: none; border: 1px solid var(--border2); color: var(--text2);
+  width: 34px; height: 34px; border-radius: 8px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
+  transition: all 0.2s;
+}
+.theme-toggle:hover { border-color: var(--border2); background: var(--bg3); color: var(--text); }
+.hamburger { display: none; }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 100px 2rem 6rem;
+  background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(124,58,237,0.18) 0%, transparent 60%);
+  text-align: center; position: relative;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: rgba(124,58,237,0.12); border: 1px solid rgba(124,58,237,0.25);
+  color: var(--violet2); padding: 0.35rem 0.85rem; border-radius: 999px;
+  font-size: 0.78rem; font-weight: 500; margin-bottom: 1.75rem;
+  font-family: var(--font-mono);
+}
+.hero-badge-dot { width: 6px; height: 6px; background: var(--violet2); border-radius: 50%; animation: pulse-dot 2s infinite; }
+@keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+.hero-headline {
+  font-size: clamp(2.5rem, 6vw, 4.75rem);
+  font-weight: 700; line-height: 1.08; letter-spacing: -0.03em;
+  margin-bottom: 1.5rem; max-width: 14ch; margin-left: auto; margin-right: auto;
+}
+.hero-headline .gradient-text {
+  background: var(--gradient2);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+}
+.hero-sub {
+  font-size: 1.1rem; color: var(--text2); max-width: 48ch; margin: 0 auto 2.5rem;
+  line-height: 1.65;
+}
+.hero-ctas { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3rem; }
+.btn-hero-primary {
+  background: var(--gradient); color: #fff; border: none;
+  padding: 0.75rem 1.75rem; border-radius: 10px; font-family: var(--font-body);
+  font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+}
+.btn-hero-primary:hover { opacity: 0.88; }
+.btn-hero-secondary {
+  background: var(--bg3); color: var(--text); border: 1px solid var(--border2);
+  padding: 0.75rem 1.75rem; border-radius: 10px; font-family: var(--font-body);
+  font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: all 0.2s;
+}
+.btn-hero-secondary:hover { background: var(--bg2); }
+.terminal-mockup {
+  max-width: 560px; margin: 0 auto;
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 12px; overflow: hidden; text-align: left;
+}
+[data-theme="light"] .terminal-mockup { box-shadow: 0 8px 40px rgba(0,0,0,0.08); }
+.terminal-header {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.75rem 1rem; background: var(--bg3); border-bottom: 1px solid var(--border);
+}
+.dot { width: 12px; height: 12px; border-radius: 50%; }
+.dot-r { background: #FF5F57; }
+.dot-y { background: #FFBD2E; }
+.dot-g { background: #28CA42; }
+.terminal-title { font-size: 0.75rem; color: var(--text3); margin-left: auto; font-family: var(--font-mono); }
+.terminal-body { padding: 1.25rem 1.25rem; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.9; }
+.t-prompt { color: var(--violet2); }
+.t-cmd { color: var(--text); }
+.t-out { color: var(--text2); }
+.t-success { color: #4ADE80; }
+.t-cursor { display: inline-block; width: 8px; height: 1em; background: var(--violet2); vertical-align: middle; animation: blink 1s step-end infinite; }
+@keyframes blink { 50%{opacity:0} }
+
+/* ── TRUST BAR ── */
+.trust-bar {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+.trust-bar-inner {
+  max-width: 960px; margin: 0 auto;
+  display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; justify-content: center;
+}
+.trust-label { font-size: 0.78rem; color: var(--text3); font-family: var(--font-mono); white-space: nowrap; }
+.marquee-wrap { overflow: hidden; flex: 1; min-width: 200px; position: relative; }
+.marquee-wrap::before,
+.marquee-wrap::after {
+  content:''; position: absolute; top:0; bottom:0; width:60px; z-index:2;
+}
+.marquee-wrap::before { left:0; background: linear-gradient(to right, var(--bg2), transparent); }
+.marquee-wrap::after { right:0; background: linear-gradient(to left, var(--bg2), transparent); }
+.marquee-track {
+  display: flex; gap: 2.5rem; width: max-content;
+  animation: marquee 22s linear infinite;
+}
+@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.logo-pill {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.8rem; font-weight: 600; color: var(--text2);
+  white-space: nowrap; padding: 0.25rem 0;
+}
+.logo-pill-icon { font-size: 1rem; }
+
+/* ── SECTION WRAPPER ── */
+section { padding: 6rem 2rem; }
+.section-inner { max-width: 1100px; margin: 0 auto; }
+.section-tag { font-family: var(--font-mono); font-size: 0.75rem; color: var(--violet2); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.75rem; }
+.section-title { font-size: clamp(1.75rem, 3.5vw, 2.75rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 1rem; }
+.section-sub { color: var(--text2); font-size: 1rem; max-width: 52ch; line-height: 1.65; }
+
+/* ── BENTO GRID ── */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: auto;
+  gap: 0.875rem;
+  margin-top: 3.5rem;
+}
+.bento-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.75rem; overflow: hidden; position: relative;
+  transition: border-color 0.25s, transform 0.25s;
+}
+.bento-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.bento-card.wide    { grid-column: span 7; }
+.bento-card.medium  { grid-column: span 5; }
+.bento-card.third   { grid-column: span 4; }
+.bento-card.full    { grid-column: span 12; }
+.bento-card.half    { grid-column: span 6; }
+.bento-card-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: rgba(124,58,237,0.15); display: flex; align-items: center;
+  justify-content: center; font-size: 1.1rem; margin-bottom: 1.25rem;
+}
+.bento-card-label { font-size: 0.72rem; font-family: var(--font-mono); color: var(--text3); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.bento-card h3 { font-size: 1.15rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 0.6rem; }
+.bento-card p { font-size: 0.875rem; color: var(--text2); line-height: 1.6; }
+.bento-glow {
+  position: absolute; top: -40px; right: -40px; width: 160px; height: 160px;
+  background: radial-gradient(ellipse, rgba(124,58,237,0.2), transparent 70%);
+  pointer-events: none;
+}
+.bento-feat-large { grid-column: span 12; background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(236,72,153,0.07)); }
+.bento-code {
+  background: var(--bg3); border-radius: 8px; padding: 1rem 1.25rem;
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--text2);
+  line-height: 1.8; margin-top: 1rem; border: 1px solid var(--border);
+}
+.bento-code .kw { color: var(--violet2); }
+.bento-code .str { color: #86EFAC; }
+.bento-code .fn { color: #FCA5A5; }
+.bento-big-num { font-size: 3rem; font-weight: 700; letter-spacing: -0.04em; background: var(--gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.chart-bars { display: flex; align-items: flex-end; gap: 4px; height: 64px; margin-top: 1rem; }
+.bar { flex: 1; border-radius: 4px 4px 0 0; background: rgba(124,58,237,0.3); transition: background 0.3s; }
+.bar:hover { background: rgba(124,58,237,0.7); }
+.bar-active { background: rgba(168,85,247,0.6) !important; }
+.avatar-stack { display: flex; }
+.avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--bg3); border: 2px solid var(--bg2); margin-left: -8px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; overflow: hidden; }
+.avatar:first-child { margin-left: 0; }
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.tag { display: inline-block; background: rgba(124,58,237,0.12); color: var(--violet2); border-radius: 6px; padding: 0.2rem 0.55rem; font-size: 0.72rem; font-family: var(--font-mono); margin: 0.2rem; }
+
+/* ── HOW IT WORKS ── */
+.how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+.how-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; position: relative; }
+.how-num { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text3); margin-bottom: 1rem; }
+.how-step-icon { font-size: 2rem; margin-bottom: 1rem; }
+.how-card h3 { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 0.6rem; }
+.how-card p { font-size: 0.875rem; color: var(--text2); line-height: 1.6; }
+.how-connector { display: none; }
+
+/* ── INTEGRATIONS ── */
+.integrations-section { background: var(--bg2); }
+.integrations-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.75rem; margin-top: 2.5rem; }
+.int-badge {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 0.875rem 1rem;
+  display: flex; align-items: center; gap: 0.6rem;
+  font-size: 0.825rem; font-weight: 500; color: var(--text2);
+  transition: all 0.2s;
+}
+.int-badge:hover { border-color: var(--border2); color: var(--text); background: var(--bg); }
+.int-icon { font-size: 1.2rem; }
+
+/* ── STATS ── */
+.stats-bar { padding: 5rem 2rem; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.stats-grid { max-width: 960px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; text-align: center; }
+.stat-item {}
+.stat-num {
+  font-size: clamp(2.2rem, 4vw, 3.25rem); font-weight: 700;
+  letter-spacing: -0.04em; background: var(--gradient);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.35rem;
+}
+.stat-label { font-size: 0.875rem; color: var(--text2); }
+
+/* ── PRICING ── */
+.pricing-toggle-wrap { display: flex; align-items: center; gap: 0.875rem; margin: 2.5rem 0; }
+.pricing-toggle {
+  position: relative; width: 48px; height: 26px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 999px; cursor: pointer; transition: background 0.2s;
+}
+.pricing-toggle.active { background: var(--violet); border-color: var(--violet); }
+.toggle-knob {
+  position: absolute; top: 3px; left: 3px;
+  width: 18px; height: 18px; background: #fff; border-radius: 50%;
+  transition: transform 0.25s;
+}
+.pricing-toggle.active .toggle-knob { transform: translateX(22px); }
+.toggle-label { font-size: 0.875rem; color: var(--text2); }
+.toggle-label.active-lbl { color: var(--text); font-weight: 500; }
+.badge-discount { background: rgba(74,222,128,0.15); color: #4ADE80; border-radius: 999px; padding: 0.15rem 0.55rem; font-size: 0.72rem; font-family: var(--font-mono); }
+.pricing-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.pricing-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 16px; padding: 2rem; position: relative; transition: border-color 0.25s;
+}
+.pricing-card.featured { border-color: rgba(124,58,237,0.5); background: linear-gradient(135deg, rgba(124,58,237,0.06), var(--bg2)); }
+.popular-badge { position: absolute; top: -1px; left: 50%; transform: translateX(-50%); background: var(--gradient); color: #fff; font-size: 0.7rem; font-weight: 600; padding: 0.25rem 0.85rem; border-radius: 0 0 8px 8px; font-family: var(--font-mono); }
+.pricing-tier { font-size: 0.75rem; font-family: var(--font-mono); color: var(--text3); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.pricing-card h3 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.375rem; }
+.pricing-card .desc { font-size: 0.825rem; color: var(--text2); margin-bottom: 1.5rem; }
+.price-wrap { display: flex; align-items: baseline; gap: 0.3rem; margin-bottom: 1.75rem; }
+.price-currency { font-size: 1rem; color: var(--text2); font-weight: 500; }
+.price-num { font-size: 2.25rem; font-weight: 700; letter-spacing: -0.04em; }
+.price-period { font-size: 0.8rem; color: var(--text2); }
+.pricing-divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+.feature-list { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 2rem; }
+.feature-list li { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.85rem; color: var(--text2); }
+.feat-check { color: #4ADE80; font-size: 0.8rem; margin-top: 0.15rem; flex-shrink: 0; }
+.feat-no { color: var(--text3); font-size: 0.8rem; margin-top: 0.15rem; flex-shrink: 0; }
+.btn-plan { width: 100%; padding: 0.75rem; border-radius: 10px; font-family: var(--font-body); font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: opacity 0.2s; }
+.btn-plan-outline { background: none; border: 1px solid var(--border2); color: var(--text); }
+.btn-plan-outline:hover { background: var(--bg3); }
+.btn-plan-gradient { background: var(--gradient); color: #fff; border: none; }
+.btn-plan-gradient:hover { opacity: 0.88; }
+
+/* ── TESTIMONIALS ── */
+.testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 3rem; }
+.testi-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.75rem;
+}
+.stars { color: #FDE68A; font-size: 0.85rem; margin-bottom: 1rem; letter-spacing: 0.1em; }
+.testi-quote { font-size: 0.9rem; color: var(--text2); line-height: 1.7; margin-bottom: 1.5rem; font-style: italic; }
+.testi-author { display: flex; align-items: center; gap: 0.75rem; }
+.testi-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--gradient); display: flex; align-items: center;
+  justify-content: center; color: #fff; font-weight: 700; font-size: 0.85rem; flex-shrink: 0;
+}
+.testi-name { font-weight: 600; font-size: 0.85rem; }
+.testi-role { font-size: 0.78rem; color: var(--text2); }
+
+/* ── FAQ ── */
+.faq-list { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 0.5rem; max-width: 720px; }
+.faq-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.faq-q {
+  width: 100%; padding: 1.1rem 1.25rem; display: flex; justify-content: space-between;
+  align-items: center; background: none; border: none; color: var(--text);
+  font-family: var(--font-body); font-size: 0.9rem; font-weight: 600; cursor: pointer;
+  text-align: left; gap: 1rem;
+}
+.faq-icon { color: var(--text3); font-size: 1.1rem; transition: transform 0.3s; flex-shrink: 0; }
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s; }
+.faq-item.open .faq-a { max-height: 300px; }
+.faq-a-inner { padding: 0 1.25rem 1.1rem; font-size: 0.875rem; color: var(--text2); line-height: 1.65; }
+
+/* ── CTA BAND ── */
+.cta-band {
+  padding: 5rem 2rem; text-align: center;
+  background: radial-gradient(ellipse 70% 80% at 50% 50%, rgba(124,58,237,0.18), rgba(236,72,153,0.08), transparent 70%), var(--bg2);
+}
+.cta-band h2 { font-size: clamp(1.75rem, 4vw, 3rem); font-weight: 700; letter-spacing: -0.03em; margin-bottom: 1rem; }
+.cta-band p { color: var(--text2); margin-bottom: 2.25rem; font-size: 1rem; max-width: 44ch; margin-left: auto; margin-right: auto; }
+.cta-band .gradient-text { background: var(--gradient2); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.cta-band-actions { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+.cta-sub { font-size: 0.78rem; color: var(--text3); margin-top: 1.25rem; font-family: var(--font-mono); }
+
+/* ── FOOTER ── */
+.footer {
+  padding: 3rem 2rem 2rem;
+  border-top: 1px solid var(--border);
+}
+.footer-inner { max-width: 1100px; margin: 0 auto; }
+.footer-top { display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: 3rem; margin-bottom: 3rem; }
+.footer-brand p { font-size: 0.85rem; color: var(--text2); margin-top: 0.75rem; line-height: 1.65; max-width: 26ch; }
+.footer-col h4 { font-size: 0.8rem; font-weight: 600; color: var(--text); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.06em; font-family: var(--font-mono); }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+.footer-col ul a { text-decoration: none; color: var(--text2); font-size: 0.85rem; transition: color 0.2s; }
+.footer-col ul a:hover { color: var(--text); }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 1.5rem; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 0.75rem; }
+.footer-bottom p { font-size: 0.78rem; color: var(--text3); font-family: var(--font-mono); }
+.footer-links { display: flex; gap: 1.25rem; }
+.footer-links a { font-size: 0.78rem; color: var(--text3); text-decoration: none; }
+.footer-links a:hover { color: var(--text2); }
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .navbar-nav, .btn-ghost, .theme-toggle { display: none; }
+  .hamburger { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: none; border: 1px solid var(--border2); border-radius: 8px; cursor: pointer; color: var(--text); font-size: 1.1rem; }
+  .mobile-menu {
+    position: fixed; top: 60px; left: 0; right: 0; z-index: 99;
+    background: var(--bg2); border-bottom: 1px solid var(--border);
+    padding: 1.5rem 2rem; display: none; flex-direction: column; gap: 1.25rem;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a { text-decoration: none; color: var(--text2); font-size: 1rem; font-weight: 500; }
+  .mobile-menu .btn-primary { text-align: center; display: block; }
+  .bento { grid-template-columns: 1fr; }
+  .bento-card.wide, .bento-card.medium, .bento-card.third, .bento-card.full, .bento-card.half { grid-column: span 1; }
+  .how-grid { grid-template-columns: 1fr; }
+  .pricing-cards { grid-template-columns: 1fr; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+  .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .footer-brand { grid-column: span 2; }
+}
+@media (max-width: 600px) {
+  section { padding: 4rem 1.25rem; }
+  .hero { padding: 90px 1.25rem 4rem; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .footer-top { grid-template-columns: 1fr; }
+  .footer-brand { grid-column: span 1; }
+  .integrations-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="#" class="navbar-logo">
+    <div class="navbar-logo-icon">N</div>
+    Nusaflow
+  </a>
+  <ul class="navbar-nav">
+    <li><a href="#fitur">Fitur</a></li>
+    <li><a href="#integrasi">Integrasi</a></li>
+    <li><a href="#harga">Harga</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <div class="navbar-actions">
+    <button class="theme-toggle" id="themeBtn" title="Toggle tema">☀</button>
+    <button class="btn-ghost">Masuk</button>
+    <button class="btn-primary">Mulai Gratis</button>
+  </div>
+  <button class="hamburger" id="hamburger">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#fitur">Fitur</a>
+  <a href="#integrasi">Integrasi</a>
+  <a href="#harga">Harga</a>
+  <a href="#faq">FAQ</a>
+  <a href="#" style="color:var(--text2)">Masuk</a>
+  <button class="btn-primary">Mulai Gratis</button>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div style="max-width:700px; width:100%;">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Baru — Nusaflow 2.0 kini tersedia →
+    </div>
+    <h1 class="hero-headline">
+      Kelola Tim & Proyek <span class="gradient-text">Lebih Cerdas</span>
+    </h1>
+    <p class="hero-sub">Platform manajemen kerja kolaboratif untuk tim Indonesia. Dari sprint planning hingga laporan otomatis — semua dalam satu dashboard.</p>
+    <div class="hero-ctas">
+      <button class="btn-hero-primary">Mulai Gratis — Tanpa Kartu Kredit</button>
+      <button class="btn-hero-secondary">Lihat Demo →</button>
+    </div>
+    <div class="terminal-mockup">
+      <div class="terminal-header">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <span class="terminal-title">nusaflow ~ terminal</span>
+      </div>
+      <div class="terminal-body">
+        <div><span class="t-prompt">$</span> <span class="t-cmd">npm install nusaflow-sdk</span></div>
+        <div><span class="t-out">→ Mengunduh dependensi...</span></div>
+        <div><span class="t-success">✓ nusaflow-sdk@2.0.4 terpasang</span></div>
+        <div style="margin-top:0.5rem"><span class="t-prompt">$</span> <span class="t-cmd">nusaflow init --workspace "Tim Alpha"</span></div>
+        <div><span class="t-success">✓ Workspace dibuat: tim-alpha.nusaflow.id</span></div>
+        <div><span class="t-prompt">$</span> <span class="t-cursor"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-bar-inner">
+    <span class="trust-label">Dipercaya oleh 2.400+ tim di Indonesia</span>
+    <div class="marquee-wrap">
+      <div class="marquee-track">
+        <span class="logo-pill"><span class="logo-pill-icon">🏦</span> Bank Nusantara</span>
+        <span class="logo-pill"><span class="logo-pill-icon">🛒</span> Tokopedia</span>
+        <span class="logo-pill"><span class="logo-pill-icon">🚗</span> Gojek</span>
+        <span class="logo-pill"><span class="logo-pill-icon">📱</span> Bukalapak</span>
+        <span class="logo-pill"><span class="logo-pill-icon">🏥</span> Halodoc</span>
+        <span class="logo-pill"><span class="logo-pill-icon">✈</span> Traveloka</span>
+        <span class="logo-pill"><span class="logo-pill-icon">📦</span> JNE Digital</span>
+        <span class="logo-pill"><span class="logo-pill-icon">🏗</span> Waskita Tech</span>
+        <span class="logo-pill"><span class="logo-pill-icon">🎓</span> Ruangguru</span>
+        <span class="logo-pill"><span class="logo-pill-icon">💳</span> OVO Finansial</span>
+        <!-- duplicate for seamless loop -->
+        <span class="logo-pill"><span class="logo-pill-icon">🏦</span> Bank Nusantara</span>
+        <span class="logo-pill"><span class="logo-pill-icon">🛒</span> Tokopedia</span>
+        <span class="logo-pill"><span class="logo-pill-icon">🚗</span> Gojek</span>
+        <span class="logo-pill"><span class="logo-pill-icon">📱</span> Bukalapak</span>
+        <span class="logo-pill"><span class="logo-pill-icon">🏥</span> Halodoc</span>
+        <span class="logo-pill"><span class="logo-pill-icon">✈</span> Traveloka</span>
+        <span class="logo-pill"><span class="logo-pill-icon">📦</span> JNE Digital</span>
+        <span class="logo-pill"><span class="logo-pill-icon">🏗</span> Waskita Tech</span>
+        <span class="logo-pill"><span class="logo-pill-icon">🎓</span> Ruangguru</span>
+        <span class="logo-pill"><span class="logo-pill-icon">💳</span> OVO Finansial</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BENTO FEATURE GRID -->
+<section id="fitur">
+  <div class="section-inner">
+    <div class="section-tag">// fitur unggulan</div>
+    <h2 class="section-title">Semua yang dibutuhkan<br>tim modern Indonesia</h2>
+    <p class="section-sub">Dirancang khusus untuk alur kerja lokal — mulai dari manajemen task harian hingga laporan kinerja mingguan.</p>
+
+    <div class="bento">
+      <!-- Wide card — main feature -->
+      <div class="bento-card wide bento-feat-large">
+        <div class="bento-glow"></div>
+        <div class="bento-card-label">// papan kanban</div>
+        <h3>Papan Kanban Cerdas</h3>
+        <p>Visualisasikan alur kerja tim dengan drag-and-drop yang intuitif. Otomatis memindahkan task berdasarkan aturan yang kamu buat.</p>
+        <div class="bento-code">
+          <span class="kw">const</span> task = <span class="kw">await</span> nusaflow.<span class="fn">createTask</span>({<br>
+          &nbsp;&nbsp;title: <span class="str">"Desain halaman beranda"</span>,<br>
+          &nbsp;&nbsp;assignee: <span class="str">"budi@tim.id"</span>,<br>
+          &nbsp;&nbsp;priority: <span class="str">"high"</span>, sprint: <span class="str">"Sprint-07"</span><br>
+          });
+        </div>
+      </div>
+
+      <!-- Medium card -->
+      <div class="bento-card medium">
+        <div class="bento-card-icon">📊</div>
+        <div class="bento-card-label">// analitik</div>
+        <h3>Laporan Otomatis</h3>
+        <p>Ringkasan kinerja tim dikirim setiap Senin pagi langsung ke email manajer.</p>
+        <div class="chart-bars">
+          <div class="bar" style="height:40%"></div>
+          <div class="bar" style="height:60%"></div>
+          <div class="bar" style="height:45%"></div>
+          <div class="bar bar-active" style="height:80%"></div>
+          <div class="bar" style="height:70%"></div>
+          <div class="bar" style="height:90%"></div>
+          <div class="bar" style="height:55%"></div>
+          <div class="bar" style="height:65%"></div>
+        </div>
+      </div>
+
+      <!-- Third cards -->
+      <div class="bento-card third">
+        <div class="bento-card-icon">⚡</div>
+        <div class="bento-card-label">// otomasi</div>
+        <h3>Workflow Otomatis</h3>
+        <p>Buat aturan otomasi tanpa kode. Jika task selesai, kirim notifikasi ke Slack.</p>
+      </div>
+      <div class="bento-card third">
+        <div class="bento-card-icon">🔒</div>
+        <div class="bento-card-label">// keamanan</div>
+        <h3>Data Tersimpan di Indonesia</h3>
+        <p>Server di Jakarta & Surabaya. Enkripsi AES-256. Comply dengan regulasi Kominfo.</p>
+      </div>
+      <div class="bento-card third">
+        <div class="bento-card-icon">👥</div>
+        <div class="bento-card-label">// kolaborasi</div>
+        <h3>Kolaborasi Real-time</h3>
+        <p>Komentar, sebutan (@mention), dan riwayat perubahan lengkap untuk setiap task.</p>
+        <div class="avatar-stack" style="margin-top:1rem">
+          <div class="avatar" style="background:linear-gradient(135deg,#7C3AED,#EC4899)">A</div>
+          <div class="avatar" style="background:linear-gradient(135deg,#0EA5E9,#7C3AED)">B</div>
+          <div class="avatar" style="background:linear-gradient(135deg,#EC4899,#F97316)">C</div>
+          <div class="avatar" style="background:linear-gradient(135deg,#4ADE80,#0EA5E9)">D</div>
+          <div class="avatar" style="background:var(--bg3); color:var(--text2); font-size:0.65rem">+12</div>
+        </div>
+      </div>
+
+      <!-- Half cards -->
+      <div class="bento-card half">
+        <div class="bento-card-icon">🏃</div>
+        <div class="bento-card-label">// sprint</div>
+        <h3>Sprint Planning Terintegrasi</h3>
+        <p>Rencanakan sprint dua mingguan dengan capacity planning dan burndown chart otomatis.</p>
+        <div style="margin-top:1rem">
+          <span class="tag">Sprint-07</span>
+          <span class="tag">18 task</span>
+          <span class="tag">75% selesai</span>
+        </div>
+      </div>
+      <div class="bento-card half">
+        <div class="bento-card-icon">🤖</div>
+        <div class="bento-card-label">// AI assist</div>
+        <h3>Asisten AI Nusaflow</h3>
+        <p>Rangkum meeting, buat task dari notulensi, dan prediksi potensi bottleneck sprint.</p>
+        <div class="bento-big-num" style="font-size:2rem; margin-top:0.75rem">∞</div>
+      </div>
+
+      <!-- Third cards row 2 -->
+      <div class="bento-card third">
+        <div class="bento-card-icon">📱</div>
+        <div class="bento-card-label">// mobile</div>
+        <h3>Aplikasi Mobile</h3>
+        <p>iOS & Android. Update status task dari mana saja, bahkan tanpa internet.</p>
+      </div>
+      <div class="bento-card third">
+        <div class="bento-card-icon">🌏</div>
+        <div class="bento-card-label">// multi-bahasa</div>
+        <h3>Bahasa Indonesia Penuh</h3>
+        <p>Antarmuka, laporan, dan notifikasi sepenuhnya dalam Bahasa Indonesia.</p>
+      </div>
+      <div class="bento-card third">
+        <div class="bento-card-icon">📅</div>
+        <div class="bento-card-label">// kalender</div>
+        <h3>Kalender Kerja Lokal</h3>
+        <p>Hari libur nasional Indonesia otomatis tersinkron. Perencanaan sprint jadi akurat.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section style="background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-tag">// cara kerja</div>
+    <h2 class="section-title">Mulai dalam 3 langkah</h2>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">01</div>
+        <div class="how-step-icon">🏗</div>
+        <h3>Buat Workspace</h3>
+        <p>Daftar gratis dan buat workspace tim kamu dalam 60 detik. Undang anggota via email atau tautan.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-num">02</div>
+        <div class="how-step-icon">🔗</div>
+        <h3>Hubungkan Tools</h3>
+        <p>Sambungkan Slack, GitHub, Figma, dan alat yang sudah dipakai tim. Nusaflow menjadi pusat koordinasi.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-num">03</div>
+        <div class="how-step-icon">🚀</div>
+        <h3>Mulai Berkolaborasi</h3>
+        <p>Buat task pertama, assign ke anggota, dan pantau progres real-time dari dashboard terpusat.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTEGRATIONS -->
+<section id="integrasi">
+  <div class="section-inner">
+    <div class="section-tag">// integrasi</div>
+    <h2 class="section-title">Terhubung dengan tools<br>favorit tim kamu</h2>
+    <p class="section-sub">60+ integrasi siap pakai — dari alat komunikasi hingga repositori kode.</p>
+    <div class="integrations-grid">
+      <div class="int-badge"><span class="int-icon">💬</span> Slack</div>
+      <div class="int-badge"><span class="int-icon">🐙</span> GitHub</div>
+      <div class="int-badge"><span class="int-icon">🎨</span> Figma</div>
+      <div class="int-badge"><span class="int-icon">📋</span> Notion</div>
+      <div class="int-badge"><span class="int-icon">📊</span> Google Sheets</div>
+      <div class="int-badge"><span class="int-icon">📁</span> Google Drive</div>
+      <div class="int-badge"><span class="int-icon">📧</span> Gmail</div>
+      <div class="int-badge"><span class="int-icon">🔷</span> GitLab</div>
+      <div class="int-badge"><span class="int-icon">🔔</span> Telegram</div>
+      <div class="int-badge"><span class="int-icon">📹</span> Zoom</div>
+      <div class="int-badge"><span class="int-icon">☁</span> Jira</div>
+      <div class="int-badge"><span class="int-icon">🌊</span> Vercel</div>
+      <div class="int-badge"><span class="int-icon">🗂</span> Trello</div>
+      <div class="int-badge"><span class="int-icon">🟢</span> WhatsApp API</div>
+      <div class="int-badge"><span class="int-icon">📝</span> Confluence</div>
+      <div class="int-badge"><span class="int-icon">+45</span> Lainnya</div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar" style="background: var(--bg2);">
+  <div class="stats-grid">
+    <div class="stat-item">
+      <div class="stat-num">2.4rb+</div>
+      <div class="stat-label">Tim Aktif</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">12 jt</div>
+      <div class="stat-label">Task Diselesaikan</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">99.9%</div>
+      <div class="stat-label">Uptime SLA</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">4.8★</div>
+      <div class="stat-label">Rating Pengguna</div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<section id="harga">
+  <div class="section-inner">
+    <div class="section-tag">// harga</div>
+    <h2 class="section-title">Harga transparan,<br>tanpa kejutan</h2>
+    <div class="pricing-toggle-wrap">
+      <span class="toggle-label active-lbl" id="lbl-monthly">Bulanan</span>
+      <div class="pricing-toggle" id="pricingToggle">
+        <div class="toggle-knob"></div>
+      </div>
+      <span class="toggle-label" id="lbl-annual">Tahunan <span class="badge-discount">Hemat 25%</span></span>
+    </div>
+    <div class="pricing-cards">
+      <div class="pricing-card">
+        <div class="pricing-tier">Pemula</div>
+        <h3>Starter</h3>
+        <p class="desc">Untuk tim kecil dan freelancer yang baru memulai.</p>
+        <div class="price-wrap">
+          <span class="price-currency">Rp</span>
+          <span class="price-num" id="price-0">0</span>
+          <span class="price-period">/bln</span>
+        </div>
+        <hr class="pricing-divider">
+        <ul class="feature-list">
+          <li><span class="feat-check">✓</span> Hingga 5 anggota tim</li>
+          <li><span class="feat-check">✓</span> 3 proyek aktif</li>
+          <li><span class="feat-check">✓</span> Papan Kanban dasar</li>
+          <li><span class="feat-check">✓</span> 1 GB penyimpanan</li>
+          <li><span class="feat-no">—</span> <span style="color:var(--text3)">Laporan otomatis</span></li>
+          <li><span class="feat-no">—</span> <span style="color:var(--text3)">Integrasi lanjutan</span></li>
+        </ul>
+        <button class="btn-plan btn-plan-outline">Mulai Gratis</button>
+      </div>
+      <div class="pricing-card featured">
+        <div class="popular-badge">Paling Populer</div>
+        <div class="pricing-tier">Profesional</div>
+        <h3>Pro</h3>
+        <p class="desc">Untuk tim berkembang yang butuh fitur lengkap.</p>
+        <div class="price-wrap">
+          <span class="price-currency">Rp</span>
+          <span class="price-num" id="price-1">149.000</span>
+          <span class="price-period">/bln per pengguna</span>
+        </div>
+        <hr class="pricing-divider">
+        <ul class="feature-list">
+          <li><span class="feat-check">✓</span> Anggota tak terbatas</li>
+          <li><span class="feat-check">✓</span> Proyek tak terbatas</li>
+          <li><span class="feat-check">✓</span> Sprint planning & burndown</li>
+          <li><span class="feat-check">✓</span> 60+ integrasi</li>
+          <li><span class="feat-check">✓</span> Laporan mingguan otomatis</li>
+          <li><span class="feat-check">✓</span> 50 GB penyimpanan</li>
+        </ul>
+        <button class="btn-plan btn-plan-gradient">Coba 14 Hari Gratis</button>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-tier">Korporat</div>
+        <h3>Enterprise</h3>
+        <p class="desc">Untuk organisasi besar dengan kebutuhan khusus.</p>
+        <div class="price-wrap">
+          <span class="price-num" style="font-size:1.5rem">Hubungi Kami</span>
+        </div>
+        <hr class="pricing-divider">
+        <ul class="feature-list">
+          <li><span class="feat-check">✓</span> Semua fitur Pro</li>
+          <li><span class="feat-check">✓</span> SSO & SAML</li>
+          <li><span class="feat-check">✓</span> Penyimpanan tak terbatas</li>
+          <li><span class="feat-check">✓</span> SLA 99.99% uptime</li>
+          <li><span class="feat-check">✓</span> Dedicated account manager</li>
+          <li><span class="feat-check">✓</span> On-premise deployment</li>
+        </ul>
+        <button class="btn-plan btn-plan-outline">Hubungi Sales</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section style="background: var(--bg2); border-top: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-tag">// testimoni</div>
+    <h2 class="section-title">Tim-tim Indonesia<br>berbicara</h2>
+    <div class="testimonials-grid">
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-quote">"Nusaflow mengubah cara kerja tim produk kami. Sprint planning yang dulu makan waktu 3 jam kini selesai dalam 45 menit karena semua data sudah siap."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">DR</div>
+          <div>
+            <div class="testi-name">Dinda Rahmawati</div>
+            <div class="testi-role">Product Manager · Tokosaya.id</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-quote">"Akhirnya ada tools manajemen proyek yang benar-benar mengerti konteks Indonesia. Notifikasi WhatsApp dan kalender hari libur nasional adalah game changer."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">AP</div>
+          <div>
+            <div class="testi-name">Arif Prasetyo</div>
+            <div class="testi-role">Engineering Lead · Mediakita Group</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-quote">"Tim kami tersebar dari Jakarta hingga Makassar. Nusaflow membuat koordinasi real-time terasa seperti duduk satu ruangan. Produktivitas naik 40%."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">SR</div>
+          <div>
+            <div class="testi-name">Sari Kusuma Rini</div>
+            <div class="testi-role">COO · Nusantara Digital Agency</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-inner">
+    <div class="section-tag">// pertanyaan umum</div>
+    <h2 class="section-title">Pertanyaan yang sering<br>ditanyakan</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q">Apakah Nusaflow benar-benar gratis selamanya untuk paket Starter? <span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Ya, paket Starter kami gratis selamanya untuk tim hingga 5 anggota. Tidak ada kartu kredit yang dibutuhkan, dan tidak akan ada biaya tersembunyi.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Di mana data kami disimpan? <span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Semua data disimpan di server yang berlokasi di Indonesia (Jakarta dan Surabaya), dikelola oleh Nusacloud IDC. Data terenkripsi dengan AES-256 dan kami comply penuh dengan regulasi Kominfo.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Bisakah saya migrasi dari Trello atau Jira? <span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Tentu. Kami menyediakan tool migrasi satu klik dari Trello, Jira, Asana, dan Notion. Tim onboarding kami juga siap membantu proses migrasi secara gratis untuk paket Pro dan Enterprise.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Apakah tersedia mode offline? <span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Aplikasi mobile Nusaflow mendukung mode offline untuk melihat dan mengupdate task. Perubahan akan tersinkronisasi secara otomatis saat koneksi internet kembali tersedia.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Berapa lama masa trial paket Pro? <span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Kami memberikan trial 14 hari penuh untuk paket Pro, tanpa perlu kartu kredit. Setelah trial berakhir, akun otomatis kembali ke paket Starter jika tidak melanjutkan berlangganan.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band">
+  <h2>Siap tingkatkan produktivitas<br><span class="gradient-text">tim kamu hari ini?</span></h2>
+  <p>Bergabung dengan 2.400+ tim di Indonesia yang sudah mempercayai Nusaflow.</p>
+  <div class="cta-band-actions">
+    <button class="btn-hero-primary">Mulai Gratis Sekarang</button>
+    <button class="btn-hero-secondary">Jadwalkan Demo</button>
+  </div>
+  <p class="cta-sub">Gratis selamanya · Tidak perlu kartu kredit · Setup dalam 2 menit</p>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="navbar-logo" style="display:inline-flex; margin-bottom:0.75rem">
+          <div class="navbar-logo-icon">N</div>
+          Nusaflow
+        </a>
+        <p>Platform manajemen tim dan proyek yang dibangun khusus untuk ekosistem kerja Indonesia.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Produk</h4>
+        <ul>
+          <li><a href="#">Fitur</a></li>
+          <li><a href="#">Integrasi</a></li>
+          <li><a href="#">Changelog</a></li>
+          <li><a href="#">Roadmap</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <ul>
+          <li><a href="#">Tentang Kami</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Karir</a></li>
+          <li><a href="#">Pers</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Bantuan</h4>
+        <ul>
+          <li><a href="#">Dokumentasi</a></li>
+          <li><a href="#">Status</a></li>
+          <li><a href="#">Kontak</a></li>
+          <li><a href="#">Keamanan</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Nusaflow Technologies, PT. Jakarta, Indonesia.</p>
+      <div class="footer-links">
+        <a href="#">Privasi</a>
+        <a href="#">Syarat</a>
+        <a href="#">Cookie</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── THEME TOGGLE
+const themeBtn = document.getElementById('themeBtn');
+themeBtn.addEventListener('click', () => {
+  const html = document.documentElement;
+  const isDark = html.dataset.theme === 'dark';
+  html.dataset.theme = isDark ? 'light' : 'dark';
+  themeBtn.textContent = isDark ? '🌙' : '☀';
+});
+
+// ── MOBILE MENU
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+  hamburger.textContent = mobileMenu.classList.contains('open') ? '✕' : '☰';
+});
+mobileMenu.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+    hamburger.textContent = '☰';
+  });
+});
+
+// ── PRICING TOGGLE
+const pricingToggle = document.getElementById('pricingToggle');
+const lblMonthly = document.getElementById('lbl-monthly');
+const lblAnnual = document.getElementById('lbl-annual');
+const prices = [
+  { monthly: '0', annual: '0' },
+  { monthly: '149.000', annual: '112.000' },
+];
+let isAnnual = false;
+pricingToggle.addEventListener('click', () => {
+  isAnnual = !isAnnual;
+  pricingToggle.classList.toggle('active', isAnnual);
+  lblMonthly.classList.toggle('active-lbl', !isAnnual);
+  lblAnnual.classList.toggle('active-lbl', isAnnual);
+  prices.forEach((p, i) => {
+    const el = document.getElementById('price-' + i);
+    if (el) el.textContent = isAnnual ? p.annual : p.monthly;
+  });
+});
+
+// ── FAQ ACCORDION
+document.querySelectorAll('.faq-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.closest('.faq-item');
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+
+// ── SMOOTH SCROLL
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+</script>
+</body>
+</html>

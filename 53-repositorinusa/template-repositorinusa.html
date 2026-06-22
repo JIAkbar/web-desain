@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RepositoriNusa — Pusat Preservasi & Diseminasi Karya Ilmiah Nasional</title>
+<meta name="description" content="RepositoriNusa — Repositori karya ilmiah terpadu: skripsi, tesis, disertasi, jurnal, dan prosiding dari institusi pendidikan tinggi Indonesia.">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* === RESET & BASE === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); transition: background 0.3s, color 0.3s; line-height: 1.65; }
+
+/* === CSS VARIABLES === */
+:root {
+  --bg:       #F7FAF7;
+  --bg2:      #EEF4EE;
+  --bg3:      #E3EDE3;
+  --text:     #1A2E1A;
+  --text2:    #3D5C3D;
+  --text3:    #7A9A7A;
+  --accent:   #1B5E20;
+  --accent2:  #2E7D32;
+  --gold:     #C8970A;
+  --border:   #C5D8C5;
+  --card-bg:  #FFFFFF;
+  --shadow:   0 2px 16px rgba(27,94,32,0.08);
+  --shadow2:  0 4px 32px rgba(27,94,32,0.12);
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --font-head: 'Source Serif 4', serif;
+  --radius:   10px;
+  --radius-lg: 16px;
+}
+[data-theme="dark"] {
+  --bg:      #0A110A;
+  --bg2:     #111A11;
+  --bg3:     #182518;
+  --text:    #E0F0E0;
+  --text2:   #94C494;
+  --text3:   #5A8A5A;
+  --border:  #1E3A1E;
+  --card-bg: #111A11;
+  --shadow:  0 2px 16px rgba(0,0,0,0.3);
+  --shadow2: 0 4px 32px rgba(0,0,0,0.4);
+}
+
+/* === ANNOUNCEMENT BAR === */
+.announce-bar {
+  background: var(--accent);
+  color: #fff;
+  text-align: center;
+  padding: 0.45rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.announce-bar a { color: #fff; text-decoration: underline; cursor: pointer; }
+
+/* === NAVBAR === */
+.navbar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+  box-shadow: var(--shadow);
+}
+.nav-brand { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; }
+.nav-logo {
+  width: 38px; height: 38px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.nav-logo svg { width: 22px; height: 22px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.nav-brand-text {}
+.nav-brand-name { font-family: var(--font-head); font-size: 1.15rem; font-weight: 700; color: var(--accent); line-height: 1.1; }
+.nav-brand-tag { font-size: 0.68rem; color: var(--text3); font-weight: 400; line-height: 1; }
+.nav-links { display: flex; align-items: center; gap: 0.2rem; }
+.nav-links a {
+  font-size: 0.875rem; font-weight: 500; color: var(--text2);
+  text-decoration: none; padding: 0.4rem 0.75rem; border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+}
+.nav-links a:hover { background: var(--bg2); color: var(--accent); }
+.nav-links .btn-login {
+  background: var(--accent); color: #fff;
+  padding: 0.4rem 1rem; border-radius: 6px;
+  font-size: 0.85rem; font-weight: 600;
+}
+.nav-links .btn-login:hover { background: var(--accent2); color: #fff; }
+.nav-right { display: flex; align-items: center; gap: 0.75rem; }
+.theme-toggle {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 20px; cursor: pointer;
+  width: 44px; height: 24px;
+  position: relative; transition: background 0.3s;
+  flex-shrink: 0;
+}
+.theme-toggle::after {
+  content: '';
+  position: absolute; top: 3px; left: 3px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--accent); transition: transform 0.3s;
+}
+[data-theme="dark"] .theme-toggle::after { transform: translateX(20px); background: var(--gold); }
+.hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+.hamburger span { display: block; width: 22px; height: 2px; background: var(--text); margin: 5px 0; border-radius: 2px; transition: all 0.3s; }
+
+/* === MOBILE NAV === */
+.mobile-nav {
+  display: none; position: fixed; top: 64px; left: 0; right: 0; bottom: 0;
+  background: var(--card-bg); z-index: 99; padding: 1.5rem 2rem;
+  flex-direction: column; gap: 0.5rem; overflow-y: auto;
+}
+.mobile-nav.open { display: flex; }
+.mobile-nav a {
+  font-size: 1rem; font-weight: 600; color: var(--text);
+  text-decoration: none; padding: 0.75rem 1rem; border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.mobile-nav a:hover { background: var(--bg2); color: var(--accent); }
+
+/* === HERO === */
+.hero {
+  background: linear-gradient(160deg, var(--bg2) 0%, var(--bg3) 50%, #d0e8d0 100%);
+  padding: 4rem 2rem 3rem;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+[data-theme="dark"] .hero { background: linear-gradient(160deg, #111A11 0%, #182518 50%, #1E3A1E 100%); }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: rgba(27,94,32,0.1); border: 1px solid rgba(27,94,32,0.25);
+  color: var(--accent2); font-size: 0.78rem; font-weight: 600;
+  padding: 0.3rem 0.9rem; border-radius: 20px; margin-bottom: 1.25rem;
+  letter-spacing: 0.03em; text-transform: uppercase;
+}
+[data-theme="dark"] .hero-badge { background: rgba(46,125,50,0.15); border-color: rgba(46,125,50,0.3); color: #81C784; }
+.hero-badge svg { width: 14px; height: 14px; }
+.hero h1 {
+  font-family: var(--font-head); font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700; color: var(--text); line-height: 1.2;
+  max-width: 720px; margin: 0 auto 1rem;
+}
+.hero h1 em { font-style: italic; color: var(--accent); }
+.hero-sub {
+  font-size: 1.05rem; color: var(--text2); max-width: 560px;
+  margin: 0 auto 2.5rem; line-height: 1.7;
+}
+.hero-search-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  max-width: 740px; margin: 0 auto 1.5rem;
+  box-shadow: var(--shadow2);
+}
+.hero-type-tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+.type-tab {
+  background: var(--bg2); border: 1px solid var(--border);
+  color: var(--text2); font-size: 0.78rem; font-weight: 600;
+  padding: 0.3rem 0.75rem; border-radius: 20px; cursor: pointer;
+  transition: all 0.15s;
+}
+.type-tab.active, .type-tab:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+.hero-search-row { display: flex; gap: 0.6rem; margin-bottom: 0.75rem; }
+.hero-search-input {
+  flex: 1; padding: 0.7rem 1rem;
+  border: 1.5px solid var(--border); border-radius: 8px;
+  background: var(--bg); color: var(--text); font-family: var(--font-body);
+  font-size: 0.95rem; outline: none; transition: border-color 0.2s;
+}
+.hero-search-input:focus { border-color: var(--accent); }
+.hero-search-input::placeholder { color: var(--text3); }
+.btn-search {
+  background: var(--accent); color: #fff;
+  border: none; border-radius: 8px; cursor: pointer;
+  font-family: var(--font-body); font-size: 0.9rem; font-weight: 700;
+  padding: 0.7rem 1.5rem; transition: background 0.2s; white-space: nowrap;
+}
+.btn-search:hover { background: var(--accent2); }
+.hero-filters { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+.hero-filters select {
+  padding: 0.4rem 0.75rem; border: 1px solid var(--border); border-radius: 6px;
+  background: var(--bg2); color: var(--text2); font-family: var(--font-body);
+  font-size: 0.82rem; cursor: pointer; outline: none;
+}
+.btn-adv-search {
+  background: none; border: 1.5px solid var(--accent); color: var(--accent);
+  border-radius: 6px; padding: 0.4rem 0.9rem;
+  font-family: var(--font-body); font-size: 0.82rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; margin-left: auto;
+}
+.btn-adv-search:hover { background: var(--accent); color: #fff; }
+.hero-stats { display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap; }
+.hero-stat { text-align: center; }
+.hero-stat-num {
+  font-family: var(--font-head); font-size: 1.6rem; font-weight: 700;
+  color: var(--accent); line-height: 1.1;
+}
+.hero-stat-lbl { font-size: 0.78rem; color: var(--text3); font-weight: 500; }
+
+/* === SECTION SHARED === */
+.section { padding: 4rem 2rem; }
+.section-inner { max-width: 1100px; margin: 0 auto; }
+.section-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 1.75rem; flex-wrap: wrap; gap: 0.75rem; }
+.section-title { font-family: var(--font-head); font-size: 1.7rem; font-weight: 700; color: var(--text); }
+.section-title span { color: var(--accent); }
+.section-sub { font-size: 0.9rem; color: var(--text3); margin-top: 0.2rem; }
+.see-all { font-size: 0.85rem; font-weight: 600; color: var(--accent); text-decoration: none; display: flex; align-items: center; gap: 0.3rem; }
+.see-all:hover { text-decoration: underline; }
+
+/* === COLLECTION SECTION === */
+.collection-section { background: var(--bg); }
+.filter-bar { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.filter-btn {
+  background: var(--bg2); border: 1.5px solid var(--border);
+  color: var(--text2); font-size: 0.82rem; font-weight: 600;
+  padding: 0.4rem 1rem; border-radius: 20px; cursor: pointer;
+  transition: all 0.15s;
+}
+.filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.filter-btn:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+
+/* === WORK ITEMS === */
+.work-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.work-item {
+  background: var(--card-bg); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.1rem 1.25rem;
+  display: flex; gap: 1rem; align-items: flex-start;
+  transition: box-shadow 0.2s, border-color 0.2s;
+  position: relative;
+}
+.work-item:hover { box-shadow: var(--shadow2); border-color: rgba(27,94,32,0.3); }
+.work-item.checked { border-color: var(--accent); background: rgba(27,94,32,0.03); }
+[data-theme="dark"] .work-item.checked { background: rgba(27,94,32,0.08); }
+.work-checkbox { margin-top: 0.2rem; flex-shrink: 0; }
+.work-checkbox input[type="checkbox"] {
+  width: 18px; height: 18px; cursor: pointer;
+  accent-color: var(--accent);
+}
+.work-body { flex: 1; min-width: 0; }
+.work-meta { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.badge-type {
+  font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem;
+  border-radius: 4px; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.badge-skripsi  { background: #DBEAFE; color: #1D4ED8; }
+.badge-tesis    { background: #EDE9FE; color: #6D28D9; }
+.badge-disertasi{ background: #FEE2E2; color: #B91C1C; }
+.badge-jurnal   { background: #D1FAE5; color: #065F46; }
+.badge-prosiding{ background: #FEF3C7; color: #92400E; }
+.badge-laporan  { background: #E0F2FE; color: #0369A1; }
+[data-theme="dark"] .badge-skripsi  { background: #1E3A5F; color: #93C5FD; }
+[data-theme="dark"] .badge-tesis    { background: #2D1B69; color: #C4B5FD; }
+[data-theme="dark"] .badge-disertasi{ background: #4C1D1D; color: #FCA5A5; }
+[data-theme="dark"] .badge-jurnal   { background: #064E3B; color: #6EE7B7; }
+[data-theme="dark"] .badge-prosiding{ background: #4D3800; color: #FCD34D; }
+[data-theme="dark"] .badge-laporan  { background: #0C2E4E; color: #7DD3FC; }
+.badge-year { font-size: 0.75rem; color: var(--text3); }
+.work-title {
+  font-family: var(--font-head); font-size: 1.05rem; font-weight: 600;
+  color: var(--text); line-height: 1.4; margin-bottom: 0.35rem;
+  cursor: pointer;
+}
+.work-title:hover { color: var(--accent); }
+.work-info { font-size: 0.82rem; color: var(--text2); margin-bottom: 0.4rem; }
+.work-info strong { color: var(--text); }
+.work-doi { font-size: 0.78rem; color: var(--text3); font-family: monospace; margin-bottom: 0.5rem; }
+.work-doi a { color: var(--accent); text-decoration: none; }
+.work-doi a:hover { text-decoration: underline; }
+.work-abstract {
+  font-size: 0.85rem; color: var(--text2); line-height: 1.6;
+  margin-top: 0.5rem; padding: 0.75rem;
+  background: var(--bg2); border-radius: 6px;
+  border-left: 3px solid var(--accent);
+  display: none;
+}
+.work-abstract.open { display: block; }
+.work-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.5rem; }
+.btn-sm {
+  font-size: 0.78rem; font-weight: 600; padding: 0.3rem 0.75rem;
+  border-radius: 5px; cursor: pointer; transition: all 0.15s;
+  font-family: var(--font-body);
+}
+.btn-outline-sm {
+  background: none; border: 1.5px solid var(--border); color: var(--text2);
+}
+.btn-outline-sm:hover { border-color: var(--accent); color: var(--accent); background: rgba(27,94,32,0.05); }
+.btn-accent-sm {
+  background: var(--accent); color: #fff; border: 1.5px solid var(--accent);
+}
+.btn-accent-sm:hover { background: var(--accent2); border-color: var(--accent2); }
+
+/* === BIBLIOGRAPHY EXPORT === */
+.biblio-section { background: var(--bg2); }
+.biblio-card {
+  background: var(--card-bg); border: 1.5px solid var(--accent);
+  border-radius: var(--radius-lg); padding: 2rem;
+  box-shadow: var(--shadow2);
+}
+.biblio-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+.biblio-title-row { display: flex; align-items: center; gap: 0.75rem; }
+.biblio-icon {
+  width: 42px; height: 42px; background: var(--accent);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.biblio-icon svg { width: 22px; height: 22px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.biblio-title { font-family: var(--font-head); font-size: 1.4rem; font-weight: 700; color: var(--text); }
+.biblio-sub { font-size: 0.83rem; color: var(--text3); }
+.biblio-counter {
+  background: rgba(27,94,32,0.12); border: 1px solid rgba(27,94,32,0.3);
+  color: var(--accent2); font-size: 0.88rem; font-weight: 700;
+  padding: 0.4rem 0.9rem; border-radius: 20px;
+}
+[data-theme="dark"] .biblio-counter { background: rgba(46,125,50,0.18); border-color: rgba(46,125,50,0.35); color: #81C784; }
+.biblio-controls { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-bottom: 1.25rem; }
+.biblio-controls select {
+  padding: 0.55rem 1rem; border: 1.5px solid var(--border);
+  border-radius: 8px; background: var(--bg2); color: var(--text);
+  font-family: var(--font-body); font-size: 0.88rem; cursor: pointer; outline: none;
+  flex: 1; min-width: 180px;
+}
+.biblio-controls select:focus { border-color: var(--accent); }
+.btn-generate {
+  background: var(--accent); color: #fff; border: none;
+  border-radius: 8px; cursor: pointer; font-family: var(--font-body);
+  font-size: 0.9rem; font-weight: 700; padding: 0.55rem 1.5rem;
+  transition: background 0.2s; white-space: nowrap;
+}
+.btn-generate:hover { background: var(--accent2); }
+.biblio-output {
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: 8px; padding: 1rem;
+  font-family: monospace; font-size: 0.82rem;
+  color: var(--text2); line-height: 1.7;
+  min-height: 160px; max-height: 320px; overflow-y: auto;
+  white-space: pre-wrap; word-break: break-word;
+  margin-bottom: 1rem;
+  resize: vertical;
+}
+.biblio-output.empty { color: var(--text3); font-style: italic; font-family: var(--font-body); }
+.biblio-btns { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.btn-copy, .btn-dl-txt, .btn-dl-bib {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.83rem; font-weight: 600; padding: 0.45rem 1rem;
+  border-radius: 7px; cursor: pointer; transition: all 0.15s;
+  font-family: var(--font-body);
+}
+.btn-copy { background: var(--bg2); border: 1.5px solid var(--border); color: var(--text2); }
+.btn-copy:hover { border-color: var(--accent); color: var(--accent); }
+.btn-dl-txt { background: var(--accent2); border: 1.5px solid var(--accent2); color: #fff; }
+.btn-dl-txt:hover { background: var(--accent); border-color: var(--accent); }
+.btn-dl-bib { background: var(--gold); border: 1.5px solid var(--gold); color: #fff; }
+.btn-dl-bib:hover { opacity: 0.85; }
+.btn-dl-bib.hidden, #btnDlBib.hidden { display: none; }
+.toast-msg {
+  font-size: 0.8rem; color: var(--accent2); font-weight: 600;
+  display: none; align-items: center; gap: 0.3rem; margin-left: 0.5rem;
+}
+.toast-msg.show { display: flex; }
+
+/* === STATISTICS === */
+.stats-section { background: var(--bg); }
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin-bottom: 3rem; }
+.stat-card {
+  background: var(--card-bg); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.5rem; text-align: center;
+  box-shadow: var(--shadow);
+}
+.stat-icon { font-size: 1.75rem; margin-bottom: 0.5rem; }
+.stat-num { font-family: var(--font-head); font-size: 2rem; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 0.25rem; }
+.stat-lbl { font-size: 0.82rem; color: var(--text3); font-weight: 500; }
+.chart-section {}
+.chart-title { font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 1.25rem; }
+.bar-chart { display: flex; align-items: flex-end; gap: 0.75rem; height: 160px; }
+.bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
+.bar-wrap { width: 100%; display: flex; align-items: flex-end; justify-content: center; flex: 1; }
+.bar {
+  width: 56px; max-width: 100%; border-radius: 6px 6px 0 0;
+  background: linear-gradient(180deg, var(--accent2) 0%, var(--accent) 100%);
+  transition: height 1s cubic-bezier(.25,.46,.45,.94);
+  cursor: pointer; position: relative;
+}
+.bar:hover::after {
+  content: attr(data-val);
+  position: absolute; top: -28px; left: 50%; transform: translateX(-50%);
+  background: var(--accent); color: #fff; font-size: 0.75rem; font-weight: 700;
+  padding: 2px 8px; border-radius: 4px; white-space: nowrap;
+}
+.bar-year { font-size: 0.78rem; color: var(--text3); font-weight: 600; }
+
+/* === POPULAR WORKS === */
+.popular-section { background: var(--bg2); }
+.popular-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+.pop-card {
+  background: var(--card-bg); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1.5rem;
+  display: flex; flex-direction: column; gap: 0.75rem;
+  box-shadow: var(--shadow); transition: box-shadow 0.2s, transform 0.2s;
+}
+.pop-card:hover { box-shadow: var(--shadow2); transform: translateY(-2px); }
+.pop-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; }
+.pop-num {
+  font-family: var(--font-head); font-size: 2rem; font-weight: 700;
+  color: var(--bg3); line-height: 1;
+}
+[data-theme="dark"] .pop-num { color: var(--bg3); }
+.pop-dl {
+  display: flex; align-items: center; gap: 0.3rem;
+  font-size: 0.78rem; font-weight: 700; color: var(--gold);
+  background: rgba(200,151,10,0.1); padding: 0.25rem 0.6rem; border-radius: 20px;
+}
+.pop-dl svg { width: 13px; height: 13px; stroke: var(--gold); fill: none; stroke-width: 2.5; }
+.pop-card-title { font-family: var(--font-head); font-size: 1rem; font-weight: 600; color: var(--text); line-height: 1.4; }
+.pop-card-author { font-size: 0.82rem; color: var(--text2); }
+.pop-card-abs { font-size: 0.82rem; color: var(--text3); line-height: 1.6; display: none; }
+.pop-card-abs.open { display: block; }
+.pop-card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
+.btn-pop-abs {
+  background: none; border: 1.5px solid var(--border); color: var(--text2);
+  border-radius: 6px; padding: 0.3rem 0.75rem; font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; font-family: var(--font-body); transition: all 0.15s;
+}
+.btn-pop-abs:hover { border-color: var(--accent); color: var(--accent); }
+
+/* === UPLOAD GUIDE === */
+.guide-section { background: var(--bg); }
+.guide-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2.5rem; }
+.guide-step {
+  text-align: center; padding: 2rem 1.5rem;
+  background: var(--card-bg); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); position: relative;
+  transition: box-shadow 0.2s;
+}
+.guide-step:hover { box-shadow: var(--shadow2); }
+.guide-step-num {
+  position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+  background: var(--accent); color: #fff;
+  font-size: 0.75rem; font-weight: 800; padding: 0.2rem 0.65rem;
+  border-radius: 12px; letter-spacing: 0.05em;
+}
+.guide-icon {
+  width: 56px; height: 56px; border-radius: 14px;
+  background: rgba(27,94,32,0.1); margin: 0 auto 1rem;
+  display: flex; align-items: center; justify-content: center;
+}
+[data-theme="dark"] .guide-icon { background: rgba(46,125,50,0.2); }
+.guide-icon svg { width: 28px; height: 28px; stroke: var(--accent); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.guide-step h3 { font-family: var(--font-head); font-size: 1.05rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+.guide-step p { font-size: 0.85rem; color: var(--text3); line-height: 1.6; }
+.guide-cta { text-align: center; }
+.btn-upload-cta {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--accent); color: #fff; border: none;
+  border-radius: 10px; padding: 0.85rem 2.25rem;
+  font-family: var(--font-body); font-size: 1rem; font-weight: 700;
+  cursor: pointer; transition: background 0.2s, transform 0.2s;
+  text-decoration: none;
+}
+.btn-upload-cta:hover { background: var(--accent2); transform: translateY(-1px); }
+.btn-upload-cta svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* === PARTNER INSTITUTIONS === */
+.partner-section { background: var(--bg2); }
+.partner-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem; }
+.partner-card {
+  background: var(--card-bg); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1.25rem 0.75rem;
+  text-align: center; transition: all 0.2s;
+}
+.partner-card:hover { box-shadow: var(--shadow); border-color: rgba(27,94,32,0.3); transform: translateY(-2px); }
+.partner-abbr {
+  font-family: var(--font-head); font-size: 1.3rem; font-weight: 700;
+  color: var(--accent); line-height: 1; margin-bottom: 0.4rem;
+}
+.partner-name { font-size: 0.72rem; color: var(--text3); font-weight: 500; line-height: 1.3; }
+
+/* === ANNOUNCEMENTS === */
+.announce-section { background: var(--bg); }
+.announce-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+.announce-card {
+  background: var(--card-bg); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.25rem;
+  transition: box-shadow 0.2s;
+}
+.announce-card:hover { box-shadow: var(--shadow); }
+.announce-date { font-size: 0.75rem; color: var(--text3); font-weight: 600; margin-bottom: 0.4rem; letter-spacing: 0.03em; }
+.announce-card h3 { font-family: var(--font-head); font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 0.4rem; line-height: 1.35; }
+.announce-card p { font-size: 0.83rem; color: var(--text2); line-height: 1.5; }
+.announce-tag {
+  display: inline-block; font-size: 0.7rem; font-weight: 700;
+  padding: 0.15rem 0.55rem; border-radius: 4px; margin-bottom: 0.5rem;
+  letter-spacing: 0.04em; text-transform: uppercase;
+}
+.tag-update { background: #DCFCE7; color: #166534; }
+.tag-template { background: #FEF9C3; color: #854D0E; }
+.tag-webinar { background: #EDE9FE; color: #6D28D9; }
+[data-theme="dark"] .tag-update { background: #14532D; color: #86EFAC; }
+[data-theme="dark"] .tag-template { background: #422006; color: #FDE047; }
+[data-theme="dark"] .tag-webinar { background: #2E1065; color: #C4B5FD; }
+
+/* === FOOTER === */
+.footer {
+  background: var(--accent);
+  color: rgba(255,255,255,0.85);
+  padding: 3rem 2rem 1.5rem;
+}
+[data-theme="dark"] .footer { background: #050D05; border-top: 1px solid var(--border); }
+.footer-inner { max-width: 1100px; margin: 0 auto; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+.footer-brand-name { font-family: var(--font-head); font-size: 1.3rem; font-weight: 700; color: #fff; margin-bottom: 0.4rem; }
+.footer-brand-tag { font-size: 0.8rem; opacity: 0.7; margin-bottom: 0.75rem; }
+.footer-brand-desc { font-size: 0.83rem; opacity: 0.65; line-height: 1.7; }
+.footer-col-title { font-size: 0.78rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 0.9rem; }
+[data-theme="dark"] .footer-col-title { color: var(--text3); }
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.45rem; }
+.footer-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+.footer-links a:hover { color: #fff; }
+[data-theme="dark"] .footer-links a { color: var(--text3); }
+[data-theme="dark"] .footer-links a:hover { color: var(--text); }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.15);
+  padding-top: 1.25rem;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 0.5rem;
+  font-size: 0.78rem; opacity: 0.6;
+}
+[data-theme="dark"] .footer-bottom { border-top-color: var(--border); }
+.footer-oai { display: flex; align-items: center; gap: 0.4rem; }
+
+/* === RESPONSIVE === */
+@media (max-width: 960px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .popular-grid { grid-template-columns: repeat(2, 1fr); }
+  .guide-steps { grid-template-columns: repeat(2, 1fr); }
+  .partner-grid { grid-template-columns: repeat(3, 1fr); }
+  .announce-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hamburger { display: block; }
+  .hero { padding: 3rem 1.5rem 2rem; }
+  .popular-grid { grid-template-columns: 1fr; }
+  .guide-steps { grid-template-columns: 1fr; }
+  .partner-grid { grid-template-columns: repeat(3, 1fr); }
+  .announce-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .section { padding: 3rem 1.25rem; }
+  .bar { width: 36px; }
+}
+@media (max-width: 600px) {
+  .hero h1 { font-size: 1.65rem; }
+  .hero-search-row { flex-direction: column; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .partner-grid { grid-template-columns: repeat(2, 1fr); }
+  .biblio-controls { flex-direction: column; }
+  .biblio-controls select { min-width: 100%; }
+  .hero-stats { gap: 1.25rem; }
+}
+@media (max-width: 400px) {
+  .navbar { padding: 0 1rem; }
+  .section { padding: 2.5rem 1rem; }
+  .hero { padding: 2.5rem 1rem 2rem; }
+  .hero-search-card { padding: 1rem; }
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .partner-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="announce-bar">
+  Indeksasi Google Scholar diperbarui — 1.240 karya baru ditambahkan &nbsp;·&nbsp;
+  <a href="#">Lihat rilis terbaru →</a>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="#" class="nav-brand">
+    <div class="nav-logo">
+      <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h8M8 15h4"/></svg>
+    </div>
+    <div class="nav-brand-text">
+      <div class="nav-brand-name">RepositoriNusa</div>
+      <div class="nav-brand-tag">Karya Ilmiah Nasional</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="#">Beranda</a>
+    <a href="#">Koleksi</a>
+    <a href="#">Unggah Karya</a>
+    <a href="#">Panduan</a>
+    <a href="#" class="btn-login">Masuk</a>
+  </div>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle tema" title="Ganti tema"></button>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" id="mobileNav">
+  <a href="#">Beranda</a>
+  <a href="#">Koleksi</a>
+  <a href="#">Unggah Karya</a>
+  <a href="#">Panduan</a>
+  <a href="#">Masuk</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Diperbarui Setiap Hari
+  </div>
+  <h1>Repositori Karya Ilmiah <em>Terpadu</em></h1>
+  <p class="hero-sub">Temukan, sitasi, dan unduh karya ilmiah dari ratusan institusi pendidikan tinggi Indonesia dalam satu platform terintegrasi.</p>
+
+  <div class="hero-search-card">
+    <div class="hero-type-tabs">
+      <button class="type-tab active" data-type="all">Semua</button>
+      <button class="type-tab" data-type="skripsi">Skripsi</button>
+      <button class="type-tab" data-type="tesis">Tesis</button>
+      <button class="type-tab" data-type="disertasi">Disertasi</button>
+      <button class="type-tab" data-type="jurnal">Jurnal</button>
+      <button class="type-tab" data-type="prosiding">Prosiding</button>
+      <button class="type-tab" data-type="laporan">Laporan</button>
+    </div>
+    <div class="hero-search-row">
+      <input class="hero-search-input" id="heroSearch" type="text" placeholder="Cari judul, penulis, kata kunci, atau DOI…">
+      <button class="btn-search" onclick="doHeroSearch()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Cari
+      </button>
+    </div>
+    <div class="hero-filters">
+      <select id="filterProdi">
+        <option value="">Semua Program Studi</option>
+        <option>Teknik Informatika</option>
+        <option>Pendidikan Bahasa Indonesia</option>
+        <option>Manajemen</option>
+        <option>Hukum</option>
+        <option>Arsitektur</option>
+        <option>Ilmu Komunikasi</option>
+        <option>Akuntansi</option>
+        <option>Biologi</option>
+        <option>Teknik Sipil</option>
+        <option>Psikologi</option>
+      </select>
+      <select id="filterTahun">
+        <option value="">Semua Tahun</option>
+        <option>2025</option>
+        <option>2024</option>
+        <option>2023</option>
+        <option>2022</option>
+        <option>2021</option>
+        <option>2020</option>
+      </select>
+      <button class="btn-adv-search">+ Penelusuran Lanjutan</button>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num">84.320</div>
+      <div class="hero-stat-lbl">Karya Tersimpan</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">1.240</div>
+      <div class="hero-stat-lbl">Pengarang Aktif</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">&#x2713; Terindeks</div>
+      <div class="hero-stat-lbl">Google Scholar</div>
+    </div>
+  </div>
+</section>
+
+<!-- COLLECTION SECTION -->
+<section class="section collection-section" id="koleksi">
+  <div class="section-inner">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Karya <span>Terbaru</span></div>
+        <div class="section-sub">Diunggah & diverifikasi dalam 30 hari terakhir</div>
+      </div>
+      <a href="#" class="see-all">Lihat Semua Karya →</a>
+    </div>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="semua">Semua</button>
+      <button class="filter-btn" data-filter="skripsi">Skripsi</button>
+      <button class="filter-btn" data-filter="tesis">Tesis</button>
+      <button class="filter-btn" data-filter="disertasi">Disertasi</button>
+      <button class="filter-btn" data-filter="jurnal">Jurnal</button>
+    </div>
+
+    <div class="work-list" id="workList">
+
+      <!-- Item 1 -->
+      <div class="work-item" data-type="skripsi">
+        <div class="work-checkbox"><input type="checkbox" class="work-check" data-id="1" onchange="handleCheck()"></div>
+        <div class="work-body">
+          <div class="work-meta">
+            <span class="badge-type badge-skripsi">Skripsi</span>
+            <span class="badge-year">2025</span>
+          </div>
+          <div class="work-title" onclick="toggleAbstract(this)">Implementasi Algoritma Naive Bayes untuk Klasifikasi Sentimen Ulasan Produk Lokal pada Platform E-Commerce Indonesia</div>
+          <div class="work-info"><strong>Anindya Kusuma Wardhani</strong> &nbsp;·&nbsp; Teknik Informatika &nbsp;·&nbsp; Universitas Negeri Malang &nbsp;·&nbsp; 2025</div>
+          <div class="work-doi">DOI: <a href="#">10.33922/rn.2025.ti.4812</a> &nbsp;|&nbsp; ISBN: 978-602-XXXXX-0</div>
+          <div class="work-abstract" id="abs-1">Penelitian ini mengimplementasikan algoritma Naive Bayes untuk mengklasifikasikan sentimen ulasan produk lokal pada platform e-commerce Tokopedia dan Shopee. Dataset berjumlah 12.400 ulasan dianotasi secara manual menjadi tiga kelas: positif, negatif, dan netral. Hasil pengujian menunjukkan akurasi 87,4% dengan precision 85,2% dan recall 88,1%, mengoverperformance metode SVM pada rasio data yang tidak seimbang.</div>
+          <div class="work-actions">
+            <button class="btn-sm btn-outline-sm" onclick="toggleAbstractById('abs-1', this)">Lihat Abstrak</button>
+            <button class="btn-sm btn-outline-sm" onclick="selectWork(1)">Kutip</button>
+            <button class="btn-sm btn-accent-sm">Unduh PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 2 -->
+      <div class="work-item" data-type="tesis">
+        <div class="work-checkbox"><input type="checkbox" class="work-check" data-id="2" onchange="handleCheck()"></div>
+        <div class="work-body">
+          <div class="work-meta">
+            <span class="badge-type badge-tesis">Tesis</span>
+            <span class="badge-year">2025</span>
+          </div>
+          <div class="work-title" onclick="toggleAbstract(this)">Pengaruh Kepemimpinan Transformasional terhadap Komitmen Organisasi dan Kinerja Pegawai pada Badan Kepegawaian Daerah di Jawa Timur</div>
+          <div class="work-info"><strong>Bagas Prasetyo Nugroho</strong> &nbsp;·&nbsp; Magister Manajemen &nbsp;·&nbsp; Universitas Brawijaya &nbsp;·&nbsp; 2025</div>
+          <div class="work-doi">DOI: <a href="#">10.33922/rn.2025.mm.3017</a></div>
+          <div class="work-abstract" id="abs-2">Penelitian ini bertujuan menganalisis pengaruh kepemimpinan transformasional terhadap komitmen organisasi dan kinerja pegawai di 12 BKD Kabupaten/Kota Jawa Timur. Menggunakan metode Structural Equation Modeling (SEM) dengan 384 responden, hasil menunjukkan kepemimpinan transformasional berpengaruh signifikan positif terhadap komitmen organisasi (β=0.621, p<0.001) dan secara tidak langsung meningkatkan kinerja pegawai melalui variabel mediasi komitmen (indirect effect=0.318).</div>
+          <div class="work-actions">
+            <button class="btn-sm btn-outline-sm" onclick="toggleAbstractById('abs-2', this)">Lihat Abstrak</button>
+            <button class="btn-sm btn-outline-sm" onclick="selectWork(2)">Kutip</button>
+            <button class="btn-sm btn-accent-sm">Unduh PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 3 -->
+      <div class="work-item" data-type="jurnal">
+        <div class="work-checkbox"><input type="checkbox" class="work-check" data-id="3" onchange="handleCheck()"></div>
+        <div class="work-body">
+          <div class="work-meta">
+            <span class="badge-type badge-jurnal">Jurnal</span>
+            <span class="badge-year">2024</span>
+          </div>
+          <div class="work-title" onclick="toggleAbstract(this)">Karakterisasi Senyawa Bioaktif Ekstrak Etanol Daun Kelor (Moringa oleifera) dan Aktivitas Antihipertensinya terhadap Tikus Wistar Model Hipertensi</div>
+          <div class="work-info"><strong>Dyah Ayu Pramesthi, Rendra Wibisono</strong> &nbsp;·&nbsp; Jurnal Farmasi Nusantara, Vol. 14(2) &nbsp;·&nbsp; 2024</div>
+          <div class="work-doi">DOI: <a href="#">10.33922/rn.2024.jfn.1154</a> &nbsp;|&nbsp; e-ISSN: 2807-XXXX</div>
+          <div class="work-abstract" id="abs-3">Penelitian ini mengevaluasi aktivitas antihipertensi fraksi n-heksan dan etil asetat ekstrak etanol daun kelor pada tikus wistar yang diinduksi DOCA-salt. Hasil identifikasi GC-MS menunjukkan keberadaan senyawa niazimicin, quercetin-3-glucoside, dan kaempferol sebagai senyawa utama. Pemberian fraksi etil asetat dosis 400 mg/kg BB selama 28 hari menurunkan tekanan darah sistolik secara signifikan (p<0.05) sebanding dengan kaptopril 10 mg/kg BB.</div>
+          <div class="work-actions">
+            <button class="btn-sm btn-outline-sm" onclick="toggleAbstractById('abs-3', this)">Lihat Abstrak</button>
+            <button class="btn-sm btn-outline-sm" onclick="selectWork(3)">Kutip</button>
+            <button class="btn-sm btn-accent-sm">Unduh PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 4 -->
+      <div class="work-item" data-type="disertasi">
+        <div class="work-checkbox"><input type="checkbox" class="work-check" data-id="4" onchange="handleCheck()"></div>
+        <div class="work-body">
+          <div class="work-meta">
+            <span class="badge-type badge-disertasi">Disertasi</span>
+            <span class="badge-year">2024</span>
+          </div>
+          <div class="work-title" onclick="toggleAbstract(this)">Rekonstruksi Nilai-Nilai Kearifan Lokal Suku Tengger dalam Pembentukan Identitas Budaya Masyarakat Pesisir Bromo-Tengger-Semeru di Era Globalisasi</div>
+          <div class="work-info"><strong>Prof. Dr. Haryo Sulistianto, M.Hum.</strong> &nbsp;·&nbsp; Doktor Ilmu Sosial &nbsp;·&nbsp; Universitas Airlangga &nbsp;·&nbsp; 2024</div>
+          <div class="work-doi">DOI: <a href="#">10.33922/rn.2024.dis.0089</a></div>
+          <div class="work-abstract" id="abs-4">Disertasi ini merekonstruksi nilai-nilai kearifan lokal Suku Tengger melalui metode etnografi kritis selama 18 bulan. Ditemukan bahwa konsep "memayu hayuning bawana" berperan sebagai aktor utama dalam pembentukan resistensi identitas budaya terhadap arus westernisasi. Kontribusi teoritis berupa model "Trisula Identitas Pasca-Kolonial" yang mengintegrasikan dimensi ritual, bahasa, dan ekonomi adat dalam satu kerangka adaptif.</div>
+          <div class="work-actions">
+            <button class="btn-sm btn-outline-sm" onclick="toggleAbstractById('abs-4', this)">Lihat Abstrak</button>
+            <button class="btn-sm btn-outline-sm" onclick="selectWork(4)">Kutip</button>
+            <button class="btn-sm btn-accent-sm">Unduh PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 5 -->
+      <div class="work-item" data-type="skripsi">
+        <div class="work-checkbox"><input type="checkbox" class="work-check" data-id="5" onchange="handleCheck()"></div>
+        <div class="work-body">
+          <div class="work-meta">
+            <span class="badge-type badge-skripsi">Skripsi</span>
+            <span class="badge-year">2024</span>
+          </div>
+          <div class="work-title" onclick="toggleAbstract(this)">Analisis Kesalahan Berbahasa Mahasiswa Asing dalam Pembelajaran BIPA Tingkat Mahir di Universitas Negeri Malang: Kajian Linguistik Kontrastif</div>
+          <div class="work-info"><strong>Faradita Nur Afifah</strong> &nbsp;·&nbsp; Pendidikan Bahasa Indonesia &nbsp;·&nbsp; Universitas Negeri Malang &nbsp;·&nbsp; 2024</div>
+          <div class="work-doi">DOI: <a href="#">10.33922/rn.2024.pbi.2271</a></div>
+          <div class="work-abstract" id="abs-5">Penelitian ini menganalisis 2.340 kalimat yang diproduksi oleh 30 mahasiswa asing BIPA tingkat mahir dari 8 negara berbeda. Menggunakan kerangka analisis kesalahan Corder (1981) yang dimodifikasi, ditemukan bahwa kesalahan interlingual mendominasi (58,3%) terutama pada penggunaan afiks me-/di- dan konstruksi kalimat pasif, disusul kesalahan intralingual (31,2%) pada konjungsi subordinatif. Implikasi pedagogis mencakup desain ulang silabus BIPA berbasis analisis kesalahan berbasis korpus.</div>
+          <div class="work-actions">
+            <button class="btn-sm btn-outline-sm" onclick="toggleAbstractById('abs-5', this)">Lihat Abstrak</button>
+            <button class="btn-sm btn-outline-sm" onclick="selectWork(5)">Kutip</button>
+            <button class="btn-sm btn-accent-sm">Unduh PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 6 -->
+      <div class="work-item" data-type="jurnal">
+        <div class="work-checkbox"><input type="checkbox" class="work-check" data-id="6" onchange="handleCheck()"></div>
+        <div class="work-body">
+          <div class="work-meta">
+            <span class="badge-type badge-jurnal">Jurnal</span>
+            <span class="badge-year">2024</span>
+          </div>
+          <div class="work-title" onclick="toggleAbstract(this)">Efektivitas Model Pembelajaran Problem-Based Learning Berbantuan Media Augmented Reality terhadap Kemampuan Berpikir Kritis Siswa SMA pada Materi Ekosistem</div>
+          <div class="work-info"><strong>Gita Purnama Sari, Drs. Agus Widodo, M.Pd.</strong> &nbsp;·&nbsp; Jurnal Pendidikan Sains Indonesia, Vol. 12(1) &nbsp;·&nbsp; 2024</div>
+          <div class="work-doi">DOI: <a href="#">10.33922/rn.2024.jpsi.0443</a> &nbsp;|&nbsp; e-ISSN: 2614-XXXX</div>
+          <div class="work-abstract" id="abs-6">Penelitian quasi-eksperimental ini melibatkan 128 siswa SMA kelas X dari 4 sekolah di Kabupaten Malang. Kelompok eksperimen memperoleh pembelajaran PBL berbantuan AR (aplikasi EcoAR yang dikembangkan peneliti), sementara kelompok kontrol menggunakan media konvensional. Hasil uji independent samples t-test menunjukkan perbedaan signifikan kemampuan berpikir kritis (t=4.82, p=0.000) dengan effect size Cohen's d=0.86 (kategori besar).</div>
+          <div class="work-actions">
+            <button class="btn-sm btn-outline-sm" onclick="toggleAbstractById('abs-6', this)">Lihat Abstrak</button>
+            <button class="btn-sm btn-outline-sm" onclick="selectWork(6)">Kutip</button>
+            <button class="btn-sm btn-accent-sm">Unduh PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 7 -->
+      <div class="work-item" data-type="tesis">
+        <div class="work-checkbox"><input type="checkbox" class="work-check" data-id="7" onchange="handleCheck()"></div>
+        <div class="work-body">
+          <div class="work-meta">
+            <span class="badge-type badge-tesis">Tesis</span>
+            <span class="badge-year">2023</span>
+          </div>
+          <div class="work-title" onclick="toggleAbstract(this)">Pemetaan Kerentanan Kawasan Pesisir terhadap Abrasi Menggunakan Citra Sentinel-2A dan Sistem Informasi Geografis di Pesisir Selatan Jawa</div>
+          <div class="work-info"><strong>Hendriawan Putra Setiadi</strong> &nbsp;·&nbsp; Magister Geografi &nbsp;·&nbsp; Universitas Gadjah Mada &nbsp;·&nbsp; 2023</div>
+          <div class="work-doi">DOI: <a href="#">10.33922/rn.2023.geo.1887</a></div>
+          <div class="work-abstract" id="abs-7">Tesis ini memetakan indeks kerentanan pesisir (CVI) sepanjang 420 km garis pantai selatan Jawa menggunakan citra Sentinel-2A multitemporal (2018–2023) dan analisis regresi logistik berbasis SIG. Ditemukan 38,7% segmen pantai berada dalam kategori sangat rentan, terutama di Kabupaten Kebumen dan Cilacap. Model prediksi kerentanan menghasilkan akurasi keseluruhan 91,2% (kappa=0.87) dan telah divalidasi lapangan di 24 titik sampel.</div>
+          <div class="work-actions">
+            <button class="btn-sm btn-outline-sm" onclick="toggleAbstractById('abs-7', this)">Lihat Abstrak</button>
+            <button class="btn-sm btn-outline-sm" onclick="selectWork(7)">Kutip</button>
+            <button class="btn-sm btn-accent-sm">Unduh PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 8 -->
+      <div class="work-item" data-type="skripsi">
+        <div class="work-checkbox"><input type="checkbox" class="work-check" data-id="8" onchange="handleCheck()"></div>
+        <div class="work-body">
+          <div class="work-meta">
+            <span class="badge-type badge-skripsi">Skripsi</span>
+            <span class="badge-year">2023</span>
+          </div>
+          <div class="work-title" onclick="toggleAbstract(this)">Perancangan Sistem Informasi Manajemen Arsip Digital Berbasis Web pada Dinas Perpustakaan dan Kearsipan Kota Surabaya dengan Pendekatan Agile Scrum</div>
+          <div class="work-info"><strong>Ika Rosyidah Amalia</strong> &nbsp;·&nbsp; Sistem Informasi &nbsp;·&nbsp; Institut Teknologi Sepuluh Nopember &nbsp;·&nbsp; 2023</div>
+          <div class="work-doi">DOI: <a href="#">10.33922/rn.2023.si.5034</a></div>
+          <div class="work-abstract" id="abs-8">Penelitian ini merancang dan mengimplementasikan SIMADI — sistem informasi manajemen arsip digital berbasis web menggunakan framework Laravel 10 dan PostgreSQL. Pengembangan dilakukan dalam 6 sprint selama 12 minggu dengan metodologi Agile Scrum. Pengujian blackbox menghasilkan 100% passed pada 47 test case. Uji usability dengan System Usability Scale (SUS) memperoleh skor 82,4 (grade B, kategori "Excellent"), dengan peningkatan efisiensi pencarian arsip dari rata-rata 14,3 menit menjadi 1,8 menit.</div>
+          <div class="work-actions">
+            <button class="btn-sm btn-outline-sm" onclick="toggleAbstractById('abs-8', this)">Lihat Abstrak</button>
+            <button class="btn-sm btn-outline-sm" onclick="selectWork(8)">Kutip</button>
+            <button class="btn-sm btn-accent-sm">Unduh PDF</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.work-list -->
+  </div>
+</section>
+
+<!-- BIBLIOGRAPHY EXPORT PANEL -->
+<section class="section biblio-section" id="bibliography">
+  <div class="section-inner">
+    <div class="biblio-card">
+      <div class="biblio-header">
+        <div class="biblio-title-row">
+          <div class="biblio-icon">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          </div>
+          <div>
+            <div class="biblio-title">Export Bibliografi</div>
+            <div class="biblio-sub">Pilih karya di atas, lalu generate kutipan dalam format yang Anda butuhkan</div>
+          </div>
+        </div>
+        <div class="biblio-counter" id="biblioCounter">0 karya dipilih</div>
+      </div>
+
+      <div class="biblio-controls">
+        <select id="biblioFormat">
+          <option value="apa">APA 7th Edition</option>
+          <option value="mla">MLA 9th Edition</option>
+          <option value="chicago">Chicago 17th Edition</option>
+          <option value="vancouver">Vancouver</option>
+          <option value="bibtex">BibTeX</option>
+          <option value="ris">RIS Format</option>
+          <option value="mendeley">Mendeley/Zotero (.ris)</option>
+        </select>
+        <button class="btn-generate" onclick="generateBibliography()">
+          &#9654; Generate Bibliografi
+        </button>
+      </div>
+
+      <div class="biblio-output empty" id="biblioOutput">
+Pilih minimal satu karya di bagian "Karya Terbaru" di atas, pilih format kutipan, lalu klik "Generate Bibliografi".</div>
+
+      <div class="biblio-btns">
+        <button class="btn-copy btn-sm" onclick="copyBiblio()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Salin Semua
+        </button>
+        <button class="btn-dl-txt btn-sm" onclick="downloadTxt()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download .txt
+        </button>
+        <button class="btn-dl-bib btn-sm hidden" id="btnDlBib" onclick="downloadBib()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download .bib
+        </button>
+        <span class="toast-msg" id="copyToast">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Disalin!
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATISTICS -->
+<section class="section stats-section" id="statistik">
+  <div class="section-inner">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Statistik <span>Repositori</span></div>
+        <div class="section-sub">Data agregat seluruh koleksi karya ilmiah</div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📚</div>
+        <div class="stat-num" data-target="84320" id="cnt1">0</div>
+        <div class="stat-lbl">Total Karya Tersimpan</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⬇️</div>
+        <div class="stat-num" data-target="2140800" id="cnt2">0</div>
+        <div class="stat-lbl">Total Unduhan</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✍️</div>
+        <div class="stat-num" data-target="1240" id="cnt3">0</div>
+        <div class="stat-lbl">Pengarang Aktif</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🏛️</div>
+        <div class="stat-num" data-target="87" id="cnt4">0</div>
+        <div class="stat-lbl">Institusi Mitra</div>
+      </div>
+    </div>
+
+    <div class="chart-section">
+      <div class="chart-title">Distribusi Karya per Tahun (2020–2025)</div>
+      <div class="bar-chart" id="barChart">
+        <div class="bar-group">
+          <div class="bar-wrap"><div class="bar" data-val="9.840" style="height:0%" data-h="61%"></div></div>
+          <div class="bar-year">2020</div>
+        </div>
+        <div class="bar-group">
+          <div class="bar-wrap"><div class="bar" data-val="11.230" style="height:0%" data-h="70%"></div></div>
+          <div class="bar-year">2021</div>
+        </div>
+        <div class="bar-group">
+          <div class="bar-wrap"><div class="bar" data-val="13.450" style="height:0%" data-h="84%"></div></div>
+          <div class="bar-year">2022</div>
+        </div>
+        <div class="bar-group">
+          <div class="bar-wrap"><div class="bar" data-val="15.120" style="height:0%" data-h="94%"></div></div>
+          <div class="bar-year">2023</div>
+        </div>
+        <div class="bar-group">
+          <div class="bar-wrap"><div class="bar" data-val="16.080" style="height:0%" data-h="100%"></div></div>
+          <div class="bar-year">2024</div>
+        </div>
+        <div class="bar-group">
+          <div class="bar-wrap"><div class="bar" data-val="18.600" style="height:0%" data-h="116%" style="background:linear-gradient(180deg,#C8970A 0%,#A67D08 100%)"></div></div>
+          <div class="bar-year">2025</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POPULAR WORKS -->
+<section class="section popular-section" id="terpopuler">
+  <div class="section-inner">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Karya <span>Terpopuler</span></div>
+        <div class="section-sub">Berdasarkan jumlah unduhan sepanjang masa</div>
+      </div>
+      <a href="#" class="see-all">Lihat Semua →</a>
+    </div>
+
+    <div class="popular-grid">
+      <div class="pop-card">
+        <div class="pop-card-top">
+          <div class="pop-num">#1</div>
+          <div class="pop-dl">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            14.820 unduhan
+          </div>
+        </div>
+        <div><span class="badge-type badge-skripsi">Skripsi</span></div>
+        <div class="pop-card-title">Rancang Bangun Aplikasi Monitoring Gizi Balita Berbasis Android dengan Integrasi Kurva WHO di Puskesmas Kota Kediri</div>
+        <div class="pop-card-author">Nadia Putri Anggraeni &nbsp;·&nbsp; Teknik Informatika, UB &nbsp;·&nbsp; 2022</div>
+        <div class="pop-card-abs" id="pabs-1">Penelitian ini merancang aplikasi Android untuk pemantauan status gizi balita usia 0–60 bulan berbasis kurva pertumbuhan WHO 2006. Sistem terintegrasi dengan database Puskesmas menggunakan REST API dan mampu memproses data dari 1.240 balita secara real-time. Hasil uji penerimaan oleh 32 tenaga kesehatan menunjukkan tingkat kepuasan 4,6/5,0.</div>
+        <div class="pop-card-footer">
+          <button class="btn-pop-abs" onclick="togglePopAbs('pabs-1', this)">Baca Abstrak</button>
+          <a href="#" style="font-size:0.8rem;color:var(--accent);text-decoration:none;font-weight:600;">Unduh →</a>
+        </div>
+      </div>
+
+      <div class="pop-card">
+        <div class="pop-card-top">
+          <div class="pop-num">#2</div>
+          <div class="pop-dl">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            11.340 unduhan
+          </div>
+        </div>
+        <div><span class="badge-type badge-tesis">Tesis</span></div>
+        <div class="pop-card-title">Strategi Pengembangan UMKM Batik Malang Berbasis Digital Marketing dan Analisis SWOT-AHP dalam Menghadapi Era Pasca-Pandemi</div>
+        <div class="pop-card-author">Rizal Firman Hidayat &nbsp;·&nbsp; Magister Manajemen, UM &nbsp;·&nbsp; 2022</div>
+        <div class="pop-card-abs" id="pabs-2">Penelitian ini menganalisis strategi pengembangan 47 UMKM batik di Kota Malang menggunakan metode SWOT-AHP dan Business Model Canvas. Hasil analisis menunjukkan strategi SO (Strengths-Opportunities) sebagai prioritas utama dengan bobot 0.412, khususnya pada pemanfaatan platform digital Tokopedia dan Instagram untuk perluasan pasar ke segmen milenial. Omzet rata-rata UMKM meningkat 34,7% pasca implementasi strategi digital selama 6 bulan.</div>
+        <div class="pop-card-footer">
+          <button class="btn-pop-abs" onclick="togglePopAbs('pabs-2', this)">Baca Abstrak</button>
+          <a href="#" style="font-size:0.8rem;color:var(--accent);text-decoration:none;font-weight:600;">Unduh →</a>
+        </div>
+      </div>
+
+      <div class="pop-card">
+        <div class="pop-card-top">
+          <div class="pop-num">#3</div>
+          <div class="pop-dl">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            9.870 unduhan
+          </div>
+        </div>
+        <div><span class="badge-type badge-jurnal">Jurnal</span></div>
+        <div class="pop-card-title">Penerapan Deep Learning ResNet-50 untuk Deteksi Dini Penyakit Tanaman Padi dari Citra Daun dengan Akurasi 96,3% pada Dataset Lokal Indonesia</div>
+        <div class="pop-card-author">Suryo Baskoro, Dr. Laksmi Dewanti &nbsp;·&nbsp; Jurnal Teknologi Pertanian, Vol. 11(3) &nbsp;·&nbsp; 2023</div>
+        <div class="pop-card-abs" id="pabs-3">Penelitian ini mengadaptasi arsitektur ResNet-50 dengan transfer learning untuk mendeteksi 7 penyakit tanaman padi (blast, bercak coklat, hawar daun bakteri, dll.) dari citra daun yang diambil dengan smartphone. Dataset terdiri dari 18.420 citra yang dikumpulkan dari 12 sawah di Jawa Timur dan Jawa Tengah. Model akhir mencapai akurasi 96,3% dengan waktu inferensi 0,34 detik/citra pada perangkat Android mid-range.</div>
+        <div class="pop-card-footer">
+          <button class="btn-pop-abs" onclick="togglePopAbs('pabs-3', this)">Baca Abstrak</button>
+          <a href="#" style="font-size:0.8rem;color:var(--accent);text-decoration:none;font-weight:600;">Unduh →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- UPLOAD GUIDE -->
+<section class="section guide-section" id="panduan">
+  <div class="section-inner">
+    <div class="section-header" style="justify-content:center;text-align:center;display:block;margin-bottom:2.5rem;">
+      <div class="section-title">Cara <span>Unggah Karya</span></div>
+      <div class="section-sub" style="margin-top:0.4rem;">Tiga langkah mudah untuk berkontribusi pada repositori nasional</div>
+    </div>
+
+    <div class="guide-steps">
+      <div class="guide-step">
+        <div class="guide-step-num">Langkah 1</div>
+        <div class="guide-icon">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <h3>Daftar Akun</h3>
+        <p>Buat akun dengan email institusi Anda. Verifikasi afiliasi melalui sistem SSO kampus atau manual oleh admin repositori.</p>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">Langkah 2</div>
+        <div class="guide-icon">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+        </div>
+        <h3>Isi Metadata Karya</h3>
+        <p>Lengkapi judul, abstrak, kata kunci, tahun, program studi, dan nama pembimbing. Metadata lengkap meningkatkan visibilitas di Google Scholar.</p>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">Langkah 3</div>
+        <div class="guide-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <h3>Upload File & Submit</h3>
+        <p>Unggah berkas PDF (maks. 50 MB). Setelah review oleh pustakawan (1–3 hari kerja), karya Anda akan tayang dan dapat disitasi.</p>
+      </div>
+    </div>
+
+    <div class="guide-cta">
+      <a href="#" class="btn-upload-cta">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Unggah Karya Anda
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNER INSTITUTIONS -->
+<section class="section partner-section" id="mitra">
+  <div class="section-inner">
+    <div class="section-header" style="justify-content:center;text-align:center;display:block;margin-bottom:2rem;">
+      <div class="section-title">Institusi <span>Mitra</span></div>
+      <div class="section-sub" style="margin-top:0.4rem;">Bergabung bersama 87 perguruan tinggi terkemuka Indonesia</div>
+    </div>
+
+    <div class="partner-grid">
+      <div class="partner-card">
+        <div class="partner-abbr">UI</div>
+        <div class="partner-name">Universitas Indonesia</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-abbr">UGM</div>
+        <div class="partner-name">Universitas Gadjah Mada</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-abbr">ITB</div>
+        <div class="partner-name">Institut Teknologi Bandung</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-abbr">UNAIR</div>
+        <div class="partner-name">Universitas Airlangga</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-abbr">ITS</div>
+        <div class="partner-name">Institut Teknologi Sepuluh Nopember</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-abbr">UM</div>
+        <div class="partner-name">Universitas Negeri Malang</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ANNOUNCEMENTS -->
+<section class="section announce-section" id="pengumuman">
+  <div class="section-inner">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Pengumuman <span>Terbaru</span></div>
+        <div class="section-sub">Informasi pembaruan sistem dan agenda kegiatan</div>
+      </div>
+      <a href="#" class="see-all">Arsip Pengumuman →</a>
+    </div>
+
+    <div class="announce-grid">
+      <div class="announce-card">
+        <span class="announce-tag tag-update">Pembaruan</span>
+        <div class="announce-date">12 Juni 2025</div>
+        <h3>Indeksasi Google Scholar Berhasil Diperbarui untuk 1.240 Karya Baru</h3>
+        <p>Proses sinkronisasi metadata dengan Google Scholar telah selesai. Seluruh karya yang diunggah sejak Januari 2025 kini dapat ditemukan melalui pencarian Google Scholar dengan DOI terverifikasi.</p>
+      </div>
+      <div class="announce-card">
+        <span class="announce-tag tag-template">Template Baru</span>
+        <div class="announce-date">5 Juni 2025</div>
+        <h3>Template Metadata APA 7th Edition Diperbaharui Sesuai Manual Terbaru</h3>
+        <p>Form unggah karya kini menggunakan template metadata APA edisi ketujuh yang telah disesuaikan dengan panduan Publication Manual of the APA (2020). Pengguna yang mengunggah karya sebelum tanggal ini disarankan untuk memperbarui metadata.</p>
+      </div>
+      <div class="announce-card">
+        <span class="announce-tag tag-webinar">Webinar</span>
+        <div class="announce-date">25 Juni 2025</div>
+        <h3>Webinar: Strategi Penulisan Karya Ilmiah Bereputasi untuk Publikasi Internasional</h3>
+        <p>Diadakan secara daring via Zoom bersama narasumber Prof. Dr. Widiyatmoko (IPB) dan Dr. Sri Hartini (UI). Pendaftaran gratis khusus anggota RepositoriNusa. Kapasitas terbatas 500 peserta.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-name">RepositoriNusa</div>
+        <div class="footer-brand-tag">Pusat Preservasi & Diseminasi Karya Ilmiah Nasional</div>
+        <div class="footer-brand-desc">Platform repositori karya ilmiah terpadu bagi perguruan tinggi Indonesia. Mendukung Open Access, Open Science, dan Sustainable Development Goals dalam bidang pendidikan berkualitas.</div>
+      </div>
+      <div>
+        <div class="footer-col-title">Koleksi</div>
+        <ul class="footer-links">
+          <li><a href="#">Skripsi</a></li>
+          <li><a href="#">Tesis</a></li>
+          <li><a href="#">Disertasi</a></li>
+          <li><a href="#">Jurnal</a></li>
+          <li><a href="#">Prosiding</a></li>
+          <li><a href="#">Laporan Penelitian</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Layanan</div>
+        <ul class="footer-links">
+          <li><a href="#">Unggah Karya</a></li>
+          <li><a href="#">Export Bibliografi</a></li>
+          <li><a href="#">Penelusuran Lanjutan</a></li>
+          <li><a href="#">API Akses Data</a></li>
+          <li><a href="#">Statistik Repositori</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Tentang</div>
+        <ul class="footer-links">
+          <li><a href="#">Tentang Kami</a></li>
+          <li><a href="#">Kebijakan Open Access</a></li>
+          <li><a href="#">Panduan Pengunggahan</a></li>
+          <li><a href="#">Institusi Mitra</a></li>
+          <li><a href="#">Kontak</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2025 RepositoriNusa. Seluruh hak cipta karya ilmiah milik pengarang masing-masing.</span>
+      <span class="footer-oai">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        Powered by OAI-PMH Protocol v2.0
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ========== DATA ==========
+const works = [
+  {
+    id: 1,
+    type: 'skripsi',
+    title: 'Implementasi Algoritma Naive Bayes untuk Klasifikasi Sentimen Ulasan Produk Lokal pada Platform E-Commerce Indonesia',
+    author: 'Wardhani, A. K.',
+    authorFull: 'Anindya Kusuma Wardhani',
+    year: 2025,
+    institution: 'Universitas Negeri Malang',
+    prodi: 'Teknik Informatika',
+    doi: '10.33922/rn.2025.ti.4812',
+    journal: null,
+    volume: null, issue: null, pages: null,
+  },
+  {
+    id: 2,
+    type: 'tesis',
+    title: 'Pengaruh Kepemimpinan Transformasional terhadap Komitmen Organisasi dan Kinerja Pegawai pada Badan Kepegawaian Daerah di Jawa Timur',
+    author: 'Nugroho, B. P.',
+    authorFull: 'Bagas Prasetyo Nugroho',
+    year: 2025,
+    institution: 'Universitas Brawijaya',
+    prodi: 'Magister Manajemen',
+    doi: '10.33922/rn.2025.mm.3017',
+    journal: null, volume: null, issue: null, pages: null,
+  },
+  {
+    id: 3,
+    type: 'jurnal',
+    title: 'Karakterisasi Senyawa Bioaktif Ekstrak Etanol Daun Kelor (Moringa oleifera) dan Aktivitas Antihipertensinya terhadap Tikus Wistar Model Hipertensi',
+    author: 'Pramesthi, D. A., & Wibisono, R.',
+    authorFull: 'Dyah Ayu Pramesthi & Rendra Wibisono',
+    year: 2024,
+    institution: null,
+    prodi: null,
+    doi: '10.33922/rn.2024.jfn.1154',
+    journal: 'Jurnal Farmasi Nusantara', volume: '14', issue: '2', pages: '88–101',
+  },
+  {
+    id: 4,
+    type: 'disertasi',
+    title: 'Rekonstruksi Nilai-Nilai Kearifan Lokal Suku Tengger dalam Pembentukan Identitas Budaya Masyarakat Pesisir Bromo-Tengger-Semeru di Era Globalisasi',
+    author: 'Sulistianto, H.',
+    authorFull: 'Haryo Sulistianto',
+    year: 2024,
+    institution: 'Universitas Airlangga',
+    prodi: 'Doktor Ilmu Sosial',
+    doi: '10.33922/rn.2024.dis.0089',
+    journal: null, volume: null, issue: null, pages: null,
+  },
+  {
+    id: 5,
+    type: 'skripsi',
+    title: 'Analisis Kesalahan Berbahasa Mahasiswa Asing dalam Pembelajaran BIPA Tingkat Mahir di Universitas Negeri Malang: Kajian Linguistik Kontrastif',
+    author: 'Afifah, F. N.',
+    authorFull: 'Faradita Nur Afifah',
+    year: 2024,
+    institution: 'Universitas Negeri Malang',
+    prodi: 'Pendidikan Bahasa Indonesia',
+    doi: '10.33922/rn.2024.pbi.2271',
+    journal: null, volume: null, issue: null, pages: null,
+  },
+  {
+    id: 6,
+    type: 'jurnal',
+    title: 'Efektivitas Model Pembelajaran Problem-Based Learning Berbantuan Media Augmented Reality terhadap Kemampuan Berpikir Kritis Siswa SMA pada Materi Ekosistem',
+    author: 'Sari, G. P., & Widodo, A.',
+    authorFull: 'Gita Purnama Sari & Agus Widodo',
+    year: 2024,
+    institution: null,
+    prodi: null,
+    doi: '10.33922/rn.2024.jpsi.0443',
+    journal: 'Jurnal Pendidikan Sains Indonesia', volume: '12', issue: '1', pages: '34–51',
+  },
+  {
+    id: 7,
+    type: 'tesis',
+    title: 'Pemetaan Kerentanan Kawasan Pesisir terhadap Abrasi Menggunakan Citra Sentinel-2A dan Sistem Informasi Geografis di Pesisir Selatan Jawa',
+    author: 'Setiadi, H. P.',
+    authorFull: 'Hendriawan Putra Setiadi',
+    year: 2023,
+    institution: 'Universitas Gadjah Mada',
+    prodi: 'Magister Geografi',
+    doi: '10.33922/rn.2023.geo.1887',
+    journal: null, volume: null, issue: null, pages: null,
+  },
+  {
+    id: 8,
+    type: 'skripsi',
+    title: 'Perancangan Sistem Informasi Manajemen Arsip Digital Berbasis Web pada Dinas Perpustakaan dan Kearsipan Kota Surabaya dengan Pendekatan Agile Scrum',
+    author: 'Amalia, I. R.',
+    authorFull: 'Ika Rosyidah Amalia',
+    year: 2023,
+    institution: 'Institut Teknologi Sepuluh Nopember',
+    prodi: 'Sistem Informasi',
+    doi: '10.33922/rn.2023.si.5034',
+    journal: null, volume: null, issue: null, pages: null,
+  },
+];
+
+// ========== THEME TOGGLE ==========
+const themeToggle = document.getElementById('themeToggle');
+const savedTheme = localStorage.getItem('repositorinusa_theme') || 'light';
+document.documentElement.setAttribute('data-theme', savedTheme);
+
+themeToggle.addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('repositorinusa_theme', next);
+});
+
+// ========== HAMBURGER ==========
+const hamburger = document.getElementById('hamburger');
+const mobileNav = document.getElementById('mobileNav');
+hamburger.addEventListener('click', () => {
+  mobileNav.classList.toggle('open');
+});
+
+// ========== HERO TYPE TABS ==========
+document.querySelectorAll('.type-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.type-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+function doHeroSearch() {
+  const q = document.getElementById('heroSearch').value.trim();
+  if (q) {
+    document.getElementById('koleksi').scrollIntoView({ behavior: 'smooth' });
+  }
+}
+document.getElementById('heroSearch').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doHeroSearch();
+});
+
+// ========== COLLECTION FILTER TABS ==========
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('.work-item').forEach(item => {
+      if (filter === 'semua' || item.dataset.type === filter) {
+        item.style.display = 'flex';
+      } else {
+        item.style.display = 'none';
+      }
+    });
+  });
+});
+
+// ========== ABSTRACT TOGGLE ==========
+function toggleAbstract(titleEl) {
+  const absId = titleEl.closest('.work-body').querySelector('.work-abstract').id;
+  toggleAbstractById(absId, null);
+}
+
+function toggleAbstractById(absId, btn) {
+  const abs = document.getElementById(absId);
+  const isOpen = abs.classList.contains('open');
+  abs.classList.toggle('open');
+  if (btn) {
+    btn.textContent = isOpen ? 'Lihat Abstrak' : 'Sembunyikan';
+  }
+}
+
+// ========== CHECKBOX & SELECTION ==========
+let selectedIds = new Set();
+
+function handleCheck() {
+  selectedIds.clear();
+  document.querySelectorAll('.work-check:checked').forEach(cb => {
+    selectedIds.add(parseInt(cb.dataset.id));
+    cb.closest('.work-item').classList.add('checked');
+  });
+  document.querySelectorAll('.work-check:not(:checked)').forEach(cb => {
+    cb.closest('.work-item').classList.remove('checked');
+  });
+  updateCounter();
+}
+
+function selectWork(id) {
+  const cb = document.querySelector(`.work-check[data-id="${id}"]`);
+  if (cb) {
+    cb.checked = true;
+    handleCheck();
+    document.getElementById('bibliography').scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+function updateCounter() {
+  const n = selectedIds.size;
+  document.getElementById('biblioCounter').textContent = n + ' karya dipilih';
+}
+
+// ========== BIBLIOGRAPHY GENERATOR ==========
+function generateBibliography() {
+  if (selectedIds.size === 0) {
+    const out = document.getElementById('biblioOutput');
+    out.classList.add('empty');
+    out.textContent = 'Belum ada karya yang dipilih. Centang minimal satu karya di bagian "Karya Terbaru" di atas.';
+    return;
+  }
+
+  const fmt = document.getElementById('biblioFormat').value;
+  const selected = works.filter(w => selectedIds.has(w.id));
+  let output = '';
+
+  const btnBib = document.getElementById('btnDlBib');
+  if (fmt === 'bibtex') {
+    btnBib.classList.remove('hidden');
+  } else {
+    btnBib.classList.add('hidden');
+  }
+
+  selected.forEach((w, idx) => {
+    const n = idx + 1;
+    let entry = '';
+
+    if (fmt === 'apa') {
+      if (w.type === 'jurnal') {
+        entry = `${n}. ${w.author} (${w.year}). ${w.title}. ${w.journal}, ${w.volume}(${w.issue}), ${w.pages}. https://doi.org/${w.doi}`;
+      } else {
+        const typeLabel = w.type.charAt(0).toUpperCase() + w.type.slice(1);
+        entry = `${n}. ${w.author} (${w.year}). ${w.title} [${typeLabel}, ${w.institution}]. RepositoriNusa. https://doi.org/${w.doi}`;
+      }
+    } else if (fmt === 'mla') {
+      if (w.type === 'jurnal') {
+        entry = `${n}. ${w.authorFull}. "${w.title}." ${w.journal}, vol. ${w.volume}, no. ${w.issue}, ${w.year}, pp. ${w.pages}. DOI: ${w.doi}.`;
+      } else {
+        const typeLabel = w.type.charAt(0).toUpperCase() + w.type.slice(1);
+        entry = `${n}. ${w.authorFull}. ${w.title}. ${w.year}. ${w.institution}, ${typeLabel}. RepositoriNusa, doi:${w.doi}.`;
+      }
+    } else if (fmt === 'chicago') {
+      if (w.type === 'jurnal') {
+        entry = `${n}. ${w.authorFull}. "${w.title}." ${w.journal} ${w.volume}, no. ${w.issue} (${w.year}): ${w.pages}. https://doi.org/${w.doi}.`;
+      } else {
+        const typeLabel = w.type.charAt(0).toUpperCase() + w.type.slice(1);
+        entry = `${n}. ${w.authorFull}. "${w.title}." ${typeLabel}. ${w.institution}, ${w.year}. https://doi.org/${w.doi}.`;
+      }
+    } else if (fmt === 'vancouver') {
+      if (w.type === 'jurnal') {
+        entry = `${n}. ${w.author} ${w.title}. ${w.journal}. ${w.year};${w.volume}(${w.issue}):${w.pages}. doi: ${w.doi}.`;
+      } else {
+        const typeLabel = w.type.charAt(0).toUpperCase() + w.type.slice(1);
+        entry = `${n}. ${w.author} ${w.title} [${typeLabel}]. ${w.institution}; ${w.year}. Available from: https://doi.org/${w.doi}`;
+      }
+    } else if (fmt === 'bibtex') {
+      const key = w.author.split(',')[0].replace(/\s/g,'').toLowerCase() + w.year;
+      if (w.type === 'jurnal') {
+        entry = `@article{${key},\n  author  = {${w.authorFull}},\n  title   = {${w.title}},\n  journal = {${w.journal}},\n  volume  = {${w.volume}},\n  number  = {${w.issue}},\n  pages   = {${w.pages}},\n  year    = {${w.year}},\n  doi     = {${w.doi}}\n}`;
+      } else {
+        const btype = w.type === 'skripsi' || w.type === 'tesis' || w.type === 'disertasi' ? 'thesis' : 'techreport';
+        const typeLabel = w.type.charAt(0).toUpperCase() + w.type.slice(1);
+        entry = `@${btype}{${key},\n  author  = {${w.authorFull}},\n  title   = {${w.title}},\n  school  = {${w.institution}},\n  type    = {${typeLabel}},\n  year    = {${w.year}},\n  doi     = {${w.doi}}\n}`;
+      }
+    } else if (fmt === 'ris') {
+      const tyMap = { jurnal: 'JOUR', skripsi: 'THES', tesis: 'THES', disertasi: 'THES', prosiding: 'CONF', laporan: 'RPRT' };
+      const ty = tyMap[w.type] || 'GEN';
+      let lines = [`TY  - ${ty}`, `AU  - ${w.authorFull}`, `TI  - ${w.title}`, `PY  - ${w.year}`];
+      if (w.journal) lines.push(`JO  - ${w.journal}`, `VL  - ${w.volume}`, `IS  - ${w.issue}`, `SP  - ${w.pages ? w.pages.split('–')[0] : ''}`, `EP  - ${w.pages ? w.pages.split('–')[1] || '' : ''}`);
+      if (w.institution) lines.push(`PB  - ${w.institution}`);
+      lines.push(`DO  - ${w.doi}`, `ER  - `);
+      entry = `${n}.\n` + lines.join('\n');
+    } else if (fmt === 'mendeley') {
+      const tyMap = { jurnal: 'JOUR', skripsi: 'THES', tesis: 'THES', disertasi: 'THES', prosiding: 'CONF', laporan: 'RPRT' };
+      const ty = tyMap[w.type] || 'GEN';
+      let lines = [`TY  - ${ty}`, `AU  - ${w.authorFull}`, `TI  - ${w.title}`, `PY  - ${w.year}`, `UR  - https://doi.org/${w.doi}`, `DO  - ${w.doi}`];
+      if (w.journal) lines.push(`JO  - ${w.journal}`, `VL  - ${w.volume}`, `IS  - ${w.issue}`);
+      if (w.institution) lines.push(`PB  - ${w.institution}`);
+      if (w.prodi) lines.push(`KW  - ${w.prodi}`);
+      lines.push(`ER  - `);
+      entry = `${n}.\n` + lines.join('\n');
+    }
+
+    output += (idx > 0 ? '\n\n' : '') + entry;
+  });
+
+  const out = document.getElementById('biblioOutput');
+  out.classList.remove('empty');
+  out.textContent = output;
+}
+
+// ========== COPY & DOWNLOAD ==========
+function copyBiblio() {
+  const text = document.getElementById('biblioOutput').textContent;
+  if (!text || document.getElementById('biblioOutput').classList.contains('empty')) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const toast = document.getElementById('copyToast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2200);
+  });
+}
+
+function downloadTxt() {
+  const text = document.getElementById('biblioOutput').textContent;
+  if (!text || document.getElementById('biblioOutput').classList.contains('empty')) return;
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'bibliografi-repositorinusa.txt';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function downloadBib() {
+  const text = document.getElementById('biblioOutput').textContent;
+  if (!text || document.getElementById('biblioOutput').classList.contains('empty')) return;
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'bibliografi-repositorinusa.bib';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+// ========== COUNTER ANIMATION ==========
+function animateCounter(el, target) {
+  const duration = 1800;
+  const start = performance.now();
+  const isLarge = target >= 10000;
+  function update(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.floor(eased * target);
+    if (isLarge) {
+      el.textContent = current.toLocaleString('id-ID');
+    } else {
+      el.textContent = current.toLocaleString('id-ID');
+    }
+    if (progress < 1) requestAnimationFrame(update);
+    else el.textContent = target.toLocaleString('id-ID');
+  }
+  requestAnimationFrame(update);
+}
+
+const statsObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const target = parseInt(el.dataset.target);
+      animateCounter(el, target);
+      statsObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.3 });
+
+['cnt1','cnt2','cnt3','cnt4'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) statsObserver.observe(el);
+});
+
+// ========== BAR CHART ANIMATION ==========
+const barObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      document.querySelectorAll('#barChart .bar').forEach((bar, i) => {
+        setTimeout(() => {
+          bar.style.height = bar.dataset.h;
+        }, i * 100);
+      });
+      barObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+
+const barChart = document.getElementById('barChart');
+if (barChart) barObserver.observe(barChart);
+
+// fix last bar color
+document.querySelectorAll('#barChart .bar').forEach((bar, i) => {
+  if (i === 5) bar.style.background = 'linear-gradient(180deg, #C8970A 0%, #A67D08 100%)';
+});
+
+// ========== POPULAR ABSTRACT TOGGLE ==========
+function togglePopAbs(id, btn) {
+  const el = document.getElementById(id);
+  const isOpen = el.classList.contains('open');
+  el.classList.toggle('open');
+  btn.textContent = isOpen ? 'Baca Abstrak' : 'Sembunyikan';
+}
+</script>
+</body>
+</html>

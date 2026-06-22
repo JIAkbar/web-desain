@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Komunitas — Template Website NGO/Organisasi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;700;900&family=Nunito:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal:       #00BFA5;
+      --teal-light: #1DDBB5;
+      --teal-pale:  #E0FAF6;
+      --teal-dim:   rgba(0,191,165,0.1);
+      --purple:     #2D0A4E;
+      --purple-mid: #4A1480;
+      --purple-light:#7C3AED;
+      --coral:      #FF6B6B;
+      --coral-light:#FF8E8E;
+      --yellow:     #FFD93D;
+      --ink:        #0A0414;
+      --ink2:       #2A1845;
+      --text2:      #6A5A80;
+      --text3:      #A090B5;
+      --white:      #FEFCFF;
+      --cream:      #F8F5FF;
+      --border:     rgba(45,10,78,0.1);
+      --shadow-sm:  0 2px 10px rgba(45,10,78,0.08);
+      --shadow-md:  0 8px 30px rgba(45,10,78,0.12);
+      --shadow-lg:  0 24px 64px rgba(45,10,78,0.18);
+      --nav-h:      70px;
+      --font-disp:  'Unbounded', system-ui, sans-serif;
+      --font-body:  'Nunito', system-ui, sans-serif;
+      --font-mono:  'JetBrains Mono', monospace;
+      --ease:       cubic-bezier(0.34,1.56,0.64,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:var(--font-body);background:var(--white);color:var(--ink);line-height:1.65;overflow-x:hidden;}
+    a{text-decoration:none;color:inherit;}
+    ::selection{background:var(--teal);color:white;}
+    ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--cream);}::-webkit-scrollbar-thumb{background:var(--teal);border-radius:3px;}
+
+    /* NAV */
+    .nav{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--nav-h);display:flex;align-items:center;padding:0 clamp(1.5rem,5vw,4rem);transition:all 0.3s;}
+    .nav.scrolled{background:rgba(254,252,255,0.93);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);box-shadow:var(--shadow-sm);}
+    .nav-inner{display:flex;align-items:center;width:100%;gap:2rem;}
+    .nav-brand{display:flex;align-items:center;gap:0.6rem;flex-shrink:0;}
+    .nav-brand-icon{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--teal),var(--purple-light));display:flex;align-items:center;justify-content:center;}
+    .nav-brand-icon svg{width:18px;height:18px;fill:white;}
+    .nav-brand-name{font-family:var(--font-disp);font-size:0.85rem;font-weight:700;color:var(--purple);letter-spacing:-0.02em;}
+    .nav-links{display:flex;gap:0.15rem;margin:0 auto;list-style:none;}
+    .nav-links a{font-size:0.88rem;font-weight:600;color:var(--text2);padding:0.4rem 0.9rem;border-radius:8px;transition:all 0.2s;}
+    .nav-links a:hover{color:var(--purple);background:var(--cream);}
+    .nav-actions{display:flex;gap:0.6rem;}
+    .btn-donate{font-family:var(--font-body);font-size:0.85rem;font-weight:700;padding:0.5rem 1.25rem;border-radius:100px;border:none;background:linear-gradient(135deg,var(--teal),var(--purple-light));color:white;cursor:pointer;transition:all 0.22s;box-shadow:0 4px 14px rgba(0,191,165,0.3);}
+    .btn-donate:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 8px 20px rgba(0,191,165,0.4);}
+    .btn-gabung{font-size:0.85rem;font-weight:600;padding:0.5rem 1.1rem;border-radius:100px;border:1.5px solid var(--border);color:var(--text2);background:none;cursor:pointer;transition:all 0.2s;}
+    .btn-gabung:hover{border-color:var(--purple);color:var(--purple);}
+    .ham{display:none;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:4px;}
+    .ham span{display:block;width:22px;height:2px;background:var(--ink);border-radius:2px;}
+
+    /* HERO */
+    .hero{min-height:100vh;padding-top:var(--nav-h);background:var(--purple);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;}
+    /* Abstract background shapes */
+    .hero-shapes{position:absolute;inset:0;pointer-events:none;}
+    .hs1{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(0,191,165,0.25) 0%,transparent 70%);top:-15%;right:-10%;animation:float1 8s ease-in-out infinite;}
+    .hs2{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,0.3) 0%,transparent 70%);bottom:-10%;left:-5%;animation:float2 10s ease-in-out infinite;}
+    .hs3{position:absolute;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,107,0.2) 0%,transparent 70%);top:30%;left:30%;animation:float1 12s ease-in-out infinite 2s;}
+    .hs-grid{position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.04) 1px,transparent 1px);background-size:32px 32px;}
+    @keyframes float1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(20px,-20px) scale(1.05)}}
+    @keyframes float2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-15px,15px) scale(0.95)}}
+
+    .hero-inner{position:relative;z-index:1;padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem);display:grid;grid-template-columns:1.1fr 0.9fr;gap:3rem;align-items:end;}
+    .hero-left{display:flex;flex-direction:column;}
+    .hero-chip{display:inline-flex;align-items:center;gap:0.6rem;background:rgba(0,191,165,0.15);border:1px solid rgba(0,191,165,0.3);border-radius:100px;padding:0.4rem 1rem;width:fit-content;margin-bottom:1.75rem;}
+    .hero-chip-wave{font-size:1rem;}
+    .hero-chip span{font-family:var(--font-mono);font-size:0.62rem;color:var(--teal-light);letter-spacing:0.08em;}
+    .hero h1{font-family:var(--font-disp);font-size:clamp(2.5rem,5.5vw,5rem);font-weight:900;line-height:1.0;letter-spacing:-0.03em;color:white;margin-bottom:1.5rem;}
+    .hero h1 .accent{color:var(--teal-light);}
+    .hero h1 .outline{-webkit-text-stroke:2px rgba(255,255,255,0.3);color:transparent;}
+    .hero-p{font-size:1rem;color:rgba(255,255,255,0.65);line-height:1.75;max-width:500px;margin-bottom:2.5rem;}
+    .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:3rem;}
+    .btn-hero-teal{display:inline-flex;align-items:center;gap:0.6rem;font-family:var(--font-body);font-size:0.95rem;font-weight:700;background:var(--teal);color:white;padding:0.9rem 2rem;border-radius:100px;border:none;cursor:pointer;transition:all 0.25s;box-shadow:0 6px 24px rgba(0,191,165,0.4);}
+    .btn-hero-teal:hover{background:var(--teal-light);transform:translateY(-2px);}
+    .btn-hero-outline{display:inline-flex;align-items:center;gap:0.5rem;font-size:0.92rem;font-weight:600;color:rgba(255,255,255,0.75);padding:0.9rem 1.75rem;border-radius:100px;border:1.5px solid rgba(255,255,255,0.2);background:none;cursor:pointer;transition:all 0.22s;}
+    .btn-hero-outline:hover{color:white;border-color:rgba(255,255,255,0.5);}
+    .hero-impact{display:flex;gap:2.5rem;flex-wrap:wrap;}
+    .hi{display:flex;flex-direction:column;gap:0.15rem;}
+    .hi-num{font-family:var(--font-disp);font-size:1.8rem;font-weight:900;color:white;line-height:1;}
+    .hi-lbl{font-size:0.72rem;color:rgba(255,255,255,0.5);}
+    .hero-right{display:flex;align-items:center;justify-content:center;}
+    .hero-card{background:rgba(255,255,255,0.08);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:1.75rem;width:100%;max-width:340px;}
+    .hc-label{font-family:var(--font-mono);font-size:0.6rem;color:rgba(255,255,255,0.4);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1.25rem;}
+    .hc-prog-title{font-size:0.9rem;font-weight:700;color:white;margin-bottom:0.3rem;}
+    .hc-prog-sub{font-size:0.75rem;color:rgba(255,255,255,0.5);margin-bottom:0.75rem;}
+    .hc-bar-wrap{height:8px;background:rgba(255,255,255,0.1);border-radius:100px;margin-bottom:0.4rem;overflow:hidden;}
+    .hc-bar{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--teal),var(--teal-light));}
+    .hc-bar-meta{display:flex;justify-content:space-between;font-size:0.68rem;color:rgba(255,255,255,0.4);margin-bottom:1.25rem;}
+    .hc-divider{height:1px;background:rgba(255,255,255,0.08);margin:1.25rem 0;}
+    .hc-donatur{font-family:var(--font-mono);font-size:0.6rem;color:rgba(255,255,255,0.4);letter-spacing:0.1em;margin-bottom:0.75rem;}
+    .hc-avatars{display:flex;align-items:center;gap:0.35rem;}
+    .hc-av{width:30px;height:30px;border-radius:50%;border:2px solid rgba(45,10,78,0.5);background:linear-gradient(135deg,var(--teal),var(--purple-light));display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;color:white;margin-left:-8px;}
+    .hc-av:first-child{margin-left:0;}
+    .hc-av-more{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);}
+    .hc-join-msg{font-size:0.72rem;color:rgba(255,255,255,0.5);margin-left:0.5rem;}
+    .hc-btn{display:block;text-align:center;margin-top:1.25rem;background:var(--teal);color:white;font-family:var(--font-body);font-size:0.85rem;font-weight:700;padding:0.7rem;border-radius:100px;cursor:pointer;transition:all 0.2s;}
+    .hc-btn:hover{background:var(--teal-light);}
+
+    /* MISI */
+    .misi{padding:clamp(4rem,7vw,6.5rem) clamp(1.5rem,5vw,4rem);background:var(--white);}
+    .misi-inner{display:grid;grid-template-columns:1fr 2fr;gap:4rem;align-items:start;}
+    .misi-sticky{position:sticky;top:calc(var(--nav-h) + 2rem);}
+    .sec-label{font-family:var(--font-mono);font-size:0.65rem;color:var(--teal);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem;}
+    .sec-label::before{content:'';width:18px;height:2px;background:var(--teal);}
+    .sec-h2{font-family:var(--font-disp);font-size:clamp(1.6rem,3vw,2.5rem);font-weight:900;line-height:1.1;letter-spacing:-0.03em;color:var(--purple);margin-bottom:1rem;}
+    .sec-sub{font-size:0.95rem;color:var(--text2);line-height:1.75;max-width:500px;}
+    .misi-items{display:flex;flex-direction:column;gap:1.5rem;}
+    .misi-item{display:flex;gap:1.5rem;padding:1.75rem;border-radius:16px;border:1.5px solid var(--border);background:var(--cream);transition:all 0.25s;cursor:default;}
+    .misi-item:hover{border-color:var(--teal);box-shadow:var(--shadow-md);transform:translateX(6px);}
+    .mi-icon-wrap{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .mi-icon-wrap svg{width:28px;height:28px;fill:white;}
+    .mi-num{font-family:var(--font-disp);font-size:0.6rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.4rem;}
+    .mi-title{font-family:var(--font-disp);font-size:0.95rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:0.4rem;color:var(--purple);}
+    .mi-desc{font-size:0.85rem;color:var(--text2);line-height:1.65;}
+
+    /* DAMPAK */
+    .dampak{padding:clamp(4rem,7vw,6.5rem) clamp(1.5rem,5vw,4rem);background:var(--cream);}
+    .dampak-header{text-align:center;margin-bottom:3.5rem;}
+    .dampak-header .sec-label{justify-content:center;}
+    .dampak-header .sec-sub{margin:0 auto;}
+    .dampak-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;}
+    .dampak-card{background:var(--purple);border-radius:16px;padding:2rem;text-align:center;position:relative;overflow:hidden;transition:transform 0.22s;}
+    .dampak-card:hover{transform:translateY(-4px);}
+    .dampak-card::before{content:'';position:absolute;bottom:-20%;right:-20%;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.04);}
+    .dc-icon{font-size:2rem;margin-bottom:1rem;}
+    .dc-num{font-family:var(--font-disp);font-size:2.5rem;font-weight:900;color:var(--teal-light);line-height:1;margin-bottom:0.4rem;}
+    .dc-label{font-size:0.82rem;color:rgba(255,255,255,0.6);}
+
+    /* PROGRAM */
+    .program{padding:clamp(4rem,7vw,6.5rem) clamp(1.5rem,5vw,4rem);background:var(--white);}
+    .program-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3rem;flex-wrap:wrap;gap:1.5rem;}
+    .btn-all-prog{font-family:var(--font-mono);font-size:0.7rem;font-weight:500;padding:0.45rem 1rem;border-radius:8px;border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:all 0.2s;}
+    .btn-all-prog:hover{border-color:var(--purple);color:var(--purple);}
+    .prog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+    .prog-card{border-radius:16px;overflow:hidden;border:1.5px solid var(--border);background:var(--white);transition:all 0.25s;}
+    .prog-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);border-color:var(--teal);}
+    .prog-top{padding:2rem;position:relative;}
+    .prog-emoji{font-size:2.5rem;margin-bottom:1rem;}
+    .prog-cat{font-family:var(--font-mono);font-size:0.6rem;color:var(--teal);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.5rem;}
+    .prog-title{font-family:var(--font-disp);font-size:1rem;font-weight:700;letter-spacing:-0.02em;color:var(--purple);margin-bottom:0.5rem;}
+    .prog-desc{font-size:0.82rem;color:var(--text2);line-height:1.65;}
+    .prog-bottom{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-top:1px solid var(--border);background:var(--cream);}
+    .prog-stat{font-family:var(--font-mono);font-size:0.65rem;color:var(--text3);}
+    .prog-stat strong{color:var(--purple);}
+    .prog-join{font-size:0.78rem;font-weight:700;color:var(--teal);display:flex;align-items:center;gap:0.3rem;transition:gap 0.2s;}
+    .prog-card:hover .prog-join{gap:0.55rem;}
+
+    /* GABUNG */
+    .gabung{padding:clamp(4rem,7vw,6.5rem) clamp(1.5rem,5vw,4rem);background:linear-gradient(135deg,var(--purple) 0%,var(--purple-mid) 60%,rgba(0,191,165,0.2) 100%);position:relative;overflow:hidden;}
+    .gabung::before{content:'';position:absolute;top:-50%;right:-20%;width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(0,191,165,0.1) 0%,transparent 60%);}
+    .gabung-inner{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;}
+    .gabung h2{font-family:var(--font-disp);font-size:clamp(2rem,4vw,3.5rem);font-weight:900;color:white;line-height:1.05;letter-spacing:-0.03em;margin-bottom:1.25rem;}
+    .gabung h2 .teal{color:var(--teal-light);}
+    .gabung p{font-size:0.95rem;color:rgba(255,255,255,0.65);line-height:1.75;margin-bottom:2rem;}
+    .gabung-form{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:2rem;}
+    .gf-title{font-family:var(--font-disp);font-size:1.1rem;font-weight:700;color:white;margin-bottom:1.5rem;letter-spacing:-0.02em;}
+    .gf-field{display:flex;flex-direction:column;gap:0.35rem;margin-bottom:1rem;}
+    .gf-field label{font-size:0.75rem;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:0.04em;}
+    .gf-field input,.gf-field select{font-family:var(--font-body);font-size:0.88rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:0.7rem 0.9rem;color:white;outline:none;transition:border-color 0.2s;}
+    .gf-field input::placeholder{color:rgba(255,255,255,0.3);}
+    .gf-field input:focus,.gf-field select:focus{border-color:var(--teal);background:rgba(0,191,165,0.08);}
+    .gf-field select option{background:var(--purple);color:white;}
+    .gf-row{display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;}
+    .btn-gf{width:100%;font-family:var(--font-body);font-size:0.9rem;font-weight:700;background:var(--teal);color:white;border:none;border-radius:100px;padding:0.85rem;cursor:pointer;transition:all 0.22s;margin-top:0.5rem;}
+    .btn-gf:hover{background:var(--teal-light);transform:translateY(-1px);}
+    .gabung-steps{list-style:none;display:flex;flex-direction:column;gap:1.25rem;margin-bottom:2.5rem;}
+    .gs{display:flex;gap:1rem;align-items:flex-start;}
+    .gs-num{width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(0,191,165,0.4);display:flex;align-items:center;justify-content:center;font-family:var(--font-disp);font-size:0.7rem;font-weight:700;color:var(--teal-light);flex-shrink:0;}
+    .gs-text strong{display:block;font-size:0.88rem;font-weight:700;color:white;margin-bottom:0.15rem;}
+    .gs-text span{font-size:0.8rem;color:rgba(255,255,255,0.5);}
+
+    /* ACARA */
+    .acara{padding:clamp(4rem,7vw,6.5rem) clamp(1.5rem,5vw,4rem);background:var(--cream);}
+    .acara-list{display:flex;flex-direction:column;gap:0;margin-top:2.5rem;}
+    .acara-item{display:grid;grid-template-columns:100px 1fr auto;gap:2rem;align-items:center;padding:1.75rem 0;border-bottom:1px solid var(--border);transition:all 0.22s;cursor:default;}
+    .acara-item:hover{padding-left:1rem;}
+    .acara-date{font-family:var(--font-disp);text-align:center;}
+    .ad-day{font-size:2.5rem;font-weight:900;color:var(--purple);line-height:1;}
+    .ad-mon{font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--teal);}
+    .ai-cat{font-family:var(--font-mono);font-size:0.62rem;color:var(--teal);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.35rem;}
+    .ai-title{font-family:var(--font-disp);font-size:1.05rem;font-weight:700;letter-spacing:-0.02em;color:var(--purple);margin-bottom:0.3rem;}
+    .ai-loc{font-size:0.82rem;color:var(--text2);}
+    .ai-tag{background:var(--teal-pale);color:var(--teal);font-family:var(--font-mono);font-size:0.62rem;font-weight:500;padding:0.3rem 0.75rem;border-radius:6px;white-space:nowrap;}
+
+    /* FOOTER */
+    footer{background:var(--purple);color:rgba(255,255,255,0.6);padding:clamp(3rem,5vw,4.5rem) clamp(1.5rem,5vw,4rem) 2rem;}
+    .footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem;padding-bottom:2.5rem;border-bottom:1px solid rgba(255,255,255,0.08);}
+    .footer-brand{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.75rem;}
+    .footer-brand-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--teal),var(--purple-light));display:flex;align-items:center;justify-content:center;}
+    .footer-brand-icon svg{width:16px;height:16px;fill:white;}
+    .footer-brand-name{font-family:var(--font-disp);font-size:1rem;font-weight:700;color:white;letter-spacing:-0.02em;}
+    .footer-top p{font-size:0.82rem;line-height:1.7;max-width:220px;}
+    .footer-social{display:flex;gap:0.6rem;margin-top:1.25rem;}
+    .fsoc{width:34px;height:34px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;transition:all 0.2s;cursor:pointer;}
+    .fsoc:hover{background:var(--teal);border-color:var(--teal);}
+    .fsoc svg{width:16px;height:16px;fill:rgba(255,255,255,0.6);}
+    .fsoc:hover svg{fill:white;}
+    .footer-col h4{font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.9);margin-bottom:1rem;}
+    .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:0.55rem;}
+    .footer-col ul li a{font-size:0.83rem;transition:color 0.2s;}
+    .footer-col ul li a:hover{color:var(--teal-light);}
+    .footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;font-family:var(--font-mono);font-size:0.65rem;}
+    .footer-badges{display:flex;gap:0.5rem;}
+    .fbadge{background:rgba(0,191,165,0.1);border:1px solid rgba(0,191,165,0.25);color:var(--teal-light);font-size:0.6rem;padding:0.2rem 0.6rem;border-radius:4px;}
+
+    /* MOB */
+    .mob-menu{display:none;position:fixed;inset:0;z-index:99;background:var(--purple);padding:calc(var(--nav-h)+1.25rem) 2rem 2rem;flex-direction:column;gap:0.5rem;}
+    .mob-menu.open{display:flex;}
+    .mob-menu a{font-family:var(--font-disp);font-size:1.5rem;font-weight:700;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.1);color:white;}
+
+    /* REVEAL */
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.6s cubic-bezier(0.4,0,0.2,1),transform 0.6s cubic-bezier(0.4,0,0.2,1);}
+    .reveal.visible{opacity:1;transform:none;}
+    .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+
+    @media(max-width:960px){
+      .hero-inner{grid-template-columns:1fr}.hero-right{display:none}
+      .misi-inner{grid-template-columns:1fr;gap:2.5rem}
+      .misi-sticky{position:static}
+      .dampak-grid{grid-template-columns:repeat(2,1fr)}
+      .prog-grid{grid-template-columns:1fr}
+      .gabung-inner{grid-template-columns:1fr;gap:2.5rem}
+      .acara-item{grid-template-columns:70px 1fr;gap:1rem}
+      .ai-tag{display:none}
+      .footer-top{grid-template-columns:1fr 1fr;gap:2rem}
+      .nav-links{display:none}.ham{display:flex}
+      .btn-gabung{display:none}
+    }
+    @media(max-width:600px){
+      .dampak-grid{grid-template-columns:1fr 1fr}
+      .footer-top{grid-template-columns:1fr}
+      .gf-row{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <div class="nav-brand-icon"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div>
+      <div class="nav-brand-name">Komunitas Nusantara</div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#misi">Misi</a></li>
+      <li><a href="#program">Program</a></li>
+      <li><a href="#acara">Acara</a></li>
+      <li><a href="#gabung">Bergabung</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="btn-gabung">Bergabung</button>
+      <button class="btn-donate">Donasi Sekarang ❤</button>
+      <button class="ham" id="hamBtn"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+
+<div class="mob-menu" id="mobMenu">
+  <a href="#misi">Misi</a><a href="#program">Program</a><a href="#acara">Acara</a><a href="#gabung">Bergabung</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-shapes">
+    <div class="hs1"></div><div class="hs2"></div><div class="hs3"></div><div class="hs-grid"></div>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-chip"><span class="hero-chip-wave">🌱</span><span>Bersama, Kita Bisa Lebih Banyak</span></div>
+      <h1>Gerakan <span class="accent">Nyata</span><br>untuk<br><span class="outline">Perubahan</span></h1>
+      <p class="hero-p">Komunitas Nusantara adalah gerakan warga yang berkomitmen membangun Indonesia yang lebih baik — melalui pendidikan, lingkungan, pemberdayaan ekonomi, dan kebudayaan.</p>
+      <div class="hero-actions">
+        <button class="btn-hero-teal">🤝 Bergabung Gratis</button>
+        <button class="btn-hero-outline">Lihat Program →</button>
+      </div>
+      <div class="hero-impact">
+        <div class="hi"><div class="hi-num">12.400</div><div class="hi-lbl">Anggota Aktif</div></div>
+        <div class="hi"><div class="hi-num">87</div><div class="hi-lbl">Program Berjalan</div></div>
+        <div class="hi"><div class="hi-num">34</div><div class="hi-lbl">Kota & Kabupaten</div></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-card">
+        <div class="hc-label">Program Aktif</div>
+        <div class="hc-prog-title">🏫 Beasiswa Anak Negeri</div>
+        <div class="hc-prog-sub">Pendidikan untuk 500 anak kurang mampu</div>
+        <div class="hc-bar-wrap"><div class="hc-bar" style="width:68%"></div></div>
+        <div class="hc-bar-meta"><span>Rp34M terkumpul</span><span>68% dari target</span></div>
+        <div class="hc-prog-title">🌊 Bersih Pantai Nasional</div>
+        <div class="hc-prog-sub">Mobilisasi 5.000 relawan serentak</div>
+        <div class="hc-bar-wrap"><div class="hc-bar" style="width:45%;background:linear-gradient(90deg,#FF6B6B,#FF8E8E)"></div></div>
+        <div class="hc-bar-meta"><span>2.250 relawan</span><span>45% dari target</span></div>
+        <div class="hc-divider"></div>
+        <div class="hc-donatur">Bergabung bersama</div>
+        <div class="hc-avatars">
+          <div class="hc-av">AR</div><div class="hc-av">BW</div><div class="hc-av">CK</div><div class="hc-av">DL</div>
+          <div class="hc-av hc-av-more">+</div>
+          <div class="hc-join-msg">12.396 lainnya</div>
+        </div>
+        <div class="hc-btn">Ikut Bergerak →</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MISI -->
+<section class="misi" id="misi">
+  <div class="misi-inner">
+    <div class="misi-sticky">
+      <div class="sec-label reveal">Misi Kami</div>
+      <h2 class="sec-h2 reveal d1">Empat Pilar<br>Gerakan</h2>
+      <p class="sec-sub reveal d2">Kami bergerak di empat bidang yang saling menguatkan untuk menciptakan dampak sistemik di seluruh Indonesia.</p>
+    </div>
+    <div class="misi-items">
+      <div class="misi-item reveal">
+        <div class="mi-icon-wrap" style="background:linear-gradient(135deg,#00BFA5,#00E5CB)"><svg viewBox="0 0 24 24"><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg></div>
+        <div><div class="mi-num" style="color:#00BFA5">01 — Pendidikan</div><div class="mi-title">Akses Pendidikan Berkualitas</div><div class="mi-desc">Beasiswa, pelatihan, mentoring, dan pengembangan kapasitas untuk generasi muda di seluruh pelosok Indonesia.</div></div>
+      </div>
+      <div class="misi-item reveal d1">
+        <div class="mi-icon-wrap" style="background:linear-gradient(135deg,#4A1480,#7C3AED)"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></div>
+        <div><div class="mi-num" style="color:#7C3AED">02 — Lingkungan</div><div class="mi-title">Bumi Lebih Hijau & Bersih</div><div class="mi-desc">Program daur ulang, bersih pantai, penanaman pohon, dan edukasi lingkungan untuk mencegah krisis iklim.</div></div>
+      </div>
+      <div class="misi-item reveal d2">
+        <div class="mi-icon-wrap" style="background:linear-gradient(135deg,#FF6B6B,#FF8E8E)"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+        <div><div class="mi-num" style="color:#FF6B6B">03 — Ekonomi</div><div class="mi-title">Pemberdayaan Ekonomi Rakyat</div><div class="mi-desc">Pelatihan kewirausahaan, akses permodalan mikro, dan pasar digital untuk UMKM dan petani lokal.</div></div>
+      </div>
+      <div class="misi-item reveal d3">
+        <div class="mi-icon-wrap" style="background:linear-gradient(135deg,#D4820A,#F0A020)"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></div>
+        <div><div class="mi-num" style="color:#D4820A">04 — Budaya</div><div class="mi-title">Pelestarian Budaya Nusantara</div><div class="mi-desc">Festival seni, digitalisasi warisan budaya, dan pemberdayaan seniman lokal untuk menjaga kekayaan budaya bangsa.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DAMPAK -->
+<section class="dampak" id="dampak">
+  <div class="dampak-header">
+    <div class="sec-label reveal">Dampak Nyata</div>
+    <h2 class="sec-h2 reveal d1">Angka yang<br>Bicara Sendiri</h2>
+    <p class="sec-sub reveal d2">Sejak 2019, kami telah menggerakkan ribuan orang untuk menciptakan perubahan yang terukur dan berkelanjutan.</p>
+  </div>
+  <div class="dampak-grid">
+    <div class="dampak-card reveal"><div class="dc-icon">🎓</div><div class="dc-num">2.840</div><div class="dc-label">Penerima Beasiswa</div></div>
+    <div class="dampak-card reveal d1" style="background:linear-gradient(135deg,#4A1480,#2D0A4E)"><div class="dc-icon">🌊</div><div class="dc-num">48 Ton</div><div class="dc-label">Sampah Dibersihkan</div></div>
+    <div class="dampak-card reveal d2" style="background:linear-gradient(135deg,#C05A2A,#2D0A4E)"><div class="dc-icon">🌱</div><div class="dc-num">120K</div><div class="dc-label">Pohon Ditanam</div></div>
+    <div class="dampak-card reveal d3" style="background:linear-gradient(135deg,#00BFA5,#2D0A4E)"><div class="dc-icon">💼</div><div class="dc-num">4.200</div><div class="dc-label">UMKM Diberdayakan</div></div>
+  </div>
+</section>
+
+<!-- PROGRAM -->
+<section class="program" id="program">
+  <div class="program-header">
+    <div>
+      <div class="sec-label reveal">Program</div>
+      <h2 class="sec-h2 reveal d1">Ikut Program<br>yang Tepat untuk Anda</h2>
+    </div>
+    <button class="btn-all-prog reveal d2">Lihat Semua Program →</button>
+  </div>
+  <div class="prog-grid">
+    <div class="prog-card reveal">
+      <div class="prog-top"><div class="prog-emoji">🏫</div><div class="prog-cat">Pendidikan</div><div class="prog-title">Beasiswa Anak Negeri</div><div class="prog-desc">Beasiswa penuh untuk anak-anak berprestasi dari keluarga kurang mampu. Mencakup biaya sekolah, seragam, dan perlengkapan belajar.</div></div>
+      <div class="prog-bottom"><div class="prog-stat">Penerima: <strong>2.840 anak</strong></div><div class="prog-join">Dukung Program <span>→</span></div></div>
+    </div>
+    <div class="prog-card reveal d1">
+      <div class="prog-top"><div class="prog-emoji">🌊</div><div class="prog-cat">Lingkungan</div><div class="prog-title">Bersih Pantai Nasional</div><div class="prog-desc">Gerakan bersih pantai serentak di 34 provinsi setiap tahun. Bergabunglah sebagai relawan di kota Anda dan jadilah bagian dari perubahan.</div></div>
+      <div class="prog-bottom"><div class="prog-stat">Relawan: <strong>5.000 orang</strong></div><div class="prog-join">Daftar Relawan <span>→</span></div></div>
+    </div>
+    <div class="prog-card reveal d2">
+      <div class="prog-top"><div class="prog-emoji">💡</div><div class="prog-cat">Ekonomi</div><div class="prog-title">Inkubator UMKM Digital</div><div class="prog-desc">Program 3 bulan untuk membantu UMKM tradisional bertransformasi ke platform digital dengan pelatihan, mentoring, dan akses pasar.</div></div>
+      <div class="prog-bottom"><div class="prog-stat">Peserta: <strong>800 UMKM</strong></div><div class="prog-join">Daftar Sekarang <span>→</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- GABUNG -->
+<section class="gabung" id="gabung">
+  <div class="gabung-inner">
+    <div>
+      <h2 class="reveal">Jadilah Bagian dari<br><span class="teal">Gerakan</span> Ini</h2>
+      <p class="reveal d1">Bergabung itu mudah dan gratis. Pilih peran yang sesuai — relawan, donatur, atau mitra organisasi. Bersama-sama kita bisa melakukan lebih banyak.</p>
+      <ul class="gabung-steps reveal d2">
+        <li class="gs"><div class="gs-num">01</div><div class="gs-text"><strong>Daftar Akun</strong><span>Gratis, butuh 2 menit. Email dan nama saja.</span></div></li>
+        <li class="gs"><div class="gs-num">02</div><div class="gs-text"><strong>Pilih Minat & Lokasi</strong><span>Kami akan cocokkan dengan program terdekat.</span></div></li>
+        <li class="gs"><div class="gs-num">03</div><div class="gs-text"><strong>Mulai Bergerak</strong><span>Ikut kegiatan, ajak teman, buat perubahan nyata.</span></div></li>
+      </ul>
+    </div>
+    <div class="gabung-form reveal d1">
+      <div class="gf-title">Daftar Jadi Anggota</div>
+      <div class="gf-row">
+        <div class="gf-field"><label>Nama Depan</label><input type="text" placeholder="Nama Anda"></div>
+        <div class="gf-field"><label>Nama Belakang</label><input type="text" placeholder=""></div>
+      </div>
+      <div class="gf-field"><label>Email</label><input type="email" placeholder="email@contoh.com"></div>
+      <div class="gf-field"><label>Kota / Kabupaten</label><input type="text" placeholder="Jakarta Selatan"></div>
+      <div class="gf-field"><label>Minat Utama</label>
+        <select>
+          <option>-- Pilih Bidang --</option>
+          <option>Pendidikan & Beasiswa</option>
+          <option>Lingkungan Hidup</option>
+          <option>Pemberdayaan Ekonomi</option>
+          <option>Seni & Budaya</option>
+          <option>Semua Bidang</option>
+        </select>
+      </div>
+      <button class="btn-gf">Bergabung Gratis 🌱</button>
+    </div>
+  </div>
+</section>
+
+<!-- ACARA -->
+<section class="acara" id="acara">
+  <div>
+    <div class="sec-label reveal">Acara & Kegiatan</div>
+    <h2 class="sec-h2 reveal d1">Kegiatan yang Akan Datang</h2>
+  </div>
+  <div class="acara-list">
+    <div class="acara-item reveal"><div class="acara-date"><div class="ad-day">21</div><div class="ad-mon">Jun 2026</div></div><div><div class="ai-cat">Workshop</div><div class="ai-title">Pelatihan Digital Marketing untuk UMKM</div><div class="ai-loc">📍 Jakarta Selatan + Online</div></div><div class="ai-tag">Terbuka Umum</div></div>
+    <div class="acara-item reveal d1"><div class="acara-date"><div class="ad-day">05</div><div class="ad-mon">Jul 2026</div></div><div><div class="ai-cat">Lingkungan</div><div class="ai-title">Bersih Pantai Ancol — Seri #4</div><div class="ai-loc">📍 Pantai Ancol, Jakarta</div></div><div class="ai-tag">Daftar Relawan</div></div>
+    <div class="acara-item reveal d2"><div class="acara-date"><div class="ad-day">12</div><div class="ad-mon">Jul 2026</div></div><div><div class="ai-cat">Pendidikan</div><div class="ai-title">Festival Beasiswa Nusantara 2026</div><div class="ai-loc">📍 GBK, Jakarta + 33 Kota</div></div><div class="ai-tag">Semua Usia</div></div>
+    <div class="acara-item reveal d3"><div class="acara-date"><div class="ad-day">28</div><div class="ad-mon">Jul 2026</div></div><div><div class="ai-cat">Budaya</div><div class="ai-title">Malam Apresiasi Seniman Lokal</div><div class="ai-loc">📍 Taman Ismail Marzuki, Jakarta</div></div><div class="ai-tag">Tiket Gratis</div></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand"><div class="footer-brand-icon"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div><div class="footer-brand-name">Komunitas Nusantara</div></div>
+      <p>Gerakan warga untuk Indonesia yang lebih adil, hijau, dan berdaya. Bergabunglah, karena perubahan dimulai dari kita.</p>
+      <div class="footer-social">
+        <div class="fsoc" title="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path fill="var(--purple)" d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/></svg></div>
+        <div class="fsoc" title="Twitter/X"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.258 5.63L18.244 2.25z"/></svg></div>
+        <div class="fsoc" title="YouTube"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon fill="var(--purple)" points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg></div>
+        <div class="fsoc" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg></div>
+      </div>
+    </div>
+    <div class="footer-col"><h4>Program</h4><ul><li><a href="#">Pendidikan</a></li><li><a href="#">Lingkungan</a></li><li><a href="#">Ekonomi</a></li><li><a href="#">Budaya</a></li></ul></div>
+    <div class="footer-col"><h4>Organisasi</h4><ul><li><a href="#">Tentang Kami</a></li><li><a href="#">Tim & Relawan</a></li><li><a href="#">Laporan Tahunan</a></li><li><a href="#">Mitra</a></li></ul></div>
+    <div class="footer-col"><h4>Dukungan</h4><ul><li><a href="#">Cara Donasi</a></li><li><a href="#">Acara</a></li><li><a href="#">Hubungi Kami</a></li><li><a href="#">FAQ</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Komunitas Nusantara. Terdaftar sebagai organisasi nonprofit.</span>
+    <div class="footer-badges"><span class="fbadge">Verified NGO</span><span class="fbadge">Transparan 100%</span></div>
+  </div>
+</footer>
+
+<script>
+  const nav=document.getElementById('mainNav');
+  window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>20));
+  document.getElementById('hamBtn').addEventListener('click',()=>document.getElementById('mobMenu').classList.toggle('open'));
+  document.querySelectorAll('.mob-menu a').forEach(a=>a.addEventListener('click',()=>document.getElementById('mobMenu').classList.remove('open')));
+  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:0.08});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

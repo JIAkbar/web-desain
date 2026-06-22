@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TradeSafe — Investasi Saham IDX Lebih Mudah & Terpercaya</title>
+<meta name="description" content="Platform trading saham Indonesia terpercaya. Eksekusi cepat, biaya rendah, terdaftar OJK & KSEI. Mulai investasi saham IDX sekarang.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #0B0F19;
+  --bg2:     #111827;
+  --bg3:     #1C2433;
+  --bg4:     #243044;
+  --text:    #F1F5F9;
+  --text2:   #94A3B8;
+  --text3:   #4B6080;
+  --up:      #22C55E;
+  --down:    #EF4444;
+  --blue:    #3B82F6;
+  --gold:    #F59E0B;
+  --border:  rgba(255,255,255,0.07);
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+[data-theme="light"] {
+  --bg: #F8FAFC; --bg2: #F1F5F9; --bg3: #E2E8F0; --bg4: #CBD5E1;
+  --text: #0F172A; --text2: #475569; --text3: #94A3B8;
+  --border: rgba(0,0,0,0.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.6;transition:background .3s,color .3s}
+
+/* ── TICKER ── */
+.ticker-bar{background:var(--bg2);border-bottom:1px solid var(--border);overflow:hidden;height:32px;display:flex;align-items:center}
+.ticker-inner{display:flex;gap:2rem;white-space:nowrap;animation:tickerScroll 28s linear infinite}
+.ticker-inner:hover{animation-play-state:paused}
+@keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.t-item{font-size:.7rem;font-family:var(--font-mono);display:flex;gap:.35rem;align-items:center}
+.t-item .sym{color:var(--text2);font-weight:600}
+.t-item .val{color:var(--text)}
+.t-item .chg.up{color:var(--up)}
+.t-item .chg.down{color:var(--down)}
+.ticker-sep{color:var(--text3);opacity:.4}
+
+/* ── NAVBAR ── */
+.navbar{position:sticky;top:0;z-index:100;background:rgba(11,15,25,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:.75rem 0}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;gap:1.5rem}
+.nav-logo{font-weight:700;font-size:1.1rem;color:var(--blue);text-decoration:none;letter-spacing:-.02em;display:flex;align-items:center;gap:.4rem}
+.nav-logo span{display:inline-block;width:24px;height:24px;background:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#fff}
+.nav-links{display:flex;gap:.25rem;flex:1;margin-left:.5rem}
+.nav-links a{font-size:.82rem;color:var(--text2);text-decoration:none;padding:.4rem .7rem;border-radius:6px;transition:all .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--text);background:var(--bg3)}
+.nav-right{display:flex;align-items:center;gap:.75rem}
+.btn-ghost{font-size:.82rem;color:var(--text2);background:none;border:1px solid var(--border);padding:.4rem .9rem;border-radius:7px;cursor:pointer;transition:all .2s}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
+.btn-primary{font-size:.82rem;font-weight:600;background:var(--blue);color:#fff;border:none;padding:.45rem 1rem;border-radius:7px;cursor:pointer;transition:all .2s}
+.btn-primary:hover{background:#2563eb}
+.theme-toggle{background:var(--bg3);border:1px solid var(--border);color:var(--text2);width:32px;height:32px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:all .2s}
+.theme-toggle:hover{border-color:var(--blue);color:var(--blue)}
+.nav-hamburger{display:none;background:none;border:1px solid var(--border);color:var(--text2);padding:.4rem .6rem;border-radius:6px;cursor:pointer;font-size:.9rem}
+.nav-mobile{display:none}
+
+/* ── HERO ── */
+.hero{padding:4rem 1.5rem 3rem;max-width:1200px;margin:0 auto}
+.hero-text{text-align:center;margin-bottom:2.5rem}
+.hero-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);color:var(--blue);font-size:.72rem;font-weight:600;padding:.3rem .75rem;border-radius:20px;margin-bottom:1.25rem;letter-spacing:.04em}
+.hero h1{font-size:clamp(2rem,4.5vw,3.2rem);font-weight:700;line-height:1.15;letter-spacing:-.03em;margin-bottom:1rem}
+.hero h1 .grad{background:linear-gradient(135deg,var(--blue),#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:1rem;color:var(--text2);max-width:540px;margin:0 auto 1.75rem}
+.hero-ctas{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+.cta-main{background:var(--blue);color:#fff;font-size:.9rem;font-weight:600;padding:.65rem 1.6rem;border-radius:9px;border:none;cursor:pointer;transition:all .2s}
+.cta-main:hover{background:#2563eb;transform:translateY(-1px)}
+.cta-sec{background:var(--bg3);color:var(--text);font-size:.9rem;font-weight:500;padding:.65rem 1.4rem;border-radius:9px;border:1px solid var(--border);cursor:pointer;transition:all .2s}
+.cta-sec:hover{border-color:var(--blue);color:var(--blue)}
+
+/* ── TRADING APP MOCKUP ── */
+.trading-app{border:1px solid var(--border);border-radius:12px;overflow:hidden;font-size:.72rem;background:var(--bg);box-shadow:0 20px 60px rgba(0,0,0,.5);max-width:900px;margin:0 auto}
+.t-topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:.5rem 1rem;display:flex;align-items:center;gap:1rem}
+.t-logo{font-weight:700;color:var(--blue);font-size:.8rem}
+.t-search{flex:1;color:var(--text3);font-size:.68rem}
+.t-balance{font-size:.72rem;color:var(--text2)}
+.t-main{display:flex;height:280px}
+.t-chart-panel{flex:1;border-right:1px solid var(--border);padding:.6rem;display:flex;flex-direction:column}
+.t-stock-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem}
+.t-ticker{font-weight:700;font-size:.9rem;margin-right:.4rem}
+.t-name{font-size:.62rem;color:var(--text3)}
+.t-price{font-family:var(--font-mono);font-size:1rem;font-weight:600}
+.t-change{font-family:var(--font-mono);font-size:.7rem;margin-left:.4rem}
+.t-change.up{color:var(--up)}
+.t-change.down{color:var(--down)}
+.t-chart{flex:1;position:relative;display:flex;gap:.25rem;overflow:hidden}
+.chart-y-axis{display:flex;flex-direction:column;justify-content:space-between;color:var(--text3);font-size:.55rem;font-family:var(--font-mono);padding-right:.25rem;width:40px;flex-shrink:0}
+.candles{flex:1;display:flex;align-items:flex-end;gap:4px;padding:0 4px}
+.candle-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+.wick{width:1.5px;background:var(--text3)}
+.candle{width:100%;border-radius:1px}
+.candle.up{background:var(--up)}
+.candle.down{background:var(--down)}
+.candle-wrap span{font-size:.5rem;color:var(--text3);margin-top:2px}
+.t-volume{display:flex;gap:4px;align-items:flex-end;height:24px;padding:0 44px 0 0;margin-top:4px}
+.vol-bar{flex:1;background:rgba(59,130,246,.3);border-radius:1px 1px 0 0}
+.t-timeframes{display:flex;gap:.3rem;margin-top:.4rem}
+.tf{font-size:.6rem;padding:.15rem .4rem;border-radius:4px;cursor:pointer;color:var(--text3)}
+.tf.active{background:var(--blue);color:#fff}
+.t-right-panel{width:200px;flex-shrink:0;display:flex;flex-direction:column}
+.t-orderbook{flex:1;padding:.5rem;border-bottom:1px solid var(--border);overflow:hidden}
+.ob-title{font-weight:600;font-size:.65rem;color:var(--text2);margin-bottom:.3rem}
+.ob-header{display:grid;grid-template-columns:repeat(3,1fr);font-size:.55rem;color:var(--text3);margin-bottom:.2rem}
+.ob-row{display:grid;grid-template-columns:repeat(3,1fr);font-size:.62rem;font-family:var(--font-mono);padding:.15rem 0}
+.ob-row.sell{color:var(--down)}
+.ob-row.buy{color:var(--up)}
+.ob-row.active-sell{background:rgba(239,68,68,.1)}
+.ob-row.active-buy{background:rgba(34,197,94,.1)}
+.ob-spread{text-align:center;font-size:.58rem;color:var(--text3);padding:.2rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:.2rem 0}
+.t-form{padding:.5rem}
+.t-form-tabs{display:flex;gap:.3rem;margin-bottom:.4rem}
+.form-tab{flex:1;padding:.25rem;border:none;border-radius:4px;font-size:.65rem;font-weight:600;cursor:pointer;background:var(--bg3);color:var(--text3)}
+.form-tab.active.buy-tab{background:var(--up);color:#000}
+.form-tab.active.sell-tab{background:var(--down);color:#fff}
+.form-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem;font-size:.62rem}
+.form-row label{color:var(--text3)}
+.t-input{width:70px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.2rem .4rem;font-size:.62rem;color:var(--text);font-family:var(--font-mono)}
+.t-total{font-family:var(--font-mono);font-size:.68rem;color:var(--up);font-weight:600}
+.t-submit{width:100%;padding:.35rem;border-radius:6px;border:none;font-weight:700;font-size:.7rem;cursor:pointer;margin-top:.3rem}
+.t-submit.buy-submit{background:var(--up);color:#000}
+.t-submit.sell-submit{background:var(--down);color:#fff}
+.t-watchlist{border-top:1px solid var(--border);display:flex;overflow-x:auto;background:var(--bg2)}
+.wl-item{padding:.4rem .75rem;cursor:pointer;border-right:1px solid var(--border);white-space:nowrap;display:flex;flex-direction:column;gap:.1rem;min-width:80px}
+.wl-item.active{background:var(--bg3)}
+.wl-tick{font-weight:700;font-size:.65rem}
+.wl-p{font-family:var(--font-mono);font-size:.68rem}
+.wl-c{font-size:.6rem}
+.wl-c.up{color:var(--up)}
+.wl-c.down{color:var(--down)}
+
+/* ── SECTIONS ── */
+section{padding:4rem 1.5rem}
+.section-inner{max-width:1200px;margin:0 auto}
+.section-tag{font-size:.72rem;font-weight:600;color:var(--blue);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem}
+.section-title{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;letter-spacing:-.02em;margin-bottom:.75rem}
+.section-sub{color:var(--text2);font-size:.95rem;max-width:520px}
+.section-header{text-align:center;margin-bottom:2.5rem}
+.section-header .section-sub{margin:0 auto}
+
+/* ── STATS ── */
+.stats-section{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.stat-card{padding:2rem 1.5rem;text-align:center;border-right:1px solid var(--border)}
+.stat-card:last-child{border-right:none}
+.stat-num{font-size:2.2rem;font-weight:700;font-family:var(--font-mono);color:var(--blue);line-height:1;margin-bottom:.4rem}
+.stat-label{font-size:.8rem;color:var(--text2)}
+
+/* ── KEUNGGULAN ── */
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.feat-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.5rem;transition:all .25s}
+.feat-card:hover{border-color:rgba(59,130,246,.3);transform:translateY(-3px)}
+.feat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1rem}
+.feat-icon.blue{background:rgba(59,130,246,.12)}
+.feat-icon.green{background:rgba(34,197,94,.12)}
+.feat-icon.gold{background:rgba(245,158,11,.12)}
+.feat-icon.purple{background:rgba(139,92,246,.12)}
+.feat-card h3{font-size:.9rem;font-weight:600;margin-bottom:.4rem}
+.feat-card p{font-size:.8rem;color:var(--text2);line-height:1.55}
+.feat-badge{display:inline-block;margin-top:.6rem;font-size:.65rem;font-weight:600;color:var(--up);background:rgba(34,197,94,.1);padding:.15rem .5rem;border-radius:20px}
+
+/* ── ANALITIK ── */
+.analitik-wrap{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+.analitik-left h2{margin-bottom:1rem}
+.analitik-list{list-style:none;display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.5rem}
+.analitik-list li{display:flex;align-items:center;gap:.6rem;font-size:.88rem;color:var(--text2)}
+.analitik-list li::before{content:'✓';color:var(--up);font-weight:700;flex-shrink:0}
+.screener-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.screener-head{padding:.75rem 1rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.screener-head span{font-size:.78rem;font-weight:600}
+.screener-head small{font-size:.65rem;color:var(--text3);font-family:var(--font-mono)}
+.screener-table{width:100%;border-collapse:collapse;font-size:.75rem}
+.screener-table th{text-align:left;padding:.5rem 1rem;font-size:.65rem;font-weight:600;color:var(--text3);border-bottom:1px solid var(--border);font-family:var(--font-mono)}
+.screener-table td{padding:.55rem 1rem;border-bottom:1px solid var(--border);font-family:var(--font-mono)}
+.screener-table tr:last-child td{border-bottom:none}
+.screener-table tr:hover td{background:var(--bg3)}
+.td-tick{font-weight:700;color:var(--text)}
+.td-up{color:var(--up)}
+.td-down{color:var(--down)}
+
+/* ── BIAYA ── */
+.fee-section{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.fee-wrap{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+.fee-table-wrap{background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.fee-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.fee-table th{text-align:left;padding:.7rem 1.1rem;font-size:.72rem;font-weight:600;color:var(--text3);background:var(--bg2);border-bottom:1px solid var(--border)}
+.fee-table td{padding:.65rem 1.1rem;border-bottom:1px solid var(--border)}
+.fee-table tr:last-child td{border-bottom:none}
+.fee-table .highlight-row td{background:rgba(59,130,246,.06);color:var(--blue);font-weight:600}
+.fee-note{font-size:.75rem;color:var(--text3);margin-top:1rem;line-height:1.6}
+.comp-table-wrap{background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.comp-table{width:100%;border-collapse:collapse;font-size:.8rem}
+.comp-table th{padding:.65rem 1rem;font-size:.7rem;font-weight:600;color:var(--text3);background:var(--bg2);border-bottom:1px solid var(--border);text-align:center}
+.comp-table th:first-child{text-align:left}
+.comp-table td{padding:.6rem 1rem;border-bottom:1px solid var(--border);text-align:center;font-family:var(--font-mono);font-size:.75rem}
+.comp-table td:first-child{text-align:left;font-family:var(--font-body);font-size:.8rem}
+.comp-table tr:last-child td{border-bottom:none}
+.comp-table .ts-col{color:var(--blue);font-weight:600}
+.comp-table .check{color:var(--up)}
+.comp-table .cross{color:var(--down)}
+
+/* ── REGULASI ── */
+.reg-section{text-align:center}
+.reg-badges{display:flex;justify-content:center;gap:1.25rem;flex-wrap:wrap;margin-bottom:2.5rem}
+.reg-badge{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.75rem;min-width:140px;text-align:center}
+.reg-badge .rb-icon{font-size:1.8rem;margin-bottom:.5rem}
+.reg-badge .rb-name{font-size:.75rem;font-weight:700;color:var(--text);margin-bottom:.2rem}
+.reg-badge .rb-desc{font-size:.65rem;color:var(--text3)}
+.security-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;max-width:700px;margin:0 auto}
+.sec-item{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem;display:flex;align-items:center;gap:.75rem;font-size:.8rem}
+.sec-item .si-icon{font-size:1.1rem;flex-shrink:0}
+
+/* ── MOBILE APP ── */
+.mobile-section{overflow:hidden}
+.mobile-wrap{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.mobile-left h2{margin-bottom:1rem}
+.mobile-left p{color:var(--text2);font-size:.9rem;margin-bottom:1.5rem}
+.dl-buttons{display:flex;gap:.75rem;flex-wrap:wrap}
+.dl-btn{display:flex;align-items:center;gap:.65rem;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:.65rem 1.1rem;cursor:pointer;transition:all .2s;text-decoration:none}
+.dl-btn:hover{border-color:var(--blue)}
+.dl-btn .dl-icon{font-size:1.4rem}
+.dl-btn .dl-text small{display:block;font-size:.6rem;color:var(--text3)}
+.dl-btn .dl-text strong{display:block;font-size:.82rem;color:var(--text)}
+.phone-mockup{position:relative;display:flex;justify-content:center}
+.phone-outer{width:220px;height:440px;background:var(--bg2);border:2px solid var(--bg4);border-radius:36px;padding:12px;box-shadow:0 30px 80px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.05);position:relative}
+.phone-notch{width:80px;height:22px;background:var(--bg);border-radius:0 0 16px 16px;margin:0 auto 10px;position:relative;z-index:2}
+.phone-screen{background:var(--bg);border-radius:24px;height:calc(100% - 34px);overflow:hidden;display:flex;flex-direction:column}
+.phone-statusbar{display:flex;justify-content:space-between;padding:.3rem .7rem;font-size:.5rem;color:var(--text3)}
+.phone-header{padding:.4rem .7rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.phone-header .ph-logo{font-size:.65rem;font-weight:700;color:var(--blue)}
+.phone-header .ph-bal{font-size:.55rem;color:var(--text3)}
+.phone-content{flex:1;padding:.5rem .6rem;display:flex;flex-direction:column;gap:.5rem}
+.ph-stock-row{display:flex;justify-content:space-between;align-items:center;background:var(--bg2);border-radius:8px;padding:.4rem .6rem}
+.ph-s-left .ph-tick{font-size:.65rem;font-weight:700}
+.ph-s-left .ph-fullname{font-size:.5rem;color:var(--text3)}
+.ph-s-right{text-align:right}
+.ph-s-right .ph-price{font-size:.65rem;font-family:var(--font-mono);font-weight:600}
+.ph-s-right .ph-chg{font-size:.52rem;font-family:var(--font-mono)}
+.ph-s-right .ph-chg.up{color:var(--up)}
+.ph-s-right .ph-chg.down{color:var(--down)}
+.ph-mini-chart{height:40px;background:var(--bg2);border-radius:8px;display:flex;align-items:flex-end;gap:2px;padding:4px 6px;overflow:hidden}
+.ph-bar{flex:1;border-radius:2px 2px 0 0;background:rgba(59,130,246,.5)}
+.ph-bar.up{background:rgba(34,197,94,.5)}
+.phone-nav{display:flex;border-top:1px solid var(--border);padding:.4rem 0}
+.pn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:.2rem;font-size:.45rem;color:var(--text3);cursor:pointer}
+.pn-item.active{color:var(--blue)}
+.pn-item .pn-dot{font-size:.7rem}
+
+/* ── BERITA ── */
+.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.news-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:all .25s}
+.news-card:hover{border-color:rgba(59,130,246,.3);transform:translateY(-2px)}
+.news-img{height:120px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:var(--bg3)}
+.news-body{padding:1rem}
+.news-meta{display:flex;gap:.6rem;align-items:center;margin-bottom:.5rem}
+.news-cat{font-size:.62rem;font-weight:600;color:var(--blue);background:rgba(59,130,246,.12);padding:.15rem .5rem;border-radius:20px}
+.news-time{font-size:.62rem;color:var(--text3)}
+.news-card h3{font-size:.85rem;font-weight:600;line-height:1.4;margin-bottom:.5rem}
+.news-card p{font-size:.77rem;color:var(--text2);line-height:1.55}
+
+/* ── EDUKASI ── */
+.edu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.edu-card{border-radius:12px;padding:1.5rem;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.edu-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.edu-card.pemula{background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(34,197,94,.03));border:1px solid rgba(34,197,94,.2)}
+.edu-card.pemula::before{background:var(--up)}
+.edu-card.teknikal{background:linear-gradient(135deg,rgba(59,130,246,.08),rgba(59,130,246,.03));border:1px solid rgba(59,130,246,.2)}
+.edu-card.teknikal::before{background:var(--blue)}
+.edu-card.fundamental{background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(245,158,11,.03));border:1px solid rgba(245,158,11,.2)}
+.edu-card.fundamental::before{background:var(--gold)}
+.edu-card:hover{transform:translateY(-3px)}
+.edu-icon{font-size:2rem;margin-bottom:.75rem}
+.edu-card h3{font-size:.95rem;font-weight:600;margin-bottom:.4rem}
+.edu-card p{font-size:.8rem;color:var(--text2);margin-bottom:1rem;line-height:1.55}
+.edu-count{font-size:.72rem;color:var(--text3)}
+.edu-link{display:inline-flex;align-items:center;gap:.3rem;font-size:.78rem;font-weight:600;margin-top:.5rem}
+.edu-card.pemula .edu-link{color:var(--up)}
+.edu-card.teknikal .edu-link{color:var(--blue)}
+.edu-card.fundamental .edu-link{color:var(--gold)}
+
+/* ── TESTIMONIAL ── */
+.testi-section{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.testi-card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:1.5rem;transition:all .25s}
+.testi-card:hover{border-color:rgba(59,130,246,.2)}
+.testi-stars{color:var(--gold);font-size:.8rem;margin-bottom:.75rem}
+.testi-quote{font-size:.85rem;color:var(--text2);line-height:1.65;margin-bottom:1.25rem;font-style:italic}
+.testi-author{display:flex;align-items:center;gap:.75rem}
+.testi-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;flex-shrink:0}
+.testi-av1{background:rgba(59,130,246,.2);color:var(--blue)}
+.testi-av2{background:rgba(34,197,94,.2);color:var(--up)}
+.testi-av3{background:rgba(245,158,11,.2);color:var(--gold)}
+.testi-info strong{display:block;font-size:.82rem;font-weight:600}
+.testi-info span{font-size:.72rem;color:var(--text3)}
+.testi-return{font-size:.7rem;font-weight:600;color:var(--up);margin-top:.2rem}
+
+/* ── PRICING ── */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;max-width:900px;margin:0 auto}
+.price-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.75rem;position:relative;transition:all .25s}
+.price-card.popular{border-color:var(--blue);box-shadow:0 0 30px rgba(59,130,246,.15)}
+.price-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:.65rem;font-weight:700;padding:.25rem .75rem;border-radius:20px;white-space:nowrap}
+.price-plan{font-size:.72rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem}
+.price-main{margin-bottom:1.25rem}
+.price-fee{font-size:1.6rem;font-weight:700;font-family:var(--font-mono);color:var(--text)}
+.price-fee span{font-size:.85rem;font-weight:400;color:var(--text3)}
+.price-sub{font-size:.72rem;color:var(--text3);margin-top:.25rem}
+.price-features{list-style:none;display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.5rem}
+.price-features li{font-size:.82rem;color:var(--text2);display:flex;align-items:center;gap:.5rem}
+.price-features li::before{content:'✓';color:var(--up);font-weight:700;flex-shrink:0}
+.price-features li.na{color:var(--text3)}
+.price-features li.na::before{content:'✗';color:var(--text3)}
+.price-cta{width:100%;padding:.6rem;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;border:1px solid var(--border);background:var(--bg3);color:var(--text)}
+.price-cta:hover,.price-card.popular .price-cta{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* ── FAQ ── */
+.faq-section{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.faq-wrap{max-width:720px;margin:0 auto}
+.faq-item{border:1px solid var(--border);border-radius:10px;margin-bottom:.75rem;overflow:hidden;background:var(--bg)}
+.faq-q{width:100%;text-align:left;background:none;border:none;padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:.88rem;font-weight:500;color:var(--text);gap:1rem}
+.faq-q .faq-icon{color:var(--text3);font-size:.85rem;transition:transform .3s;flex-shrink:0}
+.faq-q.open .faq-icon{transform:rotate(45deg);color:var(--blue)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease}
+.faq-a.open{max-height:200px}
+.faq-a p{padding:.25rem 1.25rem 1rem;font-size:.83rem;color:var(--text2);line-height:1.65}
+
+/* ── CTA FINAL ── */
+.cta-section{text-align:center;padding:5rem 1.5rem}
+.cta-inner{max-width:640px;margin:0 auto}
+.cta-glow{position:relative;display:inline-block;margin-bottom:1.5rem}
+.cta-glow::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:280px;height:280px;background:radial-gradient(circle,rgba(59,130,246,.12) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.cta-glow-icon{font-size:3rem;position:relative;z-index:1}
+.cta-section h2{font-size:clamp(1.7rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-.025em;margin-bottom:.75rem}
+.cta-section p{font-size:.95rem;color:var(--text2);margin-bottom:2rem}
+.cta-pair{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+.cta-guarantee{font-size:.75rem;color:var(--text3);margin-top:1.25rem}
+
+/* ── FOOTER ── */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:3rem 1.5rem 1.5rem}
+.footer-inner{max-width:1200px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2.5rem}
+.footer-brand .fb-logo{font-size:1rem;font-weight:700;color:var(--blue);margin-bottom:.75rem}
+.footer-brand p{font-size:.8rem;color:var(--text3);line-height:1.65;max-width:260px}
+.footer-col h4{font-size:.8rem;font-weight:600;color:var(--text);margin-bottom:.75rem}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:.4rem}
+.footer-col ul li a{font-size:.78rem;color:var(--text3);text-decoration:none;transition:color .2s}
+.footer-col ul li a:hover{color:var(--text)}
+.footer-bottom{border-top:1px solid var(--border);padding-top:1.5rem;display:flex;flex-direction:column;gap:.75rem}
+.footer-legal{display:flex;gap:1rem;flex-wrap:wrap;align-items:center}
+.footer-badges{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center}
+.f-badge{font-size:.65rem;font-weight:600;background:var(--bg3);border:1px solid var(--border);padding:.25rem .6rem;border-radius:6px;color:var(--text3)}
+.footer-copy{font-size:.72rem;color:var(--text3)}
+.footer-disclaimer{font-size:.68rem;color:var(--text3);line-height:1.6;border-top:1px solid var(--border);padding-top:1rem;margin-top:.5rem;opacity:.7}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  .features-grid{grid-template-columns:repeat(2,1fr)}
+  .analitik-wrap{grid-template-columns:1fr}
+  .fee-wrap{grid-template-columns:1fr}
+  .mobile-wrap{grid-template-columns:1fr;text-align:center}
+  .phone-mockup{margin-top:2rem}
+  .dl-buttons{justify-content:center}
+  .news-grid{grid-template-columns:repeat(2,1fr)}
+  .edu-grid{grid-template-columns:repeat(2,1fr)}
+  .testi-grid{grid-template-columns:repeat(2,1fr)}
+  .pricing-grid{grid-template-columns:1fr 1fr}
+  .footer-top{grid-template-columns:1fr 1fr}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .stat-card:nth-child(2){border-right:none}
+  .stat-card:nth-child(3){border-top:1px solid var(--border);border-right:1px solid var(--border)}
+  .stat-card:nth-child(4){border-top:1px solid var(--border)}
+  .security-row{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:768px){
+  .nav-links,.nav-right .btn-ghost{display:none}
+  .nav-hamburger{display:block}
+  .nav-mobile{display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg2);border-bottom:1px solid var(--border);padding:1rem 1.5rem;flex-direction:column;gap:.5rem;z-index:99}
+  .nav-mobile.open{display:flex}
+  .nav-mobile a{font-size:.85rem;color:var(--text2);text-decoration:none;padding:.5rem 0;border-bottom:1px solid var(--border)}
+  .t-main{height:auto;flex-direction:column}
+  .t-right-panel{width:100%;flex-direction:row}
+  .t-orderbook{flex:1}
+  .t-form{flex:1}
+  .testi-grid{grid-template-columns:1fr}
+  .pricing-grid{grid-template-columns:1fr}
+  .news-grid{grid-template-columns:1fr}
+  .edu-grid{grid-template-columns:1fr}
+  .footer-top{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  section{padding:2.5rem 1rem}
+  .hero{padding:2.5rem 1rem 2rem}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .features-grid{grid-template-columns:1fr}
+  .security-row{grid-template-columns:1fr}
+  .pricing-grid{grid-template-columns:1fr}
+  .footer-top{grid-template-columns:1fr}
+  .reg-badges{gap:.75rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ① MARKET TICKER BAR -->
+<div class="ticker-bar">
+  <div class="ticker-inner" id="tickerInner">
+    <div class="t-item"><span class="sym">IHSG</span><span class="val">7.421</span><span class="chg up">+0.85%</span></div>
+    <span class="ticker-sep">·</span>
+    <div class="t-item"><span class="sym">BBCA</span><span class="val">9.850</span><span class="chg up">+1.29%</span></div>
+    <span class="ticker-sep">·</span>
+    <div class="t-item"><span class="sym">BBRI</span><span class="val">4.620</span><span class="chg down">-0.64%</span></div>
+    <span class="ticker-sep">·</span>
+    <div class="t-item"><span class="sym">TLKM</span><span class="val">3.890</span><span class="chg up">+0.52%</span></div>
+    <span class="ticker-sep">·</span>
+    <div class="t-item"><span class="sym">GOTO</span><span class="val">68</span><span class="chg down">-2.17%</span></div>
+    <span class="ticker-sep">·</span>
+    <div class="t-item"><span class="sym">ASII</span><span class="val">5.150</span><span class="chg up">+0.98%</span></div>
+    <span class="ticker-sep">·</span>
+    <div class="t-item"><span class="sym">BMRI</span><span class="val">7.025</span><span class="chg down">-0.35%</span></div>
+    <span class="ticker-sep">·</span>
+    <div class="t-item"><span class="sym">UNVR</span><span class="val">2.840</span><span class="chg up">+1.07%</span></div>
+    <span class="ticker-sep">·</span>
+    <div class="t-item"><span class="sym">ANTM</span><span class="val">1.825</span><span class="chg up">+2.53%</span></div>
+    <span class="ticker-sep">·</span>
+    <div class="t-item"><span class="sym">PTBA</span><span class="val">2.510</span><span class="chg down">-1.18%</span></div>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-sep">·</span>
+    <div class="t-item"><span class="sym">IHSG</span><span class="val">7.421</span><span class="chg up">+0.85%</span></div>
+    <span class="ticker-sep">·</span>
+    <div class="t-item"><span class="sym">BBCA</span><span class="val">9.850</span><span class="chg up">+1.29%</span></div>
+    <span class="ticker-sep">·</span>
+    <div class="t-item"><span class="sym">BBRI</span><span class="val">4.620</span><span class="chg down">-0.64%</span></div>
+    <span class="ticker-sep">·</span>
+    <div class="t-item"><span class="sym">TLKM</span><span class="val">3.890</span><span class="chg up">+0.52%</span></div>
+    <span class="ticker-sep">·</span>
+    <div class="t-item"><span class="sym">GOTO</span><span class="val">68</span><span class="chg down">-2.17%</span></div>
+    <span class="ticker-sep">·</span>
+    <div class="t-item"><span class="sym">ASII</span><span class="val">5.150</span><span class="chg up">+0.98%</span></div>
+    <span class="ticker-sep">·</span>
+    <div class="t-item"><span class="sym">BMRI</span><span class="val">7.025</span><span class="chg down">-0.35%</span></div>
+    <span class="ticker-sep">·</span>
+    <div class="t-item"><span class="sym">UNVR</span><span class="val">2.840</span><span class="chg up">+1.07%</span></div>
+    <span class="ticker-sep">·</span>
+    <div class="t-item"><span class="sym">ANTM</span><span class="val">1.825</span><span class="chg up">+2.53%</span></div>
+    <span class="ticker-sep">·</span>
+    <div class="t-item"><span class="sym">PTBA</span><span class="val">2.510</span><span class="chg down">-1.18%</span></div>
+  </div>
+</div>
+
+<!-- ② NAVBAR -->
+<nav class="navbar" style="position:relative">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <span>TS</span>
+      TradeSafe
+    </a>
+    <div class="nav-links">
+      <a href="#" class="active">Beranda</a>
+      <a href="#pasar">Pasar</a>
+      <a href="#portofolio">Portofolio</a>
+      <a href="#berita">Berita</a>
+      <a href="#akademi">Akademi</a>
+    </div>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" title="Toggle tema">🌙</button>
+      <button class="btn-ghost">Masuk</button>
+      <button class="btn-primary">Daftar Gratis</button>
+    </div>
+    <button class="nav-hamburger" id="hamburger">☰</button>
+  </div>
+  <div class="nav-mobile" id="navMobile">
+    <a href="#">Beranda</a>
+    <a href="#pasar">Pasar</a>
+    <a href="#portofolio">Portofolio</a>
+    <a href="#berita">Berita</a>
+    <a href="#akademi">Akademi</a>
+    <a href="#">Masuk</a>
+    <a href="#" style="color:var(--blue);font-weight:600">Daftar Gratis →</a>
+  </div>
+</nav>
+
+<!-- ③ HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <div class="hero-badge">🇮🇩 Platform Trading Saham Indonesia #1</div>
+    <h1>Investasi Saham IDX<br><span class="grad">Lebih Mudah & Terpercaya</span></h1>
+    <p>Beli & jual saham Bursa Efek Indonesia dalam hitungan detik. Biaya rendah, data real-time, terdaftar & diawasi OJK.</p>
+    <div class="hero-ctas">
+      <button class="cta-main">🚀 Buka Rekening Gratis</button>
+      <button class="cta-sec">▶ Lihat Demo Platform</button>
+    </div>
+  </div>
+
+  <!-- TRADING APP MOCKUP -->
+  <div class="trading-app">
+    <div class="t-topbar">
+      <div class="t-logo">TradeSafe</div>
+      <div class="t-search">🔍 Cari saham… (BBCA, TLKM, GOTO)</div>
+      <div class="t-balance">Portofolio: <strong style="color:var(--up)">Rp 48.750.000</strong></div>
+    </div>
+    <div class="t-main">
+      <!-- Left: chart panel -->
+      <div class="t-chart-panel">
+        <div class="t-stock-header">
+          <div>
+            <span class="t-ticker">BBCA</span>
+            <span class="t-name">Bank Central Asia Tbk</span>
+          </div>
+          <div class="t-price-block">
+            <span class="t-price">Rp 9.850</span>
+            <span class="t-change up">+125 (+1.29%)</span>
+          </div>
+        </div>
+        <div class="t-chart">
+          <div class="chart-y-axis">
+            <span>9.900</span><span>9.850</span><span>9.800</span><span>9.750</span><span>9.700</span>
+          </div>
+          <div class="candles">
+            <div class="candle-wrap"><div class="wick" style="height:8px"></div><div class="candle up" style="height:20px"></div><div class="wick" style="height:5px"></div><span>Sel</span></div>
+            <div class="candle-wrap"><div class="wick" style="height:6px"></div><div class="candle down" style="height:15px"></div><div class="wick" style="height:8px"></div><span>Rab</span></div>
+            <div class="candle-wrap"><div class="wick" style="height:10px"></div><div class="candle up" style="height:25px"></div><div class="wick" style="height:4px"></div><span>Kam</span></div>
+            <div class="candle-wrap"><div class="wick" style="height:5px"></div><div class="candle down" style="height:12px"></div><div class="wick" style="height:10px"></div><span>Jum</span></div>
+            <div class="candle-wrap"><div class="wick" style="height:7px"></div><div class="candle up" style="height:30px"></div><div class="wick" style="height:3px"></div><span>Sen</span></div>
+            <div class="candle-wrap"><div class="wick" style="height:4px"></div><div class="candle up" style="height:22px"></div><div class="wick" style="height:6px"></div><span>Sel</span></div>
+            <div class="candle-wrap"><div class="wick" style="height:9px"></div><div class="candle up" style="height:18px"></div><div class="wick" style="height:7px"></div><span>Hari</span></div>
+          </div>
+        </div>
+        <div class="t-volume">
+          <div class="vol-bar" style="height:40%"></div>
+          <div class="vol-bar" style="height:60%"></div>
+          <div class="vol-bar" style="height:50%"></div>
+          <div class="vol-bar" style="height:35%"></div>
+          <div class="vol-bar" style="height:80%"></div>
+          <div class="vol-bar" style="height:55%"></div>
+          <div class="vol-bar" style="height:70%"></div>
+        </div>
+        <div class="t-timeframes">
+          <span class="tf active">1D</span><span class="tf">1W</span><span class="tf">1M</span><span class="tf">3M</span><span class="tf">1Y</span>
+        </div>
+      </div>
+      <!-- Right: order book + form -->
+      <div class="t-right-panel">
+        <div class="t-orderbook">
+          <div class="ob-title">Order Book</div>
+          <div class="ob-header"><span>Harga</span><span>Lot</span><span>Total</span></div>
+          <div class="ob-row sell"><span>9.875</span><span>120</span><span>1.185jt</span></div>
+          <div class="ob-row sell"><span>9.865</span><span>85</span><span>839jt</span></div>
+          <div class="ob-row sell active-sell"><span>9.860</span><span>200</span><span>1.972jt</span></div>
+          <div class="ob-spread">Spread: 10 · Last: 9.850</div>
+          <div class="ob-row buy active-buy"><span>9.850</span><span>350</span><span>3.448jt</span></div>
+          <div class="ob-row buy"><span>9.840</span><span>175</span><span>1.722jt</span></div>
+          <div class="ob-row buy"><span>9.825</span><span>90</span><span>884jt</span></div>
+        </div>
+        <div class="t-form">
+          <div class="t-form-tabs">
+            <button class="form-tab active buy-tab" id="buyTab">Beli</button>
+            <button class="form-tab sell-tab" id="sellTab">Jual</button>
+          </div>
+          <div class="t-form-body" id="formBody">
+            <div class="form-row"><label>Harga (Rp)</label><input type="text" value="9.850" class="t-input"></div>
+            <div class="form-row"><label>Lot</label><input type="text" value="10" class="t-input" id="lotInput"></div>
+            <div class="form-row total-row"><label>Total</label><span class="t-total" id="orderTotal">Rp 9.850.000</span></div>
+            <button class="t-submit buy-submit" id="submitBtn">Beli BBCA</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="t-watchlist">
+      <div class="wl-item active"><span class="wl-tick">BBCA</span><span class="wl-p">9.850</span><span class="wl-c up">+1.29%</span></div>
+      <div class="wl-item"><span class="wl-tick">BBRI</span><span class="wl-p">4.620</span><span class="wl-c down">-0.64%</span></div>
+      <div class="wl-item"><span class="wl-tick">TLKM</span><span class="wl-p">3.890</span><span class="wl-c up">+0.52%</span></div>
+      <div class="wl-item"><span class="wl-tick">GOTO</span><span class="wl-p">68</span><span class="wl-c down">-2.17%</span></div>
+      <div class="wl-item"><span class="wl-tick">ASII</span><span class="wl-p">5.150</span><span class="wl-c up">+0.98%</span></div>
+      <div class="wl-item"><span class="wl-tick">BMRI</span><span class="wl-p">7.025</span><span class="wl-c down">-0.35%</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ④ STATS -->
+<section class="stats-section" style="padding:0">
+  <div class="section-inner">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num" data-target="850000">0</div>
+        <div class="stat-label">Pengguna Aktif</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" data-target="4200" data-prefix="Rp " data-suffix="M+">0</div>
+        <div class="stat-label">Volume Harian</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" data-target="900" data-suffix="+">0</div>
+        <div class="stat-label">Saham Tersedia</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" data-target="12" data-suffix=" Tahun">0</div>
+        <div class="stat-label">Pengalaman</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ⑤ KEUNGGULAN PLATFORM -->
+<section id="portofolio">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag">Keunggulan</div>
+      <h2 class="section-title">Mengapa Pilih TradeSafe?</h2>
+      <p class="section-sub">Platform trading yang dirancang untuk investor Indonesia — dari pemula hingga profesional.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon blue">⚡</div>
+        <h3>Eksekusi Ultra Cepat</h3>
+        <p>Order masuk ke matching engine IDX dalam hitungan milidetik. Tidak ada slippage tersembunyi.</p>
+        <span class="feat-badge">&lt; 50ms latency</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon green">💰</div>
+        <h3>Biaya Paling Rendah</h3>
+        <p>Fee beli 0.15%, fee jual 0.25%. Hemat lebih banyak, reinvest lebih banyak. Transparan tanpa biaya tersembunyi.</p>
+        <span class="feat-badge">0.15% fee beli</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon gold">📊</div>
+        <h3>Data Real-Time IDX</h3>
+        <p>Harga, order book, dan transaksi diperbarui setiap detik langsung dari Bursa Efek Indonesia.</p>
+        <span class="feat-badge">Live streaming</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon purple">📱</div>
+        <h3>Aplikasi Mobile</h3>
+        <p>Trading di mana saja via iOS & Android. Notifikasi harga, alert saham, dan laporan portofolio.</p>
+        <span class="feat-badge">iOS & Android</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon blue">📈</div>
+        <h3>Analisis Teknikal</h3>
+        <p>50+ indikator: MA, RSI, MACD, Bollinger Bands, Fibonacci. Chart interaktif dengan drawing tools.</p>
+        <span class="feat-badge">50+ indikator</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon green">🏛️</div>
+        <h3>Terdaftar KSEI</h3>
+        <p>Saham Anda disimpan di rekening efek atas nama Anda di KSEI. Aset tetap aman meski TradeSafe tutup.</p>
+        <span class="feat-badge">SID terdaftar</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ⑥ FITUR ANALITIK -->
+<section id="pasar" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="section-inner">
+    <div class="analitik-wrap">
+      <div class="analitik-left">
+        <div class="section-tag">Analitik</div>
+        <h2 class="section-title">Screener & Analisis Fundamental</h2>
+        <p class="section-sub" style="margin-bottom:1.25rem">Filter ratusan saham berdasarkan valuasi, kinerja, dan likuiditas. Temukan saham undervalued sebelum pasar sadar.</p>
+        <ul class="analitik-list">
+          <li>Screener dengan 30+ filter parameter</li>
+          <li>Data fundamental: P/E, P/BV, EPS, Dividen</li>
+          <li>Laporan keuangan kuartal & tahunan</li>
+          <li>Perbandingan peer dalam satu sektor</li>
+          <li>Notifikasi ketika saham masuk kriteria filter</li>
+        </ul>
+        <button class="cta-main" style="font-size:.85rem;padding:.55rem 1.25rem">Coba Screener Gratis →</button>
+      </div>
+      <div>
+        <div class="screener-card">
+          <div class="screener-head">
+            <span>Screener — Hasil Filter</span>
+            <small>Updated 10:47 WIB</small>
+          </div>
+          <table class="screener-table">
+            <thead>
+              <tr>
+                <th>Ticker</th><th>Harga</th><th>P/E</th><th>P/BV</th><th>DY%</th><th>Chg</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-tick">BBCA</td><td>9.850</td><td>22.4x</td><td>4.1x</td><td>1.8%</td><td class="td-up">+1.29%</td>
+              </tr>
+              <tr>
+                <td class="td-tick">BBRI</td><td>4.620</td><td>14.2x</td><td>2.3x</td><td>4.2%</td><td class="td-down">-0.64%</td>
+              </tr>
+              <tr>
+                <td class="td-tick">BMRI</td><td>7.025</td><td>13.8x</td><td>2.1x</td><td>3.9%</td><td class="td-down">-0.35%</td>
+              </tr>
+              <tr>
+                <td class="td-tick">TLKM</td><td>3.890</td><td>18.5x</td><td>2.8x</td><td>5.1%</td><td class="td-up">+0.52%</td>
+              </tr>
+              <tr>
+                <td class="td-tick">ANTM</td><td>1.825</td><td>9.7x</td><td>1.4x</td><td>2.3%</td><td class="td-up">+2.53%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ⑦ BIAYA TRADING -->
+<section>
+  <div class="section-inner fee-section" style="background:none;border:none;padding:0">
+    <div class="section-header" style="margin-bottom:2rem">
+      <div class="section-tag">Biaya</div>
+      <h2 class="section-title">Transparan, Tanpa Kejutan</h2>
+      <p class="section-sub">Semua biaya tercantum jelas. Tidak ada biaya tersembunyi atau biaya inaktivitas.</p>
+    </div>
+    <div class="fee-wrap">
+      <div>
+        <div class="fee-table-wrap">
+          <table class="fee-table">
+            <thead>
+              <tr><th>Komponen Biaya</th><th>Persentase</th><th>Keterangan</th></tr>
+            </thead>
+            <tbody>
+              <tr class="highlight-row">
+                <td>Broker Fee — Beli</td><td>0,15%</td><td>dari nilai transaksi</td>
+              </tr>
+              <tr class="highlight-row">
+                <td>Broker Fee — Jual</td><td>0,25%</td><td>dari nilai transaksi</td>
+              </tr>
+              <tr>
+                <td>PPh Final (Jual)</td><td>0,10%</td><td>kewajiban negara</td>
+              </tr>
+              <tr>
+                <td>Biaya Kliring (KPEI)</td><td>0,015%</td><td>sudah termasuk</td>
+              </tr>
+              <tr>
+                <td>Biaya Penyelesaian (KSEI)</td><td>0,005%</td><td>sudah termasuk</td>
+              </tr>
+              <tr>
+                <td>Biaya Transfer / Deposit</td><td>—</td><td>Gratis via Virtual Account</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="fee-note">* Contoh: beli 10 lot BBCA @ Rp 9.850 = transaksi Rp 9.850.000 → fee Rp 14.775 saja. Harga sudah termasuk biaya kliring & penyelesaian BEI.</p>
+      </div>
+      <div>
+        <div class="comp-table-wrap">
+          <table class="comp-table">
+            <thead>
+              <tr><th>Fitur</th><th class="ts-col">TradeSafe</th><th>Broker A</th><th>Broker B</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Fee Beli</td><td class="ts-col">0.15%</td><td>0.18%</td><td>0.17%</td></tr>
+              <tr><td>Fee Jual</td><td class="ts-col">0.25%</td><td>0.28%</td><td>0.27%</td></tr>
+              <tr><td>Deposit Min.</td><td class="ts-col">Rp 100rb</td><td>Rp 500rb</td><td>Rp 1jt</td></tr>
+              <tr><td>Real-time Chart</td><td class="ts-col check">✓</td><td class="check">✓</td><td class="cross">✗</td></tr>
+              <tr><td>Mobile App</td><td class="ts-col check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+              <tr><td>Screener Saham</td><td class="ts-col check">✓</td><td class="cross">✗</td><td class="cross">✗</td></tr>
+              <tr><td>Chat Support 24/7</td><td class="ts-col check">✓</td><td class="cross">✗</td><td class="cross">✗</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ⑧ REGULASI & KEAMANAN -->
+<section class="reg-section" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="section-inner">
+    <div class="section-tag">Regulasi</div>
+    <h2 class="section-title" style="margin-bottom:.75rem">Diawasi Regulator, Dana Anda Aman</h2>
+    <p class="section-sub" style="margin:0 auto 2rem">TradeSafe beroperasi di bawah pengawasan penuh regulator pasar modal Indonesia.</p>
+    <div class="reg-badges">
+      <div class="reg-badge">
+        <div class="rb-icon">🏛️</div>
+        <div class="rb-name">OJK</div>
+        <div class="rb-desc">Otoritas Jasa Keuangan</div>
+      </div>
+      <div class="reg-badge">
+        <div class="rb-icon">📋</div>
+        <div class="rb-name">KSEI</div>
+        <div class="rb-desc">Kustodian Sentral</div>
+      </div>
+      <div class="reg-badge">
+        <div class="rb-icon">⚖️</div>
+        <div class="rb-name">KPEI</div>
+        <div class="rb-desc">Kliring & Penjaminan</div>
+      </div>
+      <div class="reg-badge">
+        <div class="rb-icon">🪪</div>
+        <div class="rb-name">SID</div>
+        <div class="rb-desc">Single Investor ID</div>
+      </div>
+      <div class="reg-badge">
+        <div class="rb-icon">📈</div>
+        <div class="rb-name">BEI</div>
+        <div class="rb-desc">Anggota Bursa #088</div>
+      </div>
+    </div>
+    <div class="security-row">
+      <div class="sec-item"><span class="si-icon">🔒</span><span>Enkripsi SSL 256-bit</span></div>
+      <div class="sec-item"><span class="si-icon">📲</span><span>2-Factor Authentication</span></div>
+      <div class="sec-item"><span class="si-icon">🛡️</span><span>Dana nasabah terpisah</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ⑨ APLIKASI MOBILE -->
+<section class="mobile-section">
+  <div class="section-inner">
+    <div class="mobile-wrap">
+      <div class="mobile-left">
+        <div class="section-tag">Aplikasi Mobile</div>
+        <h2 class="section-title">Trading di Genggaman Tangan</h2>
+        <p>Pantau portofolio, eksekusi order, dan analisis saham kapan saja. Notifikasi push untuk alert harga & berita emiten.</p>
+        <div class="dl-buttons">
+          <a class="dl-btn" href="#">
+            <span class="dl-icon">🍎</span>
+            <span class="dl-text"><small>Download di</small><strong>App Store</strong></span>
+          </a>
+          <a class="dl-btn" href="#">
+            <span class="dl-icon">▶</span>
+            <span class="dl-text"><small>Download di</small><strong>Google Play</strong></span>
+          </a>
+        </div>
+      </div>
+      <div class="phone-mockup">
+        <div class="phone-outer">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="phone-statusbar"><span>10:47</span><span>📶 🔋</span></div>
+            <div class="phone-header">
+              <span class="ph-logo">TradeSafe</span>
+              <span class="ph-bal">Portofolio: Rp 48,7jt</span>
+            </div>
+            <div class="phone-content">
+              <div class="ph-stock-row">
+                <div class="ph-s-left"><div class="ph-tick">BBCA</div><div class="ph-fullname">Bank Central Asia</div></div>
+                <div class="ph-s-right"><div class="ph-price">9.850</div><div class="ph-chg up">+1.29%</div></div>
+              </div>
+              <div class="ph-stock-row">
+                <div class="ph-s-left"><div class="ph-tick">BBRI</div><div class="ph-fullname">Bank Rakyat Indonesia</div></div>
+                <div class="ph-s-right"><div class="ph-price">4.620</div><div class="ph-chg down">-0.64%</div></div>
+              </div>
+              <div class="ph-stock-row">
+                <div class="ph-s-left"><div class="ph-tick">TLKM</div><div class="ph-fullname">Telkom Indonesia</div></div>
+                <div class="ph-s-right"><div class="ph-price">3.890</div><div class="ph-chg up">+0.52%</div></div>
+              </div>
+              <div class="ph-mini-chart">
+                <div class="ph-bar up" style="height:40%"></div>
+                <div class="ph-bar" style="height:60%;background:rgba(239,68,68,.5)"></div>
+                <div class="ph-bar up" style="height:55%"></div>
+                <div class="ph-bar" style="height:35%;background:rgba(239,68,68,.5)"></div>
+                <div class="ph-bar up" style="height:75%"></div>
+                <div class="ph-bar up" style="height:65%"></div>
+                <div class="ph-bar up" style="height:80%"></div>
+              </div>
+            </div>
+            <div class="phone-nav">
+              <div class="pn-item active"><span class="pn-dot">🏠</span><span>Beranda</span></div>
+              <div class="pn-item"><span class="pn-dot">📊</span><span>Pasar</span></div>
+              <div class="pn-item"><span class="pn-dot">📁</span><span>Portofolio</span></div>
+              <div class="pn-item"><span class="pn-dot">👤</span><span>Akun</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ⑩ BERITA PASAR -->
+<section id="berita" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag">Berita</div>
+      <h2 class="section-title">Update Pasar Modal Indonesia</h2>
+      <p class="section-sub">Ikuti perkembangan terkini BEI, emiten, dan ekonomi makro yang mempengaruhi portofolio Anda.</p>
+    </div>
+    <div class="news-grid">
+      <div class="news-card">
+        <div class="news-img">📰</div>
+        <div class="news-body">
+          <div class="news-meta">
+            <span class="news-cat">Emiten</span>
+            <span class="news-time">2 jam lalu</span>
+          </div>
+          <h3>BBCA Catat Laba Bersih Rp 48,6 T di Semester I 2026, Tumbuh 14%</h3>
+          <p>Bank Central Asia melaporkan kinerja semester pertama yang solid didorong pertumbuhan kredit konsumer dan UMKM yang signifikan.</p>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-img">📊</div>
+        <div class="news-body">
+          <div class="news-meta">
+            <span class="news-cat">IHSG</span>
+            <span class="news-time">4 jam lalu</span>
+          </div>
+          <h3>IHSG Tembus 7.400, Asing Net Buy Rp 1,2 Triliun dalam Sepekan</h3>
+          <p>Indeks Harga Saham Gabungan menembus level psikologis 7.400 didukung sentimen positif data inflasi yang lebih rendah dari ekspektasi.</p>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-img">🏦</div>
+        <div class="news-body">
+          <div class="news-meta">
+            <span class="news-cat">Makro</span>
+            <span class="news-time">6 jam lalu</span>
+          </div>
+          <h3>BI Pertahankan Suku Bunga 5,5%, Rupiah Menguat ke Rp 15.820/USD</h3>
+          <p>Bank Indonesia mempertahankan kebijakan moneter yang akomodatif untuk mendukung pertumbuhan ekonomi di tengah ketidakpastian global.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ⑪ EDUKASI TRADING -->
+<section id="akademi">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag">Akademi</div>
+      <h2 class="section-title">Belajar Trading dari Nol</h2>
+      <p class="section-sub">Ratusan artikel, video, dan webinar gratis untuk semua level — dari pemula hingga advanced.</p>
+    </div>
+    <div class="edu-grid">
+      <div class="edu-card pemula">
+        <div class="edu-icon">🌱</div>
+        <h3>Kelas Pemula</h3>
+        <p>Mulai dari apa itu saham, cara buka rekening, sampai strategi investasi pertama Anda. Cocok untuk investor baru.</p>
+        <div class="edu-count">48 artikel · 12 video · 4 webinar</div>
+        <a class="edu-link" href="#">Mulai Belajar →</a>
+      </div>
+      <div class="edu-card teknikal">
+        <div class="edu-icon">📐</div>
+        <h3>Analisis Teknikal</h3>
+        <p>Pelajari candlestick, support/resistance, tren, dan 20+ indikator populer untuk timing entry & exit yang lebih baik.</p>
+        <div class="edu-count">65 artikel · 24 video · 8 webinar</div>
+        <a class="edu-link" href="#">Eksplorasi →</a>
+      </div>
+      <div class="edu-card fundamental">
+        <div class="edu-icon">🔬</div>
+        <h3>Analisis Fundamental</h3>
+        <p>Baca laporan keuangan, hitung P/E & P/BV, evaluasi manajemen, dan temukan saham undervalued seperti pro.</p>
+        <div class="edu-count">52 artikel · 18 video · 6 webinar</div>
+        <a class="edu-link" href="#">Pelajari →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ⑫ TESTIMONIAL -->
+<section class="testi-section">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag">Testimoni</div>
+      <h2 class="section-title">Dipercaya 850.000+ Investor Indonesia</h2>
+      <p class="section-sub">Dari ibu rumah tangga hingga fund manager — semua mulai dari sini.</p>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Saya ibu rumah tangga yang baru mulai investasi 2 tahun lalu. TradeSafe beneran mudah dipahami, Akademinya lengkap banget. Sekarang sudah punya 15 saham blue chip."</p>
+        <div class="testi-author">
+          <div class="testi-avatar testi-av1">SR</div>
+          <div class="testi-info">
+            <strong>Sari Rahayu</strong>
+            <span>Ibu Rumah Tangga, Surabaya</span>
+            <div class="testi-return">Portofolio +38% dalam 2 tahun</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Sebagai mahasiswa dengan modal terbatas, deposit minimum Rp 100.000 itu game changer. Fee-nya juga paling murah dari yang pernah saya coba. Chart-nya detail parah."</p>
+        <div class="testi-author">
+          <div class="testi-avatar testi-av2">DP</div>
+          <div class="testi-info">
+            <strong>Dimas Prasetyo</strong>
+            <span>Mahasiswa Ekonomi, Bandung</span>
+            <div class="testi-return">Mulai dengan Rp 500ribu, kini Rp 12jt</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Screener saham TradeSafe menghemat waktu riset saya dari 3 jam jadi 30 menit. Sebagai analis, fitur data fundamentalnya sangat komprehensif dan akurat."</p>
+        <div class="testi-author">
+          <div class="testi-avatar testi-av3">NA</div>
+          <div class="testi-info">
+            <strong>Nadira Azizah, CFA</strong>
+            <span>Equity Analyst, Jakarta</span>
+            <div class="testi-return">Kelola 3 rekening, total Rp 2,1M</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ⑬ PRICING -->
+<section>
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag">Harga</div>
+      <h2 class="section-title">Pilih Paket yang Tepat</h2>
+      <p class="section-sub">Semua paket sudah termasuk akses penuh ke platform web & mobile. Upgrade kapan saja.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-plan">Reguler</div>
+        <div class="price-main">
+          <div class="price-fee">0,18% <span>/ beli</span></div>
+          <div class="price-sub">0,28% fee jual · Gratis daftar</div>
+        </div>
+        <ul class="price-features">
+          <li>Akses semua saham IDX</li>
+          <li>Real-time data harga</li>
+          <li>Chart dasar (5 indikator)</li>
+          <li>Aplikasi mobile</li>
+          <li class="na">Screener lanjutan</li>
+          <li class="na">Data laporan keuangan</li>
+          <li class="na">Priority support</li>
+        </ul>
+        <button class="price-cta">Mulai Gratis</button>
+      </div>
+      <div class="price-card popular">
+        <div class="price-badge">⭐ Paling Populer</div>
+        <div class="price-plan">Pro</div>
+        <div class="price-main">
+          <div class="price-fee">0,15% <span>/ beli</span></div>
+          <div class="price-sub">0,25% fee jual · Rp 49.000/bulan</div>
+        </div>
+        <ul class="price-features">
+          <li>Semua fitur Reguler</li>
+          <li>50+ indikator teknikal</li>
+          <li>Screener saham lengkap</li>
+          <li>Data fundamental 5 tahun</li>
+          <li>Notifikasi harga custom</li>
+          <li>Priority support 24/7</li>
+          <li>Webinar eksklusif bulanan</li>
+        </ul>
+        <button class="price-cta">Coba 30 Hari Gratis</button>
+      </div>
+      <div class="price-card">
+        <div class="price-plan">Institusi</div>
+        <div class="price-main">
+          <div class="price-fee">Negosiasi</div>
+          <div class="price-sub">Volume-based pricing</div>
+        </div>
+        <ul class="price-features">
+          <li>Semua fitur Pro</li>
+          <li>Fee berdasarkan volume</li>
+          <li>API akses data real-time</li>
+          <li>Multi-user & sub-account</li>
+          <li>Dedicated account manager</li>
+          <li>SLA 99.9% uptime</li>
+          <li>Laporan custom & audit trail</li>
+        </ul>
+        <button class="price-cta">Hubungi Sales</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ⑭ FAQ -->
+<section class="faq-section">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag">FAQ</div>
+      <h2 class="section-title">Pertanyaan Umum</h2>
+      <p class="section-sub">Tidak menemukan jawaban? Hubungi tim support kami 24/7 via live chat.</p>
+    </div>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <button class="faq-q">
+          Apa syarat untuk membuka rekening saham di TradeSafe?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>Syarat: WNI berusia 17+ tahun, KTP aktif, NPWP (opsional untuk modal &lt; Rp 240jt/tahun), nomor rekening bank atas nama sendiri, dan email aktif. Proses pembukaan rekening 100% online dan selesai dalam 1 hari kerja. Tidak perlu datang ke kantor.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">
+          Berapa minimal deposit untuk mulai trading?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>Deposit minimum hanya Rp 100.000. Anda dapat mentransfer dana via Virtual Account seluruh bank besar di Indonesia (BCA, BRI, Mandiri, BNI, dll.) tanpa biaya transfer. Dana tersedia dalam rekening efek dalam 30 menit setelah konfirmasi pembayaran.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">
+          Seberapa aman dana dan saham saya di TradeSafe?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>Sangat aman. Saham Anda disimpan di rekening efek atas nama Anda sendiri di KSEI (bukan atas nama TradeSafe), sehingga tetap aman meski TradeSafe sekalipun tutup. Dana nasabah disimpan terpisah di bank kustodian yang diawasi OJK. Platform kami menggunakan enkripsi SSL 256-bit dan 2FA.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">
+          Bagaimana perhitungan pajak saham di Indonesia?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>Ada dua jenis pajak: (1) PPh Final 0,1% dari nilai penjualan saham — dipotong otomatis saat Anda menjual, sudah termasuk dalam fee jual kami; (2) Pajak dividen 10% final, dipotong langsung oleh emiten. Anda tidak perlu laporan pajak terpisah untuk saham karena sudah bersifat final.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">
+          Kapan jam trading saham Bursa Efek Indonesia?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>Sesi I: Senin–Kamis 09.00–12.00 WIB, Jumat 09.00–11.30 WIB. Sesi II: Senin–Kamis 13.30–15.49 WIB, Jumat 14.00–15.49 WIB. Pre-opening: 08.45–09.00 WIB. Sesi pra-penutupan (closing auction): 15.50–16.00 WIB. Pasar tutup di hari libur nasional dan hari yang ditetapkan BEI.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ⑮ CTA FINAL -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-glow">
+      <div class="cta-glow-icon">📈</div>
+    </div>
+    <h2>Mulai Trading Hari Ini</h2>
+    <p>Buka rekening saham gratis dalam 5 menit. Tidak ada biaya setup, tidak ada biaya bulanan untuk paket Reguler.</p>
+    <div class="cta-pair">
+      <button class="cta-main" style="font-size:.95rem;padding:.75rem 2rem">🚀 Buka Rekening Gratis</button>
+      <button class="cta-sec" style="font-size:.9rem;padding:.7rem 1.5rem">Lihat Demo →</button>
+    </div>
+    <p class="cta-guarantee">🔒 Proses 100% online · OJK terdaftar · Data aman terenkripsi</p>
+  </div>
+</section>
+
+<!-- ⑯ FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="fb-logo">TradeSafe</div>
+        <p>Platform trading saham Indonesia yang terpercaya, terdaftar, dan diawasi OJK. Investasi lebih cerdas bersama lebih dari 850.000 investor aktif.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="#">Fitur</a></li>
+          <li><a href="#">Biaya & Fee</a></li>
+          <li><a href="#">Aplikasi Mobile</a></li>
+          <li><a href="#">API Developer</a></li>
+          <li><a href="#">Status Sistem</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Belajar</h4>
+        <ul>
+          <li><a href="#">Akademi Trading</a></li>
+          <li><a href="#">Analisis Teknikal</a></li>
+          <li><a href="#">Analisis Fundamental</a></li>
+          <li><a href="#">Webinar Gratis</a></li>
+          <li><a href="#">Blog Investasi</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <ul>
+          <li><a href="#">Tentang Kami</a></li>
+          <li><a href="#">Karir</a></li>
+          <li><a href="#">Hubungi Kami</a></li>
+          <li><a href="#">Syarat & Ketentuan</a></li>
+          <li><a href="#">Kebijakan Privasi</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-legal">
+        <div class="footer-badges">
+          <span class="f-badge">OJK Terdaftar</span>
+          <span class="f-badge">Anggota BEI</span>
+          <span class="f-badge">KSEI</span>
+          <span class="f-badge">KPEI</span>
+          <span class="f-badge">SID</span>
+        </div>
+      </div>
+      <p class="footer-copy">© 2026 PT TradeSafe Sekuritas Indonesia. Semua hak dilindungi.</p>
+      <p class="footer-disclaimer">
+        <strong>Disclaimer Investasi:</strong> Investasi saham mengandung risiko. Harga saham dapat naik maupun turun. Kinerja masa lalu tidak menjamin hasil di masa depan. TradeSafe tidak memberikan saran investasi. Semua keputusan investasi adalah tanggung jawab nasabah sepenuhnya. Pastikan Anda memahami risiko sebelum berinvestasi. TradeSafe adalah Anggota Bursa & Anggota Kliring terdaftar di Bursa Efek Indonesia (BEI) No. 088, diawasi oleh Otoritas Jasa Keuangan (OJK).
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── Timeframe pills
+document.querySelectorAll('.tf').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tf').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+  });
+});
+
+// ── Buy/Sell tab
+const buyTab = document.getElementById('buyTab');
+const sellTab = document.getElementById('sellTab');
+const submitBtn = document.getElementById('submitBtn');
+buyTab.addEventListener('click', () => {
+  buyTab.classList.add('active'); sellTab.classList.remove('active');
+  submitBtn.className = 't-submit buy-submit'; submitBtn.textContent = 'Beli BBCA';
+});
+sellTab.addEventListener('click', () => {
+  sellTab.classList.add('active'); buyTab.classList.remove('active');
+  submitBtn.className = 't-submit sell-submit'; submitBtn.textContent = 'Jual BBCA';
+});
+
+// ── Watchlist click
+document.querySelectorAll('.wl-item').forEach(w => {
+  w.addEventListener('click', () => {
+    document.querySelectorAll('.wl-item').forEach(x => x.classList.remove('active'));
+    w.classList.add('active');
+  });
+});
+
+// ── Dark/light mode toggle
+const themeToggle = document.getElementById('themeToggle');
+themeToggle.addEventListener('click', () => {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  themeToggle.textContent = isDark ? '🌙' : '☀️';
+});
+
+// ── Hamburger menu
+const hamburger = document.getElementById('hamburger');
+const navMobile = document.getElementById('navMobile');
+hamburger.addEventListener('click', () => {
+  navMobile.classList.toggle('open');
+});
+
+// ── Counter animation
+function animateCounter(el) {
+  const target = parseInt(el.getAttribute('data-target'));
+  const prefix = el.getAttribute('data-prefix') || '';
+  const suffix = el.getAttribute('data-suffix') || '';
+  const duration = 1800;
+  const step = target / (duration / 16);
+  let current = 0;
+  const timer = setInterval(() => {
+    current += step;
+    if (current >= target) {
+      current = target;
+      clearInterval(timer);
+    }
+    let display = Math.floor(current);
+    if (target >= 100000) {
+      display = (Math.floor(current / 1000)).toLocaleString('id') + '.000+';
+      el.textContent = prefix + display + (suffix === '+' ? '' : suffix);
+    } else {
+      el.textContent = prefix + Math.floor(current).toLocaleString('id') + suffix;
+    }
+  }, 16);
+}
+
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !e.target.dataset.animated) {
+      e.target.dataset.animated = 'true';
+      animateCounter(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('[data-target]').forEach(el => counterObserver.observe(el));
+
+// ── FAQ accordion
+document.querySelectorAll('.faq-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const answer = btn.nextElementSibling;
+    const isOpen = answer.classList.contains('open');
+    document.querySelectorAll('.faq-a').forEach(a => a.classList.remove('open'));
+    document.querySelectorAll('.faq-q').forEach(b => b.classList.remove('open'));
+    if (!isOpen) {
+      answer.classList.add('open');
+      btn.classList.add('open');
+    }
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IRONHIVE GYM — Lebih dari Sekedar Latihan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root[data-theme="dark"] {
+  --bg: #0D0D0D;
+  --bg-surface: #1A1A1A;
+  --bg-elevated: #222222;
+  --text: #F5F5F5;
+  --text-muted: #888888;
+  --text-subtle: #444444;
+  --accent: #FF4500;
+  --accent-light: rgba(255,69,0,0.12);
+  --border: #2A2A2A;
+  --border-accent: rgba(255,69,0,0.3);
+}
+:root[data-theme="light"] {
+  --bg: #F5F5F5;
+  --bg-surface: #EBEBEB;
+  --bg-elevated: #E0E0E0;
+  --text: #0D0D0D;
+  --text-muted: #555555;
+  --text-subtle: #AAAAAA;
+  --accent: #E03000;
+  --accent-light: rgba(224,48,0,0.1);
+  --border: #D5D5D5;
+  --border-accent: rgba(224,48,0,0.3);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Barlow', sans-serif;
+  background: var(--bg); color: var(--text);
+  transition: background 0.3s, color 0.3s;
+  overflow-x: hidden;
+}
+h1,h2,h3,h4 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.04em; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem; height: 68px;
+  background: rgba(13,13,13,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.3s;
+}
+[data-theme="light"] nav { background: rgba(245,245,245,0.95); }
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.75rem; letter-spacing: 0.06em;
+  color: var(--text); text-decoration: none;
+}
+.nav-logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a {
+  color: var(--text-muted); text-decoration: none; font-size: 0.8rem;
+  font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--accent); }
+.nav-right { display: flex; align-items: center; gap: 1rem; }
+.btn-join {
+  background: var(--accent); color: #fff; border: none;
+  padding: 0.5rem 1.5rem; font-family: 'Bebas Neue', sans-serif; font-size: 1rem;
+  letter-spacing: 0.08em; cursor: pointer; text-decoration: none; display: inline-block;
+  clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+  transition: opacity 0.2s;
+}
+.btn-join:hover { opacity: 0.85; }
+.theme-btn {
+  background: none; border: 1px solid var(--border); color: var(--text-muted);
+  width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 0.9rem; transition: border-color 0.2s, color 0.2s;
+}
+.theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+.ham-btn { display: none; background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; }
+.mob-nav {
+  display: none; position: fixed; top: 68px; left: 0; right: 0; z-index: 199;
+  background: var(--bg-surface); border-bottom: 1px solid var(--border);
+  padding: 1.5rem 2rem; flex-direction: column; gap: 0.75rem;
+}
+.mob-nav.open { display: flex; }
+.mob-nav a { color: var(--text-muted); text-decoration: none; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+
+/* HERO */
+.hero {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
+  position: relative; overflow: hidden; padding: 8rem 2rem 5rem;
+}
+.hero-texture {
+  position: absolute; inset: 0;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255,69,0,0.03) 0px, rgba(255,69,0,0.03) 1px, transparent 1px, transparent 40px),
+    repeating-linear-gradient(-45deg, rgba(255,69,0,0.03) 0px, rgba(255,69,0,0.03) 1px, transparent 1px, transparent 40px);
+}
+.hero-glow {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(255,69,0,0.1) 0%, transparent 70%);
+}
+.hero-inner { position: relative; z-index: 1; max-width: 1000px; }
+.hero-pretitle {
+  font-size: 0.75rem; font-weight: 800; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 1.5rem; display: block;
+}
+.hero h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(5rem, 14vw, 12rem); line-height: 0.9; letter-spacing: 0.02em;
+  margin-bottom: 1.5rem;
+}
+.hero h1 .outline {
+  -webkit-text-stroke: 2px var(--text);
+  color: transparent;
+}
+.hero h1 .fill { color: var(--accent); }
+.hero-tagline {
+  font-size: 1.1rem; font-weight: 600; color: var(--text-muted);
+  letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 3rem;
+}
+.hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.btn-outline-red {
+  background: transparent; color: var(--accent); border: 2px solid var(--accent);
+  padding: 0.875rem 2rem; font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem;
+  letter-spacing: 0.08em; cursor: pointer; text-decoration: none; display: inline-block;
+  transition: background 0.2s, color 0.2s;
+}
+.btn-outline-red:hover { background: var(--accent); color: #fff; }
+.btn-big-join {
+  background: var(--accent); color: #fff; border: 2px solid var(--accent);
+  padding: 0.875rem 2.5rem; font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem;
+  letter-spacing: 0.1em; cursor: pointer; text-decoration: none; display: inline-block;
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  transition: opacity 0.2s;
+}
+.btn-big-join:hover { opacity: 0.85; }
+.hero-line {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(to right, transparent, var(--accent), transparent);
+}
+
+/* STATS */
+.stats {
+  background: var(--accent); padding: 2rem 2.5rem;
+}
+.stats-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 0; text-align: center;
+}
+.stat-item {
+  padding: 0.5rem 1rem; border-right: 1px solid rgba(255,255,255,0.25);
+}
+.stat-item:last-child { border-right: none; }
+.stat-num {
+  font-family: 'Bebas Neue', sans-serif; font-size: 3rem; line-height: 1; color: #fff;
+  letter-spacing: 0.02em;
+}
+.stat-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.75); margin-top: 0.25rem; }
+
+/* SECTIONS */
+section { padding: 5.5rem 2.5rem; }
+.container { max-width: 1200px; margin: 0 auto; }
+.sec-label {
+  font-size: 0.68rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 0.5rem;
+}
+.sec-title { font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 0.95; margin-bottom: 1.5rem; }
+.sec-sub { font-size: 0.95rem; color: var(--text-muted); line-height: 1.7; max-width: 560px; }
+
+/* PROGRAMS */
+.prog-bg { background: var(--bg-surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.prog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5px; background: var(--border); margin-top: 3rem; }
+.prog-card {
+  background: var(--bg); padding: 2rem 1.75rem; position: relative;
+  overflow: hidden; transition: background 0.2s;
+}
+.prog-card::before {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+  background: var(--accent); transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s;
+}
+.prog-card:hover { background: var(--bg-surface); }
+.prog-card:hover::before { transform: scaleX(1); }
+.prog-icon { margin-bottom: 1.25rem; }
+.prog-icon svg { width: 48px; height: 48px; }
+.prog-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.75rem; letter-spacing: 0.04em; margin-bottom: 0.5rem; }
+.prog-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 1.25rem; }
+.prog-details { display: flex; gap: 1rem; flex-wrap: wrap; }
+.pd-item { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-subtle); border: 1px solid var(--border); padding: 0.2rem 0.6rem; }
+
+/* TRAINERS */
+.trainer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 3rem; }
+.trainer-card { position: relative; overflow: hidden; }
+.trainer-img {
+  aspect-ratio: 3/4; background: var(--bg-surface); border: 1px solid var(--border);
+  display: flex; align-items: flex-end; justify-content: flex-start; padding: 1.25rem;
+  position: relative; overflow: hidden;
+}
+.trainer-img-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg-surface) 40%, rgba(13,13,13,0.95) 100%);
+  display: flex; align-items: flex-start; justify-content: center; padding-top: 1.5rem;
+}
+.trainer-silhouette {
+  width: 80px; height: 120px;
+  background: var(--border); border-radius: 50% 50% 0 0;
+  opacity: 0.5; margin-top: 10px;
+}
+.trainer-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--text); position: relative; z-index: 1; line-height: 1; }
+.trainer-spec { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-top: 0.2rem; position: relative; z-index: 1; }
+.trainer-cert { font-size: 0.68rem; color: var(--text-muted); margin-top: 0.2rem; position: relative; z-index: 1; }
+
+/* SCHEDULE */
+.schedule-bg { background: var(--bg-surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.schedule-table { width: 100%; border-collapse: collapse; margin-top: 2.5rem; }
+.schedule-table th {
+  font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.1em;
+  text-align: left; padding: 0.75rem 1rem; border-bottom: 2px solid var(--accent);
+  color: var(--accent);
+}
+.schedule-table td {
+  padding: 0.875rem 1rem; font-size: 0.82rem; border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.schedule-table tr:hover td { background: var(--bg-elevated); }
+.sched-time { font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 0.78rem; }
+.sched-class { font-weight: 700; font-size: 0.85rem; }
+.sched-trainer { color: var(--text-muted); font-size: 0.75rem; }
+.sched-badge {
+  display: inline-block; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 0.15rem 0.5rem; margin-top: 0.3rem;
+}
+.sb-strength { background: #FF4500; color: #fff; }
+.sb-cardio { background: #2563EB; color: #fff; }
+.sb-hiit { background: #DC2626; color: #fff; }
+.sb-yoga { background: #059669; color: #fff; }
+.sb-box { background: #9333EA; color: #fff; }
+.sb-cross { background: #D97706; color: #fff; }
+
+/* FASILITAS */
+.fas-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); margin-top: 3rem; }
+.fas-item {
+  background: var(--bg); padding: 1.75rem; display: flex; flex-direction: column;
+  align-items: center; gap: 0.875rem; text-align: center; transition: background 0.2s;
+}
+.fas-item:hover { background: var(--bg-surface); }
+.fas-icon { font-size: 2rem; }
+.fas-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.04em; }
+.fas-desc { font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; }
+
+/* PRICING */
+.price-bg { background: var(--bg-surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.price-toggle {
+  display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem;
+}
+.toggle-label { font-size: 0.82rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+.toggle-label.active { color: var(--accent); }
+.toggle-switch {
+  width: 52px; height: 26px; background: var(--bg-elevated); border: 1px solid var(--border);
+  position: relative; cursor: pointer; transition: background 0.3s;
+}
+.toggle-switch.on { background: var(--accent-light); border-color: var(--border-accent); }
+.toggle-knob {
+  position: absolute; top: 3px; left: 3px; width: 18px; height: 18px;
+  background: var(--text-subtle); transition: transform 0.3s, background 0.3s;
+}
+.toggle-switch.on .toggle-knob { transform: translateX(26px); background: var(--accent); }
+.price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.price-card {
+  background: var(--bg); border: 1px solid var(--border); padding: 2.25rem 1.75rem;
+  position: relative; transition: transform 0.2s, border-color 0.2s;
+}
+.price-card:hover { transform: translateY(-4px); }
+.price-card.featured { border-color: var(--accent); background: var(--bg-elevated); }
+.price-best {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%) translateY(-50%);
+  background: var(--accent); color: #fff;
+  font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.1em;
+  padding: 0.25rem 1rem; white-space: nowrap;
+}
+.price-tier { font-family: 'Bebas Neue', sans-serif; font-size: 1.75rem; letter-spacing: 0.06em; margin-bottom: 1.25rem; }
+.price-amount {
+  font-family: 'Bebas Neue', sans-serif; line-height: 1; margin-bottom: 0.5rem;
+}
+.price-amount .big { font-size: 3.5rem; color: var(--text); }
+.price-amount .period { font-size: 1rem; color: var(--text-muted); }
+.price-note { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 2rem; }
+.price-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 2rem; }
+.price-list li { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.83rem; color: var(--text-muted); }
+.pi-y { color: var(--accent); font-weight: 700; flex-shrink: 0; }
+.pi-n { color: var(--text-subtle); flex-shrink: 0; }
+.btn-price-primary {
+  display: block; width: 100%; text-align: center; padding: 0.875rem;
+  background: var(--accent); color: #fff; border: none;
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.1em;
+  cursor: pointer; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+  transition: opacity 0.2s; text-decoration: none;
+}
+.btn-price-outline {
+  display: block; width: 100%; text-align: center; padding: 0.875rem;
+  background: transparent; color: var(--text); border: 1px solid var(--border);
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.1em;
+  cursor: pointer; transition: border-color 0.2s, color 0.2s; text-decoration: none;
+}
+.btn-price-outline:hover { border-color: var(--accent); color: var(--accent); }
+.btn-price-primary:hover { opacity: 0.85; }
+
+/* TRANSFORMASI */
+.trans-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+.trans-card {
+  background: var(--bg-surface); border: 1px solid var(--border); overflow: hidden;
+}
+.trans-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+.trans-img {
+  aspect-ratio: 3/4; background: var(--bg-elevated);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4rem;
+}
+.ti-label { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-subtle); }
+.ti-icon { font-size: 1.75rem; opacity: 0.35; }
+.trans-info { padding: 1.25rem; }
+.trans-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.25rem; letter-spacing: 0.04em; margin-bottom: 0.2rem; }
+.trans-result { font-size: 0.8rem; color: var(--accent); font-weight: 700; }
+.trans-duration { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+/* TESTIMONIALS */
+.testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+.testi-card {
+  background: var(--bg-surface); border: 1px solid var(--border); padding: 2rem;
+  position: relative; overflow: hidden;
+}
+.testi-card::before {
+  content: '"'; font-family: 'Bebas Neue', sans-serif; font-size: 8rem;
+  color: var(--accent); opacity: 0.08; position: absolute; top: -1.5rem; left: 1rem;
+  line-height: 1;
+}
+.testi-stars { color: var(--accent); font-size: 0.85rem; letter-spacing: 0.2em; margin-bottom: 0.875rem; }
+.testi-text { font-size: 0.88rem; color: var(--text); line-height: 1.7; margin-bottom: 1.5rem; position: relative; z-index: 1; }
+.testi-auth { display: flex; align-items: center; gap: 0.75rem; }
+.auth-av {
+  width: 40px; height: 40px; background: var(--accent-light);
+  border: 1px solid var(--border-accent); display: flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--accent); flex-shrink: 0;
+}
+.auth-name { font-weight: 700; font-size: 0.85rem; }
+.auth-role { font-size: 0.72rem; color: var(--text-muted); }
+
+/* TRIAL FORM */
+.trial-bg { background: var(--bg-surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.trial-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+.trial-left h2 { font-size: clamp(3rem, 6vw, 5rem); line-height: 0.9; margin-bottom: 1.5rem; }
+.trial-left h2 span { color: var(--accent); }
+.trial-left p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; }
+.trial-form { display: flex; flex-direction: column; gap: 1.25rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.form-label { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); }
+.form-input, .form-select {
+  background: var(--bg); border: 1px solid var(--border); color: var(--text);
+  padding: 0.875rem 1rem; font-family: 'Barlow', sans-serif; font-size: 0.9rem;
+  outline: none; transition: border-color 0.2s; -webkit-appearance: none; appearance: none;
+}
+.form-input:focus, .form-select:focus { border-color: var(--accent); }
+.form-input::placeholder { color: var(--text-subtle); }
+.btn-submit-big {
+  background: var(--accent); color: #fff; border: none; padding: 1rem;
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.1em;
+  cursor: pointer; clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  transition: opacity 0.2s; width: 100%;
+}
+.btn-submit-big:hover { opacity: 0.85; }
+
+/* CTA */
+.cta-section {
+  background: var(--accent); padding: 6rem 2.5rem; text-align: center; position: relative; overflow: hidden;
+}
+.cta-section::before {
+  content: 'IRON'; position: absolute;
+  font-family: 'Bebas Neue', sans-serif; font-size: 25vw; color: rgba(0,0,0,0.1);
+  top: 50%; left: 50%; transform: translate(-50%,-50%); white-space: nowrap; pointer-events: none;
+}
+.cta-section h2 { font-size: clamp(2.5rem, 6vw, 5.5rem); color: #fff; margin-bottom: 0.75rem; position: relative; }
+.cta-section p { color: rgba(255,255,255,0.75); font-size: 1rem; margin-bottom: 2.5rem; position: relative; }
+.cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; }
+.btn-white {
+  background: #fff; color: var(--accent); border: none; padding: 0.875rem 2.5rem;
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.1em;
+  cursor: pointer; text-decoration: none; display: inline-block;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  transition: opacity 0.2s;
+}
+.btn-white:hover { opacity: 0.85; }
+.btn-white-outline {
+  background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.5);
+  padding: 0.875rem 2.5rem; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem;
+  letter-spacing: 0.1em; cursor: pointer; text-decoration: none; display: inline-block;
+  transition: border-color 0.2s;
+}
+.btn-white-outline:hover { border-color: #fff; }
+
+/* FOOTER */
+footer { background: var(--bg-surface); border-top: 1px solid var(--border); padding: 4rem 2.5rem 2rem; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
+.fl-logo { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.06em; color: var(--text); margin-bottom: 0.75rem; }
+.fl-logo span { color: var(--accent); }
+.fl-about { font-size: 0.83rem; color: var(--text-muted); line-height: 1.65; max-width: 240px; }
+.fl-head { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-subtle); margin-bottom: 1rem; }
+.fl-list { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; }
+.fl-list a { font-size: 0.85rem; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+.fl-list a:hover { color: var(--accent); }
+.footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 2rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.footer-bottom p { font-size: 0.78rem; color: var(--text-subtle); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .stats-inner { grid-template-columns: repeat(2,1fr); }
+  .prog-grid { grid-template-columns: repeat(2,1fr); }
+  .trainer-grid { grid-template-columns: repeat(2,1fr); }
+  .fas-grid { grid-template-columns: repeat(2,1fr); }
+  .price-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
+  .trans-grid { grid-template-columns: 1fr; }
+  .testi-grid { grid-template-columns: 1fr; }
+  .trial-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .schedule-table { font-size: 0.78rem; }
+  .schedule-table th, .schedule-table td { padding: 0.5rem 0.5rem; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .ham-btn { display: block; }
+  section { padding: 4rem 1.5rem; }
+  .hero h1 { font-size: 4.5rem; }
+  .fas-grid { grid-template-columns: 1fr 1fr; }
+  .prog-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  nav { padding: 0 1.5rem; }
+}
+@media (max-width: 600px) {
+  .hero h1 { font-size: 3.5rem; }
+  .stats-inner { grid-template-columns: 1fr 1fr; }
+  .trainer-grid { grid-template-columns: 1fr; }
+  .schedule-table th:nth-child(n+4), .schedule-table td:nth-child(n+4) { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">IRON<span>HIVE</span></a>
+  <ul class="nav-links">
+    <li><a href="#program">Program</a></li>
+    <li><a href="#trainer">Trainer</a></li>
+    <li><a href="#jadwal">Jadwal</a></li>
+    <li><a href="#fasilitas">Fasilitas</a></li>
+    <li><a href="#membership">Membership</a></li>
+    <li><a href="#trial">Coba Gratis</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-btn" id="themebtn" aria-label="Toggle tema">☀</button>
+    <a href="#trial" class="btn-join">Daftar Gratis →</a>
+    <button class="ham-btn" id="hambtn" aria-label="Menu">☰</button>
+  </div>
+</nav>
+<div class="mob-nav" id="mobnav">
+  <a href="#program" onclick="closeMob()">Program</a>
+  <a href="#trainer" onclick="closeMob()">Trainer</a>
+  <a href="#jadwal" onclick="closeMob()">Jadwal</a>
+  <a href="#fasilitas" onclick="closeMob()">Fasilitas</a>
+  <a href="#membership" onclick="closeMob()">Membership</a>
+  <a href="#trial" onclick="closeMob()">Coba Gratis</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-texture"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <span class="hero-pretitle">Jakarta · Surabaya · Bandung · Bali</span>
+    <h1>
+      <span class="outline">TEMPA</span><br>
+      <span class="fill">BATAS</span><br>
+      <span class="outline">MU</span>
+    </h1>
+    <p class="hero-tagline">Lebih dari Gym. Ini Rumah Para Petarung.</p>
+    <div class="hero-btns">
+      <a href="#trial" class="btn-big-join">Coba 7 Hari Gratis</a>
+      <a href="#program" class="btn-outline-red">Lihat Program</a>
+    </div>
+  </div>
+  <div class="hero-line"></div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <div class="stat-num">1.200+</div>
+      <div class="stat-label">Member Aktif</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">15</div>
+      <div class="stat-label">Certified Trainer</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">24/7</div>
+      <div class="stat-label">Buka Setiap Hari</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">50+</div>
+      <div class="stat-label">Kelas per Minggu</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROGRAMS -->
+<section id="program" class="prog-bg">
+  <div class="container">
+    <div class="sec-label">Program Latihan</div>
+    <h2 class="sec-title">TEMUKAN PROGRAM<br>YANG TEPAT UNTUK MU</h2>
+    <div class="prog-grid">
+      <div class="prog-card">
+        <div class="prog-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 24h4M38 24h4M10 24c0-7.732 6.268-14 14-14s14 6.268 14 14-6.268 14-14 14-14-6.268-14-14z" stroke="#FF4500" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="24" cy="24" r="4" fill="#FF4500" opacity="0.5"/>
+            <path d="M6 20h4v8H6zM38 20h4v8h-4z" fill="#FF4500" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="prog-name">Strength Training</div>
+        <div class="prog-desc">Bangun kekuatan fungsional dengan program latihan beban yang terstruktur. Dari compound movements hingga isolasi otot — semua ada di IRONHIVE.</div>
+        <div class="prog-details">
+          <span class="pd-item">3–5x / Minggu</span>
+          <span class="pd-item">Semua Level</span>
+        </div>
+      </div>
+      <div class="prog-card">
+        <div class="prog-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M24 8v32M14 18l10-10 10 10M14 30l10 10 10-10" stroke="#FF4500" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="prog-name">Cardio Zone</div>
+        <div class="prog-desc">Tingkatkan daya tahan kardiovaskular dengan peralatan cardio terkini: treadmill, elliptical, rowing machine, dan VR cycling.</div>
+        <div class="prog-details">
+          <span class="pd-item">Setiap Hari</span>
+          <span class="pd-item">Semua Level</span>
+        </div>
+      </div>
+      <div class="prog-card">
+        <div class="prog-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 36L24 12l12 24H12z" stroke="#FF4500" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M18 28h12" stroke="#FF4500" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="prog-name">HIIT</div>
+        <div class="prog-desc">High-Intensity Interval Training — bakar kalori maksimal dalam waktu minimal. Sesi 45 menit yang akan mengubah metabolisme tubuh Anda.</div>
+        <div class="prog-details">
+          <span class="pd-item">3–4x / Minggu</span>
+          <span class="pd-item">Intermediate+</span>
+        </div>
+      </div>
+      <div class="prog-card">
+        <div class="prog-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="24" cy="12" r="5" stroke="#FF4500" stroke-width="2.5"/>
+            <path d="M12 28c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="#FF4500" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M8 40c0-4 4-8 16-8s16 4 16 8" stroke="#FF4500" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="prog-name">Yoga & Mobility</div>
+        <div class="prog-desc">Tingkatkan fleksibilitas, keseimbangan, dan kesehatan mental. Program yoga kami cocok untuk pemula maupun yang berpengalaman.</div>
+        <div class="prog-details">
+          <span class="pd-item">5x / Minggu</span>
+          <span class="pd-item">Semua Level</span>
+        </div>
+      </div>
+      <div class="prog-card">
+        <div class="prog-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="24" cy="12" r="5" stroke="#FF4500" stroke-width="2.5"/>
+            <path d="M8 36l4-10 5 6 7-15 7 15 5-6 4 10" stroke="#FF4500" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="prog-name">Boxing</div>
+        <div class="prog-desc">Teknik tinju profesional yang dikombinasikan dengan conditioning intensif. Pelajari footwork, kombinasi pukulan, dan mental juara.</div>
+        <div class="prog-details">
+          <span class="pd-item">3x / Minggu</span>
+          <span class="pd-item">Beginner–Advanced</span>
+        </div>
+      </div>
+      <div class="prog-card">
+        <div class="prog-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="20" width="8" height="8" rx="1" stroke="#FF4500" stroke-width="2.5"/>
+            <rect x="32" y="20" width="8" height="8" rx="1" stroke="#FF4500" stroke-width="2.5"/>
+            <path d="M16 24h16M24 12v24" stroke="#FF4500" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="prog-name">CrossFit WOD</div>
+        <div class="prog-desc">Workout of the Day yang selalu berbeda, selalu menantang. Komunitas CrossFit IRONHIVE dikenal sebagai yang paling supportif di Indonesia.</div>
+        <div class="prog-details">
+          <span class="pd-item">5x / Minggu</span>
+          <span class="pd-item">Intermediate+</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRAINERS -->
+<section id="trainer">
+  <div class="container">
+    <div class="sec-label">Tim Trainer</div>
+    <h2 class="sec-title">DILATIH OLEH<br>PARA AHLINYA</h2>
+    <div class="trainer-grid">
+      <div class="trainer-card">
+        <div class="trainer-img">
+          <div class="trainer-img-bg"><div class="trainer-silhouette"></div></div>
+          <div>
+            <div class="trainer-name">Andi Kurniawan</div>
+            <div class="trainer-spec">Strength & Conditioning</div>
+            <div class="trainer-cert">NSCA-CSCS · 8 Tahun Pengalaman</div>
+          </div>
+        </div>
+      </div>
+      <div class="trainer-card">
+        <div class="trainer-img">
+          <div class="trainer-img-bg"><div class="trainer-silhouette"></div></div>
+          <div>
+            <div class="trainer-name">Nita Puspita</div>
+            <div class="trainer-spec">Yoga & Mindfulness</div>
+            <div class="trainer-cert">RYT-500 · 6 Tahun Pengalaman</div>
+          </div>
+        </div>
+      </div>
+      <div class="trainer-card">
+        <div class="trainer-img">
+          <div class="trainer-img-bg"><div class="trainer-silhouette"></div></div>
+          <div>
+            <div class="trainer-name">Rizal Hakim</div>
+            <div class="trainer-spec">Boxing & MMA</div>
+            <div class="trainer-cert">Mantan Atlet Nasional · 12 Tahun</div>
+          </div>
+        </div>
+      </div>
+      <div class="trainer-card">
+        <div class="trainer-img">
+          <div class="trainer-img-bg"><div class="trainer-silhouette"></div></div>
+          <div>
+            <div class="trainer-name">Sari Wahyuni</div>
+            <div class="trainer-spec">HIIT & Cardio</div>
+            <div class="trainer-cert">ACE-CPT · Ironman Finisher · 7 Tahun</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHEDULE -->
+<section id="jadwal" class="schedule-bg">
+  <div class="container">
+    <div class="sec-label">Jadwal Kelas</div>
+    <h2 class="sec-title">JADWAL KELAS MINGGUAN</h2>
+    <div style="overflow-x:auto">
+      <table class="schedule-table">
+        <thead>
+          <tr>
+            <th>Waktu</th>
+            <th>Senin</th>
+            <th>Selasa</th>
+            <th>Rabu</th>
+            <th>Kamis</th>
+            <th>Jumat</th>
+            <th>Sabtu</th>
+            <th>Minggu</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="sched-time">06:00</td>
+            <td><div class="sched-class">HIIT Pagi</div><div class="sched-trainer">Sari W.</div><span class="sched-badge sb-hiit">HIIT</span></td>
+            <td><div class="sched-class">Yoga Flow</div><div class="sched-trainer">Nita P.</div><span class="sched-badge sb-yoga">Yoga</span></td>
+            <td><div class="sched-class">HIIT Pagi</div><div class="sched-trainer">Sari W.</div><span class="sched-badge sb-hiit">HIIT</span></td>
+            <td><div class="sched-class">Yoga Flow</div><div class="sched-trainer">Nita P.</div><span class="sched-badge sb-yoga">Yoga</span></td>
+            <td><div class="sched-class">HIIT Pagi</div><div class="sched-trainer">Sari W.</div><span class="sched-badge sb-hiit">HIIT</span></td>
+            <td><div class="sched-class">CrossFit WOD</div><div class="sched-trainer">Andi K.</div><span class="sched-badge sb-cross">CrossFit</span></td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td class="sched-time">08:00</td>
+            <td><div class="sched-class">Strength A</div><div class="sched-trainer">Andi K.</div><span class="sched-badge sb-strength">Strength</span></td>
+            <td><div class="sched-class">Boxing Dasar</div><div class="sched-trainer">Rizal H.</div><span class="sched-badge sb-box">Boxing</span></td>
+            <td><div class="sched-class">Strength B</div><div class="sched-trainer">Andi K.</div><span class="sched-badge sb-strength">Strength</span></td>
+            <td><div class="sched-class">Boxing Lanjut</div><div class="sched-trainer">Rizal H.</div><span class="sched-badge sb-box">Boxing</span></td>
+            <td><div class="sched-class">Strength C</div><div class="sched-trainer">Andi K.</div><span class="sched-badge sb-strength">Strength</span></td>
+            <td><div class="sched-class">Yoga Pagi</div><div class="sched-trainer">Nita P.</div><span class="sched-badge sb-yoga">Yoga</span></td>
+            <td><div class="sched-class">Open Gym</div><div class="sched-trainer">Free</div><span class="sched-badge sb-cardio">Cardio</span></td>
+          </tr>
+          <tr>
+            <td class="sched-time">17:30</td>
+            <td><div class="sched-class">CrossFit WOD</div><div class="sched-trainer">Andi K.</div><span class="sched-badge sb-cross">CrossFit</span></td>
+            <td><div class="sched-class">HIIT Sore</div><div class="sched-trainer">Sari W.</div><span class="sched-badge sb-hiit">HIIT</span></td>
+            <td><div class="sched-class">CrossFit WOD</div><div class="sched-trainer">Andi K.</div><span class="sched-badge sb-cross">CrossFit</span></td>
+            <td><div class="sched-class">HIIT Sore</div><div class="sched-trainer">Sari W.</div><span class="sched-badge sb-hiit">HIIT</span></td>
+            <td><div class="sched-class">Boxing Sore</div><div class="sched-trainer">Rizal H.</div><span class="sched-badge sb-box">Boxing</span></td>
+            <td><div class="sched-class">HIIT Weekend</div><div class="sched-trainer">Sari W.</div><span class="sched-badge sb-hiit">HIIT</span></td>
+            <td><div class="sched-class">Yoga Restoratif</div><div class="sched-trainer">Nita P.</div><span class="sched-badge sb-yoga">Yoga</span></td>
+          </tr>
+          <tr>
+            <td class="sched-time">19:00</td>
+            <td><div class="sched-class">Yoga Malam</div><div class="sched-trainer">Nita P.</div><span class="sched-badge sb-yoga">Yoga</span></td>
+            <td><div class="sched-class">Strength D</div><div class="sched-trainer">Andi K.</div><span class="sched-badge sb-strength">Strength</span></td>
+            <td><div class="sched-class">Boxing Malam</div><div class="sched-trainer">Rizal H.</div><span class="sched-badge sb-box">Boxing</span></td>
+            <td><div class="sched-class">CrossFit WOD</div><div class="sched-trainer">Andi K.</div><span class="sched-badge sb-cross">CrossFit</span></td>
+            <td><div class="sched-class">HIIT Friday</div><div class="sched-trainer">Sari W.</div><span class="sched-badge sb-hiit">HIIT</span></td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- FASILITAS -->
+<section id="fasilitas">
+  <div class="container">
+    <div class="sec-label">Fasilitas</div>
+    <h2 class="sec-title">FASILITAS<br>KELAS DUNIA</h2>
+    <div class="fas-grid">
+      <div class="fas-item"><div class="fas-icon">🏊</div><div class="fas-name">Kolam Renang</div><div class="fas-desc">Olympic-size pool dengan jalur renang terpisah</div></div>
+      <div class="fas-item"><div class="fas-icon">🧖</div><div class="fas-name">Sauna & Steam</div><div class="fas-desc">Sauna Finlandia dan steam room premium</div></div>
+      <div class="fas-item"><div class="fas-icon">🚿</div><div class="fas-name">Loker Premium</div><div class="fas-desc">Kamar ganti luas dengan loker RFID</div></div>
+      <div class="fas-item"><div class="fas-icon">🥤</div><div class="fas-name">Nutrition Bar</div><div class="fas-desc">Smoothie, protein shake, dan suplemen pilihan</div></div>
+      <div class="fas-item"><div class="fas-icon">📱</div><div class="fas-name">Tracking App</div><div class="fas-desc">Aplikasi IRONHIVE untuk tracking progress harian</div></div>
+      <div class="fas-item"><div class="fas-icon">🅿</div><div class="fas-name">Parkir Gratis</div><div class="fas-desc">Parkir luas untuk mobil dan motor</div></div>
+      <div class="fas-item"><div class="fas-icon">🩺</div><div class="fas-name">Klinik Fisio</div><div class="fas-desc">Fisioterapi dan rehabilitasi cedera olahraga</div></div>
+      <div class="fas-item"><div class="fas-icon">🏆</div><div class="fas-name">Ring Boxing</div><div class="fas-desc">Full-size boxing ring profesional bersertifikat</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="membership" class="price-bg">
+  <div class="container">
+    <div class="sec-label">Membership</div>
+    <h2 class="sec-title">PILIH PAKET<br>MU</h2>
+    <div class="price-toggle" id="priceToggle">
+      <span class="toggle-label active" id="lblBulan">Bulanan</span>
+      <div class="toggle-switch" id="toggleSwitch">
+        <div class="toggle-knob"></div>
+      </div>
+      <span class="toggle-label" id="lblTahun">Tahunan (Hemat 20%)</span>
+    </div>
+    <div class="price-grid">
+      <div class="price-card">
+        <div class="price-tier">Basic</div>
+        <div class="price-amount">
+          <span class="big" id="price-basic">299K</span>
+          <span class="period">/bulan</span>
+        </div>
+        <div class="price-note">Akses 1 cabang pilihan</div>
+        <ul class="price-list">
+          <li><span class="pi-y">✓</span> Akses Gym Area 24/7</li>
+          <li><span class="pi-y">✓</span> 4 Kelas / Bulan</li>
+          <li><span class="pi-y">✓</span> Loker Harian</li>
+          <li><span class="pi-y">✓</span> Akses Nutrition Bar</li>
+          <li><span class="pi-n">✗</span> Akses Kolam Renang</li>
+          <li><span class="pi-n">✗</span> Akses Sauna</li>
+          <li><span class="pi-n">✗</span> Personal Trainer Session</li>
+        </ul>
+        <a href="#trial" class="btn-price-outline">Mulai Sekarang</a>
+      </div>
+      <div class="price-card featured">
+        <div class="price-best">PALING POPULER</div>
+        <div class="price-tier">Pro</div>
+        <div class="price-amount">
+          <span class="big" id="price-pro">499K</span>
+          <span class="period">/bulan</span>
+        </div>
+        <div class="price-note">Akses semua cabang IRONHIVE</div>
+        <ul class="price-list">
+          <li><span class="pi-y">✓</span> Akses Gym Area 24/7</li>
+          <li><span class="pi-y">✓</span> Kelas Unlimited</li>
+          <li><span class="pi-y">✓</span> Loker Pribadi</li>
+          <li><span class="pi-y">✓</span> Akses Kolam Renang</li>
+          <li><span class="pi-y">✓</span> Akses Sauna & Steam</li>
+          <li><span class="pi-y">✓</span> 2 PT Session / Bulan</li>
+          <li><span class="pi-n">✗</span> Body Assessment Bulanan</li>
+        </ul>
+        <a href="#trial" class="btn-price-primary">Mulai Sekarang</a>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">Elite</div>
+        <div class="price-amount">
+          <span class="big" id="price-elite">899K</span>
+          <span class="period">/bulan</span>
+        </div>
+        <div class="price-note">Akses semua cabang + VIP Area</div>
+        <ul class="price-list">
+          <li><span class="pi-y">✓</span> Semua fitur Pro</li>
+          <li><span class="pi-y">✓</span> 8 PT Session / Bulan</li>
+          <li><span class="pi-y">✓</span> Body Assessment Bulanan</li>
+          <li><span class="pi-y">✓</span> Nutrition Consultation</li>
+          <li><span class="pi-y">✓</span> VIP Lounge Access</li>
+          <li><span class="pi-y">✓</span> Priority Booking Kelas</li>
+          <li><span class="pi-y">✓</span> Guest Pass 2x / Bulan</li>
+        </ul>
+        <a href="#trial" class="btn-price-outline">Mulai Sekarang</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRANSFORMASI -->
+<section id="transformasi">
+  <div class="container">
+    <div class="sec-label">Hasil Nyata</div>
+    <h2 class="sec-title">TRANSFORMASI<br>MEMBER KAMI</h2>
+    <div class="trans-grid">
+      <div class="trans-card">
+        <div class="trans-imgs">
+          <div class="trans-img"><div class="ti-label">Sebelum</div><div class="ti-icon">🧍</div></div>
+          <div class="trans-img" style="background:var(--bg-elevated)"><div class="ti-label">Sesudah</div><div class="ti-icon">💪</div></div>
+        </div>
+        <div class="trans-info">
+          <div class="trans-name">Budi Hartono</div>
+          <div class="trans-result">Turun 22 kg dalam 5 bulan</div>
+          <div class="trans-duration">Program: HIIT + Strength · 5 bulan</div>
+        </div>
+      </div>
+      <div class="trans-card">
+        <div class="trans-imgs">
+          <div class="trans-img"><div class="ti-label">Sebelum</div><div class="ti-icon">🧍</div></div>
+          <div class="trans-img" style="background:var(--bg-elevated)"><div class="ti-label">Sesudah</div><div class="ti-icon">🏃</div></div>
+        </div>
+        <div class="trans-info">
+          <div class="trans-name">Rina Agustina</div>
+          <div class="trans-result">Selesaikan Half Marathon pertama</div>
+          <div class="trans-duration">Program: Cardio + HIIT · 4 bulan</div>
+        </div>
+      </div>
+      <div class="trans-card">
+        <div class="trans-imgs">
+          <div class="trans-img"><div class="ti-label">Sebelum</div><div class="ti-icon">🧍</div></div>
+          <div class="trans-img" style="background:var(--bg-elevated)"><div class="ti-label">Sesudah</div><div class="ti-icon">🥊</div></div>
+        </div>
+        <div class="trans-info">
+          <div class="trans-name">Doni Setiawan</div>
+          <div class="trans-result">Naik 8 kg massa otot murni</div>
+          <div class="trans-duration">Program: Strength + Boxing · 6 bulan</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section style="background:var(--bg-surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="container">
+    <div class="sec-label">Testimoni Member</div>
+    <h2 class="sec-title">MEREKA SUDAH<br>MERASAKAN</h2>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"IRONHIVE mengubah hidup saya. Bukan cuma fisik, tapi mindset. Trainer Andi selalu tahu batas saya dan mendorong saya melewatinya. Sudah 8 bulan dan saya tidak pernah absen seminggu pun."</p>
+        <div class="testi-auth"><div class="auth-av">BH</div><div><div class="auth-name">Budi Hartono</div><div class="auth-role">Member Pro · 8 Bulan</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Fasilitas kelas dunia, trainer bersertifikat internasional, dan komunitas yang luar biasa supportif. Saya pernah coba 4 gym di Jakarta — tidak ada yang setara IRONHIVE. Worth every penny."</p>
+        <div class="testi-auth"><div class="auth-av">SA</div><div><div class="auth-name">Sarah Amelia</div><div class="auth-role">Member Elite · 14 Bulan</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Sebagai seorang dokter yang sibuk, 24/7 access adalah fitur terpenting. Saya sering latihan jam 5 pagi atau midnight — selalu ada petugas dan semua alat tersedia. Nilai investasi terbaik."</p>
+        <div class="testi-auth"><div class="auth-av">DP</div><div><div class="auth-name">Dr. Daniel Pratama</div><div class="auth-role">Member Elite · 10 Bulan</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRIAL FORM -->
+<section id="trial" class="trial-bg">
+  <div class="container">
+    <div class="trial-grid">
+      <div class="trial-left">
+        <div class="sec-label">Trial Gratis</div>
+        <h2><span>7 HARI</span><br>GRATIS<br>UNTUK MU</h2>
+        <p>Daftar sekarang dan rasakan sendiri perbedaan IRONHIVE. Tanpa kartu kredit, tanpa komitmen jangka panjang. Cukup datang, latihan, dan putuskan sendiri.</p>
+      </div>
+      <form class="trial-form" onsubmit="handleTrial(event)">
+        <div class="form-group">
+          <label class="form-label">Nama Lengkap</label>
+          <input type="text" class="form-input" placeholder="Budi Santoso">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" placeholder="budi@email.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nomor Telepon</label>
+          <input type="tel" class="form-input" placeholder="0812-3456-7890">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Program yang Diminati</label>
+          <select class="form-select">
+            <option value="">Pilih program</option>
+            <option>Strength Training</option>
+            <option>Cardio Zone</option>
+            <option>HIIT</option>
+            <option>Yoga & Mobility</option>
+            <option>Boxing</option>
+            <option>CrossFit WOD</option>
+            <option>Belum tahu (ingin konsultasi)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-submit-big">DAFTAR TRIAL GRATIS →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>SIAP TEMPA DIRIMU?</h2>
+  <p>Bergabunglah dengan 1.200+ member yang sudah membuktikannya.</p>
+  <div class="cta-btns">
+    <a href="#trial" class="btn-white">Mulai Gratis Sekarang</a>
+    <a href="#program" class="btn-white-outline">Lihat Semua Program</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="fl-logo">IRON<span>HIVE</span></div>
+      <p class="fl-about">Gym premium dengan fasilitas kelas dunia dan komunitas yang memberdayakan. Jakarta · Surabaya · Bandung · Bali.</p>
+    </div>
+    <div>
+      <div class="fl-head">Program</div>
+      <ul class="fl-list">
+        <li><a href="#">Strength Training</a></li>
+        <li><a href="#">HIIT</a></li>
+        <li><a href="#">Boxing</a></li>
+        <li><a href="#">Yoga</a></li>
+        <li><a href="#">CrossFit</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="fl-head">Info</div>
+      <ul class="fl-list">
+        <li><a href="#">Cabang Kami</a></li>
+        <li><a href="#">Trainer</a></li>
+        <li><a href="#">Jadwal Kelas</a></li>
+        <li><a href="#">Membership</a></li>
+        <li><a href="#">Trial Gratis</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="fl-head">Bantuan</div>
+      <ul class="fl-list">
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Kontak</a></li>
+        <li><a href="#">App IRONHIVE</a></li>
+        <li><a href="#">Karier</a></li>
+        <li><a href="#">Kebijakan Privasi</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 IRONHIVE Gym Indonesia. Semua hak cipta dilindungi.</p>
+    <p>Buka 24/7 · Jakarta · Surabaya · Bandung · Bali</p>
+  </div>
+</footer>
+
+<script>
+// THEME
+const html = document.documentElement;
+const tb = document.getElementById('themebtn');
+const sv = localStorage.getItem('ih-theme') || 'dark';
+html.setAttribute('data-theme', sv);
+tb.textContent = sv === 'dark' ? '☀' : '☾';
+tb.addEventListener('click', () => {
+  const c = html.getAttribute('data-theme');
+  const n = c === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', n);
+  localStorage.setItem('ih-theme', n);
+  tb.textContent = n === 'dark' ? '☀' : '☾';
+});
+
+// HAMBURGER
+const hb = document.getElementById('hambtn');
+const mn = document.getElementById('mobnav');
+hb.addEventListener('click', () => {
+  mn.classList.toggle('open');
+  hb.textContent = mn.classList.contains('open') ? '✕' : '☰';
+});
+function closeMob() { mn.classList.remove('open'); hb.textContent = '☰'; }
+
+// PRICING TOGGLE
+const pricesMonthly = { basic: '299K', pro: '499K', elite: '899K' };
+const pricesAnnual  = { basic: '239K', pro: '399K', elite: '719K' };
+let isAnnual = false;
+const toggleSwitch = document.getElementById('toggleSwitch');
+const lblBulan = document.getElementById('lblBulan');
+const lblTahun = document.getElementById('lblTahun');
+
+toggleSwitch.addEventListener('click', () => {
+  isAnnual = !isAnnual;
+  toggleSwitch.classList.toggle('on', isAnnual);
+  lblBulan.classList.toggle('active', !isAnnual);
+  lblTahun.classList.toggle('active', isAnnual);
+  const p = isAnnual ? pricesAnnual : pricesMonthly;
+  document.getElementById('price-basic').textContent = p.basic;
+  document.getElementById('price-pro').textContent = p.pro;
+  document.getElementById('price-elite').textContent = p.elite;
+});
+
+// TRIAL FORM
+function handleTrial(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('.btn-submit-big');
+  const orig = btn.textContent;
+  btn.textContent = 'PENDAFTARAN BERHASIL! CEK EMAIL ANDA ✓';
+  btn.style.background = '#22C55E';
+  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 4000);
+}
+</script>
+</body>
+</html>

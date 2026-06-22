@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LibraCademia — Sistem Manajemen Perpustakaan Akademik Terpadu</title>
+<meta name="description" content="LibraCademia — Sistem perpustakaan akademik terpadu. Katalog digital, generator bibliografi, dan akses e-journal dalam satu platform.">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);transition:background .3s,color .3s;line-height:1.65}
+:root{
+  --bg:#FAFAF7;--bg2:#F3F3EE;--bg3:#EAEAE3;--bg4:#E0E0D6;
+  --text:#1A1A2E;--text2:#4A4A6A;--text3:#8888AA;
+  --accent:#1E2A5E;--accent2:#2D3E80;
+  --gold:#C9A84C;--gold2:#E8C86A;
+  --border:#D8D8CC;--card-bg:#FFFFFF;
+  --shadow:0 2px 16px rgba(30,42,94,.07);
+  --shadow2:0 6px 32px rgba(30,42,94,.12);
+  --font-body:'Plus Jakarta Sans',sans-serif;
+  --font-head:'Libre Baskerville',Georgia,serif;
+}
+[data-theme="dark"]{
+  --bg:#0F1320;--bg2:#161C30;--bg3:#1E2540;--bg4:#263055;
+  --text:#E8E8F0;--text2:#A0A8C0;--text3:#6068A0;
+  --border:#2A3050;--card-bg:#161C30;
+  --shadow:0 2px 16px rgba(0,0,0,.25);
+  --shadow2:0 6px 32px rgba(0,0,0,.35);
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--text3)}
+
+/* ─── NAVBAR ─── */
+.navbar{position:sticky;top:0;z-index:200;background:rgba(250,250,247,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:.8rem 2rem;display:flex;align-items:center;gap:2rem;transition:background .3s}
+[data-theme="dark"] .navbar{background:rgba(15,19,32,.94)}
+.nav-logo{display:flex;align-items:center;gap:.75rem;text-decoration:none;flex-shrink:0}
+.nav-logo-icon{width:36px;height:36px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-logo-icon svg{width:20px;height:20px;fill:#fff}
+.nav-logo-text{display:flex;flex-direction:column}
+.nav-logo-name{font-family:var(--font-head);font-size:1.2rem;font-weight:700;color:var(--accent);letter-spacing:.01em;line-height:1.1}
+[data-theme="dark"] .nav-logo-name{color:var(--gold)}
+.nav-logo-tag{font-size:.62rem;color:var(--text3);letter-spacing:.03em;line-height:1;margin-top:1px}
+.nav-links{display:flex;gap:1.5rem;list-style:none;flex:1;margin-left:.5rem}
+.nav-links a{text-decoration:none;color:var(--text2);font-size:.88rem;font-weight:500;transition:color .2s;white-space:nowrap}
+.nav-links a:hover{color:var(--accent)}
+[data-theme="dark"] .nav-links a:hover{color:var(--gold)}
+.nav-actions{display:flex;align-items:center;gap:.6rem;margin-left:auto;flex-shrink:0}
+.btn-nav-ghost{background:none;border:1.5px solid var(--border);color:var(--text2);padding:.4rem .9rem;border-radius:7px;cursor:pointer;font-size:.83rem;font-family:var(--font-body);font-weight:500;transition:all .2s;white-space:nowrap}
+.btn-nav-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-nav-primary{background:var(--accent);color:#fff;border:none;padding:.42rem 1rem;border-radius:7px;cursor:pointer;font-size:.83rem;font-family:var(--font-body);font-weight:600;transition:all .2s;white-space:nowrap}
+.btn-nav-primary:hover{background:var(--accent2);transform:translateY(-1px)}
+.theme-toggle{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:.4rem .55rem;border-radius:7px;cursor:pointer;font-size:.95rem;transition:background .2s;flex-shrink:0}
+.theme-toggle:hover{background:var(--bg4)}
+.nav-hamburger{display:none;background:none;border:none;cursor:pointer;padding:.25rem;flex-shrink:0}
+.nav-hamburger span{display:block;width:22px;height:2px;background:var(--text);margin:5px 0;border-radius:2px;transition:all .3s}
+.nav-mobile-menu{display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg);border-bottom:1px solid var(--border);padding:1rem 2rem;flex-direction:column;gap:.75rem;box-shadow:var(--shadow2)}
+.nav-mobile-menu.open{display:flex}
+.nav-mobile-menu a{text-decoration:none;color:var(--text2);font-size:.95rem;font-weight:500;padding:.4rem 0;border-bottom:1px solid var(--border);transition:color .2s}
+.nav-mobile-menu a:last-child{border-bottom:none}
+.nav-mobile-menu a:hover{color:var(--accent)}
+
+/* ─── HERO ─── */
+.hero{padding:4.5rem 2rem 3.5rem;text-align:center;background:var(--bg);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:900px;height:500px;background:radial-gradient(ellipse at center,rgba(30,42,94,.06) 0%,transparent 70%);pointer-events:none}
+[data-theme="dark"] .hero::before{background:radial-gradient(ellipse at center,rgba(45,62,128,.15) 0%,transparent 70%)}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:.4rem;background:var(--bg3);border:1px solid var(--border);color:var(--accent);font-size:.78rem;font-weight:600;padding:.3rem .9rem;border-radius:100px;margin-bottom:1.5rem;letter-spacing:.03em;text-transform:uppercase}
+[data-theme="dark"] .hero-eyebrow{color:var(--gold);border-color:var(--border)}
+.hero h1{font-family:var(--font-head);font-size:clamp(1.9rem,4.5vw,3.1rem);font-weight:700;line-height:1.25;color:var(--text);margin-bottom:1rem;max-width:760px;margin-left:auto;margin-right:auto}
+.hero h1 .highlight{color:var(--accent)}
+[data-theme="dark"] .hero h1 .highlight{color:var(--gold)}
+.hero-sub{font-size:1.04rem;color:var(--text2);max-width:560px;margin:0 auto 2.5rem;line-height:1.7}
+.hero-search-wrap{max-width:740px;margin:0 auto 2rem;background:var(--card-bg);border:1.5px solid var(--border);border-radius:14px;padding:.9rem 1rem;display:flex;gap:.6rem;align-items:center;box-shadow:var(--shadow2);transition:border-color .2s}
+.hero-search-wrap:focus-within{border-color:var(--accent)}
+.hero-search-select{border:none;outline:none;background:var(--bg2);color:var(--text2);font-size:.82rem;font-family:var(--font-body);padding:.45rem .7rem;border-radius:8px;cursor:pointer;flex-shrink:0;border-right:1px solid var(--border)}
+.hero-search-input{flex:1;border:none;outline:none;background:transparent;font-size:.96rem;font-family:var(--font-body);color:var(--text);padding:.35rem .5rem}
+.hero-search-input::placeholder{color:var(--text3)}
+.btn-search{background:var(--accent);color:#fff;border:none;padding:.55rem 1.4rem;border-radius:9px;cursor:pointer;font-size:.9rem;font-family:var(--font-body);font-weight:600;transition:all .2s;flex-shrink:0;display:flex;align-items:center;gap:.4rem}
+.btn-search:hover{background:var(--accent2);transform:translateY(-1px)}
+.btn-search svg{width:16px;height:16px;fill:#fff;flex-shrink:0}
+.hero-stats{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-top:.5rem}
+.stat-pill{display:flex;align-items:center;gap:.4rem;background:var(--bg2);border:1px solid var(--border);border-radius:100px;padding:.35rem .9rem;font-size:.82rem;color:var(--text2)}
+.stat-pill svg{width:14px;height:14px;fill:var(--gold);flex-shrink:0}
+.stat-pill strong{color:var(--accent);font-weight:700}
+[data-theme="dark"] .stat-pill strong{color:var(--gold)}
+
+/* ─── SECTION SHARED ─── */
+.section{padding:4rem 2rem}
+.section-alt{background:var(--bg2)}
+.container{max-width:1160px;margin:0 auto}
+.section-label{font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem}
+.section-title{font-family:var(--font-head);font-size:clamp(1.5rem,3vw,2.1rem);font-weight:700;color:var(--text);margin-bottom:.6rem;line-height:1.3}
+.section-desc{font-size:.96rem;color:var(--text2);max-width:560px;line-height:1.7}
+.section-head{text-align:center;margin-bottom:2.5rem}
+.section-head .section-desc{margin:0 auto}
+
+/* ─── KATEGORI KOLEKSI ─── */
+.kategori-scroll{display:flex;gap:1rem;overflow-x:auto;padding:.5rem 0 1rem;scrollbar-width:none;-ms-overflow-style:none}
+.kategori-scroll::-webkit-scrollbar{display:none}
+.kat-card{flex-shrink:0;width:180px;background:var(--card-bg);border:1.5px solid var(--border);border-radius:14px;padding:1.4rem 1.2rem 1.2rem;text-align:center;cursor:pointer;transition:all .25s;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:.6rem}
+.kat-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:var(--shadow2)}
+.kat-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto}
+.kat-icon svg{width:24px;height:24px}
+.kat-name{font-size:.88rem;font-weight:700;color:var(--text);line-height:1.3}
+.kat-count{font-size:.76rem;color:var(--text3)}
+
+/* ─── KOLEKSI TERBARU ─── */
+.books-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem}
+.book-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all .25s;cursor:pointer}
+.book-card:hover{transform:translateY(-4px);box-shadow:var(--shadow2);border-color:var(--accent)}
+.book-cover{height:160px;display:flex;align-items:flex-end;padding:1rem;position:relative}
+.book-cover-spine{position:absolute;left:0;top:0;bottom:0;width:6px;border-radius:0;opacity:.4}
+.book-badge{font-size:.66rem;font-weight:700;padding:.22rem .6rem;border-radius:6px;text-transform:uppercase;letter-spacing:.04em}
+.badge-available{background:rgba(16,185,129,.15);color:#059669}
+.badge-borrowed{background:rgba(249,115,22,.15);color:#d97706}
+.badge-digital{background:rgba(99,102,241,.15);color:#6366f1}
+.book-info{padding:1rem}
+.book-title{font-family:var(--font-head);font-size:.88rem;font-weight:700;color:var(--text);line-height:1.4;margin-bottom:.3rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.book-author{font-size:.78rem;color:var(--text2);margin-bottom:.2rem}
+.book-year{font-size:.74rem;color:var(--text3);margin-bottom:.75rem}
+.book-actions{display:flex;gap:.5rem}
+.btn-book{flex:1;border:none;padding:.38rem .5rem;border-radius:7px;cursor:pointer;font-size:.76rem;font-family:var(--font-body);font-weight:600;transition:all .2s;white-space:nowrap}
+.btn-book-primary{background:var(--accent);color:#fff}
+.btn-book-primary:hover{background:var(--accent2)}
+.btn-book-ghost{background:var(--bg2);color:var(--text2);border:1px solid var(--border)}
+.btn-book-ghost:hover{background:var(--bg3);color:var(--accent)}
+
+/* ─── BIBLIOGRAPHY GENERATOR ─── */
+.biblio-panel{background:var(--card-bg);border:1.5px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:var(--shadow2)}
+.biblio-header{background:var(--accent);padding:1.5rem 2rem;color:#fff}
+.biblio-header h2{font-family:var(--font-head);font-size:1.5rem;font-weight:700;margin-bottom:.3rem}
+.biblio-header p{font-size:.88rem;opacity:.85}
+.biblio-tabs{display:flex;gap:.3rem;padding:1.2rem 2rem .3rem;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--border);background:var(--bg2)}
+.biblio-tabs::-webkit-scrollbar{display:none}
+.btab{background:none;border:1.5px solid var(--border);color:var(--text2);padding:.42rem .95rem;border-radius:8px;cursor:pointer;font-size:.82rem;font-family:var(--font-body);font-weight:600;white-space:nowrap;transition:all .2s;flex-shrink:0}
+.btab:hover{border-color:var(--accent);color:var(--accent)}
+.btab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.biblio-body{padding:2rem}
+.biblio-form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem}
+.form-group{display:flex;flex-direction:column;gap:.4rem}
+.form-group.span2{grid-column:span 2}
+.form-group.span3{grid-column:span 3}
+.form-label{font-size:.78rem;font-weight:600;color:var(--text2);letter-spacing:.02em}
+.form-input{background:var(--bg2);border:1.5px solid var(--border);border-radius:9px;padding:.5rem .8rem;font-size:.88rem;font-family:var(--font-body);color:var(--text);outline:none;transition:border-color .2s;width:100%}
+.form-input:focus{border-color:var(--accent)}
+.form-select{background:var(--bg2);border:1.5px solid var(--border);border-radius:9px;padding:.5rem .8rem;font-size:.88rem;font-family:var(--font-body);color:var(--text);outline:none;cursor:pointer;transition:border-color .2s;width:100%;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%238888AA' d='M4 6l4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .6rem center;background-size:16px;padding-right:2rem}
+.form-select:focus{border-color:var(--accent)}
+.biblio-generate-row{display:flex;gap:.75rem;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap}
+.btn-generate{background:var(--accent);color:#fff;border:none;padding:.6rem 1.8rem;border-radius:9px;cursor:pointer;font-size:.9rem;font-family:var(--font-body);font-weight:700;transition:all .2s;display:flex;align-items:center;gap:.5rem}
+.btn-generate:hover{background:var(--accent2);transform:translateY(-1px)}
+.btn-generate svg{width:16px;height:16px;fill:#fff}
+.biblio-format-badge{font-size:.76rem;font-weight:700;background:var(--bg3);color:var(--text3);padding:.3rem .7rem;border-radius:6px}
+.biblio-output-label{font-size:.8rem;font-weight:700;color:var(--text2);margin-bottom:.5rem;display:flex;align-items:center;gap:.4rem}
+.biblio-output-label span{font-size:.7rem;font-weight:500;background:var(--bg3);color:var(--text3);padding:.18rem .5rem;border-radius:4px}
+.biblio-output{width:100%;min-height:90px;background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;padding:.9rem 1rem;font-size:.86rem;font-family:var(--font-head);color:var(--text);resize:vertical;outline:none;line-height:1.8;transition:border-color .2s;font-style:italic}
+.biblio-output:focus{border-color:var(--accent)}
+.biblio-output-actions{display:flex;gap:.6rem;margin-top:.75rem;flex-wrap:wrap}
+.btn-copy{background:var(--bg2);border:1.5px solid var(--border);color:var(--text2);padding:.42rem 1rem;border-radius:8px;cursor:pointer;font-size:.82rem;font-family:var(--font-body);font-weight:600;transition:all .2s;display:flex;align-items:center;gap:.4rem}
+.btn-copy:hover{border-color:var(--accent);color:var(--accent)}
+.btn-add-biblio{background:var(--gold);color:#1A1A2E;border:none;padding:.42rem 1rem;border-radius:8px;cursor:pointer;font-size:.82rem;font-family:var(--font-body);font-weight:700;transition:all .2s;display:flex;align-items:center;gap:.4rem}
+.btn-add-biblio:hover{background:var(--gold2);transform:translateY(-1px)}
+.daftar-pustaka{margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+.daftar-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem}
+.daftar-header h3{font-family:var(--font-head);font-size:1.05rem;font-weight:700;color:var(--text)}
+.btn-export{background:none;border:1.5px solid var(--gold);color:var(--gold);padding:.38rem .9rem;border-radius:8px;cursor:pointer;font-size:.8rem;font-family:var(--font-body);font-weight:700;transition:all .2s;display:flex;align-items:center;gap:.35rem}
+.btn-export:hover{background:var(--gold);color:#1A1A2E}
+.daftar-empty{text-align:center;padding:2rem;color:var(--text3);font-size:.88rem;border:1.5px dashed var(--border);border-radius:10px;font-style:italic}
+.citation-item{display:flex;align-items:flex-start;gap:.75rem;padding:.9rem;background:var(--bg2);border-radius:10px;margin-bottom:.6rem;border:1px solid var(--border);transition:border-color .2s}
+.citation-item:hover{border-color:var(--accent)}
+.citation-num{font-size:.72rem;font-weight:700;color:var(--text3);background:var(--bg3);padding:.2rem .5rem;border-radius:5px;flex-shrink:0;margin-top:.15rem}
+.citation-text{flex:1;font-size:.84rem;font-family:var(--font-head);color:var(--text);line-height:1.7;font-style:italic}
+.citation-style{font-size:.68rem;font-weight:700;color:var(--accent);background:rgba(30,42,94,.08);padding:.18rem .45rem;border-radius:4px;margin-left:.4rem;font-style:normal;flex-shrink:0}
+[data-theme="dark"] .citation-style{background:rgba(201,168,76,.12);color:var(--gold)}
+.btn-del-citation{background:none;border:none;cursor:pointer;color:var(--text3);font-size:1rem;padding:.15rem .3rem;border-radius:5px;transition:all .2s;flex-shrink:0}
+.btn-del-citation:hover{background:rgba(239,68,68,.1);color:#ef4444}
+.toast-wrap{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);z-index:999;pointer-events:none}
+.toast{background:var(--accent);color:#fff;padding:.65rem 1.4rem;border-radius:10px;font-size:.85rem;font-weight:600;box-shadow:var(--shadow2);opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* ─── E-JOURNAL ─── */
+.journal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.journal-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:1.5rem;transition:all .25s;position:relative;overflow:hidden}
+.journal-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--gold))}
+.journal-card:hover{transform:translateY(-3px);box-shadow:var(--shadow2);border-color:var(--accent)}
+.journal-publisher{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:.5rem}
+.journal-title{font-family:var(--font-head);font-size:.98rem;font-weight:700;color:var(--text);margin-bottom:.4rem;line-height:1.4}
+.journal-meta{font-size:.78rem;color:var(--text3);margin-bottom:.4rem}
+.journal-tags{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem}
+.journal-tag{font-size:.68rem;font-weight:600;padding:.18rem .55rem;border-radius:5px;background:var(--bg3);color:var(--text2)}
+.btn-journal{width:100%;background:none;border:1.5px solid var(--accent);color:var(--accent);padding:.45rem;border-radius:9px;cursor:pointer;font-size:.82rem;font-family:var(--font-body);font-weight:700;transition:all .2s}
+.btn-journal:hover{background:var(--accent);color:#fff}
+
+/* ─── JAM OPERASIONAL + FASILITAS ─── */
+.opfas-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+.opfas-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:1.75rem;box-shadow:var(--shadow)}
+.opfas-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:1.25rem;display:flex;align-items:center;gap:.6rem}
+.opfas-title svg{width:20px;height:20px;fill:var(--gold)}
+.jam-table{width:100%;border-collapse:collapse}
+.jam-table td{padding:.55rem .25rem;font-size:.86rem;border-bottom:1px solid var(--border)}
+.jam-table td:first-child{color:var(--text2);font-weight:500}
+.jam-table td:last-child{color:var(--text);font-weight:600;text-align:right}
+.jam-table tr:last-child td{border-bottom:none}
+.jam-table .closed{color:var(--text3)!important}
+.jam-today{background:rgba(201,168,76,.08);border-radius:6px}
+.jam-today td{color:var(--accent)!important;font-weight:700!important}
+[data-theme="dark"] .jam-today td{color:var(--gold)!important}
+.fas-list{list-style:none;display:flex;flex-direction:column;gap:.75rem}
+.fas-item{display:flex;align-items:flex-start;gap:.75rem}
+.fas-icon{width:36px;height:36px;background:var(--bg3);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.fas-icon svg{width:18px;height:18px;fill:var(--accent)}
+[data-theme="dark"] .fas-icon svg{fill:var(--gold)}
+.fas-name{font-size:.9rem;font-weight:600;color:var(--text);line-height:1.2}
+.fas-desc{font-size:.76rem;color:var(--text3);margin-top:.15rem}
+
+/* ─── STATISTIK ─── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem}
+.stat-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:1.75rem;text-align:center;box-shadow:var(--shadow);transition:transform .25s,box-shadow .25s}
+.stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow2)}
+.stat-icon{width:48px;height:48px;border-radius:12px;background:var(--bg3);display:flex;align-items:center;justify-content:center;margin:0 auto .9rem}
+.stat-icon svg{width:24px;height:24px;fill:var(--accent)}
+[data-theme="dark"] .stat-icon svg{fill:var(--gold)}
+.stat-number{font-family:var(--font-head);font-size:2rem;font-weight:700;color:var(--accent);line-height:1;margin-bottom:.35rem}
+[data-theme="dark"] .stat-number{color:var(--gold)}
+.stat-suffix{font-size:1rem;font-weight:400}
+.stat-label{font-size:.82rem;color:var(--text2);line-height:1.4}
+
+/* ─── PENGUMUMAN ─── */
+.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.news-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all .25s}
+.news-card:hover{transform:translateY(-3px);box-shadow:var(--shadow2);border-color:var(--accent)}
+.news-header{height:80px;display:flex;align-items:center;justify-content:center;padding:1rem;position:relative}
+.news-cat{position:absolute;top:.7rem;left:.7rem;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:.2rem .55rem;border-radius:5px}
+.news-body{padding:1.2rem}
+.news-date{font-size:.73rem;color:var(--text3);margin-bottom:.4rem}
+.news-title{font-family:var(--font-head);font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:.5rem;line-height:1.4}
+.news-desc{font-size:.8rem;color:var(--text2);line-height:1.6}
+.news-link{display:inline-flex;align-items:center;gap:.3rem;font-size:.78rem;font-weight:600;color:var(--accent);text-decoration:none;margin-top:.75rem;transition:gap .2s}
+.news-link:hover{gap:.5rem}
+[data-theme="dark"] .news-link{color:var(--gold)}
+
+/* ─── FOOTER ─── */
+footer{background:var(--accent);color:rgba(255,255,255,.9);padding:3.5rem 2rem 2rem}
+[data-theme="dark"] footer{background:#0A0F1C}
+.footer-grid{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1.8fr 1fr 1fr 1.2fr;gap:2.5rem;margin-bottom:2.5rem}
+.footer-brand{display:flex;flex-direction:column;gap:1rem}
+.footer-logo{font-family:var(--font-head);font-size:1.35rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:.6rem}
+.footer-logo-icon{width:32px;height:32px;background:rgba(255,255,255,.15);border-radius:7px;display:flex;align-items:center;justify-content:center}
+.footer-logo-icon svg{width:18px;height:18px;fill:#fff}
+.footer-tagline{font-size:.82rem;line-height:1.65;color:rgba(255,255,255,.7)}
+.footer-ornament{font-family:var(--font-head);font-size:.9rem;color:var(--gold);letter-spacing:.08em;opacity:.7;margin-top:.5rem}
+.footer-col h4{font-family:var(--font-head);font-size:.92rem;font-weight:700;color:#fff;margin-bottom:1rem;letter-spacing:.01em}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+.footer-links a{text-decoration:none;font-size:.83rem;color:rgba(255,255,255,.65);transition:color .2s}
+.footer-links a:hover{color:var(--gold)}
+.footer-address{font-size:.82rem;color:rgba(255,255,255,.7);line-height:1.8}
+.footer-address strong{color:#fff}
+.footer-social{display:flex;gap:.6rem;margin-top:1rem;flex-wrap:wrap}
+.social-btn{width:34px;height:34px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;text-decoration:none}
+.social-btn:hover{background:var(--gold);border-color:var(--gold)}
+.social-btn svg{width:16px;height:16px;fill:rgba(255,255,255,.8)}
+.social-btn:hover svg{fill:#1A1A2E}
+.footer-bottom{max-width:1160px;margin:0 auto;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
+.footer-copy{font-size:.78rem;color:rgba(255,255,255,.55)}
+.footer-badges{display:flex;gap:.5rem}
+.footer-badge{font-size:.67rem;font-weight:700;padding:.2rem .55rem;border-radius:5px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);letter-spacing:.04em}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:960px){
+  .books-grid{grid-template-columns:repeat(3,1fr)}
+  .journal-grid{grid-template-columns:repeat(2,1fr)}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .biblio-form-grid{grid-template-columns:repeat(2,1fr)}
+  .biblio-form-grid .form-group.span3{grid-column:span 2}
+}
+@media(max-width:768px){
+  .navbar{padding:.7rem 1rem}
+  .nav-links,.nav-actions .btn-nav-ghost{display:none}
+  .nav-hamburger{display:block}
+  .books-grid{grid-template-columns:repeat(2,1fr)}
+  .opfas-grid{grid-template-columns:1fr}
+  .news-grid{grid-template-columns:1fr}
+  .hero{padding:3rem 1rem 2.5rem}
+  .section{padding:2.5rem 1rem}
+  .biblio-body{padding:1.25rem}
+  .biblio-form-grid{grid-template-columns:1fr 1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .books-grid{grid-template-columns:repeat(2,1fr)}
+  .journal-grid{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .hero-search-wrap{flex-direction:column;gap:.5rem}
+  .hero-search-select,.btn-search{width:100%}
+  .biblio-form-grid{grid-template-columns:1fr}
+  .biblio-form-grid .form-group.span2,.biblio-form-grid .form-group.span3{grid-column:span 1}
+  .footer-grid{grid-template-columns:1fr}
+}
+@media(max-width:400px){
+  .books-grid{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:1fr}
+  .hero-stats{flex-direction:column;align-items:center}
+}
+
+/* ─── REVEAL ANIMATION ─── */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .55s,transform .55s}
+.reveal.visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 2h14a2 2 0 012 2v16a2 2 0 01-2 2H4a2 2 0 01-2-2V4a2 2 0 012-2zm0 2v16h14V4H4zm2 2h10v2H6V6zm0 4h10v2H6v-2zm0 4h7v2H6v-2z"/></svg>
+    </div>
+    <div class="nav-logo-text">
+      <span class="nav-logo-name">LibraCademia</span>
+      <span class="nav-logo-tag">Perpustakaan Akademik Digital</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#beranda">Beranda</a></li>
+    <li><a href="#katalog">Katalog</a></li>
+    <li><a href="#ejournal">E-Journal</a></li>
+    <li><a href="#bibliografi">Bibliografi</a></li>
+    <li><a href="#panduan">Panduan</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="theme-toggle" id="themeToggle" title="Toggle tema">🌙</button>
+    <button class="btn-nav-ghost">Masuk</button>
+    <button class="btn-nav-primary">
+      <svg viewBox="0 0 16 16" width="13" height="13" fill="currentColor" style="margin-right:.3rem;vertical-align:middle"><path d="M6.5 1a5.5 5.5 0 014.383 8.823l3.146 3.148a.75.75 0 01-1.06 1.06l-3.148-3.146A5.5 5.5 0 116.5 1zm0 1.5a4 4 0 100 8 4 4 0 000-8z"/></svg>
+      Cari Koleksi
+    </button>
+  </div>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-mobile-menu" id="navMobileMenu">
+    <a href="#beranda">Beranda</a>
+    <a href="#katalog">Katalog</a>
+    <a href="#ejournal">E-Journal</a>
+    <a href="#bibliografi">Bibliografi</a>
+    <a href="#panduan">Panduan</a>
+    <a href="#">Masuk</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="beranda">
+  <div class="hero-eyebrow">
+    <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><path d="M2 2h12v2H2V2zm0 4h12v2H2V6zm0 4h8v2H2v-2z"/></svg>
+    Sistem Manajemen Perpustakaan Akademik Terpadu
+  </div>
+  <h1>Temukan Pengetahuan,<br><span class="highlight">Bangun Literasi</span></h1>
+  <p class="hero-sub">Akses ratusan ribu koleksi digital, jurnal ilmiah, dan karya tulis akademik dari satu platform terpadu yang dirancang untuk civitas akademika.</p>
+
+  <div class="hero-search-wrap">
+    <select class="hero-search-select" id="heroSearchFilter">
+      <option value="all">Semua Koleksi</option>
+      <option value="buku">Buku</option>
+      <option value="jurnal">Jurnal</option>
+      <option value="skripsi">Skripsi</option>
+      <option value="tesis">Tesis</option>
+      <option value="prosiding">Prosiding</option>
+    </select>
+    <input class="hero-search-input" id="heroSearchInput" type="text" placeholder="Cari judul, penulis, kata kunci, ISBN...">
+    <button class="btn-search" onclick="doHeroSearch()">
+      <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M6.5 1a5.5 5.5 0 014.383 8.823l3.146 3.148a.75.75 0 01-1.06 1.06l-3.148-3.146A5.5 5.5 0 116.5 1zm0 1.5a4 4 0 100 8 4 4 0 000-8z"/></svg>
+      Cari
+    </button>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat-pill">
+      <svg viewBox="0 0 16 16"><path d="M2 2h12v2H2V2zm0 4h12v2H2V6zm0 4h8v2H2v-2z"/></svg>
+      <strong>142.500</strong>&nbsp;Koleksi
+    </div>
+    <div class="stat-pill">
+      <svg viewBox="0 0 16 16"><path d="M1 3a1 1 0 011-1h4v2H3v10h10v-3h2v4a1 1 0 01-1 1H2a1 1 0 01-1-1V3zm8 0h6v6h-2V5.41l-5.29 5.3-1.42-1.42L11.59 4H9V3z"/></svg>
+      <strong>8.200</strong>&nbsp;E-Journal
+    </div>
+    <div class="stat-pill">
+      <svg viewBox="0 0 16 16"><path d="M8 1a7 7 0 110 14A7 7 0 018 1zm0 2a5 5 0 100 10A5 5 0 008 3zm.75 2v3h2v1.5h-3.5V5h1.5z"/></svg>
+      <strong>97%</strong>&nbsp;Tersedia Digital
+    </div>
+  </div>
+</section>
+
+<!-- KATEGORI KOLEKSI -->
+<section class="section section-alt" id="katalog">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-label">Jelajahi</div>
+      <h2 class="section-title">Kategori Koleksi</h2>
+      <p class="section-desc">Temukan koleksi perpustakaan berdasarkan bidang ilmu yang tersusun secara sistematis.</p>
+    </div>
+    <div class="kategori-scroll reveal">
+      <a href="#" class="kat-card">
+        <div class="kat-icon" style="background:rgba(99,102,241,.1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/></svg>
+        </div>
+        <div class="kat-name">Ilmu Sosial</div>
+        <div class="kat-count">24.820 koleksi</div>
+      </a>
+      <a href="#" class="kat-card">
+        <div class="kat-icon" style="background:rgba(16,185,129,.1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        </div>
+        <div class="kat-name">Sains &amp; Teknologi</div>
+        <div class="kat-count">31.450 koleksi</div>
+      </a>
+      <a href="#" class="kat-card">
+        <div class="kat-icon" style="background:rgba(30,42,94,.1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1E2A5E" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </div>
+        <div class="kat-name">Hukum &amp; Politik</div>
+        <div class="kat-count">18.905 koleksi</div>
+      </a>
+      <a href="#" class="kat-card">
+        <div class="kat-icon" style="background:rgba(201,168,76,.1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="2" stroke-linecap="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <div class="kat-name">Seni &amp; Budaya</div>
+        <div class="kat-count">12.340 koleksi</div>
+      </a>
+      <a href="#" class="kat-card">
+        <div class="kat-icon" style="background:rgba(239,68,68,.08)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div class="kat-name">Kesehatan</div>
+        <div class="kat-count">22.610 koleksi</div>
+      </a>
+      <a href="#" class="kat-card">
+        <div class="kat-icon" style="background:rgba(249,115,22,.1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        </div>
+        <div class="kat-name">Ekonomi</div>
+        <div class="kat-count">19.730 koleksi</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- KOLEKSI TERBARU -->
+<section class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-label">Koleksi</div>
+      <h2 class="section-title">Baru Ditambahkan</h2>
+      <p class="section-desc">Koleksi terbaru yang baru saja hadir di perpustakaan kami, siap untuk dibaca dan dijadikan referensi.</p>
+    </div>
+    <div class="books-grid reveal">
+
+      <!-- Book 1 -->
+      <div class="book-card">
+        <div class="book-cover" style="background:linear-gradient(135deg,#1E2A5E 0%,#3D5A99 100%)">
+          <div class="book-cover-spine" style="background:#C9A84C"></div>
+          <span class="book-badge badge-available">Tersedia</span>
+        </div>
+        <div class="book-info">
+          <div class="book-title">Filsafat Pendidikan dalam Perspektif Islam dan Kontemporer</div>
+          <div class="book-author">Prof. Dr. Zainul Arifin, M.Pd.</div>
+          <div class="book-year">Gadjah Mada University Press · 2023</div>
+          <div class="book-actions">
+            <button class="btn-book btn-book-primary">Detail</button>
+            <button class="btn-book btn-book-ghost">+ Referensi</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book 2 -->
+      <div class="book-card">
+        <div class="book-cover" style="background:linear-gradient(135deg,#064E3B 0%,#10B981 100%)">
+          <div class="book-cover-spine" style="background:#34D399"></div>
+          <span class="book-badge badge-digital">Digital</span>
+        </div>
+        <div class="book-info">
+          <div class="book-title">Statistika Multivariat untuk Penelitian Sosial Terapan</div>
+          <div class="book-author">Dr. Harini Kusumawati, M.Si.</div>
+          <div class="book-year">Erlangga · 2024</div>
+          <div class="book-actions">
+            <button class="btn-book btn-book-primary">Detail</button>
+            <button class="btn-book btn-book-ghost">+ Referensi</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book 3 -->
+      <div class="book-card">
+        <div class="book-cover" style="background:linear-gradient(135deg,#78350F 0%,#D97706 100%)">
+          <div class="book-cover-spine" style="background:#FCD34D"></div>
+          <span class="book-badge badge-borrowed">Dipinjam</span>
+        </div>
+        <div class="book-info">
+          <div class="book-title">Hukum Tata Negara Indonesia: Teori dan Praktik Pasca Amandemen</div>
+          <div class="book-author">Dr. Budi Santoso, S.H., M.H.</div>
+          <div class="book-year">Rajawali Pers · 2023</div>
+          <div class="book-actions">
+            <button class="btn-book btn-book-primary">Detail</button>
+            <button class="btn-book btn-book-ghost">+ Referensi</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book 4 -->
+      <div class="book-card">
+        <div class="book-cover" style="background:linear-gradient(135deg,#4C1D95 0%,#8B5CF6 100%)">
+          <div class="book-cover-spine" style="background:#A78BFA"></div>
+          <span class="book-badge badge-available">Tersedia</span>
+        </div>
+        <div class="book-info">
+          <div class="book-title">Kecerdasan Buatan: Dasar, Algoritma, dan Implementasi</div>
+          <div class="book-author">Ir. Rendra Kurniawan, M.T., Ph.D.</div>
+          <div class="book-year">Informatika · 2024</div>
+          <div class="book-actions">
+            <button class="btn-book btn-book-primary">Detail</button>
+            <button class="btn-book btn-book-ghost">+ Referensi</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book 5 -->
+      <div class="book-card">
+        <div class="book-cover" style="background:linear-gradient(135deg,#7F1D1D 0%,#EF4444 100%)">
+          <div class="book-cover-spine" style="background:#FCA5A5"></div>
+          <span class="book-badge badge-available">Tersedia</span>
+        </div>
+        <div class="book-info">
+          <div class="book-title">Manajemen Sumber Daya Manusia: Pendekatan Strategis</div>
+          <div class="book-author">Prof. Siti Rahayu Handayani, M.M.</div>
+          <div class="book-year">Salemba Empat · 2023</div>
+          <div class="book-actions">
+            <button class="btn-book btn-book-primary">Detail</button>
+            <button class="btn-book btn-book-ghost">+ Referensi</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book 6 -->
+      <div class="book-card">
+        <div class="book-cover" style="background:linear-gradient(135deg,#164E63 0%,#06B6D4 100%)">
+          <div class="book-cover-spine" style="background:#67E8F9"></div>
+          <span class="book-badge badge-digital">Digital</span>
+        </div>
+        <div class="book-info">
+          <div class="book-title">Epidemiologi Penyakit Menular di Indonesia: Tantangan dan Solusi</div>
+          <div class="book-author">dr. Wahyu Prasetya, M.Kes., Ph.D.</div>
+          <div class="book-year">EGC Medical Publisher · 2024</div>
+          <div class="book-actions">
+            <button class="btn-book btn-book-primary">Detail</button>
+            <button class="btn-book btn-book-ghost">+ Referensi</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book 7 -->
+      <div class="book-card">
+        <div class="book-cover" style="background:linear-gradient(135deg,#1A2E1A 0%,#4D7C4D 100%)">
+          <div class="book-cover-spine" style="background:#86EFAC"></div>
+          <span class="book-badge badge-available">Tersedia</span>
+        </div>
+        <div class="book-info">
+          <div class="book-title">Ekologi dan Lingkungan Hidup: Perspektif Pembangunan Berkelanjutan</div>
+          <div class="book-author">Dr. Agus Widodo, M.Sc.</div>
+          <div class="book-year">Graha Ilmu · 2023</div>
+          <div class="book-actions">
+            <button class="btn-book btn-book-primary">Detail</button>
+            <button class="btn-book btn-book-ghost">+ Referensi</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book 8 -->
+      <div class="book-card">
+        <div class="book-cover" style="background:linear-gradient(135deg,#312E81 0%,#6366F1 100%)">
+          <div class="book-cover-spine" style="background:#C7D2FE"></div>
+          <span class="book-badge badge-borrowed">Dipinjam</span>
+        </div>
+        <div class="book-info">
+          <div class="book-title">Etnografi dan Metodologi Penelitian Kualitatif Kontemporer</div>
+          <div class="book-author">Dr. Nurul Hidayah Asri, M.A.</div>
+          <div class="book-year">Pustaka Pelajar · 2024</div>
+          <div class="book-actions">
+            <button class="btn-book btn-book-primary">Detail</button>
+            <button class="btn-book btn-book-ghost">+ Referensi</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- BIBLIOGRAPHY GENERATOR -->
+<section class="section section-alt" id="bibliografi">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-label">Alat Akademik</div>
+      <h2 class="section-title">Generator Kutipan &amp; Bibliografi</h2>
+      <p class="section-desc">Buat kutipan dan daftar pustaka otomatis dalam berbagai format gaya selingkung populer hanya dalam beberapa klik.</p>
+    </div>
+    <div class="biblio-panel reveal">
+      <div class="biblio-header">
+        <h2>Generator Kutipan Otomatis</h2>
+        <p>Pilih format, isi data sumber, dan dapatkan kutipan siap pakai sesuai standar penulisan ilmiah.</p>
+      </div>
+
+      <!-- FORMAT TABS -->
+      <div class="biblio-tabs" id="biblioTabs">
+        <button class="btab active" data-fmt="APA">APA 7th</button>
+        <button class="btab" data-fmt="MLA">MLA 9th</button>
+        <button class="btab" data-fmt="Chicago">Chicago</button>
+        <button class="btab" data-fmt="Vancouver">Vancouver</button>
+        <button class="btab" data-fmt="BibTeX">BibTeX</button>
+        <button class="btab" data-fmt="Harvard">Harvard</button>
+      </div>
+
+      <div class="biblio-body">
+        <!-- FORM FIELDS -->
+        <div class="biblio-form-grid">
+          <div class="form-group">
+            <label class="form-label">Tipe Sumber</label>
+            <select class="form-select" id="bfType">
+              <option value="buku">Buku</option>
+              <option value="jurnal">Artikel Jurnal</option>
+              <option value="website">Website</option>
+              <option value="skripsi">Skripsi / Tesis</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tahun Terbit</label>
+            <input class="form-input" id="bfYear" type="text" placeholder="2024">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Penulis (Nama, Inisial. / Last, F.)</label>
+            <input class="form-input" id="bfAuthor" type="text" placeholder="Susanto, B. A.">
+          </div>
+          <div class="form-group span2">
+            <label class="form-label">Judul Karya</label>
+            <input class="form-input" id="bfTitle" type="text" placeholder="Teori dan Praktik Penelitian Pendidikan">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Penerbit / Nama Jurnal</label>
+            <input class="form-input" id="bfPublisher" type="text" placeholder="Rajawali Pers">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Kota Terbit</label>
+            <input class="form-input" id="bfCity" type="text" placeholder="Jakarta">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Volume</label>
+            <input class="form-input" id="bfVolume" type="text" placeholder="12">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nomor / Issue</label>
+            <input class="form-input" id="bfNumber" type="text" placeholder="3">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Halaman</label>
+            <input class="form-input" id="bfPages" type="text" placeholder="45–68">
+          </div>
+          <div class="form-group span2">
+            <label class="form-label">URL (opsional)</label>
+            <input class="form-input" id="bfUrl" type="text" placeholder="https://doi.org/10.xxxx/...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">DOI (opsional)</label>
+            <input class="form-input" id="bfDoi" type="text" placeholder="10.1234/jurnal.2024.01">
+          </div>
+        </div>
+
+        <!-- GENERATE ROW -->
+        <div class="biblio-generate-row">
+          <button class="btn-generate" id="btnGenerate" onclick="generateCitation()">
+            <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M14.5 2h-13A1.5 1.5 0 000 3.5v9A1.5 1.5 0 001.5 14h13a1.5 1.5 0 001.5-1.5v-9A1.5 1.5 0 0014.5 2zM7 10H4V7l4-4 3 3-4 4zm5-1l-1.5 1.5-1-1L11 8l1 1z"/></svg>
+            Generate Kutipan
+          </button>
+          <span class="biblio-format-badge" id="activeFmtBadge">Format: APA 7th</span>
+        </div>
+
+        <!-- OUTPUT -->
+        <div class="biblio-output-label">
+          Hasil Kutipan <span id="outputFormatLabel">APA 7th Edition</span>
+        </div>
+        <textarea class="biblio-output" id="biblioOutput" readonly placeholder="Kutipan akan muncul di sini setelah Anda mengisi form dan menekan Generate..."></textarea>
+        <div class="biblio-output-actions">
+          <button class="btn-copy" onclick="copyCitation()">
+            <svg viewBox="0 0 16 16" width="13" height="13" fill="currentColor"><path d="M4 2a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H4zm0 1.5h8a.5.5 0 01.5.5v8a.5.5 0 01-.5.5H4a.5.5 0 01-.5-.5V4a.5.5 0 01.5-.5z"/></svg>
+            Salin Kutipan
+          </button>
+          <button class="btn-add-biblio" onclick="addToDaftar()">
+            <svg viewBox="0 0 16 16" width="13" height="13" fill="currentColor"><path d="M8 2a.75.75 0 01.75.75v4.5h4.5a.75.75 0 010 1.5h-4.5v4.5a.75.75 0 01-1.5 0v-4.5h-4.5a.75.75 0 010-1.5h4.5v-4.5A.75.75 0 018 2z"/></svg>
+            Tambah ke Daftar Pustaka
+          </button>
+        </div>
+
+        <!-- DAFTAR PUSTAKA -->
+        <div class="daftar-pustaka">
+          <div class="daftar-header">
+            <h3>Daftar Pustaka</h3>
+            <button class="btn-export" onclick="exportDaftar()">
+              <svg viewBox="0 0 16 16" width="13" height="13" fill="currentColor"><path d="M8 1a.75.75 0 01.75.75v7.19l2.22-2.22a.75.75 0 111.06 1.06l-3.5 3.5a.75.75 0 01-1.06 0l-3.5-3.5a.75.75 0 111.06-1.06L7.25 8.94V1.75A.75.75 0 018 1zM2 14a1 1 0 011-1h10a1 1 0 110 2H3a1 1 0 01-1-1z"/></svg>
+              Export Semua (.txt)
+            </button>
+          </div>
+          <div id="daftarPustakaList">
+            <div class="daftar-empty" id="daftarEmpty">Belum ada kutipan. Generate kutipan lalu klik "Tambah ke Daftar Pustaka".</div>
+          </div>
+        </div>
+      </div><!-- /biblio-body -->
+    </div><!-- /biblio-panel -->
+  </div>
+</section>
+
+<!-- E-JOURNAL -->
+<section class="section" id="ejournal">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-label">Akses Terbuka</div>
+      <h2 class="section-title">E-Journal Unggulan</h2>
+      <p class="section-desc">Jurnal-jurnal ilmiah terpilih yang dapat diakses penuh oleh civitas akademika melalui langganan institusi.</p>
+    </div>
+    <div class="journal-grid reveal">
+
+      <div class="journal-card">
+        <div class="journal-publisher">Universitas Negeri Malang</div>
+        <div class="journal-title">Jurnal Ilmu Pendidikan dan Humaniora Nusantara</div>
+        <div class="journal-meta">ISSN: 2548-7892 (Online) · ISSN: 1412-3088 (Cetak)</div>
+        <div class="journal-tags">
+          <span class="journal-tag">Pendidikan</span>
+          <span class="journal-tag">Sosial</span>
+          <span class="journal-tag">SINTA 2</span>
+        </div>
+        <button class="btn-journal">Akses Jurnal</button>
+      </div>
+
+      <div class="journal-card">
+        <div class="journal-publisher">Lembaga Ilmu Pengetahuan Indonesia</div>
+        <div class="journal-title">Indonesian Journal of Science and Technology</div>
+        <div class="journal-meta">ISSN: 2527-8045 (Online) · ISSN: 2549-1750 (Cetak)</div>
+        <div class="journal-tags">
+          <span class="journal-tag">STEM</span>
+          <span class="journal-tag">Riset Dasar</span>
+          <span class="journal-tag">SINTA 1</span>
+        </div>
+        <button class="btn-journal">Akses Jurnal</button>
+      </div>
+
+      <div class="journal-card">
+        <div class="journal-publisher">Universitas Indonesia</div>
+        <div class="journal-title">Jurnal Kesehatan Masyarakat Indonesia</div>
+        <div class="journal-meta">ISSN: 2654-5330 (Online) · ISSN: 1829-7005 (Cetak)</div>
+        <div class="journal-tags">
+          <span class="journal-tag">Kesehatan</span>
+          <span class="journal-tag">Epidemiologi</span>
+          <span class="journal-tag">SINTA 1</span>
+        </div>
+        <button class="btn-journal">Akses Jurnal</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- JAM OPERASIONAL + FASILITAS -->
+<section class="section section-alt" id="panduan">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-label">Informasi Layanan</div>
+      <h2 class="section-title">Jam Operasional &amp; Fasilitas</h2>
+    </div>
+    <div class="opfas-grid reveal">
+
+      <div class="opfas-card">
+        <div class="opfas-title">
+          <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 110 20A10 10 0 0112 2zm0 2a8 8 0 100 16A8 8 0 0012 4zm.5 3v5.25l3.6 2.13-.75 1.27-4.1-2.4a.75.75 0 01-.37-.65V7h1.62z"/></svg>
+          Jam Operasional
+        </div>
+        <table class="jam-table">
+          <tr><td>Senin</td><td>07.30 – 20.00 WIB</td></tr>
+          <tr><td>Selasa</td><td>07.30 – 20.00 WIB</td></tr>
+          <tr class="jam-today"><td>Rabu ★</td><td>07.30 – 20.00 WIB</td></tr>
+          <tr><td>Kamis</td><td>07.30 – 20.00 WIB</td></tr>
+          <tr><td>Jumat</td><td>07.30 – 17.00 WIB</td></tr>
+          <tr><td>Sabtu</td><td>08.00 – 14.00 WIB</td></tr>
+          <tr><td>Minggu</td><td class="closed">Tutup</td></tr>
+          <tr><td>Libur Nasional</td><td class="closed">Tutup</td></tr>
+        </table>
+      </div>
+
+      <div class="opfas-card">
+        <div class="opfas-title">
+          <svg viewBox="0 0 24 24"><path d="M3 3h18a1 1 0 011 1v16a1 1 0 01-1 1H3a1 1 0 01-1-1V4a1 1 0 011-1zm17 4.414V5H4v2.414l8 8 8-8zM4 9.586V19h16V9.586l-8 8-8-8z"/></svg>
+          Fasilitas Tersedia
+        </div>
+        <ul class="fas-list">
+          <li class="fas-item">
+            <div class="fas-icon"><svg viewBox="0 0 24 24"><path d="M4 5a1 1 0 011-1h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm2 1v12h12V6H6zm2 2h8v2H8V8zm0 4h6v2H8v-2z"/></svg></div>
+            <div><div class="fas-name">Ruang Baca Tenang</div><div class="fas-desc">Kapasitas 240 kursi, ber-AC, bebas bising</div></div>
+          </li>
+          <li class="fas-item">
+            <div class="fas-icon"><svg viewBox="0 0 24 24"><path d="M1 9l2-2m0 0l8-8 8 8M3 7v13a1 1 0 001 1h6v-6h4v6h6a1 1 0 001-1V7M9 21V12"/></svg></div>
+            <div><div class="fas-name">Ruang Diskusi</div><div class="fas-desc">6 ruang kedap suara, booking online 30 menit</div></div>
+          </li>
+          <li class="fas-item">
+            <div class="fas-icon"><svg viewBox="0 0 24 24"><path d="M5 12H3l9-9 9 9h-2v7a1 1 0 01-1 1H6a1 1 0 01-1-1v-7zm2 6h4v-5h4v5h2v-5.586l-5-5-5 5V18z"/></svg></div>
+            <div><div class="fas-name">WiFi Kampus 1 Gbps</div><div class="fas-desc">Koneksi cepat di seluruh area perpustakaan</div></div>
+          </li>
+          <li class="fas-item">
+            <div class="fas-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4a1 1 0 00-1 1v14a1 1 0 001 1h16a1 1 0 001-1V5a1 1 0 00-1-1zm-9 13H7v-2h4v2zm6 0h-4v-2h4v2zm0-4H7V7h10v6z"/></svg></div>
+            <div><div class="fas-name">Komputer Publik</div><div class="fas-desc">48 unit akses OPAC dan internet</div></div>
+          </li>
+          <li class="fas-item">
+            <div class="fas-icon"><svg viewBox="0 0 24 24"><path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v14a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 00-2 0v1H7V3a1 1 0 00-1-1zM4 8h16v12H4V8zm5 3v2H7v-2h2zm4 0v2h-2v-2h2zm4 0v2h-2v-2h2zm-8 4v2H7v-2h2zm4 0v2h-2v-2h2z"/></svg></div>
+            <div><div class="fas-name">Loker Penitipan</div><div class="fas-desc">120 loker bergembok, gratis dengan KTM</div></div>
+          </li>
+          <li class="fas-item">
+            <div class="fas-icon"><svg viewBox="0 0 24 24"><path d="M6 2h12a1 1 0 011 1v18a1 1 0 01-1 1H6a1 1 0 01-1-1V3a1 1 0 011-1zm5 2v5l2-1 2 1V4H11zm-4 2v2h2V8H7zm0 4v2h10v-2H7zm0 4v2h10v-2H7z"/></svg></div>
+            <div><div class="fas-name">Mesin Fotokopi &amp; Cetak</div><div class="fas-desc">Self-service, Rp250/lembar hitam putih</div></div>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- STATISTIK -->
+<section class="section" style="background:var(--bg)">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-label">Data Kami</div>
+      <h2 class="section-title">Perpustakaan dalam Angka</h2>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card reveal">
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M4 2h14a2 2 0 012 2v16a2 2 0 01-2 2H4a2 2 0 01-2-2V4a2 2 0 012-2zm0 2v16h14V4H4zm2 2h10v2H6V6zm0 4h10v2H6v-2zm0 4h7v2H6v-2z"/></svg></div>
+        <div class="stat-number" data-target="142500" data-suffix="">0</div>
+        <div class="stat-label">Total Koleksi Buku &amp; Digital</div>
+      </div>
+      <div class="stat-card reveal">
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/></svg></div>
+        <div class="stat-number" data-target="28400" data-suffix="">0</div>
+        <div class="stat-label">Anggota Aktif Terdaftar</div>
+      </div>
+      <div class="stat-card reveal">
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M3 3h18v18H3V3zm2 2v14h14V5H5zm2 2h10v2H7V7zm0 4h10v2H7v-2zm0 4h6v2H7v-2z"/></svg></div>
+        <div class="stat-number" data-target="1850" data-suffix="">0</div>
+        <div class="stat-label">Rata-rata Kunjungan per Hari</div>
+      </div>
+      <div class="stat-card reveal">
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M1 3a1 1 0 011-1h4v2H3v10h10v-3h2v4a1 1 0 01-1 1H2a1 1 0 01-1-1V3zm8 0h12v12h-2V5.41l-8.29 8.3-1.42-1.42L17.59 4H9V3z"/></svg></div>
+        <div class="stat-number" data-target="8200" data-suffix="">0</div>
+        <div class="stat-label">E-Journal Berlangganan</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PENGUMUMAN / BERITA -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-label">Terkini</div>
+      <h2 class="section-title">Pengumuman &amp; Berita</h2>
+      <p class="section-desc">Informasi terbaru seputar layanan, koleksi, dan kegiatan perpustakaan.</p>
+    </div>
+    <div class="news-grid reveal">
+
+      <div class="news-card">
+        <div class="news-header" style="background:linear-gradient(135deg,#1E2A5E,#3D5A99)">
+          <span class="news-cat" style="background:var(--gold);color:#1A1A2E">Event</span>
+        </div>
+        <div class="news-body">
+          <div class="news-date">12 Juni 2026</div>
+          <div class="news-title">Workshop Literasi Digital: Teknik Pencarian Sumber Ilmiah Terpercaya</div>
+          <div class="news-desc">Hadir bersama pustakawan senior kami dalam sesi interaktif memaksimalkan database internasional seperti Scopus, ERIC, dan ProQuest.</div>
+          <a href="#" class="news-link">Baca selengkapnya →</a>
+        </div>
+      </div>
+
+      <div class="news-card">
+        <div class="news-header" style="background:linear-gradient(135deg,#064E3B,#10B981)">
+          <span class="news-cat" style="background:#10B981;color:#fff">Layanan</span>
+        </div>
+        <div class="news-body">
+          <div class="news-date">9 Juni 2026</div>
+          <div class="news-title">Perpanjangan Jam Layanan: Kini Buka hingga Pukul 22.00 di Masa UAS</div>
+          <div class="news-desc">Menyambut Ujian Akhir Semester Gasal 2025/2026, perpustakaan memperpanjang layanan hingga pukul 22.00 WIB mulai 15 Juni 2026.</div>
+          <a href="#" class="news-link">Baca selengkapnya →</a>
+        </div>
+      </div>
+
+      <div class="news-card">
+        <div class="news-header" style="background:linear-gradient(135deg,#78350F,#D97706)">
+          <span class="news-cat" style="background:#D97706;color:#fff">Koleksi Baru</span>
+        </div>
+        <div class="news-body">
+          <div class="news-date">5 Juni 2026</div>
+          <div class="news-title">Kedatangan 340 Judul Buku Baru Semester Genap 2025/2026</div>
+          <div class="news-desc">Perpustakaan menerima pengiriman 340 judul buku baru dari berbagai penerbit nasional dan internasional, mencakup bidang Teknik, Hukum, dan Kedokteran.</div>
+          <a href="#" class="news-link">Baca selengkapnya →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <div class="footer-logo-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 2h14a2 2 0 012 2v16a2 2 0 01-2 2H4a2 2 0 01-2-2V4a2 2 0 012-2zm0 2v16h14V4H4zm2 2h10v2H6V6zm0 4h10v2H6v-2zm0 4h7v2H6v-2z"/></svg>
+        </div>
+        LibraCademia
+      </div>
+      <div class="footer-tagline">Platform manajemen perpustakaan akademik terpadu yang menghubungkan civitas akademika dengan sumber pengetahuan terpercaya.</div>
+      <div class="footer-ornament">— Docendo discimus —</div>
+      <div class="footer-social">
+        <a href="#" class="social-btn" title="Instagram">
+          <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke-width="2"/></svg>
+        </a>
+        <a href="#" class="social-btn" title="YouTube">
+          <svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#1E2A5E"/></svg>
+        </a>
+        <a href="#" class="social-btn" title="Telegram">
+          <svg viewBox="0 0 24 24"><path d="M21.93 4.33L2.54 12.01c-1.28.52-1.27 1.25-.23 1.57l4.9 1.53 11.29-7.13c.53-.32 1.02-.15.62.21L8.75 17.23l-.38 5.1c.55 0 .8-.25 1.1-.54l2.64-2.58 5.47 4.05c1.01.56 1.74.27 1.99-.94l3.61-17.04c.37-1.49-.57-2.16-1.25-1.95z"/></svg>
+        </a>
+        <a href="#" class="social-btn" title="Email">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm0 2v.511l8 5.333 8-5.333V6H4zm0 2.822V18h16V8.822L12 14.2 4 8.822z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Navigasi</h4>
+      <ul class="footer-links">
+        <li><a href="#">Beranda</a></li>
+        <li><a href="#">Katalog OPAC</a></li>
+        <li><a href="#">E-Journal</a></li>
+        <li><a href="#">Koleksi Skripsi & Tesis</a></li>
+        <li><a href="#">Prosiding Konferensi</a></li>
+        <li><a href="#">Panduan Pengguna</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Layanan</h4>
+      <ul class="footer-links">
+        <li><a href="#">Peminjaman & Pengembalian</a></li>
+        <li><a href="#">Perpanjangan Online</a></li>
+        <li><a href="#">Permintaan Koleksi</a></li>
+        <li><a href="#">Bebas Pustaka</a></li>
+        <li><a href="#">Keanggotaan</a></li>
+        <li><a href="#">Hubungi Pustakawan</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Kontak</h4>
+      <div class="footer-address">
+        <strong>UPT Perpustakaan</strong><br>
+        Jl. Veteran No. 9, Kel. Sumbersari<br>
+        Kec. Lowokwaru, Kota Malang 65145<br>
+        Jawa Timur, Indonesia<br><br>
+        <strong>Telp:</strong> (0341) 551-312 ext. 180<br>
+        <strong>Email:</strong> pustaka@akademi.ac.id<br>
+        <strong>WhatsApp:</strong> 0812-3456-7890
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 LibraCademia — UPT Perpustakaan Akademik. Hak cipta dilindungi undang-undang.</div>
+    <div class="footer-badges">
+      <span class="footer-badge">ISO 9001</span>
+      <span class="footer-badge">KARS</span>
+      <span class="footer-badge">BAN-PT</span>
+    </div>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast-wrap">
+  <div class="toast" id="toastMsg"></div>
+</div>
+
+<script>
+// ─── THEME TOGGLE ───────────────────────────────────────────────────────────
+(function(){
+  var saved = localStorage.getItem('libracademia_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  document.getElementById('themeToggle').textContent = saved === 'dark' ? '☀️' : '🌙';
+})();
+
+document.getElementById('themeToggle').addEventListener('click', function(){
+  var html = document.documentElement;
+  var cur = html.getAttribute('data-theme');
+  var next = cur === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  this.textContent = next === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('libracademia_theme', next);
+});
+
+// ─── HAMBURGER MENU ─────────────────────────────────────────────────────────
+document.getElementById('navHamburger').addEventListener('click', function(){
+  var menu = document.getElementById('navMobileMenu');
+  menu.classList.toggle('open');
+});
+
+// ─── HERO SEARCH ────────────────────────────────────────────────────────────
+function doHeroSearch(){
+  var q = document.getElementById('heroSearchInput').value.trim();
+  var cat = document.getElementById('heroSearchFilter').value;
+  if(!q){ showToast('Masukkan kata kunci pencarian terlebih dahulu.'); return; }
+  showToast('Mencari "' + q + '" di kategori ' + (cat==='all'?'semua koleksi':cat) + '...');
+}
+document.getElementById('heroSearchInput').addEventListener('keydown', function(e){
+  if(e.key==='Enter') doHeroSearch();
+});
+
+// ─── BIBLIOGRAPHY GENERATOR ─────────────────────────────────────────────────
+var activeFmt = 'APA';
+
+// Tab switching
+document.getElementById('biblioTabs').addEventListener('click', function(e){
+  var btn = e.target.closest('.btab');
+  if(!btn) return;
+  document.querySelectorAll('.btab').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  activeFmt = btn.dataset.fmt;
+  document.getElementById('activeFmtBadge').textContent = 'Format: ' + fmtLabel(activeFmt);
+  document.getElementById('outputFormatLabel').textContent = fmtLabel(activeFmt);
+});
+
+function fmtLabel(fmt){
+  var map = {APA:'APA 7th Edition', MLA:'MLA 9th Edition', Chicago:'Chicago 17th', Vancouver:'Vancouver Style', BibTeX:'BibTeX', Harvard:'Harvard Style'};
+  return map[fmt] || fmt;
+}
+
+function getFormData(){
+  return {
+    type    : document.getElementById('bfType').value,
+    author  : document.getElementById('bfAuthor').value.trim(),
+    title   : document.getElementById('bfTitle').value.trim(),
+    year    : document.getElementById('bfYear').value.trim(),
+    publisher: document.getElementById('bfPublisher').value.trim(),
+    city    : document.getElementById('bfCity').value.trim(),
+    volume  : document.getElementById('bfVolume').value.trim(),
+    number  : document.getElementById('bfNumber').value.trim(),
+    pages   : document.getElementById('bfPages').value.trim(),
+    url     : document.getElementById('bfUrl').value.trim(),
+    doi     : document.getElementById('bfDoi').value.trim()
+  };
+}
+
+function generateCitation(){
+  var d = getFormData();
+  if(!d.author || !d.title || !d.year){
+    showToast('Harap isi minimal: Penulis, Judul, dan Tahun.');
+    return;
+  }
+  var result = '';
+
+  if(activeFmt === 'APA'){
+    // APA 7th: Author, A. A. (Year). Title of work: Capital letter also for subtitle. Publisher. https://doi.org/...
+    if(d.type === 'jurnal'){
+      result = d.author + ' (' + d.year + '). ' + d.title + '. ';
+      result += d.publisher;
+      if(d.volume) result += ', ' + d.volume;
+      if(d.number) result += '(' + d.number + ')';
+      if(d.pages) result += ', ' + d.pages;
+      result += '.';
+      if(d.doi) result += ' https://doi.org/' + d.doi;
+      else if(d.url) result += ' ' + d.url;
+    } else if(d.type === 'website'){
+      result = d.author + ' (' + d.year + '). ' + d.title + '. ';
+      if(d.publisher) result += d.publisher + '. ';
+      if(d.url) result += d.url;
+    } else {
+      result = d.author + ' (' + d.year + '). ';
+      result += d.title + '.';
+      if(d.city && d.publisher) result += ' ' + d.city + ': ' + d.publisher + '.';
+      else if(d.publisher) result += ' ' + d.publisher + '.';
+      if(d.doi) result += ' https://doi.org/' + d.doi;
+    }
+  }
+
+  else if(activeFmt === 'MLA'){
+    // MLA 9th: Author. "Title." Publisher, Year, pp. Pages.
+    var authorMLA = d.author;
+    if(d.type === 'jurnal'){
+      result = authorMLA + '. "' + d.title + '." ' + d.publisher;
+      if(d.volume) result += ', vol. ' + d.volume;
+      if(d.number) result += ', no. ' + d.number;
+      result += ', ' + d.year;
+      if(d.pages) result += ', pp. ' + d.pages;
+      result += '.';
+      if(d.doi) result += ' https://doi.org/' + d.doi + '.';
+      else if(d.url) result += ' ' + d.url + '.';
+    } else if(d.type === 'website'){
+      result = authorMLA + '. "' + d.title + '." ';
+      if(d.publisher) result += d.publisher + ', ';
+      result += d.year + ', ';
+      if(d.url) result += d.url + '.';
+    } else {
+      result = authorMLA + '. ' + d.title + '.';
+      if(d.publisher){
+        result += ' ' + d.publisher;
+        if(d.city) result = result.replace(d.publisher, d.city + ': ' + d.publisher);
+      }
+      result += ', ' + d.year + '.';
+      if(d.pages) result += ' pp. ' + d.pages + '.';
+    }
+  }
+
+  else if(activeFmt === 'Chicago'){
+    // Chicago 17th (Notes-Bibliography): Author. Title. City: Publisher, Year.
+    if(d.type === 'jurnal'){
+      result = d.author + '. "' + d.title + '." ' + d.publisher;
+      if(d.volume) result += ' ' + d.volume;
+      if(d.number) result += ', no. ' + d.number;
+      result += ' (' + d.year + ')';
+      if(d.pages) result += ': ' + d.pages;
+      result += '.';
+      if(d.doi) result += ' https://doi.org/' + d.doi + '.';
+    } else if(d.type === 'website'){
+      result = d.author + '. "' + d.title + '." ';
+      if(d.publisher) result += d.publisher + '. ';
+      result += 'Accessed ' + new Date().getFullYear() + '. ';
+      if(d.url) result += d.url + '.';
+    } else {
+      result = d.author + '. ' + d.title + '.';
+      if(d.city && d.publisher) result += ' ' + d.city + ': ' + d.publisher + ', ' + d.year + '.';
+      else if(d.publisher) result += ' ' + d.publisher + ', ' + d.year + '.';
+      else result += ' ' + d.year + '.';
+    }
+  }
+
+  else if(activeFmt === 'Vancouver'){
+    // Vancouver: Author. Title. City: Publisher; Year. p. Pages.
+    if(d.type === 'jurnal'){
+      result = d.author + '. ' + d.title + '. ' + d.publisher + '.';
+      result += ' ' + d.year;
+      if(d.volume) result += ';' + d.volume;
+      if(d.number) result += '(' + d.number + ')';
+      if(d.pages) result += ':' + d.pages;
+      result += '.';
+      if(d.doi) result += ' doi:' + d.doi;
+    } else {
+      result = d.author + '. ' + d.title + '.';
+      if(d.city && d.publisher) result += ' ' + d.city + ': ' + d.publisher + '; ' + d.year + '.';
+      else if(d.publisher) result += ' ' + d.publisher + '; ' + d.year + '.';
+      else result += ' ' + d.year + '.';
+      if(d.pages) result += ' p. ' + d.pages + '.';
+    }
+  }
+
+  else if(activeFmt === 'BibTeX'){
+    // BibTeX format
+    var key = (d.author.split(',')[0].replace(/\s/g,'') + d.year).toLowerCase().replace(/[^a-z0-9]/g,'');
+    var entryType = (d.type === 'jurnal') ? 'article' : (d.type === 'website') ? 'misc' : (d.type === 'skripsi') ? 'mastersthesis' : 'book';
+    result = '@' + entryType + '{' + key + ',\n';
+    result += '  author    = {' + d.author + '},\n';
+    result += '  title     = {' + d.title + '},\n';
+    result += '  year      = {' + d.year + '}';
+    if(d.publisher) result += ',\n  publisher = {' + d.publisher + '}';
+    if(d.city) result += ',\n  address   = {' + d.city + '}';
+    if(d.volume) result += ',\n  volume    = {' + d.volume + '}';
+    if(d.number) result += ',\n  number    = {' + d.number + '}';
+    if(d.pages) result += ',\n  pages     = {' + d.pages + '}';
+    if(d.doi) result += ',\n  doi       = {' + d.doi + '}';
+    if(d.url) result += ',\n  url       = {' + d.url + '}';
+    result += '\n}';
+  }
+
+  else if(activeFmt === 'Harvard'){
+    // Harvard: Author (Year) Title. City: Publisher.
+    if(d.type === 'jurnal'){
+      result = d.author + ' (' + d.year + ') \'' + d.title + '\'';
+      result += ', ' + d.publisher;
+      if(d.volume) result += ', ' + d.volume;
+      if(d.number) result += '(' + d.number + ')';
+      if(d.pages) result += ', pp. ' + d.pages;
+      result += '.';
+      if(d.doi) result += ' Available at: https://doi.org/' + d.doi;
+    } else if(d.type === 'website'){
+      result = d.author + ' (' + d.year + ') ' + d.title + '.';
+      if(d.publisher) result += ' ' + d.publisher + '.';
+      if(d.url) result += ' Available at: ' + d.url + ' [Accessed ' + new Date().toLocaleDateString('id-ID') + '].';
+    } else {
+      result = d.author + ' (' + d.year + ') ' + d.title + '.';
+      if(d.city && d.publisher) result += ' ' + d.city + ': ' + d.publisher + '.';
+      else if(d.publisher) result += ' ' + d.publisher + '.';
+    }
+  }
+
+  document.getElementById('biblioOutput').value = result;
+  showToast('Kutipan berhasil di-generate!');
+}
+
+function copyCitation(){
+  var out = document.getElementById('biblioOutput');
+  if(!out.value){ showToast('Belum ada kutipan untuk disalin.'); return; }
+  out.select();
+  document.execCommand('copy');
+  showToast('Kutipan berhasil disalin ke clipboard!');
+  window.getSelection && window.getSelection().removeAllRanges();
+}
+
+var daftarItems = [];
+
+function addToDaftar(){
+  var out = document.getElementById('biblioOutput').value;
+  if(!out){ showToast('Generate kutipan terlebih dahulu.'); return; }
+  daftarItems.push({ text: out, fmt: activeFmt });
+  renderDaftar();
+  showToast('Ditambahkan ke daftar pustaka!');
+}
+
+function renderDaftar(){
+  var list = document.getElementById('daftarPustakaList');
+  var empty = document.getElementById('daftarEmpty');
+  if(daftarItems.length === 0){
+    empty.style.display = '';
+    // remove all citation-item children
+    Array.from(list.querySelectorAll('.citation-item')).forEach(function(el){ el.remove(); });
+    return;
+  }
+  empty.style.display = 'none';
+  // Rebuild list
+  Array.from(list.querySelectorAll('.citation-item')).forEach(function(el){ el.remove(); });
+  daftarItems.forEach(function(item, idx){
+    var div = document.createElement('div');
+    div.className = 'citation-item';
+    div.innerHTML =
+      '<span class="citation-num">' + (idx+1) + '</span>' +
+      '<span class="citation-text">' + escHtml(item.text) + '<span class="citation-style">' + item.fmt + '</span></span>' +
+      '<button class="btn-del-citation" onclick="delCitation(' + idx + ')" title="Hapus">✕</button>';
+    list.insertBefore(div, empty);
+  });
+}
+
+function delCitation(idx){
+  daftarItems.splice(idx, 1);
+  renderDaftar();
+  showToast('Kutipan dihapus dari daftar pustaka.');
+}
+
+function exportDaftar(){
+  if(daftarItems.length === 0){ showToast('Daftar pustaka masih kosong.'); return; }
+  var txt = 'DAFTAR PUSTAKA\n';
+  txt += 'Diekspor dari LibraCademia — ' + new Date().toLocaleDateString('id-ID', {day:'2-digit',month:'long',year:'numeric'}) + '\n';
+  txt += '='.repeat(60) + '\n\n';
+  daftarItems.forEach(function(item, idx){
+    txt += '[' + (idx+1) + '] (' + item.fmt + ')\n' + item.text + '\n\n';
+  });
+  var blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'daftar-pustaka-libracademia.txt';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('File daftar-pustaka-libracademia.txt berhasil diunduh!');
+}
+
+function escHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── COUNTER ANIMASI ─────────────────────────────────────────────────────────
+function animateCounter(el){
+  var target = parseInt(el.dataset.target, 10);
+  var duration = 1800;
+  var start = null;
+  function step(ts){
+    if(!start) start = ts;
+    var prog = Math.min((ts - start) / duration, 1);
+    var ease = 1 - Math.pow(1 - prog, 3);
+    var cur = Math.floor(ease * target);
+    el.textContent = cur.toLocaleString('id-ID');
+    if(prog < 1) requestAnimationFrame(step);
+    else el.textContent = target.toLocaleString('id-ID');
+  }
+  requestAnimationFrame(step);
+}
+
+var countersDone = false;
+var statsObserver = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(entry.isIntersecting && !countersDone){
+      countersDone = true;
+      document.querySelectorAll('[data-target]').forEach(function(el){
+        animateCounter(el);
+      });
+    }
+  });
+}, {threshold: 0.3});
+var statsSection = document.querySelector('.stats-grid');
+if(statsSection) statsObserver.observe(statsSection);
+
+// ─── SCROLL REVEAL ───────────────────────────────────────────────────────────
+var revealObserver = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(entry.isIntersecting){
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, {threshold: 0.1, rootMargin: '0px 0px -40px 0px'});
+
+document.querySelectorAll('.reveal').forEach(function(el){
+  revealObserver.observe(el);
+});
+
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+var toastTimer = null;
+function showToast(msg){
+  var t = document.getElementById('toastMsg');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2800);
+}
+</script>
+</body>
+</html>

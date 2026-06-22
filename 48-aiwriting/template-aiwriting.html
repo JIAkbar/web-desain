@@ -1,0 +1,2089 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NusaWrite — Platform Penulisan Konten AI Berbahasa Indonesia</title>
+<meta name="description" content="Tulis konten viral 10x lebih cepat dengan AI. Platform penulisan konten AI terdepan untuk content creator, copywriter, dan pemilik bisnis Indonesia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,300;0,500;0,700;1,300;1,500;1,700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  transition: background 0.3s, color 0.3s;
+  overflow-x: hidden;
+}
+
+/* ============================================================
+   CSS TOKENS
+   ============================================================ */
+:root {
+  --bg:      #FFFFFF;
+  --bg2:     #F9F7FF;
+  --bg3:     #F0ECFF;
+  --bg4:     #E4DCFF;
+  --text:    #1A0A3C;
+  --text2:   #5A4A80;
+  --text3:   #9A8AB0;
+  --violet:  #7C3AED;
+  --violet2: #A855F7;
+  --pink:    #EC4899;
+  --teal:    #0D9488;
+  --border:  rgba(124,58,237,0.12);
+  --shadow:  0 4px 24px rgba(124,58,237,0.10);
+  --shadow-lg: 0 8px 48px rgba(124,58,237,0.15);
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --font-serif: 'Fraunces', serif;
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+[data-theme="dark"] {
+  --bg:    #0D0816;
+  --bg2:   #150F24;
+  --bg3:   #1E1535;
+  --bg4:   #271C45;
+  --text:  #F0EBFF;
+  --text2: #B0A0D8;
+  --text3: #7060A8;
+  --border: rgba(168,85,247,0.15);
+  --shadow: 0 4px 24px rgba(168,85,247,0.12);
+  --shadow-lg: 0 8px 48px rgba(168,85,247,0.20);
+}
+
+/* ============================================================
+   ANNOUNCEMENT BAR
+   ============================================================ */
+.announce-bar {
+  background: linear-gradient(90deg, var(--violet), var(--pink));
+  color: #fff;
+  text-align: center;
+  padding: 0.55rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  position: relative;
+  z-index: 100;
+}
+.announce-bar a { color: #fff; font-weight: 700; text-decoration: underline; margin-left: 0.4rem; }
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  transition: background 0.3s;
+}
+[data-theme="dark"] .navbar {
+  background: rgba(13,8,22,0.88);
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.nav-logo-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+}
+.nav-logo-text {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 1.25rem;
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  list-style: none;
+}
+.nav-links a {
+  text-decoration: none;
+  color: var(--text2);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-links a:hover { color: var(--violet); background: var(--bg3); }
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+.btn-ghost {
+  background: none; border: none; cursor: pointer;
+  color: var(--text2); font-size: 0.9rem; font-weight: 500;
+  padding: 0.4rem 0.75rem; border-radius: 8px;
+  font-family: var(--font-body);
+  transition: color 0.2s, background 0.2s;
+}
+.btn-ghost:hover { color: var(--violet); background: var(--bg3); }
+.btn-primary {
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  color: #fff; border: none; cursor: pointer;
+  font-size: 0.875rem; font-weight: 600;
+  padding: 0.5rem 1.25rem; border-radius: 999px;
+  font-family: var(--font-body);
+  transition: opacity 0.2s, transform 0.2s;
+  white-space: nowrap;
+}
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+.theme-toggle {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 999px; cursor: pointer;
+  width: 40px; height: 22px;
+  position: relative;
+  transition: background 0.3s;
+  flex-shrink: 0;
+}
+.theme-toggle-knob {
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 18px; height: 18px;
+  background: var(--violet);
+  border-radius: 50%;
+  transition: transform 0.3s;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem;
+}
+[data-theme="dark"] .theme-toggle-knob { transform: translateX(18px); }
+.nav-hamburger {
+  display: none;
+  background: none; border: none; cursor: pointer;
+  padding: 0.4rem;
+  flex-direction: column; gap: 5px;
+}
+.nav-hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--text); border-radius: 2px;
+  transition: all 0.3s;
+}
+.nav-mobile {
+  display: none;
+  position: fixed;
+  top: 64px; left: 0; right: 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem;
+  z-index: 98;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.nav-mobile.open { display: flex; }
+.nav-mobile a {
+  text-decoration: none;
+  color: var(--text2); font-size: 0.95rem; font-weight: 500;
+  padding: 0.6rem 0.75rem; border-radius: 8px;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-mobile a:hover { color: var(--violet); background: var(--bg3); }
+
+/* ============================================================
+   SECTIONS — COMMON
+   ============================================================ */
+section { padding: 80px 2rem; }
+.container { max-width: 1100px; margin: 0 auto; }
+.section-label {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: var(--bg3); color: var(--violet);
+  font-size: 0.75rem; font-weight: 600;
+  padding: 0.3rem 0.85rem; border-radius: 999px;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+  letter-spacing: 0.04em; text-transform: uppercase;
+}
+.section-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+.section-sub {
+  font-size: 1.05rem;
+  color: var(--text2);
+  max-width: 560px;
+  line-height: 1.7;
+}
+.text-center { text-align: center; }
+.text-center .section-sub { margin: 0 auto; }
+.italic { font-style: italic; }
+em.accent {
+  font-style: italic;
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  background: var(--bg2);
+  padding: 80px 2rem 60px;
+  overflow: hidden;
+  position: relative;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -200px; right: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(168,85,247,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -200px; left: -100px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(236,72,153,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(236,72,153,0.1));
+  border: 1px solid rgba(124,58,237,0.2);
+  color: var(--violet); font-size: 0.78rem; font-weight: 600;
+  padding: 0.35rem 0.9rem; border-radius: 999px;
+  margin-bottom: 1.5rem;
+}
+.hero-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.4rem, 5.5vw, 3.8rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.15;
+  margin-bottom: 1.25rem;
+  max-width: 720px;
+}
+.hero-sub {
+  font-size: 1.1rem;
+  color: var(--text2);
+  max-width: 560px;
+  line-height: 1.75;
+  margin-bottom: 2rem;
+}
+.hero-cta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+}
+.btn-hero-primary {
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  color: #fff; border: none; cursor: pointer;
+  font-size: 1rem; font-weight: 700;
+  padding: 0.85rem 2rem; border-radius: 999px;
+  font-family: var(--font-body);
+  transition: opacity 0.2s, transform 0.2s;
+  box-shadow: 0 8px 24px rgba(124,58,237,0.35);
+}
+.btn-hero-primary:hover { opacity: 0.9; transform: translateY(-2px); }
+.btn-hero-outline {
+  background: none;
+  border: 2px solid var(--border);
+  color: var(--text2);
+  font-size: 0.95rem; font-weight: 600;
+  padding: 0.8rem 1.75rem; border-radius: 999px;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-hero-outline:hover { border-color: var(--violet); color: var(--violet); }
+.hero-note {
+  font-size: 0.78rem;
+  color: var(--text3);
+  display: flex; align-items: center; gap: 0.35rem;
+}
+
+/* ============================================================
+   WRITER APP MOCKUP
+   ============================================================ */
+.writer-app {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  font-size: 0.75rem;
+  background: var(--bg);
+  box-shadow: var(--shadow-lg);
+  max-width: 900px;
+  margin: 0 auto;
+}
+.w-topbar {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0.6rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.w-topbar-left { display: flex; align-items: center; gap: 0.75rem; }
+.w-logo { font-weight: 800; color: var(--violet); font-size: 0.85rem; font-family: var(--font-serif); }
+.w-doc-title {
+  color: var(--text2); font-size: 0.7rem; outline: none; min-width: 100px;
+  cursor: text;
+}
+.w-doc-title:focus { border-bottom: 1px solid var(--violet); }
+.w-topbar-right { display: flex; align-items: center; gap: 0.5rem; }
+.w-words { font-size: 0.62rem; color: var(--text3); }
+.w-btn-outline {
+  font-size: 0.65rem; padding: 0.3rem 0.7rem;
+  border: 1px solid var(--border); border-radius: 6px;
+  background: var(--bg); color: var(--text2); cursor: pointer;
+  font-family: var(--font-body);
+  transition: background 0.2s;
+}
+.w-btn-outline:hover { background: var(--bg3); }
+.w-btn-primary {
+  font-size: 0.65rem; padding: 0.3rem 0.75rem; border-radius: 6px;
+  background: var(--violet); color: #fff; border: none; cursor: pointer;
+  font-family: var(--font-body);
+}
+.w-editor-body {
+  display: flex;
+  height: 340px;
+}
+.w-templates {
+  width: 140px; flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  padding: 0.5rem 0;
+  background: var(--bg2);
+  overflow-y: auto;
+}
+.tmpl-label {
+  font-size: 0.58rem; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  padding: 0.3rem 0.75rem 0.5rem;
+}
+.tmpl-item {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.65rem; color: var(--text3);
+  cursor: pointer;
+  display: flex; align-items: center; gap: 0.35rem;
+  transition: background 0.15s, color 0.15s;
+}
+.tmpl-item:hover { background: var(--bg3); color: var(--text); }
+.tmpl-item.active {
+  background: var(--bg3); color: var(--violet);
+  font-weight: 500; border-left: 2px solid var(--violet);
+}
+.w-editor {
+  flex: 1; display: flex; flex-direction: column; overflow: hidden;
+}
+.w-prompt-bar {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; gap: 0.5rem;
+  background: var(--bg2);
+}
+.w-prompt-inp {
+  flex: 1; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.3rem 0.6rem;
+  font-size: 0.65rem; color: var(--text);
+  outline: none; font-family: var(--font-body);
+  transition: border-color 0.2s;
+}
+.w-prompt-inp:focus { border-color: var(--violet); }
+.w-gen-btn {
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  color: #fff; border: none; border-radius: 8px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.65rem; font-weight: 600; cursor: pointer;
+  font-family: var(--font-body);
+  transition: opacity 0.2s;
+}
+.w-gen-btn:hover { opacity: 0.85; }
+.w-content {
+  flex: 1; padding: 1rem; overflow-y: auto; line-height: 1.7;
+}
+.w-h1 {
+  font-size: 0.95rem; font-weight: 700; color: var(--text);
+  margin-bottom: 0.5rem; line-height: 1.3;
+  font-family: var(--font-serif);
+}
+.w-h2 {
+  font-size: 0.8rem; font-weight: 600; color: var(--text);
+  margin: 0.75rem 0 0.35rem;
+}
+.w-p {
+  font-size: 0.7rem; color: var(--text2); margin-bottom: 0.5rem;
+}
+.w-highlight {
+  background: rgba(124,58,237,0.15); color: var(--violet);
+  padding: 0 2px; border-radius: 2px;
+}
+.w-typing { color: var(--violet2); }
+.w-cursor {
+  display: inline-block;
+  width: 2px; height: 0.75em;
+  background: var(--violet2);
+  margin-left: 1px;
+  vertical-align: middle;
+  animation: blink 0.8s step-end infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.w-settings {
+  width: 160px; flex-shrink: 0;
+  border-left: 1px solid var(--border);
+  padding: 0.6rem;
+  background: var(--bg2);
+  overflow-y: auto;
+}
+.setting-label {
+  font-size: 0.58rem; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: 0.35rem;
+}
+.tone-grid { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+.tone {
+  font-size: 0.6rem; padding: 0.2rem 0.45rem;
+  border: 1px solid var(--border); border-radius: 999px;
+  color: var(--text3); cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--font-body);
+}
+.tone:hover { border-color: var(--violet); color: var(--violet); }
+.tone.active { background: var(--violet); color: #fff; border-color: var(--violet); }
+.seo-tags { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+.seo-tag {
+  font-size: 0.58rem; padding: 0.15rem 0.4rem;
+  background: var(--bg3); border-radius: 4px; color: var(--text2);
+}
+.seo-tag.add-tag {
+  color: var(--violet); cursor: pointer;
+  border: 1px dashed var(--violet); background: transparent;
+}
+
+/* ============================================================
+   SOCIAL PROOF
+   ============================================================ */
+.social-proof {
+  padding: 32px 2rem;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.proof-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: flex; align-items: center;
+  gap: 2rem; flex-wrap: wrap;
+  justify-content: center;
+}
+.proof-text {
+  font-size: 0.9rem; color: var(--text2); font-weight: 500;
+  text-align: center;
+}
+.proof-text strong { color: var(--text); }
+.proof-stats {
+  display: flex; gap: 2rem; align-items: center; flex-wrap: wrap;
+  justify-content: center;
+}
+.proof-stat { text-align: center; }
+.proof-stat-num {
+  font-family: var(--font-serif);
+  font-size: 1.6rem; font-weight: 700;
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: block;
+}
+.proof-stat-label { font-size: 0.72rem; color: var(--text3); }
+.proof-divider {
+  width: 1px; height: 40px;
+  background: var(--border);
+  display: block;
+}
+.proof-brands {
+  display: flex; gap: 1.5rem; align-items: center;
+  flex-wrap: wrap; justify-content: center;
+  margin-top: 1.5rem;
+}
+.proof-brand {
+  font-size: 0.8rem; color: var(--text3); font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.proof-brand-label {
+  font-size: 0.7rem; color: var(--text3); margin-right: 0.5rem;
+}
+
+/* ============================================================
+   TEMPLATE LIBRARY
+   ============================================================ */
+.template-library { background: var(--bg2); }
+.tmpl-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+.tmpl-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  text-align: center;
+}
+.tmpl-card:hover {
+  border-color: var(--violet);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+}
+.tmpl-card-icon {
+  font-size: 2rem; margin-bottom: 0.75rem; display: block;
+}
+.tmpl-card-name {
+  font-size: 0.85rem; font-weight: 600; color: var(--text);
+  margin-bottom: 0.35rem;
+}
+.tmpl-card-count {
+  font-size: 0.72rem; color: var(--text3);
+}
+.tmpl-card-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  color: #fff;
+  font-size: 0.55rem; font-weight: 700;
+  padding: 0.1rem 0.4rem; border-radius: 999px;
+  margin-top: 0.5rem;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+
+/* ============================================================
+   HOW IT WORKS
+   ============================================================ */
+.how-it-works { background: var(--bg); }
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 3rem;
+  position: relative;
+}
+.steps-grid::before {
+  content: '';
+  position: absolute;
+  top: 32px; left: calc(16.67% + 1rem); right: calc(16.67% + 1rem);
+  height: 2px;
+  background: linear-gradient(90deg, var(--violet), var(--pink));
+  z-index: 0;
+}
+.step-card {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.step-num {
+  width: 64px; height: 64px;
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  color: #fff;
+  border-radius: 50%;
+  font-size: 1.25rem; font-weight: 700;
+  font-family: var(--font-serif);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.25rem;
+  box-shadow: 0 8px 24px rgba(124,58,237,0.3);
+}
+.step-icon {
+  font-size: 1.4rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.step-title {
+  font-size: 1rem; font-weight: 700; color: var(--text);
+  margin-bottom: 0.5rem;
+}
+.step-desc { font-size: 0.875rem; color: var(--text2); line-height: 1.6; }
+
+/* ============================================================
+   FEATURES
+   ============================================================ */
+.features { background: var(--bg2); }
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+}
+.feature-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1.5rem;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.feature-card:hover {
+  border-color: var(--violet);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+}
+.feature-icon-wrap {
+  width: 48px; height: 48px;
+  background: var(--bg3);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; margin-bottom: 1rem;
+  border: 1px solid var(--border);
+}
+.feature-title {
+  font-size: 0.95rem; font-weight: 700; color: var(--text);
+  margin-bottom: 0.5rem;
+}
+.feature-desc { font-size: 0.83rem; color: var(--text2); line-height: 1.6; }
+.feature-tag {
+  display: inline-block; margin-top: 0.75rem;
+  font-size: 0.7rem; font-weight: 600;
+  color: var(--violet); background: var(--bg3);
+  padding: 0.15rem 0.5rem; border-radius: 4px;
+}
+
+/* ============================================================
+   AI QUALITY DEMO
+   ============================================================ */
+.ai-demo { background: var(--bg); }
+.demo-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+  align-items: start;
+}
+.demo-panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.demo-panel-header {
+  padding: 0.75rem 1rem;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.demo-panel-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+}
+.demo-panel-title {
+  font-size: 0.8rem; font-weight: 600; color: var(--text);
+}
+.demo-panel-body { padding: 1.25rem; background: var(--bg); }
+.demo-input {
+  font-size: 0.875rem; color: var(--text);
+  background: var(--bg3);
+  padding: 0.75rem; border-radius: 8px;
+  border: 1px solid var(--border);
+  font-style: italic;
+  line-height: 1.5;
+}
+.demo-prompt-label {
+  font-size: 0.7rem; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--text3);
+  margin-bottom: 0.5rem; font-weight: 600;
+}
+.demo-output-title {
+  font-family: var(--font-serif);
+  font-size: 1rem; font-weight: 700; color: var(--text);
+  margin-bottom: 0.75rem;
+}
+.demo-output-text {
+  font-size: 0.83rem; color: var(--text2); line-height: 1.7;
+}
+.demo-output-text p { margin-bottom: 0.6rem; }
+.demo-output-meta {
+  display: flex; gap: 1rem; flex-wrap: wrap;
+  margin-top: 1rem; padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+.demo-meta-item { font-size: 0.7rem; color: var(--text3); }
+.demo-meta-item strong { color: var(--violet); }
+.demo-arrow {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; color: var(--violet2);
+  align-self: center;
+}
+
+/* ============================================================
+   INTEGRATIONS
+   ============================================================ */
+.integrations { background: var(--bg2); }
+.integ-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2.5rem;
+}
+.integ-chip {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.6rem 1.25rem;
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.875rem; font-weight: 600; color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.integ-chip:hover {
+  border-color: var(--violet);
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+.integ-chip-icon { font-size: 1.1rem; }
+.integ-note {
+  text-align: center; margin-top: 1.5rem;
+  font-size: 0.83rem; color: var(--text3);
+}
+
+/* ============================================================
+   PRICING
+   ============================================================ */
+.pricing { background: var(--bg); }
+.pricing-toggle-wrap {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0.75rem; margin: 2rem 0;
+}
+.pricing-toggle-label {
+  font-size: 0.875rem; font-weight: 500; color: var(--text2);
+}
+.pricing-toggle-label.active { color: var(--violet); font-weight: 700; }
+.pricing-toggle-switch {
+  width: 48px; height: 26px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 999px; cursor: pointer; position: relative;
+  transition: background 0.3s;
+}
+.pricing-toggle-switch.annual { background: var(--violet); }
+.pricing-toggle-knob {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 20px; height: 20px;
+  background: #fff; border-radius: 50%;
+  transition: transform 0.3s;
+}
+.pricing-toggle-switch.annual .pricing-toggle-knob { transform: translateX(22px); }
+.pricing-discount {
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  color: #fff; font-size: 0.68rem; font-weight: 700;
+  padding: 0.15rem 0.5rem; border-radius: 999px;
+}
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+.price-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem 1.5rem;
+  position: relative;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.price-card.featured {
+  background: linear-gradient(135deg, var(--violet) 0%, #5b21b6 100%);
+  border-color: transparent;
+  color: #fff;
+}
+.price-card.featured .price-label,
+.price-card.featured .price-amount,
+.price-card.featured .price-per,
+.price-card.featured .price-desc,
+.price-card.featured .price-feat-item { color: rgba(255,255,255,0.9); }
+.price-card.featured .price-feat-check { color: #fff; }
+.price-badge {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--pink), #f59e0b);
+  color: #fff; font-size: 0.68rem; font-weight: 700;
+  padding: 0.25rem 0.85rem; border-radius: 999px;
+  white-space: nowrap;
+}
+.price-label {
+  font-size: 0.8rem; font-weight: 600; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  margin-bottom: 0.5rem;
+}
+.price-amount {
+  font-family: var(--font-serif);
+  font-size: 2.4rem; font-weight: 700; color: var(--text);
+  line-height: 1;
+}
+.price-amount .price-currency {
+  font-size: 1rem; font-weight: 600; vertical-align: top;
+  line-height: 2.2;
+}
+.price-per {
+  font-size: 0.78rem; color: var(--text3); margin-left: 0.25rem;
+}
+.price-desc {
+  font-size: 0.83rem; color: var(--text2); margin: 0.75rem 0 1.25rem;
+  line-height: 1.5;
+}
+.price-sep {
+  height: 1px; background: var(--border); margin: 1rem 0;
+}
+.price-card.featured .price-sep { background: rgba(255,255,255,0.2); }
+.price-feat-item {
+  font-size: 0.83rem; color: var(--text2);
+  padding: 0.3rem 0; display: flex; align-items: flex-start; gap: 0.6rem;
+}
+.price-feat-check { color: var(--teal); font-size: 0.85rem; flex-shrink: 0; }
+.price-feat-item .dim { color: var(--text3); }
+.btn-price-primary {
+  width: 100%; padding: 0.75rem;
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  color: #fff; border: none; border-radius: 999px;
+  font-family: var(--font-body); font-size: 0.9rem; font-weight: 700;
+  cursor: pointer; margin-top: 1.5rem;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.btn-price-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-price-outline {
+  width: 100%; padding: 0.75rem;
+  background: transparent;
+  color: var(--violet); border: 2px solid var(--border);
+  border-radius: 999px;
+  font-family: var(--font-body); font-size: 0.9rem; font-weight: 700;
+  cursor: pointer; margin-top: 1.5rem;
+  transition: border-color 0.2s;
+}
+.btn-price-outline:hover { border-color: var(--violet); }
+.price-card.featured .btn-price-primary {
+  background: #fff;
+  color: var(--violet);
+}
+
+/* ============================================================
+   TESTIMONIALS
+   ============================================================ */
+.testimonials { background: var(--bg2); }
+.testi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+.testi-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1.5rem;
+}
+.testi-stars {
+  color: #f59e0b; font-size: 0.9rem; margin-bottom: 1rem;
+  letter-spacing: 0.1em;
+}
+.testi-quote {
+  font-size: 0.9rem; color: var(--text2);
+  line-height: 1.7; margin-bottom: 1.25rem;
+  font-style: italic;
+}
+.testi-author {
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.testi-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: 0.9rem;
+  flex-shrink: 0;
+}
+.testi-name {
+  font-size: 0.875rem; font-weight: 700; color: var(--text);
+}
+.testi-role {
+  font-size: 0.75rem; color: var(--text3);
+}
+
+/* ============================================================
+   FAQ
+   ============================================================ */
+.faq { background: var(--bg); }
+.faq-list {
+  max-width: 720px; margin: 2.5rem auto 0;
+  display: flex; flex-direction: column; gap: 0.75rem;
+}
+.faq-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.faq-question {
+  width: 100%; padding: 1.1rem 1.25rem;
+  background: var(--bg2); border: none; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 1rem; text-align: left;
+  font-family: var(--font-body); font-size: 0.95rem; font-weight: 600;
+  color: var(--text);
+  transition: background 0.2s;
+}
+.faq-question:hover { background: var(--bg3); }
+.faq-icon {
+  width: 24px; height: 24px; flex-shrink: 0;
+  background: var(--bg3); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; color: var(--violet);
+  transition: transform 0.3s;
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+.faq-answer {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.3s;
+}
+.faq-answer-inner {
+  padding: 0 1.25rem 1.1rem;
+  font-size: 0.875rem; color: var(--text2); line-height: 1.7;
+  background: var(--bg);
+}
+
+/* ============================================================
+   CTA SECTION
+   ============================================================ */
+.cta-section {
+  background: var(--bg2);
+  text-align: center;
+}
+.cta-box {
+  background: linear-gradient(135deg, var(--violet) 0%, #5b21b6 50%, var(--pink) 100%);
+  border-radius: 24px;
+  padding: 4rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.cta-box::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  pointer-events: none;
+}
+.cta-box::after {
+  content: '';
+  position: absolute;
+  bottom: -40px; left: -40px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  pointer-events: none;
+}
+.cta-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 700; color: #fff;
+  margin-bottom: 0.75rem; line-height: 1.2;
+  position: relative;
+}
+.cta-sub {
+  font-size: 1rem; color: rgba(255,255,255,0.8);
+  max-width: 500px; margin: 0 auto 2rem;
+  line-height: 1.65;
+}
+.cta-btns {
+  display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+  position: relative;
+}
+.btn-cta-white {
+  background: #fff; color: var(--violet);
+  border: none; cursor: pointer;
+  font-family: var(--font-body); font-size: 1rem; font-weight: 700;
+  padding: 0.9rem 2rem; border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  transition: opacity 0.2s, transform 0.2s;
+}
+.btn-cta-white:hover { opacity: 0.95; transform: translateY(-2px); }
+.btn-cta-outline {
+  background: transparent; color: #fff;
+  border: 2px solid rgba(255,255,255,0.4); cursor: pointer;
+  font-family: var(--font-body); font-size: 1rem; font-weight: 600;
+  padding: 0.875rem 1.75rem; border-radius: 999px;
+  transition: border-color 0.2s;
+}
+.btn-cta-outline:hover { border-color: rgba(255,255,255,0.8); }
+.cta-note {
+  font-size: 0.78rem; color: rgba(255,255,255,0.6);
+  margin-top: 1.25rem;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: 60px 2rem 32px;
+}
+.footer-inner {
+  max-width: 1100px; margin: 0 auto;
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+.footer-brand-logo {
+  display: flex; align-items: center; gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.footer-logo-icon {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem;
+}
+.footer-logo-text {
+  font-family: var(--font-serif);
+  font-size: 1.15rem; font-weight: 700;
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.footer-tagline {
+  font-size: 0.83rem; color: var(--text3); line-height: 1.65;
+  margin-bottom: 1.25rem;
+}
+.footer-social {
+  display: flex; gap: 0.5rem;
+}
+.social-btn {
+  width: 34px; height: 34px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  text-decoration: none;
+}
+.social-btn:hover { background: var(--bg4); border-color: var(--violet); }
+.footer-col-title {
+  font-size: 0.78rem; font-weight: 700; color: var(--text);
+  text-transform: uppercase; letter-spacing: 0.07em;
+  margin-bottom: 1rem;
+}
+.footer-links {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 0.6rem;
+}
+.footer-links a {
+  font-size: 0.875rem; color: var(--text2); text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--violet); }
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 1.25rem;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 0.75rem;
+}
+.footer-copy {
+  font-size: 0.78rem; color: var(--text3);
+}
+.footer-bottom-links {
+  display: flex; gap: 1.5rem;
+}
+.footer-bottom-links a {
+  font-size: 0.78rem; color: var(--text3); text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-bottom-links a:hover { color: var(--violet); }
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 960px) {
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+  .tmpl-grid { grid-template-columns: repeat(2, 1fr); }
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .steps-grid::before { display: none; }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; }
+  .testi-grid { grid-template-columns: 1fr 1fr; }
+  .demo-container { grid-template-columns: 1fr; }
+  .demo-arrow { transform: rotate(90deg); }
+}
+@media (max-width: 768px) {
+  section { padding: 60px 1.25rem; }
+  .hero { padding: 60px 1.25rem 48px; }
+  .w-editor-body { height: auto; flex-direction: column; }
+  .w-templates { width: 100%; border-right: none; border-bottom: 1px solid var(--border); display: flex; overflow-x: auto; padding: 0.4rem; height: 48px; flex-direction: row; align-items: center; gap: 0.25rem; }
+  .tmpl-label { display: none; }
+  .tmpl-item { white-space: nowrap; flex-shrink: 0; border-left: none !important; }
+  .tmpl-item.active { border-left: none; border-bottom: 2px solid var(--violet); }
+  .w-settings { width: 100%; border-left: none; border-top: 1px solid var(--border); height: auto; }
+  .w-editor-body .w-editor { min-height: 200px; }
+  .steps-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .features-grid { grid-template-columns: 1fr; }
+  .testi-grid { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+}
+@media (max-width: 600px) {
+  .hero-title { font-size: 2rem; }
+  .tmpl-grid { grid-template-columns: repeat(2, 1fr); }
+  .navbar { padding: 0 1rem; }
+  .integ-grid { gap: 0.6rem; }
+  .integ-chip { padding: 0.45rem 0.85rem; font-size: 0.8rem; }
+  .proof-stats { gap: 1.25rem; }
+  .proof-divider { display: none; }
+  .pricing-grid { max-width: 100%; }
+  .footer-bottom { flex-direction: column; text-align: center; }
+  .footer-bottom-links { justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     1. ANNOUNCEMENT BAR
+     ============================================================ -->
+<div class="announce-bar">
+  🇮🇩 NusaWrite kini mendukung Bahasa Indonesia + 12 bahasa daerah — Baru!
+  <a href="#">Lihat Fitur →</a>
+</div>
+
+<!-- ============================================================
+     2. NAVBAR
+     ============================================================ -->
+<nav class="navbar">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">✍️</div>
+    <span class="nav-logo-text">NusaWrite</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#fitur">Produk</a></li>
+    <li><a href="#template">Template</a></li>
+    <li><a href="#harga">Harga</a></li>
+    <li><a href="#blog">Blog</a></li>
+    <li><a href="#akademi">Akademi</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">
+      <div class="theme-toggle-knob" id="themeKnob">☀️</div>
+    </button>
+    <button class="btn-ghost">Masuk</button>
+    <button class="btn-primary">Coba Gratis</button>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<nav class="nav-mobile" id="navMobile">
+  <a href="#fitur">Produk</a>
+  <a href="#template">Template</a>
+  <a href="#harga">Harga</a>
+  <a href="#blog">Blog</a>
+  <a href="#akademi">Akademi</a>
+  <a href="#">Masuk</a>
+  <a href="#" style="color:var(--violet);font-weight:700;">Coba Gratis →</a>
+</nav>
+
+<!-- ============================================================
+     3. HERO
+     ============================================================ -->
+<section class="hero" id="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">
+      ✨ AI Writing berbahasa Indonesia pertama &amp; terbaik
+    </div>
+    <h1 class="hero-title">
+      Tulis Konten <em class="accent">Viral</em> 10x<br>
+      Lebih Cepat dengan AI
+    </h1>
+    <p class="hero-sub">
+      Platform penulisan konten AI yang memahami nuansa Bahasa Indonesia. Dari artikel blog hingga caption media sosial — hasilkan konten berkualitas tinggi dalam hitungan detik.
+    </p>
+    <div class="hero-cta">
+      <button class="btn-hero-primary">✨ Mulai Menulis Gratis</button>
+      <button class="btn-hero-outline">▶ Lihat Demo</button>
+    </div>
+    <div class="hero-note">
+      🔒 Gratis selamanya hingga 10.000 kata/bulan · Tidak perlu kartu kredit
+    </div>
+
+    <!-- WRITER APP MOCKUP -->
+    <div style="margin-top: 3rem;" class="reveal">
+      <div class="writer-app">
+        <!-- Editor topbar -->
+        <div class="w-topbar">
+          <div class="w-topbar-left">
+            <span class="w-logo">NusaWrite</span>
+            <span class="w-doc-title" id="docTitle" contenteditable="true">Artikel Blog — Tips Produktivitas 2026</span>
+          </div>
+          <div class="w-topbar-right">
+            <span class="w-words" id="wordCount">847 kata</span>
+            <button class="w-btn-outline">📋 Salin</button>
+            <button class="w-btn-primary" id="genBtn">✨ Generate</button>
+          </div>
+        </div>
+        <!-- Editor body -->
+        <div class="w-editor-body">
+          <!-- Template sidebar kiri -->
+          <div class="w-templates" id="tmplSidebar">
+            <div class="tmpl-label">Template</div>
+            <div class="tmpl-item active" data-title="Artikel Blog — Tips Produktivitas 2026">📝 Artikel Blog</div>
+            <div class="tmpl-item" data-title="Caption IG — Promosi Produk Viral">📱 Caption IG</div>
+            <div class="tmpl-item" data-title="Email Marketing — Newsletter Mingguan">📧 Email Marketing</div>
+            <div class="tmpl-item" data-title="Deskripsi Produk — Toko Online">🛒 Deskripsi Produk</div>
+            <div class="tmpl-item" data-title="Press Release — Peluncuran Produk">📊 Press Release</div>
+            <div class="tmpl-item" data-title="Iklan Google — Search Campaign">🎯 Iklan Google</div>
+            <div class="tmpl-item" data-title="Profil Perusahaan — Company Profile">💼 Profil Perusahaan</div>
+            <div class="tmpl-item" data-title="Proposal — Kerjasama Bisnis">🤝 Proposal</div>
+          </div>
+          <!-- Main editor -->
+          <div class="w-editor">
+            <div class="w-prompt-bar">
+              <input class="w-prompt-inp" type="text" value="Tulis artikel tentang 5 tips produktivitas untuk remote worker di Indonesia" placeholder="Describe what you want to write...">
+              <button class="w-gen-btn">✨ Write</button>
+            </div>
+            <div class="w-content">
+              <h1 class="w-h1">5 Tips Produktivitas untuk Remote Worker Indonesia di 2026</h1>
+              <p class="w-p">Bekerja dari rumah kini bukan lagi hal baru bagi jutaan profesional Indonesia. Namun, mempertahankan <span class="w-highlight">produktivitas yang konsisten</span> tetap menjadi tantangan tersendiri.</p>
+              <h2 class="w-h2">1. Tentukan Jadwal yang Terstruktur</h2>
+              <p class="w-p">Salah satu kunci sukses bekerja dari rumah adalah memiliki <span class="w-typing" id="typingSpan"></span><span class="w-cursor" id="typingCursor"></span></p>
+            </div>
+          </div>
+          <!-- Settings panel kanan -->
+          <div class="w-settings">
+            <div class="setting-label">Gaya Penulisan</div>
+            <div class="tone-grid" data-group="gaya">
+              <span class="tone active">Profesional</span>
+              <span class="tone">Kasual</span>
+              <span class="tone">Akademis</span>
+              <span class="tone">Persuasif</span>
+            </div>
+            <div class="setting-label" style="margin-top:0.75rem">Bahasa</div>
+            <div class="tone-grid" data-group="bahasa">
+              <span class="tone active">Indonesia</span>
+              <span class="tone">Inggris</span>
+              <span class="tone">Formal</span>
+            </div>
+            <div class="setting-label" style="margin-top:0.75rem">Panjang</div>
+            <div class="tone-grid" data-group="panjang">
+              <span class="tone">Pendek</span>
+              <span class="tone active">Sedang</span>
+              <span class="tone">Panjang</span>
+            </div>
+            <div class="setting-label" style="margin-top:0.75rem">SEO Keywords</div>
+            <div class="seo-tags">
+              <span class="seo-tag">produktivitas</span>
+              <span class="seo-tag">remote work</span>
+              <span class="seo-tag">wfh tips</span>
+              <span class="seo-tag add-tag">+ Tambah</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /writer-app -->
+  </div>
+</section>
+
+<!-- ============================================================
+     4. SOCIAL PROOF
+     ============================================================ -->
+<div class="social-proof">
+  <div class="proof-inner">
+    <p class="proof-text"><strong>Dipercaya</strong> content creator, copywriter, dan pemilik bisnis Indonesia</p>
+    <div class="proof-stats">
+      <div class="proof-stat">
+        <span class="proof-stat-num" data-target="120000" data-suffix="+" id="stat1">0</span>
+        <span class="proof-stat-label">Pengguna Aktif</span>
+      </div>
+      <span class="proof-divider"></span>
+      <div class="proof-stat">
+        <span class="proof-stat-num" data-target="8500000" data-suffix="+" id="stat2">0</span>
+        <span class="proof-stat-label">Konten Dibuat</span>
+      </div>
+      <span class="proof-divider"></span>
+      <div class="proof-stat">
+        <span class="proof-stat-num" data-target="98" data-suffix="%" id="stat3">0</span>
+        <span class="proof-stat-label">Kepuasan Pengguna</span>
+      </div>
+      <span class="proof-divider"></span>
+      <div class="proof-stat">
+        <span class="proof-stat-num" data-target="12" data-suffix=" bahasa" id="stat4">0</span>
+        <span class="proof-stat-label">Bahasa Daerah</span>
+      </div>
+    </div>
+    <div style="width:100%; text-align:center;">
+      <p class="proof-brand-label">Digunakan oleh tim dari</p>
+      <div class="proof-brands">
+        <span class="proof-brand">Tokopedia</span>
+        <span class="proof-brand">Ruangguru</span>
+        <span class="proof-brand">Gojek</span>
+        <span class="proof-brand">Traveloka</span>
+        <span class="proof-brand">Kompas</span>
+        <span class="proof-brand">Telkom</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     5. TEMPLATE LIBRARY
+     ============================================================ -->
+<section class="template-library" id="template">
+  <div class="container">
+    <div class="text-center reveal">
+      <div class="section-label">📚 Template Library</div>
+      <h2 class="section-title">100+ Template Siap Pakai<br>untuk Setiap Kebutuhan</h2>
+      <p class="section-sub">Pilih template sesuai tujuanmu, isi brief singkat, dan dapatkan konten profesional dalam detik.</p>
+    </div>
+    <div class="tmpl-grid reveal">
+      <div class="tmpl-card">
+        <span class="tmpl-card-icon">📝</span>
+        <div class="tmpl-card-name">Blog &amp; Artikel</div>
+        <div class="tmpl-card-count">23 template</div>
+        <div class="tmpl-card-badge">Populer</div>
+      </div>
+      <div class="tmpl-card">
+        <span class="tmpl-card-icon">📱</span>
+        <div class="tmpl-card-name">Media Sosial</div>
+        <div class="tmpl-card-count">18 template</div>
+        <div class="tmpl-card-badge">Trending</div>
+      </div>
+      <div class="tmpl-card">
+        <span class="tmpl-card-icon">📧</span>
+        <div class="tmpl-card-name">Email</div>
+        <div class="tmpl-card-count">14 template</div>
+      </div>
+      <div class="tmpl-card">
+        <span class="tmpl-card-icon">🛒</span>
+        <div class="tmpl-card-name">E-Commerce</div>
+        <div class="tmpl-card-count">19 template</div>
+        <div class="tmpl-card-badge">Baru</div>
+      </div>
+      <div class="tmpl-card">
+        <span class="tmpl-card-icon">🎯</span>
+        <div class="tmpl-card-name">Iklan</div>
+        <div class="tmpl-card-count">11 template</div>
+      </div>
+      <div class="tmpl-card">
+        <span class="tmpl-card-icon">🔍</span>
+        <div class="tmpl-card-name">SEO</div>
+        <div class="tmpl-card-count">8 template</div>
+      </div>
+      <div class="tmpl-card">
+        <span class="tmpl-card-icon">📰</span>
+        <div class="tmpl-card-name">PR &amp; Press Release</div>
+        <div class="tmpl-card-count">7 template</div>
+      </div>
+      <div class="tmpl-card">
+        <span class="tmpl-card-icon">📊</span>
+        <div class="tmpl-card-name">Presentasi</div>
+        <div class="tmpl-card-count">10 template</div>
+        <div class="tmpl-card-badge">Baru</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     6. HOW IT WORKS
+     ============================================================ -->
+<section class="how-it-works" id="cara-kerja">
+  <div class="container">
+    <div class="text-center reveal">
+      <div class="section-label">⚡ Cara Kerja</div>
+      <h2 class="section-title">Dari Ide ke Konten<br>dalam 3 Langkah</h2>
+      <p class="section-sub">Proses yang sederhana namun menghasilkan konten berkualitas tinggi, konsisten, dan siap publish.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card reveal">
+        <div class="step-num">1</div>
+        <span class="step-icon">🗂️</span>
+        <div class="step-title">Pilih Template</div>
+        <p class="step-desc">Pilih dari 100+ template yang dikategorikan berdasarkan tujuan konten kamu — blog, sosmed, email, iklan, dan lainnya.</p>
+      </div>
+      <div class="step-card reveal" style="transition-delay:0.15s">
+        <div class="step-num">2</div>
+        <span class="step-icon">✏️</span>
+        <div class="step-title">Isi Brief Singkat</div>
+        <p class="step-desc">Ketik topik, target audiens, tone, dan kata kunci yang kamu inginkan. Cukup 1–2 kalimat sudah cukup untuk AI kami.</p>
+      </div>
+      <div class="step-card reveal" style="transition-delay:0.3s">
+        <div class="step-num">3</div>
+        <span class="step-icon">🚀</span>
+        <div class="step-title">Dapatkan Konten</div>
+        <p class="step-desc">AI menghasilkan konten berkualitas dalam bahasa Indonesia yang alami, teroptimasi SEO, dan siap pakai dalam hitungan detik.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     7. FITUR UTAMA
+     ============================================================ -->
+<section class="features" id="fitur">
+  <div class="container">
+    <div class="text-center reveal">
+      <div class="section-label">✨ Fitur Unggulan</div>
+      <h2 class="section-title">Semua yang Kamu Butuhkan<br>untuk Konten Sempurna</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon-wrap">🇮🇩</div>
+        <div class="feature-title">Multi-bahasa Indonesia</div>
+        <p class="feature-desc">Memahami nuansa bahasa Indonesia, termasuk 12 bahasa daerah seperti Jawa, Sunda, Bali, dan Minang. Konten terasa lokal, bukan terjemahan.</p>
+        <span class="feature-tag">Eksklusif</span>
+      </div>
+      <div class="feature-card reveal" style="transition-delay:0.1s">
+        <div class="feature-icon-wrap">🔍</div>
+        <div class="feature-title">SEO Optimizer</div>
+        <p class="feature-desc">Analisis keyword otomatis, saran judul yang menarik, dan struktur artikel yang dioptimalkan untuk ranking Google Indonesia.</p>
+        <span class="feature-tag">Built-in</span>
+      </div>
+      <div class="feature-card reveal" style="transition-delay:0.2s">
+        <div class="feature-icon-wrap">🎭</div>
+        <div class="feature-title">Tone Adjuster</div>
+        <p class="feature-desc">Sesuaikan nada tulisan dari formal ke kasual, dari persuasif ke informatif. Brand voice kamu tetap konsisten di semua platform.</p>
+      </div>
+      <div class="feature-card reveal" style="transition-delay:0.05s">
+        <div class="feature-icon-wrap">🛡️</div>
+        <div class="feature-title">Plagiarism Checker</div>
+        <p class="feature-desc">Setiap konten yang dihasilkan dicek originality-nya secara otomatis. Pastikan kontenmu 100% unik sebelum dipublikasikan.</p>
+      </div>
+      <div class="feature-card reveal" style="transition-delay:0.15s">
+        <div class="feature-icon-wrap">🎨</div>
+        <div class="feature-title">Brand Voice</div>
+        <p class="feature-desc">Latih AI dengan contoh tulisan brand kamu. Hasilkan konten yang selalu on-brand, dari pilihan kata hingga cara menyapa audiens.</p>
+        <span class="feature-tag">Pro</span>
+      </div>
+      <div class="feature-card reveal" style="transition-delay:0.25s">
+        <div class="feature-icon-wrap">👥</div>
+        <div class="feature-title">Collaboration</div>
+        <p class="feature-desc">Undang tim, bagi dokumen, tulis bersama dalam satu workspace. Cocok untuk agensi dan tim konten yang berkolaborasi lintas divisi.</p>
+        <span class="feature-tag">Business</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     8. AI QUALITY DEMO
+     ============================================================ -->
+<section class="ai-demo" id="demo">
+  <div class="container">
+    <div class="text-center reveal">
+      <div class="section-label">🔬 Kualitas AI</div>
+      <h2 class="section-title">Prompt Singkat,<br>Hasil yang Menakjubkan</h2>
+      <p class="section-sub">Lihat sendiri bagaimana NusaWrite mengubah brief sederhana menjadi artikel panjang berkualitas tinggi.</p>
+    </div>
+    <div class="demo-container reveal">
+      <div class="demo-panel">
+        <div class="demo-panel-header">
+          <div class="demo-panel-dot" style="background:#f59e0b;"></div>
+          <span class="demo-panel-title">📝 Input Brief (3 detik)</span>
+        </div>
+        <div class="demo-panel-body">
+          <div class="demo-prompt-label">Prompt Kamu</div>
+          <div class="demo-input">
+            "Artikel tentang manfaat minum air putih di pagi hari untuk wanita usia 25-35 tahun, tone informatif dan hangat, 600 kata, dengan sub-judul."
+          </div>
+          <div style="margin-top:1rem; font-size:0.78rem; color:var(--text3);">
+            Template: Artikel Blog &nbsp;·&nbsp; Bahasa: Indonesia &nbsp;·&nbsp; Tone: Informatif
+          </div>
+        </div>
+      </div>
+      <div class="demo-arrow">→</div>
+      <div class="demo-panel">
+        <div class="demo-panel-header">
+          <div class="demo-panel-dot" style="background:#10b981;"></div>
+          <span class="demo-panel-title">✨ Output AI (dalam 8 detik)</span>
+        </div>
+        <div class="demo-panel-body">
+          <div class="demo-output-title">Rahasia Cantik dari Dalam: Manfaat Minum Air Putih di Pagi Hari yang Wajib Kamu Tahu</div>
+          <div class="demo-output-text">
+            <p>Sebelum menyeduh kopi atau memeriksa ponsel, ada kebiasaan sederhana yang bisa mengubah hari-harimu menjadi lebih sehat dan bersinar. Minum air putih di pagi hari — terdengar sepele, tapi manfaatnya luar biasa, terutama bagi kamu wanita aktif usia 25–35 tahun yang penuh aktivitas...</p>
+            <p><strong>Mengaktifkan Metabolisme Lebih Cepat</strong><br>Setelah tidur 7–8 jam, tubuh kamu dalam kondisi dehidrasi ringan. Minum 1–2 gelas air putih segera setelah bangun tidur akan langsung memicu proses metabolisme, membantu membakar kalori lebih efisien sepanjang hari...</p>
+          </div>
+          <div class="demo-output-meta">
+            <div class="demo-meta-item">Kata: <strong>618</strong></div>
+            <div class="demo-meta-item">Skor SEO: <strong>92/100</strong></div>
+            <div class="demo-meta-item">Originalitas: <strong>100%</strong></div>
+            <div class="demo-meta-item">Waktu: <strong>7.8 detik</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     9. INTEGRATIONS
+     ============================================================ -->
+<section class="integrations" id="integrasi">
+  <div class="container">
+    <div class="text-center reveal">
+      <div class="section-label">🔗 Integrasi</div>
+      <h2 class="section-title">Terhubung ke Semua<br>Platform Favoritmu</h2>
+      <p class="section-sub">Publikasikan konten langsung dari NusaWrite ke platform yang kamu gunakan setiap hari.</p>
+    </div>
+    <div class="integ-grid reveal">
+      <div class="integ-chip"><span class="integ-chip-icon">🌐</span> WordPress</div>
+      <div class="integ-chip"><span class="integ-chip-icon">🌿</span> Wix</div>
+      <div class="integ-chip"><span class="integ-chip-icon">🛍️</span> Shopee</div>
+      <div class="integ-chip"><span class="integ-chip-icon">🛒</span> Tokopedia</div>
+      <div class="integ-chip"><span class="integ-chip-icon">📸</span> Instagram</div>
+      <div class="integ-chip"><span class="integ-chip-icon">🎵</span> TikTok</div>
+      <div class="integ-chip"><span class="integ-chip-icon">📬</span> MailChimp</div>
+      <div class="integ-chip"><span class="integ-chip-icon">🎨</span> Canva</div>
+    </div>
+    <p class="integ-note reveal">Lebih banyak integrasi dalam pengembangan · <a href="#" style="color:var(--violet);">Request integrasi baru</a></p>
+  </div>
+</section>
+
+<!-- ============================================================
+     10. PRICING
+     ============================================================ -->
+<section class="pricing" id="harga">
+  <div class="container">
+    <div class="text-center reveal">
+      <div class="section-label">💰 Harga</div>
+      <h2 class="section-title">Harga Transparan,<br>Tidak Ada Biaya Tersembunyi</h2>
+      <p class="section-sub">Mulai gratis, upgrade kapan saja. Semua paket sudah termasuk AI berbahasa Indonesia terbaik.</p>
+    </div>
+    <div class="pricing-toggle-wrap reveal">
+      <span class="pricing-toggle-label" id="lblMonthly" style="color:var(--violet);font-weight:700;">Bulanan</span>
+      <div class="pricing-toggle-switch" id="pricingSwitch">
+        <div class="pricing-toggle-knob"></div>
+      </div>
+      <span class="pricing-toggle-label" id="lblAnnual">Tahunan</span>
+      <span class="pricing-discount">Hemat 30%</span>
+    </div>
+    <div class="pricing-grid">
+      <!-- FREE -->
+      <div class="price-card reveal">
+        <div class="price-label">Gratis</div>
+        <div class="price-amount">Rp 0</div>
+        <div class="price-desc">Sempurna untuk memulai dan mencoba semua fitur dasar NusaWrite.</div>
+        <div class="price-sep"></div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> <span>10.000 kata / bulan</span></div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> <span>20 template dasar</span></div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> <span>Bahasa Indonesia + Inggris</span></div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> <span>SEO Optimizer dasar</span></div>
+        <div class="price-feat-item"><span class="price-feat-check" style="color:var(--border)">✗</span> <span class="dim">Brand voice</span></div>
+        <div class="price-feat-item"><span class="price-feat-check" style="color:var(--border)">✗</span> <span class="dim">Plagiarism checker</span></div>
+        <button class="btn-price-outline">Mulai Gratis</button>
+      </div>
+      <!-- CREATOR -->
+      <div class="price-card featured reveal" style="transition-delay:0.1s">
+        <div class="price-badge">⭐ Paling Populer</div>
+        <div class="price-label">Creator</div>
+        <div class="price-amount" id="creatorPrice">
+          <span class="price-currency">Rp</span>99rb<span class="price-per">/bln</span>
+        </div>
+        <div class="price-desc">Untuk content creator dan freelancer yang ingin produktivitas maksimal.</div>
+        <div class="price-sep"></div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> <span>100.000 kata / bulan</span></div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> <span>100+ template premium</span></div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> <span>12 bahasa daerah</span></div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> <span>SEO Optimizer penuh</span></div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> <span>Plagiarism checker</span></div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> <span>Ekspor ke WordPress</span></div>
+        <button class="btn-price-primary">Mulai Sekarang</button>
+      </div>
+      <!-- BUSINESS -->
+      <div class="price-card reveal" style="transition-delay:0.2s">
+        <div class="price-label">Business</div>
+        <div class="price-amount" id="businessPrice">
+          <span class="price-currency">Rp</span>249rb<span class="price-per">/bln</span>
+        </div>
+        <div class="price-desc">Untuk tim, agensi, dan bisnis yang membutuhkan konten tanpa batas.</div>
+        <div class="price-sep"></div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> <span>Unlimited kata</span></div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> <span>Semua template + kustom</span></div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> <span>Brand voice AI</span></div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> <span>Collaboration tim (5 seat)</span></div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> <span>API akses</span></div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> <span>Dedicated support</span></div>
+        <button class="btn-price-primary">Mulai Sekarang</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     11. TESTIMONIALS
+     ============================================================ -->
+<section class="testimonials" id="testimoni">
+  <div class="container">
+    <div class="text-center reveal">
+      <div class="section-label">💬 Testimoni</div>
+      <h2 class="section-title">Apa Kata Mereka<br>yang Sudah Menggunakan</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Dulu nulis 1 artikel butuh 3 jam, sekarang 15 menit sudah jadi dan kualitasnya bagus banget. NusaWrite benar-benar memahami bahasa Indonesia, tidak terasa kaku seperti tools lain."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">RS</div>
+          <div>
+            <div class="testi-name">Rania Safitri</div>
+            <div class="testi-role">Food Blogger · 340K followers</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal" style="transition-delay:0.1s">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Toko online saya omzetnya naik 40% setelah pakai NusaWrite untuk deskripsi produk. Kontennya lebih persuasif dan teroptimasi SEO. Worth every rupiah!"</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,var(--teal),#06b6d4);">BN</div>
+          <div>
+            <div class="testi-name">Bagas Nugraha</div>
+            <div class="testi-role">Pemilik Toko Online · Shopee Star Seller</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal" style="transition-delay:0.2s">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Agensi kami handles 20+ klien sekaligus. Dengan NusaWrite Business, tim konten kami bisa output 10x lebih banyak dengan kualitas yang tetap konsisten di semua akun."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#f59e0b,var(--pink));">DP</div>
+          <div>
+            <div class="testi-name">Dita Permata</div>
+            <div class="testi-role">CEO · Nusantara Digital Agency</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     12. FAQ
+     ============================================================ -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="text-center reveal">
+      <div class="section-label">❓ FAQ</div>
+      <h2 class="section-title">Pertanyaan yang<br>Sering Ditanyakan</h2>
+    </div>
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <button class="faq-question">
+          Seberapa akurat bahasa Indonesia yang dihasilkan NusaWrite?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            NusaWrite dilatih secara khusus dengan dataset bahasa Indonesia berkualitas tinggi dari berbagai sumber lokal. AI kami memahami KBBI, gaya penulisan jurnalistik Indonesia, tata bahasa formal dan informal, serta nuansa bahasa sehari-hari. Akurasi tata bahasa mencapai 97% berdasarkan evaluasi internal dengan ahli bahasa Indonesia bersertifikat.
+          </div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          Apakah konten yang dihasilkan bebas dari plagiarisme?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            Ya. Setiap konten yang dihasilkan oleh NusaWrite adalah konten original yang dibuat khusus untukmu. Kami juga menyediakan fitur plagiarism checker bawaan yang memeriksa originalitas konten terhadap miliaran halaman web. Pada paket Creator ke atas, laporan plagiarism tersedia secara otomatis.
+          </div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          Siapa yang memiliki hak cipta konten yang dihasilkan AI?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            Kamu sepenuhnya memiliki hak atas semua konten yang kamu buat menggunakan NusaWrite. Kami tidak mengklaim hak apapun atas konten yang kamu hasilkan. Kamu bebas menggunakannya untuk tujuan komersial, mempublikasikannya, atau menjualnya — sepenuhnya milikmu.
+          </div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          Berapa kali saya bisa merevisi konten yang dihasilkan?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            Tidak ada batasan revisi. Kamu bisa generate ulang konten sebanyak yang kamu mau — setiap generate mengurangi kuota kata sesuai panjang konten. Selain itu, kamu juga bisa mengedit konten secara manual langsung di editor NusaWrite, yang tidak mengurangi kuota kata sama sekali.
+          </div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          Apakah tersedia akses API untuk integrasi sistem?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            Ya, API NusaWrite tersedia untuk pengguna paket Business. Dengan API kami, kamu bisa mengintegrasikan kemampuan AI writing langsung ke dalam aplikasi, website, atau workflow internal perusahaanmu. Dokumentasi API lengkap tersedia di developer portal kami.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     13. CTA
+     ============================================================ -->
+<section class="cta-section" id="cta">
+  <div class="container">
+    <div class="cta-box reveal">
+      <div class="cta-title">
+        Coba Gratis Sekarang —<br>
+        <em style="font-style:italic;">Tidak Perlu Kartu Kredit</em>
+      </div>
+      <p class="cta-sub">Bergabung dengan 120.000+ pengguna yang sudah menulis lebih cepat, lebih baik, dan lebih banyak dengan NusaWrite.</p>
+      <div class="cta-btns">
+        <button class="btn-cta-white">✨ Mulai Menulis Gratis</button>
+        <button class="btn-cta-outline">📅 Jadwalkan Demo</button>
+      </div>
+      <p class="cta-note">10.000 kata gratis setiap bulan · Tanpa kartu kredit · Cancel kapan saja</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     14. FOOTER
+     ============================================================ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand-logo">
+          <div class="footer-logo-icon">✍️</div>
+          <span class="footer-logo-text">NusaWrite</span>
+        </div>
+        <p class="footer-tagline">Platform penulisan konten AI terdepan untuk<br>kreator dan bisnis Indonesia.</p>
+        <div class="footer-social">
+          <a class="social-btn" href="#" aria-label="Instagram">📸</a>
+          <a class="social-btn" href="#" aria-label="Twitter/X">🐦</a>
+          <a class="social-btn" href="#" aria-label="LinkedIn">💼</a>
+          <a class="social-btn" href="#" aria-label="YouTube">▶️</a>
+          <a class="social-btn" href="#" aria-label="TikTok">🎵</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Produk</div>
+        <ul class="footer-links">
+          <li><a href="#">Template Library</a></li>
+          <li><a href="#">AI Writer</a></li>
+          <li><a href="#">SEO Tools</a></li>
+          <li><a href="#">Brand Voice</a></li>
+          <li><a href="#">API</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Perusahaan</div>
+        <ul class="footer-links">
+          <li><a href="#">Tentang Kami</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Akademi</a></li>
+          <li><a href="#">Karir</a></li>
+          <li><a href="#">Hubungi Kami</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Dukungan</div>
+        <ul class="footer-links">
+          <li><a href="#">Pusat Bantuan</a></li>
+          <li><a href="#">Status Layanan</a></li>
+          <li><a href="#">Kebijakan Privasi</a></li>
+          <li><a href="#">Syarat &amp; Ketentuan</a></li>
+          <li><a href="#">Afiliasi</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 NusaWrite. Hak cipta dilindungi. Dibuat dengan ❤️ di Indonesia.</p>
+      <div class="footer-bottom-links">
+        <a href="#">Privasi</a>
+        <a href="#">Ketentuan</a>
+        <a href="#">Cookie</a>
+        <a href="#">Sitemap</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ============================================================
+// THEME TOGGLE (light default → dark)
+// ============================================================
+const html = document.documentElement;
+const themeToggle = document.getElementById('themeToggle');
+const themeKnob = document.getElementById('themeKnob');
+
+function setTheme(isDark) {
+  html.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  themeKnob.textContent = isDark ? '🌙' : '☀️';
+  localStorage.setItem('nusawrite_theme', isDark ? 'dark' : 'light');
+}
+
+// Restore saved theme (default = light)
+const savedTheme = localStorage.getItem('nusawrite_theme');
+setTheme(savedTheme === 'dark');
+
+themeToggle.addEventListener('click', function() {
+  const isDark = html.getAttribute('data-theme') !== 'dark';
+  setTheme(isDark);
+});
+
+// ============================================================
+// NAVBAR HAMBURGER
+// ============================================================
+const navHamburger = document.getElementById('navHamburger');
+const navMobile = document.getElementById('navMobile');
+
+navHamburger.addEventListener('click', function() {
+  navMobile.classList.toggle('open');
+});
+
+// Close mobile nav on link click
+navMobile.querySelectorAll('a').forEach(function(a) {
+  a.addEventListener('click', function() {
+    navMobile.classList.remove('open');
+  });
+});
+
+// ============================================================
+// TEMPLATE SIDEBAR — click to change active + update doc title
+// ============================================================
+const tmplItems = document.querySelectorAll('#tmplSidebar .tmpl-item');
+const docTitle = document.getElementById('docTitle');
+
+tmplItems.forEach(function(item) {
+  item.addEventListener('click', function() {
+    tmplItems.forEach(function(i) { i.classList.remove('active'); });
+    item.classList.add('active');
+    if (docTitle && item.dataset.title) {
+      docTitle.textContent = item.dataset.title;
+    }
+  });
+});
+
+// ============================================================
+// TONE / STYLE BUTTONS — exclusive per group
+// ============================================================
+document.querySelectorAll('.tone-grid').forEach(function(grid) {
+  grid.querySelectorAll('.tone').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      grid.querySelectorAll('.tone').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+    });
+  });
+});
+
+// ============================================================
+// TYPEWRITER ANIMATION
+// ============================================================
+(function() {
+  const target = document.getElementById('typingSpan');
+  const cursor = document.getElementById('typingCursor');
+  if (!target || !cursor) return;
+
+  const fullText = 'rutinitas harian yang jelas. Mulai hari dengan ritual pagi yang produktif — dari olahraga ringan hingga membuat daftar prioritas tugas...';
+  let index = 0;
+  let paused = false;
+
+  function type() {
+    if (index <= fullText.length) {
+      target.textContent = fullText.slice(0, index);
+      index++;
+      setTimeout(type, 38);
+    } else {
+      // Pause then restart
+      paused = true;
+      setTimeout(function() {
+        index = 0;
+        paused = false;
+        type();
+      }, 3200);
+    }
+  }
+
+  // Start after small delay
+  setTimeout(type, 1200);
+})();
+
+// ============================================================
+// COUNTER ANIMATION
+// ============================================================
+function formatNum(num, suffix) {
+  if (suffix === '+' && num >= 1000000) {
+    return (num / 1000000).toFixed(1).replace('.0', '') + 'jt';
+  }
+  if (suffix === '+' && num >= 1000) {
+    return Math.round(num / 1000) + 'rb';
+  }
+  return num.toString();
+}
+
+function animateCounter(el) {
+  const target = parseInt(el.dataset.target, 10);
+  const suffix = el.dataset.suffix || '';
+  const duration = 1800;
+  const step = Math.ceil(duration / 60);
+  let current = 0;
+  const increment = target / (duration / step);
+
+  function update() {
+    current = Math.min(current + increment, target);
+    el.textContent = formatNum(Math.round(current), suffix) + suffix;
+    if (current < target) {
+      setTimeout(update, step);
+    } else {
+      el.textContent = formatNum(target, suffix) + suffix;
+    }
+  }
+  update();
+}
+
+// Trigger counters when social proof comes into view
+const statEls = document.querySelectorAll('[data-target]');
+let countersRan = false;
+
+const counterObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting && !countersRan) {
+      countersRan = true;
+      statEls.forEach(animateCounter);
+    }
+  });
+}, { threshold: 0.3 });
+
+statEls.forEach(function(el) { counterObserver.observe(el); });
+
+// ============================================================
+// PRICING TOGGLE
+// ============================================================
+const pricingSwitch = document.getElementById('pricingSwitch');
+const creatorPrice = document.getElementById('creatorPrice');
+const businessPrice = document.getElementById('businessPrice');
+const lblMonthly = document.getElementById('lblMonthly');
+const lblAnnual = document.getElementById('lblAnnual');
+
+let isAnnual = false;
+
+pricingSwitch.addEventListener('click', function() {
+  isAnnual = !isAnnual;
+  pricingSwitch.classList.toggle('annual', isAnnual);
+
+  if (isAnnual) {
+    creatorPrice.innerHTML = '<span class="price-currency">Rp</span>69rb<span class="price-per">/bln</span>';
+    businessPrice.innerHTML = '<span class="price-currency">Rp</span>174rb<span class="price-per">/bln</span>';
+    lblMonthly.style.color = '';
+    lblMonthly.style.fontWeight = '';
+    lblAnnual.style.color = 'var(--violet)';
+    lblAnnual.style.fontWeight = '700';
+  } else {
+    creatorPrice.innerHTML = '<span class="price-currency">Rp</span>99rb<span class="price-per">/bln</span>';
+    businessPrice.innerHTML = '<span class="price-currency">Rp</span>249rb<span class="price-per">/bln</span>';
+    lblMonthly.style.color = 'var(--violet)';
+    lblMonthly.style.fontWeight = '700';
+    lblAnnual.style.color = '';
+    lblAnnual.style.fontWeight = '';
+  }
+});
+
+// ============================================================
+// FAQ ACCORDION
+// ============================================================
+document.querySelectorAll('.faq-question').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+
+    // Close all
+    document.querySelectorAll('.faq-item').forEach(function(i) {
+      i.classList.remove('open');
+      i.querySelector('.faq-answer').style.maxHeight = '0';
+    });
+
+    // Open clicked (if it was closed)
+    if (!isOpen) {
+      item.classList.add('open');
+      const answer = item.querySelector('.faq-answer');
+      const inner = item.querySelector('.faq-answer-inner');
+      answer.style.maxHeight = inner.offsetHeight + 'px';
+    }
+  });
+});
+
+// ============================================================
+// SCROLL REVEAL
+// ============================================================
+const revealEls = document.querySelectorAll('.reveal');
+
+const revealObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+
+revealEls.forEach(function(el) { revealObserver.observe(el); });
+</script>
+</body>
+</html>

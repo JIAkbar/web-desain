@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="parchment">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warisan Digital — Repositori Koleksi Budaya</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Lato:ital,wght@0,300;0,400;0,700;1,400&family=Libre+Barcode+128+Text&display=swap" rel="stylesheet">
+  <style>
+    /* ─── TOKENS ─── */
+    [data-theme="parchment"] {
+      --bg:         #F6EDD8;
+      --bg-card:    #FDFAF2;
+      --bg-surf:    #EDE1C6;
+      --bg-dark:    #E2D2B0;
+      --text:       #1A0E07;
+      --text2:      #4A2E1A;
+      --text3:      #7A5A42;
+      --gold:       #8B6512;
+      --gold2:      #A87820;
+      --gold-lt:    #C8A040;
+      --red:        #8B2A2A;
+      --red2:       #A83232;
+      --border:     #D8C8A4;
+      --border2:    #C0A878;
+      --nav-bg:     rgba(246,237,216,0.94);
+      --shadow:     0 2px 14px rgba(40,20,8,0.10);
+      --shadow2:    0 10px 36px rgba(40,20,8,0.16);
+      --orn:        var(--gold);
+    }
+    [data-theme="heritage"] {
+      --bg:         #16141E;
+      --bg-card:    #1E1C2A;
+      --bg-surf:    #252338;
+      --bg-dark:    #2C2A40;
+      --text:       #EDE8DC;
+      --text2:      #C0B898;
+      --text3:      #907860;
+      --gold:       #D4A84A;
+      --gold2:      #E8C060;
+      --gold-lt:    #F0D080;
+      --red:        #C05050;
+      --red2:       #D46060;
+      --border:     rgba(200,170,100,0.12);
+      --border2:    rgba(200,170,100,0.24);
+      --nav-bg:     rgba(22,20,30,0.95);
+      --shadow:     0 2px 14px rgba(0,0,0,0.4);
+      --shadow2:    0 10px 36px rgba(0,0,0,0.55);
+      --orn:        var(--gold);
+    }
+
+    /* ─── BASE ─── */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Lato',Georgia,sans-serif;background:var(--bg);color:var(--text);line-height:1.65;overflow-x:hidden;transition:background 0.4s,color 0.4s;}
+    a{text-decoration:none;color:inherit;}
+    ::selection{background:var(--gold2);color:white;}
+    ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg-surf);}::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px;}
+
+    /* ─── NAV ─── */
+    .nav{position:fixed;top:0;left:0;right:0;z-index:200;height:66px;display:flex;align-items:center;padding:0 clamp(1.25rem,5vw,4rem);background:var(--nav-bg);backdrop-filter:blur(16px) saturate(180%);border-bottom:1px solid var(--border);transition:background 0.4s,border-color 0.4s;}
+    .nav-brand{display:flex;align-items:center;gap:0.7rem;margin-right:auto;}
+    .nav-ornament{width:34px;height:34px;border:1.5px solid var(--gold2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic;font-weight:600;color:var(--gold2);}
+    .nav-brand-text{display:flex;flex-direction:column;gap:0;}
+    .nav-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;letter-spacing:0.1em;color:var(--text);line-height:1;}
+    .nav-sub{font-size:0.52rem;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;}
+    .nav-links{display:flex;gap:2rem;list-style:none;}
+    .nav-links a{font-size:0.8rem;color:var(--text2);transition:color 0.2s;letter-spacing:0.03em;}
+    .nav-links a:hover{color:var(--gold);}
+    .nav-right{display:flex;align-items:center;gap:0.6rem;}
+    .btn-theme{display:flex;align-items:center;gap:0.35rem;font-size:0.7rem;font-weight:700;letter-spacing:0.06em;background:var(--bg-surf);color:var(--text3);border:1px solid var(--border2);border-radius:100px;padding:0.3rem 0.8rem;cursor:pointer;transition:all 0.2s;}
+    .btn-theme:hover{color:var(--gold);border-color:var(--gold);}
+    .btn-akses{font-family:'Lato',sans-serif;font-size:0.76rem;font-weight:700;letter-spacing:0.06em;background:var(--gold);color:white;border:none;border-radius:100px;padding:0.4rem 1rem;cursor:pointer;transition:background 0.2s;}
+    .btn-akses:hover{background:var(--gold2);}
+    .ham{display:none;flex-direction:column;gap:4.5px;background:none;border:none;cursor:pointer;padding:3px;}
+    .ham span{width:20px;height:1.5px;background:var(--text);border-radius:2px;}
+
+    /* ─── ORNAMENTAL DIVIDER ─── */
+    .orn-div{display:flex;align-items:center;gap:0.75rem;margin:0 auto;}
+    .orn-line{flex:1;height:1px;background:var(--border);}
+    .orn-sym{color:var(--orn);font-size:0.8rem;flex-shrink:0;}
+
+    /* ─── HERO ─── */
+    .hero{min-height:100vh;padding-top:66px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden;}
+    /* Paper texture via CSS */
+    .hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 30px,rgba(139,101,18,0.025) 30px,rgba(139,101,18,0.025) 31px),repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(139,101,18,0.015) 60px,rgba(139,101,18,0.015) 61px);pointer-events:none;}
+    [data-theme="heritage"] .hero::before{background:repeating-linear-gradient(0deg,transparent,transparent 30px,rgba(212,168,74,0.04) 30px,rgba(212,168,74,0.04) 31px);}
+    .hero-watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Cormorant Garamond',serif;font-size:clamp(8rem,22vw,20rem);font-style:italic;font-weight:300;color:var(--border);opacity:0.45;pointer-events:none;user-select:none;white-space:nowrap;letter-spacing:0.04em;z-index:0;}
+    .hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1fr;align-items:end;padding:clamp(3rem,6vw,5rem) clamp(1.25rem,5vw,4rem) clamp(3rem,5vw,5rem);max-width:1200px;margin:0 auto;width:100%;}
+    .hero-eyebrow{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.5rem;}
+    .he-line{width:24px;height:1px;background:var(--gold);}
+    .he-text{font-size:0.65rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);}
+    .hero-h1{font-family:'Cormorant Garamond',serif;font-size:clamp(3.5rem,10vw,9rem);font-weight:300;line-height:0.92;letter-spacing:-0.01em;color:var(--text);margin-bottom:0.5rem;}
+    .hero-h1 em{font-style:italic;color:var(--gold2);}
+    .hero-h2{font-family:'Cormorant Garamond',serif;font-size:clamp(1.5rem,4vw,3.5rem);font-weight:300;font-style:italic;color:var(--text3);margin-bottom:2rem;}
+    .hero-bottom{display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
+    .hero-desc{font-size:0.95rem;color:var(--text2);line-height:1.75;max-width:480px;}
+    .hero-actions{display:flex;gap:0.75rem;flex-wrap:wrap;flex-shrink:0;}
+    .btn-cta-primary{font-family:'Lato',sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.08em;background:var(--gold);color:white;border:none;padding:0.75rem 1.75rem;border-radius:3px;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.5rem;}
+    .btn-cta-primary:hover{background:var(--gold2);transform:translateY(-2px);}
+    .btn-cta-ghost{font-size:0.85rem;font-weight:700;letter-spacing:0.08em;color:var(--text2);border:1px solid var(--border2);padding:0.75rem 1.5rem;border-radius:3px;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.5rem;}
+    .btn-cta-ghost:hover{border-color:var(--gold);color:var(--gold);}
+    /* Slider dots */
+    .hero-dots{display:flex;gap:0.5rem;margin-top:2rem;}
+    .hero-dot{width:20px;height:2px;background:var(--border2);border-radius:1px;transition:all 0.3s;cursor:pointer;}
+    .hero-dot.on{width:36px;background:var(--gold);}
+    /* Stats strip */
+    .hero-stats{display:flex;gap:2.5rem;margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;}
+    .hs-item{}
+    .hs-num{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:var(--text);line-height:1;}
+    .hs-lbl{font-size:0.68rem;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;}
+
+    /* ─── SEARCH ─── */
+    .search-sec{background:var(--bg-surf);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:2rem clamp(1.25rem,5vw,4rem);}
+    .search-inner{max-width:1200px;margin:0 auto;display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;}
+    .search-bar{flex:1;min-width:200px;display:flex;background:var(--bg-card);border:1px solid var(--border2);border-radius:3px;overflow:hidden;transition:border-color 0.2s;box-shadow:var(--shadow);}
+    .search-bar:focus-within{border-color:var(--gold);}
+    .search-bar input{flex:1;background:none;border:none;outline:none;padding:0.75rem 1rem;font-family:'Lato',sans-serif;font-size:0.9rem;color:var(--text);}
+    .search-bar input::placeholder{color:var(--text3);}
+    .search-bar button{background:var(--gold);border:none;padding:0 1.25rem;color:white;cursor:pointer;font-size:0.75rem;font-weight:700;letter-spacing:0.08em;transition:background 0.2s;}
+    .search-bar button:hover{background:var(--gold2);}
+    .search-filters{display:flex;gap:0.5rem;flex-wrap:wrap;}
+    .sf{font-size:0.72rem;font-weight:700;letter-spacing:0.06em;padding:0.4rem 0.85rem;border-radius:2px;border:1px solid var(--border2);color:var(--text3);cursor:pointer;transition:all 0.2s;}
+    .sf:hover,.sf.on{background:var(--gold);color:white;border-color:var(--gold);}
+
+    /* ─── SECTION BASE ─── */
+    .sec{padding:clamp(4rem,7vw,6rem) clamp(1.25rem,5vw,4rem);}
+    .sec-inner{max-width:1200px;margin:0 auto;}
+    .sec-eyebrow{font-size:0.62rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem;}
+    .sec-eyebrow::before{content:'';width:14px;height:1px;background:var(--gold);}
+    .sec-h2{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3.5rem);font-weight:500;line-height:1.1;letter-spacing:-0.01em;color:var(--text);margin-bottom:1rem;}
+    .sec-h2 em{font-style:italic;color:var(--gold2);}
+    .sec-sub{font-size:0.92rem;color:var(--text2);line-height:1.75;max-width:520px;}
+
+    /* ─── CATALOG ─── */
+    .catalog{background:var(--bg);}
+    .cat-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2.5rem;flex-wrap:wrap;gap:1.5rem;}
+    .cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;}
+    .cat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:2px;overflow:hidden;transition:all 0.25s;cursor:pointer;position:relative;}
+    .cat-card:hover{border-color:var(--gold2);box-shadow:var(--shadow2);transform:translateY(-4px);}
+    .cc-cover{aspect-ratio:3/4;background:var(--bg-surf);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+    .cc-cover-img{width:100%;height:100%;object-fit:cover;}
+    /* Placeholder cover */
+    .cc-cover-ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;padding:1.5rem;}
+    .cc-cover-ph-title{font-family:'Cormorant Garamond',serif;font-size:0.9rem;font-style:italic;color:var(--text3);text-align:center;line-height:1.3;}
+    .cc-cover-ph-orn{font-size:1.5rem;opacity:0.4;}
+    .cc-cover-ph-line{width:20px;height:1px;background:var(--border2);}
+    .cc-badge{position:absolute;top:0.6rem;left:0.6rem;font-size:0.58rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:2px 8px;border-radius:1px;}
+    .cb-aksara{background:rgba(139,101,18,0.85);color:white;}
+    .cb-lontar{background:rgba(139,42,42,0.8);color:white;}
+    .cb-kertas{background:rgba(40,80,130,0.8);color:white;}
+    .cb-daluwang{background:rgba(70,100,40,0.8);color:white;}
+    .cc-body{padding:1rem 1rem 1.25rem;}
+    .cc-kode{font-size:0.58rem;letter-spacing:0.12em;color:var(--text3);text-transform:uppercase;margin-bottom:0.4rem;}
+    .cc-title{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;color:var(--text);margin-bottom:0.3rem;line-height:1.25;}
+    .cc-media{font-size:0.72rem;color:var(--text3);margin-bottom:0.5rem;}
+    .cc-tags{display:flex;gap:0.35rem;flex-wrap:wrap;}
+    .cc-tag{font-size:0.6rem;font-weight:700;letter-spacing:0.06em;padding:2px 7px;border-radius:1px;background:var(--bg-surf);color:var(--text3);border:1px solid var(--border);}
+
+    /* ─── FITUR ─── */
+    .fitur{background:var(--bg-surf);}
+    .fitur-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem;}
+    .fitur-card{background:var(--bg-card);border:1px solid var(--border);border-radius:2px;padding:2rem;position:relative;transition:all 0.25s;overflow:hidden;}
+    .fitur-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform 0.3s;}
+    .fitur-card:hover{border-color:var(--border2);box-shadow:var(--shadow2);}
+    .fitur-card:hover::before{transform:scaleX(1);}
+    .fc-roman{font-family:'Cormorant Garamond',serif;font-size:2rem;font-style:italic;font-weight:300;color:var(--border2);margin-bottom:1rem;line-height:1;}
+    .fc-title{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;color:var(--text);margin-bottom:0.6rem;}
+    .fc-desc{font-size:0.83rem;color:var(--text2);line-height:1.7;}
+
+    /* ─── ABOUT ─── */
+    .about{background:var(--bg);}
+    .about-inner{display:grid;grid-template-columns:1fr 1.4fr;gap:5rem;align-items:center;}
+    .about-visual{position:relative;}
+    .av-main{aspect-ratio:3/4;background:var(--bg-surf);border:1px solid var(--border);border-radius:2px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+    .av-main-text{font-family:'Cormorant Garamond',serif;font-size:5rem;font-style:italic;font-weight:300;color:var(--border2);user-select:none;}
+    .av-accent{position:absolute;bottom:-16px;right:-16px;width:70%;aspect-ratio:1;background:var(--bg-dark);border:1px solid var(--border2);border-radius:2px;z-index:-1;}
+    .av-chip{position:absolute;top:1rem;right:-1.5rem;background:var(--gold);color:white;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;padding:0.5rem 1rem;border-radius:2px;box-shadow:var(--shadow);}
+    .about-content{}
+    .about-quote{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-style:italic;font-weight:400;line-height:1.6;color:var(--text);border-left:2px solid var(--gold);padding-left:1.25rem;margin-bottom:1.75rem;}
+    .about-body{font-size:0.9rem;color:var(--text2);line-height:1.8;margin-bottom:1.75rem;}
+    .about-meta{display:flex;flex-direction:column;gap:0.6rem;}
+    .am-row{display:flex;align-items:center;gap:0.75rem;font-size:0.8rem;color:var(--text3);}
+    .am-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0;}
+
+    /* ─── AKSARA (feature demo) ─── */
+    .aksara-sec{background:linear-gradient(135deg,var(--bg-card),var(--bg-surf));}
+    .aksara-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;}
+    .aksara-demo{background:var(--bg-card);border:1px solid var(--border);border-radius:2px;padding:2rem;box-shadow:var(--shadow);}
+    .ad-title{font-family:'Cormorant Garamond',serif;font-size:0.75rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1.25rem;display:flex;align-items:center;gap:0.5rem;}
+    .ad-title::after{content:'';flex:1;height:1px;background:var(--border);}
+    .aksara-list{display:flex;flex-direction:column;gap:0;}
+    .aksara-item{display:flex;align-items:center;gap:1rem;padding:0.9rem 0;border-bottom:1px solid var(--border);transition:background 0.15s;}
+    .aksara-item:last-child{border-bottom:none;}
+    .ai-num{width:28px;height:28px;border:1px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:0.75rem;color:var(--gold);flex-shrink:0;}
+    .ai-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:500;color:var(--text);flex:1;}
+    .ai-count{font-size:0.65rem;color:var(--text3);}
+    .ai-bar-wrap{width:70px;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+    .ai-bar{height:100%;border-radius:2px;background:var(--gold);}
+
+    /* ─── CTA DARK ─── */
+    .cta-sec{background:var(--bg-dark);border-top:1px solid var(--border2);}
+    .cta-inner{max-width:700px;margin:0 auto;text-align:center;}
+    .cta-orn{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-style:italic;color:var(--border2);margin-bottom:1rem;display:block;}
+    .cta-h2{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:500;color:var(--text);margin-bottom:1rem;line-height:1.15;}
+    .cta-p{font-size:0.9rem;color:var(--text2);line-height:1.75;margin-bottom:2rem;}
+    .cta-actions{display:flex;justify-content:center;gap:0.75rem;flex-wrap:wrap;}
+
+    /* ─── FOOTER ─── */
+    footer{background:var(--bg-card);border-top:1px solid var(--border);padding:3rem clamp(1.25rem,5vw,4rem) 2rem;}
+    .footer-top{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:2.5rem;padding-bottom:2rem;border-bottom:1px solid var(--border);}
+    .footer-logo-area{}
+    .footer-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;letter-spacing:0.1em;color:var(--text);margin-bottom:0.4rem;}
+    .footer-desc{font-size:0.78rem;color:var(--text3);line-height:1.7;max-width:200px;}
+    .footer-col h4{font-size:0.6rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin-bottom:0.9rem;}
+    .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:0.5rem;}
+    .footer-col ul li a{font-size:0.8rem;color:var(--text3);transition:color 0.2s;}
+    .footer-col ul li a:hover{color:var(--gold);}
+    .footer-bottom{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;font-size:0.7rem;color:var(--text3);}
+
+    /* ─── MOB MENU ─── */
+    .mob-menu{display:none;position:fixed;top:66px;left:0;right:0;z-index:199;background:var(--nav-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);flex-direction:column;}
+    .mob-menu.open{display:flex;}
+    .mob-menu a{display:block;padding:0.85rem clamp(1.25rem,5vw,4rem);font-size:0.88rem;color:var(--text2);border-bottom:1px solid var(--border);transition:color 0.2s;}
+    .mob-menu a:hover{color:var(--gold);}
+
+    .reveal{opacity:0;transform:translateY(18px);transition:opacity 0.55s ease,transform 0.55s ease;}
+    .reveal.visible{opacity:1;transform:none;}
+    .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+
+    @media(max-width:900px){
+      .cat-grid{grid-template-columns:repeat(2,1fr)}
+      .about-inner{grid-template-columns:1fr}
+      .av-accent,.av-chip{display:none}
+      .aksara-inner{grid-template-columns:1fr}
+      .fitur-grid{grid-template-columns:1fr}
+      .footer-top{grid-template-columns:1fr 1fr;gap:2rem}
+      .nav-links{display:none}.ham{display:flex}
+    }
+    @media(max-width:600px){
+      .cat-grid{grid-template-columns:1fr}
+      .footer-top{grid-template-columns:1fr}
+      .hero-stats{gap:1.5rem}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="mainNav">
+  <div class="nav-brand">
+    <div class="nav-ornament">W</div>
+    <div class="nav-brand-text">
+      <div class="nav-title">WARISAN DIGITAL</div>
+      <div class="nav-sub">Repositori Koleksi Budaya</div>
+    </div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#katalog">Katalog</a></li>
+    <li><a href="#fitur">Fitur</a></li>
+    <li><a href="#tentang">Tentang</a></li>
+    <li><a href="#kontak">Kontak</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="btn-theme" id="themeBtn">
+      <span id="themeIcon">🌙</span> <span id="themeLabel">Heritage</span>
+    </button>
+    <button class="btn-akses">Akses Koleksi</button>
+    <button class="ham" id="hamBtn"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mob-menu" id="mobMenu">
+  <a href="#katalog">Katalog</a><a href="#fitur">Fitur</a><a href="#tentang">Tentang</a><a href="#kontak">Kontak</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-watermark">Warisan</div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow"><div class="he-line"></div><div class="he-text">Repositori Digital Warisan Budaya</div></div>
+    <h1 class="hero-h1">Koleksi<br><em>Naskah</em><br>Kuno</h1>
+    <div class="hero-h2">Tersimpan Abadi dalam Arsip Digital</div>
+    <div class="hero-bottom">
+      <p class="hero-desc">Menjaga, merawat, dan memperkenalkan kekayaan naskah kuno Nusantara kepada dunia. Setiap lembar menyimpan pengetahuan yang tak ternilai.</p>
+      <div class="hero-actions">
+        <button class="btn-cta-primary">Jelajahi Koleksi →</button>
+        <button class="btn-cta-ghost">Tentang Kami</button>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hs-item"><div class="hs-num">1.247</div><div class="hs-lbl">Naskah Terdigitalisasi</div></div>
+      <div class="hs-item"><div class="hs-num">16</div><div class="hs-lbl">Jenis Aksara</div></div>
+      <div class="hs-item"><div class="hs-num">8</div><div class="hs-lbl">Jenis Media</div></div>
+      <div class="hs-item"><div class="hs-num">XII–XX</div><div class="hs-lbl">Abad Naskah</div></div>
+    </div>
+    <div class="hero-dots">
+      <div class="hero-dot on"></div>
+      <div class="hero-dot"></div>
+      <div class="hero-dot"></div>
+    </div>
+  </div>
+</section>
+
+<!-- SEARCH -->
+<div class="search-sec">
+  <div class="search-inner">
+    <div class="search-bar">
+      <input type="text" placeholder="Cari naskah, aksara, bahasa, atau koleksi...">
+      <button>CARI</button>
+    </div>
+    <div class="search-filters">
+      <div class="sf on" onclick="setFilter(this)">Semua</div>
+      <div class="sf" onclick="setFilter(this)">Lontar</div>
+      <div class="sf" onclick="setFilter(this)">Daluwang</div>
+      <div class="sf" onclick="setFilter(this)">Kertas Eropa</div>
+      <div class="sf" onclick="setFilter(this)">Buku Tulis</div>
+    </div>
+  </div>
+</div>
+
+<!-- CATALOG -->
+<section class="sec catalog" id="katalog">
+  <div class="sec-inner">
+    <div class="cat-header">
+      <div>
+        <div class="sec-eyebrow reveal">Katalog Naskah</div>
+        <h2 class="sec-h2 reveal d1">Koleksi <em>Pilihan</em></h2>
+      </div>
+      <button class="btn-cta-ghost reveal d2">Lihat Semua Koleksi →</button>
+    </div>
+    <div class="cat-grid">
+      <div class="cat-card reveal">
+        <div class="cc-cover"><div class="cc-cover-ph"><div class="cc-cover-ph-orn">☽</div><div class="cc-cover-ph-line"></div><div class="cc-cover-ph-title">Nahwu<br>ꦤꦲꦸ</div></div><div class="cc-badge cb-daluwang">Daluwang</div></div>
+        <div class="cc-body"><div class="cc-kode">NRN-001 · Abad XVIII</div><div class="cc-title">Kitab Nahwu</div><div class="cc-media">Daluwang · 48 halaman</div><div class="cc-tags"><span class="cc-tag">Arab</span><span class="cc-tag">Pegon</span><span class="cc-tag">Jawa</span></div></div>
+      </div>
+      <div class="cat-card reveal d1">
+        <div class="cc-cover"><div class="cc-cover-ph"><div class="cc-cover-ph-orn">✦</div><div class="cc-cover-ph-line"></div><div class="cc-cover-ph-title">Usadha<br>ꦲꦸꦱꦢꦲ</div></div><div class="cc-badge cb-kertas">Kertas Eropa</div></div>
+        <div class="cc-body"><div class="cc-kode">NRN-002 · Abad XIX</div><div class="cc-title">Serat Usadha</div><div class="cc-media">Kertas Eropa · 72 halaman</div><div class="cc-tags"><span class="cc-tag">Jawa</span><span class="cc-tag">Carakan</span></div></div>
+      </div>
+      <div class="cat-card reveal d2">
+        <div class="cc-cover"><div class="cc-cover-ph"><div class="cc-cover-ph-orn">◈</div><div class="cc-cover-ph-line"></div><div class="cc-cover-ph-title">Wedhatama<br>ꦮꦼꦢꦠꦩ</div></div><div class="cc-badge cb-kertas">Kertas Eropa</div></div>
+        <div class="cc-body"><div class="cc-kode">NRN-005 · Abad XIX</div><div class="cc-title">Serat Wedhatama</div><div class="cc-media">Kertas Eropa · 96 halaman</div><div class="cc-tags"><span class="cc-tag">Jawa</span></div></div>
+      </div>
+      <div class="cat-card reveal d3">
+        <div class="cc-cover"><div class="cc-cover-ph"><div class="cc-cover-ph-orn">☀</div><div class="cc-cover-ph-line"></div><div class="cc-cover-ph-title">Babad Malang<br>ꦧꦧꦢ</div></div><div class="cc-badge cb-kertas">Folio Bergaris</div></div>
+        <div class="cc-body"><div class="cc-kode">NRN-008 · Abad XX</div><div class="cc-title">Babad Malang</div><div class="cc-media">Kertas Folio Bergaris · 120 halaman</div><div class="cc-tags"><span class="cc-tag">Jawa</span><span class="cc-tag">Latin</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FITUR -->
+<section class="sec fitur" id="fitur">
+  <div class="sec-inner">
+    <div class="sec-eyebrow reveal">Kemampuan Platform</div>
+    <h2 class="sec-h2 reveal d1">Tiga Pilar <em>Pelestarian</em></h2>
+    <p class="sec-sub reveal d2">Dari digitalisasi hingga aksesibilitas publik, platform ini dirancang untuk menjaga warisan budaya lintas generasi.</p>
+    <div class="fitur-grid">
+      <div class="fitur-card reveal">
+        <div class="fc-roman">I.</div>
+        <div class="fc-title">Digitalisasi Presisi</div>
+        <div class="fc-desc">Setiap naskah didigitalisasi dengan resolusi tinggi dan metadata lengkap — aksara, bahasa, media, kondisi fisik, dan perkiraan abad.</div>
+      </div>
+      <div class="fitur-card reveal d1">
+        <div class="fc-roman">II.</div>
+        <div class="fc-title">Pencarian Multidimensi</div>
+        <div class="fc-desc">Temukan naskah berdasarkan aksara, bahasa, media, koleksi, atau kata kunci bebas. Filter berlapis untuk penelitian mendalam.</div>
+      </div>
+      <div class="fitur-card reveal d2">
+        <div class="fc-roman">III.</div>
+        <div class="fc-title">Akses Terbuka</div>
+        <div class="fc-desc">Koleksi dapat diakses publik tanpa registrasi. Peneliti, pelajar, dan masyarakat umum bisa mengeksplorasi warisan leluhur kapan saja.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="sec about" id="tentang">
+  <div class="sec-inner">
+    <div class="about-inner">
+      <div class="about-visual">
+        <div class="av-main"><div class="av-main-text">ꦱꦺꦫꦠ꧀</div></div>
+        <div class="av-accent"></div>
+        <div class="av-chip">Sejak 2024</div>
+      </div>
+      <div class="about-content">
+        <div class="sec-eyebrow reveal">Tentang Kami</div>
+        <h2 class="sec-h2 reveal d1">Menjaga <em>Ingatan</em><br>Peradaban</h2>
+        <blockquote class="about-quote reveal d2">"Naskah adalah jendela peradaban — ia menyimpan ilmu, seni, hukum, dan kebijaksanaan yang melampaui zaman."</blockquote>
+        <p class="about-body reveal d3">Platform ini lahir dari keprihatinan terhadap semakin banyaknya naskah kuno yang rusak dan tidak terdokumentasi. Kami bersama lembaga kearsipan daerah berkomitmen untuk mendigitalisasi, merawat, dan memperluas akses terhadap kekayaan intelektual leluhur Nusantara.<br><br>Setiap naskah memiliki cerita yang layak didengar oleh dunia.</p>
+        <div class="about-meta reveal d4">
+          <div class="am-row"><div class="am-dot"></div>Bekerja sama dengan Dispussipda Kota Malang</div>
+          <div class="am-row"><div class="am-dot"></div>Koleksi dari abad XII hingga XX</div>
+          <div class="am-row"><div class="am-dot"></div>Terdaftar di JARANAN — Jaringan Arsip Nasional</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AKSARA DEMO -->
+<section class="sec aksara-sec">
+  <div class="sec-inner">
+    <div class="aksara-inner">
+      <div>
+        <div class="sec-eyebrow reveal">Distribusi Aksara</div>
+        <h2 class="sec-h2 reveal d1">Ragam <em>Aksara</em><br>dalam Koleksi</h2>
+        <p class="sec-sub reveal d2">Koleksi kami mencakup berbagai jenis aksara dari seluruh Nusantara, mencerminkan kekayaan tradisi tulis Indonesia.</p>
+      </div>
+      <div class="aksara-demo reveal d1">
+        <div class="ad-title">Aksara Terbanyak dalam Koleksi</div>
+        <div class="aksara-list">
+          <div class="aksara-item"><div class="ai-num">ꦲ</div><div class="ai-name">Hanacaraka / Jawa</div><div class="ai-count">482 naskah</div><div class="ai-bar-wrap"><div class="ai-bar" style="width:88%"></div></div></div>
+          <div class="aksara-item"><div class="ai-num">ﭬ</div><div class="ai-name">Arab Pegon</div><div class="ai-count">318 naskah</div><div class="ai-bar-wrap"><div class="ai-bar" style="width:58%"></div></div></div>
+          <div class="aksara-item"><div class="ai-num">ع</div><div class="ai-name">Arab Klasik</div><div class="ai-count">241 naskah</div><div class="ai-bar-wrap"><div class="ai-bar" style="width:44%"></div></div></div>
+          <div class="aksara-item"><div class="ai-num">ᬅ</div><div class="ai-name">Bali</div><div class="ai-count">128 naskah</div><div class="ai-bar-wrap"><div class="ai-bar" style="width:23%"></div></div></div>
+          <div class="aksara-item"><div class="ai-num">A</div><div class="ai-name">Latin</div><div class="ai-count">78 naskah</div><div class="ai-bar-wrap"><div class="ai-bar" style="width:14%"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="sec cta-sec" id="kontak">
+  <div class="sec-inner">
+    <div class="cta-inner">
+      <span class="cta-orn">❧</span>
+      <h2 class="cta-h2 reveal">Mulai Menjelajahi<br>Warisan Budaya Kita</h2>
+      <p class="cta-p reveal d1">Akses ribuan naskah kuno secara gratis. Dukung pelestarian budaya dengan menjadi mitra digitalisasi atau donatur koleksi.</p>
+      <div class="cta-actions reveal d2">
+        <button class="btn-cta-primary">Buka Katalog Lengkap</button>
+        <button class="btn-cta-ghost">Hubungi Kami</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-logo-area">
+      <div class="footer-title">WARISAN DIGITAL</div>
+      <div class="footer-desc">Repositori digital naskah kuno Nusantara untuk peneliti, pelajar, dan masyarakat umum.</div>
+    </div>
+    <div class="footer-col"><h4>Koleksi</h4><ul><li><a href="#">Katalog Naskah</a></li><li><a href="#">Daftar Aksara</a></li><li><a href="#">Koleksi Terbaru</a></li><li><a href="#">Pencarian Lanjut</a></li></ul></div>
+    <div class="footer-col"><h4>Lembaga</h4><ul><li><a href="#">Tentang Kami</a></li><li><a href="#">Mitra Institusi</a></li><li><a href="#">Cara Berdonasi</a></li><li><a href="#">Kontak</a></li></ul></div>
+    <div class="footer-col"><h4>Tautan</h4><ul><li><a href="#">Khastara Perpusnas</a></li><li><a href="#">ANRI</a></li><li><a href="#">OPAC Perpusnas</a></li><li><a href="#">ONESearch</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Warisan Digital. Seluruh koleksi dilindungi hak cipta lembaga terkait.</span>
+    <span>Parchment · Heritage</span>
+  </div>
+</footer>
+
+<script>
+  // Theme toggle
+  const themes = ['parchment','heritage'];
+  const icons  = ['🌙','☀️'];
+  const labels = ['Heritage','Parchment'];
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    const root = document.documentElement;
+    const cur  = root.getAttribute('data-theme');
+    const next = cur === 'parchment' ? 'heritage' : 'parchment';
+    const idx  = next === 'heritage' ? 0 : 1;
+    root.setAttribute('data-theme', next);
+    document.getElementById('themeIcon').textContent = icons[idx];
+    document.getElementById('themeLabel').textContent = labels[idx];
+  });
+
+  // Nav scroll
+  window.addEventListener('scroll', () =>
+    document.getElementById('mainNav').style.boxShadow = scrollY > 20 ? '0 2px 20px rgba(0,0,0,0.12)' : '');
+
+  // Mobile menu
+  document.getElementById('hamBtn').addEventListener('click', () =>
+    document.getElementById('mobMenu').classList.toggle('open'));
+  document.querySelectorAll('.mob-menu a').forEach(a =>
+    a.addEventListener('click', () => document.getElementById('mobMenu').classList.remove('open')));
+
+  // Search filter
+  function setFilter(el) {
+    document.querySelectorAll('.sf').forEach(e => e.classList.remove('on'));
+    el.classList.add('on');
+  }
+
+  // Reveal on scroll
+  const obs = new IntersectionObserver(entries =>
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+    { threshold: 0.07 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Hero dot interaction
+  document.querySelectorAll('.hero-dot').forEach((dot, i) => {
+    dot.addEventListener('click', () => {
+      document.querySelectorAll('.hero-dot').forEach(d => d.classList.remove('on'));
+      dot.classList.add('on');
+    });
+  });
+</script>
+</body>
+</html>

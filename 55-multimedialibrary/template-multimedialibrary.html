@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediaNusa — Perpustakaan Multimedia Premium</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0D0817;
+  --bg2: #120B2A;
+  --bg3: #1A1040;
+  --surface: #1E1345;
+  --surface2: #241A52;
+  --border: rgba(168,85,247,0.15);
+  --border2: rgba(168,85,247,0.25);
+  --text: #F0ECF8;
+  --text2: #A89BC2;
+  --text3: #6B5E8A;
+  --purple: #A855F7;
+  --purple2: #9333EA;
+  --pink: #EC4899;
+  --cyan: #06B6D4;
+  --gold: #F59E0B;
+  --ease: cubic-bezier(0.16,1,0.3,1);
+  --font-disp: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --r: 14px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--purple2); border-radius: 99px; }
+
+/* UTILS */
+.container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+}
+.reveal.visible { opacity: 1; transform: none; }
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(13,8,23,0.72);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  height: 64px;
+  padding: 0 24px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-disp);
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--text);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.nav-logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--purple), var(--pink));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; font-weight: 700; color: #fff;
+}
+.nav-links {
+  display: flex;
+  gap: 4px;
+  list-style: none;
+  flex: 1;
+}
+.nav-links a {
+  color: var(--text2);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 8px;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-links a:hover { color: var(--text); background: var(--surface); }
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+.badge-free {
+  background: linear-gradient(90deg, var(--purple2), var(--pink));
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+.nav-avatar {
+  position: relative;
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--surface2), var(--purple2));
+  border-radius: 50%;
+  border: 2px solid var(--border2);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem;
+}
+.notif-dot {
+  position: absolute;
+  top: -1px; right: -1px;
+  width: 10px; height: 10px;
+  background: var(--pink);
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+}
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  padding-top: 64px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 40%, rgba(168,85,247,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 80% 60%, rgba(236,72,153,0.1) 0%, transparent 60%),
+    var(--bg2);
+  z-index: 0;
+}
+.hero-grain {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+}
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 80px 24px 120px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  width: 100%;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(168,85,247,0.12);
+  border: 1px solid var(--border2);
+  border-radius: 99px;
+  padding: 5px 14px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--purple);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.hero-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--purple);
+  animation: pulse-dot 2s infinite;
+}
+@keyframes pulse-dot {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:0.5; transform:scale(0.7); }
+}
+.hero-title {
+  font-family: var(--font-disp);
+  font-size: clamp(2.8rem, 5vw, 4.4rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, var(--text) 40%, var(--purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-author {
+  font-family: var(--font-disp);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text2);
+  margin-bottom: 16px;
+}
+.hero-genres {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.genre-pill {
+  background: rgba(168,85,247,0.1);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text2);
+}
+.hero-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.stars { color: var(--gold); letter-spacing: 2px; font-size: 1.05rem; }
+.rating-text { font-size: 0.82rem; color: var(--text3); }
+.hero-desc {
+  color: var(--text2);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  max-width: 480px;
+  margin-bottom: 28px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(90deg, var(--purple2), var(--pink));
+  color: #fff;
+  font-family: var(--font-disp);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 13px 28px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s var(--ease), box-shadow 0.2s;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(168,85,247,0.4); }
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-disp);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 13px 24px;
+  border-radius: 12px;
+  border: 1px solid var(--border2);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.btn-outline:hover { background: var(--surface); border-color: var(--purple); }
+
+/* HERO MEDIA STACK */
+.hero-media-stack {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 420px;
+}
+.media-card-stack { position: relative; width: 220px; height: 320px; }
+.media-card-stack .card-item {
+  position: absolute;
+  width: 200px;
+  height: 290px;
+  border-radius: 16px;
+  border: 1px solid var(--border2);
+}
+.card-item:nth-child(1) {
+  background: linear-gradient(135deg, #1a0a3a, #3b1278);
+  left: 60px; top: 20px;
+  transform: rotate(8deg);
+  z-index: 1;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.card-item:nth-child(2) {
+  background: linear-gradient(135deg, #0d1f3c, #1a4a8a);
+  left: 30px; top: 10px;
+  transform: rotate(4deg);
+  z-index: 2;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.card-item:nth-child(3) {
+  background: linear-gradient(145deg, #1e0a30, #7c2d9e 60%, #c026d3);
+  left: 0; top: 0;
+  transform: rotate(0deg);
+  z-index: 3;
+  box-shadow: 0 20px 80px rgba(168,85,247,0.35);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+}
+.card-item:nth-child(3)::before {
+  content: '';
+  position: absolute;
+  top: 20px; left: 50%;
+  transform: translateX(-50%);
+  width: 100px; height: 130px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.stack-title {
+  font-family: var(--font-disp);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+  position: relative; z-index: 1;
+}
+.stack-sub {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.6);
+  position: relative; z-index: 1;
+}
+
+/* TICKER */
+.ticker-wrap {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(18,11,42,0.85);
+  border-top: 1px solid var(--border);
+  height: 40px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  z-index: 2;
+}
+.ticker-track {
+  display: flex;
+  gap: 48px;
+  white-space: nowrap;
+  animation: ticker-scroll 32s linear infinite;
+}
+.ticker-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--text3);
+  flex-shrink: 0;
+}
+.ticker-type {
+  background: var(--surface2);
+  color: var(--purple);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+@keyframes ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* SECTION BASE */
+section { padding: 80px 0; }
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+.section-title {
+  font-family: var(--font-disp);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.section-link {
+  color: var(--purple);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: gap 0.2s;
+}
+.section-link:hover { gap: 8px; }
+
+/* TABS */
+.tabs-wrap {
+  background: var(--bg2);
+  padding: 60px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.tabs-bar {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  margin-bottom: 36px;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+.tabs-bar::-webkit-scrollbar { display: none; }
+.tab-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--text3);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+.tab-btn::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 20%; right: 20%;
+  height: 2px;
+  background: var(--purple);
+  border-radius: 99px;
+  transform: scaleX(0);
+  transition: transform 0.25s var(--ease);
+  box-shadow: 0 0 8px var(--purple);
+}
+.tab-btn:hover { color: var(--text2); background: var(--surface); }
+.tab-btn.active { color: var(--text); background: var(--surface); }
+.tab-btn.active::after { transform: scaleX(1); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.media-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  align-items: flex-start;
+  cursor: pointer;
+  transition: transform 0.25s var(--ease), box-shadow 0.25s, border-color 0.25s;
+}
+.media-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 32px rgba(168,85,247,0.2);
+  border-color: var(--border2);
+}
+.media-thumb {
+  width: 72px;
+  height: 100px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+.media-info { flex: 1; min-width: 0; }
+.media-type-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.badge-ebook { background: rgba(168,85,247,0.2); color: var(--purple); }
+.badge-jurnal { background: rgba(6,182,212,0.2); color: var(--cyan); }
+.badge-dokumenter { background: rgba(245,158,11,0.2); color: var(--gold); }
+.badge-podcast { background: rgba(236,72,153,0.2); color: var(--pink); }
+.badge-audio { background: rgba(52,211,153,0.2); color: #34d399; }
+.media-title {
+  font-family: var(--font-disp);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.media-author { font-size: 0.78rem; color: var(--text3); margin-bottom: 8px; }
+.media-meta { display: flex; align-items: center; justify-content: space-between; }
+.media-pages { font-size: 0.75rem; color: var(--text3); }
+.media-rating { font-size: 0.75rem; color: var(--gold); }
+
+/* Gradient thumbs */
+.g1  { background: linear-gradient(135deg,#1a0a3a,#7c2d9e); }
+.g2  { background: linear-gradient(135deg,#0d1f3c,#065f8c); }
+.g3  { background: linear-gradient(135deg,#1e3a1e,#16803c); }
+.g4  { background: linear-gradient(135deg,#3a1a0a,#c05621); }
+.g5  { background: linear-gradient(135deg,#1a2a3a,#1d4ed8); }
+.g6  { background: linear-gradient(135deg,#2a1a3a,#be185d); }
+.g7  { background: linear-gradient(135deg,#0a2a2a,#0e7490); }
+.g8  { background: linear-gradient(135deg,#2a2a0a,#a16207); }
+.g9  { background: linear-gradient(135deg,#1a0a0a,#9b1c1c); }
+.g10 { background: linear-gradient(135deg,#0a1a2a,#1e40af); }
+.g11 { background: linear-gradient(135deg,#2a0a2a,#86198f); }
+.g12 { background: linear-gradient(135deg,#0a2a1a,#065f46); }
+.g13 { background: linear-gradient(135deg,#2a1a0a,#92400e); }
+.g14 { background: linear-gradient(135deg,#1a0a2a,#6d28d9); }
+.g15 { background: linear-gradient(135deg,#0a1a1a,#134e4a); }
+.g16 { background: linear-gradient(135deg,#2a2a1a,#854d0e); }
+
+/* NEW SECTION — horizontal scroll */
+.new-section { background: var(--bg); padding: 70px 0; }
+.scroll-row {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 8px 4px 20px;
+  scrollbar-width: none;
+}
+.scroll-row::-webkit-scrollbar { display: none; }
+.scroll-card { flex-shrink: 0; width: 160px; scroll-snap-align: start; cursor: pointer; }
+.scroll-thumb {
+  width: 160px;
+  height: 230px;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+  transition: box-shadow 0.25s, transform 0.25s var(--ease);
+}
+.scroll-card:hover .scroll-thumb {
+  box-shadow: 0 8px 28px rgba(168,85,247,0.25);
+  transform: translateY(-4px);
+}
+.scroll-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(13,8,23,0.75);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.scroll-card:hover .scroll-overlay { opacity: 1; }
+.overlay-play {
+  width: 44px; height: 44px;
+  background: var(--purple);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; color: #fff;
+}
+.overlay-btn {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.scroll-card-title {
+  font-family: var(--font-disp);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+.scroll-card-genre {
+  font-size: 0.7rem;
+  color: var(--text3);
+  background: var(--surface);
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+.scroll-nav { display: flex; gap: 8px; margin-top: 16px; }
+.scroll-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+.scroll-btn:hover { background: var(--purple2); border-color: var(--purple); }
+
+/* AUTHORS */
+.authors-section {
+  background: var(--bg3);
+  padding: 70px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.authors-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.author-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 28px 24px;
+  transition: border-color 0.25s, transform 0.25s var(--ease);
+}
+.author-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+.author-avatar {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  margin-bottom: 16px;
+}
+.author-name {
+  font-family: var(--font-disp);
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.author-genre { font-size: 0.8rem; color: var(--purple); margin-bottom: 4px; font-weight: 500; }
+.author-works { font-size: 0.78rem; color: var(--text3); margin-bottom: 14px; }
+.author-quote {
+  font-size: 0.82rem;
+  color: var(--text2);
+  line-height: 1.6;
+  font-style: italic;
+  border-left: 2px solid var(--border2);
+  padding-left: 12px;
+}
+
+/* RESUME */
+.resume-section { background: var(--bg2); padding: 70px 0; }
+.resume-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.resume-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  align-items: center;
+  transition: border-color 0.25s;
+}
+.resume-card:hover { border-color: var(--border2); }
+.resume-thumb {
+  width: 60px;
+  height: 84px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+.resume-body { flex: 1; min-width: 0; }
+.resume-title {
+  font-family: var(--font-disp);
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.resume-page { font-size: 0.75rem; color: var(--text3); margin-bottom: 10px; }
+.progress-bar-wrap {
+  height: 4px;
+  background: var(--surface2);
+  border-radius: 99px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  width: 0;
+  transition: width 1.2s var(--ease);
+}
+.resume-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--purple);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.resume-btn:hover { background: var(--purple2); color: #fff; border-color: var(--purple2); }
+
+/* GENRE TAGS */
+.genre-section { background: var(--bg); padding: 70px 0; }
+.tag-cloud { display: flex; flex-wrap: wrap; gap: 10px; }
+.tag-pill {
+  padding: 8px 18px;
+  border-radius: 99px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.tag-pill:hover { transform: scale(1.05); box-shadow: 0 4px 14px rgba(0,0,0,0.3); }
+.tag-a { color:var(--purple); border-color:rgba(168,85,247,0.3); background:rgba(168,85,247,0.08); }
+.tag-a:hover { background:rgba(168,85,247,0.2); }
+.tag-b { color:var(--cyan); border-color:rgba(6,182,212,0.3); background:rgba(6,182,212,0.08); }
+.tag-b:hover { background:rgba(6,182,212,0.2); }
+.tag-c { color:var(--pink); border-color:rgba(236,72,153,0.3); background:rgba(236,72,153,0.08); }
+.tag-c:hover { background:rgba(236,72,153,0.2); }
+.tag-d { color:var(--gold); border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.08); }
+.tag-d:hover { background:rgba(245,158,11,0.2); }
+.tag-e { color:#34d399; border-color:rgba(52,211,153,0.3); background:rgba(52,211,153,0.08); }
+.tag-e:hover { background:rgba(52,211,153,0.2); }
+.tag-f { color:#fb7185; border-color:rgba(251,113,133,0.3); background:rgba(251,113,133,0.08); }
+.tag-f:hover { background:rgba(251,113,133,0.2); }
+
+/* PRICING */
+.pricing-section {
+  background: var(--bg2);
+  padding: 80px 0;
+  border-top: 1px solid var(--border);
+}
+.pricing-header { text-align: center; margin-bottom: 40px; }
+.pricing-title {
+  font-family: var(--font-disp);
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+.pricing-sub { color: var(--text2); font-size: 0.95rem; }
+.toggle-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 24px 0 40px;
+}
+.toggle-label { font-size: 0.9rem; color: var(--text2); font-weight: 500; }
+.toggle-switch {
+  width: 52px; height: 28px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 99px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.toggle-switch.on { background: var(--purple2); border-color: var(--purple); }
+.toggle-knob {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 20px; height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  transition: left 0.25s var(--ease);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+.toggle-switch.on .toggle-knob { left: 27px; }
+.discount-badge {
+  background: rgba(52,211,153,0.15);
+  color: #34d399;
+  border: 1px solid rgba(52,211,153,0.3);
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.pricing-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 32px 28px;
+  position: relative;
+  transition: transform 0.25s var(--ease), box-shadow 0.25s;
+  backdrop-filter: blur(10px);
+}
+.pricing-card:hover { transform: translateY(-4px); }
+.pricing-card.popular {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 1px var(--purple), 0 20px 60px rgba(168,85,247,0.2);
+}
+.popular-badge {
+  position: absolute;
+  top: -14px; left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, var(--cyan), #0891b2);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 16px;
+  border-radius: 99px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.plan-name {
+  font-family: var(--font-disp);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text2);
+  margin-bottom: 12px;
+}
+.plan-price {
+  font-family: var(--font-disp);
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 4px;
+}
+.plan-price span { font-size: 0.9rem; color: var(--text3); font-weight: 400; }
+.plan-desc { font-size: 0.82rem; color: var(--text3); margin-bottom: 24px; }
+.plan-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.plan-features li {
+  font-size: 0.86rem;
+  color: var(--text2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.plan-features li::before {
+  content: '✓';
+  width: 18px; height: 18px;
+  background: rgba(168,85,247,0.15);
+  color: var(--purple);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.plan-features li.no { color: var(--text3); }
+.plan-features li.no::before { content: '✕'; background: rgba(107,94,138,0.15); color: var(--text3); }
+.plan-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  font-family: var(--font-disp);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.plan-btn-outline {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text);
+}
+.plan-btn-outline:hover { background: var(--surface2); border-color: var(--purple); }
+.plan-btn-filled {
+  background: linear-gradient(90deg, var(--purple2), var(--pink));
+  border: none;
+  color: #fff;
+}
+.plan-btn-filled:hover { box-shadow: 0 4px 20px rgba(168,85,247,0.4); transform: translateY(-1px); }
+
+/* STATS */
+.stats-section {
+  background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
+  padding: 80px 0;
+  border-top: 1px solid var(--border);
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+}
+.stat-item {
+  background: var(--surface);
+  padding: 36px 24px;
+  text-align: center;
+  transition: background 0.2s;
+}
+.stat-item:hover { background: var(--surface2); }
+.stat-number {
+  font-family: var(--font-disp);
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, var(--purple), var(--pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+.stat-label { font-size: 0.85rem; color: var(--text3); font-weight: 500; }
+
+/* FOOTER */
+footer {
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+footer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--purple), transparent);
+  box-shadow: 0 0 30px 10px rgba(168,85,247,0.15);
+}
+.footer-main {
+  padding: 60px 0 40px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  gap: 40px;
+}
+.footer-brand .nav-logo { margin-bottom: 14px; display: inline-flex; }
+.footer-tagline { font-size: 0.85rem; color: var(--text3); line-height: 1.6; margin-bottom: 20px; }
+.footer-socials { display: flex; gap: 8px; }
+.social-btn {
+  width: 36px; height: 36px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  color: var(--text2);
+  text-decoration: none;
+}
+.social-btn:hover { background: var(--surface2); border-color: var(--purple); color: var(--purple); }
+.app-btns { display: flex; gap: 8px; margin-top: 16px; }
+.app-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 0.75rem;
+  color: var(--text2);
+  cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  transition: border-color 0.2s;
+}
+.app-btn:hover { border-color: var(--purple); }
+.footer-col-title {
+  font-family: var(--font-disp);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-links a {
+  font-size: 0.85rem;
+  color: var(--text3);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--purple); }
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  padding: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.footer-copyright { font-size: 0.8rem; color: var(--text3); }
+.footer-legal { display: flex; gap: 20px; }
+.footer-legal a {
+  font-size: 0.8rem;
+  color: var(--text3);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-legal a:hover { color: var(--text2); }
+
+/* RESPONSIVE */
+@media (max-width: 960px) {
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-media-stack { display: none; }
+  .footer-main { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .media-grid, .authors-grid, .resume-grid, .pricing-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-main { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon">M</div>
+      MediaNusa
+    </a>
+    <ul class="nav-links">
+      <li><a href="#">Jelajah</a></li>
+      <li><a href="#">Kategori</a></li>
+      <li><a href="#">Penulis</a></li>
+      <li><a href="#">Berlangganan</a></li>
+    </ul>
+    <div class="nav-right">
+      <span class="badge-free">7 Hari Gratis</span>
+      <div class="nav-avatar">
+        👤
+        <span class="notif-dot"></span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grain"></div>
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="hero-dot"></span>
+        Koleksi Unggulan Juni 2026
+      </div>
+      <h1 class="hero-title">Laskar Pelangi</h1>
+      <p class="hero-author">oleh Andrea Hirata</p>
+      <div class="hero-genres">
+        <span class="genre-pill">Fiksi</span>
+        <span class="genre-pill">Sastra Indonesia</span>
+        <span class="genre-pill">Bestseller</span>
+      </div>
+      <div class="hero-rating">
+        <span class="stars">★★★★☆</span>
+        <span class="rating-text">4.8/5 &middot; 12,4 ribu ulasan</span>
+      </div>
+      <p class="hero-desc">Kisah sepuluh anak kampung yang berjuang mendapatkan pendidikan di Belitong dengan segala keterbatasannya. Novel ikonik yang menginspirasi jutaan pembaca Indonesia dan dunia — sebuah perayaan semangat, persahabatan, dan mimpi tanpa batas.</p>
+      <div class="hero-ctas">
+        <button class="btn-primary" id="btnBaca" onclick="toggleBaca(this)">&#9654; Baca Sekarang</button>
+        <button class="btn-outline" id="btnSimpan" onclick="toggleSimpan(this)">&#65291; Simpan</button>
+      </div>
+    </div>
+    <div class="hero-media-stack">
+      <div class="media-card-stack">
+        <div class="card-item"></div>
+        <div class="card-item"></div>
+        <div class="card-item">
+          <div class="stack-title">Laskar Pelangi</div>
+          <div class="stack-sub">Andrea Hirata &middot; 529 hal</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ticker-wrap">
+    <div class="ticker-track">
+      <span class="ticker-item"><span class="ticker-type">EBOOK</span> Bumi Manusia &mdash; Pramoedya Ananta Toer</span>
+      <span class="ticker-item"><span class="ticker-type">AUDIO</span> Filosofi Teras &mdash; Henry Manampiring</span>
+      <span class="ticker-item"><span class="ticker-type">JURNAL</span> Keberlanjutan Energi Terbarukan &mdash; LIPI 2025</span>
+      <span class="ticker-item"><span class="ticker-type">PODCAST</span> Apa Kabar, Indonesia? &mdash; Edisi 247</span>
+      <span class="ticker-item"><span class="ticker-type">DOKUMENTER</span> Nusantara dari Atas &mdash; Nat Geo Indonesia</span>
+      <span class="ticker-item"><span class="ticker-type">EBOOK</span> Atomic Habits &mdash; James Clear (Terjemahan)</span>
+      <span class="ticker-item"><span class="ticker-type">JURNAL</span> Kecerdasan Buatan di Asia Tenggara &mdash; 2026</span>
+      <span class="ticker-item"><span class="ticker-type">AUDIO</span> Sapiens &mdash; Yuval Noah Harari (Bahasa Indonesia)</span>
+      <span class="ticker-item"><span class="ticker-type">EBOOK</span> Bumi Manusia &mdash; Pramoedya Ananta Toer</span>
+      <span class="ticker-item"><span class="ticker-type">AUDIO</span> Filosofi Teras &mdash; Henry Manampiring</span>
+      <span class="ticker-item"><span class="ticker-type">JURNAL</span> Keberlanjutan Energi Terbarukan &mdash; LIPI 2025</span>
+      <span class="ticker-item"><span class="ticker-type">PODCAST</span> Apa Kabar, Indonesia? &mdash; Edisi 247</span>
+      <span class="ticker-item"><span class="ticker-type">DOKUMENTER</span> Nusantara dari Atas &mdash; Nat Geo Indonesia</span>
+      <span class="ticker-item"><span class="ticker-type">EBOOK</span> Atomic Habits &mdash; James Clear (Terjemahan)</span>
+      <span class="ticker-item"><span class="ticker-type">JURNAL</span> Kecerdasan Buatan di Asia Tenggara &mdash; 2026</span>
+      <span class="ticker-item"><span class="ticker-type">AUDIO</span> Sapiens &mdash; Yuval Noah Harari (Bahasa Indonesia)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── KATEGORI MEDIA TABS ── -->
+<div class="tabs-wrap">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 class="section-title">Jelajahi Koleksi</h2>
+    </div>
+    <div class="tabs-bar reveal">
+      <button class="tab-btn active" onclick="switchTab(this,'semua')">Semua</button>
+      <button class="tab-btn" onclick="switchTab(this,'ebook')">Ebook</button>
+      <button class="tab-btn" onclick="switchTab(this,'jurnal')">Jurnal Ilmiah</button>
+      <button class="tab-btn" onclick="switchTab(this,'dokumenter')">Dokumenter</button>
+      <button class="tab-btn" onclick="switchTab(this,'podcast')">Podcast</button>
+      <button class="tab-btn" onclick="switchTab(this,'audiobook')">Audiobook</button>
+    </div>
+
+    <div class="tab-panel active" data-panel="semua">
+      <div class="media-grid">
+        <div class="media-card reveal"><div class="media-thumb g1"></div><div class="media-info"><span class="media-type-badge badge-ebook">Ebook</span><div class="media-title">Bumi Manusia</div><div class="media-author">Pramoedya Ananta Toer</div><div class="media-meta"><span class="media-pages">535 halaman</span><span class="media-rating">&#9733; 4.9</span></div></div></div>
+        <div class="media-card reveal"><div class="media-thumb g7"></div><div class="media-info"><span class="media-type-badge badge-jurnal">Jurnal</span><div class="media-title">Riset AI di Indonesia 2026</div><div class="media-author">BRIN &mdash; Pusat Riset Komputasi</div><div class="media-meta"><span class="media-pages">88 halaman</span><span class="media-rating">&#9733; 4.7</span></div></div></div>
+        <div class="media-card reveal"><div class="media-thumb g4"></div><div class="media-info"><span class="media-type-badge badge-dokumenter">Dokumenter</span><div class="media-title">Nusantara dari Atas</div><div class="media-author">Nat Geo Indonesia</div><div class="media-meta"><span class="media-pages">3 episode &middot; 120 mnt</span><span class="media-rating">&#9733; 4.8</span></div></div></div>
+        <div class="media-card reveal"><div class="media-thumb g6"></div><div class="media-info"><span class="media-type-badge badge-podcast">Podcast</span><div class="media-title">Apa Kabar, Indonesia?</div><div class="media-author">Najwa Shihab &amp; Tim</div><div class="media-meta"><span class="media-pages">247 episode</span><span class="media-rating">&#9733; 4.9</span></div></div></div>
+        <div class="media-card reveal"><div class="media-thumb g5"></div><div class="media-info"><span class="media-type-badge badge-audio">Audiobook</span><div class="media-title">Filosofi Teras</div><div class="media-author">Henry Manampiring</div><div class="media-meta"><span class="media-pages">9 jam 22 mnt</span><span class="media-rating">&#9733; 4.8</span></div></div></div>
+        <div class="media-card reveal"><div class="media-thumb g3"></div><div class="media-info"><span class="media-type-badge badge-ebook">Ebook</span><div class="media-title">Pulang</div><div class="media-author">Tere Liye</div><div class="media-meta"><span class="media-pages">400 halaman</span><span class="media-rating">&#9733; 4.7</span></div></div></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" data-panel="ebook">
+      <div class="media-grid">
+        <div class="media-card"><div class="media-thumb g2"></div><div class="media-info"><span class="media-type-badge badge-ebook">Ebook</span><div class="media-title">Saman</div><div class="media-author">Ayu Utami</div><div class="media-meta"><span class="media-pages">196 halaman</span><span class="media-rating">&#9733; 4.6</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g9"></div><div class="media-info"><span class="media-type-badge badge-ebook">Ebook</span><div class="media-title">Lelaki Tua dan Laut</div><div class="media-author">Ernest Hemingway</div><div class="media-meta"><span class="media-pages">127 halaman</span><span class="media-rating">&#9733; 4.7</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g14"></div><div class="media-info"><span class="media-type-badge badge-ebook">Ebook</span><div class="media-title">Dilan: 1990</div><div class="media-author">Pidi Baiq</div><div class="media-meta"><span class="media-pages">222 halaman</span><span class="media-rating">&#9733; 4.5</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g11"></div><div class="media-info"><span class="media-type-badge badge-ebook">Ebook</span><div class="media-title">Cantik Itu Luka</div><div class="media-author">Eka Kurniawan</div><div class="media-meta"><span class="media-pages">505 halaman</span><span class="media-rating">&#9733; 4.8</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g13"></div><div class="media-info"><span class="media-type-badge badge-ebook">Ebook</span><div class="media-title">Negeri Para Bedebah</div><div class="media-author">Tere Liye</div><div class="media-meta"><span class="media-pages">360 halaman</span><span class="media-rating">&#9733; 4.6</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g15"></div><div class="media-info"><span class="media-type-badge badge-ebook">Ebook</span><div class="media-title">Ronggeng Dukuh Paruk</div><div class="media-author">Ahmad Tohari</div><div class="media-meta"><span class="media-pages">256 halaman</span><span class="media-rating">&#9733; 4.7</span></div></div></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" data-panel="jurnal">
+      <div class="media-grid">
+        <div class="media-card"><div class="media-thumb g7"></div><div class="media-info"><span class="media-type-badge badge-jurnal">Jurnal</span><div class="media-title">Keberlanjutan Energi 2025</div><div class="media-author">LIPI Bandung</div><div class="media-meta"><span class="media-pages">72 halaman</span><span class="media-rating">&#9733; 4.5</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g10"></div><div class="media-info"><span class="media-type-badge badge-jurnal">Jurnal</span><div class="media-title">Literasi Digital Remaja</div><div class="media-author">Universitas Indonesia</div><div class="media-meta"><span class="media-pages">45 halaman</span><span class="media-rating">&#9733; 4.6</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g12"></div><div class="media-info"><span class="media-type-badge badge-jurnal">Jurnal</span><div class="media-title">Kesehatan Masyarakat Pesisir</div><div class="media-author">IPB University</div><div class="media-meta"><span class="media-pages">61 halaman</span><span class="media-rating">&#9733; 4.4</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g5"></div><div class="media-info"><span class="media-type-badge badge-jurnal">Jurnal</span><div class="media-title">Arsitektur Nusantara</div><div class="media-author">ITB Press</div><div class="media-meta"><span class="media-pages">88 halaman</span><span class="media-rating">&#9733; 4.7</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g8"></div><div class="media-info"><span class="media-type-badge badge-jurnal">Jurnal</span><div class="media-title">Pertanian Organik Indonesia</div><div class="media-author">Kementan RI</div><div class="media-meta"><span class="media-pages">54 halaman</span><span class="media-rating">&#9733; 4.3</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g16"></div><div class="media-info"><span class="media-type-badge badge-jurnal">Jurnal</span><div class="media-title">Ekonomi Kreatif 2026</div><div class="media-author">Kemenparekraf</div><div class="media-meta"><span class="media-pages">95 halaman</span><span class="media-rating">&#9733; 4.6</span></div></div></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" data-panel="dokumenter">
+      <div class="media-grid">
+        <div class="media-card"><div class="media-thumb g4"></div><div class="media-info"><span class="media-type-badge badge-dokumenter">Dokumenter</span><div class="media-title">Hutan Kalimantan</div><div class="media-author">WWF Indonesia</div><div class="media-meta"><span class="media-pages">52 menit</span><span class="media-rating">&#9733; 4.9</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g8"></div><div class="media-info"><span class="media-type-badge badge-dokumenter">Dokumenter</span><div class="media-title">Batik: Warisan Dunia</div><div class="media-author">TVRI Nasional</div><div class="media-meta"><span class="media-pages">45 menit</span><span class="media-rating">&#9733; 4.7</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g13"></div><div class="media-info"><span class="media-type-badge badge-dokumenter">Dokumenter</span><div class="media-title">Papua: Tanah di Ujung Fajar</div><div class="media-author">KompasTV</div><div class="media-meta"><span class="media-pages">68 menit</span><span class="media-rating">&#9733; 4.8</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g3"></div><div class="media-info"><span class="media-type-badge badge-dokumenter">Dokumenter</span><div class="media-title">Terumbu Karang Nusantara</div><div class="media-author">Yayasan Bahari</div><div class="media-meta"><span class="media-pages">40 menit</span><span class="media-rating">&#9733; 4.9</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g6"></div><div class="media-info"><span class="media-type-badge badge-dokumenter">Dokumenter</span><div class="media-title">Perempuan Penenun Timor</div><div class="media-author">Archipelago Films</div><div class="media-meta"><span class="media-pages">55 menit</span><span class="media-rating">&#9733; 4.6</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g9"></div><div class="media-info"><span class="media-type-badge badge-dokumenter">Dokumenter</span><div class="media-title">Gunung Berapi Indonesia</div><div class="media-author">BMKG Prod.</div><div class="media-meta"><span class="media-pages">75 menit</span><span class="media-rating">&#9733; 4.7</span></div></div></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" data-panel="podcast">
+      <div class="media-grid">
+        <div class="media-card"><div class="media-thumb g6"></div><div class="media-info"><span class="media-type-badge badge-podcast">Podcast</span><div class="media-title">Makna Hidup</div><div class="media-author">Boy William</div><div class="media-meta"><span class="media-pages">190 episode</span><span class="media-rating">&#9733; 4.8</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g2"></div><div class="media-info"><span class="media-type-badge badge-podcast">Podcast</span><div class="media-title">Startup Jajan</div><div class="media-author">Amir &amp; Rizal</div><div class="media-meta"><span class="media-pages">310 episode</span><span class="media-rating">&#9733; 4.7</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g11"></div><div class="media-info"><span class="media-type-badge badge-podcast">Podcast</span><div class="media-title">Catatan Psikologi</div><div class="media-author">dr. Jiemi Ardian</div><div class="media-meta"><span class="media-pages">88 episode</span><span class="media-rating">&#9733; 4.9</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g14"></div><div class="media-info"><span class="media-type-badge badge-podcast">Podcast</span><div class="media-title">Podcast Sejarah</div><div class="media-author">Historia ID</div><div class="media-meta"><span class="media-pages">200 episode</span><span class="media-rating">&#9733; 4.8</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g8"></div><div class="media-info"><span class="media-type-badge badge-podcast">Podcast</span><div class="media-title">Ngomongin Uang</div><div class="media-author">Felicia Putri</div><div class="media-meta"><span class="media-pages">155 episode</span><span class="media-rating">&#9733; 4.7</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g5"></div><div class="media-info"><span class="media-type-badge badge-podcast">Podcast</span><div class="media-title">Sains Itu Asik</div><div class="media-author">Martin Suryajaya</div><div class="media-meta"><span class="media-pages">120 episode</span><span class="media-rating">&#9733; 4.6</span></div></div></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" data-panel="audiobook">
+      <div class="media-grid">
+        <div class="media-card"><div class="media-thumb g5"></div><div class="media-info"><span class="media-type-badge badge-audio">Audiobook</span><div class="media-title">Sapiens (Bahasa Indonesia)</div><div class="media-author">Yuval Noah Harari</div><div class="media-meta"><span class="media-pages">15 jam 30 mnt</span><span class="media-rating">&#9733; 4.9</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g3"></div><div class="media-info"><span class="media-type-badge badge-audio">Audiobook</span><div class="media-title">Para Priyayi</div><div class="media-author">Umar Kayam</div><div class="media-meta"><span class="media-pages">11 jam 45 mnt</span><span class="media-rating">&#9733; 4.7</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g10"></div><div class="media-info"><span class="media-type-badge badge-audio">Audiobook</span><div class="media-title">Atomic Habits (Terjemahan)</div><div class="media-author">James Clear</div><div class="media-meta"><span class="media-pages">8 jam 20 mnt</span><span class="media-rating">&#9733; 4.8</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g1"></div><div class="media-info"><span class="media-type-badge badge-audio">Audiobook</span><div class="media-title">Sejarah Uang</div><div class="media-author">Niall Ferguson</div><div class="media-meta"><span class="media-pages">13 jam</span><span class="media-rating">&#9733; 4.6</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g16"></div><div class="media-info"><span class="media-type-badge badge-audio">Audiobook</span><div class="media-title">Thinking, Fast and Slow</div><div class="media-author">Daniel Kahneman</div><div class="media-meta"><span class="media-pages">20 jam</span><span class="media-rating">&#9733; 4.8</span></div></div></div>
+        <div class="media-card"><div class="media-thumb g6"></div><div class="media-info"><span class="media-type-badge badge-audio">Audiobook</span><div class="media-title">Rich Dad Poor Dad (Ind)</div><div class="media-author">Robert Kiyosaki</div><div class="media-meta"><span class="media-pages">6 jam 15 mnt</span><span class="media-rating">&#9733; 4.5</span></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── BARU DITAMBAHKAN ── -->
+<section class="new-section">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 class="section-title">Baru Ditambahkan</h2>
+      <a href="#" class="section-link">Lihat Semua &#8594;</a>
+    </div>
+    <div class="reveal">
+      <div class="scroll-row" id="scrollRow">
+        <div class="scroll-card"><div class="scroll-thumb g1"><div class="scroll-overlay"><div class="overlay-play">&#9654;</div><button class="overlay-btn">Baca</button></div></div><div class="scroll-card-title">Gadis Kretek</div><span class="scroll-card-genre">Fiksi Sejarah</span></div>
+        <div class="scroll-card"><div class="scroll-thumb g7"><div class="scroll-overlay"><div class="overlay-play">&#9654;</div><button class="overlay-btn">Baca</button></div></div><div class="scroll-card-title">Deep Work</div><span class="scroll-card-genre">Produktivitas</span></div>
+        <div class="scroll-card"><div class="scroll-thumb g4"><div class="scroll-overlay"><div class="overlay-play">&#9654;</div><button class="overlay-btn">Tonton</button></div></div><div class="scroll-card-title">Keajaiban Laut Indonesia</div><span class="scroll-card-genre">Dokumenter</span></div>
+        <div class="scroll-card"><div class="scroll-thumb g6"><div class="scroll-overlay"><div class="overlay-play">&#9654;</div><button class="overlay-btn">Dengar</button></div></div><div class="scroll-card-title">Zero to One (Terjemahan)</div><span class="scroll-card-genre">Bisnis</span></div>
+        <div class="scroll-card"><div class="scroll-thumb g5"><div class="scroll-overlay"><div class="overlay-play">&#9654;</div><button class="overlay-btn">Baca</button></div></div><div class="scroll-card-title">Perempuan di Titik Nol</div><span class="scroll-card-genre">Sastra Dunia</span></div>
+        <div class="scroll-card"><div class="scroll-thumb g11"><div class="scroll-overlay"><div class="overlay-play">&#9654;</div><button class="overlay-btn">Baca</button></div></div><div class="scroll-card-title">The Psychology of Money</div><span class="scroll-card-genre">Keuangan</span></div>
+        <div class="scroll-card"><div class="scroll-thumb g3"><div class="scroll-overlay"><div class="overlay-play">&#9654;</div><button class="overlay-btn">Dengar</button></div></div><div class="scroll-card-title">Hutan Larangan</div><span class="scroll-card-genre">Petualangan</span></div>
+        <div class="scroll-card"><div class="scroll-thumb g8"><div class="scroll-overlay"><div class="overlay-play">&#9654;</div><button class="overlay-btn">Baca</button></div></div><div class="scroll-card-title">Ekonomi Indonesia 2026</div><span class="scroll-card-genre">Ekonomi</span></div>
+      </div>
+      <div class="scroll-nav">
+        <button class="scroll-btn" onclick="doScrollRow(-1)">&#9664;</button>
+        <button class="scroll-btn" onclick="doScrollRow(1)">&#9654;</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PENULIS SOROTAN ── -->
+<section class="authors-section">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 class="section-title">Penulis Sorotan</h2>
+      <a href="#" class="section-link">Lihat Semua &#8594;</a>
+    </div>
+    <div class="authors-grid">
+      <div class="author-card reveal">
+        <div class="author-avatar g1"></div>
+        <div class="author-name">Pramoedya Ananta Toer</div>
+        <div class="author-genre">Sastra Indonesia &middot; Fiksi Sejarah</div>
+        <div class="author-works">24 karya tersedia</div>
+        <div class="author-quote">"Jadilah manusia yang mau berjuang. Kalau tidak mau berjuang, matilah &mdash; tapi dengan cara bermartabat."</div>
+      </div>
+      <div class="author-card reveal">
+        <div class="author-avatar g6"></div>
+        <div class="author-name">Dee Lestari</div>
+        <div class="author-genre">Fiksi &middot; Filsafat &middot; Sci-Fi</div>
+        <div class="author-works">17 karya tersedia</div>
+        <div class="author-quote">"Mimpi adalah jembatan antara apa yang kita pikirkan dan apa yang kita wujudkan."</div>
+      </div>
+      <div class="author-card reveal">
+        <div class="author-avatar g3"></div>
+        <div class="author-name">Tere Liye</div>
+        <div class="author-genre">Fiksi &middot; Drama &middot; Petualangan</div>
+        <div class="author-works">38 karya tersedia</div>
+        <div class="author-quote">"Kita tidak bisa memilih dari mana kita berasal, tapi kita selalu bisa memilih ke mana kita pergi."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── LANJUTKAN MEMBACA ── -->
+<section class="resume-section">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 class="section-title">Lanjutkan Membaca</h2>
+      <a href="#" class="section-link">Riwayat Lengkap &#8594;</a>
+    </div>
+    <div class="resume-grid">
+      <div class="resume-card reveal">
+        <div class="resume-thumb g2"></div>
+        <div class="resume-body">
+          <div class="resume-title">Bumi Manusia</div>
+          <div class="resume-page">Halaman 357 dari 535</div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" data-width="67" style="background:linear-gradient(90deg,var(--purple),var(--pink));"></div>
+          </div>
+          <button class="resume-btn">Lanjut Baca</button>
+        </div>
+      </div>
+      <div class="resume-card reveal">
+        <div class="resume-thumb g7"></div>
+        <div class="resume-body">
+          <div class="resume-title">Riset AI Indonesia 2026</div>
+          <div class="resume-page">Halaman 21 dari 88</div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" data-width="23" style="background:linear-gradient(90deg,var(--cyan),#0e7490);"></div>
+          </div>
+          <button class="resume-btn">Lanjut Baca</button>
+        </div>
+      </div>
+      <div class="resume-card reveal">
+        <div class="resume-thumb g5"></div>
+        <div class="resume-body">
+          <div class="resume-title">Filosofi Teras</div>
+          <div class="resume-page">Bab 8 dari 9 &middot; 89% selesai</div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" data-width="89" style="background:linear-gradient(90deg,#34d399,#065f46);"></div>
+          </div>
+          <button class="resume-btn">Lanjut Baca</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TAG GENRE ── -->
+<section class="genre-section">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 class="section-title">Jelajahi Genre</h2>
+    </div>
+    <div class="tag-cloud reveal">
+      <span class="tag-pill tag-a">Fiksi</span>
+      <span class="tag-pill tag-b">Non-Fiksi</span>
+      <span class="tag-pill tag-c">Sains &amp; Teknologi</span>
+      <span class="tag-pill tag-d">Sejarah</span>
+      <span class="tag-pill tag-e">Biografi</span>
+      <span class="tag-pill tag-f">Ekonomi</span>
+      <span class="tag-pill tag-a">Psikologi</span>
+      <span class="tag-pill tag-b">Seni &amp; Budaya</span>
+      <span class="tag-pill tag-c">Filsafat</span>
+      <span class="tag-pill tag-d">Politik</span>
+      <span class="tag-pill tag-e">Pendidikan</span>
+      <span class="tag-pill tag-f">Kesehatan</span>
+      <span class="tag-pill tag-a">Religi &amp; Spiritual</span>
+      <span class="tag-pill tag-b">Sastra Indonesia</span>
+      <span class="tag-pill tag-c">Sastra Dunia</span>
+      <span class="tag-pill tag-d">Petualangan</span>
+      <span class="tag-pill tag-e">Anak &amp; Remaja</span>
+      <span class="tag-pill tag-f">Hukum</span>
+      <span class="tag-pill tag-a">Sosial &amp; Humaniora</span>
+      <span class="tag-pill tag-b">Lingkungan Hidup</span>
+      <span class="tag-pill tag-c">Kewirausahaan</span>
+      <span class="tag-pill tag-d">Sains Populer</span>
+      <span class="tag-pill tag-e">Keuangan &amp; Investasi</span>
+      <span class="tag-pill tag-f">Parenting</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── BERLANGGANAN ── -->
+<section class="pricing-section">
+  <div class="container">
+    <div class="pricing-header reveal">
+      <h2 class="pricing-title">Pilih Paket Langganan</h2>
+      <p class="pricing-sub">Akses jutaan konten digital &mdash; ebook, jurnal, audiobook, podcast, dan dokumenter.</p>
+      <div class="toggle-wrap">
+        <span class="toggle-label">Bulanan</span>
+        <div class="toggle-switch" id="pricingToggle" onclick="togglePricing()">
+          <div class="toggle-knob"></div>
+        </div>
+        <span class="toggle-label">Tahunan</span>
+        <span class="discount-badge">Hemat 20%</span>
+      </div>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal">
+        <div class="plan-name">Gratis</div>
+        <div class="plan-price" id="price-free">Rp 0<span>/bulan</span></div>
+        <div class="plan-desc">Mulai membaca tanpa biaya</div>
+        <ul class="plan-features">
+          <li>5 buku per bulan</li>
+          <li>Akses ebook terbatas</li>
+          <li class="no">Audiobook</li>
+          <li class="no">Download offline</li>
+          <li class="no">Bebas iklan</li>
+        </ul>
+        <button class="plan-btn plan-btn-outline">Mulai Gratis</button>
+      </div>
+      <div class="pricing-card popular reveal">
+        <div class="popular-badge">PALING POPULER</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price" id="price-pro">Rp 49.000<span>/bulan</span></div>
+        <div class="plan-desc">Ideal untuk pembaca aktif</div>
+        <ul class="plan-features">
+          <li>30 buku per bulan</li>
+          <li>Semua ebook &amp; jurnal</li>
+          <li>Audiobook lengkap</li>
+          <li>5 download offline</li>
+          <li>Bebas iklan</li>
+        </ul>
+        <button class="plan-btn plan-btn-filled">Coba 7 Hari Gratis</button>
+      </div>
+      <div class="pricing-card reveal">
+        <div class="plan-name">Premium</div>
+        <div class="plan-price" id="price-premium">Rp 89.000<span>/bulan</span></div>
+        <div class="plan-desc">Akses tak terbatas segalanya</div>
+        <ul class="plan-features">
+          <li>Koleksi unlimited</li>
+          <li>Semua jenis media</li>
+          <li>Download offline unlimited</li>
+          <li>Priority support 24/7</li>
+          <li>Akses awal koleksi baru</li>
+        </ul>
+        <button class="plan-btn plan-btn-outline">Pilih Premium</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATISTIK ── -->
+<section class="stats-section">
+  <div class="container">
+    <div class="stats-grid reveal" id="statsGrid">
+      <div class="stat-item">
+        <div class="stat-number" data-display="2,4 Juta+" data-target="2400000">0</div>
+        <div class="stat-label">Koleksi Digital</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" data-display="850.000+" data-target="850000">0</div>
+        <div class="stat-label">Pembaca Aktif</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" data-display="120+" data-target="120">0</div>
+        <div class="stat-label">Kategori Konten</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" data-display="4,9&#9733;" data-target="49">0</div>
+        <div class="stat-label">Rating Rata-rata</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="container">
+    <div class="footer-main">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo">
+          <div class="nav-logo-icon">M</div>
+          MediaNusa
+        </a>
+        <p class="footer-tagline">Satu Platform, Jutaan Pengetahuan.<br>Perpustakaan multimedia digital terlengkap di Indonesia.</p>
+        <div class="footer-socials">
+          <a href="#" class="social-btn">𝕏</a>
+          <a href="#" class="social-btn">in</a>
+          <a href="#" class="social-btn">ig</a>
+          <a href="#" class="social-btn">yt</a>
+        </div>
+        <div class="app-btns">
+          <button class="app-btn">&#128241; App Store</button>
+          <button class="app-btn">&#129302; Google Play</button>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Jelajah</div>
+        <ul class="footer-links">
+          <li><a href="#">Koleksi Terbaru</a></li>
+          <li><a href="#">Terpopuler</a></li>
+          <li><a href="#">Pilihan Editor</a></li>
+          <li><a href="#">Koleksi Lokal</a></li>
+          <li><a href="#">Akses Terbuka</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Kategori</div>
+        <ul class="footer-links">
+          <li><a href="#">Ebook</a></li>
+          <li><a href="#">Jurnal Ilmiah</a></li>
+          <li><a href="#">Audiobook</a></li>
+          <li><a href="#">Podcast</a></li>
+          <li><a href="#">Dokumenter</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Perusahaan</div>
+        <ul class="footer-links">
+          <li><a href="#">Tentang Kami</a></li>
+          <li><a href="#">Karier</a></li>
+          <li><a href="#">Partner Penerbit</a></li>
+          <li><a href="#">Berita</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Dukungan</div>
+        <ul class="footer-links">
+          <li><a href="#">Pusat Bantuan</a></li>
+          <li><a href="#">Hubungi Kami</a></li>
+          <li><a href="#">Status Layanan</a></li>
+          <li><a href="#">Aksesibilitas</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copyright">&copy; 2026 MediaNusa. Hak cipta dilindungi.</span>
+      <div class="footer-legal">
+        <a href="#">Privasi</a>
+        <a href="#">Ketentuan</a>
+        <a href="#">Cookie</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// TAB SWITCHING
+function switchTab(btn, panel) {
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+  btn.classList.add('active');
+  var target = document.querySelector('[data-panel="' + panel + '"]');
+  if (target) target.classList.add('active');
+}
+
+// PRICING TOGGLE
+var isYearly = false;
+var prices = {
+  free:    { monthly: 'Rp 0',      yearly: 'Rp 0' },
+  pro:     { monthly: 'Rp 49.000', yearly: 'Rp 39.200' },
+  premium: { monthly: 'Rp 89.000', yearly: 'Rp 71.200' }
+};
+function togglePricing() {
+  isYearly = !isYearly;
+  document.getElementById('pricingToggle').classList.toggle('on', isYearly);
+  var suffix = isYearly ? '/bulan (tagihan tahunan)' : '/bulan';
+  function setPrice(id, val) {
+    var el = document.getElementById(id);
+    el.innerHTML = val + '<span>' + suffix + '</span>';
+  }
+  var key = isYearly ? 'yearly' : 'monthly';
+  setPrice('price-free',    prices.free[key]);
+  setPrice('price-pro',     prices.pro[key]);
+  setPrice('price-premium', prices.premium[key]);
+}
+
+// HORIZONTAL SCROLL
+function doScrollRow(dir) {
+  document.getElementById('scrollRow').scrollBy({ left: dir * 360, behavior: 'smooth' });
+}
+
+// HERO BUTTONS
+function toggleBaca(btn) {
+  if (btn.textContent.trim().indexOf('Baca') !== -1) {
+    btn.textContent = '⏸ Dijeda';
+    btn.style.background = 'linear-gradient(90deg,#6b21a8,#be185d)';
+  } else {
+    btn.innerHTML = '&#9654; Baca Sekarang';
+    btn.style.background = '';
+  }
+}
+function toggleSimpan(btn) {
+  if (btn.textContent.trim().indexOf('Simpan') !== -1) {
+    btn.textContent = '✓ Disimpan';
+    btn.style.borderColor = 'var(--purple)';
+    btn.style.color = 'var(--purple)';
+  } else {
+    btn.innerHTML = '&#65291; Simpan';
+    btn.style.borderColor = '';
+    btn.style.color = '';
+  }
+}
+
+// SCROLL REVEAL
+var revealObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(function(el) { revealObs.observe(el); });
+
+// COUNTER ANIMATION
+var statsDone = false;
+var statsObs = new IntersectionObserver(function(entries) {
+  if (entries[0].isIntersecting && !statsDone) {
+    statsDone = true;
+    document.querySelectorAll('.stat-number').forEach(function(el) {
+      var display = el.getAttribute('data-display');
+      var target  = parseInt(el.getAttribute('data-target'));
+      var duration = 1400;
+      var startTime = null;
+      function step(ts) {
+        if (!startTime) startTime = ts;
+        var prog = Math.min((ts - startTime) / duration, 1);
+        var eased = 1 - Math.pow(1 - prog, 3);
+        var val = Math.floor(eased * target);
+        if (target >= 1000000) {
+          el.textContent = (val / 1000000).toFixed(1).replace('.', ',') + ' Juta+';
+        } else if (target >= 10000) {
+          el.textContent = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + '+';
+        } else if (target === 49) {
+          el.innerHTML = (eased * 4.9).toFixed(1).replace('.', ',') + '&#9733;';
+        } else {
+          el.textContent = val + '+';
+        }
+        if (prog < 1) requestAnimationFrame(step);
+        else el.innerHTML = display;
+      }
+      requestAnimationFrame(step);
+    });
+  }
+}, { threshold: 0.4 });
+var statsGrid = document.getElementById('statsGrid');
+if (statsGrid) statsObs.observe(statsGrid);
+
+// PROGRESS BARS
+var progObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.progress-bar-fill').forEach(function(bar) {
+        bar.style.width = bar.getAttribute('data-width') + '%';
+      });
+      progObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+var resumeSec = document.querySelector('.resume-section');
+if (resumeSec) progObs.observe(resumeSec);
+</script>
+</body>
+</html>

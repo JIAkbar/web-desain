@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dapur Nusantara — Fine Dining Indonesia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root[data-theme="dark"] {
+  --bg: #1A0F0A;
+  --bg-surface: #251810;
+  --bg-elevated: #2E1E14;
+  --text: #F5EDE0;
+  --text-muted: #A08060;
+  --text-subtle: #5A3C28;
+  --accent: #C8963C;
+  --accent-light: rgba(200,150,60,0.15);
+  --border: #3A2418;
+  --border-light: rgba(200,150,60,0.2);
+}
+:root[data-theme="light"] {
+  --bg: #FDF6EE;
+  --bg-surface: #F5EAD8;
+  --bg-elevated: #EBD9C0;
+  --text: #1A0F0A;
+  --text-muted: #7A5030;
+  --text-subtle: #C0A080;
+  --accent: #A07028;
+  --accent-light: rgba(160,112,40,0.1);
+  --border: #D8C4A8;
+  --border-light: rgba(160,112,40,0.25);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg); color: var(--text);
+  transition: background 0.35s, color 0.35s;
+  overflow-x: hidden;
+}
+h1,h2,h3,h4 { font-family: 'Cormorant Garamond', serif; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 3rem; height: 72px;
+  background: rgba(26,15,10,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.35s;
+}
+[data-theme="light"] nav { background: rgba(253,246,238,0.94); }
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700;
+  color: var(--text); text-decoration: none; letter-spacing: 0.04em;
+}
+.nav-logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 2.25rem; list-style: none; }
+.nav-links a {
+  color: var(--text-muted); text-decoration: none; font-size: 0.82rem;
+  font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--accent); }
+.nav-right { display: flex; align-items: center; gap: 1rem; }
+.btn-reservasi {
+  border: 1px solid var(--accent); color: var(--accent);
+  background: transparent; padding: 0.5rem 1.5rem;
+  font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; font-weight: 600;
+  letter-spacing: 0.05em; cursor: pointer; text-decoration: none;
+  display: inline-block; transition: background 0.2s, color 0.2s;
+}
+.btn-reservasi:hover { background: var(--accent); color: var(--bg); }
+.theme-btn {
+  background: none; border: 1px solid var(--border); color: var(--text-muted);
+  width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 0.9rem; transition: border-color 0.2s, color 0.2s;
+}
+.theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+.ham-btn { display: none; background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; }
+.mob-nav {
+  display: none; position: fixed; top: 72px; left: 0; right: 0; z-index: 199;
+  background: var(--bg-surface); border-bottom: 1px solid var(--border);
+  padding: 1.5rem 2rem; flex-direction: column; gap: 0.75rem;
+}
+.mob-nav.open { display: flex; }
+.mob-nav a {
+  color: var(--text-muted); text-decoration: none; font-size: 0.95rem;
+  padding: 0.5rem 0; border-bottom: 1px solid var(--border);
+  font-weight: 500; letter-spacing: 0.04em;
+}
+
+/* HERO */
+.hero {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
+  position: relative; overflow: hidden;
+  padding: 9rem 2rem 5rem;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 40%, rgba(200,150,60,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 80% 80%, rgba(200,150,60,0.04) 0%, transparent 60%);
+}
+.hero-ornament {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 600px; height: 600px; border-radius: 50%;
+  border: 1px solid var(--border-light); opacity: 0.4;
+  pointer-events: none;
+}
+.hero-ornament::before, .hero-ornament::after {
+  content: ''; position: absolute; border-radius: 50%; border: 1px solid var(--border-light);
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+}
+.hero-ornament::before { width: 80%; height: 80%; }
+.hero-ornament::after { width: 60%; height: 60%; }
+.hero-inner { position: relative; z-index: 1; max-width: 760px; }
+.hero-sub {
+  font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 1.5rem; font-weight: 600;
+}
+.hero h1 {
+  font-size: clamp(3.5rem, 8vw, 6.5rem); font-weight: 700; line-height: 1.05;
+  letter-spacing: 0.02em; margin-bottom: 1.25rem;
+}
+.hero h1 em { font-style: italic; color: var(--accent); display: block; }
+.hero-tagline {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-style: italic;
+  color: var(--text-muted); margin-bottom: 3rem; line-height: 1.6;
+}
+.hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.btn-primary-warm {
+  background: var(--accent); color: var(--bg); border: none;
+  padding: 0.875rem 2.5rem; font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem; font-weight: 700; letter-spacing: 0.05em; cursor: pointer;
+  text-decoration: none; display: inline-block; transition: opacity 0.2s;
+}
+.btn-primary-warm:hover { opacity: 0.85; }
+.hero-scroll {
+  position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  font-size: 0.65rem; letter-spacing: 0.15em; color: var(--text-subtle); text-transform: uppercase;
+}
+.hero-scroll::after {
+  content: ''; width: 1px; height: 48px;
+  background: linear-gradient(to bottom, var(--text-subtle), transparent);
+  animation: drop 2s ease-in-out infinite;
+}
+@keyframes drop { 0%,100%{transform:scaleY(1);opacity:1;} 50%{transform:scaleY(0.4);opacity:0.3;} }
+
+/* SECTIONS BASE */
+section { padding: 6rem 2rem; }
+.container { max-width: 1200px; margin: 0 auto; }
+.sec-label {
+  font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--accent); font-weight: 600; margin-bottom: 0.75rem;
+}
+.sec-title {
+  font-size: clamp(2rem, 4vw, 3.25rem); font-weight: 700;
+  line-height: 1.1; letter-spacing: 0.01em; margin-bottom: 1.25rem;
+}
+.sec-title em { font-style: italic; color: var(--accent); }
+.ornament-line {
+  display: flex; align-items: center; gap: 1rem; margin: 1.25rem 0;
+  color: var(--accent); font-size: 1rem;
+}
+.ornament-line::before, .ornament-line::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* STORY */
+.story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+.story-img {
+  aspect-ratio: 3/4; background: var(--bg-surface); border: 1px solid var(--border);
+  position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.story-img-inner {
+  width: 100%; height: 100%;
+  background:
+    linear-gradient(160deg, var(--bg-elevated) 0%, var(--bg-surface) 50%, var(--bg-elevated) 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+}
+.photo-icon { font-size: 3rem; opacity: 0.3; }
+.photo-caption { font-size: 0.75rem; color: var(--text-subtle); letter-spacing: 0.1em; }
+.story-badge {
+  position: absolute; bottom: -1px; right: -1px;
+  background: var(--accent); padding: 1.25rem 1.5rem;
+}
+.story-badge .year { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 700; color: var(--bg); line-height: 1; }
+.story-badge .since { font-size: 0.7rem; color: rgba(26,15,10,0.7); font-weight: 600; letter-spacing: 0.08em; }
+.story-text p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.8; margin-bottom: 1rem; }
+
+/* DISHES */
+.dishes-bg { background: var(--bg-surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.dishes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+.dish-card {
+  background: var(--bg); border: 1px solid var(--border); overflow: hidden;
+  transition: transform 0.25s, border-color 0.25s;
+}
+.dish-card:hover { transform: translateY(-4px); border-color: var(--accent); }
+.dish-img {
+  aspect-ratio: 4/3; background: var(--bg-elevated);
+  display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+}
+.dish-img-inner {
+  width: 100%; height: 100%;
+  background: linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-surface) 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem;
+}
+.dish-emoji { font-size: 2.5rem; }
+.dish-img-label { font-size: 0.65rem; color: var(--text-subtle); letter-spacing: 0.1em; text-transform: uppercase; }
+.dish-body { padding: 1.25rem; }
+.dish-name { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 700; margin-bottom: 0.4rem; }
+.dish-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 0.875rem; }
+.dish-price { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+
+/* MENU TABS */
+.menu-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 2rem; overflow-x: auto; }
+.menu-tab {
+  background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  padding: 0.875rem 1.75rem; font-family: 'Cormorant Garamond', serif; font-size: 1rem;
+  font-weight: 700; color: var(--text-muted); cursor: pointer; white-space: nowrap;
+  transition: color 0.2s, border-color 0.2s; letter-spacing: 0.03em;
+}
+.menu-tab.on { color: var(--accent); border-bottom-color: var(--accent); }
+.menu-tab:hover:not(.on) { color: var(--text); }
+.menu-panel { display: none; }
+.menu-panel.on { display: block; }
+.menu-list { display: flex; flex-direction: column; gap: 0; max-width: 720px; }
+.menu-item {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding: 1rem 0; border-bottom: 1px dotted var(--border); gap: 1rem;
+}
+.menu-item:last-child { border-bottom: none; }
+.menu-item-info {}
+.mi-name { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.2rem; }
+.mi-desc { font-size: 0.78rem; color: var(--text-muted); }
+.mi-price { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 700; color: var(--accent); white-space: nowrap; }
+
+/* GALLERY */
+.gal-bg { background: var(--bg-surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.gal-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 220px); gap: 4px; margin-top: 3rem; }
+.gal-item {
+  background: var(--bg-elevated); display: flex; align-items: center; justify-content: center;
+  overflow: hidden; position: relative;
+}
+.gal-item:first-child { grid-row: span 2; }
+.gal-inner {
+  width: 100%; height: 100%;
+  background: linear-gradient(135deg, var(--bg-elevated), var(--bg-surface));
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem;
+  transition: transform 0.4s;
+}
+.gal-item:hover .gal-inner { transform: scale(1.03); }
+.gal-icon { font-size: 2rem; opacity: 0.4; }
+.gal-lbl { font-size: 0.65rem; color: var(--text-subtle); letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* CHEF */
+.chef-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+.chef-portrait {
+  aspect-ratio: 3/4; background: var(--bg-surface); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; position: relative;
+}
+.chef-portrait-inner {
+  width: 100%; height: 100%;
+  background: linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg-surface) 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+  padding-bottom: 2rem; gap: 0.5rem;
+}
+.chef-silhouette {
+  width: 120px; height: 180px; margin-bottom: 1rem;
+  background: var(--border); opacity: 0.4; clip-path: ellipse(50px 90px at 50% 50%);
+}
+.chef-name-plate {
+  position: absolute; bottom: 1.5rem; left: 1.5rem; right: 1.5rem;
+  background: var(--bg); border: 1px solid var(--border); padding: 1rem;
+}
+.cnp-name { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 700; }
+.cnp-title { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; }
+.chef-quote {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-style: italic;
+  line-height: 1.5; color: var(--accent); margin-bottom: 1.5rem;
+}
+.chef-bio { font-size: 0.9rem; color: var(--text-muted); line-height: 1.75; }
+
+/* RESERVASI */
+.reservasi-bg { background: var(--bg-surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-top: 3rem; align-items: start; }
+.res-form { display: flex; flex-direction: column; gap: 1.25rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+label { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+input, select, textarea {
+  background: var(--bg); border: 1px solid var(--border); color: var(--text);
+  padding: 0.75rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+  transition: border-color 0.2s; outline: none;
+  -webkit-appearance: none; appearance: none;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+input::placeholder, textarea::placeholder { color: var(--text-subtle); }
+.btn-submit {
+  background: var(--accent); color: var(--bg); border: none; padding: 0.875rem 2rem;
+  font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-weight: 700;
+  letter-spacing: 0.04em; cursor: pointer; transition: opacity 0.2s; width: 100%;
+}
+.btn-submit:hover { opacity: 0.85; }
+.res-info h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.25rem; }
+.ops-item { display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border); font-size: 0.875rem; }
+.ops-day { color: var(--text); }
+.ops-time { color: var(--accent); font-weight: 600; }
+.res-note { margin-top: 1.5rem; padding: 1rem; border: 1px solid var(--border-light); background: var(--accent-light); font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
+
+/* TESTIMONIALS */
+.testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+.testi-card { background: var(--bg-surface); border: 1px solid var(--border); padding: 2rem; position: relative; }
+.stars { color: var(--accent); font-size: 0.9rem; margin-bottom: 1rem; letter-spacing: 0.2em; }
+.testi-text { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-style: italic; line-height: 1.7; color: var(--text); margin-bottom: 1.5rem; }
+.testi-auth { display: flex; align-items: center; gap: 0.75rem; }
+.auth-av { width: 40px; height: 40px; background: var(--accent-light); border: 1px solid var(--border-light); font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 1rem; color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.auth-name { font-weight: 600; font-size: 0.85rem; }
+.auth-role { font-size: 0.73rem; color: var(--text-muted); }
+
+/* PRIVATE DINING */
+.privat-bg { background: var(--bg-surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.privat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+.privat-img {
+  aspect-ratio: 16/9; background: var(--bg-elevated); border: 1px solid var(--border);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+}
+.privat-icon { font-size: 3rem; opacity: 0.4; }
+.privat-lbl { font-size: 0.7rem; color: var(--text-subtle); letter-spacing: 0.1em; text-transform: uppercase; }
+.privat-features { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }
+.pf-item { display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; color: var(--text-muted); }
+.pf-icon { color: var(--accent); font-size: 1rem; flex-shrink: 0; }
+
+/* FOOTER */
+footer { background: var(--bg-surface); border-top: 1px solid var(--border); padding: 4rem 2rem 2rem; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 4rem; margin-bottom: 3rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
+.footer-logo-text { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 700; color: var(--text); margin-bottom: 0.75rem; }
+.footer-logo-text span { color: var(--accent); }
+.footer-about { font-size: 0.83rem; color: var(--text-muted); line-height: 1.7; max-width: 260px; }
+.footer-contact { margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.footer-contact span { font-size: 0.82rem; color: var(--text-muted); }
+.footer-contact span strong { color: var(--accent); }
+.fc-head { font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-subtle); margin-bottom: 1rem; }
+.fc-list { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; }
+.fc-list a { font-size: 0.85rem; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+.fc-list a:hover { color: var(--accent); }
+.footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 2rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.footer-bottom p { font-size: 0.78rem; color: var(--text-subtle); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .story-grid, .chef-grid, .privat-grid, .res-grid { grid-template-columns: 1fr; }
+  .dishes-grid { grid-template-columns: repeat(2,1fr); }
+  .testi-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .ham-btn { display: block; }
+  section { padding: 4rem 1.5rem; }
+  .hero { padding: 8rem 1.5rem 5rem; }
+  .gal-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+  .gal-item:first-child { grid-row: span 1; }
+  .dishes-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  nav { padding: 0 1.5rem; }
+}
+@media (max-width: 600px) {
+  .hero h1 { font-size: 2.75rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">Dapur <span>Nusantara</span></a>
+  <ul class="nav-links">
+    <li><a href="#cerita">Cerita</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#chef">Chef</a></li>
+    <li><a href="#reservasi">Reservasi</a></li>
+    <li><a href="#private">Private</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-btn" id="themebtn" aria-label="Toggle tema">☀</button>
+    <a href="#reservasi" class="btn-reservasi">Reservasi</a>
+    <button class="ham-btn" id="hambtn" aria-label="Menu">☰</button>
+  </div>
+</nav>
+<div class="mob-nav" id="mobnav">
+  <a href="#cerita" onclick="closeMob()">Cerita</a>
+  <a href="#menu" onclick="closeMob()">Menu</a>
+  <a href="#chef" onclick="closeMob()">Chef</a>
+  <a href="#reservasi" onclick="closeMob()">Reservasi</a>
+  <a href="#private" onclick="closeMob()">Private Dining</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-ornament"></div>
+  <div class="hero-inner">
+    <div class="hero-sub">Fine Dining · Masakan Nusantara</div>
+    <h1>Dapur<br><em>Nusantara</em></h1>
+    <p class="hero-tagline">Di mana warisan bumbu leluhur bertemu keanggunan kontemporer.<br>Setiap hidangan, sebuah perjalanan lintas kepulauan.</p>
+    <div class="hero-btns">
+      <a href="#menu" class="btn-primary-warm">Lihat Menu</a>
+      <a href="#reservasi" class="btn-reservasi">Buat Reservasi</a>
+    </div>
+  </div>
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<!-- STORY -->
+<section id="cerita">
+  <div class="container">
+    <div class="story-grid">
+      <div class="story-img">
+        <div class="story-img-inner">
+          <span class="photo-icon">🏛</span>
+          <span class="photo-caption">Foto Restoran</span>
+        </div>
+        <div class="story-badge">
+          <div class="year">2009</div>
+          <div class="since">Berdiri Sejak</div>
+        </div>
+      </div>
+      <div class="story-text">
+        <div class="sec-label">Tentang Kami</div>
+        <h2 class="sec-title">Sebuah Dedikasi kepada <em>Cita Rasa Asli</em></h2>
+        <div class="ornament-line">✦</div>
+        <p>Dapur Nusantara lahir dari keyakinan bahwa masakan Indonesia adalah salah satu kuliner paling kaya dan paling kompleks di dunia — layak mendapatkan panggung yang setara dengan masakan Prancis atau Jepang.</p>
+        <p>Selama lebih dari satu dekade, kami mengumpulkan resep warisan dari 27 provinsi, mengunjungi petani rempah di Maluku, nelayan di Sulawesi, dan penjual pasar di Jawa — untuk menghadirkan keaslian yang tak bisa dikompromikan.</p>
+        <p>Format fine dining kami bukan tentang kesombongan, melainkan tentang penghormatan: kepada bahan, kepada proses, kepada mereka yang memasak sebelum kita.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SIGNATURE DISHES -->
+<section id="hidangan" class="dishes-bg">
+  <div class="container">
+    <div class="sec-label">Hidangan Unggulan</div>
+    <h2 class="sec-title">Signature <em>Dishes</em></h2>
+    <div class="dishes-grid">
+      <div class="dish-card">
+        <div class="dish-img"><div class="dish-img-inner"><span class="dish-emoji">🍲</span><span class="dish-img-label">Sup Melayu Riau</span></div></div>
+        <div class="dish-body">
+          <div class="dish-name">Sup Ikan Asap Melayu</div>
+          <div class="dish-desc">Kaldu bening dari ikan tenggiri asap Riau, lengkap dengan kemangi, jahe, dan kulit jeruk purut. Disajikan dalam mangkuk tanah liat tradisional.</div>
+          <div class="dish-price">Rp 185.000</div>
+        </div>
+      </div>
+      <div class="dish-card">
+        <div class="dish-img"><div class="dish-img-inner"><span class="dish-emoji">🥩</span><span class="dish-img-label">Rendang Wagyu</span></div></div>
+        <div class="dish-body">
+          <div class="dish-name">Rendang Wagyu Minang</div>
+          <div class="dish-desc">Daging wagyu grade A5 dimasak rendang selama 6 jam dengan bumbu 30 rempah autentik Minangkabau. Disajikan di atas daun pisang segar.</div>
+          <div class="dish-price">Rp 380.000</div>
+        </div>
+      </div>
+      <div class="dish-card">
+        <div class="dish-img"><div class="dish-img-inner"><span class="dish-emoji">🦞</span><span class="dish-img-label">Udang Saus Pedas</span></div></div>
+        <div class="dish-body">
+          <div class="dish-name">Udang Galah Saus Manado</div>
+          <div class="dish-desc">Udang galah segar dari Kalimantan, dimasak dengan cabai rawit Manado, tomat cherry, dan daun kemangi hutan. Pedas yang kompleks dan memanjakan.</div>
+          <div class="dish-price">Rp 295.000</div>
+        </div>
+      </div>
+      <div class="dish-card">
+        <div class="dish-img"><div class="dish-img-inner"><span class="dish-emoji">🫕</span><span class="dish-img-label">Gulai Itik</span></div></div>
+        <div class="dish-body">
+          <div class="dish-name">Gulai Itik Alabio</div>
+          <div class="dish-desc">Bebek Alabio Kalimantan dimasak gulai dengan santan kelapa muda dan 17 rempah pilihan. Lembut, kaya rasa, dan tak berlemak berlebihan.</div>
+          <div class="dish-price">Rp 265.000</div>
+        </div>
+      </div>
+      <div class="dish-card">
+        <div class="dish-img"><div class="dish-img-inner"><span class="dish-emoji">🍛</span><span class="dish-img-label">Nasi Tumpeng Mini</span></div></div>
+        <div class="dish-body">
+          <div class="dish-name">Nasi Tumpeng Kemewahan</div>
+          <div class="dish-desc">Nasi kunyit dengan 9 lauk pelengkap pilihan chef: ayam ingkung, tempe orek, lalapan segar, sambal matah, urap sayur, dan perkedel jagung.</div>
+          <div class="dish-price">Rp 210.000</div>
+        </div>
+      </div>
+      <div class="dish-card">
+        <div class="dish-img"><div class="dish-img-inner"><span class="dish-emoji">🍮</span><span class="dish-img-label">Dessert Nusantara</span></div></div>
+        <div class="dish-body">
+          <div class="dish-name">Trio Puding Rempah</div>
+          <div class="dish-desc">Tiga variasi puding: pandan-kelapa, kayu manis-cengkeh, dan kunyit-jahe. Disajikan dingin dengan saus gula merah Jawa asli.</div>
+          <div class="dish-price">Rp 125.000</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU LENGKAP -->
+<section id="menu">
+  <div class="container">
+    <div class="sec-label">Daftar Menu</div>
+    <h2 class="sec-title">Menu <em>Lengkap</em></h2>
+    <div class="menu-tabs">
+      <button class="menu-tab on" data-cat="pembuka">Pembuka</button>
+      <button class="menu-tab" data-cat="utama">Hidangan Utama</button>
+      <button class="menu-tab" data-cat="dessert">Dessert</button>
+      <button class="menu-tab" data-cat="minuman">Minuman</button>
+    </div>
+    <div class="menu-panel on" id="cat-pembuka">
+      <div class="menu-list">
+        <div class="menu-item"><div class="menu-item-info"><div class="mi-name">Gado-Gado Jakarta Premium</div><div class="mi-desc">Sayuran segar, telur rebus, lontong, dan bumbu kacang homemade</div></div><div class="mi-price">Rp 95.000</div></div>
+        <div class="menu-item"><div class="menu-item-info"><div class="mi-name">Soto Betawi Clear Broth</div><div class="mi-desc">Kaldu sapi bening dengan daging has dalam, tomat, dan emping melinjo</div></div><div class="mi-price">Rp 110.000</div></div>
+        <div class="menu-item"><div class="menu-item-info"><div class="mi-name">Kerupuk Udang Artisan Trio</div><div class="mi-desc">Tiga varian kerupuk udang artisan dengan sambal hijau, merah, dan matah</div></div><div class="mi-price">Rp 65.000</div></div>
+        <div class="menu-item"><div class="menu-item-info"><div class="mi-name">Perkedel Kepiting Bangka</div><div class="mi-desc">Perkedel isi kepiting segar Bangka dengan saus remoulade nusantara</div></div><div class="mi-price">Rp 135.000</div></div>
+        <div class="menu-item"><div class="menu-item-info"><div class="mi-name">Rujak Buah Taman Bali</div><div class="mi-desc">Buah segar musiman dengan bumbu rujak pedas manis khas Bali</div></div><div class="mi-price">Rp 75.000</div></div>
+      </div>
+    </div>
+    <div class="menu-panel" id="cat-utama">
+      <div class="menu-list">
+        <div class="menu-item"><div class="menu-item-info"><div class="mi-name">Rendang Wagyu Minang</div><div class="mi-desc">Wagyu grade A5 dimasak rendang 6 jam, 30 rempah autentik</div></div><div class="mi-price">Rp 380.000</div></div>
+        <div class="menu-item"><div class="menu-item-info"><div class="mi-name">Udang Galah Saus Manado</div><div class="mi-desc">Udang segar Kalimantan, cabai rawit, tomat cherry, kemangi hutan</div></div><div class="mi-price">Rp 295.000</div></div>
+        <div class="menu-item"><div class="menu-item-info"><div class="mi-name">Ikan Bakar Jimbaran</div><div class="mi-desc">Ikan kakap merah bakar bumbu Jimbaran dengan plecing kangkung</div></div><div class="mi-price">Rp 240.000</div></div>
+        <div class="menu-item"><div class="menu-item-info"><div class="mi-name">Ayam Betutu Bungkus Pisang</div><div class="mi-desc">Ayam kampung dimasak betutu 8 jam, dibungkus daun pisang dan pelepah</div></div><div class="mi-price">Rp 185.000</div></div>
+        <div class="menu-item"><div class="menu-item-info"><div class="mi-name">Nasi Tumpeng Kemewahan</div><div class="mi-desc">Nasi kunyit dengan 9 lauk pelengkap pilihan chef</div></div><div class="mi-price">Rp 210.000</div></div>
+      </div>
+    </div>
+    <div class="menu-panel" id="cat-dessert">
+      <div class="menu-list">
+        <div class="menu-item"><div class="menu-item-info"><div class="mi-name">Trio Puding Rempah</div><div class="mi-desc">Pandan-kelapa, kayu manis-cengkeh, dan kunyit-jahe</div></div><div class="mi-price">Rp 125.000</div></div>
+        <div class="menu-item"><div class="menu-item-info"><div class="mi-name">Es Kopyor Kelapa Muda</div><div class="mi-desc">Kelapa muda segar dengan kopyor, biji selasih, dan sirup gula batu</div></div><div class="mi-price">Rp 95.000</div></div>
+        <div class="menu-item"><div class="menu-item-info"><div class="mi-name">Kue Lapis Pelangi</div><div class="mi-desc">Kue lapis 7 warna dari tepung beras dan santan, resep leluhur Betawi</div></div><div class="mi-price">Rp 85.000</div></div>
+        <div class="menu-item"><div class="menu-item-info"><div class="mi-name">Pisang Foster Nusantara</div><div class="mi-desc">Pisang raja flambé dengan saus gula merah Jawa dan es krim kelapa</div></div><div class="mi-price">Rp 115.000</div></div>
+      </div>
+    </div>
+    <div class="menu-panel" id="cat-minuman">
+      <div class="menu-list">
+        <div class="menu-item"><div class="menu-item-info"><div class="mi-name">Jamu Kunyit Asam Segar</div><div class="mi-desc">Kunyit, asam jawa, gula batu, sedikit garam — resep tradisional</div></div><div class="mi-price">Rp 55.000</div></div>
+        <div class="menu-item"><div class="menu-item-info"><div class="mi-name">Es Lidah Buaya Pandan</div><div class="mi-desc">Lidah buaya segar, sirup pandan homemade, dan air kelapa muda</div></div><div class="mi-price">Rp 65.000</div></div>
+        <div class="menu-item"><div class="menu-item-info"><div class="mi-name">Kopi Luwak Toraja</div><div class="mi-desc">Single origin Toraja, diseduh dengan metode pour-over</div></div><div class="mi-price">Rp 145.000</div></div>
+        <div class="menu-item"><div class="menu-item-info"><div class="mi-name">Teh Tarik Susu Segar</div><div class="mi-desc">Teh hitam pekat dengan susu segar lokal, ditarik hingga berbuih</div></div><div class="mi-price">Rp 55.000</div></div>
+        <div class="menu-item"><div class="menu-item-info"><div class="mi-name">Wedang Jahe Rempah</div><div class="mi-desc">Jahe merah, kayu manis, cengkeh, sereh, dan gula batu organik</div></div><div class="mi-price">Rp 60.000</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gal-bg">
+  <div class="container">
+    <div class="sec-label">Suasana</div>
+    <h2 class="sec-title">Galeri <em>Atmosfer</em></h2>
+    <div class="gal-grid">
+      <div class="gal-item"><div class="gal-inner"><span class="gal-icon">🍽</span><span class="gal-lbl">Interior Utama</span></div></div>
+      <div class="gal-item"><div class="gal-inner"><span class="gal-icon">🌿</span><span class="gal-lbl">Taman Dalam</span></div></div>
+      <div class="gal-item"><div class="gal-inner"><span class="gal-icon">🕯</span><span class="gal-lbl">Suasana Malam</span></div></div>
+      <div class="gal-item"><div class="gal-inner"><span class="gal-icon">👨‍🍳</span><span class="gal-lbl">Dapur Terbuka</span></div></div>
+      <div class="gal-item"><div class="gal-inner"><span class="gal-icon">🥂</span><span class="gal-lbl">Private Room</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CHEF -->
+<section id="chef">
+  <div class="container">
+    <div class="chef-grid">
+      <div class="chef-portrait">
+        <div class="chef-portrait-inner">
+          <div class="chef-silhouette"></div>
+        </div>
+        <div class="chef-name-plate">
+          <div class="cnp-name">Chef Ratna Kusumawati</div>
+          <div class="cnp-title">Executive Chef & Pemilik</div>
+        </div>
+      </div>
+      <div>
+        <div class="sec-label">Sang Chef</div>
+        <h2 class="sec-title">Penjaga <em>Tradisi</em></h2>
+        <div class="ornament-line">✦</div>
+        <blockquote class="chef-quote">"Memasak adalah cara saya berdialog dengan leluhur. Setiap rempah menyimpan sejarah yang lebih panjang dari hidup kita."</blockquote>
+        <p class="chef-bio">Chef Ratna memulai perjalanan kulinernya di dapur neneknya di Yogyakarta. Setelah menempuh pendidikan di Le Cordon Bleu Paris dan magang di restoran Michelin-starred di Lyon, ia memilih pulang — membawa teknik, namun setia pada rasa.</p>
+        <p class="chef-bio" style="margin-top:1rem">Selama 15 tahun ia telah mendokumentasikan lebih dari 400 resep warisan dari seluruh nusantara, dan menerima penghargaan "Pelestari Kuliner Nusantara" dari Kementerian Pariwisata pada 2023.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESERVASI -->
+<section id="reservasi" class="reservasi-bg">
+  <div class="container">
+    <div class="sec-label">Reservasi</div>
+    <h2 class="sec-title">Buat <em>Reservasi</em></h2>
+    <div class="res-grid">
+      <form class="res-form" onsubmit="handleRes(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="res-name">Nama Lengkap</label>
+            <input type="text" id="res-name" placeholder="Budi Santoso">
+          </div>
+          <div class="form-group">
+            <label for="res-tel">Nomor Telepon</label>
+            <input type="tel" id="res-tel" placeholder="0812-3456-7890">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="res-date">Tanggal</label>
+            <input type="date" id="res-date">
+          </div>
+          <div class="form-group">
+            <label for="res-time">Jam</label>
+            <select id="res-time">
+              <option value="">Pilih jam</option>
+              <option>11:00</option>
+              <option>12:00</option>
+              <option>13:00</option>
+              <option>18:00</option>
+              <option>19:00</option>
+              <option>20:00</option>
+              <option>21:00</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="res-tamu">Jumlah Tamu</label>
+          <select id="res-tamu">
+            <option value="">Pilih jumlah</option>
+            <option>1 orang</option>
+            <option>2 orang</option>
+            <option>3–4 orang</option>
+            <option>5–8 orang</option>
+            <option>9–15 orang (Private Room)</option>
+            <option>16+ orang (Hubungi kami)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="res-note">Catatan Khusus (alergi, occasion, dll)</label>
+          <textarea id="res-note" rows="3" placeholder="Contoh: Vegetarian, anniversary, kursi roda..."></textarea>
+        </div>
+        <button type="submit" class="btn-submit">Konfirmasi Reservasi</button>
+      </form>
+      <div class="res-info">
+        <h3>Jam Operasional</h3>
+        <div class="ops-item"><span class="ops-day">Senin – Jumat</span><span class="ops-time">11:00 – 14:30 & 18:00 – 22:30</span></div>
+        <div class="ops-item"><span class="ops-day">Sabtu</span><span class="ops-time">11:00 – 23:00</span></div>
+        <div class="ops-item"><span class="ops-day">Minggu</span><span class="ops-time">11:00 – 21:00</span></div>
+        <div class="ops-item"><span class="ops-day">Hari Libur Nasional</span><span class="ops-time">Tutup / Khusus Event</span></div>
+        <div class="ops-item"><span class="ops-day">📍 Alamat</span><span class="ops-time">Jl. Kemang Raya No. 88, Jakarta Selatan</span></div>
+        <div class="res-note">
+          <strong>Catatan:</strong> Reservasi dikonfirmasi via WhatsApp dalam 2 jam kerja. Kedatangan lebih dari 15 menit dari jam reservasi dapat mengakibatkan meja dialihkan.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="ulasan">
+  <div class="container">
+    <div class="sec-label">Ulasan Tamu</div>
+    <h2 class="sec-title">Kata <em>Mereka</em></h2>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"Rendang Wagyu mereka adalah yang terbaik yang pernah saya makan — dan saya orang Minang! Chef Ratna benar-benar menghormati tradisi sekaligus mempersembahkannya dengan elegan."</p>
+        <div class="testi-auth"><div class="auth-av">HA</div><div><div class="auth-name">Helmi Anwar</div><div class="auth-role">Food Critic, Majalah Taste Indonesia</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"Kami merayakan anniversary ke-25 di sini dan mendapatkan perlakuan luar biasa. Private room yang indah, menu tasting yang telah disesuaikan, dan pelayanan yang benar-benar penuh hati."</p>
+        <div class="testi-auth"><div class="auth-av">DK</div><div><div class="auth-name">Dewi Kusuma</div><div class="auth-role">Tamu Setia sejak 2015</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"Sebagai chef asing yang tinggal di Jakarta, Dapur Nusantara adalah referensi utama saya untuk memahami kekayaan masakan Indonesia. Tempat yang wajib dikunjungi oleh siapa pun."</p>
+        <div class="testi-auth"><div class="auth-av">MB</div><div><div class="auth-name">Marc Beaumont</div><div class="auth-role">Executive Chef, Hotel Raffles Jakarta</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRIVATE DINING -->
+<section id="private" class="privat-bg">
+  <div class="container">
+    <div class="privat-grid">
+      <div>
+        <div class="sec-label">Acara Khusus</div>
+        <h2 class="sec-title">Private <em>Dining</em></h2>
+        <div class="ornament-line">✦</div>
+        <p style="color:var(--text-muted);font-size:0.95rem;line-height:1.8;margin-bottom:1.25rem">Ruang makan privat kami dapat menampung 10–30 tamu untuk acara-acara istimewa: ulang tahun, anniversary perusahaan, peluncuran produk, arisan keluarga, atau makan malam diplomatik.</p>
+        <p style="color:var(--text-muted);font-size:0.95rem;line-height:1.8;margin-bottom:1.5rem">Chef Ratna dan tim akan merancang menu tasting eksklusif yang disesuaikan dengan tema acara dan preferensi tamu Anda.</p>
+        <div class="privat-features">
+          <div class="pf-item"><span class="pf-icon">✦</span>Ruang privat terpisah, kapasitas 10–30 orang</div>
+          <div class="pf-item"><span class="pf-icon">✦</span>Menu tasting 7 course disesuaikan</div>
+          <div class="pf-item"><span class="pf-icon">✦</span>Dekorasi meja sesuai tema</div>
+          <div class="pf-item"><span class="pf-icon">✦</span>AV dan sound system tersedia</div>
+          <div class="pf-item"><span class="pf-icon">✦</span>Konsultasi menu gratis (3–5 hari sebelum acara)</div>
+        </div>
+        <a href="#reservasi" class="btn-primary-warm" style="display:inline-block;margin-top:2rem">Tanyakan Private Dining</a>
+      </div>
+      <div class="privat-img">
+        <span class="privat-icon">🥂</span>
+        <span class="privat-lbl">Ruang Private Dining</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo-text">Dapur <span>Nusantara</span></div>
+      <p class="footer-about">Fine dining Indonesia yang merawat warisan rempah dan resep nusantara sejak 2009. Berlokasi di jantung Jakarta Selatan.</p>
+      <div class="footer-contact">
+        <span><strong>📍</strong> Jl. Kemang Raya No. 88, Jakarta Selatan</span>
+        <span><strong>📞</strong> (021) 7894-5678</span>
+        <span><strong>✉</strong> reservasi@dapurnusantara.id</span>
+      </div>
+    </div>
+    <div>
+      <div class="fc-head">Menu</div>
+      <ul class="fc-list">
+        <li><a href="#">Pembuka</a></li>
+        <li><a href="#">Hidangan Utama</a></li>
+        <li><a href="#">Dessert</a></li>
+        <li><a href="#">Minuman</a></li>
+        <li><a href="#">Menu Tasting</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="fc-head">Informasi</div>
+      <ul class="fc-list">
+        <li><a href="#">Tentang Chef</a></li>
+        <li><a href="#">Reservasi</a></li>
+        <li><a href="#">Private Dining</a></li>
+        <li><a href="#">Media & Press</a></li>
+        <li><a href="#">Karier</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Dapur Nusantara. Semua hak cipta dilindungi.</p>
+    <p>Jl. Kemang Raya No. 88 · Jakarta Selatan · Indonesia</p>
+  </div>
+</footer>
+
+<script>
+// THEME
+const html = document.documentElement;
+const tb = document.getElementById('themebtn');
+const sv = localStorage.getItem('dn-theme') || 'dark';
+html.setAttribute('data-theme', sv);
+tb.textContent = sv === 'dark' ? '☀' : '☾';
+tb.addEventListener('click', () => {
+  const c = html.getAttribute('data-theme');
+  const n = c === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', n);
+  localStorage.setItem('dn-theme', n);
+  tb.textContent = n === 'dark' ? '☀' : '☾';
+});
+
+// HAMBURGER
+const hb = document.getElementById('hambtn');
+const mn = document.getElementById('mobnav');
+hb.addEventListener('click', () => {
+  mn.classList.toggle('open');
+  hb.textContent = mn.classList.contains('open') ? '✕' : '☰';
+});
+function closeMob() { mn.classList.remove('open'); hb.textContent = '☰'; }
+
+// MENU TABS
+document.querySelectorAll('.menu-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('on'));
+    document.querySelectorAll('.menu-panel').forEach(p => p.classList.remove('on'));
+    tab.classList.add('on');
+    document.getElementById('cat-' + tab.dataset.cat).classList.add('on');
+  });
+});
+
+// RESERVASI
+function handleRes(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('.btn-submit');
+  const orig = btn.textContent;
+  btn.textContent = 'Terkirim ✓';
+  btn.style.background = '#4CAF50';
+  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 3000);
+}
+</script>
+</body>
+</html>

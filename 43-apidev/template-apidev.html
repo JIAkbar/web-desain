@@ -1,0 +1,2395 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FluxAPI — Platform Manajemen & Gateway API untuk Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CSS VARIABLES
+   ============================================================ */
+:root {
+  --bg:      #0A0F1E;
+  --bg2:     #0F1628;
+  --bg3:     #162038;
+  --bg4:     #1C2A48;
+  --text:    #E4EDF8;
+  --text2:   #7A9EC0;
+  --text3:   #3A5A80;
+  --cyan:    #00E5FF;
+  --cyan2:   #22D3EE;
+  --green:   #00FF88;
+  --amber:   #FFB800;
+  --red:     #FF4444;
+  --violet:  #BD93F9;
+  --border:  rgba(0,229,255,0.1);
+  --glow:    0 0 30px rgba(0,229,255,0.15);
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-body: 'Inter', sans-serif;
+  --radius: 8px;
+  --radius-lg: 14px;
+  --transition: 0.2s ease;
+}
+[data-theme="light"] {
+  --bg:    #F5F8FF;
+  --bg2:   #E8EEF8;
+  --bg3:   #D8E4F5;
+  --bg4:   #C8D4E8;
+  --text:  #0A1428;
+  --text2: #2A4468;
+  --text3: #5A7498;
+  --border: rgba(0,160,200,0.15);
+  --glow: none;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  transition: background var(--transition), color var(--transition);
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+/* ============================================================
+   STATUS BAR
+   ============================================================ */
+.status-bar {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0.45rem 0;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text2);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+.status-bar .status-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  margin-right: 6px;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+.navbar {
+  position: sticky;
+  top: 34px;
+  z-index: 150;
+  background: rgba(10,15,30,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+[data-theme="light"] .navbar {
+  background: rgba(245,248,255,0.92);
+}
+.nav-logo {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--cyan);
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+.nav-logo span { color: var(--text); }
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+  font-size: 0.82rem;
+  color: var(--text2);
+}
+.nav-links a:hover { color: var(--cyan); }
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+.theme-toggle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+.theme-toggle:hover { border-color: var(--cyan); color: var(--cyan); }
+.btn-primary {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--cyan);
+  color: var(--bg);
+  padding: 0.5rem 1.1rem;
+  border-radius: var(--radius);
+  transition: var(--transition);
+  letter-spacing: 0.02em;
+}
+.btn-primary:hover { opacity: 0.85; box-shadow: 0 0 16px rgba(0,229,255,0.4); }
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  width: 28px;
+  cursor: pointer;
+}
+.hamburger span {
+  display: block;
+  height: 2px;
+  background: var(--text2);
+  border-radius: 2px;
+  transition: var(--transition);
+}
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 94px;
+  left: 0; right: 0;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 1.5rem 2rem;
+  z-index: 140;
+  flex-direction: column;
+  gap: 1rem;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a { font-size: 0.9rem; color: var(--text2); padding: 0.4rem 0; }
+
+/* ============================================================
+   SECTION BASE
+   ============================================================ */
+.section { padding: 5rem 2rem; max-width: 1180px; margin: 0 auto; }
+.section-sm { padding: 4rem 2rem; max-width: 1180px; margin: 0 auto; }
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--cyan);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.section-title {
+  font-family: var(--font-mono);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+.section-sub {
+  font-size: 1rem;
+  color: var(--text2);
+  max-width: 600px;
+  line-height: 1.7;
+}
+.section-head { margin-bottom: 3rem; }
+.section-head.center { text-align: center; }
+.section-head.center .section-sub { margin: 0 auto; }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  padding: 5rem 2rem 3rem;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+.hero-content { max-width: 720px; margin-bottom: 3.5rem; }
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0,229,255,0.08);
+  border: 1px solid rgba(0,229,255,0.2);
+  border-radius: 100px;
+  padding: 0.3rem 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--cyan);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.05em;
+}
+.hero-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--cyan);
+  animation: pulse 2s infinite;
+}
+.hero-title {
+  font-family: var(--font-mono);
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--text);
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.03em;
+}
+.hero-title em {
+  font-style: normal;
+  color: var(--cyan);
+}
+.hero-sub {
+  font-size: 1.05rem;
+  color: var(--text2);
+  line-height: 1.75;
+  margin-bottom: 2rem;
+  max-width: 560px;
+}
+.hero-ctas {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.btn-outline {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text2);
+  border: 1px solid var(--border);
+  padding: 0.5rem 1.1rem;
+  border-radius: var(--radius);
+  transition: var(--transition);
+}
+.btn-outline:hover { border-color: var(--cyan); color: var(--cyan); }
+.hero-typing {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text3);
+  margin-top: 1.5rem;
+  min-height: 1.2em;
+}
+.hero-typing::after {
+  content: '|';
+  animation: blink 1s infinite;
+  color: var(--cyan);
+}
+@keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
+
+/* ============================================================
+   API EXPLORER
+   ============================================================ */
+.api-explorer {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--glow), 0 24px 80px rgba(0,0,0,0.4);
+}
+.explorer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  height: 46px;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  gap: 1rem;
+}
+.exp-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 100%;
+}
+.exp-tab {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text3);
+  padding: 0 1rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.exp-tab.active {
+  color: var(--cyan);
+  border-bottom-color: var(--cyan);
+}
+.exp-tab:hover:not(.active) { color: var(--text2); }
+.exp-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.env-badge {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--green);
+  background: rgba(0,255,136,0.1);
+  border: 1px solid rgba(0,255,136,0.2);
+  border-radius: 100px;
+  padding: 0.15rem 0.6rem;
+}
+.exp-version {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text3);
+}
+.explorer-body {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 420px;
+}
+
+/* Endpoint list */
+.endpoint-list {
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0;
+  overflow-y: auto;
+  max-height: 420px;
+}
+.ep-group { margin-bottom: 0.25rem; }
+.ep-group-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--text3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.5rem 1rem 0.3rem;
+}
+.ep-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  transition: var(--transition);
+  border-left: 2px solid transparent;
+}
+.ep-item:hover { background: rgba(0,229,255,0.04); }
+.ep-item.active {
+  background: rgba(0,229,255,0.07);
+  border-left-color: var(--cyan);
+}
+.method {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 700;
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  flex-shrink: 0;
+  min-width: 30px;
+  text-align: center;
+}
+.method.get   { background: rgba(0,255,136,0.15); color: var(--green); }
+.method.post  { background: rgba(255,184,0,0.15); color: var(--amber); }
+.method.put   { background: rgba(189,147,249,0.15); color: var(--violet); }
+.method.del   { background: rgba(255,68,68,0.15); color: var(--red); }
+.ep-path {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ep-item.active .ep-path { color: var(--text); }
+
+/* Request/Response viewer */
+.req-viewer {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.req-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.req-method {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--green);
+  min-width: 52px;
+}
+.req-url {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text3);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.req-url span { color: var(--text2); }
+.req-send {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  background: var(--cyan);
+  color: var(--bg);
+  padding: 0.3rem 0.75rem;
+  border-radius: 4px;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+.req-send:hover { opacity: 0.85; }
+.resp-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.resp-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 1.25rem;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.resp-status {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+.resp-time, .resp-size {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text3);
+}
+.resp-body {
+  flex: 1;
+  padding: 1.25rem;
+  overflow: auto;
+  background: var(--bg);
+  max-height: 280px;
+}
+.resp-body code {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  line-height: 1.6;
+  color: var(--text2);
+  white-space: pre;
+}
+
+/* ============================================================
+   LIVE STATS
+   ============================================================ */
+.stats-section {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 3rem 2rem;
+}
+.stats-grid {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+.stat-card {
+  text-align: center;
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg3);
+}
+.stat-number {
+  font-family: var(--font-mono);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 700;
+  color: var(--cyan);
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--text2);
+}
+.stat-unit {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text3);
+  margin-top: 0.25rem;
+}
+
+/* ============================================================
+   FEATURES GRID
+   ============================================================ */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+.feat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.feat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  opacity: 0;
+  transition: var(--transition);
+}
+.feat-card:hover {
+  border-color: rgba(0,229,255,0.25);
+  box-shadow: var(--glow);
+  transform: translateY(-2px);
+}
+.feat-card:hover::before { opacity: 1; }
+.feat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius);
+  background: rgba(0,229,255,0.1);
+  border: 1px solid rgba(0,229,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+.feat-title {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+.feat-desc {
+  font-size: 0.82rem;
+  color: var(--text2);
+  line-height: 1.65;
+}
+
+/* ============================================================
+   CODE SNIPPET
+   ============================================================ */
+.code-section { background: var(--bg2); }
+.code-section > div { max-width: 1180px; margin: 0 auto; padding: 5rem 2rem; }
+.code-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--border);
+}
+.code-tab {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text3);
+  padding: 0.6rem 1.2rem;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: var(--transition);
+  background: none;
+}
+.code-tab.active {
+  color: var(--cyan);
+  border-bottom-color: var(--cyan);
+}
+.code-tab:hover:not(.active) { color: var(--text2); }
+.code-block-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  position: relative;
+}
+.code-panel { display: none; }
+.code-panel.active { display: block; }
+.copy-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text3);
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  padding: 0.3rem 0.7rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.copy-btn:hover { color: var(--cyan); border-color: rgba(0,229,255,0.3); }
+.copy-btn.copied { color: var(--green); border-color: rgba(0,255,136,0.3); }
+pre.code-pre {
+  padding: 1.5rem 1.5rem 1.5rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: var(--text2);
+}
+.kw { color: var(--violet); }
+.str { color: var(--amber); }
+.cm { color: var(--text3); font-style: italic; }
+.fn { color: var(--cyan); }
+.nm { color: var(--green); }
+
+/* ============================================================
+   DASHBOARD ANALYTICS
+   ============================================================ */
+.analytics-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.25rem;
+}
+.ana-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+}
+.ana-title {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.ana-val {
+  font-family: var(--font-mono);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+.ana-sub {
+  font-size: 0.75rem;
+  color: var(--text3);
+}
+.chart-svg { width: 100%; overflow: visible; }
+/* Bar chart */
+.bar-wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 80px;
+  margin-top: 0.75rem;
+}
+.bar {
+  flex: 1;
+  background: rgba(0,229,255,0.25);
+  border-radius: 2px 2px 0 0;
+  transition: background var(--transition);
+  min-height: 4px;
+}
+.bar.peak { background: var(--cyan); }
+/* Gauge */
+.gauge-wrap { display: flex; align-items: center; gap: 1rem; margin-top: 0.75rem; }
+.gauge-circle {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+}
+.gauge-circle svg { width: 80px; height: 80px; }
+.gauge-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.gauge-pct {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--green);
+}
+.gauge-text {
+  font-size: 0.6rem;
+  color: var(--text3);
+}
+.gauge-info { flex: 1; }
+.gauge-info-title {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text2);
+  margin-bottom: 0.3rem;
+}
+.gauge-info-bar {
+  height: 4px;
+  background: var(--bg4);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.gauge-info-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--green);
+  width: 97.4%;
+}
+
+/* ============================================================
+   PROTOCOL SUPPORT
+   ============================================================ */
+.protocol-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+.protocol-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.75rem 1.25rem;
+  transition: var(--transition);
+}
+.protocol-badge:hover {
+  border-color: rgba(0,229,255,0.3);
+  background: var(--bg3);
+}
+.protocol-icon { font-size: 1.2rem; }
+.protocol-name {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.protocol-desc {
+  font-size: 0.68rem;
+  color: var(--text3);
+}
+
+/* ============================================================
+   SECURITY
+   ============================================================ */
+.security-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+.sec-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+.sec-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+.sec-title {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.3rem;
+}
+.sec-desc { font-size: 0.75rem; color: var(--text2); }
+
+/* ============================================================
+   INTEGRATIONS
+   ============================================================ */
+.integration-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+}
+.int-badge {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 0.5rem;
+  text-align: center;
+  transition: var(--transition);
+  cursor: default;
+}
+.int-badge:hover {
+  border-color: rgba(0,229,255,0.3);
+  background: var(--bg3);
+  transform: translateY(-2px);
+}
+.int-icon { font-size: 1.5rem; margin-bottom: 0.4rem; }
+.int-name {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text3);
+}
+
+/* ============================================================
+   PRICING
+   ============================================================ */
+.pricing-toggle-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+}
+.pricing-toggle-wrap span {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text2);
+}
+.toggle-switch {
+  width: 48px;
+  height: 26px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  position: relative;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.toggle-switch.active { background: rgba(0,229,255,0.2); border-color: var(--cyan); }
+.toggle-knob {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--text3);
+  transition: var(--transition);
+}
+.toggle-switch.active .toggle-knob {
+  left: 25px;
+  background: var(--cyan);
+}
+.save-badge {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--green);
+  background: rgba(0,255,136,0.1);
+  border: 1px solid rgba(0,255,136,0.2);
+  border-radius: 100px;
+  padding: 0.2rem 0.5rem;
+}
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+.price-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  transition: var(--transition);
+}
+.price-card.featured {
+  border-color: rgba(0,229,255,0.4);
+  background: linear-gradient(135deg, rgba(0,229,255,0.05), var(--bg2));
+  box-shadow: var(--glow);
+  position: relative;
+}
+.price-popular {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  background: var(--cyan);
+  color: var(--bg);
+  padding: 0.2rem 0.75rem;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+.price-tier {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--cyan);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.price-amount {
+  font-family: var(--font-mono);
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+.price-amount sup {
+  font-size: 1rem;
+  vertical-align: top;
+  margin-top: 0.4rem;
+  display: inline-block;
+  color: var(--text2);
+}
+.price-period {
+  font-size: 0.75rem;
+  color: var(--text3);
+  margin-bottom: 1.25rem;
+}
+.price-desc {
+  font-size: 0.8rem;
+  color: var(--text2);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.price-features { list-style: none; margin-bottom: 1.75rem; }
+.price-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text2);
+  padding: 0.3rem 0;
+}
+.price-features li::before {
+  content: '✓';
+  color: var(--green);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  margin-top: 0.05em;
+}
+.btn-price {
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.65rem;
+  border-radius: var(--radius);
+  transition: var(--transition);
+  text-align: center;
+  display: block;
+}
+.btn-price-primary {
+  background: var(--cyan);
+  color: var(--bg);
+}
+.btn-price-primary:hover { opacity: 0.85; box-shadow: 0 0 16px rgba(0,229,255,0.4); }
+.btn-price-outline {
+  border: 1px solid var(--border);
+  color: var(--text2);
+}
+.btn-price-outline:hover { border-color: var(--cyan); color: var(--cyan); }
+
+/* ============================================================
+   TESTIMONIALS
+   ============================================================ */
+.testi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+.testi-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+}
+.testi-stars {
+  color: var(--amber);
+  font-size: 0.8rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: 2px;
+}
+.testi-quote {
+  font-size: 0.85rem;
+  color: var(--text2);
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+  font-style: italic;
+}
+.testi-quote::before { content: '"'; }
+.testi-quote::after { content: '"'; }
+.testi-author {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.testi-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg4);
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--cyan);
+}
+.testi-name {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.testi-role { font-size: 0.7rem; color: var(--text3); }
+
+/* ============================================================
+   FAQ
+   ============================================================ */
+.faq-list { display: flex; flex-direction: column; gap: 0.5rem; max-width: 800px; margin: 0 auto; }
+.faq-item {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: var(--transition);
+}
+.faq-item.open { border-color: rgba(0,229,255,0.25); }
+.faq-q {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text);
+  text-align: left;
+  gap: 1rem;
+  cursor: pointer;
+  background: none;
+}
+.faq-icon {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: var(--cyan);
+  flex-shrink: 0;
+  transition: transform 0.2s;
+  line-height: 1;
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+.faq-a {
+  display: none;
+  padding: 0 1.25rem 1.1rem;
+  font-size: 0.82rem;
+  color: var(--text2);
+  line-height: 1.7;
+  border-top: 1px solid var(--border);
+}
+.faq-item.open .faq-a { display: block; }
+
+/* ============================================================
+   CTA FINAL
+   ============================================================ */
+.cta-section {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 5rem 2rem;
+  text-align: center;
+}
+.cta-inner { max-width: 700px; margin: 0 auto; }
+.cta-title {
+  font-family: var(--font-mono);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
+}
+.cta-sub {
+  font-size: 0.9rem;
+  color: var(--text2);
+  margin-bottom: 2rem;
+  line-height: 1.7;
+}
+.cta-cmd-wrap {
+  display: flex;
+  align-items: center;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  max-width: 560px;
+  margin: 0 auto 1.5rem;
+  box-shadow: var(--glow);
+}
+.cta-prompt {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--green);
+  padding: 0 0.75rem;
+  border-right: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.cta-cmd {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text2);
+  padding: 1rem 1rem;
+  flex: 1;
+  text-align: left;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.cta-copy-btn {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--bg);
+  background: var(--cyan);
+  padding: 0 1rem;
+  height: 100%;
+  flex-shrink: 0;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border: none;
+  transition: var(--transition);
+}
+.cta-copy-btn:hover { opacity: 0.85; }
+.cta-copy-btn.copied { background: var(--green); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 3rem 2rem 1.5rem;
+}
+.footer-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+.footer-brand-name {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--cyan);
+  margin-bottom: 0.5rem;
+}
+.footer-tagline {
+  font-size: 0.78rem;
+  color: var(--text3);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.footer-status-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--green);
+  background: rgba(0,255,136,0.08);
+  border: 1px solid rgba(0,255,136,0.2);
+  border-radius: 100px;
+  padding: 0.25rem 0.7rem;
+}
+.footer-col-title {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.footer-links { display: flex; flex-direction: column; gap: 0.5rem; }
+.footer-links a {
+  font-size: 0.8rem;
+  color: var(--text2);
+  transition: var(--transition);
+}
+.footer-links a:hover { color: var(--cyan); }
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.footer-copy {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text3);
+}
+.footer-discord {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--violet);
+  border: 1px solid rgba(189,147,249,0.2);
+  border-radius: 100px;
+  padding: 0.3rem 0.7rem;
+  transition: var(--transition);
+}
+.footer-discord:hover { border-color: rgba(189,147,249,0.5); background: rgba(189,147,249,0.05); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 960px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .analytics-wrap { grid-template-columns: 1fr 1fr; }
+  .security-grid { grid-template-columns: repeat(2, 1fr); }
+  .integration-grid { grid-template-columns: repeat(4, 1fr); }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+  .testi-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .explorer-body { grid-template-columns: 1fr; }
+  .endpoint-list { max-height: 180px; border-right: none; border-bottom: 1px solid var(--border); }
+}
+
+@media (max-width: 768px) {
+  .hero-title { font-size: 1.9rem; }
+  .features-grid { grid-template-columns: 1fr; }
+  .analytics-wrap { grid-template-columns: 1fr; }
+  .security-grid { grid-template-columns: 1fr; }
+  .integration-grid { grid-template-columns: repeat(3, 1fr); }
+  .testi-grid { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr; }
+  .cta-cmd { font-size: 0.62rem; }
+}
+
+@media (max-width: 600px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .integration-grid { grid-template-columns: repeat(2, 1fr); }
+  .protocol-grid { flex-direction: column; }
+  .hero-ctas { flex-direction: column; align-items: flex-start; }
+  .section { padding: 3.5rem 1.25rem; }
+  .navbar { padding: 0 1.25rem; }
+  .cta-section { padding: 3.5rem 1.25rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     1. STATUS BAR
+     ============================================================ -->
+<div class="status-bar">
+  <span class="status-dot"></span>
+  API Status: <strong style="color:var(--green)">All Systems Operational</strong>
+  &nbsp;·&nbsp; 99.97% uptime bulan ini
+  &nbsp;·&nbsp; <span style="color:var(--text3)">REST · GraphQL · gRPC · WebSocket</span>
+</div>
+
+<!-- ============================================================
+     2. NAVBAR
+     ============================================================ -->
+<nav class="navbar">
+  <div class="nav-logo">Flux<span>API</span><span style="color:var(--cyan)">.</span></div>
+  <div class="nav-links">
+    <a href="#docs">Docs</a>
+    <a href="#explorer">Explorer</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#blog">Blog</a>
+    <a href="#status">Status</a>
+  </div>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeBtn" title="Toggle theme">☾</button>
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+    <a href="#pricing" class="btn-primary">Get API Key</a>
+  </div>
+</nav>
+<nav class="mobile-menu" id="mobileMenu">
+  <a href="#docs">Docs</a>
+  <a href="#explorer">Explorer</a>
+  <a href="#pricing">Pricing</a>
+  <a href="#blog">Blog</a>
+  <a href="#status">Status</a>
+  <a href="#pricing" class="btn-primary" style="text-align:center;margin-top:0.5rem">Get API Key</a>
+</nav>
+
+<!-- ============================================================
+     3. HERO
+     ============================================================ -->
+<section id="hero">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">v2.4.1 — Rate Limiting & mTLS baru tersedia</div>
+      <h1 class="hero-title">
+        Gateway API yang<br><em>Developer</em> Cintai
+      </h1>
+      <p class="hero-sub">
+        Bangun, kelola, dan skalakan API Anda dengan percaya diri. Rate limiting, autentikasi multi-layer, analytics real-time, dan SDK untuk semua bahasa — dalam satu platform.
+      </p>
+      <div class="hero-ctas">
+        <a href="#pricing" class="btn-primary" style="font-size:0.82rem;padding:0.65rem 1.5rem">▶ Mulai Gratis</a>
+        <a href="#explorer" class="btn-outline">Lihat API Explorer →</a>
+      </div>
+      <div class="hero-typing" id="heroTyping"></div>
+    </div>
+
+    <!-- API EXPLORER -->
+    <div class="api-explorer" id="explorer">
+      <div class="explorer-header">
+        <div class="exp-tabs">
+          <span class="exp-tab active">Explorer</span>
+          <span class="exp-tab">Logs</span>
+          <span class="exp-tab">Analytics</span>
+        </div>
+        <div class="exp-meta">
+          <span class="env-badge">● Production</span>
+          <span class="exp-version">v2.4.1</span>
+        </div>
+      </div>
+      <div class="explorer-body">
+        <!-- Endpoint list -->
+        <div class="endpoint-list">
+          <div class="ep-group">
+            <div class="ep-group-label">Users</div>
+            <div class="ep-item active" data-method="GET" data-path="/users" data-status="200 OK" data-time="142ms" data-size="2.4 KB">
+              <span class="method get">GET</span><span class="ep-path">/users</span>
+            </div>
+            <div class="ep-item" data-method="POST" data-path="/users" data-status="201 Created" data-time="98ms" data-size="0.6 KB">
+              <span class="method post">POST</span><span class="ep-path">/users</span>
+            </div>
+            <div class="ep-item" data-method="GET" data-path="/users/{id}" data-status="200 OK" data-time="67ms" data-size="0.5 KB">
+              <span class="method get">GET</span><span class="ep-path">/users/{id}</span>
+            </div>
+            <div class="ep-item" data-method="PUT" data-path="/users/{id}" data-status="200 OK" data-time="113ms" data-size="0.5 KB">
+              <span class="method put">PUT</span><span class="ep-path">/users/{id}</span>
+            </div>
+            <div class="ep-item" data-method="DELETE" data-path="/users/{id}" data-status="204 No Content" data-time="55ms" data-size="0.1 KB">
+              <span class="method del">DEL</span><span class="ep-path">/users/{id}</span>
+            </div>
+          </div>
+          <div class="ep-group">
+            <div class="ep-group-label">Products</div>
+            <div class="ep-item" data-method="GET" data-path="/products" data-status="200 OK" data-time="187ms" data-size="8.2 KB">
+              <span class="method get">GET</span><span class="ep-path">/products</span>
+            </div>
+            <div class="ep-item" data-method="POST" data-path="/products" data-status="201 Created" data-time="104ms" data-size="0.8 KB">
+              <span class="method post">POST</span><span class="ep-path">/products</span>
+            </div>
+          </div>
+          <div class="ep-group">
+            <div class="ep-group-label">Auth</div>
+            <div class="ep-item" data-method="POST" data-path="/auth/token" data-status="200 OK" data-time="44ms" data-size="0.4 KB">
+              <span class="method post">POST</span><span class="ep-path">/auth/token</span>
+            </div>
+            <div class="ep-item" data-method="DELETE" data-path="/auth/revoke" data-status="204 No Content" data-time="31ms" data-size="0.1 KB">
+              <span class="method del">DEL</span><span class="ep-path">/auth/revoke</span>
+            </div>
+          </div>
+        </div>
+        <!-- Request/Response viewer -->
+        <div class="req-viewer">
+          <div class="req-header">
+            <span class="req-method" id="heroMethod" style="color:var(--green)">GET</span>
+            <span class="req-url">https://api.fluxapi.io/v2<span id="heroPath">/users</span></span>
+            <button class="req-send" id="sendBtn">▶ Send</button>
+          </div>
+          <div class="resp-section">
+            <div class="resp-meta">
+              <span class="resp-status" id="respStatus" style="color:var(--green)">● 200 OK</span>
+              <span class="resp-time" id="respTime">142ms</span>
+              <span class="resp-size" id="respSize">2.4 KB</span>
+            </div>
+            <pre class="resp-body"><code id="heroResp">{
+  "data": [
+    {
+      "id": "usr_01HXYZ",
+      "name": "Budi Santoso",
+      "email": "budi@mail.com",
+      "role": "admin",
+      "created_at": "2024-03-15"
+    },
+    {
+      "id": "usr_02HABC",
+      "name": "Siti Rahayu",
+      "email": "siti@mail.com",
+      "role": "user",
+      "created_at": "2024-03-18"
+    }
+  ],
+  "meta": {
+    "total": 284,
+    "page": 1,
+    "per_page": 20
+  }
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end api-explorer -->
+  </div>
+</section>
+
+<!-- ============================================================
+     4. LIVE STATS
+     ============================================================ -->
+<div class="stats-section">
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number" data-target="4200000" data-prefix="" data-suffix="M+">0</div>
+      <div class="stat-label">API Calls / Hari</div>
+      <div class="stat-unit">rata-rata 30 hari terakhir</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" data-target="48" data-prefix="" data-suffix="ms">0</div>
+      <div class="stat-label">Rata-rata Latency</div>
+      <div class="stat-unit">p50 global edge network</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" data-target="9997" data-prefix="" data-suffix="%">0</div>
+      <div class="stat-label">Uptime SLA</div>
+      <div class="stat-unit">99.97% — 12 bulan terakhir</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" data-target="12400" data-prefix="" data-suffix="+">0</div>
+      <div class="stat-label">Developer Aktif</div>
+      <div class="stat-unit">di 34 negara</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     5. FITUR GATEWAY
+     ============================================================ -->
+<section class="section" id="docs">
+  <div class="section-head">
+    <div class="section-label">// gateway.features</div>
+    <h2 class="section-title">Semua yang Kamu Butuhkan<br>untuk Production API</h2>
+    <p class="section-sub">Dari rate limiting hingga analytics real-time — FluxAPI menyediakan lapisan infrastruktur yang biasanya butuh tim platform tersendiri.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feat-card">
+      <div class="feat-icon">⚡</div>
+      <div class="feat-title">Rate Limiting</div>
+      <p class="feat-desc">Konfigurasi per-key, per-IP, atau per-endpoint. Sliding window, fixed window, atau token bucket — pilih sesuai kebutuhan.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🔐</div>
+      <div class="feat-title">Auth Multi-Layer</div>
+      <p class="feat-desc">OAuth 2.0, JWT validation, API Key, dan mTLS dalam satu gateway. Ganti strategi tanpa ubah kode backend.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">📊</div>
+      <div class="feat-title">Analytics Real-time</div>
+      <p class="feat-desc">Request per menit, error rate, latency distribution, dan top consumers — semua live tanpa konfigurasi tambahan.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🔍</div>
+      <div class="feat-title">Log & Debug</div>
+      <p class="feat-desc">Full request/response log dengan replay. Filter by status code, endpoint, atau consumer. Integrasikan ke Datadog atau Loki.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🔀</div>
+      <div class="feat-title">API Versioning</div>
+      <p class="feat-desc">Kelola v1, v2, v3 secara paralel. Traffic splitting, deprecation warning otomatis, dan sunset policy per versi.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🚀</div>
+      <div class="feat-title">Caching Layer</div>
+      <p class="feat-desc">Edge cache dengan TTL per-route. Cache bypass via header. Kompatibel dengan Redis custom atau managed cache FluxAPI.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     6. CODE SNIPPET
+     ============================================================ -->
+<div class="code-section">
+  <div>
+    <div class="section-head">
+      <div class="section-label">// quick.start</div>
+      <h2 class="section-title">Siap dalam 3 Baris Kode</h2>
+      <p class="section-sub">SDK tersedia untuk semua bahasa utama. Atau langsung pakai REST — tidak ada lock-in.</p>
+    </div>
+    <div>
+      <div class="code-tabs">
+        <button class="code-tab active" data-tab="curl">cURL</button>
+        <button class="code-tab" data-tab="node">Node.js</button>
+        <button class="code-tab" data-tab="python">Python</button>
+      </div>
+      <div class="code-block-wrap">
+        <!-- cURL -->
+        <div class="code-panel active" id="tab-curl">
+          <button class="copy-btn" data-copy="curl">Copy</button>
+          <pre class="code-pre" id="code-curl">curl -X GET https://api.fluxapi.io/v2/users \
+  -H <span class="str">"Authorization: Bearer {API_KEY}"</span> \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -H <span class="str">"X-FluxAPI-Version: 2024-06"</span></pre>
+        </div>
+        <!-- Node.js -->
+        <div class="code-panel" id="tab-node">
+          <button class="copy-btn" data-copy="node">Copy</button>
+          <pre class="code-pre" id="code-node"><span class="cm">// npm install @fluxapi/sdk</span>
+<span class="kw">const</span> flux = <span class="fn">require</span>(<span class="str">'@fluxapi/sdk'</span>);
+
+<span class="kw">const</span> client = <span class="kw">new</span> flux.<span class="nm">Client</span>({
+  apiKey: process.env.<span class="nm">FLUX_KEY</span>,
+  version: <span class="str">'2024-06'</span>
+});
+
+<span class="kw">const</span> users = <span class="kw">await</span> client.users.<span class="fn">list</span>({ limit: 20 });
+console.<span class="fn">log</span>(users.data); <span class="cm">// [{ id, name, email, ... }]</span></pre>
+        </div>
+        <!-- Python -->
+        <div class="code-panel" id="tab-python">
+          <button class="copy-btn" data-copy="python">Copy</button>
+          <pre class="code-pre" id="code-python"><span class="cm"># pip install fluxapi</span>
+<span class="kw">import</span> fluxapi
+<span class="kw">import</span> os
+
+client = fluxapi.<span class="nm">Client</span>(
+    api_key=os.environ[<span class="str">"FLUX_KEY"</span>],
+    version=<span class="str">"2024-06"</span>
+)
+
+users = client.users.<span class="fn">list</span>(limit=20)
+<span class="fn">print</span>(users.data)  <span class="cm"># [UserObject, ...]</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     7. DASHBOARD ANALYTICS PREVIEW
+     ============================================================ -->
+<section class="section">
+  <div class="section-head">
+    <div class="section-label">// dashboard.preview</div>
+    <h2 class="section-title">Observability Bawaan</h2>
+    <p class="section-sub">Tidak perlu setup Grafana atau Datadog dari nol. Dashboard analytics siap pakai dari hari pertama.</p>
+  </div>
+  <div class="analytics-wrap">
+    <!-- SVG line chart -->
+    <div class="ana-card" style="grid-column: span 2 / span 2;">
+      <div class="ana-title">Requests / Hour — Hari Ini</div>
+      <div class="ana-val">4,284 <span style="font-size:0.9rem;color:var(--green)">↑ 12%</span></div>
+      <div class="ana-sub">vs. kemarin: 3,824 reqs/jam</div>
+      <svg class="chart-svg" viewBox="0 0 540 90" height="90" style="margin-top:1rem">
+        <defs>
+          <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#00E5FF" stop-opacity="0.25"/>
+            <stop offset="100%" stop-color="#00E5FF" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path d="M0,70 L30,65 L60,58 L90,62 L120,50 L150,45 L180,40 L210,35 L240,42 L270,30 L300,25 L330,18 L360,22 L390,14 L420,10 L450,16 L480,8 L510,5 L540,12" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M0,70 L30,65 L60,58 L90,62 L120,50 L150,45 L180,40 L210,35 L240,42 L270,30 L300,25 L330,18 L360,22 L390,14 L420,10 L450,16 L480,8 L510,5 L540,12 L540,90 L0,90 Z" fill="url(#lineGrad)"/>
+        <circle cx="540" cy="12" r="4" fill="var(--cyan)"/>
+      </svg>
+    </div>
+    <!-- Error rate gauge -->
+    <div class="ana-card">
+      <div class="ana-title">Error Rate</div>
+      <div class="gauge-wrap">
+        <div class="gauge-circle">
+          <svg viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="30" fill="none" stroke="var(--bg4)" stroke-width="8"/>
+            <circle cx="40" cy="40" r="30" fill="none" stroke="var(--green)" stroke-width="8"
+              stroke-dasharray="188.5" stroke-dashoffset="181"
+              stroke-linecap="round" transform="rotate(-90 40 40)"/>
+          </svg>
+          <div class="gauge-label">
+            <div class="gauge-pct">0.3%</div>
+            <div class="gauge-text">errors</div>
+          </div>
+        </div>
+        <div class="gauge-info">
+          <div class="gauge-info-title">Success Rate</div>
+          <div class="gauge-info-bar"><div class="gauge-info-fill"></div></div>
+          <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--green);margin-top:0.3rem">99.7% OK</div>
+        </div>
+      </div>
+      <div class="ana-sub" style="margin-top:0.5rem">13 error dari 4,284 request</div>
+    </div>
+  </div>
+  <!-- Bar chart row -->
+  <div style="margin-top:1.25rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;">
+    <div class="ana-title">Requests per Jam (24h terakhir)</div>
+    <div class="bar-wrap">
+      <div class="bar" style="height:30%"></div>
+      <div class="bar" style="height:25%"></div>
+      <div class="bar" style="height:35%"></div>
+      <div class="bar" style="height:40%"></div>
+      <div class="bar" style="height:28%"></div>
+      <div class="bar" style="height:20%"></div>
+      <div class="bar" style="height:18%"></div>
+      <div class="bar" style="height:22%"></div>
+      <div class="bar" style="height:45%"></div>
+      <div class="bar" style="height:60%"></div>
+      <div class="bar" style="height:75%"></div>
+      <div class="bar" style="height:80%"></div>
+      <div class="bar peak" style="height:100%"></div>
+      <div class="bar" style="height:90%"></div>
+      <div class="bar" style="height:85%"></div>
+      <div class="bar" style="height:70%"></div>
+      <div class="bar" style="height:65%"></div>
+      <div class="bar" style="height:72%"></div>
+      <div class="bar" style="height:68%"></div>
+      <div class="bar" style="height:55%"></div>
+      <div class="bar" style="height:50%"></div>
+      <div class="bar" style="height:42%"></div>
+      <div class="bar" style="height:38%"></div>
+      <div class="bar" style="height:35%"></div>
+    </div>
+    <div style="font-family:var(--font-mono);font-size:0.62rem;color:var(--text3);margin-top:0.5rem;text-align:right">Peak: 13:00 — 4,284 req/jam</div>
+  </div>
+</section>
+
+<!-- ============================================================
+     8. PROTOCOL SUPPORT
+     ============================================================ -->
+<div style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="section-sm" style="text-align:center">
+    <div class="section-label" style="display:block;margin-bottom:0.5rem">// protocol.support</div>
+    <h2 class="section-title" style="margin-bottom:2rem">Satu Gateway, Semua Protokol</h2>
+    <div class="protocol-grid">
+      <div class="protocol-badge">
+        <div class="protocol-icon">🌐</div>
+        <div>
+          <div class="protocol-name">REST</div>
+          <div class="protocol-desc">HTTP/1.1 & HTTP/2</div>
+        </div>
+      </div>
+      <div class="protocol-badge">
+        <div class="protocol-icon">⬡</div>
+        <div>
+          <div class="protocol-name">GraphQL</div>
+          <div class="protocol-desc">Query & Subscription</div>
+        </div>
+      </div>
+      <div class="protocol-badge">
+        <div class="protocol-icon">⚡</div>
+        <div>
+          <div class="protocol-name">gRPC</div>
+          <div class="protocol-desc">Protobuf, streaming</div>
+        </div>
+      </div>
+      <div class="protocol-badge">
+        <div class="protocol-icon">🔌</div>
+        <div>
+          <div class="protocol-name">WebSocket</div>
+          <div class="protocol-desc">Real-time bidirectional</div>
+        </div>
+      </div>
+      <div class="protocol-badge">
+        <div class="protocol-icon">🪝</div>
+        <div>
+          <div class="protocol-name">Webhook</div>
+          <div class="protocol-desc">Event-driven push</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     9. SECURITY
+     ============================================================ -->
+<section class="section">
+  <div class="section-head">
+    <div class="section-label">// security.config</div>
+    <h2 class="section-title">Keamanan Enterprise,<br>Konfigurasi Developer</h2>
+    <p class="section-sub">SOC2 Type II tersertifikasi. Semua enkripsi in-transit dan at-rest. Tidak ada kompromi.</p>
+  </div>
+  <div class="security-grid">
+    <div class="sec-item">
+      <div class="sec-icon">🔑</div>
+      <div>
+        <div class="sec-title">OAuth 2.0</div>
+        <div class="sec-desc">Authorization Code, Client Credentials, PKCE — semua flow standar tersedia.</div>
+      </div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-icon">🎟️</div>
+      <div>
+        <div class="sec-title">JWT Validation</div>
+        <div class="sec-desc">RS256, HS256, ES256. Auto-fetch JWKS. Custom claims validation.</div>
+      </div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-icon">🛡️</div>
+      <div>
+        <div class="sec-title">mTLS</div>
+        <div class="sec-desc">Mutual TLS untuk service-to-service. Certificate pinning dan auto-rotation.</div>
+      </div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-icon">📋</div>
+      <div>
+        <div class="sec-title">IP Allowlist</div>
+        <div class="sec-desc">CIDR range, geo-blocking, per-consumer policy. Update tanpa downtime.</div>
+      </div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-icon">🌊</div>
+      <div>
+        <div class="sec-title">DDoS Protection</div>
+        <div class="sec-desc">Layer 3/4/7 mitigation. Challenge mode otomatis. Bandwidth filtering.</div>
+      </div>
+    </div>
+    <div class="sec-item">
+      <div class="sec-icon">✅</div>
+      <div>
+        <div class="sec-title">SOC2 Type II</div>
+        <div class="sec-desc">Audit tahunan. GDPR compliant. Data residency pilih region.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     10. INTEGRASI
+     ============================================================ -->
+<div style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="section-sm">
+    <div class="section-head center">
+      <div class="section-label">// integrations</div>
+      <h2 class="section-title">Terhubung ke Stack Kamu</h2>
+      <p class="section-sub">Plug & play dengan semua cloud, CI/CD, dan infrastruktur tools yang sudah kamu gunakan.</p>
+    </div>
+    <div class="integration-grid">
+      <div class="int-badge"><div class="int-icon">☁️</div><div class="int-name">AWS</div></div>
+      <div class="int-badge"><div class="int-icon">🌤️</div><div class="int-name">GCP</div></div>
+      <div class="int-badge"><div class="int-icon">🔷</div><div class="int-name">Azure</div></div>
+      <div class="int-badge"><div class="int-icon">▲</div><div class="int-name">Vercel</div></div>
+      <div class="int-badge"><div class="int-icon">🚂</div><div class="int-name">Railway</div></div>
+      <div class="int-badge"><div class="int-icon">🌿</div><div class="int-name">Render</div></div>
+      <div class="int-badge"><div class="int-icon">⚡</div><div class="int-name">Supabase</div></div>
+      <div class="int-badge"><div class="int-icon">🦍</div><div class="int-name">Kong</div></div>
+      <div class="int-badge"><div class="int-icon">🌐</div><div class="int-name">Nginx</div></div>
+      <div class="int-badge"><div class="int-icon">⚙️</div><div class="int-name">GitHub Actions</div></div>
+      <div class="int-badge"><div class="int-icon">🐳</div><div class="int-name">Docker</div></div>
+      <div class="int-badge"><div class="int-icon">🔧</div><div class="int-name">Terraform</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     11. PRICING
+     ============================================================ -->
+<section class="section" id="pricing">
+  <div class="section-head center">
+    <div class="section-label">// pricing.plans</div>
+    <h2 class="section-title">Mulai Gratis,<br>Bayar Saat Skala</h2>
+    <p class="section-sub">Tidak ada kartu kredit untuk plan Developer. Upgrade kapan saja sesuai pertumbuhan.</p>
+  </div>
+  <div class="pricing-toggle-wrap">
+    <span>Bulanan</span>
+    <div class="toggle-switch" id="pricingToggle">
+      <div class="toggle-knob"></div>
+    </div>
+    <span>Tahunan</span>
+    <span class="save-badge">Hemat 20%</span>
+  </div>
+  <div class="pricing-grid">
+    <!-- Developer -->
+    <div class="price-card">
+      <div class="price-tier">Developer</div>
+      <div class="price-amount"><sup>$</sup>0</div>
+      <div class="price-period">Selamanya gratis</div>
+      <div class="price-desc">Untuk side project, eksplorasi, dan prototype. Tidak perlu kartu kredit.</div>
+      <ul class="price-features">
+        <li>100.000 request / bulan</li>
+        <li>3 API endpoints</li>
+        <li>Rate limiting dasar</li>
+        <li>API Key auth</li>
+        <li>Log 7 hari</li>
+        <li>Community support</li>
+      </ul>
+      <a href="#cta" class="btn-price btn-price-outline">Mulai Sekarang</a>
+    </div>
+    <!-- Scale -->
+    <div class="price-card featured">
+      <div class="price-popular">Paling Populer</div>
+      <div class="price-tier">Scale</div>
+      <div class="price-amount" id="scalePrice"><sup>$</sup>49</div>
+      <div class="price-period" id="scalePeriod">per bulan</div>
+      <div class="price-desc">Untuk startup dan tim yang butuh keandalan production-grade.</div>
+      <ul class="price-features">
+        <li>10 juta request / bulan</li>
+        <li>Unlimited endpoints</li>
+        <li>Rate limiting lanjutan</li>
+        <li>OAuth 2.0 + JWT + mTLS</li>
+        <li>Analytics real-time</li>
+        <li>Log 90 hari</li>
+        <li>Caching layer</li>
+        <li>Prioritas email support</li>
+      </ul>
+      <a href="#cta" class="btn-price btn-price-primary">Coba 14 Hari Gratis</a>
+    </div>
+    <!-- Enterprise -->
+    <div class="price-card">
+      <div class="price-tier">Enterprise</div>
+      <div class="price-amount" style="font-size:1.8rem">Custom</div>
+      <div class="price-period">hubungi sales</div>
+      <div class="price-desc">Untuk perusahaan dengan kebutuhan volume tinggi, compliance, dan SLA khusus.</div>
+      <ul class="price-features">
+        <li>Unlimited requests</li>
+        <li>Dedicated gateway instance</li>
+        <li>SLA 99.99% uptime</li>
+        <li>Data residency pilihan</li>
+        <li>SOC2 report akses</li>
+        <li>Onboarding engineer</li>
+        <li>Slack dedicated support</li>
+      </ul>
+      <a href="#cta" class="btn-price btn-price-outline">Hubungi Sales</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     12. TESTIMONIALS
+     ============================================================ -->
+<div style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="section-sm">
+    <div class="section-head center">
+      <div class="section-label">// community.voices</div>
+      <h2 class="section-title">Developer Bicara</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">FluxAPI memangkas waktu setup gateway kami dari 3 minggu jadi 2 hari. Rate limiting dan JWT validation-nya bekerja out-of-the-box tanpa konfigurasi ribet.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">RA</div>
+          <div>
+            <div class="testi-name">Rizal Aditya</div>
+            <div class="testi-role">CTO — Tokopintar.id</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">Analytics real-time-nya luar biasa. Kami bisa detect anomali traffic dalam hitungan detik, bukan menit. Lebih murah dari Datadog dengan fitur yang kami butuhkan.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">NW</div>
+          <div>
+            <div class="testi-name">Nadia Wulandari</div>
+            <div class="testi-role">Platform Engineer — Growthify</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">Migrasi dari Kong ke FluxAPI di tengah jalan. Developer experience jauh lebih baik, dokumentasinya jelas, dan SDK Node.js-nya terasa natural untuk tim kami.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">HF</div>
+          <div>
+            <div class="testi-name">Hendra Firmansyah</div>
+            <div class="testi-role">Lead Backend — KoperasiDigital.co</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     13. FAQ
+     ============================================================ -->
+<section class="section">
+  <div class="section-head center">
+    <div class="section-label">// faq.developer</div>
+    <h2 class="section-title">Pertanyaan Teknis</h2>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item">
+      <button class="faq-q">
+        Apakah FluxAPI mendukung self-hosted deployment?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Ya. Plan Enterprise mendukung deployment via Docker image atau Helm chart ke cluster Kubernetes kamu sendiri. Self-hosted instance tetap sync ke dashboard cloud FluxAPI untuk analytics dan konfigurasi, atau bisa fully air-gapped jika diperlukan.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">
+        Bagaimana cara kerja rate limiting untuk multi-tenant API?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">FluxAPI mendukung rate limiting per API Key, per IP, per user ID dari JWT claim, atau kombinasinya. Kamu bisa set limit berbeda untuk tier consumer yang berbeda via konsep "Consumer Groups". Semua konfigurasi via dashboard atau Terraform provider.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">
+        Apakah ada latensi overhead dari gateway ini?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Overhead p50 FluxAPI adalah 3–8ms, p99 di bawah 20ms — diukur dari edge PoP terdekat. Kami punya 14 edge location termasuk Jakarta dan Singapura. Untuk request yang hit cache, overhead bisa turun ke &lt;1ms.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">
+        Bagaimana migrasi dari gateway lain (Kong, Nginx, AWS API Gateway)?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Kami menyediakan migration script untuk Kong (via Deck config) dan import wizard untuk AWS API Gateway JSON export. Untuk Nginx, tersedia panduan manual konversi rule. Traffic dapat di-shadow route dulu — request tetap ke gateway lama, FluxAPI hanya mirror untuk comparison sebelum full cutover.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">
+        Apakah FluxAPI menyimpan request body / response body?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Secara default, FluxAPI hanya log metadata (URL, method, status, latency, headers). Request/response body logging bisa diaktifkan per-route dengan redaction rules untuk field sensitif (password, token, kartu kredit). Data log disimpan di region yang kamu pilih dan bisa di-export ke S3 atau GCS.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     14. CTA FINAL
+     ============================================================ -->
+<div class="cta-section" id="cta">
+  <div class="cta-inner">
+    <div class="section-label" style="display:block;margin-bottom:0.75rem">// get.started</div>
+    <h2 class="cta-title">Satu Perintah untuk Memulai</h2>
+    <p class="cta-sub">Daftar, dapatkan API Key, dan buat request pertama dalam 2 menit. Tidak perlu setup infrastruktur.</p>
+    <div class="cta-cmd-wrap">
+      <span class="cta-prompt">$</span>
+      <span class="cta-cmd" id="ctaCmd">curl -X POST https://api.fluxapi.io/auth/register -d '{"email":"kamu@startup.id"}'</span>
+      <button class="cta-copy-btn" id="ctaCopyBtn">Copy</button>
+    </div>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+      <a href="#pricing" class="btn-primary" style="font-size:0.85rem;padding:0.7rem 1.75rem">Mulai Gratis — 100K req/bulan</a>
+      <a href="#docs" class="btn-outline" style="font-size:0.85rem;padding:0.7rem 1.75rem">Baca Dokumentasi</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     15. FOOTER
+     ============================================================ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand-name">FluxAPI.</div>
+        <p class="footer-tagline">Platform manajemen & gateway API untuk developer yang membangun produk serius. Cepat, aman, dan observable.</p>
+        <a href="#status" class="footer-status-link">
+          <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite"></span>
+          Semua sistem berjalan normal
+        </a>
+      </div>
+      <div>
+        <div class="footer-col-title">Product</div>
+        <div class="footer-links">
+          <a href="#">Explorer</a>
+          <a href="#">Analytics</a>
+          <a href="#">Rate Limiting</a>
+          <a href="#">Changelog</a>
+          <a href="#status">Status Page</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Developers</div>
+        <div class="footer-links">
+          <a href="#">Dokumentasi</a>
+          <a href="#">API Reference</a>
+          <a href="#">SDK</a>
+          <a href="#">Postman Collection</a>
+          <a href="#">GitHub</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <div class="footer-links">
+          <a href="#">Blog</a>
+          <a href="#">Karir</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Kontak</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2024 FluxAPI. Built for developers, by developers.</div>
+      <a href="#discord" class="footer-discord">
+        <span>💬</span> Discord Community
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   DARK / LIGHT TOGGLE
+   ============================================================ */
+const themeBtn = document.getElementById('themeBtn');
+themeBtn.addEventListener('click', () => {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  themeBtn.textContent = isDark ? '☀' : '☾';
+});
+
+/* ============================================================
+   MOBILE MENU
+   ============================================================ */
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+});
+mobileMenu.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+});
+
+/* ============================================================
+   TYPING ANIMATION
+   ============================================================ */
+const typingEl = document.getElementById('heroTyping');
+const phrases = [
+  '$ curl https://api.fluxapi.io/v2/users -H "Authorization: Bearer sk_live_..."',
+  '→ 200 OK · 48ms · 2.4 KB',
+  '$ npm install @fluxapi/sdk',
+  '→ rate_limit: 9,834 / 10,000 remaining',
+  '$ flux deploy --env production',
+];
+let phraseIdx = 0;
+let charIdx = 0;
+let typing = true;
+function tick() {
+  const current = phrases[phraseIdx];
+  if (typing) {
+    typingEl.textContent = current.slice(0, charIdx + 1);
+    charIdx++;
+    if (charIdx >= current.length) {
+      typing = false;
+      setTimeout(tick, 1800);
+      return;
+    }
+  } else {
+    typingEl.textContent = current.slice(0, charIdx - 1);
+    charIdx--;
+    if (charIdx <= 0) {
+      typing = true;
+      phraseIdx = (phraseIdx + 1) % phrases.length;
+      setTimeout(tick, 400);
+      return;
+    }
+  }
+  setTimeout(tick, typing ? 32 : 12);
+}
+tick();
+
+/* ============================================================
+   ENDPOINT SWITCHER
+   ============================================================ */
+const responses = {
+  'GET /users': `{
+  "data": [
+    {
+      "id": "usr_01HXYZ",
+      "name": "Budi Santoso",
+      "email": "budi@mail.com",
+      "role": "admin",
+      "created_at": "2024-03-15"
+    },
+    {
+      "id": "usr_02HABC",
+      "name": "Siti Rahayu",
+      "email": "siti@mail.com",
+      "role": "user",
+      "created_at": "2024-03-18"
+    }
+  ],
+  "meta": {
+    "total": 284,
+    "page": 1,
+    "per_page": 20
+  }
+}`,
+  'POST /users': `{
+  "id": "usr_03HNEW",
+  "name": "Ahmad Fauzi",
+  "email": "ahmad@mail.com",
+  "role": "user",
+  "created_at": "2024-06-16",
+  "status": "active"
+}`,
+  'GET /users/{id}': `{
+  "id": "usr_01HXYZ",
+  "name": "Budi Santoso",
+  "email": "budi@mail.com",
+  "role": "admin",
+  "created_at": "2024-03-15",
+  "last_login": "2024-06-16T08:42:00Z"
+}`,
+  'PUT /users/{id}': `{
+  "id": "usr_01HXYZ",
+  "name": "Budi Santoso Updated",
+  "email": "budi.new@mail.com",
+  "role": "admin",
+  "updated_at": "2024-06-16T09:00:00Z"
+}`,
+  'DELETE /users/{id}': `{
+  "message": "User deleted successfully",
+  "id": "usr_01HXYZ",
+  "deleted_at": "2024-06-16T09:15:00Z"
+}`,
+  'GET /products': `{
+  "data": [
+    { "id": "prd_01", "name": "Laptop Pro X", "price": 15000000, "stock": 42 },
+    { "id": "prd_02", "name": "Keyboard Mekanikal", "price": 850000, "stock": 128 }
+  ],
+  "meta": { "total": 1284, "page": 1 }
+}`,
+  'POST /products': `{
+  "id": "prd_99",
+  "name": "Monitor 4K 27\"",
+  "price": 5500000,
+  "stock": 0,
+  "created_at": "2024-06-16"
+}`,
+  'POST /auth/token': `{
+  "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "Bearer",
+  "expires_in": 3600,
+  "scope": "read write"
+}`,
+  'DELETE /auth/revoke': `{
+  "message": "Token revoked successfully",
+  "revoked_at": "2024-06-16T09:20:00Z"
+}`
+};
+
+const methodColors = {
+  GET:    'var(--green)',
+  POST:   'var(--amber)',
+  PUT:    'var(--violet)',
+  DELETE: 'var(--red)'
+};
+const statusColors = {
+  '200 OK':         'var(--green)',
+  '201 Created':    'var(--green)',
+  '204 No Content': 'var(--text3)',
+};
+
+document.querySelectorAll('.ep-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.ep-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    const method = item.dataset.method;
+    const path = item.dataset.path;
+    const status = item.dataset.status;
+    const time = item.dataset.time;
+    const size = item.dataset.size;
+    const key = method + ' ' + path;
+
+    document.getElementById('heroMethod').textContent = method;
+    document.getElementById('heroMethod').style.color = methodColors[method] || 'var(--cyan)';
+    document.getElementById('heroPath').textContent = path;
+    document.getElementById('heroResp').textContent = responses[key] || '{}';
+    document.getElementById('respStatus').textContent = '● ' + status;
+    document.getElementById('respStatus').style.color = statusColors[status] || 'var(--text2)';
+    document.getElementById('respTime').textContent = time;
+    document.getElementById('respSize').textContent = size;
+  });
+});
+
+// Send button animation
+document.getElementById('sendBtn').addEventListener('click', function() {
+  this.textContent = '⟳ Sending...';
+  this.style.opacity = '0.6';
+  setTimeout(() => {
+    this.textContent = '▶ Send';
+    this.style.opacity = '1';
+  }, 600);
+});
+
+/* ============================================================
+   CODE TAB SWITCHER
+   ============================================================ */
+document.querySelectorAll('.code-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const target = tab.dataset.tab;
+    document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.code-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + target).classList.add('active');
+  });
+});
+
+/* ============================================================
+   COPY BUTTONS
+   ============================================================ */
+const codeRaw = {
+  curl: `curl -X GET https://api.fluxapi.io/v2/users \\
+  -H "Authorization: Bearer {API_KEY}" \\
+  -H "Content-Type: application/json" \\
+  -H "X-FluxAPI-Version: 2024-06"`,
+  node: `// npm install @fluxapi/sdk
+const flux = require('@fluxapi/sdk');
+const client = new flux.Client({ apiKey: process.env.FLUX_KEY, version: '2024-06' });
+const users = await client.users.list({ limit: 20 });
+console.log(users.data);`,
+  python: `# pip install fluxapi
+import fluxapi, os
+client = fluxapi.Client(api_key=os.environ["FLUX_KEY"], version="2024-06")
+users = client.users.list(limit=20)
+print(users.data)`
+};
+
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const lang = btn.dataset.copy;
+    navigator.clipboard.writeText(codeRaw[lang] || '').then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 1800);
+    });
+  });
+});
+
+// CTA copy
+document.getElementById('ctaCopyBtn').addEventListener('click', function() {
+  const cmd = document.getElementById('ctaCmd').textContent;
+  navigator.clipboard.writeText(cmd).then(() => {
+    this.textContent = 'Copied!';
+    this.classList.add('copied');
+    setTimeout(() => {
+      this.textContent = 'Copy';
+      this.classList.remove('copied');
+    }, 1800);
+  });
+});
+
+/* ============================================================
+   COUNTER ANIMATION
+   ============================================================ */
+function formatStat(el, val) {
+  const suffix = el.dataset.suffix || '';
+  const prefix = el.dataset.prefix || '';
+  const target = parseInt(el.dataset.target);
+  if (el.dataset.suffix === 'M+') {
+    el.textContent = (val / 1000000).toFixed(1) + 'M+';
+  } else if (el.dataset.suffix === '%') {
+    const pct = (val / 100).toFixed(2).replace('.', '.');
+    // format: 99.97%
+    el.textContent = (val / 100).toFixed(2) + '%';
+  } else {
+    el.textContent = val.toLocaleString('id-ID') + suffix;
+  }
+}
+
+function animateCounter(el) {
+  const target = parseInt(el.dataset.target);
+  const duration = 2000;
+  const step = 16;
+  const steps = duration / step;
+  let current = 0;
+  const increment = target / steps;
+  const timer = setInterval(() => {
+    current += increment;
+    if (current >= target) {
+      current = target;
+      clearInterval(timer);
+    }
+    formatStat(el, Math.floor(current));
+  }, step);
+}
+
+const statEls = document.querySelectorAll('.stat-number');
+let statsAnimated = false;
+const statsObserver = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting && !statsAnimated) {
+    statsAnimated = true;
+    statEls.forEach(el => animateCounter(el));
+  }
+}, { threshold: 0.3 });
+if (statEls[0]) statsObserver.observe(statEls[0].closest('.stats-section') || statEls[0]);
+
+/* ============================================================
+   PRICING TOGGLE
+   ============================================================ */
+const pricingToggle = document.getElementById('pricingToggle');
+const scalePrice = document.getElementById('scalePrice');
+const scalePeriod = document.getElementById('scalePeriod');
+let isAnnual = false;
+pricingToggle.addEventListener('click', () => {
+  isAnnual = !isAnnual;
+  pricingToggle.classList.toggle('active', isAnnual);
+  if (isAnnual) {
+    scalePrice.innerHTML = '<sup>$</sup>39';
+    scalePeriod.textContent = 'per bulan, tagih tahunan';
+  } else {
+    scalePrice.innerHTML = '<sup>$</sup>49';
+    scalePeriod.textContent = 'per bulan';
+  }
+});
+
+/* ============================================================
+   FAQ ACCORDION
+   ============================================================ */
+document.querySelectorAll('.faq-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+});
+</script>
+</body>
+</html>

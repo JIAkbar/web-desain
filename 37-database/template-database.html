@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DataSphere — Platform Manajemen Database Visual untuk Tim</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #0F1117;
+  --bg2:     #161822;
+  --bg3:     #1E2030;
+  --text:    #CDD9E5;
+  --text2:   #8896A7;
+  --text3:   #4A5568;
+  --indigo:  #818CF8;
+  --indigo2: #6366F1;
+  --cyan:    #22D3EE;
+  --green:   #34D399;
+  --amber:   #FBBF24;
+  --red:     #F87171;
+  --border:  rgba(129,140,248,0.12);
+  --glow:    0 0 24px rgba(99,102,241,0.15);
+  --font-body: 'IBM Plex Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+[data-theme="light"] {
+  --bg: #F8F9FF; --bg2: #EDEEFF; --bg3: #E0E2FF;
+  --text: #0F1117; --text2: #344060; --text3: #6070A0;
+  --border: rgba(99,102,241,0.15); --glow: none;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.6;font-size:16px;transition:background .3s,color .3s}
+a{text-decoration:none;color:inherit}
+.container{max-width:1160px;margin:0 auto;padding:0 24px}
+
+/* NAVBAR */
+nav{background:rgba(15,17,23,0.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;transition:.3s}
+[data-theme="light"] nav{background:rgba(248,249,255,0.92)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+.nav-logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;color:var(--indigo)}
+.logo-ico{width:36px;height:36px;background:linear-gradient(135deg,var(--indigo2),var(--cyan));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.nav-links{display:flex;gap:2px;list-style:none}
+.nav-links a{padding:6px 14px;border-radius:6px;color:var(--text2);font-size:15px;font-weight:500;transition:.2s}
+.nav-links a:hover{color:var(--text);background:var(--bg2)}
+.nav-actions{display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:8px;font-family:var(--font-body);font-size:15px;font-weight:600;cursor:pointer;transition:.2s;border:none}
+.btn-indigo{background:var(--indigo2);color:#fff}
+.btn-indigo:hover{background:#4F46E5}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text2)}
+.btn-outline:hover{border-color:var(--indigo);color:var(--indigo)}
+.btn-sm{padding:7px 14px;font-size:14px}
+.dark-toggle{background:var(--bg2);border:1px solid var(--border);color:var(--text2);padding:7px 12px;border-radius:6px;cursor:pointer;font-size:13px;font-family:var(--font-body)}
+.nav-burger{display:none;background:none;border:none;cursor:pointer;padding:6px}
+.burger-line{display:block;width:22px;height:2px;background:var(--text);margin:4px 0;border-radius:2px}
+
+/* HERO */
+.hero{padding:80px 0 60px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:800px;height:400px;background:radial-gradient(ellipse,rgba(99,102,241,0.08) 0%,transparent 70%);pointer-events:none}
+.hero-inner{display:grid;grid-template-columns:1fr 1.2fr;gap:48px;align-items:center}
+.hero-chip{display:inline-flex;align-items:center;gap:8px;background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.25);color:var(--indigo);padding:5px 14px;border-radius:20px;font-size:13px;font-weight:600;margin-bottom:20px;font-family:var(--font-mono)}
+.hero-text h1{font-size:clamp(26px,3.5vw,48px);font-weight:700;color:var(--text);line-height:1.15;margin-bottom:18px}
+.hero-text h1 span{background:linear-gradient(135deg,var(--indigo),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-text p{font-size:17px;color:var(--text2);margin-bottom:28px;line-height:1.7;max-width:460px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.hero-proof{display:flex;align-items:center;gap:12px;margin-top:24px;flex-wrap:wrap}
+.hp-item{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--text3)}
+.hp-dot{width:4px;height:4px;border-radius:50%;background:var(--text3)}
+
+/* DB MOCKUP */
+.db-device{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--glow),0 24px 60px rgba(0,0,0,0.5)}
+[data-theme="light"] .db-device{box-shadow:0 8px 40px rgba(99,102,241,0.1)}
+.db-topbar{background:var(--bg);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:8px}
+.db-dots{display:flex;gap:5px}
+.db-dot{width:10px;height:10px;border-radius:50%}
+.db-title{font-family:var(--font-mono);font-size:12px;color:var(--text3);margin-left:auto;margin-right:auto}
+.db-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);background:var(--bg)}
+.db-tab{padding:8px 16px;font-size:12px;font-family:var(--font-mono);color:var(--text3);cursor:pointer;border-right:1px solid var(--border);transition:.2s;border-bottom:2px solid transparent;margin-bottom:-1px}
+.db-tab:hover{color:var(--indigo)}
+.db-tab.active{color:var(--indigo);border-bottom-color:var(--indigo);background:var(--bg2)}
+.db-toolbar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border);background:var(--bg2)}
+.db-search{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;color:var(--text3);font-family:var(--font-mono)}
+.db-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:5px 12px;border-radius:6px;font-size:11px;font-family:var(--font-mono);cursor:pointer;white-space:nowrap;transition:.2s}
+.db-btn:hover{border-color:var(--indigo);color:var(--indigo)}
+.db-btn.primary{background:var(--indigo2);color:#fff;border-color:var(--indigo2)}
+.db-table{width:100%;border-collapse:collapse;font-size:12px;font-family:var(--font-mono)}
+.db-table th{background:var(--bg);padding:8px 12px;text-align:left;color:var(--text3);font-weight:500;border-bottom:1px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none;transition:.2s}
+.db-table th:hover{color:var(--indigo)}
+.db-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text2);white-space:nowrap}
+.db-table tr:hover td{background:rgba(129,140,248,0.04)}
+.badge-admin{background:rgba(251,191,36,0.12);color:var(--amber);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600}
+.badge-user{background:rgba(52,211,153,0.1);color:var(--green);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600}
+.badge-editor{background:rgba(34,211,238,0.1);color:var(--cyan);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600}
+.badge-active{background:rgba(52,211,153,0.1);color:var(--green);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600}
+.badge-inactive{background:rgba(248,113,113,0.1);color:var(--red);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600}
+.db-actions{color:var(--text3);font-size:14px;display:flex;gap:6px}
+.db-act{cursor:pointer;transition:color .2s}
+.db-act:hover{color:var(--indigo)}
+.db-pagination{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--bg);font-size:11px;font-family:var(--font-mono);color:var(--text3);border-top:1px solid var(--border)}
+.db-pages{display:flex;gap:4px;align-items:center}
+.db-page{padding:2px 8px;border-radius:4px;cursor:pointer;transition:.2s}
+.db-page:hover,.db-page.cur{background:var(--indigo2);color:#fff}
+
+/* SECTIONS */
+section{padding:72px 0}
+.s-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--indigo);margin-bottom:8px;font-family:var(--font-mono)}
+.s-title{font-size:clamp(24px,2.8vw,38px);font-weight:700;color:var(--text);margin-bottom:12px;line-height:1.2}
+.s-sub{color:var(--text2);font-size:16px;max-width:560px;margin:0 auto 48px;line-height:1.7}
+.tc{text-align:center}
+.bg2{background:var(--bg2)}
+
+/* STATS */
+.stats-bar{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:16px;padding:32px 0}
+.stats-inner{display:grid;grid-template-columns:repeat(3,1fr);text-align:center}
+.stat-item{padding:16px 24px;border-right:1px solid var(--border)}
+.stat-item:last-child{border-right:none}
+.stat-num{font-family:var(--font-mono);font-size:clamp(28px,3vw,44px);font-weight:700;color:var(--indigo);display:block;margin-bottom:4px}
+.stat-lbl{font-size:14px;color:var(--text2)}
+
+/* FITUR */
+.fitur-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.fitur-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:28px;transition:.25s;cursor:default}
+.fitur-card:hover{border-color:var(--indigo);box-shadow:var(--glow)}
+.fitur-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px;border:1px solid rgba(129,140,248,0.2)}
+.fitur-card h3{font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px}
+.fitur-card p{font-size:14px;color:var(--text2);line-height:1.6}
+.tag-new{background:rgba(52,211,153,0.12);color:var(--green);font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;vertical-align:middle;margin-left:6px;font-family:var(--font-mono)}
+
+/* CARA KERJA */
+.ck-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;position:relative}
+.ck-grid::before{content:'';position:absolute;top:32px;left:calc(16.67% + 20px);right:calc(16.67% + 20px);height:1px;background:linear-gradient(to right,var(--indigo2),var(--cyan));opacity:.3}
+.ck-item{text-align:center;padding:0 16px}
+.ck-num{width:64px;height:64px;background:var(--bg2);border:2px solid var(--indigo2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:18px;font-weight:700;color:var(--indigo);margin:0 auto 20px;position:relative;z-index:1}
+.ck-item h3{font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px}
+.ck-item p{font-size:14px;color:var(--text2);line-height:1.6}
+
+/* ERD / SCHEMA PREVIEW */
+.erd-preview{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:24px;overflow:hidden}
+.erd-inner{position:relative;min-height:220px}
+.erd-table{position:absolute;background:var(--bg2);border:1px solid var(--border);border-radius:8px;min-width:140px;overflow:hidden}
+.erd-table-hd{padding:8px 12px;font-family:var(--font-mono);font-size:12px;font-weight:600;border-bottom:1px solid var(--border)}
+.erd-table-hd.t-users{background:rgba(129,140,248,0.15);color:var(--indigo)}
+.erd-table-hd.t-orders{background:rgba(34,211,238,0.12);color:var(--cyan)}
+.erd-table-hd.t-products{background:rgba(52,211,153,0.12);color:var(--green)}
+.erd-field{display:flex;align-items:center;gap:6px;padding:5px 12px;font-family:var(--font-mono);font-size:11px;color:var(--text2);border-bottom:1px solid var(--border)}
+.erd-field:last-child{border-bottom:none}
+.erd-key{font-size:10px;background:rgba(251,191,36,0.12);color:var(--amber);padding:1px 5px;border-radius:3px;flex-shrink:0}
+.erd-fk{font-size:10px;background:rgba(129,140,248,0.1);color:var(--indigo);padding:1px 5px;border-radius:3px;flex-shrink:0}
+.erd-type{color:var(--text3);margin-left:auto;font-size:10px}
+.erd-conn{position:absolute;pointer-events:none}
+.editor-text h3{font-size:26px;font-weight:700;color:var(--text);margin-bottom:12px}
+.editor-text p{color:var(--text2);margin-bottom:20px;line-height:1.7}
+.erd-inner-wrap{display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center}
+
+/* INTEGRASI */
+.integ-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.integ-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 24px;display:flex;align-items:center;gap:14px;transition:.2s}
+.integ-card:hover{border-color:var(--indigo)}
+.integ-ico{font-size:28px;flex-shrink:0}
+.integ-card h4{font-size:15px;font-weight:600;color:var(--text);margin-bottom:2px}
+.integ-card p{font-size:13px;color:var(--text3)}
+.integ-badge{font-size:10px;background:rgba(52,211,153,0.1);color:var(--green);padding:2px 7px;border-radius:4px;font-family:var(--font-mono);font-weight:600}
+
+/* KEAMANAN */
+.sec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.sec-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px;text-align:center;transition:.2s}
+.sec-card:hover{border-color:var(--green);box-shadow:0 0 20px rgba(52,211,153,0.08)}
+.sec-icon{font-size:32px;margin-bottom:12px}
+.sec-card h3{font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px}
+.sec-card p{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* ROLE & PERMISSION */
+.role-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.role-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;transition:.2s}
+.role-card:hover{border-color:var(--indigo)}
+.role-ico{width:48px;height:48px;border-radius:12px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.role-card h4{font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px}
+.role-card p{font-size:12px;color:var(--text3);line-height:1.5}
+.role-perms{display:flex;flex-direction:column;gap:4px;margin-top:10px}
+.rp{display:flex;align-items:center;gap:5px;font-size:11px;font-family:var(--font-mono)}
+.rp.yes{color:var(--green)}
+.rp.no{color:var(--text3)}
+
+/* PRICING */
+.p-toggle{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:40px}
+.p-lbl{font-size:14px;color:var(--text2)}
+.p-lbl.act{color:var(--indigo);font-weight:600}
+.p-sw{width:44px;height:24px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;cursor:pointer;position:relative}
+.p-sw::after{content:'';position:absolute;width:18px;height:18px;background:var(--indigo2);border-radius:50%;top:2px;left:3px;transition:.25s}
+.p-sw.yr::after{left:21px}
+.p-save{background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);color:var(--green);padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;font-family:var(--font-mono)}
+.price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.pc{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:.25s;position:relative}
+.pc:hover{box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+.pc.feat{border-color:var(--indigo2);box-shadow:var(--glow)}
+.pc-pop{position:absolute;top:12px;right:12px;background:var(--indigo2);color:#fff;font-size:10px;font-weight:700;padding:3px 9px;border-radius:12px;font-family:var(--font-mono)}
+.pc-hd{padding:24px 20px;border-bottom:1px solid var(--border)}
+.pc-name{font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--indigo);margin-bottom:10px}
+.pc-price{font-size:28px;font-weight:700;color:var(--text);line-height:1}
+.pc-price small{font-size:13px;font-weight:400;color:var(--text3)}
+.pc-desc{font-size:12px;color:var(--text3);margin-top:6px}
+.pc-body{padding:16px 20px}
+.pf{display:flex;align-items:flex-start;gap:8px;padding:6px 0;font-size:13px;color:var(--text2)}
+.pf::before{content:'✓';color:var(--green);font-weight:700;font-family:var(--font-mono);flex-shrink:0;margin-top:1px}
+.pc-ft{padding:0 20px 20px}
+
+/* TESTIMONI */
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.testi-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px}
+.testi-stars{color:var(--amber);font-size:14px;margin-bottom:12px}
+.testi-text{font-size:14px;color:var(--text2);font-style:italic;line-height:1.65;margin-bottom:16px}
+.testi-author{display:flex;align-items:center;gap:10px}
+.testi-av{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:1px solid var(--border)}
+.testi-name{font-size:14px;font-weight:600;color:var(--text)}
+.testi-role{font-size:12px;color:var(--text3);font-family:var(--font-mono)}
+
+/* FAQ */
+.faq-list{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:8px}
+.faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;font-size:15px;font-weight:500;color:var(--text);gap:12px;transition:.2s}
+.faq-q:hover{color:var(--indigo)}
+.faq-arrow{font-size:18px;transition:transform .3s;color:var(--text3);flex-shrink:0}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.faq-a-inner{padding:0 20px 16px;font-size:14px;color:var(--text2);line-height:1.65;font-family:var(--font-body)}
+.faq-item.open .faq-arrow{transform:rotate(45deg);color:var(--indigo)}
+.faq-item.open .faq-a{max-height:220px}
+
+/* CTA */
+.cta-sec{background:linear-gradient(135deg,rgba(99,102,241,0.1),rgba(34,211,238,0.06));border:1px solid rgba(129,140,248,0.2);border-radius:20px;padding:64px 40px;text-align:center}
+.cta-sec h2{font-size:clamp(24px,3vw,40px);font-weight:700;color:var(--text);margin-bottom:12px}
+.cta-sec p{font-size:17px;color:var(--text2);margin-bottom:28px}
+.cta-note{font-size:13px;color:var(--text3);margin-top:12px;font-family:var(--font-mono)}
+
+/* FOOTER */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:52px 0 24px}
+.footer-inner{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.f-logo{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:700;color:var(--indigo);margin-bottom:12px}
+.f-brand p{font-size:14px;color:var(--text3);line-height:1.7;margin-bottom:16px}
+.f-socials{display:flex;gap:8px}
+.soc{width:32px;height:32px;background:var(--bg3);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;transition:.2s}
+.soc:hover{background:var(--indigo2)}
+.f-col h4{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:14px;font-family:var(--font-mono)}
+.f-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.f-col a{font-size:14px;color:var(--text2);transition:color .2s}
+.f-col a:hover{color:var(--indigo)}
+.f-bottom{border-top:1px solid var(--border);padding-top:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.f-bottom p{font-size:13px;color:var(--text3);font-family:var(--font-mono)}
+.f-badges{display:flex;gap:8px;flex-wrap:wrap}
+.f-badge{font-size:10px;background:rgba(129,140,248,0.08);border:1px solid rgba(129,140,248,0.2);padding:3px 9px;border-radius:12px;color:var(--indigo);font-family:var(--font-mono)}
+
+/* MOBILE MENU */
+.m-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:300;padding:80px 24px 24px;flex-direction:column;gap:6px}
+.m-menu.open{display:flex}
+.m-close{position:absolute;top:16px;right:16px;font-size:28px;background:none;border:none;cursor:pointer;color:var(--text)}
+.m-menu a{display:block;padding:12px 16px;font-size:18px;font-weight:500;color:var(--text);border-radius:8px}
+.m-menu a:hover{background:var(--bg2)}
+.m-cta{background:var(--indigo2);color:#fff !important;text-align:center;margin-top:8px}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  .hero-inner{grid-template-columns:1fr}
+  .hero-visual-db{display:none}
+  .fitur-grid{grid-template-columns:1fr 1fr}
+  .ck-grid::before{display:none}
+  .ck-grid{grid-template-columns:1fr;gap:20px}
+  .erd-inner-wrap{grid-template-columns:1fr}
+  .integ-grid{grid-template-columns:1fr 1fr}
+  .sec-grid{grid-template-columns:1fr 1fr}
+  .role-grid{grid-template-columns:1fr 1fr}
+  .price-grid{grid-template-columns:1fr 1fr}
+  .testi-grid{grid-template-columns:1fr 1fr}
+  .footer-inner{grid-template-columns:1fr 1fr}
+  .stats-inner{grid-template-columns:1fr}
+  .stat-item{border-right:none;border-bottom:1px solid var(--border);padding:20px}
+  .stat-item:last-child{border-bottom:none}
+}
+@media(max-width:768px){
+  .nav-links,.dark-toggle{display:none}
+  .nav-burger{display:block}
+  .fitur-grid{grid-template-columns:1fr}
+  .price-grid{grid-template-columns:1fr}
+  .pc.feat{order:-1}
+  .testi-grid{grid-template-columns:1fr}
+  .integ-grid{grid-template-columns:1fr}
+  .sec-grid{grid-template-columns:1fr}
+  .role-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  section{padding:48px 0}
+  .cta-sec{padding:40px 20px}
+  .footer-inner{grid-template-columns:1fr}
+  .role-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="container nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="logo-ico">🗄️</div>
+      DataSphere
+    </a>
+    <ul class="nav-links">
+      <li><a href="#fitur">Fitur</a></li>
+      <li><a href="#integrasi">Integrasi</a></li>
+      <li><a href="#keamanan">Keamanan</a></li>
+      <li><a href="#pricing">Harga</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="dark-toggle" onclick="toggleTheme()">☀️ Terang</button>
+      <a href="#" class="btn btn-outline btn-sm">Masuk</a>
+      <a href="#pricing" class="btn btn-indigo btn-sm">Mulai Gratis</a>
+      <button class="nav-burger" onclick="document.getElementById('mMenu').classList.add('open')" aria-label="Menu">
+        <span class="burger-line"></span><span class="burger-line"></span><span class="burger-line"></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="m-menu" id="mMenu">
+  <button class="m-close" onclick="document.getElementById('mMenu').classList.remove('open')">✕</button>
+  <a href="#fitur" onclick="document.getElementById('mMenu').classList.remove('open')">Fitur</a>
+  <a href="#integrasi" onclick="document.getElementById('mMenu').classList.remove('open')">Integrasi</a>
+  <a href="#keamanan" onclick="document.getElementById('mMenu').classList.remove('open')">Keamanan</a>
+  <a href="#pricing" onclick="document.getElementById('mMenu').classList.remove('open')">Harga</a>
+  <a href="#faq" onclick="document.getElementById('mMenu').classList.remove('open')">FAQ</a>
+  <a href="#pricing" class="m-cta" onclick="document.getElementById('mMenu').classList.remove('open')">🗄️ Buat Database Pertamamu Gratis</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="hero-chip">🗄️ v4.0 — Kini dengan AI Query</div>
+        <h1>Database Visual <span>tanpa Kode</span></h1>
+        <p>Buat, kelola, dan bagikan database tim Anda dalam hitungan menit. GUI intuitif, SQL mode penuh, REST API otomatis — tanpa setup server.</p>
+        <div class="hero-actions">
+          <a href="#pricing" class="btn btn-indigo">🗄️ Buat Database Gratis</a>
+          <a href="#fitur" class="btn btn-outline">Lihat Demo</a>
+        </div>
+        <div class="hero-proof">
+          <span class="hp-item">✓ Tanpa kartu kredit</span>
+          <span class="hp-dot"></span>
+          <span class="hp-item">✓ Setup &lt; 2 menit</span>
+          <span class="hp-dot"></span>
+          <span class="hp-item">✓ SOC 2 Certified</span>
+        </div>
+      </div>
+      <div class="hero-visual-db" style="display:block">
+        <div class="db-device">
+          <div class="db-topbar">
+            <div class="db-dots">
+              <div class="db-dot" style="background:#F85149"></div>
+              <div class="db-dot" style="background:#E3B341"></div>
+              <div class="db-dot" style="background:#3FB950"></div>
+            </div>
+            <div class="db-title">DataSphere — datasphere.dev/proyek-budi</div>
+          </div>
+          <div class="db-tabs" id="dbTabs">
+            <div class="db-tab active" onclick="switchDbTab(this,'users')">users</div>
+            <div class="db-tab" onclick="switchDbTab(this,'products')">products</div>
+            <div class="db-tab" onclick="switchDbTab(this,'orders')">orders</div>
+            <div class="db-tab" onclick="switchDbTab(this,'+')">+</div>
+          </div>
+          <div class="db-toolbar">
+            <div class="db-search">🔍 Filter data...</div>
+            <button class="db-btn primary" onclick="this.textContent='✓ Tersimpan';setTimeout(()=>this.textContent='+ Tambah',1200)">+ Tambah</button>
+            <button class="db-btn">↓ Export</button>
+            <button class="db-btn">⚙ Schema</button>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="db-table" id="dbTable">
+              <thead>
+                <tr>
+                  <th onclick="sortTable(0)">ID ↕</th>
+                  <th onclick="sortTable(1)">Nama ↕</th>
+                  <th onclick="sortTable(2)">Email ↕</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="dbTbody">
+                <tr><td>001</td><td>Budi Santoso</td><td>budi@mail.com</td><td><span class="badge-admin">Admin</span></td><td><span class="badge-active">Aktif</span></td><td><div class="db-actions"><span class="db-act">✏️</span><span class="db-act">🗑️</span></div></td></tr>
+                <tr><td>002</td><td>Siti Rahayu</td><td>siti@mail.com</td><td><span class="badge-user">User</span></td><td><span class="badge-active">Aktif</span></td><td><div class="db-actions"><span class="db-act">✏️</span><span class="db-act">🗑️</span></div></td></tr>
+                <tr><td>003</td><td>Ahmad Fauzi</td><td>ahmad@mail.com</td><td><span class="badge-user">User</span></td><td><span class="badge-inactive">Nonaktif</span></td><td><div class="db-actions"><span class="db-act">✏️</span><span class="db-act">🗑️</span></div></td></tr>
+                <tr><td>004</td><td>Dewi Lestari</td><td>dewi@mail.com</td><td><span class="badge-editor">Editor</span></td><td><span class="badge-active">Aktif</span></td><td><div class="db-actions"><span class="db-act">✏️</span><span class="db-act">🗑️</span></div></td></tr>
+                <tr><td>005</td><td>Rizky Pratama</td><td>rizky@mail.com</td><td><span class="badge-user">User</span></td><td><span class="badge-active">Aktif</span></td><td><div class="db-actions"><span class="db-act">✏️</span><span class="db-act">🗑️</span></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="db-pagination">
+            <span>1–5 dari 2.847 baris</span>
+            <div class="db-pages">
+              <span class="db-page">←</span>
+              <span class="db-page cur">1</span>
+              <span class="db-page">2</span>
+              <span class="db-page">3</span>
+              <span class="db-page">...</span>
+              <span class="db-page">569</span>
+              <span class="db-page">→</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div style="padding:32px 0">
+  <div class="container">
+    <div class="stats-bar" id="statsBar">
+      <div class="stats-inner">
+        <div class="stat-item"><span class="stat-num" data-target="50000">0</span><div class="stat-lbl">Tabel dibuat</div></div>
+        <div class="stat-item"><span class="stat-num" data-target="1000000000">0</span><div class="stat-lbl">Baris data diproses</div></div>
+        <div class="stat-item"><span class="stat-num" data-target="999">0</span><div class="stat-lbl">Uptime (per mil)</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FITUR -->
+<section id="fitur">
+  <div class="container">
+    <div class="tc">
+      <div class="s-label">Fitur Platform</div>
+      <h2 class="s-title">Semua yang Tim Anda Butuhkan</h2>
+      <p class="s-sub">Database yang kuat tidak harus rumit. DataSphere menyederhanakan manajemen data tanpa mengorbankan kemampuan.</p>
+    </div>
+    <div class="fitur-grid">
+      <div class="fitur-card">
+        <div class="fitur-icon" style="background:rgba(129,140,248,0.08)">📊</div>
+        <h3>Visual Table Editor</h3>
+        <p>Edit data seperti spreadsheet — klik, ketik, simpan. Tambah kolom baru, ubah tipe data, dan atur relasi tanpa menulis SQL.</p>
+      </div>
+      <div class="fitur-card">
+        <div class="fitur-icon" style="background:rgba(34,211,238,0.08)">💻</div>
+        <h3>SQL Mode Penuh <span class="tag-new">PRO</span></h3>
+        <p>Tulis query SQL kompleks dengan syntax highlighting, autocomplete cerdas, dan explain plan untuk optimasi performa.</p>
+      </div>
+      <div class="fitur-card">
+        <div class="fitur-icon" style="background:rgba(52,211,153,0.08)">⚡</div>
+        <h3>REST API Otomatis</h3>
+        <p>Setiap tabel otomatis memiliki endpoint REST API yang terdokumentasi. Filter, sort, dan paginate tanpa coding backend.</p>
+      </div>
+      <div class="fitur-card">
+        <div class="fitur-icon" style="background:rgba(251,191,36,0.08)">🔐</div>
+        <h3>Role & Permission</h3>
+        <p>Kontrol akses granular per tabel dan kolom. Admin, Editor, Viewer, dan API-only — atur siapa boleh baca atau tulis.</p>
+      </div>
+      <div class="fitur-card">
+        <div class="fitur-icon" style="background:rgba(129,140,248,0.08)">🔄</div>
+        <h3>Realtime Sync <span class="tag-new">BARU</span></h3>
+        <p>Perubahan data tampil instan di semua perangkat tim melalui WebSocket. Kolaborasi real-time tanpa refresh manual.</p>
+      </div>
+      <div class="fitur-card">
+        <div class="fitur-icon" style="background:rgba(248,113,113,0.08)">📋</div>
+        <h3>Audit Log</h3>
+        <p>Rekam semua perubahan data — siapa, kapan, dan apa yang diubah. Rollback ke versi sebelumnya kapan saja dalam 30 hari.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CARA KERJA -->
+<section class="bg2">
+  <div class="container">
+    <div class="tc">
+      <div class="s-label">Mulai Cepat</div>
+      <h2 class="s-title">Dari Nol ke Database Live dalam 3 Langkah</h2>
+      <p class="s-sub">Tidak perlu setup server, tidak perlu DevOps. DataSphere menangani semua infrastruktur untuk Anda.</p>
+    </div>
+    <div class="ck-grid">
+      <div class="ck-item">
+        <div class="ck-num">01</div>
+        <h3>Import atau Buat Tabel</h3>
+        <p>Upload file CSV/Excel atau buat tabel baru dari nol. Kolom terdeteksi otomatis dengan tipe data yang tepat.</p>
+      </div>
+      <div class="ck-item">
+        <div class="ck-num">02</div>
+        <h3>Atur Kolom & Relasi</h3>
+        <p>Definisikan tipe data, validasi, nilai default, dan relasi antar tabel dengan drag-and-drop yang intuitif.</p>
+      </div>
+      <div class="ck-item">
+        <div class="ck-num">03</div>
+        <h3>Bagikan & Integrasikan</h3>
+        <p>Undang anggota tim dengan role berbeda. Gunakan REST API atau embed tabel langsung ke aplikasi Anda.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ERD / SCHEMA PREVIEW -->
+<section>
+  <div class="container">
+    <div class="erd-inner-wrap">
+      <div class="erd-preview">
+        <div style="font-size:12px;color:var(--text3);font-family:var(--font-mono);margin-bottom:16px">Schema Diagram — proyek-budi</div>
+        <div class="erd-inner" style="height:240px;position:relative">
+          <!-- users table -->
+          <div class="erd-table" style="top:10px;left:0;width:155px">
+            <div class="erd-table-hd t-users">🟣 users</div>
+            <div class="erd-field"><span class="erd-key">PK</span> id <span class="erd-type">uuid</span></div>
+            <div class="erd-field">nama <span class="erd-type">text</span></div>
+            <div class="erd-field">email <span class="erd-type">text</span></div>
+            <div class="erd-field">role <span class="erd-type">enum</span></div>
+          </div>
+          <!-- orders table -->
+          <div class="erd-table" style="top:10px;right:0;width:170px">
+            <div class="erd-table-hd t-orders">🔵 orders</div>
+            <div class="erd-field"><span class="erd-key">PK</span> id <span class="erd-type">uuid</span></div>
+            <div class="erd-field"><span class="erd-fk">FK</span> user_id <span class="erd-type">uuid</span></div>
+            <div class="erd-field"><span class="erd-fk">FK</span> product_id <span class="erd-type">uuid</span></div>
+            <div class="erd-field">total <span class="erd-type">numeric</span></div>
+          </div>
+          <!-- products table -->
+          <div class="erd-table" style="bottom:0;left:50%;transform:translateX(-50%);width:160px">
+            <div class="erd-table-hd t-products">🟢 products</div>
+            <div class="erd-field"><span class="erd-key">PK</span> id <span class="erd-type">uuid</span></div>
+            <div class="erd-field">nama <span class="erd-type">text</span></div>
+            <div class="erd-field">harga <span class="erd-type">numeric</span></div>
+            <div class="erd-field">stok <span class="erd-type">int</span></div>
+          </div>
+          <!-- Connection lines (SVG) -->
+          <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none" viewBox="0 0 500 240">
+            <line x1="155" y1="60" x2="330" y2="60" stroke="rgba(129,140,248,0.3)" stroke-width="1.5" stroke-dasharray="4"/>
+            <line x1="244" y1="155" x2="340" y2="155" stroke="rgba(129,140,248,0.3)" stroke-width="1.5" stroke-dasharray="4"/>
+            <line x1="244" y1="185" x2="244" y2="200" stroke="rgba(52,211,153,0.3)" stroke-width="1.5" stroke-dasharray="4"/>
+          </svg>
+        </div>
+      </div>
+      <div class="editor-text">
+        <div class="s-label">Schema Visual</div>
+        <h3>Lihat Relasi Antar Tabel Sekaligus</h3>
+        <p>ERD (Entity Relationship Diagram) otomatis dihasilkan dari schema database Anda. Klik tabel untuk edit langsung dari diagram.</p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text2)"><span style="width:8px;height:8px;border-radius:50%;background:var(--indigo);flex-shrink:0;display:inline-block"></span>Deteksi relasi FK otomatis</div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text2)"><span style="width:8px;height:8px;border-radius:50%;background:var(--cyan);flex-shrink:0;display:inline-block"></span>Edit schema via klik pada diagram</div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text2)"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;display:inline-block"></span>Export schema sebagai SQL atau PNG</div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text2)"><span style="width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0;display:inline-block"></span>Validasi integritas referensial</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTEGRASI -->
+<section id="integrasi" class="bg2">
+  <div class="container">
+    <div class="tc">
+      <div class="s-label">Integrasi</div>
+      <h2 class="s-title">Connect ke Database Favorit Anda</h2>
+      <p class="s-sub">Import dari berbagai sumber database atau gunakan DataSphere sebagai database utama dengan REST API penuh.</p>
+    </div>
+    <div class="integ-grid">
+      <div class="integ-card"><div class="integ-ico">🐘</div><div><h4>PostgreSQL <span class="integ-badge">NATIVE</span></h4><p>Koneksi langsung, penuh fitur, termasuk ekstensi</p></div></div>
+      <div class="integ-card"><div class="integ-ico">🐬</div><div><h4>MySQL / MariaDB</h4><p>Import skema dan data dari database MySQL Anda</p></div></div>
+      <div class="integ-card"><div class="integ-ico">🍃</div><div><h4>MongoDB</h4><p>Query dokumen NoSQL dengan antarmuka visual</p></div></div>
+      <div class="integ-card"><div class="integ-ico">⚡</div><div><h4>Supabase <span class="integ-badge">POPULER</span></h4><p>Import project Supabase langsung via API key</p></div></div>
+      <div class="integ-card"><div class="integ-ico">🔥</div><div><h4>Firebase</h4><p>Sinkronisasi Firestore ke tabel relasional terstruktur</p></div></div>
+      <div class="integ-card"><div class="integ-ico">📋</div><div><h4>Airtable</h4><p>Migrasikan base Airtable ke database relasional</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- KEAMANAN -->
+<section id="keamanan">
+  <div class="container">
+    <div class="tc">
+      <div class="s-label">Keamanan Enterprise</div>
+      <h2 class="s-title">Aman dari Atas hingga Bawah</h2>
+      <p class="s-sub">Keamanan bukan fitur tambahan — kami membangunnya ke dalam setiap lapisan platform.</p>
+    </div>
+    <div class="sec-grid">
+      <div class="sec-card"><div class="sec-icon">🔒</div><h3>Row Level Security</h3><p>Kontrol akses per baris data. User hanya melihat data yang diizinkan sesuai policy yang Anda definisikan.</p></div>
+      <div class="sec-card"><div class="sec-icon">🛡️</div><h3>Enkripsi At-Rest</h3><p>Semua data terenkripsi AES-256 di storage. Kunci enkripsi dikelola terpisah dan di-rotate berkala.</p></div>
+      <div class="sec-card"><div class="sec-icon">🔑</div><h3>2FA Wajib</h3><p>Autentikasi dua faktor untuk semua akun. Dukung TOTP, WebAuthn, dan SSO enterprise (SAML 2.0).</p></div>
+      <div class="sec-card"><div class="sec-icon">📋</div><h3>Audit Log Lengkap</h3><p>Setiap aksi terekam: login, query, perubahan data, ekspor. Log tidak dapat dihapus dan tersimpan 1 tahun.</p></div>
+      <div class="sec-card"><div class="sec-icon">☁️</div><h3>Backup Otomatis</h3><p>Point-in-time recovery hingga 30 hari. Backup harian ke 3 region berbeda untuk zero data loss.</p></div>
+      <div class="sec-card"><div class="sec-icon">✅</div><h3>SOC 2 Type II</h3><p>Tersertifikasi SOC 2 Type II, ISO 27001, dan memenuhi standar PDPA Indonesia untuk perlindungan data.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ROLE & PERMISSION -->
+<section class="bg2">
+  <div class="container">
+    <div class="tc">
+      <div class="s-label">Manajemen Tim</div>
+      <h2 class="s-title">Role yang Sesuai untuk Setiap Anggota Tim</h2>
+      <p class="s-sub">Berikan akses yang tepat kepada orang yang tepat. Tidak lebih, tidak kurang.</p>
+    </div>
+    <div class="role-grid">
+      <div class="role-card">
+        <div class="role-ico" style="background:rgba(251,191,36,0.12)">👑</div>
+        <h4>Admin</h4>
+        <p>Akses penuh ke semua fitur dan pengaturan</p>
+        <div class="role-perms">
+          <div class="rp yes">✓ Baca & tulis</div>
+          <div class="rp yes">✓ Kelola schema</div>
+          <div class="rp yes">✓ Kelola tim</div>
+          <div class="rp yes">✓ Ekspor data</div>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-ico" style="background:rgba(34,211,238,0.1)">✏️</div>
+        <h4>Editor</h4>
+        <p>Edit data, tidak bisa ubah schema</p>
+        <div class="role-perms">
+          <div class="rp yes">✓ Baca & tulis</div>
+          <div class="rp no">✗ Kelola schema</div>
+          <div class="rp no">✗ Kelola tim</div>
+          <div class="rp yes">✓ Ekspor data</div>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-ico" style="background:rgba(52,211,153,0.1)">👁️</div>
+        <h4>Viewer</h4>
+        <p>Hanya baca data, tidak bisa edit</p>
+        <div class="role-perms">
+          <div class="rp yes">✓ Baca data</div>
+          <div class="rp no">✗ Tulis data</div>
+          <div class="rp no">✗ Kelola schema</div>
+          <div class="rp no">✗ Ekspor data</div>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-ico" style="background:rgba(129,140,248,0.1)">⚡</div>
+        <h4>API-only</h4>
+        <p>Akses via API key, tanpa login UI</p>
+        <div class="role-perms">
+          <div class="rp yes">✓ API read</div>
+          <div class="rp yes">✓ API write</div>
+          <div class="rp no">✗ Akses GUI</div>
+          <div class="rp no">✗ Kelola schema</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="container">
+    <div class="tc">
+      <div class="s-label">Harga Transparan</div>
+      <h2 class="s-title">Mulai Gratis, Scale Sesuai Kebutuhan</h2>
+      <p class="s-sub">Tidak ada biaya tersembunyi. Upgrade atau downgrade kapan saja.</p>
+    </div>
+    <div class="p-toggle">
+      <span class="p-lbl act" id="pLblBln">Bulanan</span>
+      <div class="p-sw" id="pSwitch" onclick="togglePricing()"></div>
+      <span class="p-lbl" id="pLblThn">Tahunan</span>
+      <span class="p-save" id="pSave" style="opacity:0">Hemat 2 bulan</span>
+    </div>
+    <div class="price-grid">
+      <div class="pc">
+        <div class="pc-hd">
+          <div class="pc-name">Free</div>
+          <div class="pc-price">$0 <small>/ selamanya</small></div>
+          <div class="pc-desc">Untuk proyek personal</div>
+        </div>
+        <div class="pc-body">
+          <div class="pf">3 tabel aktif</div>
+          <div class="pf">10.000 baris data</div>
+          <div class="pf">REST API (read only)</div>
+          <div class="pf">1 anggota tim</div>
+        </div>
+        <div class="pc-ft"><a href="#" class="btn btn-outline" style="width:100%;justify-content:center">Mulai Gratis</a></div>
+      </div>
+      <div class="pc feat">
+        <div class="pc-pop">POPULER</div>
+        <div class="pc-hd">
+          <div class="pc-name">Pro</div>
+          <div class="pc-price"><span id="proPrc">$29</span> <small id="proMo">/ bulan</small></div>
+          <div class="pc-desc">Untuk tim kecil hingga menengah</div>
+        </div>
+        <div class="pc-body">
+          <div class="pf">Tabel tidak terbatas</div>
+          <div class="pf">1 juta baris data</div>
+          <div class="pf">REST API penuh (read/write)</div>
+          <div class="pf">SQL mode & query builder</div>
+          <div class="pf">5 anggota tim</div>
+          <div class="pf">Audit log 30 hari</div>
+        </div>
+        <div class="pc-ft"><a href="#" class="btn btn-indigo" style="width:100%;justify-content:center">Coba 14 Hari Gratis</a></div>
+      </div>
+      <div class="pc">
+        <div class="pc-hd">
+          <div class="pc-name">Team</div>
+          <div class="pc-price"><span id="teamPrc">$79</span> <small id="teamMo">/ bulan</small></div>
+          <div class="pc-desc">Untuk tim besar & startup</div>
+        </div>
+        <div class="pc-body">
+          <div class="pf">Semua fitur Pro</div>
+          <div class="pf">Data tidak terbatas</div>
+          <div class="pf">Anggota tim tidak terbatas</div>
+          <div class="pf">Realtime sync & kolaborasi</div>
+          <div class="pf">Backup point-in-time</div>
+          <div class="pf">Audit log 1 tahun</div>
+        </div>
+        <div class="pc-ft"><a href="#" class="btn btn-outline" style="width:100%;justify-content:center">Mulai Trial</a></div>
+      </div>
+      <div class="pc">
+        <div class="pc-hd">
+          <div class="pc-name">Enterprise</div>
+          <div class="pc-price">Custom</div>
+          <div class="pc-desc">Untuk korporasi & instansi</div>
+        </div>
+        <div class="pc-body">
+          <div class="pf">Semua fitur Team</div>
+          <div class="pf">On-premise deployment</div>
+          <div class="pf">SSO / SAML 2.0</div>
+          <div class="pf">SLA uptime 99.99%</div>
+          <div class="pf">Dedicated support</div>
+          <div class="pf">Custom contract</div>
+        </div>
+        <div class="pc-ft"><a href="#" class="btn btn-outline" style="width:100%;justify-content:center">Hubungi Sales</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONI -->
+<section class="bg2">
+  <div class="container">
+    <div class="tc">
+      <div class="s-label">Pengguna DataSphere</div>
+      <h2 class="s-title">Dipercaya Developer & Tim Tech Indonesia</h2>
+      <p class="s-sub">Bergabung dengan ribuan developer, startup, dan perusahaan yang sudah beralih ke DataSphere.</p>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"REST API otomatis yang DataSphere berikan menghemat waktu development kami minimal 2 minggu per fitur. Tidak perlu bangun backend dari nol lagi."</p>
+        <div class="testi-author">
+          <div class="testi-av">👨‍💻</div>
+          <div><div class="testi-name">Fajar Nugroho</div><div class="testi-role">CTO — TechSinergi Jakarta</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Tim analis kami yang bukan programmer sekarang bisa langsung edit data sendiri. Tidak perlu minta tolong developer tiap kali ada update kecil."</p>
+        <div class="testi-author">
+          <div class="testi-av">👩‍💼</div>
+          <div><div class="testi-name">Rika Handayani</div><div class="testi-role">Head of Data — Nusadata Analytics</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Audit log dan role permission DataSphere membantu kami lulus audit ISO 27001 dengan mudah. Semua jejak akses data sudah tercatat rapi dan bisa diexport."</p>
+        <div class="testi-author">
+          <div class="testi-av">👨‍🔧</div>
+          <div><div class="testi-name">Denny Prasetyo</div><div class="testi-role">IT Security Lead — BankMaju Indonesia</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="tc">
+      <div class="s-label">FAQ Teknis</div>
+      <h2 class="s-title">Pertanyaan yang Sering Ditanyakan</h2>
+      <p class="s-sub">Tidak menemukan jawaban yang Anda cari? Tim developer kami siap membantu via Discord atau email.</p>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Apakah bisa menulis query SQL custom di DataSphere? <span class="faq-arrow">+</span></div>
+        <div class="faq-a"><div class="faq-a-inner">Ya, paket Pro ke atas memiliki SQL Mode penuh dengan editor yang dilengkapi syntax highlighting, autocomplete, dan explain plan. Anda juga bisa membuat view, function, dan trigger langsung dari antarmuka.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Bagaimana format endpoint REST API yang dihasilkan? <span class="faq-arrow">+</span></div>
+        <div class="faq-a"><div class="faq-a-inner">Setiap tabel mendapat endpoint RESTful standar: GET /api/[tabel], POST /api/[tabel], PATCH /api/[tabel]/{id}, DELETE /api/[tabel]/{id}. Mendukung filter (?kolom=nilai), sort (?sort=kolom&order=asc), dan pagination (?page=1&limit=50). Dokumentasi Swagger tersedia otomatis.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Seberapa sering backup dilakukan dan berapa lama tersimpan? <span class="faq-arrow">+</span></div>
+        <div class="faq-a"><div class="faq-a-inner">Paket Gratis: backup harian, tersimpan 7 hari. Paket Pro: backup setiap 6 jam, tersimpan 30 hari dengan point-in-time recovery. Paket Team ke atas: backup setiap jam, tersimpan 365 hari. Enterprise dapat dikonfigurasi sesuai kebutuhan.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Berapa ukuran database maksimum yang bisa ditampung? <span class="faq-arrow">+</span></div>
+        <div class="faq-a"><div class="faq-a-inner">Paket Free: maksimum 500 MB. Paket Pro: 50 GB. Paket Team: 500 GB. Enterprise tidak terbatas (tergantung kontrak). Untuk dataset sangat besar (Terabyte), kami menyediakan solusi DataSphere Warehouse yang dioptimalkan untuk analitik.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Apakah data saya bisa diekspor jika ingin pindah platform? <span class="faq-arrow">+</span></div>
+        <div class="faq-a"><div class="faq-a-inner">Tentu. Anda bisa ekspor data kapan saja dalam format CSV, Excel, JSON, atau SQL dump (PostgreSQL-compatible). Tidak ada vendor lock-in. Ekspor lengkap termasuk schema tersedia di semua paket termasuk Gratis.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section>
+  <div class="container">
+    <div class="cta-sec">
+      <div class="s-label" style="text-align:center">Mulai Sekarang</div>
+      <h2>Buat Database Pertamamu Gratis</h2>
+      <p>Bergabung dengan ribuan developer dan tim tech Indonesia yang sudah menggunakan DataSphere setiap hari.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="#" class="btn btn-indigo" style="padding:14px 32px;font-size:16px">🗄️ Mulai Gratis Sekarang</a>
+        <a href="#" class="btn btn-outline" style="padding:14px 32px;font-size:16px">📖 Baca Dokumentasi</a>
+      </div>
+      <p class="cta-note">✓ Tanpa kartu kredit &nbsp;&nbsp; ✓ Setup &lt; 2 menit &nbsp;&nbsp; ✓ SOC 2 Certified</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="f-brand">
+        <div class="f-logo">🗄️ DataSphere</div>
+        <p>Platform manajemen database visual untuk tim modern Indonesia. Visual, aman, dan siap produksi.</p>
+        <div class="f-socials">
+          <div class="soc">📘</div><div class="soc">🐦</div><div class="soc">💬</div><div class="soc">💻</div>
+        </div>
+      </div>
+      <div class="f-col">
+        <h4>Produk</h4>
+        <ul>
+          <li><a href="#">Fitur</a></li><li><a href="#">Integrasi</a></li>
+          <li><a href="#">Harga</a></li><li><a href="#">Changelog</a></li>
+          <li><a href="#">Status</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h4>Developer</h4>
+        <ul>
+          <li><a href="#">Dokumentasi API</a></li><li><a href="#">SDK & Library</a></li>
+          <li><a href="#">Contoh Proyek</a></li><li><a href="#">Komunitas Discord</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h4>Perusahaan</h4>
+        <ul>
+          <li><a href="#">Tentang Kami</a></li><li><a href="#">Blog</a></li>
+          <li><a href="#">Karir</a></li><li><a href="#">Kebijakan Privasi</a></li>
+          <li><a href="#">Syarat Layanan</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <p>© 2026 DataSphere. Built for Indonesia developers.</p>
+      <div class="f-badges">
+        <span class="f-badge">SOC 2</span><span class="f-badge">ISO 27001</span>
+        <span class="f-badge">PDPA</span><span class="f-badge">PCI DSS</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// THEME TOGGLE
+function toggleTheme(){
+  const h=document.documentElement;
+  const isLight=h.getAttribute('data-theme')==='light';
+  h.setAttribute('data-theme',isLight?'dark':'light');
+  document.querySelector('.dark-toggle').textContent=isLight?'☀️ Terang':'🌙 Gelap';
+}
+
+// DB MOCKUP TABS
+const tabData={
+  users:{
+    headers:['ID','Nama','Email','Role','Status','Aksi'],
+    rows:[
+      ['001','Budi Santoso','budi@mail.com','<span class="badge-admin">Admin</span>','<span class="badge-active">Aktif</span>','<div class="db-actions"><span class="db-act">✏️</span><span class="db-act">🗑️</span></div>'],
+      ['002','Siti Rahayu','siti@mail.com','<span class="badge-user">User</span>','<span class="badge-active">Aktif</span>','<div class="db-actions"><span class="db-act">✏️</span><span class="db-act">🗑️</span></div>'],
+      ['003','Ahmad Fauzi','ahmad@mail.com','<span class="badge-user">User</span>','<span class="badge-inactive">Nonaktif</span>','<div class="db-actions"><span class="db-act">✏️</span><span class="db-act">🗑️</span></div>'],
+      ['004','Dewi Lestari','dewi@mail.com','<span class="badge-editor">Editor</span>','<span class="badge-active">Aktif</span>','<div class="db-actions"><span class="db-act">✏️</span><span class="db-act">🗑️</span></div>'],
+      ['005','Rizky Pratama','rizky@mail.com','<span class="badge-user">User</span>','<span class="badge-active">Aktif</span>','<div class="db-actions"><span class="db-act">✏️</span><span class="db-act">🗑️</span></div>'],
+    ],
+    count:'1–5 dari 2.847 baris'
+  },
+  products:{
+    headers:['ID','Nama Produk','Kategori','Harga','Stok','Aksi'],
+    rows:[
+      ['P001','Laptop Asus VivoBook','Elektronik','Rp 8.500.000','12','<div class="db-actions"><span class="db-act">✏️</span><span class="db-act">🗑️</span></div>'],
+      ['P002','Mouse Wireless Logitech','Aksesoris','Rp 320.000','87','<div class="db-actions"><span class="db-act">✏️</span><span class="db-act">🗑️</span></div>'],
+      ['P003','Keyboard Mechanical','Aksesoris','Rp 750.000','34','<div class="db-actions"><span class="db-act">✏️</span><span class="db-act">🗑️</span></div>'],
+      ['P004','Monitor 24" IPS','Elektronik','Rp 2.100.000','8','<div class="db-actions"><span class="db-act">✏️</span><span class="db-act">🗑️</span></div>'],
+      ['P005','USB Hub 7 Port','Aksesoris','Rp 185.000','156','<div class="db-actions"><span class="db-act">✏️</span><span class="db-act">🗑️</span></div>'],
+    ],
+    count:'1–5 dari 1.203 baris'
+  },
+  orders:{
+    headers:['ID','User','Produk','Total','Status','Aksi'],
+    rows:[
+      ['O001','Budi Santoso','Laptop Asus','Rp 8.500.000','<span class="badge-active">Selesai</span>','<div class="db-actions"><span class="db-act">✏️</span><span class="db-act">🗑️</span></div>'],
+      ['O002','Siti Rahayu','Mouse Logitech','Rp 320.000','<span class="badge-active">Selesai</span>','<div class="db-actions"><span class="db-act">✏️</span><span class="db-act">🗑️</span></div>'],
+      ['O003','Dewi Lestari','Monitor 24"','Rp 2.100.000','<span class="badge-user">Diproses</span>','<div class="db-actions"><span class="db-act">✏️</span><span class="db-act">🗑️</span></div>'],
+      ['O004','Rizky Pratama','USB Hub','Rp 185.000','<span class="badge-inactive">Dibatalkan</span>','<div class="db-actions"><span class="db-act">✏️</span><span class="db-act">🗑️</span></div>'],
+      ['O005','Ahmad Fauzi','Keyboard','Rp 750.000','<span class="badge-user">Diproses</span>','<div class="db-actions"><span class="db-act">✏️</span><span class="db-act">🗑️</span></div>'],
+    ],
+    count:'1–5 dari 18.491 baris'
+  }
+};
+
+function switchDbTab(btn, key){
+  if(key==='+'){
+    const newName=prompt('Nama tabel baru:');
+    if(!newName)return;
+    const t=document.createElement('div');
+    t.className='db-tab';
+    t.textContent=newName;
+    t.onclick=()=>alert('Tabel "'+newName+'" masih kosong — tambahkan kolom dulu!');
+    btn.parentElement.insertBefore(t,btn);
+    return;
+  }
+  document.querySelectorAll('#dbTabs .db-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const data=tabData[key];
+  if(!data)return;
+  const thead=document.querySelector('#dbTable thead tr');
+  thead.innerHTML=data.headers.map(h=>`<th onclick="sortTable(${data.headers.indexOf(h)})">${h} ↕</th>`).join('');
+  const tbody=document.getElementById('dbTbody');
+  tbody.innerHTML=data.rows.map(r=>'<tr>'+r.map(c=>`<td>${c}</td>`).join('')+'</tr>').join('');
+  document.querySelector('.db-pagination span').textContent=data.count;
+}
+
+// SORT TABLE
+let sortAsc=true;
+function sortTable(col){
+  const tbody=document.getElementById('dbTbody');
+  const rows=Array.from(tbody.querySelectorAll('tr'));
+  rows.sort((a,b)=>{
+    const ta=a.cells[col]?.textContent||'';
+    const tb=b.cells[col]?.textContent||'';
+    return sortAsc?ta.localeCompare(tb):tb.localeCompare(ta);
+  });
+  sortAsc=!sortAsc;
+  rows.forEach(r=>tbody.appendChild(r));
+}
+
+// PRICING TOGGLE
+let priceYearly=false;
+function togglePricing(){
+  priceYearly=!priceYearly;
+  document.getElementById('pSwitch').classList.toggle('yr',priceYearly);
+  document.getElementById('pLblBln').classList.toggle('act',!priceYearly);
+  document.getElementById('pLblThn').classList.toggle('act',priceYearly);
+  document.getElementById('pSave').style.opacity=priceYearly?'1':'0';
+  document.getElementById('proPrc').textContent=priceYearly?'$23':'$29';
+  document.getElementById('proMo').textContent=priceYearly?'/ bulan (tagih tahunan)':'/ bulan';
+  document.getElementById('teamPrc').textContent=priceYearly?'$63':'$79';
+  document.getElementById('teamMo').textContent=priceYearly?'/ bulan (tagih tahunan)':'/ bulan';
+}
+
+// FAQ TOGGLE
+function toggleFaq(q){
+  const item=q.closest('.faq-item');
+  const wasOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+  if(!wasOpen)item.classList.add('open');
+}
+
+// COUNTER ANIMASI
+function animateNum(el,target,suffix){
+  const dur=2000;
+  const step=target/60;
+  let cur=0;
+  const t=setInterval(()=>{
+    cur+=step;
+    if(cur>=target){cur=target;clearInterval(t)}
+    const v=Math.floor(cur);
+    if(target===999){el.textContent='99.9%';return;}
+    if(target>=1000000000){el.textContent=(v/1000000000).toFixed(1)+'B+';}
+    else if(target>=1000){el.textContent=(v/1000).toFixed(0)+'K+';}
+    else el.textContent=v.toLocaleString('id-ID')+suffix;
+  },dur/60);
+}
+let counted=false;
+new IntersectionObserver(entries=>{
+  if(entries[0].isIntersecting&&!counted){
+    counted=true;
+    document.querySelectorAll('.stat-num[data-target]').forEach(el=>{
+      const t=parseInt(el.dataset.target);
+      animateNum(el,t,'');
+    });
+  }
+},{threshold:.3}).observe(document.getElementById('statsBar'));
+</script>
+</body>
+</html>

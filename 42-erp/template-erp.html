@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexaERP — Sistem ERP Modern untuk Bisnis Indonesia</title>
+  <meta name="description" content="Satu Platform, Semua Operasional Bisnis Anda. ERP modern dengan modul keuangan, SDM, inventori, penjualan, dan manufaktur.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:      #0D1B2A;
+      --bg2:     #122030;
+      --bg3:     #1A2D42;
+      --sidebar: #091420;
+      --text:    #E8F0F8;
+      --text2:   #8BAAC8;
+      --text3:   #4A6A88;
+      --blue:    #1B6FEB;
+      --blue2:   #3B8FFF;
+      --amber:   #F59E0B;
+      --green:   #10B981;
+      --red:     #EF4444;
+      --violet:  #8B5CF6;
+      --cyan:    #06B6D4;
+      --orange:  #F97316;
+      --teal:    #14B8A6;
+      --border:  rgba(27,111,235,0.15);
+      --glow:    0 0 24px rgba(27,111,235,0.12);
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+      --radius: 12px;
+      --transition: 0.25s ease;
+    }
+    [data-theme="light"] {
+      --bg: #F0F4FA;
+      --bg2: #E4EAF5;
+      --bg3: #D4DCF0;
+      --sidebar: #1A2D42;
+      --text: #0D1B2A;
+      --text2: #2A4A6A;
+      --text3: #6A8AAA;
+      --border: rgba(27,111,235,0.15);
+      --glow: 0 0 24px rgba(27,111,235,0.08);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    /* ─── NAVBAR ─── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 64px;
+      background: rgba(13,27,42,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      transition: background var(--transition);
+    }
+    [data-theme="light"] .navbar {
+      background: rgba(240,244,250,0.9);
+    }
+    .nav-logo {
+      font-size: 1.25rem; font-weight: 700;
+      background: linear-gradient(135deg, var(--blue2), var(--cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.02em;
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 0.25rem;
+      list-style: none;
+    }
+    .nav-links a {
+      padding: 0.4rem 0.85rem; border-radius: 6px;
+      color: var(--text2); text-decoration: none;
+      font-size: 0.875rem; font-weight: 500;
+      transition: color var(--transition), background var(--transition);
+    }
+    .nav-links a:hover { color: var(--text); background: var(--bg3); }
+    .nav-right { display: flex; align-items: center; gap: 0.75rem; }
+    .btn-theme {
+      background: var(--bg3); border: 1px solid var(--border);
+      color: var(--text2); width: 36px; height: 36px;
+      border-radius: 8px; cursor: pointer; font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: all var(--transition);
+    }
+    .btn-theme:hover { color: var(--text); background: var(--bg2); }
+    .btn-nav {
+      background: var(--blue); color: #fff; border: none;
+      padding: 0.45rem 1.1rem; border-radius: 8px;
+      font-size: 0.85rem; font-weight: 600; cursor: pointer;
+      transition: all var(--transition);
+    }
+    .btn-nav:hover { background: var(--blue2); transform: translateY(-1px); }
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; background: none; border: none; padding: 4px;
+    }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--text2); border-radius: 2px; transition: all 0.3s; }
+
+    /* ─── MOBILE NAV ─── */
+    .mobile-nav {
+      display: none; position: fixed; top: 64px; left: 0; right: 0; z-index: 999;
+      background: var(--bg2); border-bottom: 1px solid var(--border);
+      padding: 1rem; flex-direction: column; gap: 0.25rem;
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a {
+      padding: 0.65rem 1rem; color: var(--text2); text-decoration: none;
+      font-size: 0.9rem; border-radius: 8px; transition: all var(--transition);
+    }
+    .mobile-nav a:hover { color: var(--text); background: var(--bg3); }
+    .mobile-nav .btn-nav { width: 100%; text-align: center; padding: 0.65rem; margin-top: 0.5rem; }
+
+    /* ─── SECTIONS ─── */
+    section { padding: 5rem 2rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-family: var(--font-mono); font-size: 0.78rem;
+      color: var(--blue2); letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700;
+      line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 1rem;
+    }
+    .section-sub {
+      font-size: 1rem; color: var(--text2); max-width: 600px; line-height: 1.7;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      padding-top: 9rem; padding-bottom: 4rem;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(27,111,235,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(27,111,235,0.1); border: 1px solid rgba(27,111,235,0.25);
+      color: var(--blue2); font-size: 0.78rem; font-weight: 500;
+      padding: 0.35rem 0.85rem; border-radius: 999px; margin-bottom: 1.75rem;
+    }
+    .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse-dot 2s infinite; }
+    @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 700;
+      letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 1.25rem;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--blue2), var(--cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 1.1rem; color: var(--text2); max-width: 560px;
+      margin: 0 auto 2rem; line-height: 1.7;
+    }
+    .hero-ctas { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3rem; }
+    .btn-primary {
+      background: var(--blue); color: #fff; border: none;
+      padding: 0.75rem 1.75rem; border-radius: 10px;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer;
+      transition: all var(--transition); text-decoration: none;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .btn-primary:hover { background: var(--blue2); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(27,111,235,0.35); }
+    .btn-outline {
+      background: transparent; color: var(--text2);
+      border: 1px solid var(--border);
+      padding: 0.75rem 1.75rem; border-radius: 10px;
+      font-size: 0.95rem; font-weight: 500; cursor: pointer;
+      transition: all var(--transition); text-decoration: none;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .btn-outline:hover { color: var(--text); border-color: var(--blue2); background: rgba(27,111,235,0.06); }
+
+    /* ─── ERP PREVIEW ─── */
+    .erp-preview {
+      border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4), var(--glow);
+      max-width: 900px; margin: 0 auto;
+      font-size: 0.72rem;
+      font-family: var(--font-body);
+    }
+    .erp-chrome {
+      background: var(--sidebar); padding: 0.6rem 1rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .chrome-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .chrome-title { margin-left: 0.5rem; color: var(--text3); font-size: 0.68rem; flex: 1; }
+    .chrome-user { color: var(--text2); font-size: 0.68rem; }
+    .erp-app { display: flex; height: 320px; }
+    .erp-sidebar {
+      width: 140px; background: var(--sidebar); flex-shrink: 0;
+      padding: 0.75rem 0; border-right: 1px solid var(--border);
+    }
+    .erp-logo { color: var(--blue2); font-weight: 700; font-size: 0.8rem; padding: 0.5rem 1rem 1rem; }
+    .erp-nav-item {
+      padding: 0.5rem 1rem; color: var(--text3); cursor: pointer;
+      transition: all 0.2s; white-space: nowrap; overflow: hidden;
+    }
+    .erp-nav-item:hover { color: var(--text); background: var(--bg3); }
+    .erp-nav-item.active { color: var(--blue2); background: rgba(27,111,235,0.1); border-right: 2px solid var(--blue); }
+    .erp-main { flex: 1; background: var(--bg); padding: 0.75rem; overflow: hidden; }
+    .kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.5rem; margin-bottom: 0.75rem; }
+    .kpi-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem; }
+    .kpi-label { font-size: 0.6rem; color: var(--text3); margin-bottom: 0.25rem; }
+    .kpi-val { font-size: 1rem; font-weight: 700; line-height: 1.2; }
+    .kpi-change { font-size: 0.58rem; margin-top: 0.15rem; color: var(--text3); }
+    .kpi-change.up { color: var(--green); }
+    .kpi-change.down { color: var(--red); }
+    .erp-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; height: calc(100% - 85px); }
+    .erp-chart { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem; }
+    .chart-label { font-size: 0.6rem; color: var(--text2); margin-bottom: 0.5rem; }
+    .bar-group { display: flex; align-items: flex-end; gap: 0.3rem; height: 80px; }
+    .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; height: 100%; justify-content: flex-end; }
+    .bar { width: 100%; border-radius: 3px 3px 0 0; transition: height 1s cubic-bezier(0.34,1.56,0.64,1); }
+    .bar-wrap span { font-size: 0.55rem; color: var(--text3); }
+    .erp-activity { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem; overflow: hidden; }
+    .act-label { font-size: 0.6rem; color: var(--text2); margin-bottom: 0.5rem; }
+    .act-item { display: flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0; border-bottom: 1px solid var(--border); font-size: 0.6rem; color: var(--text2); }
+    .act-item:last-child { border-bottom: none; }
+    .act-badge { font-size: 0.5rem; padding: 0.1rem 0.3rem; border-radius: 3px; font-weight: 700; flex-shrink: 0; }
+    .act-badge.inv { background: rgba(16,185,129,0.2); color: var(--green); }
+    .act-badge.po  { background: rgba(245,158,11,0.2); color: var(--amber); }
+    .act-badge.hr  { background: rgba(139,92,246,0.2); color: var(--violet); }
+    .act-badge.warn { background: rgba(239,68,68,0.2); color: var(--red); }
+
+    /* ─── TICKER ─── */
+    .ticker-bar {
+      background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 0.75rem 0; overflow: hidden; position: relative;
+    }
+    .ticker-track {
+      display: flex; gap: 3rem; white-space: nowrap;
+      animation: ticker-scroll 28s linear infinite;
+    }
+    .ticker-bar:hover .ticker-track { animation-play-state: paused; }
+    @keyframes ticker-scroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+    .ticker-item {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.82rem; color: var(--text2);
+    }
+    .ticker-item strong { color: var(--text); }
+    .ticker-sep { color: var(--blue); font-size: 0.9rem; }
+
+    /* ─── MODULES ─── */
+    .modules-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem;
+      margin-top: 2.5rem;
+    }
+    .module-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem;
+      transition: all var(--transition); cursor: default;
+      position: relative; overflow: hidden;
+    }
+    .module-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: var(--card-accent, var(--blue));
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .module-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.25); border-color: var(--card-accent, var(--blue)); }
+    .module-card:hover::before { transform: scaleX(1); }
+    .module-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; margin-bottom: 1rem;
+      background: color-mix(in srgb, var(--card-accent, var(--blue)) 15%, transparent);
+    }
+    .module-card h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .module-card p { font-size: 0.82rem; color: var(--text2); line-height: 1.6; }
+    .module-tag {
+      display: inline-block; margin-top: 0.75rem;
+      font-size: 0.7rem; font-family: var(--font-mono);
+      padding: 0.2rem 0.6rem; border-radius: 4px;
+      background: color-mix(in srgb, var(--card-accent, var(--blue)) 12%, transparent);
+      color: var(--card-accent, var(--blue));
+    }
+
+    /* ─── HOW IT WORKS ─── */
+    .how-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem;
+      margin-top: 2.5rem; position: relative;
+    }
+    .how-grid::before {
+      content: '';
+      position: absolute; top: 32px; left: calc(16.67% + 24px); right: calc(16.67% + 24px);
+      height: 1px; background: linear-gradient(90deg, var(--blue), var(--cyan), var(--blue));
+      z-index: 0;
+    }
+    .how-step {
+      text-align: center; position: relative; z-index: 1;
+    }
+    .how-num {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--bg2); border: 2px solid var(--blue);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem; font-weight: 700; color: var(--blue2);
+      margin: 0 auto 1.25rem; position: relative;
+    }
+    .how-num .badge-time {
+      position: absolute; top: -6px; right: -6px;
+      background: var(--green); color: #fff;
+      font-size: 0.55rem; font-weight: 700; padding: 2px 5px; border-radius: 4px;
+      white-space: nowrap;
+    }
+    .how-step h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .how-step p { font-size: 0.875rem; color: var(--text2); line-height: 1.65; }
+
+    /* ─── COMPARISON TABLE ─── */
+    .compare-wrap { margin-top: 2.5rem; overflow-x: auto; }
+    .compare-table {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    .compare-table th {
+      padding: 1rem 1.25rem; text-align: left;
+      font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--border);
+      color: var(--text2);
+    }
+    .compare-table th.nexa-col {
+      color: var(--blue2);
+      background: rgba(27,111,235,0.06);
+    }
+    .compare-table td {
+      padding: 0.9rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: var(--text2); transition: background var(--transition);
+    }
+    .compare-table td.nexa-col {
+      background: rgba(27,111,235,0.04);
+      color: var(--text);
+      font-weight: 500;
+    }
+    .compare-table tr:hover td { background: var(--bg3); }
+    .compare-table tr:hover td.nexa-col { background: rgba(27,111,235,0.1); }
+    .compare-table td:first-child { color: var(--text); font-weight: 500; }
+    .check { color: var(--green); font-size: 1rem; }
+    .cross { color: var(--red); font-size: 1rem; }
+    .partial { color: var(--amber); font-size: 1rem; }
+
+    /* ─── FEATURES ─── */
+    .features-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem;
+      margin-top: 2.5rem;
+    }
+    .feat-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem;
+      transition: all var(--transition); position: relative; overflow: hidden;
+    }
+    .feat-card::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 60px;
+      background: radial-gradient(ellipse at 50% 100%, rgba(27,111,235,0.08) 0%, transparent 70%);
+    }
+    .feat-card:hover { transform: translateY(-3px); box-shadow: var(--glow); border-color: rgba(27,111,235,0.3); }
+    .feat-icon { font-size: 1.75rem; margin-bottom: 1rem; }
+    .feat-card h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .feat-card p { font-size: 0.82rem; color: var(--text2); line-height: 1.65; }
+
+    /* ─── REPORT PREVIEW ─── */
+    .report-wrap {
+      margin-top: 2.5rem; background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .report-header {
+      padding: 1rem 1.5rem; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .report-header h3 { font-size: 0.9rem; font-weight: 600; }
+    .report-tabs { display: flex; gap: 0.25rem; }
+    .report-tab {
+      padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.78rem;
+      cursor: pointer; color: var(--text3); transition: all var(--transition);
+      border: 1px solid transparent;
+    }
+    .report-tab.active { color: var(--blue2); background: rgba(27,111,235,0.1); border-color: var(--border); }
+    .report-body { display: grid; grid-template-columns: 1.2fr 1fr; gap: 0; }
+    .report-table-wrap { padding: 1rem 1.5rem; border-right: 1px solid var(--border); }
+    .report-table { width: 100%; font-size: 0.78rem; border-collapse: collapse; }
+    .report-table th { padding: 0.5rem 0.75rem; text-align: left; color: var(--text3); font-weight: 500; border-bottom: 1px solid var(--border); font-size: 0.72rem; }
+    .report-table td { padding: 0.5rem 0.75rem; color: var(--text2); border-bottom: 1px solid rgba(255,255,255,0.03); }
+    .report-table td:last-child { text-align: right; }
+    .report-table .positive { color: var(--green); }
+    .report-table .negative { color: var(--red); }
+    .report-chart-wrap { padding: 1rem 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
+    .mini-bar-label { font-size: 0.72rem; color: var(--text3); margin-bottom: 0.5rem; }
+    .mini-bar-row { display: flex; align-items: center; gap: 0.75rem; font-size: 0.72rem; }
+    .mini-bar-name { width: 70px; color: var(--text2); flex-shrink: 0; }
+    .mini-bar-track { flex: 1; height: 6px; background: var(--bg3); border-radius: 4px; overflow: hidden; }
+    .mini-bar-fill { height: 100%; border-radius: 4px; }
+    .mini-bar-val { width: 50px; text-align: right; color: var(--text2); }
+
+    /* ─── TIMELINE ─── */
+    .timeline {
+      display: flex; gap: 0; margin-top: 2.5rem;
+      position: relative;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute; top: 24px; left: 24px; right: 24px; height: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+    }
+    .tl-step { flex: 1; padding-top: 56px; padding-left: 0.5rem; padding-right: 0.5rem; position: relative; }
+    .tl-dot {
+      position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--bg); border: 2px solid var(--blue2);
+      z-index: 1;
+    }
+    .tl-week {
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      font-size: 0.7rem; color: var(--blue2); font-family: var(--font-mono);
+      white-space: nowrap;
+    }
+    .tl-step h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.35rem; }
+    .tl-step p { font-size: 0.8rem; color: var(--text2); line-height: 1.55; }
+    .tl-icon { font-size: 1.2rem; margin-bottom: 0.5rem; }
+
+    /* ─── PRICING ─── */
+    .pricing-toggle-wrap {
+      display: flex; align-items: center; justify-content: center;
+      gap: 1rem; margin: 1.5rem 0 2.5rem;
+    }
+    .toggle-label { font-size: 0.9rem; color: var(--text2); }
+    .toggle-label.active { color: var(--text); font-weight: 500; }
+    .toggle-switch {
+      width: 48px; height: 26px; background: var(--blue); border-radius: 999px;
+      position: relative; cursor: pointer; transition: background var(--transition);
+    }
+    .toggle-switch::after {
+      content: ''; position: absolute; top: 3px; left: 3px;
+      width: 20px; height: 20px; background: #fff; border-radius: 50%;
+      transition: transform 0.3s;
+    }
+    .toggle-switch.yearly::after { transform: translateX(22px); }
+    .save-badge {
+      font-size: 0.72rem; background: rgba(16,185,129,0.15); color: var(--green);
+      padding: 0.2rem 0.55rem; border-radius: 999px; font-weight: 500;
+    }
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem;
+    }
+    .price-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.75rem;
+      transition: all var(--transition); position: relative;
+    }
+    .price-card.popular {
+      border-color: var(--blue); background: rgba(27,111,235,0.05);
+      box-shadow: 0 0 40px rgba(27,111,235,0.12);
+    }
+    .popular-badge {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: var(--blue); color: #fff;
+      font-size: 0.72rem; font-weight: 700; padding: 0.25rem 0.85rem; border-radius: 999px;
+      white-space: nowrap;
+    }
+    .price-tier { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text2); margin-bottom: 0.5rem; }
+    .price-val { display: flex; align-items: flex-start; gap: 0.25rem; margin: 1rem 0; }
+    .price-currency { font-size: 1rem; font-weight: 600; color: var(--text2); padding-top: 0.25rem; }
+    .price-num { font-size: 2.25rem; font-weight: 700; line-height: 1; letter-spacing: -0.03em; }
+    .price-period { font-size: 0.78rem; color: var(--text3); margin-left: 0.25rem; align-self: flex-end; padding-bottom: 0.25rem; }
+    .price-desc { font-size: 0.82rem; color: var(--text2); margin-bottom: 1.25rem; }
+    .price-features { list-style: none; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+    .price-features li { font-size: 0.85rem; color: var(--text2); display: flex; align-items: flex-start; gap: 0.5rem; }
+    .price-features li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+    .btn-price {
+      width: 100%; padding: 0.7rem; border-radius: 8px; border: none;
+      font-size: 0.9rem; font-weight: 600; cursor: pointer;
+      transition: all var(--transition);
+    }
+    .btn-price-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-price-outline:hover { border-color: var(--blue2); color: var(--blue2); }
+    .btn-price-fill { background: var(--blue); color: #fff; }
+    .btn-price-fill:hover { background: var(--blue2); transform: translateY(-1px); }
+    .price-users { font-size: 0.72rem; color: var(--text3); text-align: center; margin-top: 0.75rem; font-family: var(--font-mono); }
+
+    /* ─── TESTIMONIALS ─── */
+    .testimonials-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem;
+      margin-top: 2.5rem;
+    }
+    .testi-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem;
+      transition: all var(--transition);
+    }
+    .testi-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+    .testi-stars { color: var(--amber); font-size: 0.9rem; margin-bottom: 1rem; letter-spacing: 0.1em; }
+    .testi-text { font-size: 0.9rem; color: var(--text2); line-height: 1.7; margin-bottom: 1.25rem; font-style: italic; }
+    .testi-author { display: flex; align-items: center; gap: 0.75rem; }
+    .testi-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; font-weight: 700; flex-shrink: 0;
+    }
+    .testi-name { font-size: 0.875rem; font-weight: 600; }
+    .testi-role { font-size: 0.75rem; color: var(--text3); }
+    .testi-company { font-size: 0.72rem; color: var(--blue2); margin-top: 0.1rem; font-family: var(--font-mono); }
+
+    /* ─── FAQ ─── */
+    .faq-list { margin-top: 2.5rem; max-width: 750px; display: flex; flex-direction: column; gap: 0.5rem; }
+    .faq-item {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden;
+      transition: border-color var(--transition);
+    }
+    .faq-item.open { border-color: rgba(27,111,235,0.3); }
+    .faq-q {
+      padding: 1.1rem 1.25rem; display: flex; align-items: center;
+      justify-content: space-between; cursor: pointer;
+      font-size: 0.925rem; font-weight: 500;
+    }
+    .faq-q:hover { color: var(--blue2); }
+    .faq-icon { color: var(--text3); font-size: 1.1rem; transition: transform 0.3s; flex-shrink: 0; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); color: var(--blue2); }
+    .faq-a {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s;
+      font-size: 0.875rem; color: var(--text2); line-height: 1.7;
+      padding: 0 1.25rem;
+    }
+    .faq-item.open .faq-a { max-height: 200px; padding-bottom: 1.1rem; }
+
+    /* ─── STATS ─── */
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 1.25rem;
+      margin-top: 2rem;
+    }
+    .stat-card {
+      text-align: center; padding: 1.5rem;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .stat-num {
+      font-size: 2rem; font-weight: 700;
+      background: linear-gradient(135deg, var(--blue2), var(--cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label { font-size: 0.82rem; color: var(--text2); margin-top: 0.25rem; }
+
+    /* ─── CTA FINAL ─── */
+    .cta-final {
+      background: linear-gradient(135deg, rgba(27,111,235,0.12), rgba(6,182,212,0.08));
+      border: 1px solid rgba(27,111,235,0.2);
+      border-radius: 20px; padding: 4rem 2rem; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-final::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(27,111,235,0.06) 0%, transparent 70%);
+    }
+    .cta-final h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700; margin-bottom: 0.75rem; }
+    .cta-final p { font-size: 1rem; color: var(--text2); margin-bottom: 2rem; max-width: 520px; margin-left: auto; margin-right: auto; }
+    .cta-final .btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--sidebar); border-top: 1px solid var(--border);
+      padding: 3rem 2rem 1.5rem;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 2fr repeat(3,1fr); gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+    .footer-brand .foot-logo {
+      font-size: 1.2rem; font-weight: 700;
+      background: linear-gradient(135deg, var(--blue2), var(--cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; margin-bottom: 0.75rem;
+    }
+    .footer-brand p { font-size: 0.82rem; color: var(--text3); line-height: 1.7; max-width: 260px; }
+    .footer-certs { display: flex; gap: 0.5rem; margin-top: 1.25rem; flex-wrap: wrap; }
+    .cert-badge {
+      font-size: 0.65rem; font-family: var(--font-mono);
+      padding: 0.25rem 0.6rem; border-radius: 5px;
+      border: 1px solid var(--border); color: var(--text3);
+    }
+    .footer-col h4 { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.05em; color: var(--text); margin-bottom: 1rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .footer-col a { font-size: 0.82rem; color: var(--text3); text-decoration: none; transition: color var(--transition); }
+    .footer-col a:hover { color: var(--blue2); }
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 1.5rem; border-top: 1px solid var(--border);
+      font-size: 0.78rem; color: var(--text3);
+      flex-wrap: wrap; gap: 0.75rem;
+    }
+    .footer-bottom a { color: var(--text3); text-decoration: none; }
+    .footer-bottom a:hover { color: var(--blue2); }
+
+    /* ─── UTILITIES ─── */
+    .text-center { text-align: center; }
+    .mt-1 { margin-top: 1rem; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 960px) {
+      .modules-grid { grid-template-columns: repeat(2,1fr); }
+      .features-grid { grid-template-columns: repeat(2,1fr); }
+      .testimonials-grid { grid-template-columns: repeat(2,1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .stats-grid { grid-template-columns: repeat(2,1fr); }
+      .kpi-row { grid-template-columns: repeat(2,1fr); }
+      .erp-bottom { grid-template-columns: 1fr; }
+      .how-grid::before { display: none; }
+    }
+    @media (max-width: 768px) {
+      .nav-links, .nav-right .btn-nav { display: none; }
+      .hamburger { display: flex; }
+      section { padding: 3.5rem 1.25rem; }
+      .pricing-grid { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; }
+      .timeline { flex-direction: column; }
+      .timeline::before { display: none; }
+      .tl-step { padding-top: 0; padding-left: 3rem; border-left: 2px solid var(--blue); position: relative; }
+      .tl-dot { left: -11px; top: 2px; transform: none; }
+      .tl-week { left: 1.5rem; top: 2px; transform: none; font-size: 0.65rem; }
+      .report-body { grid-template-columns: 1fr; }
+      .report-chart-wrap { border-top: 1px solid var(--border); }
+      .compare-table { font-size: 0.78rem; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .erp-app { height: auto; flex-direction: column; }
+      .erp-sidebar { width: 100%; display: flex; flex-wrap: wrap; gap: 0.25rem; padding: 0.5rem; }
+      .erp-nav-item { padding: 0.3rem 0.6rem; font-size: 0.65rem; }
+      .erp-logo { padding: 0.25rem 0.5rem; }
+      .erp-main { height: 320px; overflow: hidden; }
+    }
+    @media (max-width: 600px) {
+      .modules-grid { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .how-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 1.9rem; }
+      .erp-preview { font-size: 0.62rem; }
+      .kpi-row { grid-template-columns: repeat(2,1fr); }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── NAVBAR ─── -->
+  <nav class="navbar">
+    <div class="nav-logo">NexaERP</div>
+    <ul class="nav-links">
+      <li><a href="#modul">Modul</a></li>
+      <li><a href="#fitur">Fitur</a></li>
+      <li><a href="#harga">Harga</a></li>
+      <li><a href="#pelanggan">Pelanggan</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="btn-theme" id="themeToggle" title="Ganti tema" aria-label="Toggle tema">🌙</button>
+      <a href="#harga" class="btn-nav">Coba 30 Hari Gratis</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ─── MOBILE NAV ─── -->
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#modul" onclick="closeMobileNav()">Modul ERP</a>
+    <a href="#cara-kerja" onclick="closeMobileNav()">Cara Kerja</a>
+    <a href="#fitur" onclick="closeMobileNav()">Fitur Unggulan</a>
+    <a href="#harga" onclick="closeMobileNav()">Harga</a>
+    <a href="#pelanggan" onclick="closeMobileNav()">Pelanggan</a>
+    <a href="#faq" onclick="closeMobileNav()">FAQ</a>
+    <a href="#harga" class="btn-nav" onclick="closeMobileNav()">Coba 30 Hari Gratis</a>
+  </div>
+
+  <!-- ─── HERO ─── -->
+  <section class="hero" id="beranda">
+    <div class="container">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Versi 4.2 kini tersedia — Laporan Pajak PPh 21 Otomatis
+      </div>
+      <h1>Satu Platform,<br><span>Semua Operasional</span><br>Bisnis Anda</h1>
+      <p class="hero-sub">NexaERP menyatukan keuangan, SDM, inventori, penjualan, dan produksi dalam satu sistem terintegrasi yang dirancang khusus untuk bisnis Indonesia.</p>
+      <div class="hero-ctas">
+        <a href="#harga" class="btn-primary">🚀 Mulai 30 Hari Gratis</a>
+        <a href="#modul" class="btn-outline">📹 Lihat Demo Produk</a>
+      </div>
+
+      <!-- ERP DASHBOARD MOCKUP -->
+      <div class="erp-preview" id="erpPreview">
+        <div class="erp-chrome">
+          <span class="chrome-dot" style="background:#FF5F56"></span>
+          <span class="chrome-dot" style="background:#FFBD2E"></span>
+          <span class="chrome-dot" style="background:#27C93F"></span>
+          <span class="chrome-title">NexaERP — Dashboard Utama</span>
+          <span class="chrome-user">Budi Santoso ▾</span>
+        </div>
+        <div class="erp-app">
+          <nav class="erp-sidebar">
+            <div class="erp-logo">NexaERP</div>
+            <div class="erp-nav-item active" data-nav="dashboard">📊 Dashboard</div>
+            <div class="erp-nav-item" data-nav="keuangan">💰 Keuangan</div>
+            <div class="erp-nav-item" data-nav="sdm">👥 SDM</div>
+            <div class="erp-nav-item" data-nav="inventori">📦 Inventori</div>
+            <div class="erp-nav-item" data-nav="penjualan">🛒 Penjualan</div>
+            <div class="erp-nav-item" data-nav="produksi">🏭 Produksi</div>
+            <div class="erp-nav-item" data-nav="laporan">📋 Laporan</div>
+          </nav>
+          <main class="erp-main">
+            <div class="kpi-row">
+              <div class="kpi-card">
+                <div class="kpi-label">Pendapatan Bulan Ini</div>
+                <div class="kpi-val" style="color:var(--green)">Rp 2,4 M</div>
+                <div class="kpi-change up">+12.3%</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Purchase Order</div>
+                <div class="kpi-val" style="color:var(--amber)">47</div>
+                <div class="kpi-change up">+8 baru</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Stok Kritis</div>
+                <div class="kpi-val" style="color:var(--red)">12</div>
+                <div class="kpi-change down">Perlu restock</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-label">Karyawan Aktif</div>
+                <div class="kpi-val" style="color:var(--blue2)">284</div>
+                <div class="kpi-change">3 cuti hari ini</div>
+              </div>
+            </div>
+            <div class="erp-bottom">
+              <div class="erp-chart">
+                <div class="chart-label">Pendapatan 6 Bulan Terakhir</div>
+                <div class="bar-group" id="barGroup">
+                  <div class="bar-wrap"><div class="bar" data-h="45" style="height:0%;background:var(--blue)"></div><span>Jan</span></div>
+                  <div class="bar-wrap"><div class="bar" data-h="60" style="height:0%;background:var(--blue)"></div><span>Feb</span></div>
+                  <div class="bar-wrap"><div class="bar" data-h="52" style="height:0%;background:var(--blue)"></div><span>Mar</span></div>
+                  <div class="bar-wrap"><div class="bar" data-h="78" style="height:0%;background:var(--blue)"></div><span>Apr</span></div>
+                  <div class="bar-wrap"><div class="bar" data-h="68" style="height:0%;background:var(--blue)"></div><span>Mei</span></div>
+                  <div class="bar-wrap"><div class="bar" data-h="90" style="height:0%;background:var(--blue2)"></div><span>Jun</span></div>
+                </div>
+              </div>
+              <div class="erp-activity">
+                <div class="act-label">Aktivitas Terbaru</div>
+                <div class="act-item"><span class="act-badge inv">INV</span> Invoice #2024 diterbitkan — Rp 48jt</div>
+                <div class="act-item"><span class="act-badge po">PO</span> PO #847 disetujui — PT Sumber Makmur</div>
+                <div class="act-item"><span class="act-badge hr">HR</span> 2 karyawan baru onboarding hari ini</div>
+                <div class="act-item"><span class="act-badge warn">!</span> Stok "Kertas A4" di bawah minimum</div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── SOCIAL PROOF TICKER ─── -->
+  <div class="ticker-bar">
+    <div class="ticker-track" id="tickerTrack">
+      <span class="ticker-item"><strong>3.200+</strong> perusahaan mempercayai NexaERP</span>
+      <span class="ticker-sep">✦</span>
+      <span class="ticker-item"><strong>500+</strong> pengguna aktif hari ini</span>
+      <span class="ticker-sep">✦</span>
+      <span class="ticker-item">Rating <strong>4.9/5</strong> dari 1.800+ ulasan</span>
+      <span class="ticker-sep">✦</span>
+      <span class="ticker-item">Implementasi rata-rata <strong>4 minggu</strong></span>
+      <span class="ticker-sep">✦</span>
+      <span class="ticker-item">Support <strong>24/7</strong> dalam Bahasa Indonesia</span>
+      <span class="ticker-sep">✦</span>
+      <span class="ticker-item">Hemat hingga <strong>60%</strong> vs ERP legacy</span>
+      <span class="ticker-sep">✦</span>
+      <!-- Duplicate for seamless loop -->
+      <span class="ticker-item"><strong>3.200+</strong> perusahaan mempercayai NexaERP</span>
+      <span class="ticker-sep">✦</span>
+      <span class="ticker-item"><strong>500+</strong> pengguna aktif hari ini</span>
+      <span class="ticker-sep">✦</span>
+      <span class="ticker-item">Rating <strong>4.9/5</strong> dari 1.800+ ulasan</span>
+      <span class="ticker-sep">✦</span>
+      <span class="ticker-item">Implementasi rata-rata <strong>4 minggu</strong></span>
+      <span class="ticker-sep">✦</span>
+      <span class="ticker-item">Support <strong>24/7</strong> dalam Bahasa Indonesia</span>
+      <span class="ticker-sep">✦</span>
+      <span class="ticker-item">Hemat hingga <strong>60%</strong> vs ERP legacy</span>
+      <span class="ticker-sep">✦</span>
+    </div>
+  </div>
+
+  <!-- ─── STATS ─── -->
+  <section style="padding: 3rem 2rem;">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-num" data-count="3200" data-suffix="+">0</div>
+          <div class="stat-label">Perusahaan Aktif</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" data-count="98" data-suffix="%">0</div>
+          <div class="stat-label">Tingkat Retensi Klien</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" data-count="4" data-suffix=" Minggu">0</div>
+          <div class="stat-label">Rata-rata Implementasi</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" data-count="99" data-suffix=".9% SLA">0</div>
+          <div class="stat-label">Uptime Dijamin</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── MODUL ERP ─── -->
+  <section id="modul">
+    <div class="container">
+      <div class="section-label">// modul.erp</div>
+      <h2 class="section-title">8 Modul Terintegrasi,<br>Satu Ekosistem Bisnis</h2>
+      <p class="section-sub">Setiap modul dirancang untuk saling terhubung secara real-time. Perubahan di satu modul langsung tercermin di seluruh sistem.</p>
+      <div class="modules-grid">
+        <div class="module-card" style="--card-accent: var(--amber)">
+          <div class="module-icon">💰</div>
+          <h3>Keuangan &amp; Akuntansi</h3>
+          <p>Jurnal otomatis, laporan keuangan PSAK, rekonsiliasi bank, dan manajemen kas multi-akun.</p>
+          <span class="module-tag">finance</span>
+        </div>
+        <div class="module-card" style="--card-accent: var(--violet)">
+          <div class="module-icon">👥</div>
+          <h3>Manajemen SDM</h3>
+          <p>Penggajian BPJS terintegrasi, absensi biometrik, penilaian kinerja KPI, dan manajemen cuti.</p>
+          <span class="module-tag">hr</span>
+        </div>
+        <div class="module-card" style="--card-accent: var(--green)">
+          <div class="module-icon">📦</div>
+          <h3>Inventori &amp; Gudang</h3>
+          <p>Multi-gudang, FIFO/LIFO, barcode scanner, reorder point otomatis, dan stock opname digital.</p>
+          <span class="module-tag">inventory</span>
+        </div>
+        <div class="module-card" style="--card-accent: var(--cyan)">
+          <div class="module-icon">🛒</div>
+          <h3>Penjualan &amp; CRM</h3>
+          <p>Pipeline penjualan, manajemen pelanggan, penawaran harga, dan integrasi marketplace online.</p>
+          <span class="module-tag">crm</span>
+        </div>
+        <div class="module-card" style="--card-accent: var(--blue)">
+          <div class="module-icon">🏭</div>
+          <h3>Manufaktur &amp; Produksi</h3>
+          <p>Bill of Materials, Work Order, MRP (Material Requirement Planning), dan quality control.</p>
+          <span class="module-tag">manufacturing</span>
+        </div>
+        <div class="module-card" style="--card-accent: var(--orange)">
+          <div class="module-icon">📋</div>
+          <h3>Pelaporan &amp; BI</h3>
+          <p>Dashboard eksekutif real-time, laporan kustom drag-and-drop, dan export ke Excel/PDF.</p>
+          <span class="module-tag">analytics</span>
+        </div>
+        <div class="module-card" style="--card-accent: var(--teal)">
+          <div class="module-icon">🔗</div>
+          <h3>Pembelian &amp; Vendor</h3>
+          <p>Manajemen vendor, persetujuan PO berjenjang, three-way matching, dan evaluasi supplier.</p>
+          <span class="module-tag">procurement</span>
+        </div>
+        <div class="module-card" style="--card-accent: var(--red)">
+          <div class="module-icon">🔐</div>
+          <h3>Manajemen Akses</h3>
+          <p>Role-based access, audit trail lengkap, SSO, 2FA, dan manajemen izin granular per divisi.</p>
+          <span class="module-tag">security</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CARA KERJA ─── -->
+  <section id="cara-kerja" style="background: var(--bg2);">
+    <div class="container">
+      <div class="section-label">// onboarding.flow</div>
+      <h2 class="section-title">Mulai Beroperasi dalam<br>4 Minggu, Bukan 4 Bulan</h2>
+      <p class="section-sub">Kami mengelola seluruh proses implementasi sehingga tim Anda bisa fokus pada bisnis, bukan konfigurasi sistem.</p>
+      <div class="how-grid">
+        <div class="how-step">
+          <div class="how-num">1<span class="badge-time">Hari 1</span></div>
+          <div class="tl-icon">⚙️</div>
+          <h3>Setup &amp; Konfigurasi</h3>
+          <p>Tim konsultan kami menganalisis proses bisnis Anda dan mengkonfigurasi modul sesuai kebutuhan spesifik perusahaan.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-num">2<span class="badge-time">Minggu 2</span></div>
+          <div class="tl-icon">🗄️</div>
+          <h3>Migrasi Data</h3>
+          <p>Data historis dari sistem lama (Excel, ERP lain, atau akuntansi manual) dipindahkan secara terstruktur dengan validasi penuh.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-num">3<span class="badge-time">Minggu 4</span></div>
+          <div class="tl-icon">🚀</div>
+          <h3>Pelatihan &amp; Go Live</h3>
+          <p>Pelatihan intensif seluruh tim pengguna, uji coba paralel, dan pendampingan go-live oleh engineer berpengalaman.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── COMPARISON TABLE ─── -->
+  <section>
+    <div class="container">
+      <div class="section-label">// comparison.benchmark</div>
+      <h2 class="section-title">NexaERP vs ERP Legacy</h2>
+      <p class="section-sub">Mengapa ribuan perusahaan beralih dari SAP, Oracle, dan Microsoft Dynamics ke NexaERP?</p>
+      <div class="compare-wrap">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Kriteria</th>
+              <th class="nexa-col">✦ NexaERP</th>
+              <th>SAP Business One</th>
+              <th>Oracle NetSuite</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Biaya Implementasi</td>
+              <td class="nexa-col">Rp 50–200 juta</td>
+              <td>Rp 500 juta – 2 M</td>
+              <td>Rp 800 juta – 3 M</td>
+            </tr>
+            <tr>
+              <td>Waktu Go-Live</td>
+              <td class="nexa-col"><span class="check">✓</span> 4 Minggu</td>
+              <td><span class="cross">✗</span> 6–18 Bulan</td>
+              <td><span class="cross">✗</span> 6–12 Bulan</td>
+            </tr>
+            <tr>
+              <td>Bahasa Indonesia</td>
+              <td class="nexa-col"><span class="check">✓</span> Native</td>
+              <td><span class="partial">◐</span> Parsial</td>
+              <td><span class="cross">✗</span> Tidak</td>
+            </tr>
+            <tr>
+              <td>Support Lokal 24/7</td>
+              <td class="nexa-col"><span class="check">✓</span> Tim Jakarta</td>
+              <td><span class="partial">◐</span> Reseller</td>
+              <td><span class="cross">✗</span> Offshore</td>
+            </tr>
+            <tr>
+              <td>e-Faktur / NPWP DJP</td>
+              <td class="nexa-col"><span class="check">✓</span> Terintegrasi</td>
+              <td><span class="partial">◐</span> Add-on berbayar</td>
+              <td><span class="cross">✗</span> Tidak didukung</td>
+            </tr>
+            <tr>
+              <td>BPJS Ketenagakerjaan</td>
+              <td class="nexa-col"><span class="check">✓</span> Otomatis</td>
+              <td><span class="cross">✗</span> Manual</td>
+              <td><span class="cross">✗</span> Manual</td>
+            </tr>
+            <tr>
+              <td>Biaya Bulanan (25 user)</td>
+              <td class="nexa-col">Rp 4,5 juta/bln</td>
+              <td>Rp 45–90 juta/bln</td>
+              <td>Rp 60–120 juta/bln</td>
+            </tr>
+            <tr>
+              <td>API Terbuka</td>
+              <td class="nexa-col"><span class="check">✓</span> REST + Webhook</td>
+              <td><span class="partial">◐</span> Terbatas</td>
+              <td><span class="check">✓</span> REST API</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FITUR UNGGULAN ─── -->
+  <section id="fitur" style="background: var(--bg2);">
+    <div class="container">
+      <div class="section-label">// features.highlight</div>
+      <h2 class="section-title">Dirancang untuk<br>Realita Bisnis Indonesia</h2>
+      <p class="section-sub">Bukan sekadar terjemahan ERP asing. NexaERP dibangun dari nol untuk regulasi, perpajakan, dan ketenagakerjaan Indonesia.</p>
+      <div class="features-grid">
+        <div class="feat-card">
+          <div class="feat-icon">🏢</div>
+          <h3>Multi-Cabang Real-Time</h3>
+          <p>Kelola ratusan cabang dalam satu dashboard. Konsolidasi laporan keuangan lintas entitas secara instan.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">💱</div>
+          <h3>Multi-Mata Uang</h3>
+          <p>Transaksi dalam IDR, USD, EUR, SGD dengan kurs otomatis dari Bank Indonesia dan laporan selisih kurs.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🧾</div>
+          <h3>e-Faktur &amp; NPWP Terintegrasi</h3>
+          <p>Generate e-Faktur PPN langsung dari faktur penjualan. Sinkronisasi otomatis dengan DJP Online.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🏥</div>
+          <h3>BPJS Terintegrasi</h3>
+          <p>Hitung dan laporkan iuran BPJS Kesehatan &amp; Ketenagakerjaan otomatis setiap siklus penggajian.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">📊</div>
+          <h3>Laporan Pajak Otomatis</h3>
+          <p>SPT PPh 21, PPh 23, PPh Pasal 4 Ayat 2 tersedia langsung dari data transaksi. Ekspor ke format e-SPT.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🔌</div>
+          <h3>API Terbuka &amp; Webhook</h3>
+          <p>REST API lengkap dengan dokumentasi Swagger. Integrasikan dengan marketplace, logistik, dan payment gateway.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── LAPORAN & ANALITIK ─── -->
+  <section>
+    <div class="container">
+      <div class="section-label">// reporting.analytics</div>
+      <h2 class="section-title">Keputusan Bisnis Berbasis Data,<br>Bukan Instinct</h2>
+      <p class="section-sub">Dashboard eksekutif real-time dengan drill-down hingga level transaksi. Laporan yang selalu siap saat dibutuhkan.</p>
+      <div class="report-wrap">
+        <div class="report-header">
+          <h3>📊 Laporan Keuangan — Juni 2025</h3>
+          <div class="report-tabs">
+            <div class="report-tab active" onclick="switchReportTab(this)">Laba Rugi</div>
+            <div class="report-tab" onclick="switchReportTab(this)">Neraca</div>
+            <div class="report-tab" onclick="switchReportTab(this)">Arus Kas</div>
+          </div>
+        </div>
+        <div class="report-body">
+          <div class="report-table-wrap">
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th>Akun</th>
+                  <th>Periode Ini</th>
+                  <th>vs Bulan Lalu</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Pendapatan Usaha</td>
+                  <td>Rp 2.437.800.000</td>
+                  <td class="positive">+12.3%</td>
+                </tr>
+                <tr>
+                  <td>Harga Pokok Produksi</td>
+                  <td>Rp 1.287.400.000</td>
+                  <td class="negative">+8.1%</td>
+                </tr>
+                <tr>
+                  <td>Laba Bruto</td>
+                  <td><strong>Rp 1.150.400.000</strong></td>
+                  <td class="positive">+17.2%</td>
+                </tr>
+                <tr>
+                  <td>Biaya Operasional</td>
+                  <td>Rp 487.600.000</td>
+                  <td class="positive">−2.4%</td>
+                </tr>
+                <tr>
+                  <td>Biaya SDM</td>
+                  <td>Rp 324.200.000</td>
+                  <td class="negative">+3.8%</td>
+                </tr>
+                <tr>
+                  <td><strong>Laba Bersih</strong></td>
+                  <td><strong style="color:var(--green)">Rp 338.600.000</strong></td>
+                  <td class="positive"><strong>+29.4%</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="report-chart-wrap">
+            <div class="mini-bar-label">Kontribusi per Divisi</div>
+            <div class="mini-bar-row">
+              <div class="mini-bar-name">Penjualan</div>
+              <div class="mini-bar-track"><div class="mini-bar-fill" style="width:82%;background:var(--green)"></div></div>
+              <div class="mini-bar-val">82%</div>
+            </div>
+            <div class="mini-bar-row">
+              <div class="mini-bar-name">Manufaktur</div>
+              <div class="mini-bar-track"><div class="mini-bar-fill" style="width:64%;background:var(--blue2)"></div></div>
+              <div class="mini-bar-val">64%</div>
+            </div>
+            <div class="mini-bar-row">
+              <div class="mini-bar-name">Distribusi</div>
+              <div class="mini-bar-track"><div class="mini-bar-fill" style="width:47%;background:var(--cyan)"></div></div>
+              <div class="mini-bar-val">47%</div>
+            </div>
+            <div class="mini-bar-row">
+              <div class="mini-bar-name">Jasa</div>
+              <div class="mini-bar-track"><div class="mini-bar-fill" style="width:31%;background:var(--amber)"></div></div>
+              <div class="mini-bar-val">31%</div>
+            </div>
+            <div class="mini-bar-row">
+              <div class="mini-bar-name">Ekspor</div>
+              <div class="mini-bar-track"><div class="mini-bar-fill" style="width:23%;background:var(--violet)"></div></div>
+              <div class="mini-bar-val">23%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── IMPLEMENTASI & ONBOARDING TIMELINE ─── -->
+  <section style="background: var(--bg2);">
+    <div class="container">
+      <div class="section-label">// implementation.timeline</div>
+      <h2 class="section-title">Implementasi Terstruktur,<br>Hasil yang Terukur</h2>
+      <p class="section-sub">Setiap tahap ditangani oleh tim bersertifikat dengan SLA yang jelas. Anda tidak akan pernah merasa sendirian.</p>
+      <div class="timeline">
+        <div class="tl-step">
+          <span class="tl-week">Minggu 1</span>
+          <div class="tl-dot"></div>
+          <div class="tl-icon">📝</div>
+          <h4>Kontrak &amp; Kickoff</h4>
+          <p>Penandatanganan kontrak, assignment project manager dedikasi, dan kickoff meeting dengan seluruh stakeholder.</p>
+        </div>
+        <div class="tl-step">
+          <span class="tl-week">Minggu 1–2</span>
+          <div class="tl-dot"></div>
+          <div class="tl-icon">⚙️</div>
+          <h4>Setup &amp; Konfigurasi</h4>
+          <p>Konfigurasi akun, chart of accounts, struktur organisasi, role pengguna, dan workflow approval sesuai SOP perusahaan.</p>
+        </div>
+        <div class="tl-step">
+          <span class="tl-week">Minggu 2–3</span>
+          <div class="tl-dot"></div>
+          <div class="tl-icon">🗄️</div>
+          <h4>Migrasi Data</h4>
+          <p>Import master data (produk, vendor, pelanggan, aset) dan data historis transaksi dari sistem lama dengan validasi berlapis.</p>
+        </div>
+        <div class="tl-step">
+          <span class="tl-week">Minggu 3</span>
+          <div class="tl-dot"></div>
+          <div class="tl-icon">🎓</div>
+          <h4>Training Tim</h4>
+          <p>Pelatihan per modul untuk setiap departemen. Tersedia training onsite, online live, dan rekaman video untuk referensi.</p>
+        </div>
+        <div class="tl-step">
+          <span class="tl-week">Minggu 4</span>
+          <div class="tl-dot"></div>
+          <div class="tl-icon">🚀</div>
+          <h4>Go Live + Pendampingan</h4>
+          <p>Parallel run 1 minggu, lalu full go-live dengan engineer on-call 24 jam selama 2 minggu pertama operasional.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PRICING ─── -->
+  <section id="harga">
+    <div class="container text-center">
+      <div class="section-label">// pricing.plans</div>
+      <h2 class="section-title">Investasi Transparan,<br>Tanpa Biaya Tersembunyi</h2>
+      <p class="section-sub" style="margin: 0 auto;">Mulai gratis 30 hari. Tidak perlu kartu kredit. Upgrade kapan saja sesuai pertumbuhan bisnis Anda.</p>
+      <div class="pricing-toggle-wrap">
+        <span class="toggle-label active" id="lbl-monthly">Bulanan</span>
+        <div class="toggle-switch" id="pricingToggle"></div>
+        <span class="toggle-label" id="lbl-yearly">Tahunan</span>
+        <span class="save-badge">Hemat 20%</span>
+      </div>
+      <div class="pricing-grid">
+        <!-- STARTER -->
+        <div class="price-card">
+          <div class="price-tier">Starter</div>
+          <p style="font-size:0.82rem; color:var(--text2)">Untuk usaha kecil yang baru memulai digitalisasi</p>
+          <div class="price-val">
+            <span class="price-currency">Rp</span>
+            <span class="price-num" data-monthly="1500" data-yearly="1200" id="price-starter">1.500</span>
+            <span class="price-period">/bulan</span>
+          </div>
+          <p class="price-desc">Harga sudah termasuk onboarding dasar dan migrasi data dari Excel</p>
+          <ul class="price-features">
+            <li>Hingga 5 pengguna</li>
+            <li>Modul Keuangan &amp; Akuntansi</li>
+            <li>Modul Inventori Dasar</li>
+            <li>Laporan Standar (15 jenis)</li>
+            <li>Storage 10 GB</li>
+            <li>Support via email (respon 24 jam)</li>
+          </ul>
+          <button class="btn-price btn-price-outline">Mulai Gratis 30 Hari</button>
+          <div class="price-users">max 5 user · 1 legal entity</div>
+        </div>
+        <!-- BUSINESS -->
+        <div class="price-card popular">
+          <div class="popular-badge">✦ Paling Populer</div>
+          <div class="price-tier" style="color:var(--blue2)">Business</div>
+          <p style="font-size:0.82rem; color:var(--text2)">Untuk bisnis yang sedang tumbuh dan butuh kontrol penuh</p>
+          <div class="price-val">
+            <span class="price-currency">Rp</span>
+            <span class="price-num" data-monthly="4500" data-yearly="3600" id="price-business">4.500</span>
+            <span class="price-period">/bulan</span>
+          </div>
+          <p class="price-desc">Termasuk implementasi penuh, migrasi data, dan training 2 hari</p>
+          <ul class="price-features">
+            <li>Hingga 25 pengguna</li>
+            <li>Semua 8 modul ERP</li>
+            <li>e-Faktur &amp; BPJS terintegrasi</li>
+            <li>Laporan Kustom unlimited</li>
+            <li>Multi-cabang (5 lokasi)</li>
+            <li>Storage 100 GB</li>
+            <li>Support 24/7 (respon 2 jam)</li>
+            <li>API akses penuh</li>
+          </ul>
+          <button class="btn-price btn-price-fill">Mulai Gratis 30 Hari</button>
+          <div class="price-users">max 25 user · 5 legal entity</div>
+        </div>
+        <!-- ENTERPRISE -->
+        <div class="price-card">
+          <div class="price-tier">Enterprise</div>
+          <p style="font-size:0.82rem; color:var(--text2)">Untuk korporasi dan grup perusahaan skala besar</p>
+          <div class="price-val">
+            <span class="price-currency" style="font-size:0.85rem; padding-top: 0.5rem;">Harga</span>
+            <span class="price-num" style="font-size:1.5rem" id="price-enterprise">Kustom</span>
+          </div>
+          <p class="price-desc">Paket disesuaikan dengan kebutuhan, volume transaksi, dan SLA enterprise</p>
+          <ul class="price-features">
+            <li>Pengguna tidak terbatas</li>
+            <li>Dedicated server / on-premise</li>
+            <li>Kustomisasi modul penuh</li>
+            <li>Multi-entitas konsolidasi</li>
+            <li>Storage tidak terbatas</li>
+            <li>SLA 99.9% dijamin</li>
+            <li>Dedicated customer success</li>
+            <li>Training onsite unlimited</li>
+          </ul>
+          <button class="btn-price btn-price-outline">Hubungi Sales</button>
+          <div class="price-users">unlimited user · unlimited entity</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── TESTIMONIAL ─── -->
+  <section id="pelanggan" style="background: var(--bg2);">
+    <div class="container">
+      <div class="section-label">// testimonials.clients</div>
+      <h2 class="section-title">Dipercaya Pemimpin Industri<br>di Seluruh Indonesia</h2>
+      <p class="section-sub">Dari manufaktur Jawa Timur hingga distributor nasional — NexaERP bekerja untuk semua skala bisnis.</p>
+      <div class="testimonials-grid">
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-text">"Implementasi NexaERP hanya 3,5 minggu untuk 4 pabrik kami. Laporan konsolidasi yang dulunya butuh 3 hari kerja, sekarang tersedia real-time. ROI kami capai dalam 8 bulan."</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:rgba(245,158,11,0.15);color:var(--amber)">DW</div>
+            <div>
+              <div class="testi-name">Dwi Wahyudi</div>
+              <div class="testi-role">CFO, PT Surya Mandiri Industri</div>
+              <div class="testi-company">// Manufaktur Plastik · Surabaya · 850 karyawan</div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-text">"Kami punya 47 cabang distribusi dari Sabang sampai Merauke. NexaERP adalah satu-satunya ERP yang bisa handle kompleksitas ini dengan harga yang masuk akal untuk perusahaan Indonesia."</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:rgba(6,182,212,0.15);color:var(--cyan)">RS</div>
+            <div>
+              <div class="testi-name">Ratna Sari Dewi</div>
+              <div class="testi-role">Direktur Operasional, CV Nusantara Distribusi</div>
+              <div class="testi-company">// FMCG Distribusi · Jakarta · 1.200 karyawan</div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-text">"Sebagai jaringan retail dengan 120 toko, kami butuh POS-to-ERP yang seamless. Fitur e-Faktur otomatis NexaERP menghemat 40 jam kerja tim pajak kami setiap bulannya."</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:rgba(139,92,246,0.15);color:var(--violet)">AP</div>
+            <div>
+              <div class="testi-name">Andi Pratama</div>
+              <div class="testi-role">Head of IT, Grup Ritel Matahari Timur</div>
+              <div class="testi-company">// Ritel Fashion · Makassar · 3.500 karyawan</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FAQ ─── -->
+  <section id="faq">
+    <div class="container">
+      <div class="section-label">// faq.technical</div>
+      <h2 class="section-title">Pertanyaan yang Sering<br>Ditanyakan Tim IT</h2>
+      <p class="section-sub">Tidak menemukan jawaban yang Anda cari? Hubungi tim sales engineering kami.</p>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            Bagaimana proses migrasi data dari sistem lama (SAP, Oracle, atau Excel)?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-a">Tim data engineer kami menyediakan script migrasi untuk 30+ format sistem ERP populer. Untuk Excel, kami memiliki template import standar. Data divalidasi dalam tiga tahap: struktur, duplikasi, dan integritas relasional. Seluruh proses migrasi rata-rata memakan waktu 5–10 hari kerja tergantung volume data dan kompleksitas chart of accounts Anda.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            Apakah NexaERP bisa di-host di server internal perusahaan (on-premise)?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-a">Ya, paket Enterprise mendukung deployment on-premise, hybrid cloud, maupun private cloud di AWS Jakarta, GCP Jakarta, atau Azure Southeast Asia. Untuk paket Starter dan Business, kami menggunakan infrastruktur cloud kami sendiri dengan data center di Jakarta (Tier-3 certified) dengan uptime SLA 99.9%. Backup otomatis harian dengan retensi 90 hari.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            Apa saja sistem eksternal yang bisa diintegrasikan dengan NexaERP?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-a">NexaERP menyediakan REST API lengkap dan webhook untuk integrasi dua arah. Koneksi siap pakai (plug-and-play) tersedia untuk: Tokopedia, Shopee, Lazada, TikTok Shop, Bukalapak (marketplace); Midtrans, Xendit, DOKU (payment gateway); Anteraja, JNE, JET, SiCepat (logistik); serta sistem absensi Fingerspot, Hikvision, dan ZKTeco. Untuk kebutuhan kustom, tim API kami siap membantu.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            Bagaimana skema dukungan teknis dan SLA support NexaERP?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-a">Starter: support via email dan tiket, respon maks 24 jam (hari kerja). Business: WhatsApp, email, dan telpon, respon maks 2 jam 24/7/365, dengan dedicated account manager. Enterprise: engineer on-call 24/7 dengan respon 30 menit untuk critical issues, serta dedicated customer success manager yang melakukan review bulanan performa sistem Anda.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            Bagaimana NexaERP memastikan keamanan data sensitif perusahaan kami?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-a">NexaERP bersertifikat ISO 27001 dan SOC 2 Type II. Semua data dienkripsi AES-256 saat penyimpanan dan TLS 1.3 saat transmisi. Audit trail lengkap untuk setiap aksi pengguna. Fitur keamanan termasuk: 2FA wajib, IP whitelist, session management, RBAC granular, dan penetration testing rutin oleh pihak ketiga independen setiap 6 bulan. Data Anda tidak pernah digunakan untuk keperluan lain.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CTA FINAL ─── -->
+  <section style="padding: 4rem 2rem;">
+    <div class="container">
+      <div class="cta-final">
+        <div class="section-label" style="margin-bottom:1rem">// get.started</div>
+        <h2>Siap Transformasi Digital<br>Bisnis Anda?</h2>
+        <p>Jadwalkan demo gratis 45 menit bersama konsultan ERP kami. Kami akan menunjukkan bagaimana NexaERP bekerja untuk industri spesifik Anda.</p>
+        <div class="btns">
+          <a href="#harga" class="btn-primary">📅 Jadwalkan Demo Gratis</a>
+          <a href="#harga" class="btn-outline">💬 Hubungi Sales</a>
+        </div>
+        <p style="margin-top:1.5rem; font-size:0.8rem; color:var(--text3)">Tidak perlu kartu kredit · Setup dalam 1 hari kerja · Batalkan kapan saja</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="foot-logo">NexaERP</div>
+          <p>Sistem ERP modern yang dirancang khusus untuk bisnis Indonesia. Satu platform untuk semua operasional bisnis Anda.</p>
+          <div class="footer-certs">
+            <span class="cert-badge">ISO 27001</span>
+            <span class="cert-badge">SOC 2 Type II</span>
+            <span class="cert-badge">PSE Kominfo</span>
+            <span class="cert-badge">TKDN 40%</span>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>PRODUK</h4>
+          <ul>
+            <li><a href="#">Modul Keuangan</a></li>
+            <li><a href="#">Manajemen SDM</a></li>
+            <li><a href="#">Inventori &amp; Gudang</a></li>
+            <li><a href="#">Penjualan &amp; CRM</a></li>
+            <li><a href="#">Manufaktur</a></li>
+            <li><a href="#">Pembelian</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>PERUSAHAAN</h4>
+          <ul>
+            <li><a href="#">Tentang Kami</a></li>
+            <li><a href="#">Blog &amp; Insight</a></li>
+            <li><a href="#">Karir</a></li>
+            <li><a href="#">Partner Program</a></li>
+            <li><a href="#">Hubungi Kami</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>DUKUNGAN</h4>
+          <ul>
+            <li><a href="#">Dokumentasi API</a></li>
+            <li><a href="#">Pusat Bantuan</a></li>
+            <li><a href="#">Status Sistem</a></li>
+            <li><a href="#">Kebijakan Privasi</a></li>
+            <li><a href="#">Syarat &amp; Ketentuan</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2025 NexaERP. Hak cipta dilindungi. PT Nexa Teknologi Indonesia.</span>
+        <span>📍 Jl. Sudirman Kav. 52–53, Jakarta Selatan 12190</span>
+        <span>☎ +62 21 5000-8888 &nbsp;|&nbsp; <a href="#">hello@nexaerp.id</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ─── THEME TOGGLE ───
+    const html = document.documentElement;
+    const themeBtn = document.getElementById('themeToggle');
+    let isDark = true;
+
+    themeBtn.addEventListener('click', () => {
+      isDark = !isDark;
+      html.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      themeBtn.textContent = isDark ? '🌙' : '☀️';
+    });
+
+    // ─── MOBILE NAV ───
+    const hamburger = document.getElementById('hamburger');
+    const mobileNav = document.getElementById('mobileNav');
+
+    hamburger.addEventListener('click', () => {
+      mobileNav.classList.toggle('open');
+    });
+
+    function closeMobileNav() {
+      mobileNav.classList.remove('open');
+    }
+
+    // Close mobile nav on outside click
+    document.addEventListener('click', (e) => {
+      if (!hamburger.contains(e.target) && !mobileNav.contains(e.target)) {
+        mobileNav.classList.remove('open');
+      }
+    });
+
+    // ─── ERP SIDEBAR INTERACTIVE ───
+    document.querySelectorAll('.erp-nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        document.querySelectorAll('.erp-nav-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+      });
+    });
+
+    // ─── BAR CHART ANIMATION ───
+    function animateBars() {
+      const bars = document.querySelectorAll('#barGroup .bar');
+      bars.forEach(bar => {
+        const targetH = bar.getAttribute('data-h');
+        setTimeout(() => {
+          bar.style.height = targetH + '%';
+        }, 200);
+      });
+    }
+
+    // Animate bars when hero is visible
+    const erpObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateBars();
+          erpObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    const erpPreview = document.getElementById('erpPreview');
+    if (erpPreview) erpObserver.observe(erpPreview);
+
+    // ─── COUNTER ANIMATION ───
+    function animateCounter(el) {
+      const target = parseInt(el.getAttribute('data-count'));
+      const suffix = el.getAttribute('data-suffix') || '';
+      const duration = 1800;
+      const steps = 60;
+      const increment = target / steps;
+      let current = 0;
+      let step = 0;
+
+      const timer = setInterval(() => {
+        step++;
+        current = Math.min(Math.round(increment * step), target);
+        el.textContent = current.toLocaleString('id-ID') + suffix;
+        if (step >= steps) clearInterval(timer);
+      }, duration / steps);
+    }
+
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll('[data-count]').forEach(el => {
+            animateCounter(el);
+          });
+          statsObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('.stats-grid').forEach(el => statsObserver.observe(el));
+
+    // ─── PRICING TOGGLE ───
+    const pricingToggle = document.getElementById('pricingToggle');
+    const lblMonthly = document.getElementById('lbl-monthly');
+    const lblYearly = document.getElementById('lbl-yearly');
+    let isYearly = false;
+
+    pricingToggle.addEventListener('click', () => {
+      isYearly = !isYearly;
+      pricingToggle.classList.toggle('yearly', isYearly);
+      lblMonthly.classList.toggle('active', !isYearly);
+      lblYearly.classList.toggle('active', isYearly);
+
+      const priceEls = document.querySelectorAll('.price-num[data-monthly]');
+      priceEls.forEach(el => {
+        const val = isYearly
+          ? parseInt(el.getAttribute('data-yearly'))
+          : parseInt(el.getAttribute('data-monthly'));
+        el.textContent = val.toLocaleString('id-ID');
+      });
+    });
+
+    // ─── FAQ ACCORDION ───
+    function toggleFaq(trigger) {
+      const item = trigger.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+
+      // Close all
+      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+
+      // Open clicked if it wasn't already open
+      if (!isOpen) item.classList.add('open');
+    }
+
+    // ─── REPORT TAB SWITCHER ───
+    function switchReportTab(tab) {
+      document.querySelectorAll('.report-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    }
+
+    // ─── COMPARISON TABLE ROW HIGHLIGHT ───
+    document.querySelectorAll('.compare-table tbody tr').forEach(row => {
+      row.addEventListener('mouseenter', () => {
+        row.querySelectorAll('td').forEach(td => {
+          td.style.background = '';
+        });
+      });
+    });
+
+    // ─── SCROLL REVEAL ───
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    const revealTargets = document.querySelectorAll(
+      '.module-card, .feat-card, .testi-card, .price-card, .how-step, .tl-step, .stat-card'
+    );
+    revealTargets.forEach((el, i) => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = `opacity 0.5s ease ${(i % 4) * 0.08}s, transform 0.5s ease ${(i % 4) * 0.08}s`;
+      revealObserver.observe(el);
+    });
+  </script>
+</body>
+</html>

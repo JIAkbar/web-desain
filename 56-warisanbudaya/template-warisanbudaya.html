@@ -1,0 +1,1879 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArsipNusa — Perpustakaan Warisan Budaya Nusantara</title>
+<meta name="description" content="Pusat Arsip Warisan Budaya Nusantara. Lebih dari 94.600 item terdigitalisasi dari 12 provinsi, menjaga memori Nusantara untuk generasi mendatang.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== CSS VARIABLES ===== */
+:root {
+  --bg: #F7F4EE;
+  --bg2: #EDE8DF;
+  --bg3: #E2DAD0;
+  --surface: #FFFFFF;
+  --border: #D9D2C6;
+  --border2: #C4BAA8;
+  --text: #1C0E04;
+  --text2: #6B5544;
+  --text3: #9C876E;
+  --terra: #8B4513;
+  --terra2: #A0522D;
+  --gold: #C9963E;
+  --gold2: #E8B84B;
+  --gold-dim: rgba(201,150,62,0.12);
+  --cream: #F7F4EE;
+  --ease: cubic-bezier(0.16,1,0.3,1);
+  --font-disp: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Source Sans 3', system-ui, sans-serif;
+  --r: 8px;
+}
+[data-theme="dark"] {
+  --bg: #150E06;
+  --bg2: #1E150A;
+  --bg3: #261B0E;
+  --surface: #2E2010;
+  --border: #3D2B18;
+  --border2: #4F3822;
+  --text: #F0E8D8;
+  --text2: #B8967A;
+  --text3: #7A5E40;
+  --gold-dim: rgba(201,150,62,0.15);
+}
+
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  transition: background 0.3s var(--ease), color 0.3s var(--ease);
+  overflow-x: hidden;
+}
+
+/* ===== SUBTLE BATIK PATTERN ===== */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(201,150,62,0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(139,69,19,0.03) 0%, transparent 40%),
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 30px,
+      rgba(201,150,62,0.018) 30px,
+      rgba(201,150,62,0.018) 31px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 30px,
+      rgba(139,69,19,0.015) 30px,
+      rgba(139,69,19,0.015) 31px
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+body > * { position: relative; z-index: 1; }
+
+/* ===== TYPOGRAPHY ===== */
+h1, h2, h3, h4 {
+  font-family: var(--font-disp);
+  font-weight: 600;
+  line-height: 1.15;
+}
+h1 { font-size: clamp(3rem, 8vw, 6rem); }
+h2 { font-size: clamp(2rem, 4vw, 3rem); }
+h3 { font-size: clamp(1.4rem, 2.5vw, 1.8rem); }
+p { color: var(--text2); }
+a { color: inherit; text-decoration: none; }
+
+/* ===== UTILITIES ===== */
+.container { max-width: 1280px; margin: 0 auto; padding: 0 48px; }
+.section { padding: 110px 0; }
+.section-sm { padding: 80px 0; }
+.divider { height: 1px; background: var(--border); }
+
+.ornament-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 36px 0;
+}
+.ornament-divider::before,
+.ornament-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+}
+.ornament-divider span {
+  color: var(--gold);
+  font-size: 1rem;
+}
+
+/* ===== SCROLL REVEAL ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.75s var(--ease), transform 0.75s var(--ease);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-d1 { transition-delay: 0.1s; }
+.reveal-d2 { transition-delay: 0.2s; }
+.reveal-d3 { transition-delay: 0.3s; }
+.reveal-d4 { transition-delay: 0.4s; }
+
+/* ===== NAVIGATION ===== */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  transition: border-color 0.3s var(--ease), background 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  border-bottom: 1px solid transparent;
+}
+nav.scrolled {
+  border-bottom-color: var(--border);
+  box-shadow: 0 2px 24px rgba(28,14,4,0.06);
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  height: 74px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+.nav-logo {
+  font-family: var(--font-disp);
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+.nav-logo-orn { color: var(--gold); }
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  list-style: none;
+}
+.nav-links a {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text2);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+  position: relative;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -3px; left: 0; right: 0;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s var(--ease);
+}
+.nav-links a:hover { color: var(--text); }
+.nav-links a:hover::after { transform: scaleX(1); }
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+.btn-nav-outline {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 9px 20px;
+  border: 1.5px solid var(--gold);
+  color: var(--gold);
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+.btn-nav-outline:hover { background: var(--gold); color: #fff; }
+.dark-toggle {
+  width: 38px; height: 38px;
+  border: 1.5px solid var(--border2);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text2);
+  font-size: 1rem;
+  transition: border-color 0.2s, color 0.2s;
+  line-height: 1;
+}
+.dark-toggle:hover { border-color: var(--gold); color: var(--gold); }
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px;
+  background: none;
+  border: none;
+}
+.nav-hamburger span {
+  display: block;
+  width: 24px; height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+}
+
+/* ===== HERO ===== */
+.hero { padding: 90px 0 110px; }
+.hero-grid {
+  display: grid;
+  grid-template-columns: 55% 45%;
+  gap: 80px;
+  align-items: center;
+}
+.hero-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 32px; height: 1px;
+  background: var(--terra);
+  flex-shrink: 0;
+}
+.hero-h1 {
+  color: var(--text);
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 0;
+}
+.hero-h1 em { color: var(--terra); font-style: italic; }
+.hero-gold-line {
+  width: 80px; height: 2px;
+  background: linear-gradient(to right, var(--gold), var(--gold2), transparent);
+  margin: 34px 0;
+}
+.hero-sub {
+  font-size: 1.1rem;
+  color: var(--text2);
+  line-height: 1.78;
+  max-width: 520px;
+}
+.hero-stats {
+  display: flex;
+  gap: 0;
+  margin: 44px 0;
+  flex-wrap: wrap;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+.hero-stat {
+  flex: 1;
+  text-align: center;
+  padding: 20px 16px;
+  border-right: 1px solid var(--border);
+}
+.hero-stat:last-child { border-right: none; }
+.hero-stat-num {
+  font-family: var(--font-disp);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text);
+  display: block;
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+.hero-stat-lbl {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+.hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--terra);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 14px 30px;
+  border-radius: 4px;
+  border: 2px solid var(--terra);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.btn-primary:hover { background: var(--terra2); border-color: var(--terra2); transform: translateY(-2px); }
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 14px 30px;
+  border-radius: 4px;
+  border: 2px solid var(--border2);
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.btn-outline:hover { border-color: var(--text2); transform: translateY(-2px); }
+
+/* ===== MUSEUM FRAME ===== */
+.hero-frame-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+.museum-frame {
+  width: 100%;
+  max-width: 400px;
+  aspect-ratio: 3/4;
+  padding: 20px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  box-shadow:
+    0 0 0 1px var(--border),
+    0 32px 80px rgba(28,14,4,0.18),
+    0 8px 24px rgba(28,14,4,0.1);
+  border-radius: 2px;
+  position: relative;
+}
+.museum-mat {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+}
+.museum-frame-inner {
+  flex: 1;
+  background:
+    linear-gradient(160deg,
+      #D4A853 0%,
+      #B8851F 15%,
+      #6B3A12 35%,
+      #3D1E08 55%,
+      #8B5E2A 72%,
+      #C9963E 88%,
+      #5A3010 100%
+    );
+  position: relative;
+  overflow: hidden;
+}
+.museum-frame-inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(0,0,0,0.05) 0px, transparent 1px,
+      transparent 20px, rgba(0,0,0,0.02) 20px,
+      transparent 21px, transparent 40px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0,0,0,0.04) 0px, transparent 1px,
+      transparent 28px, rgba(0,0,0,0.02) 28px,
+      transparent 29px, transparent 56px
+    );
+}
+.museum-frame-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+}
+.museum-frame-text span {
+  display: block;
+  font-family: var(--font-disp);
+  font-style: italic;
+  color: rgba(255,255,255,0.12);
+  line-height: 1.3;
+}
+.mft-1 { font-size: 2rem; margin-bottom: 8px; }
+.mft-2 { font-size: 3.5rem; }
+.frame-patina {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 25%, rgba(255,220,130,0.14) 0%, transparent 55%),
+    radial-gradient(ellipse at 75% 80%, rgba(60,20,5,0.22) 0%, transparent 45%);
+  pointer-events: none;
+}
+.frame-caption {
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+  color: var(--text3);
+  text-align: center;
+  line-height: 1.65;
+  max-width: 360px;
+}
+.frame-caption strong { color: var(--text2); font-weight: 600; }
+.frame-id {
+  display: inline-block;
+  font-family: 'Courier New', monospace;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--terra);
+  background: var(--gold-dim);
+  padding: 4px 12px;
+  border-radius: 2px;
+  border: 1px solid rgba(201,150,62,0.25);
+  margin-top: 8px;
+}
+
+/* ===== SECTION HEADER ===== */
+.section-header { margin-bottom: 60px; }
+.section-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-eyebrow::before {
+  content: '';
+  width: 24px; height: 1px;
+  background: var(--terra);
+  flex-shrink: 0;
+}
+.section-title { color: var(--text); }
+.section-subtitle {
+  font-size: 1.05rem;
+  color: var(--text2);
+  margin-top: 16px;
+  max-width: 620px;
+  line-height: 1.75;
+}
+
+/* ===== ERA TIMELINE ===== */
+.era-section { background: var(--bg2); }
+.era-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  border-radius: calc(var(--r) + 2px);
+  overflow: hidden;
+  box-shadow: 0 8px 48px rgba(28,14,4,0.12);
+}
+.era-card {
+  position: relative;
+  padding: 52px 30px 40px;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.4s var(--ease);
+}
+.era-card:hover { transform: translateY(-5px); }
+.era-card:hover .era-arrow { transform: translateX(5px); opacity: 1; }
+.era-card-pra    { background: linear-gradient(170deg, #C9963E 0%, #8B6820 35%, #4D3A0E 70%, #2E2006 100%); }
+.era-card-kolonial { background: linear-gradient(170deg, #8B4513 0%, #5C2A08 38%, #2D1204 75%, #180A02 100%); }
+.era-card-merdeka  { background: linear-gradient(170deg, #7B1E1E 0%, #4A0E0E 38%, #1E0808 75%, #0C0202 100%); }
+.era-card-modern   { background: linear-gradient(170deg, #3D2B18 0%, #261B0E 38%, #150E06 75%, #0A0602 100%); }
+.era-num {
+  position: absolute;
+  top: 16px; right: 20px;
+  font-family: var(--font-disp);
+  font-size: 6rem;
+  font-weight: 700;
+  font-style: italic;
+  color: rgba(255,255,255,0.05);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+.era-badge {
+  font-family: var(--font-body);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  background: rgba(255,255,255,0.08);
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 2px;
+  margin-bottom: 18px;
+  width: fit-content;
+}
+.era-title {
+  font-family: var(--font-disp);
+  font-size: 1.55rem;
+  font-style: italic;
+  font-weight: 600;
+  color: rgba(255,255,255,0.95);
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+.era-desc {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.65;
+  margin-bottom: 22px;
+}
+.era-count {
+  font-family: var(--font-disp);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.88);
+  margin-bottom: 12px;
+}
+.era-arrow {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: transform 0.3s var(--ease), opacity 0.3s;
+  opacity: 0.6;
+}
+
+/* ===== PAMERAN DIGITAL ===== */
+.exhibit-section {
+  background: linear-gradient(140deg, #5C2A08 0%, #3D1A04 28%, #6B3010 55%, #2D1204 82%, #1C0A02 100%);
+  position: relative;
+  overflow: hidden;
+}
+.exhibit-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at -10% 60%, rgba(201,150,62,0.1) 0%, transparent 55%),
+    radial-gradient(ellipse at 110% 40%, rgba(201,150,62,0.07) 0%, transparent 50%),
+    repeating-linear-gradient(
+      45deg,
+      transparent, transparent 44px,
+      rgba(255,255,255,0.008) 44px,
+      rgba(255,255,255,0.008) 45px
+    );
+  pointer-events: none;
+}
+.exhibit-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  position: relative;
+}
+.exhibit-tag {
+  font-family: var(--font-body);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold2);
+  background: rgba(201,150,62,0.14);
+  border: 1px solid rgba(201,150,62,0.28);
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 2px;
+  margin-bottom: 28px;
+}
+.exhibit-title {
+  font-family: var(--font-disp);
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  font-weight: 600;
+  color: #F0E8D8;
+  line-height: 1.18;
+  margin-bottom: 26px;
+}
+.exhibit-title em { color: var(--gold2); }
+.exhibit-body {
+  font-size: 1rem;
+  color: rgba(240,232,216,0.65);
+  line-height: 1.82;
+  margin-bottom: 36px;
+}
+.exhibit-meta { margin-bottom: 40px; display: flex; flex-direction: column; gap: 10px; }
+.exhibit-meta-row {
+  display: flex;
+  gap: 14px;
+  font-size: 0.84rem;
+  align-items: baseline;
+}
+.exhibit-meta-label {
+  font-weight: 600;
+  color: var(--gold2);
+  min-width: 110px;
+  font-family: var(--font-body);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+.exhibit-meta-val { color: rgba(240,232,216,0.65); }
+.btn-exhibit {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(240,232,216,0.94);
+  color: #3D1A04;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 14px 30px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.btn-exhibit:hover { background: #fff; transform: translateY(-2px); }
+.exhibit-frame {
+  aspect-ratio: 4/5;
+  padding: 20px;
+  background: rgba(240,232,216,0.07);
+  border: 1px solid rgba(201,150,62,0.2);
+  box-shadow:
+    0 0 0 1px rgba(201,150,62,0.1),
+    0 40px 100px rgba(0,0,0,0.45);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.exhibit-mat {
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(201,150,62,0.15);
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+}
+.exhibit-frame-inner {
+  flex: 1;
+  background: linear-gradient(150deg,
+    #1C0A02 0%,
+    #5C2A08 20%,
+    #C9963E 45%,
+    #8B5E2A 65%,
+    #3D1A04 85%,
+    #0A0400 100%
+  );
+  position: relative;
+  overflow: hidden;
+}
+.exhibit-frame-inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, rgba(0,0,0,0.04) 0px, transparent 1px, transparent 10px, rgba(0,0,0,0.02) 10px, transparent 11px, transparent 20px),
+    radial-gradient(ellipse at 50% 40%, rgba(201,150,62,0.22) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 75%, rgba(139,69,19,0.28) 0%, transparent 45%);
+}
+
+/* ===== KOLEKSI / COLLECTION BROWSER ===== */
+.collection-section { background: var(--bg); }
+.filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 52px;
+}
+.pill {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 9px 22px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.22s var(--ease);
+}
+.pill:hover { border-color: var(--terra); color: var(--terra); }
+.pill.active {
+  background: var(--terra);
+  border-color: var(--terra);
+  color: #fff;
+}
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+.col-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  transition: box-shadow 0.3s var(--ease), transform 0.3s var(--ease), border-color 0.3s, opacity 0.3s, scale 0.3s;
+}
+.col-card:hover {
+  box-shadow: 0 16px 56px rgba(28,14,4,0.11);
+  transform: translateY(-4px);
+  border-color: var(--border2);
+}
+.col-thumb {
+  width: 100%;
+  aspect-ratio: 4/3;
+  position: relative;
+  overflow: hidden;
+}
+.col-thumb-naskah  { background: linear-gradient(145deg, #D4A853 0%, #8B6820 35%, #4D3A10 65%, #6B4E1A 100%); }
+.col-thumb-foto    { background: linear-gradient(145deg, #9B8A6E 0%, #7A6248 30%, #4A3828 60%, #C8B48C 100%); }
+.col-thumb-peta    { background: linear-gradient(145deg, #4E7040 0%, #2E4A26 35%, #6B8854 60%, #3D5E30 100%); }
+.col-thumb-audio   { background: linear-gradient(145deg, #3A487B 0%, #1E2E60 40%, #6B7EAA 65%, #2A3A70 100%); }
+.col-thumb-film    { background: linear-gradient(145deg, #242018 0%, #5A4230 35%, #907858 65%, #2C1C10 100%); }
+.col-thumb-koran   { background: linear-gradient(145deg, #C8C0B0 0%, #9B9082 35%, #5A5248 65%, #DED4C4 100%); }
+.col-thumb-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(28,14,4,0.35) 0%, transparent 60%);
+}
+.col-thumb-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -58%);
+  font-size: 2.8rem;
+  opacity: 0.2;
+  user-select: none;
+}
+.col-body { padding: 24px; }
+.col-type-badge {
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 2px;
+  display: inline-block;
+  margin-bottom: 14px;
+}
+.badge-naskah { background: rgba(201,150,62,0.14); color: #9B7020; border: 1px solid rgba(201,150,62,0.28); }
+.badge-foto   { background: rgba(139,112,85,0.12); color: #6B5040; border: 1px solid rgba(139,112,85,0.22); }
+.badge-peta   { background: rgba(74,112,64,0.12); color: #3A6030; border: 1px solid rgba(74,112,64,0.22); }
+.badge-audio  { background: rgba(58,72,123,0.12); color: #3A4878; border: 1px solid rgba(58,72,123,0.22); }
+.badge-film   { background: rgba(80,60,40,0.1); color: var(--text2); border: 1px solid var(--border); }
+.badge-koran  { background: rgba(140,130,110,0.12); color: var(--text3); border: 1px solid var(--border2); }
+.col-title {
+  font-family: var(--font-disp);
+  font-size: 1.18rem;
+  font-style: italic;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 9px;
+  line-height: 1.32;
+}
+.col-meta {
+  font-size: 0.78rem;
+  color: var(--text3);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.col-meta::before { content: '◆'; font-size: 0.4rem; color: var(--gold); flex-shrink: 0; }
+.col-id {
+  font-family: 'Courier New', monospace;
+  font-size: 0.68rem;
+  color: var(--text3);
+  letter-spacing: 0.08em;
+  margin-bottom: 20px;
+  opacity: 0.65;
+}
+.btn-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--terra);
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  transition: gap 0.2s, color 0.2s;
+}
+.btn-detail:hover { gap: 12px; color: var(--terra2); }
+
+/* ===== STATISTICS ===== */
+.stats-section {
+  background: linear-gradient(140deg, #3D1A04 0%, #2D1204 45%, #1C0A02 100%);
+  position: relative;
+  overflow: hidden;
+}
+.stats-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 15% 50%, rgba(201,150,62,0.09) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 50%, rgba(201,150,62,0.07) 0%, transparent 50%),
+    repeating-linear-gradient(-45deg, transparent, transparent 36px, rgba(255,255,255,0.008) 36px, rgba(255,255,255,0.008) 37px);
+  pointer-events: none;
+}
+.stats-top {
+  text-align: center;
+  margin-bottom: 70px;
+  position: relative;
+}
+.stats-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(201,150,62,0.65);
+  margin-bottom: 18px;
+}
+.stats-title {
+  font-family: var(--font-disp);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-style: italic;
+  color: rgba(240,232,216,0.88);
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  position: relative;
+}
+.stat-item {
+  text-align: center;
+  padding: 52px 32px;
+  position: relative;
+}
+.stat-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 20%; right: 0;
+  height: 60%; width: 1px;
+  background: rgba(201,150,62,0.18);
+}
+.stat-num {
+  font-family: var(--font-disp);
+  font-size: clamp(2.8rem, 5vw, 4.2rem);
+  font-weight: 700;
+  color: rgba(240,232,216,0.94);
+  line-height: 1;
+  margin-bottom: 14px;
+  display: block;
+}
+.stat-num-gold { color: var(--gold2); }
+.stat-lbl {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: rgba(240,232,216,0.42);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* ===== RISET & KOLABORASI ===== */
+.riset-section { background: var(--bg2); }
+.riset-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.riset-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 44px 34px;
+  transition: box-shadow 0.3s var(--ease), border-color 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.riset-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(to right, var(--terra), var(--gold));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s var(--ease);
+}
+.riset-card:hover {
+  box-shadow: 0 16px 56px rgba(28,14,4,0.1);
+  border-color: var(--border2);
+}
+.riset-card:hover::before { transform: scaleX(1); }
+.riset-icon {
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 26px;
+}
+.riset-icon-1 { background: rgba(139,69,19,0.1); }
+.riset-icon-2 { background: rgba(201,150,62,0.12); }
+.riset-icon-3 { background: rgba(74,112,64,0.1); }
+.riset-card-title {
+  font-family: var(--font-disp);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 16px;
+  line-height: 1.28;
+}
+.riset-card-body {
+  font-size: 0.9rem;
+  color: var(--text2);
+  line-height: 1.78;
+  margin-bottom: 30px;
+}
+.btn-riset {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  color: var(--terra);
+  text-transform: uppercase;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: gap 0.22s;
+}
+.btn-riset:hover { gap: 12px; }
+
+/* ===== PULL QUOTE ===== */
+.quote-section {
+  background: var(--bg3);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.quote-section::before {
+  content: '❧';
+  position: absolute;
+  top: -0.15em;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18rem;
+  color: var(--border);
+  font-family: Georgia, serif;
+  pointer-events: none;
+  opacity: 0.35;
+  user-select: none;
+  line-height: 1;
+}
+.quote-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  position: relative;
+}
+.quote-mark {
+  font-family: var(--font-disp);
+  font-size: 9rem;
+  color: var(--gold);
+  line-height: 0.55;
+  display: block;
+  margin-bottom: 20px;
+  opacity: 0.35;
+  user-select: none;
+}
+.pull-quote {
+  font-family: var(--font-disp);
+  font-size: clamp(1.65rem, 3.2vw, 2.5rem);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.48;
+  margin-bottom: 36px;
+}
+.quote-attr {
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--text3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.quote-attr::before { content: '\2014\0020'; }
+
+/* ===== NEWSLETTER ===== */
+.newsletter-section { background: var(--bg); }
+.newsletter-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+.newsletter-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.newsletter-eyebrow::before {
+  content: '';
+  width: 24px; height: 1px;
+  background: var(--terra);
+}
+.newsletter-title {
+  font-family: var(--font-disp);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-style: italic;
+  color: var(--text);
+  margin-bottom: 18px;
+  line-height: 1.2;
+}
+.newsletter-sub {
+  font-size: 1rem;
+  color: var(--text2);
+  line-height: 1.78;
+  margin-bottom: 22px;
+}
+.newsletter-issn {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  text-transform: uppercase;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  display: inline-block;
+}
+.newsletter-form { display: flex; flex-direction: column; gap: 14px; }
+.form-label {
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  display: block;
+  margin-bottom: -4px;
+}
+.newsletter-input {
+  width: 100%;
+  padding: 13px 18px;
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+  outline: none;
+}
+.newsletter-input:focus { border-color: var(--terra); }
+.newsletter-input::placeholder { color: var(--text3); }
+.newsletter-btn {
+  padding: 14px 30px;
+  background: var(--terra);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  align-self: flex-start;
+}
+.newsletter-btn:hover { background: var(--terra2); transform: translateY(-2px); }
+.newsletter-consent {
+  font-size: 0.72rem;
+  color: var(--text3);
+  line-height: 1.65;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  background: #120800;
+  color: rgba(240,232,216,0.45);
+  padding: 80px 0 0;
+}
+[data-theme="dark"] footer { background: #0A0400; }
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 60px;
+}
+.footer-brand-logo {
+  font-family: var(--font-disp);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: rgba(240,232,216,0.88);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.footer-brand-orn { color: var(--gold); }
+.footer-brand-desc {
+  font-size: 0.85rem;
+  line-height: 1.75;
+  color: rgba(240,232,216,0.38);
+  margin-bottom: 10px;
+}
+.footer-divider-sm {
+  height: 1px;
+  background: rgba(240,232,216,0.07);
+  margin: 20px 0;
+}
+.footer-cc {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: rgba(240,232,216,0.25);
+  text-transform: uppercase;
+}
+.footer-col-title {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(240,232,216,0.28);
+  margin-bottom: 22px;
+}
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+.footer-links a {
+  font-size: 0.88rem;
+  color: rgba(240,232,216,0.5);
+  transition: color 0.2s;
+  display: inline-block;
+}
+.footer-links a:hover { color: var(--gold2); }
+.footer-bottom {
+  border-top: 1px solid rgba(240,232,216,0.07);
+  padding: 28px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.footer-bottom-text { font-size: 0.78rem; color: rgba(240,232,216,0.25); }
+.footer-mitra { font-size: 0.74rem; color: rgba(240,232,216,0.25); letter-spacing: 0.06em; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1100px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 60px; }
+  .museum-frame { max-width: 320px; }
+  .era-grid { grid-template-columns: repeat(2, 1fr); }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .stat-item:nth-child(2)::after { display: none; }
+  .footer-top { grid-template-columns: 1fr 1fr 1fr; }
+}
+@media (max-width: 900px) {
+  .exhibit-grid { grid-template-columns: 1fr; }
+  .newsletter-grid { grid-template-columns: 1fr; gap: 40px; }
+}
+@media (max-width: 768px) {
+  .nav-links, .btn-nav-outline { display: none; }
+  .nav-hamburger { display: flex; }
+  .container { padding: 0 20px; }
+  .nav-inner { padding: 0 20px; }
+  .section { padding: 72px 0; }
+  .hero { padding: 56px 0 72px; }
+  .hero-stats { border-radius: var(--r); }
+  .hero-stat { min-width: 80px; }
+  .collection-grid { grid-template-columns: 1fr 1fr; }
+  .riset-grid { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr 1fr; gap: 28px; }
+}
+@media (max-width: 540px) {
+  .era-grid { grid-template-columns: 1fr; }
+  .collection-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .stat-item:not(:last-child)::after { display: none; }
+  .footer-top { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav id="mainNav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <span class="nav-logo-orn">❧</span>
+      ArsipNusa
+      <span class="nav-logo-orn">❧</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#">Koleksi</a></li>
+      <li><a href="#">Pameran Digital</a></li>
+      <li><a href="#">Riset</a></li>
+      <li><a href="#">Tentang</a></li>
+      <li><a href="#">Kontak</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="dark-toggle" id="darkToggle" title="Toggle mode gelap" aria-label="Toggle dark mode">☾</button>
+      <button class="btn-nav-outline">Daftar Peneliti</button>
+      <button class="nav-hamburger" id="hamburger" aria-label="Buka menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+
+      <!-- KIRI -->
+      <div class="reveal">
+        <div class="hero-eyebrow">Koleksi Unggulan &nbsp;/&nbsp; Juni 2026</div>
+        <h1 class="hero-h1">Menjaga <em>Memori</em><br>Nusantara untuk<br>Generasi Mendatang</h1>
+        <div class="hero-gold-line"></div>
+        <p class="hero-sub">
+          ArsipNusa adalah pusat pelestarian warisan budaya dan intelektual Nusantara yang terbuka bagi peneliti, pelajar, dan masyarakat umum. Kami mendigitalisasi, merawat, dan menyebarluaskan kekayaan arsip dari seluruh penjuru kepulauan — dari naskah kuno berusia berabad-abad hingga rekaman budaya kontemporer.
+        </p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <span class="hero-stat-num">12.400</span>
+            <span class="hero-stat-lbl">Naskah</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">78.000</span>
+            <span class="hero-stat-lbl">Foto Arsip</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">3.200</span>
+            <span class="hero-stat-lbl">Rekaman Audio</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">950</span>
+            <span class="hero-stat-lbl">Film Dokumenter</span>
+          </div>
+        </div>
+        <div class="hero-ctas">
+          <button class="btn-primary">Jelajahi Koleksi &nbsp;&rarr;</button>
+          <button class="btn-outline">Panduan Peneliti</button>
+        </div>
+      </div>
+
+      <!-- KANAN -->
+      <div class="hero-frame-wrap reveal reveal-d2">
+        <div class="museum-frame">
+          <div class="museum-mat">
+            <div class="museum-frame-inner">
+              <div class="museum-frame-text">
+                <span class="mft-1">ꦤꦱ꧀ꦏꦃ</span>
+                <span class="mft-2">❧</span>
+              </div>
+              <div class="frame-patina"></div>
+            </div>
+          </div>
+        </div>
+        <div style="text-align:center;">
+          <p class="frame-caption">
+            <strong>Naskah Babad Tanah Jawi</strong>, ca. 1780<br>
+            Kertas Dluwang &middot; Tinta Hitam &amp; Merah &middot; 412 halaman
+          </p>
+          <span class="frame-id">#NM-1780-001</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== ERA SECTION ===== -->
+<section class="era-section section">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-eyebrow">Navigasi Sejarah</div>
+      <h2 class="section-title"><em>Jelajahi Koleksi</em><br>Berdasarkan Periode Sejarah</h2>
+      <p class="section-subtitle">Ribuan artefak digital dikurasi secara cermat, memungkinkan Anda menelusuri jejak peradaban Nusantara dari era kerajaan awal hingga masa kini.</p>
+    </div>
+    <div class="era-grid reveal reveal-d1">
+
+      <div class="era-card era-card-pra">
+        <span class="era-num">I</span>
+        <div class="era-badge">Sebelum 1600</div>
+        <div class="era-title">Pra-Kolonial</div>
+        <div class="era-desc">Naskah, prasasti, dan artefak dari era kerajaan-kerajaan besar Nusantara: Majapahit, Sriwijaya, dan Mataram Kuno</div>
+        <div class="era-count">2.400 Koleksi</div>
+        <div class="era-arrow">Jelajahi &nbsp;&rarr;</div>
+      </div>
+
+      <div class="era-card era-card-kolonial">
+        <span class="era-num">II</span>
+        <div class="era-badge">1600 &ndash; 1945</div>
+        <div class="era-title">Era Kolonial</div>
+        <div class="era-desc">Arsip pemerintahan, dokumen hukum adat, peta kolonial, dan foto-foto langka era Hindia Belanda</div>
+        <div class="era-count">4.800 Koleksi</div>
+        <div class="era-arrow">Jelajahi &nbsp;&rarr;</div>
+      </div>
+
+      <div class="era-card era-card-merdeka">
+        <span class="era-num">III</span>
+        <div class="era-badge">1945 &ndash; 1970</div>
+        <div class="era-title">Masa Kemerdekaan</div>
+        <div class="era-desc">Dokumen proklamasi, surat kabar perjuangan, foto revolusi, dan rekaman pidato para founding fathers</div>
+        <div class="era-count">3.200 Koleksi</div>
+        <div class="era-arrow">Jelajahi &nbsp;&rarr;</div>
+      </div>
+
+      <div class="era-card era-card-modern">
+        <span class="era-num">IV</span>
+        <div class="era-badge">1970 &ndash; Kini</div>
+        <div class="era-title">Era Modern</div>
+        <div class="era-desc">Arsip kontemporer, film dokumenter etnografi, rekaman musik tradisional, dan dokumentasi seni budaya hidup</div>
+        <div class="era-count">2.000 Koleksi</div>
+        <div class="era-arrow">Jelajahi &nbsp;&rarr;</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== PAMERAN DIGITAL ===== -->
+<section class="exhibit-section section">
+  <div class="container">
+    <div class="exhibit-grid">
+
+      <div class="reveal">
+        <span class="exhibit-tag">&#10022;&nbsp; Pameran Pilihan Editor &nbsp;&#10022;</span>
+        <h2 class="exhibit-title"><em>Batik dalam Lintas<br>Sejarah Nusantara</em></h2>
+        <p class="exhibit-body">
+          Sebuah perjalanan visual dan tekstual menelusuri evolusi seni batik dari catatan tertua abad ke-12 hingga ekspresi kontemporer hari ini. Pameran ini menampilkan 48 koleksi digital terpilih dari 7 sentra batik utama — Yogyakarta, Solo, Pekalongan, Cirebon, Madura, Lasem, dan Jambi — disertai narasi kuratorial mendalam dari para pakar tekstil warisan budaya Indonesia.
+        </p>
+        <div class="exhibit-meta">
+          <div class="exhibit-meta-row">
+            <span class="exhibit-meta-label">Kurator</span>
+            <span class="exhibit-meta-val">Dr. Siti Rahayu, M.A. &mdash; Pakar Tekstil Warisan, ISI Yogyakarta</span>
+          </div>
+          <div class="exhibit-meta-row">
+            <span class="exhibit-meta-label">Tersedia hingga</span>
+            <span class="exhibit-meta-val">31 Agustus 2026</span>
+          </div>
+          <div class="exhibit-meta-row">
+            <span class="exhibit-meta-label">Jumlah Koleksi</span>
+            <span class="exhibit-meta-val">48 Koleksi Digital Terseleksi</span>
+          </div>
+          <div class="exhibit-meta-row">
+            <span class="exhibit-meta-label">Akses</span>
+            <span class="exhibit-meta-val">Gratis untuk semua pengunjung</span>
+          </div>
+        </div>
+        <button class="btn-exhibit">Kunjungi Pameran &nbsp;&rarr;</button>
+      </div>
+
+      <div class="reveal reveal-d2">
+        <div class="exhibit-frame">
+          <div class="exhibit-mat">
+            <div class="exhibit-frame-inner"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== PENJELAJAH KOLEKSI ===== -->
+<section class="collection-section section" id="koleksi">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-eyebrow">Jelajahi Arsip</div>
+      <h2 class="section-title">Koleksi <em>Digital</em></h2>
+      <p class="section-subtitle">Telusuri ribuan artefak terdigitalisasi berdasarkan kategori &mdash; dari naskah bertulis tangan hingga film dokumenter etnografi.</p>
+    </div>
+
+    <div class="filter-pills reveal reveal-d1" id="filterPills">
+      <button class="pill active" data-filter="all">Semua</button>
+      <button class="pill" data-filter="naskah">Naskah</button>
+      <button class="pill" data-filter="foto">Foto Arsip</button>
+      <button class="pill" data-filter="peta">Peta Kuno</button>
+      <button class="pill" data-filter="audio">Rekaman Audio</button>
+      <button class="pill" data-filter="film">Film Dokumenter</button>
+      <button class="pill" data-filter="koran">Surat Kabar</button>
+    </div>
+
+    <div class="collection-grid" id="collectionGrid">
+
+      <div class="col-card reveal" data-type="naskah">
+        <div class="col-thumb col-thumb-naskah">
+          <div class="col-thumb-overlay"></div>
+          <div class="col-thumb-icon">𑀳</div>
+        </div>
+        <div class="col-body">
+          <span class="col-type-badge badge-naskah">Naskah</span>
+          <div class="col-title">Serat Centhini &mdash; Jilid III</div>
+          <div class="col-meta">ca. 1814 &middot; Surakarta, Jawa Tengah</div>
+          <div class="col-id">#NS-1814-0032</div>
+          <button class="btn-detail">Lihat Detail &nbsp;&rarr;</button>
+        </div>
+      </div>
+
+      <div class="col-card reveal reveal-d1" data-type="foto">
+        <div class="col-thumb col-thumb-foto">
+          <div class="col-thumb-overlay"></div>
+          <div class="col-thumb-icon">&#9672;</div>
+        </div>
+        <div class="col-body">
+          <span class="col-type-badge badge-foto">Foto Arsip</span>
+          <div class="col-title">Pasar Besar Malang, 1925</div>
+          <div class="col-meta">1925 &middot; Malang, Jawa Timur</div>
+          <div class="col-id">#FA-1925-0187</div>
+          <button class="btn-detail">Lihat Detail &nbsp;&rarr;</button>
+        </div>
+      </div>
+
+      <div class="col-card reveal reveal-d2" data-type="peta">
+        <div class="col-thumb col-thumb-peta">
+          <div class="col-thumb-overlay"></div>
+          <div class="col-thumb-icon">&#8853;</div>
+        </div>
+        <div class="col-body">
+          <span class="col-type-badge badge-peta">Peta Kuno</span>
+          <div class="col-title">Peta Pulau Jawa &mdash; VOC, 1699</div>
+          <div class="col-meta">1699 &middot; Batavia, Hindia Belanda</div>
+          <div class="col-id">#PK-1699-0011</div>
+          <button class="btn-detail">Lihat Detail &nbsp;&rarr;</button>
+        </div>
+      </div>
+
+      <div class="col-card reveal" data-type="audio">
+        <div class="col-thumb col-thumb-audio">
+          <div class="col-thumb-overlay"></div>
+          <div class="col-thumb-icon">&#9834;</div>
+        </div>
+        <div class="col-body">
+          <span class="col-type-badge badge-audio">Rekaman Audio</span>
+          <div class="col-title">Gamelan Sekaten &mdash; Kyai Nogowilogo</div>
+          <div class="col-meta">1958 &middot; Yogyakarta</div>
+          <div class="col-id">#RA-1958-0054</div>
+          <button class="btn-detail">Lihat Detail &nbsp;&rarr;</button>
+        </div>
+      </div>
+
+      <div class="col-card reveal reveal-d1" data-type="film">
+        <div class="col-thumb col-thumb-film">
+          <div class="col-thumb-overlay"></div>
+          <div class="col-thumb-icon">&#9654;</div>
+        </div>
+        <div class="col-body">
+          <span class="col-type-badge badge-film">Film Dokumenter</span>
+          <div class="col-title">Upacara Ngaben di Bali &mdash; Dokumentasi Etnografi</div>
+          <div class="col-meta">1972 &middot; Bali</div>
+          <div class="col-id">#FD-1972-0023</div>
+          <button class="btn-detail">Lihat Detail &nbsp;&rarr;</button>
+        </div>
+      </div>
+
+      <div class="col-card reveal reveal-d2" data-type="koran">
+        <div class="col-thumb col-thumb-koran">
+          <div class="col-thumb-overlay"></div>
+          <div class="col-thumb-icon">&#10022;</div>
+        </div>
+        <div class="col-body">
+          <span class="col-type-badge badge-koran">Surat Kabar</span>
+          <div class="col-title">Soeara Ra'jat &mdash; 17 Agustus 1945</div>
+          <div class="col-meta">1945 &middot; Batavia (Jakarta)</div>
+          <div class="col-id">#SK-1945-0001</div>
+          <button class="btn-detail">Lihat Detail &nbsp;&rarr;</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== STATISTIK ===== -->
+<section class="stats-section section">
+  <div class="container">
+    <div class="stats-top reveal">
+      <div class="stats-eyebrow">&#9670; &nbsp;Capaian Digitalisasi&nbsp; &#9670;</div>
+      <div class="stats-title"><em>Warisan yang Terus Bertumbuh</em></div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <span class="stat-num stat-num-gold" data-count="94600" data-suffix="+">94.600+</span>
+        <div class="stat-lbl">Item Terdigitalisasi</div>
+      </div>
+      <div class="stat-item reveal reveal-d1">
+        <span class="stat-num" data-count="12" data-suffix="">12</span>
+        <div class="stat-lbl">Provinsi Tercakup</div>
+      </div>
+      <div class="stat-item reveal reveal-d2">
+        <span class="stat-num" data-count="380" data-suffix="+">380+</span>
+        <div class="stat-lbl">Mitra Peneliti</div>
+      </div>
+      <div class="stat-item reveal reveal-d3">
+        <span class="stat-num" data-count="45" data-suffix="">45</span>
+        <div class="stat-lbl">Tahun Pengarsipan</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== RISET & KOLABORASI ===== -->
+<section class="riset-section section">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-eyebrow">Bergabung Bersama Kami</div>
+      <h2 class="section-title">Riset &amp; <em>Kolaborasi</em></h2>
+      <p class="section-subtitle">ArsipNusa terbuka untuk peneliti, institusi, dan individu yang memiliki semangat pelestarian warisan budaya Nusantara.</p>
+    </div>
+    <div class="riset-grid">
+
+      <div class="riset-card reveal">
+        <div class="riset-icon riset-icon-1">&#127963;</div>
+        <div class="riset-card-title"><em>Akses Peneliti</em></div>
+        <p class="riset-card-body">Daftarkan diri sebagai peneliti terverifikasi untuk mendapatkan akses dokumen resolusi tinggi, metadata lengkap, dan layanan konsultasi arsip dengan kurator kami. Tersedia untuk akademisi, jurnalis, dan profesional budaya.</p>
+        <button class="btn-riset">Daftar Sekarang &nbsp;&rarr;</button>
+      </div>
+
+      <div class="riset-card reveal reveal-d1">
+        <div class="riset-icon riset-icon-2">&#128220;</div>
+        <div class="riset-card-title"><em>Sumbangkan Koleksi</em></div>
+        <p class="riset-card-body">Miliki artefak, naskah, atau dokumen bersejarah yang layak dilestarikan? Kami menerima sumbangan koleksi dan akan mendigitalisasi serta merawatnya secara profesional untuk generasi mendatang dengan standar arsip internasional.</p>
+        <button class="btn-riset">Pelajari Cara &nbsp;&rarr;</button>
+      </div>
+
+      <div class="riset-card reveal reveal-d2">
+        <div class="riset-icon riset-icon-3">&#127891;</div>
+        <div class="riset-card-title"><em>Kunjungan Institusi</em></div>
+        <p class="riset-card-body">Program kunjungan edukasi dirancang untuk sekolah, universitas, dan institusi budaya. Termasuk sesi apresiasi naskah kuno, demonstrasi proses digitalisasi, dan presentasi kuratorial oleh para ahli kami.</p>
+        <button class="btn-riset">Hubungi Kami &nbsp;&rarr;</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== PULL QUOTE ===== -->
+<section class="quote-section section">
+  <div class="container">
+    <div class="quote-inner reveal">
+      <span class="quote-mark">&ldquo;</span>
+      <blockquote class="pull-quote">
+        &ldquo;Setiap naskah yang terselamatkan adalah jendela menuju jiwa nenek moyang kita &mdash; sebuah dialog tak berujung antara masa lalu yang bisu dan masa depan yang masih bisa mendengar.&rdquo;
+      </blockquote>
+      <div class="ornament-divider"><span>&#10022;</span></div>
+      <div class="quote-attr">Dr. Ahmad Fauzi, M.Hum. &mdash; Direktur Eksekutif ArsipNusa</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== NEWSLETTER ===== -->
+<section class="newsletter-section section-sm">
+  <div class="container">
+    <div class="newsletter-grid">
+
+      <div class="reveal">
+        <div class="newsletter-eyebrow">Jurnal Bulanan</div>
+        <h2 class="newsletter-title"><em>Tetap Terhubung<br>dengan Warisan</em></h2>
+        <p class="newsletter-sub">Terima <em>Jurnal Bulanan ArsipNusa</em> &mdash; berisi penelitian terbaru, pameran digital yang akan datang, koleksi baru yang baru didigitalisasi, dan akses eksklusif pratinjau untuk peneliti terdaftar.</p>
+        <div class="newsletter-issn">ISSN 2807-4521 &nbsp;&middot;&nbsp; Terbit setiap bulan</div>
+      </div>
+
+      <div class="reveal reveal-d1">
+        <form class="newsletter-form" onsubmit="return handleNewsletter(event)">
+          <label class="form-label" for="nl-name">Nama Lengkap</label>
+          <input type="text" id="nl-name" class="newsletter-input" placeholder="Nama Anda" autocomplete="name">
+          <label class="form-label" for="nl-email">Alamat Email</label>
+          <input type="email" id="nl-email" class="newsletter-input" placeholder="email@institusi.ac.id" required autocomplete="email">
+          <label class="form-label" for="nl-inst">Institusi / Afiliasi</label>
+          <input type="text" id="nl-inst" class="newsletter-input" placeholder="Universitas / Lembaga Anda">
+          <button type="submit" class="newsletter-btn" id="nlBtn">Berlangganan Gratis</button>
+          <p class="newsletter-consent">
+            Dengan berlangganan, Anda menyetujui kebijakan privasi kami. Anda dapat berhenti berlangganan kapan saja. ArsipNusa tidak membagikan data Anda kepada pihak ketiga.
+          </p>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand-logo">
+          <span class="footer-brand-orn">&#10023;</span>
+          ArsipNusa
+        </div>
+        <p class="footer-brand-desc">
+          Pusat Arsip Warisan Budaya Nusantara. Mendokumentasikan, melestarikan, dan menyebarluaskan kekayaan intelektual dan budaya Indonesia untuk kepentingan publik sejak 1981.
+        </p>
+        <p class="footer-brand-desc">
+          Jl. Perwakilan Nusantara No. 7<br>
+          Jakarta Pusat 10110<br>
+          riset@arsipnusa.id
+        </p>
+        <div class="footer-divider-sm"></div>
+        <div class="footer-cc">&copy; 2026 ArsipNusa &nbsp;&middot;&nbsp; CC BY-NC 4.0</div>
+      </div>
+      <div>
+        <div class="footer-col-title">Koleksi</div>
+        <ul class="footer-links">
+          <li><a href="#">Naskah Kuno</a></li>
+          <li><a href="#">Foto Arsip</a></li>
+          <li><a href="#">Peta Kuno</a></li>
+          <li><a href="#">Rekaman Audio</a></li>
+          <li><a href="#">Film Dokumenter</a></li>
+          <li><a href="#">Surat Kabar</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Layanan</div>
+        <ul class="footer-links">
+          <li><a href="#">Pencarian Koleksi</a></li>
+          <li><a href="#">Pameran Digital</a></li>
+          <li><a href="#">Peminjaman Institusi</a></li>
+          <li><a href="#">Reproduksi Digital</a></li>
+          <li><a href="#">Konsultasi Arsip</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Riset</div>
+        <ul class="footer-links">
+          <li><a href="#">Akses Peneliti</a></li>
+          <li><a href="#">Panduan Sitasi</a></li>
+          <li><a href="#">Jurnal ArsipNusa</a></li>
+          <li><a href="#">Sumbang Koleksi</a></li>
+          <li><a href="#">Program Magang</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Tentang</div>
+        <ul class="footer-links">
+          <li><a href="#">Sejarah Lembaga</a></li>
+          <li><a href="#">Tim Kurator</a></li>
+          <li><a href="#">Kebijakan Akses</a></li>
+          <li><a href="#">Kunjungi Kami</a></li>
+          <li><a href="#">Karir</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-bottom-text">
+        &copy; 2026 Pusat Arsip Warisan Budaya Nusantara &mdash; ArsipNusa. Seluruh koleksi dilindungi undang-undang hak cipta.
+      </div>
+      <div class="footer-mitra">
+        Didukung oleh: Kemendikbud Ristek &nbsp;&middot;&nbsp; Perpusnas RI &nbsp;&middot;&nbsp; BRIN
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ===== DARK MODE (run immediately) =====
+(function () {
+  var saved = localStorage.getItem('arsipnusa_theme');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+    var btn = document.getElementById('darkToggle');
+    if (btn) btn.textContent = saved === 'dark' ? '☀' : '☾';
+  }
+})();
+
+document.getElementById('darkToggle').addEventListener('click', function () {
+  var html = document.documentElement;
+  var current = html.getAttribute('data-theme') || 'light';
+  var next = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  this.textContent = next === 'dark' ? '☀' : '☾';
+  localStorage.setItem('arsipnusa_theme', next);
+});
+
+// ===== NAV SCROLL =====
+var nav = document.getElementById('mainNav');
+window.addEventListener('scroll', function () {
+  nav.classList.toggle('scrolled', window.scrollY > 40);
+}, { passive: true });
+
+// ===== SCROLL REVEAL =====
+(function () {
+  var els = document.querySelectorAll('.reveal');
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  els.forEach(function (el) { io.observe(el); });
+})();
+
+// ===== COUNTER ANIMATION =====
+function animateCount(el, target, duration) {
+  var suffix = el.getAttribute('data-suffix') || '';
+  var startTime = null;
+  function step(ts) {
+    if (!startTime) startTime = ts;
+    var progress = Math.min((ts - startTime) / duration, 1);
+    var eased = 1 - Math.pow(1 - progress, 4);
+    var val = Math.floor(eased * target);
+    el.textContent = val.toLocaleString('id-ID') + suffix;
+    if (progress < 1) requestAnimationFrame(step);
+    else el.textContent = target.toLocaleString('id-ID') + suffix;
+  }
+  requestAnimationFrame(step);
+}
+(function () {
+  var counters = document.querySelectorAll('.stat-num[data-count]');
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        var count = parseInt(e.target.getAttribute('data-count'), 10);
+        animateCount(e.target, count, 1800);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(function (el) { io.observe(el); });
+})();
+
+// ===== FILTER KOLEKSI =====
+(function () {
+  var pills = document.querySelectorAll('.pill');
+  var cards = document.querySelectorAll('.col-card');
+
+  pills.forEach(function (pill) {
+    pill.addEventListener('click', function () {
+      pills.forEach(function (p) { p.classList.remove('active'); });
+      this.classList.add('active');
+      var filter = this.getAttribute('data-filter');
+
+      cards.forEach(function (card) {
+        var match = filter === 'all' || card.getAttribute('data-type') === filter;
+        if (match) {
+          card.style.display = '';
+          // tiny delay so display:'' applies before opacity transition
+          requestAnimationFrame(function () {
+            card.style.opacity = '1';
+            card.style.transform = 'scale(1)';
+          });
+        } else {
+          card.style.opacity = '0';
+          card.style.transform = 'scale(0.96)';
+          setTimeout(function () { card.style.display = 'none'; }, 280);
+        }
+      });
+    });
+  });
+
+  // set initial transition on cards
+  cards.forEach(function (c) {
+    c.style.transition += ', opacity 0.28s ease, transform 0.28s ease';
+  });
+})();
+
+// ===== NEWSLETTER SUBMIT =====
+function handleNewsletter(e) {
+  e.preventDefault();
+  var btn = document.getElementById('nlBtn');
+  btn.textContent = 'Sedang diproses…';
+  btn.disabled = true;
+  setTimeout(function () {
+    btn.textContent = '✓ Berhasil! Cek inbox Anda';
+    btn.style.background = '#2D6A2F';
+    document.getElementById('nl-email').value = '';
+    document.getElementById('nl-name').value = '';
+    document.getElementById('nl-inst').value = '';
+    setTimeout(function () {
+      btn.textContent = 'Berlangganan Gratis';
+      btn.style.background = '';
+      btn.disabled = false;
+    }, 3500);
+  }, 1200);
+  return false;
+}
+
+// ===== MOBILE NAV TOGGLE =====
+document.getElementById('hamburger').addEventListener('click', function () {
+  var links = document.querySelector('.nav-links');
+  if (links.style.display === 'flex') {
+    links.style.display = '';
+  } else {
+    links.setAttribute('style',
+      'display:flex;flex-direction:column;position:absolute;' +
+      'top:74px;left:0;right:0;background:var(--bg);' +
+      'padding:24px 20px 32px;gap:22px;border-bottom:1px solid var(--border);' +
+      'z-index:99;box-shadow:0 8px 32px rgba(28,14,4,0.1);'
+    );
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PulsaMetric — Analitik Bisnis Real-Time untuk Tim Indonesia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,600;0,9..40,700;0,9..40,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:      #0C0800;
+  --bg2:     #1A1200;
+  --bg3:     #261C00;
+  --text:    #FFF8E8;
+  --text2:   #C0A060;
+  --text3:   #806040;
+  --orange:  #F97316;
+  --orange2: #FB923C;
+  --yellow:  #FBBF24;
+  --red:     #EF4444;
+  --green:   #22C55E;
+  --border:  rgba(249,115,22,0.12);
+  --border2: rgba(249,115,22,0.26);
+  --glow:    0 0 28px rgba(249,115,22,0.16);
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+[data-theme="light"] {
+  --bg: #FFFBF5; --bg2: #FFF3E0; --bg3: #FFE8C0;
+  --text: #1A0C00; --text2: #6B3800; --text3: #A06020;
+  --border: rgba(249,115,22,0.14); --border2: rgba(249,115,22,0.3);
+  --glow: 0 0 20px rgba(249,115,22,0.1);
+}
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
+
+/* NAVBAR */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 60px;
+  background: rgba(12,8,0,0.88); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+[data-theme="light"] .navbar { background: rgba(255,251,245,0.9); }
+.navbar-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--text); font-weight: 800; font-size: 1.05rem; letter-spacing: -0.02em; }
+.logo-icon { width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg,#F97316,#FBBF24); display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 800; color: #fff; }
+.navbar-nav { display: flex; align-items: center; gap: 1.75rem; list-style: none; }
+.navbar-nav a { text-decoration: none; color: var(--text2); font-size: 0.875rem; font-weight: 500; transition: color 0.2s; }
+.navbar-nav a:hover { color: var(--text); }
+.navbar-actions { display: flex; align-items: center; gap: 0.6rem; }
+.btn-ghost { background: none; border: 1px solid var(--border2); color: var(--text2); padding: 0.45rem 1rem; border-radius: 8px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+.btn-ghost:hover { color: var(--text); background: var(--bg3); }
+.btn-primary { background: linear-gradient(135deg,#F97316,#FBBF24); color: #1A0C00; border: none; padding: 0.45rem 1.1rem; border-radius: 8px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 800; cursor: pointer; transition: opacity 0.2s; }
+.btn-primary:hover { opacity: 0.85; }
+.theme-toggle { background: none; border: 1px solid var(--border2); color: var(--text2); width: 34px; height: 34px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: all 0.2s; }
+.theme-toggle:hover { background: var(--bg3); color: var(--text); }
+.hamburger { display: none; background: none; border: 1px solid var(--border2); color: var(--text); width: 34px; height: 34px; border-radius: 8px; cursor: pointer; font-size: 1rem; align-items: center; justify-content: center; }
+.mobile-menu { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--bg2); border-bottom: 1px solid var(--border); z-index: 99; flex-direction: column; padding: 1rem 2rem; }
+.mobile-menu.open { display: flex; }
+.mobile-menu a { text-decoration: none; color: var(--text2); font-size: 0.95rem; padding: 0.6rem 0; border-bottom: 1px solid var(--border); }
+.mobile-menu a:last-child { border-bottom: none; }
+
+/* SECTIONS */
+.section-inner { max-width: 1120px; margin: 0 auto; padding: 5rem 2rem; }
+.section-tag { font-family: var(--font-mono); font-size: 0.75rem; color: var(--orange); letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+.section-title { font-size: clamp(1.9rem,4vw,2.8rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 1rem; }
+.section-sub { color: var(--text2); font-size: 1.05rem; max-width: 560px; line-height: 1.7; margin-bottom: 2.5rem; }
+.gradient-text { background: linear-gradient(135deg,#F97316,#FBBF24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+/* HERO */
+.hero { padding-top: 100px; background: radial-gradient(ellipse 80% 55% at 50% -10%, rgba(249,115,22,0.14) 0%, transparent 65%); }
+.hero-inner { max-width: 1120px; margin: 0 auto; padding: 4rem 2rem 2rem; text-align: center; }
+.hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(249,115,22,0.1); border: 1px solid var(--border2); color: var(--orange2); font-size: 0.78rem; font-weight: 600; padding: 0.35rem 0.85rem; border-radius: 999px; margin-bottom: 1.5rem; }
+.hero-badge span { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); animation: blink 1.4s infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:0.25} }
+.hero h1 { font-size: clamp(2.4rem,6vw,4rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 1.25rem; }
+.hero p { color: var(--text2); font-size: 1.1rem; line-height: 1.75; max-width: 560px; margin: 0 auto 2rem; }
+.hero-cta { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem; }
+.btn-hero-primary { background: linear-gradient(135deg,#F97316,#FBBF24); color: #1A0C00; border: none; padding: 0.8rem 1.75rem; border-radius: 10px; font-family: var(--font-body); font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 20px rgba(249,115,22,0.3); }
+.btn-hero-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(249,115,22,0.4); }
+.btn-hero-secondary { background: none; border: 1px solid var(--border2); color: var(--text); padding: 0.8rem 1.75rem; border-radius: 10px; font-family: var(--font-body); font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.btn-hero-secondary:hover { background: var(--bg3); }
+.hero-sub { color: var(--text3); font-size: 0.8rem; margin-bottom: 3.5rem; }
+
+/* BENTO GRID */
+.bento-wrap { max-width: 1120px; margin: 0 auto; padding: 0 2rem 4rem; }
+.bento-grid { display: grid; grid-template-columns: repeat(12,1fr); gap: 12px; }
+.bento-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; overflow: hidden; transition: border-color 0.3s, box-shadow 0.3s; }
+.bento-card:hover { border-color: var(--border2); box-shadow: var(--glow); }
+.bento-wide   { grid-column: span 8; }
+.bento-medium { grid-column: span 4; }
+.bento-half   { grid-column: span 6; }
+.bento-third  { grid-column: span 4; }
+.bento-quarter{ grid-column: span 3; }
+.bento-label { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text3); letter-spacing: 0.06em; margin-bottom: 0.75rem; text-transform: uppercase; }
+
+/* LINE CHART */
+.line-chart-wrap { position: relative; }
+.line-chart { width: 100%; height: 110px; }
+.chart-labels { display: flex; justify-content: space-between; margin-top: 0.25rem; }
+.chart-labels span { font-size: 0.6rem; color: var(--text3); font-family: var(--font-mono); }
+
+/* METRIC HERO */
+.metric-hero { display: flex; flex-direction: column; gap: 0.35rem; height: 100%; justify-content: center; }
+.metric-label { font-size: 0.72rem; color: var(--text3); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; }
+.metric-value { font-size: 1.55rem; font-weight: 800; font-family: var(--font-mono); color: var(--text); line-height: 1; }
+.metric-change { font-size: 0.78rem; font-weight: 700; }
+.metric-change.up { color: var(--green); }
+.metric-change.down { color: var(--red); }
+.metric-sub { font-size: 0.7rem; color: var(--text3); margin-top: 0.25rem; }
+
+/* FUNNEL */
+.funnel { display: flex; flex-direction: column; gap: 6px; }
+.funnel-row { display: flex; align-items: center; gap: 0.5rem; }
+.funnel-label { font-size: 0.68rem; color: var(--text2); width: 72px; flex-shrink: 0; }
+.funnel-bar-wrap { flex: 1; background: var(--bg3); border-radius: 4px; height: 14px; overflow: hidden; }
+.funnel-bar { height: 100%; border-radius: 4px; background: linear-gradient(90deg,var(--orange),var(--yellow)); }
+.funnel-val { font-size: 0.65rem; color: var(--text3); font-family: var(--font-mono); width: 32px; text-align: right; flex-shrink: 0; }
+
+/* TOP CHANNELS */
+.channel-list { display: flex; flex-direction: column; gap: 10px; }
+.channel-row { display: flex; flex-direction: column; gap: 4px; }
+.channel-meta { display: flex; justify-content: space-between; }
+.channel-name { font-size: 0.72rem; color: var(--text2); }
+.channel-pct { font-size: 0.7rem; font-weight: 700; color: var(--text); font-family: var(--font-mono); }
+.channel-bar-wrap { height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+.channel-bar { height: 100%; border-radius: 3px; }
+
+/* REALTIME */
+.realtime-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; height: 100%; text-align: center; }
+.realtime-num { font-size: 2.8rem; font-weight: 800; font-family: var(--font-mono); color: var(--orange); line-height: 1; }
+.realtime-label { font-size: 0.7rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; }
+.realtime-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); animation: blink 1s infinite; margin: 0 auto; }
+
+/* HEALTH SCORE */
+.health-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; height: 100%; justify-content: center; }
+.health-ring { width: 80px; height: 80px; border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center; }
+.health-ring::before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(var(--green) 0% 92%, var(--bg3) 92% 100%); }
+.health-ring::after { content: ''; position: absolute; inset: 11px; border-radius: 50%; background: var(--bg2); }
+.health-score { position: relative; z-index: 1; font-size: 1.3rem; font-weight: 800; color: var(--green); }
+.health-label { font-size: 0.7rem; color: var(--text2); text-align: center; }
+.health-tag { font-size: 0.65rem; background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.3); padding: 0.15rem 0.5rem; border-radius: 999px; }
+
+/* ALERT FEED */
+.alert-list { display: flex; flex-direction: column; gap: 0.65rem; }
+.alert-item { display: flex; align-items: flex-start; gap: 0.55rem; padding: 0.55rem; background: var(--bg3); border-radius: 8px; border: 1px solid transparent; }
+.alert-item.success { border-color: rgba(34,197,94,0.2); }
+.alert-item.warn { border-color: rgba(251,191,36,0.2); }
+.alert-item.danger { border-color: rgba(239,68,68,0.2); }
+.alert-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 0.3rem; }
+.alert-text { font-size: 0.7rem; color: var(--text2); line-height: 1.4; }
+.alert-text strong { color: var(--text); }
+.alert-time { font-size: 0.6rem; color: var(--text3); margin-top: 0.1rem; }
+
+/* METRIC MARQUEE */
+.marquee-section { background: var(--orange); overflow: hidden; padding: 0.6rem 0; }
+.marquee-track { display: flex; gap: 2rem; animation: marquee 22s linear infinite; white-space: nowrap; }
+.marquee-track span { font-size: 0.8rem; font-weight: 700; color: #1A0C00; font-family: var(--font-mono); }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* PROBLEM */
+.problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 2.5rem; }
+.problem-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+.problem-emoji { font-size: 1.4rem; margin-bottom: 0.65rem; }
+.problem-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.35rem; }
+.problem-card p { font-size: 0.83rem; color: var(--text2); line-height: 1.65; }
+
+/* STEPS */
+.steps-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin-top: 2.5rem; }
+.step-card { text-align: center; padding: 1.75rem 1rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; position: relative; }
+.step-card::after { content: '→'; position: absolute; right: -0.7rem; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 1rem; }
+.step-card:last-child::after { display: none; }
+.step-num { width: 44px; height: 44px; border-radius: 12px; background: rgba(249,115,22,0.1); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; color: var(--orange); margin: 0 auto 0.85rem; }
+.step-card h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.35rem; }
+.step-card p { font-size: 0.78rem; color: var(--text2); line-height: 1.6; }
+
+/* FEATURE BENTO */
+.feat-bento { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-top: 2rem; }
+.feat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; transition: border-color 0.3s, box-shadow 0.3s; }
+.feat-card:hover { border-color: var(--border2); box-shadow: var(--glow); }
+.feat-card.wide { grid-column: span 2; }
+.feat-icon { width: 40px; height: 40px; border-radius: 10px; background: rgba(249,115,22,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: 0.9rem; }
+.feat-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; }
+.feat-card p { font-size: 0.82rem; color: var(--text2); line-height: 1.6; }
+
+/* INTEGRATIONS */
+.integrations-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 2rem; }
+.integration-chip { display: flex; align-items: center; gap: 0.45rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 0.55rem 0.95rem; font-size: 0.82rem; font-weight: 600; color: var(--text2); transition: all 0.2s; }
+.integration-chip:hover { border-color: var(--border2); color: var(--text); }
+
+/* TESTIMONIALS */
+.testimonials-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; }
+.testi-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+.stars { color: var(--yellow); font-size: 0.8rem; margin-bottom: 0.75rem; }
+.testi-quote { font-size: 0.88rem; color: var(--text2); line-height: 1.7; margin-bottom: 1.25rem; }
+.testi-author { display: flex; align-items: center; gap: 0.75rem; }
+.testi-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,var(--orange),var(--yellow)); display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 700; color: #1A0C00; flex-shrink: 0; }
+.testi-name { font-size: 0.85rem; font-weight: 700; }
+.testi-role { font-size: 0.72rem; color: var(--text3); }
+
+/* PRICING */
+.pricing-toggle-wrap { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2.5rem; justify-content: center; }
+.pricing-lbl { font-size: 0.88rem; color: var(--text2); font-weight: 500; transition: color 0.2s; }
+.pricing-lbl.active-lbl { color: var(--text); font-weight: 700; }
+.toggle-track { width: 44px; height: 24px; border-radius: 12px; background: var(--bg3); border: 1px solid var(--border2); position: relative; cursor: pointer; transition: background 0.3s; }
+.toggle-track.active { background: var(--orange); }
+.toggle-thumb { position: absolute; width: 18px; height: 18px; border-radius: 50%; background: #fff; top: 2px; left: 2px; transition: left 0.3s; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+.toggle-track.active .toggle-thumb { left: 22px; }
+.annual-badge { background: rgba(249,115,22,0.12); color: var(--orange2); border: 1px solid var(--border2); font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px; }
+.pricing-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; }
+.pricing-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; }
+.pricing-card.featured { border-color: var(--orange); box-shadow: 0 0 30px rgba(249,115,22,0.12); position: relative; }
+.pricing-featured-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg,#F97316,#FBBF24); color: #1A0C00; font-size: 0.7rem; font-weight: 800; padding: 0.25rem 0.9rem; border-radius: 999px; white-space: nowrap; }
+.pricing-name { font-size: 0.78rem; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+.pricing-price { display: flex; align-items: baseline; gap: 0.2rem; margin-bottom: 0.25rem; }
+.price-curr { font-size: 0.95rem; color: var(--text2); }
+.price-val { font-size: 2.1rem; font-weight: 800; font-family: var(--font-mono); }
+.price-period { font-size: 0.75rem; color: var(--text3); }
+.pricing-desc { font-size: 0.78rem; color: var(--text3); margin-bottom: 1.25rem; }
+.pricing-divider { height: 1px; background: var(--border); margin-bottom: 1.25rem; }
+.pricing-features { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; }
+.pf-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--text2); }
+.pf-check { color: var(--orange); font-size: 0.82rem; } .pf-x { color: var(--text3); font-size: 0.82rem; }
+.pricing-btn { width: 100%; padding: 0.7rem; border-radius: 10px; font-family: var(--font-body); font-size: 0.88rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.pricing-btn-primary { background: linear-gradient(135deg,#F97316,#FBBF24); color: #1A0C00; border: none; }
+.pricing-btn-ghost { background: none; border: 1px solid var(--border2); color: var(--text); }
+.pricing-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+/* COMPARISON TABLE */
+.compare-table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+.compare-table th, .compare-table td { padding: 0.85rem 1rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+.compare-table th { color: var(--text2); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.compare-table td:first-child { color: var(--text); font-weight: 500; }
+.compare-table td:not(:first-child) { text-align: center; }
+.compare-table tr:hover td { background: var(--bg2); }
+.col-us { color: var(--orange); font-weight: 700; }
+.col-no { color: var(--text3); }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; max-width: 720px; }
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-q { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 1.1rem 0; background: none; border: none; color: var(--text); font-family: var(--font-body); font-size: 0.92rem; font-weight: 600; cursor: pointer; text-align: left; }
+.faq-icon { color: var(--text3); font-size: 1.1rem; transition: transform 0.3s; flex-shrink: 0; margin-left: 1rem; }
+.faq-item.open .faq-icon { transform: rotate(45deg); color: var(--orange); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+.faq-item.open .faq-a { max-height: 220px; }
+.faq-a-inner { padding-bottom: 1rem; font-size: 0.85rem; color: var(--text2); line-height: 1.7; }
+
+/* CTA BAND */
+.cta-band { background: linear-gradient(135deg,rgba(249,115,22,0.1),rgba(251,191,36,0.05)); border-top: 1px solid var(--border); text-align: center; padding: 5rem 2rem; }
+.cta-band h2 { font-size: clamp(1.8rem,4vw,2.8rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.75rem; }
+.cta-band p { color: var(--text2); margin-bottom: 2rem; font-size: 1rem; }
+.cta-band-actions { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem; }
+.cta-sub { color: var(--text3); font-size: 0.78rem; }
+
+/* FOOTER */
+.footer { background: var(--bg2); border-top: 1px solid var(--border); }
+.footer-inner { max-width: 1120px; margin: 0 auto; padding: 3rem 2rem 1.5rem; }
+.footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2rem; margin-bottom: 2.5rem; }
+.footer-brand p { font-size: 0.82rem; color: var(--text3); line-height: 1.7; margin-top: 0.75rem; max-width: 260px; }
+.footer-col h4 { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text2); margin-bottom: 0.85rem; }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.footer-col a { text-decoration: none; color: var(--text3); font-size: 0.82rem; transition: color 0.2s; }
+.footer-col a:hover { color: var(--text); }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 1.5rem; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--text3); }
+.footer-links { display: flex; gap: 1.25rem; }
+.footer-links a { color: var(--text3); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--text); }
+
+/* COUNTER */
+.counter-section { background: var(--bg2); border-top: 1px solid var(--border); }
+.counter-inner { max-width: 1120px; margin: 0 auto; padding: 3.5rem 2rem; display: grid; grid-template-columns: repeat(4,1fr); gap: 1.5rem; }
+.counter-card { text-align: center; }
+.counter-val { font-size: 2.4rem; font-weight: 800; font-family: var(--font-mono); color: var(--text); }
+.counter-val span { color: var(--orange); }
+.counter-key { font-size: 0.82rem; color: var(--text3); margin-top: 0.25rem; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .navbar-nav, .navbar-actions .btn-ghost, .navbar-actions .btn-primary { display: none; }
+  .hamburger { display: flex; }
+  .bento-wide, .bento-medium, .bento-half, .bento-third, .bento-quarter { grid-column: span 12; }
+  .problem-grid, .steps-grid { grid-template-columns: 1fr; }
+  .step-card::after { display: none; }
+  .feat-bento { grid-template-columns: 1fr; }
+  .feat-card.wide { grid-column: span 1; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .counter-inner { grid-template-columns: 1fr 1fr; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .footer-bottom { flex-direction: column; gap: 0.75rem; text-align: center; }
+}
+@media (max-width: 600px) {
+  .section-inner { padding: 3.5rem 1.25rem; }
+  .bento-wrap { padding: 0 1.25rem 3rem; }
+  .hero-inner { padding: 3rem 1.25rem 1.5rem; }
+  .counter-inner { padding: 2.5rem 1.25rem; }
+  .footer-top { grid-template-columns: 1fr; }
+  .compare-table { font-size: 0.73rem; }
+  .compare-table th, .compare-table td { padding: 0.6rem 0.45rem; }
+  .steps-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="#" class="navbar-logo">
+    <div class="logo-icon">PM</div>
+    PulsaMetric
+  </a>
+  <ul class="navbar-nav">
+    <li><a href="#fitur">Fitur</a></li>
+    <li><a href="#integrasi">Integrasi</a></li>
+    <li><a href="#testimoni">Testimoni</a></li>
+    <li><a href="#harga">Harga</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <div class="navbar-actions">
+    <button class="theme-toggle" id="themeBtn">☀</button>
+    <button class="btn-ghost">Masuk</button>
+    <button class="btn-primary">Mulai Gratis</button>
+    <button class="hamburger" id="hamburger">☰</button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#fitur">Fitur</a>
+  <a href="#integrasi">Integrasi</a>
+  <a href="#testimoni">Testimoni</a>
+  <a href="#harga">Harga</a>
+  <a href="#faq">FAQ</a>
+  <a href="#">Masuk</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge"><span></span> Real-time · Update setiap 30 detik</div>
+    <h1>Ukur Yang Penting,<br><span class="gradient-text">Abaikan Yang Tidak</span></h1>
+    <p>PulsaMetric mengubah data bisnis berceceran menjadi satu dashboard real-time yang bisa dibaca siapa saja — dari founder hingga tim lapangan.</p>
+    <div class="hero-cta">
+      <button class="btn-hero-primary">Coba Gratis 14 Hari →</button>
+      <button class="btn-hero-secondary">▶ Lihat Demo</button>
+    </div>
+    <p class="hero-sub">Tidak perlu kartu kredit · Koneksi data dalam 5 menit · 800+ bisnis aktif</p>
+  </div>
+
+  <!-- BENTO GRID -->
+  <div class="bento-wrap">
+    <div class="bento-grid">
+
+      <!-- Revenue Line Chart (span 8) -->
+      <div class="bento-card bento-wide">
+        <div class="bento-label">// pendapatan — 8 bulan terakhir</div>
+        <div class="line-chart-wrap">
+          <svg class="line-chart" viewBox="0 0 400 110" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <line x1="0" y1="25" x2="400" y2="25" stroke="rgba(249,115,22,0.08)" stroke-width="1"/>
+            <line x1="0" y1="55" x2="400" y2="55" stroke="rgba(249,115,22,0.08)" stroke-width="1"/>
+            <line x1="0" y1="85" x2="400" y2="85" stroke="rgba(249,115,22,0.08)" stroke-width="1"/>
+            <path d="M0,98 L57,84 L114,76 L171,62 L228,52 L285,36 L342,22 L400,10 L400,110 L0,110 Z" fill="rgba(249,115,22,0.12)"/>
+            <path d="M0,98 L57,84 L114,76 L171,62 L228,52 L285,36 L342,22 L400,10" fill="none" stroke="url(#lineGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="400" cy="10" r="4" fill="#F97316"/>
+            <circle cx="342" cy="22" r="3" fill="#FBBF24"/>
+            <defs>
+              <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#FB923C"/>
+                <stop offset="100%" stop-color="#FBBF24"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="chart-labels">
+            <span>Nov</span><span>Des</span><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>Mei</span><span>Jun</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Revenue Angka Besar (span 4) -->
+      <div class="bento-card bento-medium">
+        <div class="bento-label">// pendapatan bulan ini</div>
+        <div class="metric-hero">
+          <span class="metric-label">Total Pendapatan</span>
+          <span class="metric-value">Rp <span id="revCount">0</span></span>
+          <span class="metric-change up">+18,3% ↑ vs bulan lalu</span>
+          <span class="metric-sub">Target: Rp 900.000.000</span>
+          <div style="margin-top:0.5rem;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:94%;background:linear-gradient(90deg,var(--orange),var(--yellow));border-radius:3px;transition:width 1s"></div>
+          </div>
+          <span style="font-size:0.65rem;color:var(--text3);font-family:var(--font-mono)">94,1% dari target</span>
+        </div>
+      </div>
+
+      <!-- Conversion Funnel (span 4) -->
+      <div class="bento-card bento-third">
+        <div class="bento-label">// conversion funnel</div>
+        <div class="funnel">
+          <div class="funnel-row">
+            <span class="funnel-label">Pengunjung</span>
+            <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:100%"></div></div>
+            <span class="funnel-val">100%</span>
+          </div>
+          <div class="funnel-row">
+            <span class="funnel-label">Daftar</span>
+            <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:41%;opacity:0.85"></div></div>
+            <span class="funnel-val">41%</span>
+          </div>
+          <div class="funnel-row">
+            <span class="funnel-label">Trial</span>
+            <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:22%;opacity:0.7"></div></div>
+            <span class="funnel-val">22%</span>
+          </div>
+          <div class="funnel-row">
+            <span class="funnel-label">Bayar</span>
+            <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:11%;opacity:0.55"></div></div>
+            <span class="funnel-val">11%</span>
+          </div>
+          <div class="funnel-row">
+            <span class="funnel-label">Perpanjang</span>
+            <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:8%;opacity:0.4"></div></div>
+            <span class="funnel-val">8%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Realtime Counter (span 3) -->
+      <div class="bento-card bento-quarter">
+        <div class="bento-label">// online sekarang</div>
+        <div class="realtime-wrap">
+          <div class="realtime-dot"></div>
+          <div class="realtime-num" id="rtCount">0</div>
+          <div class="realtime-label">Pengguna Aktif</div>
+          <div style="font-size:0.62rem;color:var(--text3);font-family:var(--font-mono);margin-top:0.25rem">update / 30 dtk</div>
+        </div>
+      </div>
+
+      <!-- Customer Health Score (span 3) -->
+      <div class="bento-card bento-quarter">
+        <div class="bento-label">// customer health</div>
+        <div class="health-wrap">
+          <div class="health-ring"><span class="health-score">92</span></div>
+          <div class="health-label">Health Score</div>
+          <span class="health-tag">Sangat Sehat</span>
+        </div>
+      </div>
+
+      <!-- Top Channels (span 6) -->
+      <div class="bento-card bento-half">
+        <div class="bento-label">// sumber trafik teratas</div>
+        <div class="channel-list">
+          <div class="channel-row">
+            <div class="channel-meta"><span class="channel-name">Organic Search</span><span class="channel-pct">42%</span></div>
+            <div class="channel-bar-wrap"><div class="channel-bar" style="width:42%;background:linear-gradient(90deg,var(--orange),var(--yellow))"></div></div>
+          </div>
+          <div class="channel-row">
+            <div class="channel-meta"><span class="channel-name">Direct</span><span class="channel-pct">28%</span></div>
+            <div class="channel-bar-wrap"><div class="channel-bar" style="width:28%;background:linear-gradient(90deg,#FB923C,#FBBF24)"></div></div>
+          </div>
+          <div class="channel-row">
+            <div class="channel-meta"><span class="channel-name">Paid Ads</span><span class="channel-pct">18%</span></div>
+            <div class="channel-bar-wrap"><div class="channel-bar" style="width:18%;background:linear-gradient(90deg,#F97316,#FB923C)"></div></div>
+          </div>
+          <div class="channel-row">
+            <div class="channel-meta"><span class="channel-name">Social Media</span><span class="channel-pct">12%</span></div>
+            <div class="channel-bar-wrap"><div class="channel-bar" style="width:12%;background:linear-gradient(90deg,#FBBF24,#FDE68A)"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alert Feed (span 6) -->
+      <div class="bento-card bento-half">
+        <div class="bento-label">// notifikasi metrik</div>
+        <div class="alert-list">
+          <div class="alert-item success">
+            <span class="alert-dot" style="background:var(--green)"></span>
+            <div><div class="alert-text"><strong>Target Juni tercapai</strong> — Rp 847 juta dari target Rp 800 juta</div><div class="alert-time">5 menit lalu</div></div>
+          </div>
+          <div class="alert-item warn">
+            <span class="alert-dot" style="background:var(--yellow)"></span>
+            <div><div class="alert-text"><strong>Churn alert</strong> — 3 akun Enterprise belum perpanjang (nilai Rp 42 juta)</div><div class="alert-time">2 jam lalu</div></div>
+          </div>
+          <div class="alert-item success">
+            <span class="alert-dot" style="background:var(--green)"></span>
+            <div><div class="alert-text"><strong>CAC turun 12%</strong> — dari Rp 480rb menjadi Rp 422rb bulan ini</div><div class="alert-time">Kemarin, 09.30</div></div>
+          </div>
+          <div class="alert-item danger">
+            <span class="alert-dot" style="background:var(--red)"></span>
+            <div><div class="alert-text"><strong>Anomali traffic</strong> — lonjakan 340% dari Surabaya dalam 30 mnt</div><div class="alert-time">Kemarin, 22.14</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- METRIC MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track" id="marqueeTrack">
+    <span>📈 MRR +18.3%</span><span>👥 1.247 pengguna aktif</span><span>🔄 Churn rate 1.2%</span><span>💰 ARPU Rp 680.000</span><span>⚡ LTV/CAC ratio 4.8x</span><span>🎯 NPS Score 72</span><span>📊 DAU/MAU 68%</span><span>🚀 Trial-to-paid 22%</span>
+    <span>📈 MRR +18.3%</span><span>👥 1.247 pengguna aktif</span><span>🔄 Churn rate 1.2%</span><span>💰 ARPU Rp 680.000</span><span>⚡ LTV/CAC ratio 4.8x</span><span>🎯 NPS Score 72</span><span>📊 DAU/MAU 68%</span><span>🚀 Trial-to-paid 22%</span>
+  </div>
+</div>
+
+<!-- COUNTER -->
+<div class="counter-section">
+  <div class="counter-inner">
+    <div class="counter-card"><div class="counter-val"><span id="c1">0</span>+</div><div class="counter-key">Bisnis Terhubung</div></div>
+    <div class="counter-card"><div class="counter-val"><span id="c2">0</span>M+</div><div class="counter-key">Data Points Diproses/Hari</div></div>
+    <div class="counter-card"><div class="counter-val"><span id="c3">0</span> dtk</div><div class="counter-key">Rata-rata Refresh Data</div></div>
+    <div class="counter-card"><div class="counter-val"><span id="c4">0</span>%</div><div class="counter-key">Uptime SLA</div></div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section>
+  <div class="section-inner">
+    <div class="section-tag">// masalah yang kami selesaikan</div>
+    <h2 class="section-title">Tim Anda Masih Buat<br><span class="gradient-text">Laporan Manual di Excel?</span></h2>
+    <p class="section-sub">Setiap jam yang dihabiskan menyusun laporan adalah jam yang tidak digunakan untuk mengambil keputusan bisnis.</p>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="problem-emoji">📊</div>
+        <h4>Data di Mana-Mana</h4>
+        <p>Penjualan di Shopee, traffic di Analytics, iklan di Meta Ads, transaksi di Midtrans — tidak ada yang bicara satu sama lain dan semua harus disatukan manual setiap minggu.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-emoji">⏱️</div>
+        <h4>Laporan Sudah Basi Sebelum Dibaca</h4>
+        <p>Laporan bulanan yang selesai tanggal 5 sudah tidak relevan. Bisnis bergerak setiap jam — keputusan butuh data yang segar, bukan rekap kemarin.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-emoji">👁️</div>
+        <h4>Tidak Ada Visibilitas untuk Semua Level</h4>
+        <p>CEO ingin summary, manajer ingin breakdown, tim lapangan ingin angka hari ini. Satu Excel tidak bisa melayani semua kebutuhan ini sekaligus.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-emoji">🔕</div>
+        <h4>Peluang & Masalah Tak Terdeteksi</h4>
+        <p>Anomali traffic, lonjakan penjualan, atau penurunan konversi baru diketahui saat sudah terlambat — karena tidak ada yang memantau real-time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section style="background:var(--bg2);border-top:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-tag">// cara kerja</div>
+    <h2 class="section-title">Empat Langkah dari<br>Data ke Keputusan</h2>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <h4>Connect</h4>
+        <p>Hubungkan sumber data Anda dalam 5 menit: e-commerce, payment, CRM, iklan, website.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <h4>Visualize</h4>
+        <p>Dashboard otomatis terbentuk dengan chart dan metrik yang paling relevan untuk bisnis Anda.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <h4>Share</h4>
+        <p>Bagikan dashboard ke tim dengan satu link. Atur level akses per divisi atau peran.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">04</div>
+        <h4>Decide</h4>
+        <p>Terima alert otomatis saat metrik penting berubah — dan ambil keputusan sebelum terlambat.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="fitur">
+  <div class="section-inner">
+    <div class="section-tag">// fitur unggulan</div>
+    <h2 class="section-title">Analytics yang Bekerja<br><span class="gradient-text">Sekeras Tim Anda</span></h2>
+    <div class="feat-bento">
+      <div class="feat-card wide">
+        <div class="feat-icon">⚡</div>
+        <h4>Dashboard Real-Time 30 Detik</h4>
+        <p>Data dari semua sumber diperbarui setiap 30 detik. Tidak ada lagi menunggu laporan — lihat apa yang sedang terjadi di bisnis Anda sekarang, bukan tadi malam.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔔</div>
+        <h4>Smart Alerts</h4>
+        <p>Atur threshold untuk metrik penting. Dapatkan notifikasi ke WhatsApp, email, atau Slack saat ada anomali — baik peluang maupun ancaman.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🤖</div>
+        <h4>AI Insight Generator</h4>
+        <p>AI menganalisis pola data dan memberikan insight dalam bahasa Indonesia yang bisa langsung dipresentasikan ke manajemen.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📱</div>
+        <h4>Mobile Dashboard</h4>
+        <p>Pantau KPI penting dari smartphone di mana saja. Dirancang untuk bisa dibaca dengan satu tatapan, bahkan dalam meeting.</p>
+      </div>
+      <div class="feat-card wide">
+        <div class="feat-icon">🔌</div>
+        <h4>100+ Konektor Data Indonesia</h4>
+        <p>Tokopedia, Shopee, Lazada, Blibli, GoPay, OVO, DANA, Midtrans, Xendit, Meta Ads, Google Ads, TikTok Ads, dan 90+ platform lainnya. Satu koneksi untuk semua sumber data bisnis Anda di Indonesia.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <h4>Custom Report Builder</h4>
+        <p>Bangun laporan visual sesuai kebutuhan. Export ke PDF atau PowerPoint dengan satu klik — siap dipresentasikan.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTEGRATIONS -->
+<section id="integrasi" style="background:var(--bg2);border-top:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-tag">// integrasi</div>
+    <h2 class="section-title">Semua Sumber Data<br>Bisnis Indonesia</h2>
+    <p class="section-sub">Hubungkan semua platform yang sudah Anda gunakan — tanpa coding, tanpa konfigurasi rumit.</p>
+    <div class="integrations-grid">
+      <div class="integration-chip">🛒 Tokopedia</div>
+      <div class="integration-chip">🟠 Shopee</div>
+      <div class="integration-chip">💳 Midtrans</div>
+      <div class="integration-chip">💵 Xendit</div>
+      <div class="integration-chip">📦 GoPay</div>
+      <div class="integration-chip">🔵 OVO</div>
+      <div class="integration-chip">📊 Google Analytics</div>
+      <div class="integration-chip">📢 Meta Ads</div>
+      <div class="integration-chip">🎵 TikTok Ads</div>
+      <div class="integration-chip">💼 Salesforce</div>
+      <div class="integration-chip">🗃️ HubSpot</div>
+      <div class="integration-chip">📋 Google Sheets</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimoni">
+  <div class="section-inner">
+    <div class="section-tag">// testimoni</div>
+    <h2 class="section-title">Founder & GM Indonesia<br><span class="gradient-text">Berbicara</span></h2>
+    <div class="testimonials-grid">
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-quote">"Dulu butuh 3 hari setiap bulan untuk rekap laporan dari semua channel. Sekarang saya buka PulsaMetric pagi hari, semua sudah ada — dan real-time. Waktu itu saya pakai untuk hal yang lebih penting."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">HW</div>
+          <div><div class="testi-name">Hendra Wijaya</div><div class="testi-role">Founder & CEO · Warsa.co.id</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-quote">"Koneksi ke Shopee, Tokopedia, dan Midtrans selesai dalam 8 menit. Dashboard langsung muncul dan akurat. Saya bisa monitor performa semua marketplace dari satu layar saja."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">AR</div>
+          <div><div class="testi-name">Anita Rahayu</div><div class="testi-role">GM Commerce · NusaRetail Group</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-quote">"Alert otomatis PulsaMetric mendeteksi churn risk sebelum akun Enterprise kami pergi. Kami berhasil retain Rp 180 juta ARR hanya karena dapat peringatan tepat waktu."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">BP</div>
+          <div><div class="testi-name">Bima Pratama</div><div class="testi-role">Head of Growth · SaaSku Indonesia</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="harga" style="background:var(--bg2);border-top:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-tag">// harga</div>
+    <h2 class="section-title">Investasi yang Langsung<br>Terbayar</h2>
+    <div class="pricing-toggle-wrap">
+      <span class="pricing-lbl active-lbl" id="lbl-monthly">Bulanan</span>
+      <div class="toggle-track" id="pricingToggle"><div class="toggle-thumb"></div></div>
+      <span class="pricing-lbl" id="lbl-annual">Tahunan</span>
+      <span class="annual-badge">Hemat 20%</span>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-name">Starter</div>
+        <div class="pricing-price"><span class="price-curr">Rp</span><span class="price-val" id="price-0">299.000</span><span class="price-period">/bulan</span></div>
+        <div class="pricing-desc">Untuk bisnis yang baru mulai melacak metrik penting.</div>
+        <div class="pricing-divider"></div>
+        <div class="pricing-features">
+          <div class="pf-item"><span class="pf-check">✓</span> 5 koneksi data</div>
+          <div class="pf-item"><span class="pf-check">✓</span> 3 dashboard</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Refresh tiap 1 jam</div>
+          <div class="pf-item"><span class="pf-check">✓</span> 3 pengguna</div>
+          <div class="pf-item"><span class="pf-x">✕</span> <span style="color:var(--text3)">AI Insight</span></div>
+          <div class="pf-item"><span class="pf-x">✕</span> <span style="color:var(--text3)">Smart Alerts</span></div>
+        </div>
+        <button class="pricing-btn pricing-btn-ghost">Coba Gratis 14 Hari</button>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-featured-badge">🔥 Paling Populer</div>
+        <div class="pricing-name">Growth</div>
+        <div class="pricing-price"><span class="price-curr">Rp</span><span class="price-val" id="price-1">799.000</span><span class="price-period">/bulan</span></div>
+        <div class="pricing-desc">Untuk bisnis yang serius dengan data-driven decisions.</div>
+        <div class="pricing-divider"></div>
+        <div class="pricing-features">
+          <div class="pf-item"><span class="pf-check">✓</span> 30 koneksi data</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Dashboard tak terbatas</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Refresh real-time 30 dtk</div>
+          <div class="pf-item"><span class="pf-check">✓</span> 10 pengguna</div>
+          <div class="pf-item"><span class="pf-check">✓</span> AI Insight Generator</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Smart Alerts WA & Email</div>
+        </div>
+        <button class="pricing-btn pricing-btn-primary">Coba Gratis 14 Hari</button>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-name">Enterprise</div>
+        <div class="pricing-price"><span class="price-val" style="font-size:1.8rem">Custom</span></div>
+        <div class="pricing-desc">Untuk grup bisnis besar dengan kebutuhan multi-brand.</div>
+        <div class="pricing-divider"></div>
+        <div class="pricing-features">
+          <div class="pf-item"><span class="pf-check">✓</span> Koneksi data tak terbatas</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Pengguna tak terbatas</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Dedicated data pipeline</div>
+          <div class="pf-item"><span class="pf-check">✓</span> SLA 99.9% uptime</div>
+          <div class="pf-item"><span class="pf-check">✓</span> On-premise tersedia</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Account manager khusus</div>
+        </div>
+        <button class="pricing-btn pricing-btn-ghost">Hubungi Sales</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section>
+  <div class="section-inner">
+    <div class="section-tag">// perbandingan</div>
+    <h2 class="section-title">PulsaMetric vs<br>Laporan Manual</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Aspek</th>
+          <th style="color:var(--orange)">PulsaMetric</th>
+          <th>Excel Manual</th>
+          <th>Google Sheets</th>
+          <th>BI Tools Global</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Waktu setup</td><td class="col-us">5 menit</td><td class="col-no">Berminggu-minggu</td><td style="color:var(--text2)">Beberapa hari</td><td class="col-no">Berbulan-bulan</td></tr>
+        <tr><td>Data real-time</td><td class="col-us">✓ 30 dtk</td><td class="col-no">✕</td><td class="col-no">Manual import</td><td style="color:var(--text2)">Tergantung konfigurasi</td></tr>
+        <tr><td>Konektor Indonesia</td><td class="col-us">100+</td><td class="col-no">✕</td><td class="col-no">✕</td><td class="col-no">Sangat terbatas</td></tr>
+        <tr><td>AI Insight B. Indonesia</td><td class="col-us">✓</td><td class="col-no">✕</td><td class="col-no">✕</td><td class="col-no">✕</td></tr>
+        <tr><td>Smart Alerts WA</td><td class="col-us">✓</td><td class="col-no">✕</td><td class="col-no">✕</td><td class="col-no">✕</td></tr>
+        <tr><td>Harga mulai</td><td class="col-us">Rp 299rb/bln</td><td style="color:var(--text2)">Gratis (waktu mahal)</td><td style="color:var(--text2)">Gratis (waktu mahal)</td><td class="col-no">$50+/user/bln</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" style="background:var(--bg2);border-top:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-tag">// pertanyaan umum</div>
+    <h2 class="section-title">Ada Pertanyaan?</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q">Berapa lama waktu setup dan koneksi data? <span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Rata-rata 5–15 menit untuk menghubungkan sumber data pertama Anda. Konektor populer seperti Shopee, Tokopedia, dan Midtrans tersedia dalam format klik-izinkan-selesai, tanpa perlu konfigurasi teknis.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Apakah data saya aman? <span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Ya. PulsaMetric menggunakan enkripsi AES-256 untuk data at-rest dan TLS 1.3 untuk data in-transit. Server berlokasi di Indonesia. Kami tidak menyimpan credential akun platform Anda — hanya OAuth token yang bisa Anda cabut kapan saja.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Bisakah saya bagikan dashboard ke investor atau klien? <span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Tentu. Anda bisa berbagi dashboard sebagai link read-only yang bisa diakses tanpa login. Cocok untuk laporan ke investor, klien, atau tim partner. Anda juga bisa export ke PDF atau embed di website perusahaan.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Apakah bisa integrasi dengan sistem custom saya? <span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Ya. PulsaMetric menyediakan REST API dan Webhook untuk mengirim data dari sistem custom, database internal, atau ERP yang belum ada konektor resminya. Dokumentasi tersedia lengkap di developer portal kami.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Bagaimana jika platform yang saya pakai belum tersedia? <span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Anda bisa request konektor baru melalui form di dashboard kami. Konektor yang paling banyak diminta diprioritaskan dan biasanya tersedia dalam 2–4 minggu. Sementara menunggu, Anda bisa menggunakan Google Sheets atau REST API sebagai alternatif.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band">
+  <h2>Mulai Keputusan Berdasarkan<br><span class="gradient-text">Data, Bukan Perasaan</span></h2>
+  <p>Bergabung dengan 800+ bisnis Indonesia yang sudah mempercayai PulsaMetric.</p>
+  <div class="cta-band-actions">
+    <button class="btn-hero-primary">Coba Gratis 14 Hari →</button>
+    <button class="btn-hero-secondary">Lihat Demo Langsung</button>
+  </div>
+  <p class="cta-sub">Setup 5 menit · Tidak perlu kartu kredit · Data real-time seketika</p>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="navbar-logo" style="display:inline-flex;margin-bottom:0.75rem">
+          <div class="logo-icon">PM</div>
+          PulsaMetric
+        </a>
+        <p>Platform analitik bisnis real-time yang dirancang untuk ekosistem bisnis Indonesia.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Produk</h4>
+        <ul><li><a href="#">Fitur</a></li><li><a href="#">Integrasi</a></li><li><a href="#">Changelog</a></li><li><a href="#">Roadmap</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <ul><li><a href="#">Tentang Kami</a></li><li><a href="#">Blog</a></li><li><a href="#">Karir</a></li><li><a href="#">Pers</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Bantuan</h4>
+        <ul><li><a href="#">Dokumentasi</a></li><li><a href="#">API Reference</a></li><li><a href="#">Status</a></li><li><a href="#">Kontak</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 PulsaMetric Technologies, PT. Jakarta, Indonesia.</p>
+      <div class="footer-links">
+        <a href="#">Privasi</a><a href="#">Syarat</a><a href="#">Cookie</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// THEME TOGGLE
+const themeBtn = document.getElementById('themeBtn');
+themeBtn.addEventListener('click', () => {
+  const html = document.documentElement;
+  const isDark = html.dataset.theme === 'dark';
+  html.dataset.theme = isDark ? 'light' : 'dark';
+  themeBtn.textContent = isDark ? '🌙' : '☀';
+});
+
+// MOBILE MENU
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+  hamburger.textContent = mobileMenu.classList.contains('open') ? '✕' : '☰';
+});
+mobileMenu.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => { mobileMenu.classList.remove('open'); hamburger.textContent = '☰'; });
+});
+
+// REVENUE COUNTER ANIMATION (animasi ke 847.290.000)
+function animateRevenue() {
+  const el = document.getElementById('revCount');
+  if (!el) return;
+  const target = 847290000;
+  const duration = 2400;
+  let start = null;
+  function formatRupiah(n) {
+    return Math.floor(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+  function step(ts) {
+    if (!start) start = ts;
+    const progress = Math.min((ts - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    el.textContent = formatRupiah(ease * target);
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// REALTIME COUNTER SIMULATION
+let rtBase = 1247;
+const rtEl = document.getElementById('rtCount');
+function updateRt() {
+  rtBase += Math.floor(Math.random() * 7) - 3;
+  if (rtBase < 1200) rtBase = 1200;
+  if (rtBase > 1300) rtBase = 1300;
+  if (rtEl) rtEl.textContent = rtBase.toLocaleString('id-ID');
+}
+if (rtEl) { rtEl.textContent = rtBase.toLocaleString('id-ID'); setInterval(updateRt, 3000); }
+
+// GENERAL COUNTER ANIMATION
+function animateCounter(el, target, duration, decimals) {
+  duration = duration || 1800; decimals = decimals || 0;
+  let start = 0;
+  const step = target / (duration / 16);
+  const timer = setInterval(() => {
+    start = Math.min(start + step, target);
+    el.textContent = decimals ? start.toFixed(decimals) : Math.floor(start);
+    if (start >= target) clearInterval(timer);
+  }, 16);
+}
+
+const counterTargets = [
+  { id: 'c1', val: 800 }, { id: 'c2', val: 4.2 },
+  { id: 'c3', val: 30 }, { id: 'c4', val: 99.9 }
+];
+let countersRan = false;
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && !countersRan) {
+      countersRan = true;
+      animateRevenue();
+      counterTargets.forEach(c => {
+        const el = document.getElementById(c.id);
+        if (!el) return;
+        if (c.id === 'c2') animateCounter(el, c.val, 1800, 1);
+        else if (c.id === 'c4') animateCounter(el, c.val, 1800, 1);
+        else animateCounter(el, c.val, 1800, 0);
+      });
+    }
+  });
+}, { threshold: 0.3 });
+const bentoWrap = document.querySelector('.bento-wrap');
+if (bentoWrap) obs.observe(bentoWrap);
+
+// PRICING TOGGLE
+const pricingToggle = document.getElementById('pricingToggle');
+const lblMonthly = document.getElementById('lbl-monthly');
+const lblAnnual = document.getElementById('lbl-annual');
+const prices = [
+  { monthly: '299.000', annual: '239.000' },
+  { monthly: '799.000', annual: '639.000' }
+];
+let isAnnual = false;
+pricingToggle.addEventListener('click', () => {
+  isAnnual = !isAnnual;
+  pricingToggle.classList.toggle('active', isAnnual);
+  lblMonthly.classList.toggle('active-lbl', !isAnnual);
+  lblAnnual.classList.toggle('active-lbl', isAnnual);
+  prices.forEach((p, i) => {
+    const el = document.getElementById('price-' + i);
+    if (el) el.textContent = isAnnual ? p.annual : p.monthly;
+  });
+});
+
+// FAQ ACCORDION
+document.querySelectorAll('.faq-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.closest('.faq-item');
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+
+// SMOOTH SCROLL
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+</script>
+</body>
+</html>

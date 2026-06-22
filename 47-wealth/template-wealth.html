@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NesiWealth — Kelola Kekayaan & Investasi Cerdas</title>
+<meta name="description" content="Satu Platform untuk Semua Investasimu. Reksa Dana, Saham, Obligasi, Emas Digital — kelola semua aset dalam satu dashboard cerdas.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* =============================================
+   CSS VARIABLES
+   ============================================= */
+:root {
+  --bg:      #0F1419;
+  --bg2:     #171E27;
+  --bg3:     #1F2A36;
+  --bg4:     #283444;
+  --text:    #F5ECD7;
+  --text2:   #B8A580;
+  --text3:   #7A6545;
+  --gold:    #D4A017;
+  --gold2:   #F0C040;
+  --teal:    #0D9488;
+  --up:      #22C55E;
+  --down:    #EF4444;
+  --border:  rgba(212,160,23,0.12);
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --font-serif: 'DM Serif Display', serif;
+  --radius: 12px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.35);
+}
+[data-theme="light"] {
+  --bg: #FDFAF4;
+  --bg2: #F5EDD8;
+  --bg3: #EAD8B0;
+  --bg4: #DEC888;
+  --text: #1A1208;
+  --text2: #5A3E10;
+  --text3: #9A7A40;
+  --border: rgba(180,120,0,0.12);
+  --shadow: 0 4px 24px rgba(100,60,0,0.12);
+}
+
+/* =============================================
+   RESET & BASE
+   ============================================= */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  transition: background 0.3s, color 0.3s;
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; border: none; background: none; font-family: var(--font-body); }
+ul { list-style: none; }
+
+/* =============================================
+   TRUST BAR
+   ============================================= */
+.trust-bar {
+  background: var(--gold);
+  color: #0F1419;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.4rem 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  letter-spacing: 0.03em;
+  overflow-x: auto;
+}
+.trust-bar span { display: flex; align-items: center; gap: 0.35rem; white-space: nowrap; }
+.trust-bar span::before { content: '\2713'; font-weight: 800; }
+
+/* =============================================
+   NAVBAR
+   ============================================= */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(15,20,25,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  height: 64px;
+  gap: 2rem;
+  transition: background 0.3s;
+}
+[data-theme="light"] .navbar { background: rgba(253,250,244,0.92); }
+.nav-logo {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  color: var(--gold);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.nav-logo span { font-style: italic; }
+.nav-links {
+  display: flex;
+  gap: 1.75rem;
+  flex: 1;
+  justify-content: center;
+}
+.nav-links a {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text2);
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+.nav-links a:hover { color: var(--gold); }
+.nav-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+.btn-theme {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  font-size: 0.9rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.btn-theme:hover { background: var(--bg4); color: var(--gold); }
+.btn-login {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text2);
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  transition: color 0.2s;
+}
+.btn-login:hover { color: var(--gold); }
+.btn-cta {
+  background: var(--gold);
+  color: #0F1419;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  transition: background 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+.btn-cta:hover { background: var(--gold2); transform: translateY(-1px); }
+.nav-burger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 6px;
+  cursor: pointer;
+}
+.nav-burger span {
+  display: block;
+  width: 22px; height: 2px;
+  background: var(--text2);
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+.mobile-nav {
+  display: none;
+  position: fixed;
+  top: 64px; left: 0; right: 0;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  z-index: 99;
+  padding: 1rem 2rem 1.5rem;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.mobile-nav.open { display: flex; }
+.mobile-nav a {
+  font-size: 0.9rem; font-weight: 500;
+  color: var(--text2); padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+  transition: color 0.2s;
+}
+.mobile-nav a:hover { color: var(--gold); }
+.mobile-nav .btn-cta { width: 100%; text-align: center; padding: 0.65rem; margin-top: 0.5rem; display: block; }
+
+/* =============================================
+   HERO
+   ============================================= */
+.hero {
+  padding: 5rem 2rem 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(212,160,23,0.12);
+  border: 1px solid rgba(212,160,23,0.3);
+  color: var(--gold);
+  font-size: 0.75rem; font-weight: 600;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  margin-bottom: 1.75rem;
+  letter-spacing: 0.04em;
+}
+.hero-badge::before { content: '\2605'; }
+.hero h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  line-height: 1.15;
+  color: var(--text);
+  margin-bottom: 1.25rem;
+  max-width: 800px;
+  margin-left: auto; margin-right: auto;
+}
+.hero h1 em { font-style: italic; color: var(--gold); }
+.hero-sub {
+  font-size: 1.05rem; color: var(--text2);
+  max-width: 560px; margin: 0 auto 2.5rem;
+  line-height: 1.7;
+}
+.hero-actions {
+  display: flex; justify-content: center; gap: 1rem;
+  flex-wrap: wrap; margin-bottom: 3.5rem;
+}
+.hero-actions .btn-cta { font-size: 0.95rem; padding: 0.75rem 2rem; border-radius: 10px; }
+.btn-outline {
+  font-size: 0.95rem; font-weight: 600; color: var(--text2);
+  padding: 0.75rem 2rem; border-radius: 10px;
+  border: 1px solid var(--border); background: transparent;
+  transition: all 0.2s;
+}
+.btn-outline:hover { border-color: var(--gold); color: var(--gold); background: rgba(212,160,23,0.06); }
+
+/* =============================================
+   WEALTH APP MOCKUP
+   ============================================= */
+.wealth-app {
+  border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+  font-size: 0.72rem; background: var(--bg);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  max-width: 900px; margin: 0 auto;
+}
+[data-theme="light"] .wealth-app { box-shadow: 0 20px 60px rgba(0,0,0,0.12); }
+.w-header {
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  padding: 0.6rem 1rem; display: flex; align-items: center; gap: 1rem;
+}
+.w-logo { font-weight: 700; color: var(--gold); font-size: 0.85rem; font-family: var(--font-serif); }
+.w-greeting { flex: 1; color: var(--text2); font-size: 0.7rem; }
+.w-date { font-size: 0.62rem; color: var(--text3); }
+.w-main { display: flex; height: 230px; border-bottom: 1px solid var(--border); }
+.w-summary {
+  width: 210px; border-right: 1px solid var(--border);
+  padding: 0.75rem; display: flex; flex-direction: column;
+  gap: 0.5rem; flex-shrink: 0;
+}
+.w-label { font-size: 0.6rem; color: var(--text3); }
+.w-val { font-size: 1rem; font-weight: 700; color: var(--text); line-height: 1.2; }
+.w-gain { font-size: 0.62rem; }
+.w-gain.up { color: var(--up); }
+.pie-wrap { display: flex; gap: 0.5rem; align-items: center; flex: 1; }
+.pie-chart {
+  width: 62px; height: 62px; border-radius: 50%; flex-shrink: 0;
+  background: conic-gradient(#D4A017 0% 45%, #0D9488 45% 75%, #6366F1 75% 90%, #F59E0B 90% 100%);
+  box-shadow: 0 0 12px rgba(212,160,23,0.25);
+}
+.pie-legend { display: flex; flex-direction: column; gap: 0.22rem; }
+.leg-item { display: flex; align-items: center; gap: 0.3rem; font-size: 0.6rem; color: var(--text2); }
+.leg-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+.w-holdings { flex: 1; padding: 0.5rem 0.75rem; overflow-y: auto; min-width: 0; }
+.w-hold-title {
+  font-size: 0.62rem; color: var(--text3); font-weight: 600;
+  margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.06em;
+}
+.hold-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.35rem 0.4rem; border-bottom: 1px solid var(--border);
+  font-size: 0.65rem; cursor: pointer; border-radius: 4px;
+  transition: background 0.15s;
+}
+.hold-item:hover, .hold-item.active { background: rgba(212,160,23,0.07); }
+.hold-item:last-child { border-bottom: none; }
+.hold-type {
+  font-size: 0.5rem; padding: 0.1rem 0.3rem;
+  border-radius: 3px; margin-left: 0.3rem; font-weight: 600;
+}
+.hold-type.saham { background: rgba(212,160,23,0.2); color: var(--gold); }
+.hold-type.rd    { background: rgba(13,148,136,0.2); color: var(--teal); }
+.hold-type.obli  { background: rgba(99,102,241,0.2); color: #818CF8; }
+.hold-type.emas  { background: rgba(245,158,11,0.2); color: #F59E0B; }
+.hold-detail { display: flex; gap: 0.5rem; align-items: center; }
+.hold-val { font-weight: 600; color: var(--text); }
+.hold-pnl { font-size: 0.6rem; font-weight: 600; }
+.hold-pnl.up   { color: var(--up); }
+.hold-pnl.down { color: var(--down); }
+.w-goals {
+  padding: 0.6rem 1rem; display: flex; gap: 1.5rem;
+  background: var(--bg2); flex-wrap: wrap;
+}
+.goal-item { flex: 1; min-width: 120px; }
+.goal-label { font-size: 0.62rem; color: var(--text2); margin-bottom: 0.3rem; }
+.goal-bar { height: 4px; background: var(--bg3); border-radius: 2px; overflow: hidden; margin-bottom: 0.2rem; }
+.goal-prog { height: 100%; border-radius: 2px; width: 0; transition: width 1.2s ease; }
+.goal-pct { font-size: 0.55rem; color: var(--text3); }
+
+/* =============================================
+   SECTION WRAPPER
+   ============================================= */
+.section { padding: 5rem 2rem; }
+.section-inner { max-width: 1200px; margin: 0 auto; }
+.section-label {
+  font-size: 0.7rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--gold); margin-bottom: 0.75rem;
+}
+.section-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  line-height: 1.2; color: var(--text); margin-bottom: 1rem;
+}
+.section-title em { font-style: italic; color: var(--gold); }
+.section-sub { font-size: 1rem; color: var(--text2); line-height: 1.7; max-width: 560px; }
+.section-header { margin-bottom: 3rem; }
+.divider { border: none; border-top: 1px solid var(--border); max-width: 1200px; margin: 0 auto; }
+
+/* =============================================
+   STATS
+   ============================================= */
+.stats-section {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 4rem 2rem;
+}
+.stats-grid {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 2rem;
+}
+.stat-card { text-align: center; }
+.stat-val {
+  font-family: var(--font-serif);
+  font-size: 2.6rem; color: var(--gold);
+  line-height: 1.1; margin-bottom: 0.4rem; font-weight: 400;
+}
+.stat-label { font-size: 0.8rem; color: var(--text2); font-weight: 500; }
+.stat-sub { font-size: 0.7rem; color: var(--text3); margin-top: 0.2rem; }
+
+/* =============================================
+   PRODUK INVESTASI
+   ============================================= */
+.products-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.5rem; }
+.product-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.75rem 1.5rem;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+.product-card:hover {
+  transform: translateY(-4px); box-shadow: var(--shadow);
+  border-color: rgba(212,160,23,0.3);
+}
+.product-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; margin-bottom: 1.25rem;
+}
+.product-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--text); }
+.product-card p { font-size: 0.82rem; color: var(--text2); margin-bottom: 1rem; line-height: 1.6; }
+.product-tag { font-size: 0.7rem; font-weight: 600; padding: 0.25rem 0.6rem; border-radius: 6px; display: inline-block; }
+.product-return { font-size: 0.75rem; color: var(--text3); margin-top: 0.35rem; }
+
+/* =============================================
+   FITUR PERENCANAAN
+   ============================================= */
+.planning-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1.5rem; }
+.plan-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.75rem;
+  display: flex; gap: 1.25rem; transition: border-color 0.2s;
+}
+.plan-card:hover { border-color: rgba(212,160,23,0.3); }
+.plan-icon { font-size: 2rem; flex-shrink: 0; }
+.plan-content h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem; color: var(--text); }
+.plan-content p { font-size: 0.82rem; color: var(--text2); margin-bottom: 0.75rem; line-height: 1.6; }
+.plan-meta { display: flex; gap: 1rem; flex-wrap: wrap; }
+.plan-meta-item { font-size: 0.72rem; }
+.plan-meta-label { color: var(--text3); margin-bottom: 0.15rem; }
+.plan-meta-val { font-weight: 700; color: var(--gold); }
+
+/* =============================================
+   ROBO-ADVISOR
+   ============================================= */
+.robo-section {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.robo-inner { max-width: 1100px; margin: 0 auto; }
+.robo-tabs {
+  display: flex; margin-bottom: 2.5rem;
+  border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--border); width: fit-content;
+}
+.robo-tab {
+  padding: 0.6rem 1.5rem; font-size: 0.85rem; font-weight: 600;
+  color: var(--text2); background: var(--bg3); transition: all 0.2s;
+  border-right: 1px solid var(--border);
+}
+.robo-tab:last-child { border-right: none; }
+.robo-tab.active { background: var(--gold); color: #0F1419; }
+.robo-content { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+.robo-pie-wrap { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+.robo-pie {
+  width: 180px; height: 180px; border-radius: 50%;
+  transition: background 0.5s;
+  box-shadow: 0 0 40px rgba(212,160,23,0.15);
+}
+.robo-legend { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+.robo-leg-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; color: var(--text2); }
+.robo-leg-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.robo-info h3 { font-size: 1.3rem; font-weight: 700; color: var(--text); margin-bottom: 0.75rem; }
+.robo-info p { font-size: 0.9rem; color: var(--text2); line-height: 1.7; margin-bottom: 1.25rem; }
+.robo-alloc { display: flex; flex-direction: column; gap: 0.6rem; }
+.robo-alloc-row { display: flex; align-items: center; gap: 0.75rem; font-size: 0.82rem; }
+.robo-alloc-bar-wrap { flex: 1; height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+.robo-alloc-bar { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+.robo-alloc-label { width: 90px; color: var(--text2); }
+.robo-alloc-pct { width: 36px; text-align: right; color: var(--text3); font-weight: 600; font-size: 0.75rem; }
+
+/* =============================================
+   REKSA DANA TABLE
+   ============================================= */
+.rd-table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+.rd-table { width: 100%; border-collapse: collapse; }
+.rd-table thead tr { background: var(--bg2); border-bottom: 1px solid var(--border); }
+.rd-table th {
+  padding: 0.9rem 1rem; font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em; color: var(--text3); text-align: left;
+}
+.rd-table th:not(:first-child) { text-align: center; }
+.rd-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+.rd-table tbody tr:last-child { border-bottom: none; }
+.rd-table tbody tr:hover { background: rgba(212,160,23,0.04); }
+.rd-table td { padding: 0.85rem 1rem; font-size: 0.83rem; color: var(--text); }
+.rd-table td:not(:first-child) { text-align: center; }
+.rd-name { font-weight: 600; }
+.rd-cat {
+  font-size: 0.68rem; font-weight: 600; padding: 0.2rem 0.5rem;
+  border-radius: 5px; display: inline-block;
+}
+.rd-cat.cat-campuran   { background: rgba(212,160,23,0.15); color: var(--gold); }
+.rd-cat.cat-saham      { background: rgba(34,197,94,0.15);  color: var(--up); }
+.rd-cat.cat-pendapatan { background: rgba(99,102,241,0.15); color: #818CF8; }
+.rd-cat.cat-pasar      { background: rgba(13,148,136,0.15); color: var(--teal); }
+.rd-ret-up { color: var(--up); font-weight: 600; }
+.rd-stars  { color: var(--gold); letter-spacing: -0.05em; font-size: 0.85rem; }
+.rd-star-dim { color: var(--bg4); }
+
+/* =============================================
+   KALKULATOR
+   ============================================= */
+.calc-section {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.calc-inner { max-width: 900px; margin: 0 auto; }
+.calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+.form-group { margin-bottom: 1.25rem; }
+.form-label { font-size: 0.78rem; font-weight: 600; color: var(--text2); margin-bottom: 0.4rem; display: block; }
+.form-input {
+  width: 100%; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.65rem 0.9rem;
+  font-size: 0.88rem; color: var(--text); font-family: var(--font-body);
+  transition: border-color 0.2s; outline: none;
+}
+.form-input:focus { border-color: var(--gold); }
+.slider-wrap { display: flex; gap: 1rem; align-items: center; }
+.form-slider {
+  -webkit-appearance: none; appearance: none;
+  flex: 1; height: 4px; background: var(--bg4);
+  border-radius: 2px; outline: none; cursor: pointer;
+}
+.form-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--gold); cursor: pointer;
+  box-shadow: 0 0 6px rgba(212,160,23,0.4);
+}
+.slider-val { font-size: 0.82rem; font-weight: 700; color: var(--gold); min-width: 52px; text-align: right; }
+.btn-calc {
+  background: var(--gold); color: #0F1419;
+  font-size: 0.9rem; font-weight: 700;
+  padding: 0.75rem 2rem; border-radius: 10px;
+  width: 100%; transition: background 0.2s, transform 0.15s;
+}
+.btn-calc:hover { background: var(--gold2); transform: translateY(-1px); }
+.calc-result {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 2rem; text-align: center;
+}
+.calc-result-label {
+  font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--text3); margin-bottom: 0.5rem;
+}
+.calc-result-val {
+  font-family: var(--font-serif);
+  font-size: 2.2rem; color: var(--gold);
+  line-height: 1.2; margin-bottom: 0.5rem; min-height: 2.6rem;
+}
+.calc-result-sub { font-size: 0.8rem; color: var(--text2); margin-bottom: 1.5rem; line-height: 1.6; }
+.calc-breakdown { display: flex; flex-direction: column; gap: 0.6rem; text-align: left; }
+.calc-row {
+  display: flex; justify-content: space-between; font-size: 0.8rem;
+  padding: 0.4rem 0; border-bottom: 1px solid var(--border);
+}
+.calc-row:last-child { border-bottom: none; font-weight: 700; color: var(--gold); }
+.calc-row-label { color: var(--text2); }
+.calc-row-val { color: var(--text); font-weight: 600; }
+
+/* =============================================
+   KEAMANAN
+   ============================================= */
+.security-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
+.security-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.75rem; text-align: center;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.security-card:hover { transform: translateY(-3px); border-color: rgba(212,160,23,0.25); }
+.security-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+.security-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+.security-card p { font-size: 0.8rem; color: var(--text2); line-height: 1.6; }
+.badge-row {
+  display: flex; justify-content: center; gap: 1.5rem;
+  flex-wrap: wrap; margin-top: 3rem;
+}
+.reg-badge {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.6rem 1.2rem;
+  display: flex; align-items: center; gap: 0.6rem;
+  font-size: 0.78rem; font-weight: 700; color: var(--text2);
+}
+.reg-badge-icon { font-size: 1.1rem; }
+
+/* =============================================
+   APLIKASI MOBILE
+   ============================================= */
+.app-section {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.app-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1.2fr; gap: 4rem; align-items: center;
+}
+.app-features { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 2rem; }
+.app-feat {
+  display: flex; gap: 1rem; align-items: flex-start;
+  padding: 1rem 1.25rem; background: var(--bg3);
+  border: 1px solid var(--border); border-radius: 10px;
+  transition: border-color 0.2s;
+}
+.app-feat:hover { border-color: rgba(212,160,23,0.3); }
+.app-feat-icon { font-size: 1.4rem; flex-shrink: 0; }
+.app-feat-content h4 { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 0.2rem; }
+.app-feat-content p { font-size: 0.78rem; color: var(--text2); line-height: 1.5; }
+.app-store-btns { display: flex; gap: 0.75rem; margin-top: 1.75rem; flex-wrap: wrap; }
+.app-store-btn {
+  display: flex; align-items: center; gap: 0.6rem;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 0.65rem 1.2rem;
+  transition: border-color 0.2s, background 0.2s;
+}
+.app-store-btn:hover { border-color: var(--gold); background: var(--bg4); }
+.app-store-icon { font-size: 1.3rem; }
+.app-store-text { display: flex; flex-direction: column; }
+.app-store-text small { font-size: 0.6rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; }
+.app-store-text strong { font-size: 0.85rem; color: var(--text); }
+/* Phone mockup */
+.phone-mockup {
+  background: var(--bg3); border: 2px solid var(--border);
+  border-radius: 32px; padding: 1rem;
+  max-width: 280px; margin: 0 auto;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+}
+.phone-notch {
+  width: 80px; height: 20px; background: var(--bg);
+  border-radius: 10px; margin: 0 auto 0.75rem;
+}
+.phone-screen { background: var(--bg); border-radius: 16px; overflow: hidden; }
+.phone-header {
+  background: var(--bg2); padding: 0.6rem 0.8rem;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.65rem;
+}
+.phone-header-logo { font-family: var(--font-serif); color: var(--gold); font-size: 0.75rem; }
+.phone-header-balance { font-size: 0.6rem; color: var(--text3); text-align: right; }
+.phone-header-val { font-size: 0.75rem; font-weight: 700; color: var(--text); }
+.phone-body { padding: 0.6rem; }
+.phone-chart {
+  height: 70px; background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
+  border-radius: 8px; margin-bottom: 0.6rem;
+  position: relative; overflow: hidden;
+}
+.phone-chart::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 100%;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 70'%3E%3Cpath d='M0 60 Q20 50 40 45 Q70 38 90 30 Q120 18 150 22 Q180 26 200 15 Q230 5 260 8 Q270 8.5 280 7 L280 70 L0 70Z' fill='rgba(212,160,23,0.1)'/%3E%3Cpath d='M0 60 Q20 50 40 45 Q70 38 90 30 Q120 18 150 22 Q180 26 200 15 Q230 5 260 8 Q270 8.5 280 7' fill='none' stroke='%23D4A017' stroke-width='2'/%3E%3C/svg%3E") no-repeat bottom;
+  background-size: cover;
+}
+.phone-items { display: flex; flex-direction: column; gap: 0.35rem; }
+.phone-item {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.58rem; padding: 0.3rem 0.2rem;
+  border-bottom: 1px solid var(--border);
+}
+.phone-item:last-child { border-bottom: none; }
+.phone-item-name { color: var(--text2); }
+.phone-item-val { color: var(--text); font-weight: 600; }
+.phone-nav {
+  display: flex; justify-content: space-around;
+  padding: 0.5rem; background: var(--bg2);
+  font-size: 0.6rem; color: var(--text3);
+}
+.phone-nav-item { display: flex; flex-direction: column; align-items: center; gap: 0.15rem; }
+.phone-nav-item.active { color: var(--gold); }
+.phone-nav-icon { font-size: 0.85rem; }
+
+/* =============================================
+   TESTIMONIAL
+   ============================================= */
+.testi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
+.testi-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.75rem; position: relative;
+}
+.testi-card::before {
+  content: '\201C';
+  position: absolute; top: 1rem; left: 1.5rem;
+  font-family: var(--font-serif);
+  font-size: 3.5rem; color: var(--gold);
+  opacity: 0.2; line-height: 1;
+}
+.testi-text {
+  font-size: 0.88rem; color: var(--text2); line-height: 1.7;
+  margin-bottom: 1.25rem; font-style: italic;
+}
+.testi-author { display: flex; align-items: center; gap: 0.75rem; }
+.testi-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--bg4); display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0; border: 2px solid var(--border);
+}
+.testi-name { font-size: 0.88rem; font-weight: 700; color: var(--text); }
+.testi-meta { font-size: 0.72rem; color: var(--text3); }
+.testi-rating { color: var(--gold); font-size: 0.8rem; margin-bottom: 0.25rem; }
+.testi-return {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  background: rgba(34,197,94,0.1); color: var(--up);
+  font-size: 0.7rem; font-weight: 600;
+  padding: 0.2rem 0.5rem; border-radius: 5px; margin-top: 0.25rem;
+}
+
+/* =============================================
+   ARTIKEL EDUKASI
+   ============================================= */
+.artikel-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
+.artikel-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  transition: transform 0.2s, border-color 0.2s; cursor: pointer;
+}
+.artikel-card:hover { transform: translateY(-4px); border-color: rgba(212,160,23,0.3); }
+.artikel-thumb {
+  height: 120px; display: flex; align-items: center; justify-content: center;
+  font-size: 2.8rem; position: relative; overflow: hidden;
+}
+.artikel-body { padding: 1.25rem; }
+.artikel-tag {
+  font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--gold); margin-bottom: 0.5rem;
+}
+.artikel-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; line-height: 1.4; }
+.artikel-card p { font-size: 0.78rem; color: var(--text2); line-height: 1.6; margin-bottom: 0.75rem; }
+.artikel-meta { display: flex; gap: 1rem; font-size: 0.7rem; color: var(--text3); }
+
+/* =============================================
+   FAQ
+   ============================================= */
+.faq-section {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.faq-inner { max-width: 800px; margin: 0 auto; }
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-item:first-of-type { border-top: 1px solid var(--border); }
+.faq-q {
+  width: 100%; display: flex; justify-content: space-between; align-items: center;
+  padding: 1.15rem 0; font-size: 0.92rem; font-weight: 600;
+  color: var(--text); text-align: left; cursor: pointer; transition: color 0.2s;
+}
+.faq-q:hover { color: var(--gold); }
+.faq-icon {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--bg3); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; color: var(--gold);
+  transition: transform 0.3s, background 0.2s;
+  flex-shrink: 0; margin-left: 1rem; font-style: normal;
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); background: var(--gold); color: #0F1419; }
+.faq-a {
+  font-size: 0.85rem; color: var(--text2); line-height: 1.7;
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s ease;
+  padding: 0;
+}
+.faq-item.open .faq-a { max-height: 200px; padding-bottom: 1.1rem; }
+
+/* =============================================
+   CTA SECTION
+   ============================================= */
+.cta-section {
+  padding: 5rem 2rem; text-align: center;
+  background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(212,160,23,0.08) 0%, transparent 70%);
+}
+.cta-inner { max-width: 700px; margin: 0 auto; }
+.cta-section h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  color: var(--text); margin-bottom: 1rem; line-height: 1.2;
+}
+.cta-section h2 em { font-style: italic; color: var(--gold); }
+.cta-section p { font-size: 1rem; color: var(--text2); margin-bottom: 2.5rem; line-height: 1.7; }
+.cta-actions { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.cta-actions .btn-cta { font-size: 1rem; padding: 0.85rem 2.5rem; border-radius: 12px; }
+.cta-note {
+  font-size: 0.78rem; color: var(--text3);
+  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+}
+.cta-note::before { content: '\2713'; color: var(--up); font-weight: 700; }
+
+/* =============================================
+   FOOTER
+   ============================================= */
+footer {
+  background: var(--bg2); border-top: 1px solid var(--border);
+  padding: 3.5rem 2rem 2rem;
+}
+.footer-inner { max-width: 1200px; margin: 0 auto; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 2.5rem; }
+.footer-brand .nav-logo { font-size: 1.5rem; margin-bottom: 0.75rem; display: block; }
+.footer-brand p { font-size: 0.8rem; color: var(--text3); line-height: 1.7; max-width: 280px; }
+.footer-col h4 {
+  font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--text3); margin-bottom: 1rem;
+}
+.footer-col ul { display: flex; flex-direction: column; gap: 0.5rem; }
+.footer-col ul li a { font-size: 0.82rem; color: var(--text2); transition: color 0.2s; }
+.footer-col ul li a:hover { color: var(--gold); }
+.footer-bottom {
+  border-top: 1px solid var(--border); padding-top: 1.5rem;
+  display: flex; flex-wrap: wrap; gap: 1rem;
+  justify-content: space-between; align-items: flex-start;
+}
+.footer-disclaimer { font-size: 0.7rem; color: var(--text3); line-height: 1.7; max-width: 700px; }
+.footer-disclaimer strong { color: var(--text2); }
+.footer-copy { font-size: 0.72rem; color: var(--text3); white-space: nowrap; }
+
+/* =============================================
+   SCROLL REVEAL
+   ============================================= */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 960px) {
+  .products-grid { grid-template-columns: repeat(2,1fr); }
+  .stats-grid { grid-template-columns: repeat(2,1fr); }
+  .planning-grid { grid-template-columns: 1fr; }
+  .robo-content { grid-template-columns: 1fr; }
+  .calc-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .app-inner { grid-template-columns: 1fr; }
+  .phone-mockup { display: none; }
+  .security-grid { grid-template-columns: repeat(2,1fr); }
+  .w-main { flex-direction: column; height: auto; }
+  .w-summary {
+    width: 100%; flex-direction: row; flex-wrap: wrap;
+    border-right: none; border-bottom: 1px solid var(--border);
+    padding: 0.6rem 0.75rem; gap: 1rem;
+  }
+  .w-holdings { max-height: 180px; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .btn-login { display: none; }
+  .nav-burger { display: flex; }
+  .testi-grid { grid-template-columns: 1fr; }
+  .artikel-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .products-grid { grid-template-columns: 1fr; }
+  .security-grid { grid-template-columns: 1fr; }
+  .trust-bar { gap: 0.75rem; justify-content: flex-start; flex-wrap: nowrap; }
+  .w-goals { flex-direction: column; gap: 0.75rem; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 3.5rem 1.25rem 2.5rem; }
+  .section { padding: 3.5rem 1.25rem; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .hero-actions .btn-cta, .btn-outline { text-align: center; }
+  .robo-tabs { flex-direction: column; width: 100%; }
+  .robo-tab { border-right: none; border-bottom: 1px solid var(--border); }
+  .robo-tab:last-child { border-bottom: none; }
+  .calc-grid { gap: 2rem; }
+  .footer-bottom { flex-direction: column; }
+  .badge-row { gap: 0.75rem; }
+  .wealth-app { font-size: 0.65rem; }
+  .w-val { font-size: 0.9rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- =============================================
+     1. TRUST BAR
+     ============================================= -->
+<div class="trust-bar">
+  <span>OJK Terdaftar &amp; Berizin</span>
+  <span>Asuransi Dana Nasabah</span>
+  <span>128-bit Enkripsi SSL</span>
+  <span>250.000+ Nasabah Aktif</span>
+</div>
+
+<!-- =============================================
+     2. NAVBAR
+     ============================================= -->
+<nav class="navbar">
+  <a href="#" class="nav-logo"><span>Nesi</span>Wealth</a>
+  <div class="nav-links">
+    <a href="#produk">Produk</a>
+    <a href="#perencanaan">Perencanaan</a>
+    <a href="#kalkulator">Simulasi</a>
+    <a href="#reksa-dana">Reksa Dana</a>
+    <a href="#edukasi">Edukasi</a>
+  </div>
+  <div class="nav-right">
+    <button class="btn-theme" id="btnTheme" title="Toggle theme">&#127769;</button>
+    <a href="#" class="btn-login">Masuk</a>
+    <a href="#" class="btn-cta">Mulai Investasi</a>
+  </div>
+  <button class="nav-burger" id="navBurger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-nav" id="mobileNav">
+  <a href="#produk">Produk</a>
+  <a href="#perencanaan">Perencanaan</a>
+  <a href="#kalkulator">Simulasi</a>
+  <a href="#reksa-dana">Reksa Dana</a>
+  <a href="#edukasi">Edukasi</a>
+  <a href="#" class="btn-cta">Mulai Investasi Sekarang</a>
+</div>
+
+<!-- =============================================
+     3. HERO + PORTFOLIO DASHBOARD MOCKUP
+     ============================================= -->
+<section class="hero">
+  <div class="hero-badge">Platform Investasi #1 Indonesia</div>
+  <h1>Kelola Seluruh <em>Kekayaan</em>mu<br>dalam Satu Aplikasi</h1>
+  <p class="hero-sub">Reksa Dana, Saham IDX, Obligasi Negara, dan Emas Digital — semua terintegrasi dalam satu dashboard cerdas yang membantu kamu mencapai tujuan finansial lebih cepat.</p>
+  <div class="hero-actions">
+    <a href="#" class="btn-cta">Mulai dengan Rp 10.000</a>
+    <button class="btn-outline" onclick="document.getElementById('kalkulator').scrollIntoView({behavior:'smooth'})">Simulasi Investasi</button>
+  </div>
+
+  <!-- Portfolio Dashboard Mockup -->
+  <div class="wealth-app" id="wealthApp">
+    <div class="w-header">
+      <div class="w-logo">NesiWealth</div>
+      <div class="w-greeting">Selamat siang, <strong>Andi</strong> &#128075;</div>
+      <div class="w-date">Rabu, 17 Juni 2026 &middot; 14:23 WIB</div>
+    </div>
+    <div class="w-main">
+      <div class="w-summary">
+        <div class="w-total">
+          <div class="w-label">Total Aset</div>
+          <div class="w-val">Rp 284.750.000</div>
+          <div class="w-gain up">&#8593; +Rp 18.200.000 (6.83%) YTD</div>
+        </div>
+        <div class="pie-wrap">
+          <div class="pie-chart"></div>
+          <div class="pie-legend">
+            <div class="leg-item"><span class="leg-dot" style="background:#D4A017"></span>Saham <strong>45%</strong></div>
+            <div class="leg-item"><span class="leg-dot" style="background:#0D9488"></span>Reksa Dana <strong>30%</strong></div>
+            <div class="leg-item"><span class="leg-dot" style="background:#6366F1"></span>Obligasi <strong>15%</strong></div>
+            <div class="leg-item"><span class="leg-dot" style="background:#F59E0B"></span>Emas <strong>10%</strong></div>
+          </div>
+        </div>
+      </div>
+      <div class="w-holdings">
+        <div class="w-hold-title">Portofolio Saya</div>
+        <div class="hold-item" onclick="this.classList.toggle('active')">
+          <div><strong>BBCA</strong><span class="hold-type saham">Saham</span></div>
+          <div class="hold-detail"><span class="hold-val">Rp 98.500.000</span><span class="hold-pnl up">+12.4%</span></div>
+        </div>
+        <div class="hold-item" onclick="this.classList.toggle('active')">
+          <div><strong>RD Pendapatan Tetap Makmur</strong><span class="hold-type rd">RD</span></div>
+          <div class="hold-detail"><span class="hold-val">Rp 85.000.000</span><span class="hold-pnl up">+5.2%</span></div>
+        </div>
+        <div class="hold-item" onclick="this.classList.toggle('active')">
+          <div><strong>ORI025</strong><span class="hold-type obli">Obligasi</span></div>
+          <div class="hold-detail"><span class="hold-val">Rp 42.750.000</span><span class="hold-pnl up">+3.8%</span></div>
+        </div>
+        <div class="hold-item" onclick="this.classList.toggle('active')">
+          <div><strong>Emas Digital</strong><span class="hold-type emas">Emas</span></div>
+          <div class="hold-detail"><span class="hold-val">Rp 28.500.000</span><span class="hold-pnl down">-1.2%</span></div>
+        </div>
+        <div class="hold-item" onclick="this.classList.toggle('active')">
+          <div><strong>TLKM</strong><span class="hold-type saham">Saham</span></div>
+          <div class="hold-detail"><span class="hold-val">Rp 30.000.000</span><span class="hold-pnl up">+4.1%</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="w-goals" id="wGoals">
+      <div class="goal-item">
+        <div class="goal-label">&#127968; Dana Rumah</div>
+        <div class="goal-bar"><div class="goal-prog" data-width="62" style="background:var(--gold)"></div></div>
+        <div class="goal-pct">62% &middot; Rp 310jt dari Rp 500jt</div>
+      </div>
+      <div class="goal-item">
+        <div class="goal-label">&#127891; Dana Pendidikan</div>
+        <div class="goal-bar"><div class="goal-prog" data-width="38" style="background:var(--teal)"></div></div>
+        <div class="goal-pct">38% &middot; Rp 38jt dari Rp 100jt</div>
+      </div>
+      <div class="goal-item">
+        <div class="goal-label">&#9992;&#65039; Dana Pensiun</div>
+        <div class="goal-bar"><div class="goal-prog" data-width="18" style="background:#6366F1"></div></div>
+        <div class="goal-pct">18% &middot; Rp 270jt dari Rp 1,5M</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     4. STATS
+     ============================================= -->
+<section class="stats-section" id="stats">
+  <div class="stats-grid">
+    <div class="stat-card reveal">
+      <div class="stat-val" data-target="250000" data-prefix="" data-suffix="+" data-format="number">0</div>
+      <div class="stat-label">Nasabah Aktif</div>
+      <div class="stat-sub">Di seluruh Indonesia</div>
+    </div>
+    <div class="stat-card reveal">
+      <div class="stat-val" data-target="12.4" data-prefix="Rp " data-suffix=" T" data-format="decimal">0</div>
+      <div class="stat-label">AUM Dikelola</div>
+      <div class="stat-sub">Assets Under Management</div>
+    </div>
+    <div class="stat-card reveal">
+      <div class="stat-val" data-target="87" data-prefix="" data-suffix="+" data-format="number">0</div>
+      <div class="stat-label">Produk Investasi</div>
+      <div class="stat-sub">Saham, RD, Obligasi, Emas</div>
+    </div>
+    <div class="stat-card reveal">
+      <div class="stat-val" data-target="14.7" data-prefix="" data-suffix="%" data-format="decimal">0</div>
+      <div class="stat-label">Rata-rata Return/Tahun</div>
+      <div class="stat-sub">Portofolio Moderat 5 tahun</div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     5. PRODUK INVESTASI
+     ============================================= -->
+<section class="section" id="produk">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div class="section-label">Produk Investasi</div>
+      <h2 class="section-title">Semua Aset dalam<br><em>Satu Ekosistem</em></h2>
+      <p class="section-sub">Dari reksa dana syariah hingga saham blue chip &mdash; pilih instrumen yang sesuai dengan profil risiko dan tujuan keuanganmu.</p>
+    </div>
+    <div class="products-grid">
+      <div class="product-card reveal">
+        <div class="product-icon" style="background:rgba(13,148,136,0.12);">&#128202;</div>
+        <h3>Reksa Dana</h3>
+        <p>15+ pilihan reksa dana dari manajer investasi terpercaya. Mulai dari pasar uang, pendapatan tetap, campuran, hingga saham.</p>
+        <span class="product-tag" style="background:rgba(13,148,136,0.12);color:var(--teal)">15+ Produk</span>
+        <div class="product-return">Return rata-rata: <strong style="color:var(--up)">8&ndash;14% / tahun</strong></div>
+      </div>
+      <div class="product-card reveal">
+        <div class="product-icon" style="background:rgba(212,160,23,0.12);">&#128200;</div>
+        <h3>Saham IDX</h3>
+        <p>Investasi langsung di saham Bursa Efek Indonesia. Akses real-time, analisis fundamental &amp; teknikal, dan notifikasi harga otomatis.</p>
+        <span class="product-tag" style="background:rgba(212,160,23,0.12);color:var(--gold)">800+ Emiten</span>
+        <div class="product-return">Dividen + capital gain: <strong style="color:var(--up)">market rate</strong></div>
+      </div>
+      <div class="product-card reveal">
+        <div class="product-icon" style="background:rgba(99,102,241,0.12);">&#127963;&#65039;</div>
+        <h3>Obligasi Negara</h3>
+        <p>ORI, SBR, Sukuk Ritel, dan SR. Investasi aman dijamin pemerintah dengan kupon tetap yang dibayar bulanan langsung ke rekeningmu.</p>
+        <span class="product-tag" style="background:rgba(99,102,241,0.12);color:#818CF8">Dijamin Negara</span>
+        <div class="product-return">Kupon tetap: <strong style="color:var(--up)">5.5&ndash;7.0% / tahun</strong></div>
+      </div>
+      <div class="product-card reveal">
+        <div class="product-icon" style="background:rgba(245,158,11,0.12);">&#129351;</div>
+        <h3>Emas Digital</h3>
+        <p>Beli emas 24 karat mulai 0.01 gram. Harga mengikuti harga emas dunia, bisa dicetak fisik kapan saja, tanpa risiko kehilangan.</p>
+        <span class="product-tag" style="background:rgba(245,158,11,0.12);color:#F59E0B">Mulai 0.01 gram</span>
+        <div class="product-return">Lindung nilai inflasi: <strong style="color:var(--up)">historis 8%/tahun</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- =============================================
+     6. FITUR PERENCANAAN
+     ============================================= -->
+<section class="section" id="perencanaan">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div class="section-label">Goal-Based Investing</div>
+      <h2 class="section-title">Investasi Terarah<br>untuk Setiap <em>Tujuan Hidupmu</em></h2>
+      <p class="section-sub">Tetapkan target finansialmu, dan NesiWealth akan merancang strategi investasi otomatis yang tepat untuk mencapainya tepat waktu.</p>
+    </div>
+    <div class="planning-grid">
+      <div class="plan-card reveal">
+        <div class="plan-icon">&#128737;&#65039;</div>
+        <div class="plan-content">
+          <h3>Dana Darurat</h3>
+          <p>Bangun perlindungan finansial 3&ndash;6&times; pengeluaran bulanan. Ditempatkan di reksa dana pasar uang yang likuid, bisa dicairkan kapan saja.</p>
+          <div class="plan-meta">
+            <div class="plan-meta-item"><div class="plan-meta-label">Target Ideal</div><div class="plan-meta-val">6&times; Gaji</div></div>
+            <div class="plan-meta-item"><div class="plan-meta-label">Instrumen</div><div class="plan-meta-val">RD Pasar Uang</div></div>
+            <div class="plan-meta-item"><div class="plan-meta-label">Likuiditas</div><div class="plan-meta-val">T+1 Hari</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="plan-card reveal">
+        <div class="plan-icon">&#127891;</div>
+        <div class="plan-content">
+          <h3>Dana Pendidikan</h3>
+          <p>Siapkan biaya pendidikan anak sejak dini. Dengan investasi rutin dan efek compounding, target dana pendidikan menjadi lebih terjangkau.</p>
+          <div class="plan-meta">
+            <div class="plan-meta-item"><div class="plan-meta-label">Horizon</div><div class="plan-meta-val">5&ndash;18 Tahun</div></div>
+            <div class="plan-meta-item"><div class="plan-meta-label">Instrumen</div><div class="plan-meta-val">RD Campuran</div></div>
+            <div class="plan-meta-item"><div class="plan-meta-label">Auto-invest</div><div class="plan-meta-val">Tiap Bulan</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="plan-card reveal">
+        <div class="plan-icon">&#127958;</div>
+        <div class="plan-content">
+          <h3>Dana Pensiun</h3>
+          <p>Mulai dari sekarang untuk pensiun yang tenang. Kalkulasi otomatis berapa yang perlu ditabung tiap bulan agar pensiun di usia yang kamu inginkan.</p>
+          <div class="plan-meta">
+            <div class="plan-meta-item"><div class="plan-meta-label">Horizon</div><div class="plan-meta-val">20&ndash;35 Tahun</div></div>
+            <div class="plan-meta-item"><div class="plan-meta-label">Instrumen</div><div class="plan-meta-val">Diversifikasi</div></div>
+            <div class="plan-meta-item"><div class="plan-meta-label">Rebalancing</div><div class="plan-meta-val">Otomatis</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="plan-card reveal">
+        <div class="plan-icon">&#127968;</div>
+        <div class="plan-content">
+          <h3>Dana Rumah</h3>
+          <p>Kumpulkan uang muka KPR lebih cepat. Simulasikan target DP, pilih kombinasi instrumen terbaik, dan pantau progresnya setiap hari.</p>
+          <div class="plan-meta">
+            <div class="plan-meta-item"><div class="plan-meta-label">Target DP</div><div class="plan-meta-val">10&ndash;30%</div></div>
+            <div class="plan-meta-item"><div class="plan-meta-label">Instrumen</div><div class="plan-meta-val">RD + Obligasi</div></div>
+            <div class="plan-meta-item"><div class="plan-meta-label">Horizon</div><div class="plan-meta-val">2&ndash;7 Tahun</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     7. ROBO-ADVISOR
+     ============================================= -->
+<section class="section robo-section" id="robo">
+  <div class="section-inner robo-inner">
+    <div class="section-header reveal">
+      <div class="section-label">Robo-Advisor</div>
+      <h2 class="section-title">Pilih Profil Risiko,<br><em>Biarkan AI Bekerja</em></h2>
+      <p class="section-sub">Algoritma kami menganalisis kondisi pasar dan secara otomatis menyesuaikan alokasi portofoliomu untuk hasil optimal.</p>
+    </div>
+    <div class="robo-tabs" id="roboTabs">
+      <button class="robo-tab active" data-profile="konservatif">&#128737;&#65039; Konservatif</button>
+      <button class="robo-tab" data-profile="moderat">&#9878;&#65039; Moderat</button>
+      <button class="robo-tab" data-profile="agresif">&#128640; Agresif</button>
+    </div>
+    <div class="robo-content">
+      <div class="robo-pie-wrap">
+        <div class="robo-pie" id="roboPie"></div>
+        <div class="robo-legend" id="roboLegend"></div>
+      </div>
+      <div class="robo-info">
+        <h3 id="roboTitle">Konservatif</h3>
+        <p id="roboDesc">Cocok untuk kamu yang mengutamakan keamanan modal. Portofolio didominasi instrumen fixed-income dengan volatilitas rendah.</p>
+        <div class="robo-alloc" id="roboAlloc"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     8. REKSA DANA UNGGULAN
+     ============================================= -->
+<section class="section" id="reksa-dana">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div class="section-label">Reksa Dana Unggulan</div>
+      <h2 class="section-title">Pilihan Terbaik untuk<br><em>Portofolio Optimalmu</em></h2>
+      <p class="section-sub">Diseleksi ketat berdasarkan konsistensi return, kualitas manajer investasi, dan biaya pengelolaan yang kompetitif.</p>
+    </div>
+    <div class="rd-table-wrap reveal">
+      <table class="rd-table">
+        <thead>
+          <tr>
+            <th>Nama Reksa Dana</th>
+            <th>Kategori</th>
+            <th>NAB/Unit</th>
+            <th>Return YTD</th>
+            <th>Return 1 Tahun</th>
+            <th>Rating</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="rd-name">Manulife Saham Andalan</div><div style="font-size:0.7rem;color:var(--text3)">Manulife Aset Manajemen</div></td>
+            <td><span class="rd-cat cat-saham">Saham</span></td>
+            <td>Rp 5.842</td>
+            <td><span class="rd-ret-up">+18.4%</span></td>
+            <td><span class="rd-ret-up">+22.7%</span></td>
+            <td><span class="rd-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></td>
+          </tr>
+          <tr>
+            <td><div class="rd-name">Schroder Dana Prestasi Plus</div><div style="font-size:0.7rem;color:var(--text3)">Schroder Investment</div></td>
+            <td><span class="rd-cat cat-campuran">Campuran</span></td>
+            <td>Rp 12.350</td>
+            <td><span class="rd-ret-up">+11.2%</span></td>
+            <td><span class="rd-ret-up">+14.8%</span></td>
+            <td><span class="rd-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></td>
+          </tr>
+          <tr>
+            <td><div class="rd-name">Batavia Dana Obligasi Optima</div><div style="font-size:0.7rem;color:var(--text3)">Batavia Prosperindo</div></td>
+            <td><span class="rd-cat cat-pendapatan">Pendapatan Tetap</span></td>
+            <td>Rp 2.187</td>
+            <td><span class="rd-ret-up">+6.8%</span></td>
+            <td><span class="rd-ret-up">+8.3%</span></td>
+            <td><span class="rd-stars">&#9733;&#9733;&#9733;&#9733;</span><span class="rd-star-dim">&#9733;</span></td>
+          </tr>
+          <tr>
+            <td><div class="rd-name">Sucorinvest Money Market Fund</div><div style="font-size:0.7rem;color:var(--text3)">Sucorinvest AMI</div></td>
+            <td><span class="rd-cat cat-pasar">Pasar Uang</span></td>
+            <td>Rp 1.412</td>
+            <td><span class="rd-ret-up">+3.2%</span></td>
+            <td><span class="rd-ret-up">+4.8%</span></td>
+            <td><span class="rd-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></td>
+          </tr>
+          <tr>
+            <td><div class="rd-name">Eastspring Syariah Greater Indonesia</div><div style="font-size:0.7rem;color:var(--text3)">Eastspring Investments</div></td>
+            <td><span class="rd-cat cat-saham">Saham Syariah</span></td>
+            <td>Rp 3.924</td>
+            <td><span class="rd-ret-up">+15.6%</span></td>
+            <td><span class="rd-ret-up">+19.1%</span></td>
+            <td><span class="rd-stars">&#9733;&#9733;&#9733;&#9733;</span><span class="rd-star-dim">&#9733;</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     9. KALKULATOR SIMULASI
+     ============================================= -->
+<section class="section calc-section" id="kalkulator">
+  <div class="section-inner calc-inner">
+    <div class="section-header reveal">
+      <div class="section-label">Simulasi Investasi</div>
+      <h2 class="section-title">Hitung <em>Potensi Pertumbuhan</em><br>Investasimu</h2>
+      <p class="section-sub">Masukkan parameter investasimu dan lihat bagaimana compounding interest bekerja untuk masa depan finansialmu.</p>
+    </div>
+    <div class="calc-grid">
+      <div>
+        <div class="form-group">
+          <label class="form-label" for="calcModal">Modal Awal</label>
+          <input class="form-input" type="text" id="calcModal" value="10.000.000" placeholder="Rp 0">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="calcBulanan">Tambahan Bulanan</label>
+          <input class="form-input" type="text" id="calcBulanan" value="1.000.000" placeholder="Rp 0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tenor Investasi: <span id="tenorLabel">10 tahun</span></label>
+          <div class="slider-wrap">
+            <input class="form-slider" type="range" id="calcTenor" min="1" max="30" value="10">
+            <span class="slider-val" id="tenorVal">10 thn</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estimasi Return/Tahun: <span id="returnLabel">10%</span></label>
+          <div class="slider-wrap">
+            <input class="form-slider" type="range" id="calcReturn" min="3" max="25" value="10" step="0.5">
+            <span class="slider-val" id="returnVal">10%</span>
+          </div>
+        </div>
+        <button class="btn-calc" onclick="hitungKalkulator()">Hitung Proyeksi</button>
+      </div>
+      <div class="calc-result">
+        <div class="calc-result-label">Estimasi Nilai Akhir</div>
+        <div class="calc-result-val" id="calcResultVal">&mdash;</div>
+        <div class="calc-result-sub" id="calcResultSub">Masukkan data dan klik Hitung Proyeksi untuk melihat simulasi</div>
+        <div class="calc-breakdown" id="calcBreakdown"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     10. KEAMANAN & REGULASI
+     ============================================= -->
+<section class="section" id="keamanan">
+  <div class="section-inner">
+    <div class="section-header reveal" style="text-align:center">
+      <div class="section-label">Keamanan &amp; Regulasi</div>
+      <h2 class="section-title">Danamu Aman,<br><em>Terlindungi Penuh</em></h2>
+      <p class="section-sub" style="margin:0 auto">Beroperasi di bawah pengawasan otoritas keuangan Indonesia dengan standar keamanan kelas dunia.</p>
+    </div>
+    <div class="security-grid">
+      <div class="security-card reveal">
+        <div class="security-icon">&#128272;</div>
+        <h3>Enkripsi AES-256</h3>
+        <p>Seluruh data dan transaksi dienkripsi dengan standar enkripsi militer AES-256. Bahkan tim internal kami tidak bisa membaca datamu.</p>
+      </div>
+      <div class="security-card reveal">
+        <div class="security-icon">&#128737;&#65039;</div>
+        <h3>Autentikasi 2 Faktor</h3>
+        <p>Lindungi akun dengan verifikasi dua langkah via SMS OTP, email, atau aplikasi authenticator. Transaksi besar memerlukan PIN tambahan.</p>
+      </div>
+      <div class="security-card reveal">
+        <div class="security-icon">&#127970;</div>
+        <h3>Rekening Terpisah</h3>
+        <p>Dana nasabah disimpan terpisah dari dana operasional perusahaan di bank kustodian independen yang diawasi OJK.</p>
+      </div>
+    </div>
+    <div class="badge-row reveal">
+      <div class="reg-badge"><span class="reg-badge-icon">&#127963;&#65039;</span>OJK Berizin</div>
+      <div class="reg-badge"><span class="reg-badge-icon">&#128203;</span>KSEI Terdaftar</div>
+      <div class="reg-badge"><span class="reg-badge-icon">&#128274;</span>ISO 27001</div>
+      <div class="reg-badge"><span class="reg-badge-icon">&#9989;</span>POJK 22/2021</div>
+      <div class="reg-badge"><span class="reg-badge-icon">&#127760;</span>SSL/TLS 1.3</div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     11. APLIKASI MOBILE
+     ============================================= -->
+<section class="section app-section">
+  <div class="section-inner app-inner">
+    <div>
+      <div class="section-label reveal">Aplikasi Mobile</div>
+      <h2 class="section-title reveal">Investasi di Mana Saja,<br><em>Kapan Saja</em></h2>
+      <p class="section-sub reveal">Kelola portofolio, pantau pasar real-time, dan transaksi langsung dari smartphone-mu. Tersedia untuk iOS dan Android.</p>
+      <div class="app-features">
+        <div class="app-feat reveal">
+          <div class="app-feat-icon">&#128276;</div>
+          <div class="app-feat-content">
+            <h4>Notifikasi Dividen &amp; Kupon</h4>
+            <p>Dapatkan notifikasi otomatis setiap ada pembayaran dividen saham, kupon obligasi, atau distribusi hasil reksa dana langsung ke rekeningmu.</p>
+          </div>
+        </div>
+        <div class="app-feat reveal">
+          <div class="app-feat-icon">&#9881;&#65039;</div>
+          <div class="app-feat-content">
+            <h4>Auto-Invest Terjadwal</h4>
+            <p>Atur investasi otomatis setiap tanggal gajian. Pilih produk, jumlah, dan frekuensi &mdash; biarkan NesiWealth yang eksekusi secara konsisten.</p>
+          </div>
+        </div>
+        <div class="app-feat reveal">
+          <div class="app-feat-icon">&#128202;</div>
+          <div class="app-feat-content">
+            <h4>Laporan &amp; Analitik Bulanan</h4>
+            <p>Laporan portofolio lengkap dengan breakdown per aset, analisis kinerja, dan proyeksi pencapaian tujuan keuanganmu.</p>
+          </div>
+        </div>
+        <div class="app-feat reveal">
+          <div class="app-feat-icon">&#127769;</div>
+          <div class="app-feat-content">
+            <h4>Dark Mode &amp; Widget</h4>
+            <p>Tampilan elegan dark mode untuk kenyamanan malam hari, plus widget homescreen untuk pantau portofolio sekilas tanpa buka app.</p>
+          </div>
+        </div>
+      </div>
+      <div class="app-store-btns reveal">
+        <a href="#" class="app-store-btn">
+          <span class="app-store-icon">&#127822;</span>
+          <span class="app-store-text"><small>Download di</small><strong>App Store</strong></span>
+        </a>
+        <a href="#" class="app-store-btn">
+          <span class="app-store-icon">&#9654;&#65039;</span>
+          <span class="app-store-text"><small>Dapatkan di</small><strong>Google Play</strong></span>
+        </a>
+      </div>
+    </div>
+    <div class="phone-mockup">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="phone-header">
+          <div class="phone-header-logo">NesiWealth</div>
+          <div>
+            <div class="phone-header-balance">Total Aset</div>
+            <div class="phone-header-val">Rp 284,75jt</div>
+          </div>
+        </div>
+        <div class="phone-body">
+          <div class="phone-chart"></div>
+          <div class="phone-items">
+            <div class="phone-item"><span class="phone-item-name">BBCA</span><span class="phone-item-val">Rp 98,5jt</span><span style="color:var(--up);font-size:0.55rem">+12.4%</span></div>
+            <div class="phone-item"><span class="phone-item-name">RD Makmur</span><span class="phone-item-val">Rp 85,0jt</span><span style="color:var(--up);font-size:0.55rem">+5.2%</span></div>
+            <div class="phone-item"><span class="phone-item-name">ORI025</span><span class="phone-item-val">Rp 42,8jt</span><span style="color:var(--up);font-size:0.55rem">+3.8%</span></div>
+            <div class="phone-item"><span class="phone-item-name">Emas Digital</span><span class="phone-item-val">Rp 28,5jt</span><span style="color:var(--down);font-size:0.55rem">-1.2%</span></div>
+          </div>
+        </div>
+        <div class="phone-nav">
+          <div class="phone-nav-item active"><span class="phone-nav-icon">&#127968;</span>Beranda</div>
+          <div class="phone-nav-item"><span class="phone-nav-icon">&#128202;</span>Porto</div>
+          <div class="phone-nav-item"><span class="phone-nav-icon">&#128269;</span>Jelajah</div>
+          <div class="phone-nav-item"><span class="phone-nav-icon">&#128100;</span>Profil</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     12. TESTIMONIAL
+     ============================================= -->
+<section class="section" id="testimonial">
+  <div class="section-inner">
+    <div class="section-header reveal" style="text-align:center">
+      <div class="section-label">Cerita Nasabah</div>
+      <h2 class="section-title">Mereka Sudah<br><em>Merasakan Manfaatnya</em></h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <p class="testi-text">Baru lulus kuliah, gaji pertama langsung saya alokasikan ke NesiWealth. Awalnya takut investasi, tapi antarmukanya sangat mudah. Sekarang sudah punya 3 tujuan investasi berjalan sekaligus!</p>
+        <div class="testi-author">
+          <div class="testi-avatar">&#128104;&#8205;&#128187;</div>
+          <div>
+            <div class="testi-rating">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <div class="testi-name">Reza Firmansyah</div>
+            <div class="testi-meta">Software Developer, 24 tahun &middot; Surabaya</div>
+            <div class="testi-return">&#8593; Return 16.2% dalam 14 bulan</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal">
+        <p class="testi-text">Sebagai ibu rumah tangga, saya tidak punya waktu banyak untuk pantau investasi. Fitur Robo-Advisor dan Auto-Invest benar-benar mengubah cara saya menabung. Dana pendidikan anak semakin dekat tujuannya.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">&#128105;&#8205;&#128102;</div>
+          <div>
+            <div class="testi-rating">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <div class="testi-name">Dewi Anggraini</div>
+            <div class="testi-meta">Ibu Rumah Tangga, 38 tahun &middot; Malang</div>
+            <div class="testi-return">&#8593; Dana pendidikan 67% dari target</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal">
+        <p class="testi-text">Sudah 3 tahun di NesiWealth. Setelah pensiun, saya pindahkan seluruh tabungan ke sini. Laporan bulanan yang detail dan kupon ORI yang masuk rutin tiap bulan memberikan ketenangan yang saya cari.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">&#128116;</div>
+          <div>
+            <div class="testi-rating">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <div class="testi-name">Bambang Sutrisno</div>
+            <div class="testi-meta">Pensiunan PNS, 62 tahun &middot; Yogyakarta</div>
+            <div class="testi-return">&#8593; Passive income Rp 4,2jt/bulan</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     13. ARTIKEL EDUKASI
+     ============================================= -->
+<section class="section" id="edukasi" style="background:var(--bg2);border-top:1px solid var(--border)">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div class="section-label">Edukasi Investasi</div>
+      <h2 class="section-title">Belajar Sebelum<br><em>Mulai Berinvestasi</em></h2>
+      <p class="section-sub">Konten edukasi gratis untuk semua level &mdash; dari pemula hingga investor berpengalaman.</p>
+    </div>
+    <div class="artikel-grid">
+      <div class="artikel-card reveal">
+        <div class="artikel-thumb" style="background:linear-gradient(135deg,rgba(13,148,136,0.15),rgba(13,148,136,0.05))">&#128202;</div>
+        <div class="artikel-body">
+          <div class="artikel-tag">Pemula</div>
+          <h3>Reksa Dana untuk Pemula: Mulai dari Rp 10.000</h3>
+          <p>Apa itu reksa dana? Bagaimana cara kerjanya? Panduan lengkap untuk investor pertama kali yang ingin memulai dengan modal kecil.</p>
+          <div class="artikel-meta"><span>&#128214; 8 menit baca</span><span>&#128197; 15 Jun 2026</span></div>
+        </div>
+      </div>
+      <div class="artikel-card reveal">
+        <div class="artikel-thumb" style="background:linear-gradient(135deg,rgba(212,160,23,0.15),rgba(212,160,23,0.05))">&#128201;</div>
+        <div class="artikel-body">
+          <div class="artikel-tag">Strategi</div>
+          <h3>Dollar-Cost Averaging: Strategi Investasi Tanpa Takut Timing</h3>
+          <p>DCA adalah cara investasi rutin tanpa perlu memprediksi kapan pasar naik atau turun. Mengapa strategi ini terbukti efektif jangka panjang.</p>
+          <div class="artikel-meta"><span>&#128214; 6 menit baca</span><span>&#128197; 10 Jun 2026</span></div>
+        </div>
+      </div>
+      <div class="artikel-card reveal">
+        <div class="artikel-thumb" style="background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(99,102,241,0.05))">&#127963;&#65039;</div>
+        <div class="artikel-body">
+          <div class="artikel-tag">Perbandingan</div>
+          <h3>ORI vs SBN: Mana yang Lebih Untung untuk Investor Ritel?</h3>
+          <p>Obligasi Ritel Indonesia (ORI) vs Surat Berharga Negara (SBN) &mdash; perbedaan, kelebihan, dan mana yang cocok untuk profil investasimu.</p>
+          <div class="artikel-meta"><span>&#128214; 10 menit baca</span><span>&#128197; 5 Jun 2026</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     14. FAQ
+     ============================================= -->
+<section class="section faq-section" id="faq">
+  <div class="section-inner faq-inner">
+    <div class="section-header reveal" style="text-align:center">
+      <div class="section-label">FAQ</div>
+      <h2 class="section-title">Pertanyaan yang<br><em>Sering Ditanyakan</em></h2>
+    </div>
+    <div id="faqList">
+      <div class="faq-item">
+        <button class="faq-q">Berapa minimal investasi di NesiWealth? <i class="faq-icon">+</i></button>
+        <div class="faq-a">Kamu bisa mulai investasi di NesiWealth dengan modal awal hanya <strong>Rp 10.000</strong> untuk reksa dana pasar uang. Untuk saham IDX minimal 1 lot (100 lembar) sesuai harga pasar. Obligasi SBN minimal Rp 1 juta. Emas digital bisa dimulai dari 0.01 gram (~Rp 9.000). Tidak ada biaya pembukaan rekening.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Apakah ada biaya pengelolaan atau komisi? <i class="faq-icon">+</i></button>
+        <div class="faq-a">NesiWealth menggunakan model biaya transparan: <strong>0% biaya pembelian reksa dana</strong>, biaya pengelolaan reksa dana sudah termasuk dalam NAB (0.5&ndash;2% per tahun tergantung produk). Untuk saham, biaya beli 0.15% dan jual 0.25% sudah termasuk levy. Emas digital dikenakan spread 1.5%. Tidak ada biaya bulanan atau biaya tidak aktif.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Bagaimana keamanan dana saya? Apakah dijamin? <i class="faq-icon">+</i></button>
+        <div class="faq-a">Dana investasimu 100% aman dan terpisah dari dana operasional NesiWealth. Reksa dana dan saham disimpan di KSEI (Kustodian Sentral Efek Indonesia). Obligasi negara dijamin penuh oleh Pemerintah RI. NesiWealth beroperasi di bawah izin OJK sebagai Agen Penjual Reksa Dana dan Perusahaan Efek. Enkripsi AES-256 dan 2FA melindungi akun kamu.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Kapan saya bisa mencairkan investasi? <i class="faq-icon">+</i></button>
+        <div class="faq-a">Reksa dana pasar uang bisa dicairkan kapan saja dengan proses <strong>T+1 hari kerja</strong>. Reksa dana pendapatan tetap dan campuran T+2 hari kerja. Saham bisa dijual kapan saja di jam bursa (T+2 settlement). Emas digital bisa dijual 24/7. Untuk obligasi SBN, ada masa holding period tertentu (umumnya tidak bisa dijual 2 bulan pertama).</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Bagaimana cara pelaporan pajak investasi? <i class="faq-icon">+</i></button>
+        <div class="faq-a">NesiWealth secara otomatis memotong pajak yang berlaku: PPh final 0.1% dari penjualan saham (sudah termasuk dalam biaya jual), kupon obligasi dikenakan PPh final 10%, dan capital gain reksa dana dikenakan PPh sesuai aturan yang berlaku. Kami menyediakan laporan pajak tahunan yang siap dilampirkan di SPT Tahunan kamu tanpa perlu repot menghitung sendiri.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     15. CTA
+     ============================================= -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <div class="section-label reveal" style="display:block;text-align:center;margin-bottom:1rem">Mulai Sekarang</div>
+    <h2 class="reveal">Investasi Pertamamu<br>Dimulai dari <em>Rp 10.000</em></h2>
+    <p class="reveal">Bergabung bersama 250.000+ nasabah yang sudah mempercayakan masa depan finansial mereka kepada NesiWealth. Buka rekening gratis dalam 5 menit.</p>
+    <div class="cta-actions reveal">
+      <a href="#" class="btn-cta">Buka Rekening Gratis</a>
+      <button class="btn-outline">Pelajari Lebih Lanjut</button>
+    </div>
+    <div class="cta-note reveal">Tanpa biaya pembukaan &middot; Tanpa saldo minimum &middot; Proses 5 menit</div>
+  </div>
+</section>
+
+<!-- =============================================
+     16. FOOTER
+     ============================================= -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="nav-logo"><span>Nesi</span>Wealth</span>
+        <p>Platform manajemen kekayaan dan investasi digital Indonesia yang terdaftar dan diawasi oleh Otoritas Jasa Keuangan (OJK).</p>
+      </div>
+      <div class="footer-col">
+        <h4>Produk</h4>
+        <ul>
+          <li><a href="#">Reksa Dana</a></li>
+          <li><a href="#">Saham IDX</a></li>
+          <li><a href="#">Obligasi Negara</a></li>
+          <li><a href="#">Emas Digital</a></li>
+          <li><a href="#">Robo-Advisor</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <ul>
+          <li><a href="#">Tentang Kami</a></li>
+          <li><a href="#">Karir</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Pers</a></li>
+          <li><a href="#">Mitra</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Dukungan</h4>
+        <ul>
+          <li><a href="#">Pusat Bantuan</a></li>
+          <li><a href="#">Hubungi Kami</a></li>
+          <li><a href="#">Kebijakan Privasi</a></li>
+          <li><a href="#">Syarat &amp; Ketentuan</a></li>
+          <li><a href="#">Pengaduan</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-disclaimer">
+        <strong>Disclaimer Investasi:</strong> NesiWealth adalah platform perantara investasi yang terdaftar dan diawasi OJK. Investasi mengandung risiko, termasuk kemungkinan kehilangan sebagian atau seluruh modal yang diinvestasikan. Kinerja masa lalu tidak menjamin hasil di masa depan. Nilai aset dapat naik maupun turun. Pastikan kamu telah memahami risiko investasi sebelum berinvestasi. Konten di platform ini bukan merupakan saran investasi. NesiWealth tidak bertanggung jawab atas kerugian yang timbul akibat keputusan investasi.
+      </div>
+      <div class="footer-copy">&copy; 2026 NesiWealth. Hak Cipta Dilindungi.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// =============================================
+// ROBO-ADVISOR DATA & RENDER
+// =============================================
+var roboData = {
+  konservatif: {
+    title: 'Konservatif',
+    desc: 'Cocok untuk kamu yang mengutamakan keamanan modal. Portofolio didominasi instrumen fixed-income dengan volatilitas rendah. Ideal untuk horizon investasi 1–3 tahun atau mendekati tujuan keuangan.',
+    alloc: [
+      { label: 'Pasar Uang', pct: 35, color: '#0D9488' },
+      { label: 'Obligasi',   pct: 40, color: '#6366F1' },
+      { label: 'RD Campuran',pct: 20, color: '#D4A017' },
+      { label: 'Saham',      pct: 5,  color: '#22C55E' }
+    ]
+  },
+  moderat: {
+    title: 'Moderat',
+    desc: 'Menyeimbangkan pertumbuhan dan perlindungan. Kombinasi aset beragam untuk mengoptimalkan return sambil mengendalikan risiko. Ideal untuk horizon 3–7 tahun dan profil risiko menengah.',
+    alloc: [
+      { label: 'Saham',      pct: 35, color: '#22C55E' },
+      { label: 'Obligasi',   pct: 30, color: '#6366F1' },
+      { label: 'RD Campuran',pct: 25, color: '#D4A017' },
+      { label: 'Pasar Uang', pct: 10, color: '#0D9488' }
+    ]
+  },
+  agresif: {
+    title: 'Agresif',
+    desc: 'Memaksimalkan potensi pertumbuhan jangka panjang. Portofolio didominasi saham growth dengan eksposur lebih tinggi. Cocok untuk investor dengan toleransi risiko tinggi dan horizon 7+ tahun.',
+    alloc: [
+      { label: 'Saham',    pct: 65, color: '#22C55E' },
+      { label: 'RD Saham', pct: 20, color: '#D4A017' },
+      { label: 'Obligasi', pct: 10, color: '#6366F1' },
+      { label: 'Emas',     pct: 5,  color: '#F59E0B' }
+    ]
+  }
+};
+
+function renderRobo(profile) {
+  var d = roboData[profile];
+  document.getElementById('roboTitle').textContent = d.title;
+  document.getElementById('roboDesc').textContent = d.desc;
+  var cum = 0;
+  var gradient = d.alloc.map(function(a) {
+    var start = cum; cum += a.pct;
+    return a.color + ' ' + start + '% ' + cum + '%';
+  }).join(', ');
+  document.getElementById('roboPie').style.background = 'conic-gradient(' + gradient + ')';
+  document.getElementById('roboLegend').innerHTML = d.alloc.map(function(a) {
+    return '<div class="robo-leg-item"><span class="robo-leg-dot" style="background:' + a.color + '"></span>' + a.label + ' <strong>' + a.pct + '%</strong></div>';
+  }).join('');
+  document.getElementById('roboAlloc').innerHTML = d.alloc.map(function(a) {
+    return '<div class="robo-alloc-row">'
+      + '<div class="robo-alloc-label">' + a.label + '</div>'
+      + '<div class="robo-alloc-bar-wrap"><div class="robo-alloc-bar" style="width:' + a.pct + '%;background:' + a.color + '"></div></div>'
+      + '<div class="robo-alloc-pct">' + a.pct + '%</div>'
+      + '</div>';
+  }).join('');
+}
+
+renderRobo('konservatif');
+
+document.getElementById('roboTabs').addEventListener('click', function(e) {
+  var btn = e.target.closest('.robo-tab');
+  if (!btn) return;
+  document.querySelectorAll('.robo-tab').forEach(function(t) { t.classList.remove('active'); });
+  btn.classList.add('active');
+  renderRobo(btn.dataset.profile);
+});
+
+// =============================================
+// KALKULATOR COMPOUND INTEREST
+// =============================================
+var calcTenorEl = document.getElementById('calcTenor');
+var calcReturnEl = document.getElementById('calcReturn');
+
+calcTenorEl.addEventListener('input', function() {
+  document.getElementById('tenorVal').textContent = this.value + ' thn';
+  document.getElementById('tenorLabel').textContent = this.value + ' tahun';
+});
+calcReturnEl.addEventListener('input', function() {
+  document.getElementById('returnVal').textContent = this.value + '%';
+  document.getElementById('returnLabel').textContent = this.value + '%';
+});
+
+function parseRupiah(str) {
+  return parseInt(String(str).replace(/[^\d]/g, '')) || 0;
+}
+function formatRupiah(n) {
+  if (n >= 1e12) return 'Rp ' + (n / 1e12).toFixed(2) + ' T';
+  if (n >= 1e9)  return 'Rp ' + (n / 1e9).toFixed(2) + ' M';
+  if (n >= 1e6)  return 'Rp ' + (n / 1e6).toFixed(1) + ' jt';
+  return 'Rp ' + Math.round(n).toLocaleString('id-ID');
+}
+function formatFull(n) {
+  return 'Rp ' + Math.round(n).toLocaleString('id-ID');
+}
+
+['calcModal', 'calcBulanan'].forEach(function(id) {
+  var el = document.getElementById(id);
+  el.addEventListener('blur', function() {
+    var n = parseRupiah(this.value);
+    if (n > 0) this.value = n.toLocaleString('id-ID');
+  });
+  el.addEventListener('focus', function() {
+    this.value = parseRupiah(this.value) || '';
+  });
+});
+
+function hitungKalkulator() {
+  var modal   = parseRupiah(document.getElementById('calcModal').value);
+  var bulanan = parseRupiah(document.getElementById('calcBulanan').value);
+  var tenor   = parseInt(calcTenorEl.value);
+  var r       = parseFloat(calcReturnEl.value) / 100;
+  if (!modal && !bulanan) { alert('Masukkan modal awal atau tambahan bulanan!'); return; }
+  var rBulan = r / 12;
+  var n = tenor * 12;
+  var fvModal   = modal * Math.pow(1 + rBulan, n);
+  var fvBulanan = rBulan > 0 ? bulanan * ((Math.pow(1 + rBulan, n) - 1) / rBulan) : bulanan * n;
+  var total = fvModal + fvBulanan;
+  var totalSetor = modal + (bulanan * n);
+  var totalKeuntungan = total - totalSetor;
+  var resultEl = document.getElementById('calcResultVal');
+  var start = 0, duration = 800;
+  var step = (total - start) / (duration / 16);
+  var current = start;
+  var timer = setInterval(function() {
+    current = Math.min(current + step, total);
+    resultEl.textContent = formatRupiah(current);
+    if (current >= total) clearInterval(timer);
+  }, 16);
+  document.getElementById('calcResultSub').textContent =
+    'Proyeksi investasi selama ' + tenor + ' tahun dengan asumsi return ' + calcReturnEl.value + '% per tahun (compounding bulanan)';
+  document.getElementById('calcBreakdown').innerHTML =
+    '<div class="calc-row"><span class="calc-row-label">Modal Awal</span><span class="calc-row-val">' + formatFull(modal) + '</span></div>'
+    + '<div class="calc-row"><span class="calc-row-label">Total Setoran Bulanan</span><span class="calc-row-val">' + formatFull(bulanan * n) + '</span></div>'
+    + '<div class="calc-row"><span class="calc-row-label">Total Modal Disetor</span><span class="calc-row-val">' + formatFull(totalSetor) + '</span></div>'
+    + '<div class="calc-row"><span class="calc-row-label">Keuntungan Investasi</span><span class="calc-row-val" style="color:var(--up)">' + formatFull(totalKeuntungan) + '</span></div>'
+    + '<div class="calc-row"><span class="calc-row-label">Nilai Akhir Estimasi</span><span class="calc-row-val">' + formatFull(total) + '</span></div>';
+}
+
+// =============================================
+// FAQ ACCORDION
+// =============================================
+document.getElementById('faqList').addEventListener('click', function(e) {
+  var btn = e.target.closest('.faq-q');
+  if (!btn) return;
+  var item = btn.closest('.faq-item');
+  var isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(function(i) { i.classList.remove('open'); });
+  if (!isOpen) item.classList.add('open');
+});
+
+// =============================================
+// DARK / LIGHT TOGGLE
+// =============================================
+document.getElementById('btnTheme').addEventListener('click', function() {
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  this.textContent = isDark ? '☀️' : '🌙';
+});
+
+// =============================================
+// MOBILE NAV
+// =============================================
+document.getElementById('navBurger').addEventListener('click', function() {
+  document.getElementById('mobileNav').classList.toggle('open');
+});
+document.querySelectorAll('.mobile-nav a').forEach(function(a) {
+  a.addEventListener('click', function() { document.getElementById('mobileNav').classList.remove('open'); });
+});
+
+// =============================================
+// COUNTER ANIMATION
+// =============================================
+function animateCounter(el) {
+  var target = parseFloat(el.dataset.target);
+  var prefix = el.dataset.prefix || '';
+  var suffix = el.dataset.suffix || '';
+  var format = el.dataset.format || 'number';
+  var duration = 1800;
+  var startTime = performance.now();
+  function update(now) {
+    var elapsed = now - startTime;
+    var progress = Math.min(elapsed / duration, 1);
+    var ease = 1 - Math.pow(1 - progress, 3);
+    var current = target * ease;
+    if (format === 'decimal') {
+      el.textContent = prefix + current.toFixed(1) + suffix;
+    } else {
+      if (target >= 1000) {
+        el.textContent = prefix + Math.floor(current).toLocaleString('id-ID') + suffix;
+      } else {
+        el.textContent = prefix + Math.floor(current) + suffix;
+      }
+    }
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+// =============================================
+// INTERSECTION OBSERVER
+// =============================================
+var revealObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(function(el) { revealObs.observe(el); });
+
+var counterObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      animateCounter(entry.target);
+      counterObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('[data-target]').forEach(function(el) { counterObs.observe(el); });
+
+var goalObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.goal-prog').forEach(function(bar) {
+        var w = bar.dataset.width;
+        setTimeout(function() { bar.style.width = w + '%'; }, 200);
+      });
+      goalObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+var wGoals = document.getElementById('wGoals');
+if (wGoals) goalObs.observe(wGoals);
+</script>
+</body>
+</html>

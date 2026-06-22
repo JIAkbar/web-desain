@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NusaMart — Belanja Mudah, Pengiriman Cepat ke Seluruh Indonesia</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:      #FFFFFF;
+  --bg2:     #F5F6FA;
+  --bg3:     #ECEEF5;
+  --text:    #111827;
+  --text2:   #4B5563;
+  --text3:   #9CA3AF;
+  --primary: #7C3AED;
+  --primary2:#6D28D9;
+  --orange:  #F97316;
+  --green:   #16A34A;
+  --red:     #DC2626;
+  --yellow:  #FACC15;
+  --border:  rgba(124,58,237,0.1);
+  --border2: #E5E7EB;
+  --shadow:  0 2px 8px rgba(0,0,0,0.06);
+  --shadow2: 0 4px 16px rgba(0,0,0,0.1);
+  --font-body: 'Inter', sans-serif;
+  --font-heading: 'Sora', sans-serif;
+  --radius: 10px;
+  --tr: 0.2s ease;
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); line-height: 1.6; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+button { cursor: pointer; font-family: var(--font-body); }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 1.25rem; }
+.section { padding: 3rem 0; }
+.section-title { font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; color: var(--text); margin-bottom: 0.25rem; }
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem; }
+.see-all { color: var(--primary); font-size: 0.875rem; font-weight: 600; transition: color var(--tr); }
+.see-all:hover { color: var(--primary2); }
+
+/* TOP PROMO BAR */
+.promo-bar { background: var(--primary); color: #fff; padding: 0.5rem 0; text-align: center; font-size: 0.83rem; font-weight: 500; }
+.promo-bar .inner { display: flex; align-items: center; justify-content: center; gap: 2rem; flex-wrap: wrap; }
+.promo-bar a { color: rgba(255,255,255,0.9); font-weight: 700; text-decoration: underline; }
+.promo-sep { color: rgba(255,255,255,0.35); }
+
+/* NAVBAR */
+.navbar { position: sticky; top: 0; z-index: 1000; background: #fff; border-bottom: 1px solid var(--border2); box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+.nav-inner { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 1.25rem; max-width: 1200px; margin: 0 auto; }
+.nav-logo { display: flex; align-items: center; gap: 0.6rem; flex-shrink: 0; }
+.logo-icon { width: 36px; height: 36px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-family: var(--font-heading); font-weight: 800; font-size: 0.9rem; }
+.logo-name { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 800; color: var(--primary); }
+.search-bar-nav { flex: 1; display: flex; border: 2px solid var(--primary); border-radius: var(--radius); overflow: hidden; max-width: 500px; }
+.search-cat-nav { border: none; border-right: 1px solid rgba(124,58,237,0.2); padding: 0 0.65rem; font-size: 0.8rem; color: var(--text2); background: var(--bg2); outline: none; font-family: var(--font-body); cursor: pointer; }
+.search-input-nav { flex: 1; border: none; padding: 0.5rem 0.75rem; font-size: 0.9rem; outline: none; color: var(--text); font-family: var(--font-body); }
+.search-btn-nav { background: var(--primary); color: #fff; border: none; padding: 0 1rem; font-size: 0.875rem; font-weight: 600; transition: background var(--tr); }
+.search-btn-nav:hover { background: var(--primary2); }
+.nav-actions { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+.nav-icon-btn { position: relative; display: flex; align-items: center; gap: 0.35rem; font-size: 0.85rem; color: var(--text2); padding: 0.4rem 0.7rem; border-radius: 8px; transition: background var(--tr); }
+.nav-icon-btn:hover { background: var(--bg2); }
+.cart-badge { position: absolute; top: -2px; right: -2px; width: 18px; height: 18px; background: var(--orange); color: #fff; border-radius: 50%; font-size: 0.7rem; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+.btn-login { background: transparent; border: 2px solid var(--primary); color: var(--primary); padding: 0.45rem 1rem; border-radius: 8px; font-size: 0.875rem; font-weight: 700; transition: all var(--tr); }
+.btn-login:hover { background: var(--primary); color: #fff; }
+.btn-daftar { background: var(--primary); color: #fff; padding: 0.45rem 1rem; border-radius: 8px; font-size: 0.875rem; font-weight: 700; transition: background var(--tr); }
+.btn-daftar:hover { background: var(--primary2); }
+.hamburger { display: none; flex-direction: column; gap: 4px; background: none; border: none; padding: 0.4rem; }
+.hamburger span { width: 20px; height: 2px; background: var(--text); border-radius: 2px; }
+.mobile-search { display: none; padding: 0.6rem 1.25rem; border-top: 1px solid var(--border2); background: #fff; }
+.mobile-search.open { display: block; }
+.mobile-search-row { display: flex; border: 2px solid var(--primary); border-radius: 8px; overflow: hidden; }
+.mobile-search-row input { flex: 1; border: none; padding: 0.5rem 0.75rem; font-size: 0.875rem; outline: none; font-family: var(--font-body); }
+.mobile-search-row button { background: var(--primary); color: #fff; border: none; padding: 0 1rem; font-size: 0.9rem; }
+
+/* HERO - BIG SEARCH */
+.hero { background: linear-gradient(135deg, #4C1D95 0%, var(--primary) 50%, #6D28D9 100%); padding: 3.5rem 0 4rem; position: relative; overflow: hidden; text-align: center; }
+.hero::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 40px; background: var(--bg2); clip-path: polygon(0 100%, 100% 0, 100% 100%); }
+.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 50%, rgba(249,115,22,0.2) 0%, transparent 55%), radial-gradient(ellipse at 80% 20%, rgba(250,204,21,0.12) 0%, transparent 45%); }
+.hero-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+.hero h1 { font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; }
+.hero h1 .brand { color: var(--yellow); }
+.hero-sub { color: rgba(255,255,255,0.8); margin-bottom: 2rem; font-size: 1rem; }
+.search-bar-big { display: flex; background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.2); max-width: 680px; margin: 0 auto 1rem; }
+.search-cat-big { border: none; border-right: 1px solid #E5E7EB; padding: 0 1rem; font-size: 0.875rem; color: var(--text2); background: #F9FAFB; outline: none; cursor: pointer; font-family: var(--font-body); min-width: 130px; }
+.search-input-big { flex: 1; border: none; padding: 1rem; font-size: 0.95rem; outline: none; color: var(--text); font-family: var(--font-body); }
+.search-btn-big { background: var(--primary); color: #fff; border: none; padding: 0 1.5rem; font-size: 1rem; font-weight: 700; transition: background var(--tr); font-family: var(--font-body); }
+.search-btn-big:hover { background: var(--primary2); }
+.search-suggestions { display: flex; align-items: center; justify-content: center; gap: 0.6rem; flex-wrap: wrap; font-size: 0.85rem; }
+.search-suggestions .label { color: rgba(255,255,255,0.7); font-weight: 500; }
+.search-suggestions a { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); padding: 0.25rem 0.7rem; border-radius: 20px; transition: background var(--tr); }
+.search-suggestions a:hover { background: rgba(255,255,255,0.22); }
+
+/* KATEGORI ICON GRID */
+.kat-section { background: var(--bg2); padding: 2rem 0; }
+.kat-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 0.75rem; }
+.kat-item { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; padding: 0.85rem 0.5rem; background: #fff; border-radius: var(--radius); border: 1px solid var(--border2); cursor: pointer; transition: border-color var(--tr), box-shadow var(--tr), transform var(--tr); text-align: center; }
+.kat-item:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(124,58,237,0.1); transform: translateY(-2px); }
+.kat-icon { font-size: 1.6rem; }
+.kat-name { font-size: 0.72rem; color: var(--text2); font-weight: 600; line-height: 1.2; }
+
+/* BANNER CAROUSEL */
+.banner-section { padding: 1.5rem 0; }
+.banner-wrapper { position: relative; overflow: hidden; border-radius: 14px; }
+.banner-track { display: flex; transition: transform 0.45s ease; }
+.banner-slide { min-width: 100%; border-radius: 14px; overflow: hidden; }
+.banner-img { height: 240px; display: flex; align-items: center; padding: 2.5rem; position: relative; }
+.banner-badge { display: inline-block; padding: 0.3rem 0.85rem; border-radius: 20px; font-size: 0.78rem; font-weight: 800; margin-bottom: 0.75rem; }
+.banner-title { font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; }
+.banner-sub { color: rgba(255,255,255,0.85); font-size: 0.95rem; margin-bottom: 1.25rem; }
+.banner-cta { display: inline-flex; align-items: center; gap: 0.4rem; background: #fff; color: var(--text); padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 700; font-size: 0.875rem; transition: box-shadow var(--tr); }
+.banner-cta:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.banner-emoji { position: absolute; right: 3rem; font-size: 5rem; opacity: 0.3; }
+.banner-dots { display: flex; justify-content: center; gap: 0.5rem; margin-top: 0.75rem; }
+.banner-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border2); cursor: pointer; transition: background var(--tr), width var(--tr); border: none; }
+.banner-dot.active { background: var(--primary); width: 24px; border-radius: 4px; }
+.banner-prev, .banner-next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.9); border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; box-shadow: var(--shadow2); transition: background var(--tr); z-index: 5; }
+.banner-prev { left: 1rem; }
+.banner-next { right: 1rem; }
+.banner-prev:hover, .banner-next:hover { background: #fff; }
+
+/* FLASH SALE */
+.flash-section { background: var(--bg2); padding: 2rem 0; }
+.flash-header { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.flash-title { font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 0.5rem; }
+.flash-timer { display: flex; align-items: center; gap: 0.4rem; }
+.flash-label { font-size: 0.82rem; color: var(--text3); font-weight: 600; }
+.flash-unit { background: var(--red); color: #fff; border-radius: 6px; padding: 0.25rem 0.55rem; font-family: var(--font-heading); font-weight: 800; font-size: 0.95rem; min-width: 34px; text-align: center; }
+.flash-colon { font-weight: 800; color: var(--red); }
+.flash-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
+
+/* PRODUCT CARD (shared) */
+.product-card { background: #fff; border: 1px solid var(--border2); border-radius: var(--radius); overflow: hidden; transition: box-shadow var(--tr), transform var(--tr); position: relative; }
+.product-card:hover { box-shadow: var(--shadow2); transform: translateY(-3px); }
+.product-img { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 3rem; position: relative; overflow: hidden; }
+.product-badge { position: absolute; top: 8px; left: 8px; background: var(--red); color: #fff; padding: 0.2rem 0.55rem; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
+.wishlist-btn { position: absolute; top: 8px; right: 8px; width: 30px; height: 30px; background: rgba(255,255,255,0.9); border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; cursor: pointer; transition: background var(--tr), transform var(--tr); }
+.wishlist-btn:hover { background: #fff; transform: scale(1.1); }
+.wishlist-btn.active { background: #FEE2E2; }
+.product-info { padding: 0.85rem; }
+.product-name { font-size: 0.82rem; color: var(--text); line-height: 1.4; margin-bottom: 0.4rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.product-price { font-family: var(--font-heading); font-size: 1rem; font-weight: 800; color: var(--red); }
+.product-original { font-size: 0.78rem; color: var(--text3); text-decoration: line-through; }
+.product-meta { font-size: 0.75rem; color: var(--text3); margin-top: 0.3rem; }
+.product-location { font-size: 0.72rem; color: var(--text3); margin-top: 0.2rem; }
+.add-cart-btn { width: 100%; background: var(--primary); color: #fff; border: none; padding: 0.6rem; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: background var(--tr); font-family: var(--font-body); margin-top: 0.6rem; border-radius: 6px; }
+.add-cart-btn:hover { background: var(--primary2); }
+.add-cart-btn:active { transform: scale(0.98); }
+
+/* TERLARIS / TERBARU TABS */
+.prod-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+.prod-tab { padding: 0.5rem 1.1rem; border-radius: 20px; font-size: 0.875rem; font-weight: 700; border: 2px solid var(--border2); background: #fff; color: var(--text2); cursor: pointer; transition: all var(--tr); font-family: var(--font-body); }
+.prod-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.prod-tab:hover:not(.active) { border-color: var(--primary); color: var(--primary); }
+.prod-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+
+/* BRAND RESMI */
+.brand-section { background: var(--bg2); padding: 2rem 0; }
+.brand-grid { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+.brand-logo { background: #fff; border: 1px solid var(--border2); border-radius: var(--radius); width: 100px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; cursor: pointer; transition: border-color var(--tr), box-shadow var(--tr); }
+.brand-logo:hover { border-color: var(--primary); box-shadow: var(--shadow); }
+
+/* SELLER TERPERCAYA */
+.seller-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.seller-card { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 1.5rem; transition: box-shadow var(--tr), transform var(--tr); }
+.seller-card:hover { box-shadow: var(--shadow2); transform: translateY(-2px); }
+.seller-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+.seller-avatar { width: 54px; height: 54px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+.seller-name { font-family: var(--font-heading); font-size: 0.95rem; font-weight: 700; color: var(--text); }
+.seller-verified { color: var(--green); font-size: 0.78rem; font-weight: 600; }
+.seller-stats { display: flex; gap: 1.5rem; margin-bottom: 1rem; }
+.seller-stat { text-align: center; }
+.seller-stat .num { font-family: var(--font-heading); font-size: 1rem; font-weight: 800; color: var(--primary); }
+.seller-stat .lbl { font-size: 0.72rem; color: var(--text3); }
+.seller-products { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
+.seller-mini-img { height: 60px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+.btn-kunjungi { width: 100%; background: transparent; border: 2px solid var(--primary); color: var(--primary); padding: 0.5rem; border-radius: 8px; font-size: 0.85rem; font-weight: 700; margin-top: 1rem; transition: all var(--tr); font-family: var(--font-body); }
+.btn-kunjungi:hover { background: var(--primary); color: #fff; }
+
+/* PROMO KATEGORI BANNER */
+.promo-kat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.promo-kat-banner { border-radius: 14px; overflow: hidden; height: 180px; display: flex; align-items: center; padding: 2rem; position: relative; cursor: pointer; }
+.promo-kat-banner::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.06); transition: background var(--tr); }
+.promo-kat-banner:hover::after { background: rgba(0,0,0,0.12); }
+.promo-kat-content { position: relative; z-index: 1; }
+.promo-kat-tag { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.promo-kat-title { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 0.3rem; }
+.promo-kat-sub { color: rgba(255,255,255,0.85); font-size: 0.875rem; margin-bottom: 1rem; }
+.promo-kat-btn { display: inline-flex; align-items: center; gap: 0.3rem; background: #fff; color: var(--text); padding: 0.45rem 1rem; border-radius: 6px; font-size: 0.82rem; font-weight: 700; }
+.promo-kat-emoji { position: absolute; right: 2rem; font-size: 5rem; opacity: 0.22; z-index: 1; }
+
+/* ULASAN */
+.ulasan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.ulasan-card { background: var(--bg2); border-radius: var(--radius); padding: 1.5rem; }
+.ulasan-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+.ulasan-person { display: flex; align-items: center; gap: 0.75rem; }
+.ulasan-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+.ulasan-name { font-weight: 700; font-size: 0.875rem; color: var(--text); }
+.ulasan-loc { font-size: 0.75rem; color: var(--text3); }
+.ulasan-stars { color: var(--orange); font-size: 0.85rem; }
+.ulasan-text { font-size: 0.875rem; color: var(--text2); line-height: 1.6; margin-bottom: 0.75rem; }
+.ulasan-product { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: #fff; border-radius: 6px; border: 1px solid var(--border2); }
+.ulasan-product-img { width: 36px; height: 36px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+.ulasan-product-name { font-size: 0.78rem; color: var(--text2); font-weight: 500; }
+
+/* KEUNGGULAN */
+.keunggulan-bar { background: var(--primary); padding: 2rem 0; }
+.keung-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+.keung-item { display: flex; align-items: center; gap: 1rem; color: #fff; }
+.keung-icon { font-size: 2rem; flex-shrink: 0; }
+.keung-title { font-family: var(--font-heading); font-size: 0.95rem; font-weight: 700; margin-bottom: 0.2rem; }
+.keung-desc { font-size: 0.8rem; color: rgba(255,255,255,0.78); }
+
+/* APP DOWNLOAD BANNER */
+.app-banner { background: linear-gradient(135deg, #F3E8FF, #EDE9FE); padding: 3rem 0; }
+.app-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+.app-title { font-family: var(--font-heading); font-size: 1.75rem; font-weight: 800; color: var(--text); margin-bottom: 0.75rem; }
+.app-sub { color: var(--text2); margin-bottom: 1.5rem; font-size: 0.95rem; }
+.app-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+.app-btn { display: flex; align-items: center; gap: 0.7rem; background: var(--text); color: #fff; padding: 0.75rem 1.5rem; border-radius: 10px; transition: opacity var(--tr); cursor: pointer; }
+.app-btn:hover { opacity: 0.88; }
+.app-btn-icon { font-size: 1.5rem; }
+.app-btn-sub { font-size: 0.7rem; color: rgba(255,255,255,0.7); }
+.app-btn-label { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; }
+.app-mockup { background: var(--primary); border-radius: 20px; height: 240px; display: flex; align-items: center; justify-content: center; font-size: 6rem; box-shadow: 0 20px 60px rgba(124,58,237,0.25); }
+.app-stat-row { display: flex; gap: 2rem; margin-top: 1.5rem; }
+.app-stat .num { font-family: var(--font-heading); font-size: 1.3rem; font-weight: 800; color: var(--primary); }
+.app-stat .lbl { font-size: 0.78rem; color: var(--text3); }
+
+/* FOOTER */
+.footer { background: var(--text); color: #fff; padding: 3rem 0 0; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1.3fr; gap: 2rem; padding-bottom: 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.footer-brand p { font-size: 0.85rem; color: rgba(255,255,255,0.65); line-height: 1.65; margin-bottom: 1.25rem; }
+.footer-logo { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; }
+.footer-logo-icon { width: 36px; height: 36px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-family: var(--font-heading); font-weight: 800; font-size: 0.9rem; }
+.footer-logo-name { font-family: var(--font-heading); font-size: 1.1rem; font-weight: 800; color: #fff; }
+.footer-sosmed { display: flex; gap: 0.6rem; }
+.sosmed-btn { width: 32px; height: 32px; background: rgba(255,255,255,0.1); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: background var(--tr); cursor: pointer; }
+.sosmed-btn:hover { background: rgba(255,255,255,0.2); }
+.footer-col h5 { font-family: var(--font-heading); font-size: 0.88rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: rgba(255,255,255,0.45); margin-bottom: 0.85rem; }
+.footer-col ul { display: flex; flex-direction: column; gap: 0.5rem; }
+.footer-col ul li a { color: rgba(255,255,255,0.7); font-size: 0.875rem; transition: color var(--tr); }
+.footer-col ul li a:hover { color: #fff; }
+.payment-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+.payment-badge { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.15); border-radius: 5px; padding: 0.25rem 0.5rem; font-size: 0.72rem; color: rgba(255,255,255,0.75); }
+.footer-bottom { padding: 1.25rem 0; display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; color: rgba(255,255,255,0.45); flex-wrap: wrap; gap: 0.5rem; }
+.footer-btm-links { display: flex; gap: 1.5rem; }
+.footer-btm-links a { color: rgba(255,255,255,0.6); }
+.footer-btm-links a:hover { color: #fff; }
+
+/* RESPONSIVE */
+@media (max-width: 960px) {
+  .kat-grid     { grid-template-columns: repeat(5, 1fr); }
+  .flash-grid   { grid-template-columns: repeat(3, 1fr); }
+  .prod-grid    { grid-template-columns: repeat(3, 1fr); }
+  .seller-grid  { grid-template-columns: 1fr 1fr; }
+  .keung-grid   { grid-template-columns: repeat(2, 1fr); }
+  .app-inner    { grid-template-columns: 1fr; }
+  .app-mockup   { height: 160px; font-size: 4rem; }
+  .footer-grid  { grid-template-columns: 1fr 1fr 1fr; }
+  .nav-links-desktop { display: none; }
+  .search-bar-nav { max-width: 340px; }
+  .btn-login, .btn-daftar { display: none; }
+}
+@media (max-width: 768px) {
+  .hero h1      { font-size: 1.7rem; }
+  .kat-grid     { grid-template-columns: repeat(5, 1fr); }
+  .flash-grid   { grid-template-columns: repeat(2, 1fr); }
+  .prod-grid    { grid-template-columns: repeat(2, 1fr); }
+  .ulasan-grid  { grid-template-columns: 1fr; }
+  .promo-kat-grid { grid-template-columns: 1fr; }
+  .seller-grid  { grid-template-columns: 1fr; }
+  .banner-img   { height: 180px; padding: 1.5rem; }
+  .banner-title { font-size: 1.3rem; }
+  .banner-emoji { display: none; }
+  .search-cat-big { min-width: 80px; font-size: 0.78rem; }
+}
+@media (max-width: 600px) {
+  .kat-grid     { grid-template-columns: repeat(5, 1fr); }
+  .flash-grid   { grid-template-columns: repeat(2, 1fr); }
+  .prod-grid    { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid  { grid-template-columns: 1fr 1fr; }
+  .keung-grid   { grid-template-columns: 1fr 1fr; }
+  .hero h1      { font-size: 1.4rem; }
+  .promo-bar .inner { gap: 0.75rem; }
+  .search-bar-nav { display: none; }
+  .hamburger    { display: flex; }
+  .app-inner    { grid-template-columns: 1fr; }
+  .app-mockup   { display: none; }
+}
+@media (max-width: 400px) {
+  .kat-grid     { grid-template-columns: repeat(4, 1fr); }
+  .prod-grid    { grid-template-columns: 1fr 1fr; }
+  .footer-grid  { grid-template-columns: 1fr; }
+  .app-btns     { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP PROMO BAR -->
+<div class="promo-bar">
+  <div class="container inner">
+    <span>🚚 Gratis Ongkir min. Rp 50.000 <a href="#">Lihat syarat</a></span>
+    <span class="promo-sep">|</span>
+    <span>💳 Bayar di tempat (COD) tersedia</span>
+    <span class="promo-sep">|</span>
+    <span>🔥 Flash Sale setiap hari jam 12.00 WIB</span>
+    <span class="promo-sep">|</span>
+    <span>📱 <a href="#">Download App NusaMart</a></span>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <div class="logo-icon">N</div>
+      <span class="logo-name">NusaMart</span>
+    </div>
+    <div class="search-bar-nav">
+      <select class="search-cat-nav">
+        <option>Semua Kategori</option>
+        <option>Elektronik</option>
+        <option>Fashion</option>
+        <option>Makanan</option>
+        <option>Kecantikan</option>
+        <option>Olahraga</option>
+      </select>
+      <input class="search-input-nav" type="text" placeholder="Cari produk, toko, atau merek...">
+      <button class="search-btn-nav">🔍</button>
+    </div>
+    <div class="nav-actions">
+      <a href="#" class="nav-icon-btn">
+        ❤️ Wishlist
+      </a>
+      <a href="#" class="nav-icon-btn" id="cartNavBtn">
+        🛒 Keranjang
+        <span class="cart-badge" id="cartBadge">0</span>
+      </a>
+      <button class="btn-login">Masuk</button>
+      <button class="btn-daftar">Daftar</button>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-search" id="mobileSearch">
+    <div class="mobile-search-row">
+      <input type="text" placeholder="Cari produk...">
+      <button>🔍</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO - BIG SEARCH -->
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Belanja Apa Saja di <span class="brand">NusaMart</span></h1>
+    <p class="hero-sub">Jutaan produk dari ribuan penjual terpercaya se-Indonesia</p>
+    <div class="search-bar-big">
+      <select class="search-cat-big">
+        <option>Semua Kategori</option>
+        <option>Elektronik</option>
+        <option>Fashion Pria</option>
+        <option>Fashion Wanita</option>
+        <option>Makanan & Minuman</option>
+        <option>Kecantikan</option>
+        <option>Olahraga</option>
+        <option>Rumah & Dapur</option>
+        <option>Otomotif</option>
+        <option>Mainan Anak</option>
+        <option>Buku & Alat Tulis</option>
+      </select>
+      <input type="text" class="search-input-big" placeholder="Cari produk, toko, atau merek...">
+      <button class="search-btn-big">🔍 Cari</button>
+    </div>
+    <div class="search-suggestions">
+      <span class="label">Populer:</span>
+      <a href="#">Headphone Bluetooth</a>
+      <a href="#">Baju Batik</a>
+      <a href="#">Skincare Korea</a>
+      <a href="#">Sepatu Sneakers</a>
+      <a href="#">Rice Cooker</a>
+      <a href="#">Parfum Pria</a>
+    </div>
+  </div>
+</section>
+
+<!-- KATEGORI UTAMA -->
+<section class="kat-section">
+  <div class="container">
+    <div class="kat-grid">
+      <div class="kat-item"><div class="kat-icon">📱</div><div class="kat-name">Elektronik</div></div>
+      <div class="kat-item"><div class="kat-icon">👗</div><div class="kat-name">Fashion</div></div>
+      <div class="kat-item"><div class="kat-icon">🍜</div><div class="kat-name">Makanan</div></div>
+      <div class="kat-item"><div class="kat-icon">💄</div><div class="kat-name">Kecantikan</div></div>
+      <div class="kat-item"><div class="kat-icon">⚽</div><div class="kat-name">Olahraga</div></div>
+      <div class="kat-item"><div class="kat-icon">🏠</div><div class="kat-name">Rumah</div></div>
+      <div class="kat-item"><div class="kat-icon">🚗</div><div class="kat-name">Otomotif</div></div>
+      <div class="kat-item"><div class="kat-icon">🧸</div><div class="kat-name">Mainan</div></div>
+      <div class="kat-item"><div class="kat-icon">📚</div><div class="kat-name">Buku</div></div>
+      <div class="kat-item"><div class="kat-icon">🔧</div><div class="kat-name">Lainnya</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BANNER CAROUSEL -->
+<section class="banner-section">
+  <div class="container">
+    <div class="banner-wrapper">
+      <button class="banner-prev" id="bannerPrev">◀</button>
+      <div class="banner-track" id="bannerTrack">
+        <!-- Slide 1 -->
+        <div class="banner-slide">
+          <div class="banner-img" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);">
+            <div>
+              <div class="banner-badge" style="background:#FACC15;color:#000;">⚡ Flash Sale</div>
+              <div class="banner-title">DISKON HINGGA<br>90%</div>
+              <div class="banner-sub">Ribuan produk elektronik & gadget pilihan</div>
+              <a href="#" class="banner-cta" style="color:var(--primary);">🛒 Belanja Sekarang</a>
+            </div>
+            <div class="banner-emoji">📱</div>
+          </div>
+        </div>
+        <!-- Slide 2 -->
+        <div class="banner-slide">
+          <div class="banner-img" style="background:linear-gradient(135deg,#F97316,#EA580C);">
+            <div>
+              <div class="banner-badge" style="background:#fff;color:#F97316;">🎉 Double Day 6.6</div>
+              <div class="banner-title">FASHION SALE<br>TERBESAR</div>
+              <div class="banner-sub">Baju, tas, sepatu — diskon spesial hari ini</div>
+              <a href="#" class="banner-cta" style="color:var(--orange);">👗 Lihat Koleksi</a>
+            </div>
+            <div class="banner-emoji">👜</div>
+          </div>
+        </div>
+        <!-- Slide 3 -->
+        <div class="banner-slide">
+          <div class="banner-img" style="background:linear-gradient(135deg,#16A34A,#15803D);">
+            <div>
+              <div class="banner-badge" style="background:#FACC15;color:#000;">🏷️ Brand Festival</div>
+              <div class="banner-title">BRAND OFFICIAL<br>STORE</div>
+              <div class="banner-sub">Belanja langsung dari toko resmi brand ternama</div>
+              <a href="#" class="banner-cta" style="color:var(--green);">🏪 Kunjungi Toko</a>
+            </div>
+            <div class="banner-emoji">🏆</div>
+          </div>
+        </div>
+      </div>
+      <button class="banner-next" id="bannerNext">▶</button>
+    </div>
+    <div class="banner-dots">
+      <button class="banner-dot active" data-idx="0"></button>
+      <button class="banner-dot" data-idx="1"></button>
+      <button class="banner-dot" data-idx="2"></button>
+    </div>
+  </div>
+</section>
+
+<!-- FLASH SALE -->
+<section class="flash-section">
+  <div class="container">
+    <div class="flash-header">
+      <div class="flash-title">⚡ Flash Sale</div>
+      <div class="flash-timer">
+        <span class="flash-label">Berakhir dalam:</span>
+        <span class="flash-unit" id="fsH">02</span>
+        <span class="flash-colon">:</span>
+        <span class="flash-unit" id="fsM">45</span>
+        <span class="flash-colon">:</span>
+        <span class="flash-unit" id="fsS">30</span>
+      </div>
+      <a href="#" class="see-all">Lihat semua →</a>
+    </div>
+    <div class="flash-grid">
+      <div class="product-card">
+        <div class="product-img" style="background:linear-gradient(135deg,#EEF2FF,#DBEAFE);">🎧
+          <div class="product-badge">-65%</div>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Headphone Wireless Bluetooth Pro X Gen 2</div>
+          <div class="product-price">Rp 189.000</div>
+          <div class="product-original">Rp 540.000</div>
+          <div class="product-meta">⭐ 4.8 · 2.341 terjual</div>
+          <div class="product-location">📍 Surabaya</div>
+          <button class="add-cart-btn" onclick="addToCart()">+ Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img" style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);">⌚
+          <div class="product-badge">-72%</div>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Smartwatch Fitness Tracker Water Resistant IP68</div>
+          <div class="product-price">Rp 229.000</div>
+          <div class="product-original">Rp 820.000</div>
+          <div class="product-meta">⭐ 4.7 · 1.856 terjual</div>
+          <div class="product-location">📍 Jakarta</div>
+          <button class="add-cart-btn" onclick="addToCart()">+ Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img" style="background:linear-gradient(135deg,#FFF7ED,#FFECD8);">👟
+          <div class="product-badge">-48%</div>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Sepatu Sneakers Kasual Pria Breathable Sport</div>
+          <div class="product-price">Rp 149.000</div>
+          <div class="product-original">Rp 285.000</div>
+          <div class="product-meta">⭐ 4.6 · 987 terjual</div>
+          <div class="product-location">📍 Bandung</div>
+          <button class="add-cart-btn" onclick="addToCart()">+ Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img" style="background:linear-gradient(135deg,#FDF4FF,#F3E8FF);">💄
+          <div class="product-badge">-55%</div>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Paket Skincare Korea Brightening 5 in 1 Original</div>
+          <div class="product-price">Rp 179.000</div>
+          <div class="product-original">Rp 398.000</div>
+          <div class="product-meta">⭐ 4.9 · 5.120 terjual</div>
+          <div class="product-location">📍 Bekasi</div>
+          <button class="add-cart-btn" onclick="addToCart()">+ Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img" style="background:linear-gradient(135deg,#FFFBEB,#FEF3C7);">🍳
+          <div class="product-badge">-40%</div>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Wajan Anti Lengket Premium Marble Coating 28cm</div>
+          <div class="product-price">Rp 89.000</div>
+          <div class="product-original">Rp 149.000</div>
+          <div class="product-meta">⭐ 4.7 · 3.204 terjual</div>
+          <div class="product-location">📍 Semarang</div>
+          <button class="add-cart-btn" onclick="addToCart()">+ Keranjang</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUK TERLARIS / TERBARU -->
+<section class="section">
+  <div class="container">
+    <div class="prod-tabs">
+      <button class="prod-tab active" data-panel="terlaris">🔥 Terlaris</button>
+      <button class="prod-tab" data-panel="terbaru">✨ Terbaru</button>
+      <button class="prod-tab" data-panel="promo">🏷️ Promo</button>
+    </div>
+    <!-- Terlaris Panel -->
+    <div class="prod-grid" id="panel-terlaris">
+      <div class="product-card">
+        <div class="product-img" style="background:linear-gradient(135deg,#EEF2FF,#C7D2FE);">📱
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Smartphone Gaming 5G 8/256GB Triple Camera</div>
+          <div class="product-price">Rp 2.499.000</div>
+          <div class="product-meta">⭐ 4.9 · 8.421 terjual</div>
+          <div class="product-location">📍 Jakarta Pusat</div>
+          <button class="add-cart-btn" onclick="addToCart()">+ Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img" style="background:linear-gradient(135deg,#F0FDF4,#BBFFD4);">👜
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Tas Wanita Kulit Sintetis Sling Bag Premium</div>
+          <div class="product-price">Rp 179.000</div>
+          <div class="product-meta">⭐ 4.8 · 6.209 terjual</div>
+          <div class="product-location">📍 Bandung</div>
+          <button class="add-cart-btn" onclick="addToCart()">+ Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img" style="background:linear-gradient(135deg,#FFF7ED,#FED7AA);">🍚
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Rice Cooker Digital 3 Liter Multi Cook Serbaguna</div>
+          <div class="product-price">Rp 349.000</div>
+          <div class="product-meta">⭐ 4.7 · 4.892 terjual</div>
+          <div class="product-location">📍 Surabaya</div>
+          <button class="add-cart-btn" onclick="addToCart()">+ Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img" style="background:linear-gradient(135deg,#FDF4FF,#E9D5FF);">💪
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Whey Protein 1 Kg Rasa Cokelat Swiss Miss</div>
+          <div class="product-price">Rp 289.000</div>
+          <div class="product-meta">⭐ 4.8 · 3.711 terjual</div>
+          <div class="product-location">📍 Jakarta Selatan</div>
+          <button class="add-cart-btn" onclick="addToCart()">+ Keranjang</button>
+        </div>
+      </div>
+    </div>
+    <!-- Terbaru Panel (hidden) -->
+    <div class="prod-grid" id="panel-terbaru" style="display:none;">
+      <div class="product-card">
+        <div class="product-img" style="background:linear-gradient(135deg,#ECFEFF,#A5F3FC);">🎮
+          <span class="product-badge" style="background:var(--green);">BARU</span>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Controller Wireless Gaming Bluetooth PC & Mobile</div>
+          <div class="product-price">Rp 219.000</div>
+          <div class="product-meta">⭐ 4.6 · 241 terjual</div>
+          <div class="product-location">📍 Medan</div>
+          <button class="add-cart-btn" onclick="addToCart()">+ Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img" style="background:linear-gradient(135deg,#FFF0F3,#FECDD3);">🌸
+          <span class="product-badge" style="background:var(--green);">BARU</span>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Parfum Wanita Eau de Parfum Floral 30ml Limited</div>
+          <div class="product-price">Rp 139.000</div>
+          <div class="product-meta">⭐ 4.7 · 89 terjual</div>
+          <div class="product-location">📍 Yogyakarta</div>
+          <button class="add-cart-btn" onclick="addToCart()">+ Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img" style="background:linear-gradient(135deg,#ECFDF5,#A7F3D0);">🧴
+          <span class="product-badge" style="background:var(--green);">BARU</span>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Sabun Muka Salicylic Acid Anti Acne Series</div>
+          <div class="product-price">Rp 59.000</div>
+          <div class="product-meta">⭐ 4.9 · 156 terjual</div>
+          <div class="product-location">📍 Tangerang</div>
+          <button class="add-cart-btn" onclick="addToCart()">+ Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img" style="background:linear-gradient(135deg,#FFFBEB,#FDE68A);">🕯️
+          <span class="product-badge" style="background:var(--green);">BARU</span>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Aromaterapi Lilin Scented Candle Set 3pc Premium</div>
+          <div class="product-price">Rp 99.000</div>
+          <div class="product-meta">⭐ 4.8 · 73 terjual</div>
+          <div class="product-location">📍 Solo</div>
+          <button class="add-cart-btn" onclick="addToCart()">+ Keranjang</button>
+        </div>
+      </div>
+    </div>
+    <!-- Promo Panel (hidden) -->
+    <div class="prod-grid" id="panel-promo" style="display:none;">
+      <div class="product-card">
+        <div class="product-img" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);">⌨️
+          <div class="product-badge">-60%</div>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Keyboard Mekanikal Gaming RGB Hot-Swap</div>
+          <div class="product-price">Rp 299.000</div>
+          <div class="product-original">Rp 749.000</div>
+          <div class="product-meta">⭐ 4.8 · 1.299 terjual</div>
+          <div class="product-location">📍 Jakarta</div>
+          <button class="add-cart-btn" onclick="addToCart()">+ Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img" style="background:linear-gradient(135deg,#EDE9FE,#DDD6FE);">🎒
+          <div class="product-badge">-45%</div>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Ransel Laptop Anti Air 15.6" Multifungsi USB Port</div>
+          <div class="product-price">Rp 189.000</div>
+          <div class="product-original">Rp 345.000</div>
+          <div class="product-meta">⭐ 4.7 · 2.081 terjual</div>
+          <div class="product-location">📍 Bandung</div>
+          <button class="add-cart-btn" onclick="addToCart()">+ Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img" style="background:linear-gradient(135deg,#D1FAE5,#A7F3D0);">🧘
+          <div class="product-badge">-35%</div>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Matras Yoga Non-Slip 6mm Extra Thick Premium</div>
+          <div class="product-price">Rp 129.000</div>
+          <div class="product-original">Rp 199.000</div>
+          <div class="product-meta">⭐ 4.9 · 3.456 terjual</div>
+          <div class="product-location">📍 Surabaya</div>
+          <button class="add-cart-btn" onclick="addToCart()">+ Keranjang</button>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img" style="background:linear-gradient(135deg,#FCE7F3,#FBCFE8);">🧸
+          <div class="product-badge">-50%</div>
+          <button class="wishlist-btn" onclick="toggleWish(this)">♡</button>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Boneka Hamster Besar 60cm Super Soft Premium</div>
+          <div class="product-price">Rp 79.000</div>
+          <div class="product-original">Rp 159.000</div>
+          <div class="product-meta">⭐ 4.8 · 4.723 terjual</div>
+          <div class="product-location">📍 Malang</div>
+          <button class="add-cart-btn" onclick="addToCart()">+ Keranjang</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BRAND RESMI -->
+<section class="brand-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-title">🏷️ Brand Resmi & Official Store</div>
+      <a href="#" class="see-all">Lihat semua brand →</a>
+    </div>
+    <div class="brand-grid">
+      <div class="brand-logo">📱</div>
+      <div class="brand-logo">🎵</div>
+      <div class="brand-logo">👟</div>
+      <div class="brand-logo">💄</div>
+      <div class="brand-logo">🍫</div>
+      <div class="brand-logo">⌚</div>
+      <div class="brand-logo">🎮</div>
+      <div class="brand-logo">🏋️</div>
+      <div class="brand-logo">👗</div>
+      <div class="brand-logo">🧴</div>
+    </div>
+  </div>
+</section>
+
+<!-- SELLER TERPERCAYA -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-title">🏪 Seller Terpercaya NusaMart</div>
+      <a href="#" class="see-all">Lihat semua toko →</a>
+    </div>
+    <div class="seller-grid">
+      <div class="seller-card">
+        <div class="seller-header">
+          <div class="seller-avatar" style="background:linear-gradient(135deg,#EEF2FF,#C7D2FE);">📱</div>
+          <div>
+            <div class="seller-name">TechGadget Official</div>
+            <div class="seller-verified">✅ Seller Terverifikasi · Star Seller</div>
+          </div>
+        </div>
+        <div class="seller-stats">
+          <div class="seller-stat"><div class="num">4.9</div><div class="lbl">Rating</div></div>
+          <div class="seller-stat"><div class="num">12.4K</div><div class="lbl">Produk</div></div>
+          <div class="seller-stat"><div class="num">84.2K</div><div class="lbl">Pengikut</div></div>
+        </div>
+        <div class="seller-products">
+          <div class="seller-mini-img" style="background:linear-gradient(135deg,#EEF2FF,#C7D2FE);">📱</div>
+          <div class="seller-mini-img" style="background:linear-gradient(135deg,#ECFDF5,#A7F3D0);">⌚</div>
+          <div class="seller-mini-img" style="background:linear-gradient(135deg,#FFF7ED,#FED7AA);">🎧</div>
+        </div>
+        <button class="btn-kunjungi">Kunjungi Toko</button>
+      </div>
+      <div class="seller-card">
+        <div class="seller-header">
+          <div class="seller-avatar" style="background:linear-gradient(135deg,#FFF7ED,#FED7AA);">👗</div>
+          <div>
+            <div class="seller-name">Batik Nusantara Store</div>
+            <div class="seller-verified">✅ Seller Terverifikasi · Star Seller</div>
+          </div>
+        </div>
+        <div class="seller-stats">
+          <div class="seller-stat"><div class="num">4.8</div><div class="lbl">Rating</div></div>
+          <div class="seller-stat"><div class="num">3.2K</div><div class="lbl">Produk</div></div>
+          <div class="seller-stat"><div class="num">52.1K</div><div class="lbl">Pengikut</div></div>
+        </div>
+        <div class="seller-products">
+          <div class="seller-mini-img" style="background:linear-gradient(135deg,#FFF7ED,#FED7AA);">👗</div>
+          <div class="seller-mini-img" style="background:linear-gradient(135deg,#FDF4FF,#E9D5FF);">👔</div>
+          <div class="seller-mini-img" style="background:linear-gradient(135deg,#FFFBEB,#FDE68A);">👒</div>
+        </div>
+        <button class="btn-kunjungi">Kunjungi Toko</button>
+      </div>
+      <div class="seller-card">
+        <div class="seller-header">
+          <div class="seller-avatar" style="background:linear-gradient(135deg,#F0FDF4,#BBF7D0);">🌿</div>
+          <div>
+            <div class="seller-name">Natural Beauty Co.</div>
+            <div class="seller-verified">✅ Seller Terverifikasi · Star Seller</div>
+          </div>
+        </div>
+        <div class="seller-stats">
+          <div class="seller-stat"><div class="num">4.9</div><div class="lbl">Rating</div></div>
+          <div class="seller-stat"><div class="num">890</div><div class="lbl">Produk</div></div>
+          <div class="seller-stat"><div class="num">128K</div><div class="lbl">Pengikut</div></div>
+        </div>
+        <div class="seller-products">
+          <div class="seller-mini-img" style="background:linear-gradient(135deg,#F0FDF4,#BBF7D0);">🧴</div>
+          <div class="seller-mini-img" style="background:linear-gradient(135deg,#FDF4FF,#F3E8FF);">💄</div>
+          <div class="seller-mini-img" style="background:linear-gradient(135deg,#ECFEFF,#A5F3FC);">🌸</div>
+        </div>
+        <button class="btn-kunjungi">Kunjungi Toko</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROMO KATEGORI BANNER -->
+<section class="section" style="background:var(--bg2);padding:2rem 0;">
+  <div class="container">
+    <div class="promo-kat-grid">
+      <div class="promo-kat-banner" style="background:linear-gradient(135deg,#7C3AED,#5B21B6);">
+        <div class="promo-kat-content">
+          <div class="promo-kat-tag" style="color:#FACC15;">👗 Fashion Week</div>
+          <div class="promo-kat-title">Fashion Sale<br>Up to 80% Off</div>
+          <div class="promo-kat-sub">Baju, celana, dress, jaket, & aksesori terlengkap</div>
+          <a href="#" class="promo-kat-btn" style="color:var(--primary);">Belanja Fashion →</a>
+        </div>
+        <div class="promo-kat-emoji">👗</div>
+      </div>
+      <div class="promo-kat-banner" style="background:linear-gradient(135deg,#0891B2,#0E7490);">
+        <div class="promo-kat-content">
+          <div class="promo-kat-tag" style="color:#FACC15;">⚡ Tech Deals</div>
+          <div class="promo-kat-title">Elektronik<br>Flash Deals Hari Ini</div>
+          <div class="promo-kat-sub">Gadget, laptop, audio, & aksesoris terkini</div>
+          <a href="#" class="promo-kat-btn" style="color:#0891B2;">Belanja Elektronik →</a>
+        </div>
+        <div class="promo-kat-emoji">💻</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ULASAN PEMBELI -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-title">💬 Ulasan Pembeli NusaMart</div>
+    </div>
+    <div class="ulasan-grid">
+      <div class="ulasan-card">
+        <div class="ulasan-top">
+          <div class="ulasan-person">
+            <div class="ulasan-avatar" style="background:linear-gradient(135deg,#EEF2FF,#C7D2FE);">😊</div>
+            <div>
+              <div class="ulasan-name">Siti Rahayu</div>
+              <div class="ulasan-loc">📍 Malang, Jawa Timur</div>
+            </div>
+          </div>
+          <div class="ulasan-stars">★★★★★</div>
+        </div>
+        <div class="ulasan-text">Pesanan tiba dalam 1 hari! Packagingnya rapi banget, produk sesuai foto. Penjual responsif dan ramah. Pasti belanja lagi di NusaMart!</div>
+        <div class="ulasan-product">
+          <div class="ulasan-product-img" style="background:linear-gradient(135deg,#EEF2FF,#C7D2FE);">🎧</div>
+          <div class="ulasan-product-name">Headphone Wireless Bluetooth Pro X</div>
+        </div>
+      </div>
+      <div class="ulasan-card">
+        <div class="ulasan-top">
+          <div class="ulasan-person">
+            <div class="ulasan-avatar" style="background:linear-gradient(135deg,#FFF7ED,#FED7AA);">😄</div>
+            <div>
+              <div class="ulasan-name">Budi Setiawan</div>
+              <div class="ulasan-loc">📍 Surabaya, Jawa Timur</div>
+            </div>
+          </div>
+          <div class="ulasan-stars">★★★★★</div>
+        </div>
+        <div class="ulasan-text">Kualitas barangnya bagus banget, harganya juga jauh lebih murah dari toko fisik. Gratis ongkirnya bantu hemat banyak. Recommended!</div>
+        <div class="ulasan-product">
+          <div class="ulasan-product-img" style="background:linear-gradient(135deg,#FFF7ED,#FED7AA);">👟</div>
+          <div class="ulasan-product-name">Sepatu Sneakers Kasual Pria Breathable</div>
+        </div>
+      </div>
+      <div class="ulasan-card">
+        <div class="ulasan-top">
+          <div class="ulasan-person">
+            <div class="ulasan-avatar" style="background:linear-gradient(135deg,#F0FDF4,#BBF7D0);">😍</div>
+            <div>
+              <div class="ulasan-name">Dewi Lestari</div>
+              <div class="ulasan-loc">📍 Bandung, Jawa Barat</div>
+            </div>
+          </div>
+          <div class="ulasan-stars">★★★★★</div>
+        </div>
+        <div class="ulasan-text">Skincare-nya original 100% ada hologram resmi. Hasilnya nyata dalam 2 minggu! Sudah langganan beli di NusaMart, puas selalu.</div>
+        <div class="ulasan-product">
+          <div class="ulasan-product-img" style="background:linear-gradient(135deg,#FDF4FF,#E9D5FF);">💄</div>
+          <div class="ulasan-product-name">Paket Skincare Korea Brightening 5 in 1</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KEUNGGULAN -->
+<div class="keunggulan-bar">
+  <div class="container">
+    <div class="keung-grid">
+      <div class="keung-item">
+        <div class="keung-icon">🔒</div>
+        <div>
+          <div class="keung-title">Belanja 100% Aman</div>
+          <div class="keung-desc">Uang ditahan hingga barang diterima</div>
+        </div>
+      </div>
+      <div class="keung-item">
+        <div class="keung-icon">🚚</div>
+        <div>
+          <div class="keung-title">Pengiriman Cepat</div>
+          <div class="keung-desc">Estimasi 1–3 hari ke seluruh Indonesia</div>
+        </div>
+      </div>
+      <div class="keung-item">
+        <div class="keung-icon">💰</div>
+        <div>
+          <div class="keung-title">Garansi Uang Kembali</div>
+          <div class="keung-desc">Tidak puas? Dana dikembalikan penuh</div>
+        </div>
+      </div>
+      <div class="keung-item">
+        <div class="keung-icon">🏷️</div>
+        <div>
+          <div class="keung-title">Promo Setiap Hari</div>
+          <div class="keung-desc">Flash sale, voucher, dan cashback harian</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DOWNLOAD APP BANNER -->
+<section class="app-banner">
+  <div class="container">
+    <div class="app-inner">
+      <div>
+        <div class="app-title">Belanja Lebih Mudah<br>dengan App NusaMart</div>
+        <div class="app-sub">Download sekarang dan dapatkan voucher gratis ongkir Rp 30.000 untuk pengguna baru!</div>
+        <div class="app-btns">
+          <div class="app-btn">
+            <div class="app-btn-icon">🍎</div>
+            <div>
+              <div class="app-btn-sub">Download di</div>
+              <div class="app-btn-label">App Store</div>
+            </div>
+          </div>
+          <div class="app-btn">
+            <div class="app-btn-icon">🤖</div>
+            <div>
+              <div class="app-btn-sub">Dapatkan di</div>
+              <div class="app-btn-label">Google Play</div>
+            </div>
+          </div>
+        </div>
+        <div class="app-stat-row">
+          <div class="app-stat"><div class="num">4.9 ★</div><div class="lbl">Rating App</div></div>
+          <div class="app-stat"><div class="num">5 Juta+</div><div class="lbl">Download</div></div>
+          <div class="app-stat"><div class="num">2 Juta+</div><div class="lbl">Penjual Aktif</div></div>
+        </div>
+      </div>
+      <div class="app-mockup">📲</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="footer-logo-icon">N</div>
+          <span class="footer-logo-name">NusaMart</span>
+        </div>
+        <p>Marketplace terpercaya dengan jutaan produk dari ribuan penjual seluruh Indonesia. Belanja aman, cepat, dan hemat.</p>
+        <div class="footer-sosmed">
+          <div class="sosmed-btn">📘</div>
+          <div class="sosmed-btn">📸</div>
+          <div class="sosmed-btn">🐦</div>
+          <div class="sosmed-btn">▶️</div>
+          <div class="sosmed-btn">🎵</div>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Tentang</h5>
+        <ul>
+          <li><a href="#">Tentang NusaMart</a></li>
+          <li><a href="#">Karir</a></li>
+          <li><a href="#">Kebijakan Privasi</a></li>
+          <li><a href="#">Syarat & Ketentuan</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Bantuan</h5>
+        <ul>
+          <li><a href="#">Pusat Bantuan</a></li>
+          <li><a href="#">Cara Belanja</a></li>
+          <li><a href="#">Pengembalian Barang</a></li>
+          <li><a href="#">Status Pesanan</a></li>
+          <li><a href="#">Hubungi Kami</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Penjual</h5>
+        <ul>
+          <li><a href="#">Daftar Jadi Penjual</a></li>
+          <li><a href="#">Pusat Edukasi Seller</a></li>
+          <li><a href="#">Program Afiliasi</a></li>
+          <li><a href="#">Official Store</a></li>
+          <li><a href="#">Iklan NusaMart</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Metode Pembayaran</h5>
+        <div class="payment-badges">
+          <div class="payment-badge">BCA</div>
+          <div class="payment-badge">BNI</div>
+          <div class="payment-badge">Mandiri</div>
+          <div class="payment-badge">BRI</div>
+          <div class="payment-badge">GoPay</div>
+          <div class="payment-badge">OVO</div>
+          <div class="payment-badge">Dana</div>
+          <div class="payment-badge">ShopeePay</div>
+          <div class="payment-badge">QRIS</div>
+          <div class="payment-badge">COD</div>
+          <div class="payment-badge">Visa</div>
+          <div class="payment-badge">Mastercard</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 NusaMart — Belanja Mudah, Pengiriman Cepat ke Seluruh Indonesia</span>
+      <div class="footer-btm-links">
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat Penggunaan</a>
+        <a href="#">Peta Situs</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// HAMBURGER
+var hamburger = document.getElementById('hamburger');
+var mobileSearch = document.getElementById('mobileSearch');
+hamburger.addEventListener('click', function() {
+  mobileSearch.classList.toggle('open');
+});
+
+// BANNER CAROUSEL
+var bannerTrack = document.getElementById('bannerTrack');
+var bannerDots = document.querySelectorAll('.banner-dot');
+var currentSlide = 0;
+var totalSlides = 3;
+
+function goToSlide(idx) {
+  currentSlide = idx;
+  bannerTrack.style.transform = 'translateX(-' + (idx * 100) + '%)';
+  bannerDots.forEach(function(dot, i) {
+    dot.classList.toggle('active', i === idx);
+  });
+}
+
+document.getElementById('bannerPrev').addEventListener('click', function() {
+  goToSlide((currentSlide - 1 + totalSlides) % totalSlides);
+});
+document.getElementById('bannerNext').addEventListener('click', function() {
+  goToSlide((currentSlide + 1) % totalSlides);
+});
+bannerDots.forEach(function(dot) {
+  dot.addEventListener('click', function() {
+    goToSlide(parseInt(dot.getAttribute('data-idx'), 10));
+  });
+});
+var bannerInterval = setInterval(function() {
+  goToSlide((currentSlide + 1) % totalSlides);
+}, 3000);
+document.querySelector('.banner-wrapper').addEventListener('mouseenter', function() {
+  clearInterval(bannerInterval);
+});
+document.querySelector('.banner-wrapper').addEventListener('mouseleave', function() {
+  bannerInterval = setInterval(function() {
+    goToSlide((currentSlide + 1) % totalSlides);
+  }, 3000);
+});
+
+// FLASH SALE COUNTDOWN (hitung sampai jam 23:59:59 hari ini)
+function updateFlashTimer() {
+  var now = new Date();
+  var end = new Date();
+  end.setHours(23, 59, 59, 0);
+  var diff = end - now;
+  if (diff <= 0) diff = 0;
+  var h = Math.floor(diff / 3600000);
+  var m = Math.floor((diff % 3600000) / 60000);
+  var s = Math.floor((diff % 60000) / 1000);
+  function pad(n) { return String(n).padStart(2, '0'); }
+  document.getElementById('fsH').textContent = pad(h);
+  document.getElementById('fsM').textContent = pad(m);
+  document.getElementById('fsS').textContent = pad(s);
+}
+updateFlashTimer();
+setInterval(updateFlashTimer, 1000);
+
+// CART COUNTER
+var cartCount = 0;
+var cartBadge = document.getElementById('cartBadge');
+
+function addToCart() {
+  cartCount++;
+  cartBadge.textContent = cartCount;
+  cartBadge.style.animation = 'none';
+  cartBadge.offsetHeight;
+  cartBadge.style.transform = 'scale(1.4)';
+  setTimeout(function() { cartBadge.style.transform = 'scale(1)'; }, 200);
+  cartBadge.style.transition = 'transform 0.2s ease';
+}
+
+// WISHLIST TOGGLE
+function toggleWish(btn) {
+  btn.classList.toggle('active');
+  btn.textContent = btn.classList.contains('active') ? '❤️' : '♡';
+}
+
+// PRODUCT TABS
+var prodTabs = document.querySelectorAll('.prod-tab');
+var prodPanels = { terlaris: document.getElementById('panel-terlaris'), terbaru: document.getElementById('panel-terbaru'), promo: document.getElementById('panel-promo') };
+
+prodTabs.forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    prodTabs.forEach(function(t) { t.classList.remove('active'); });
+    tab.classList.add('active');
+    var panel = tab.getAttribute('data-panel');
+    Object.keys(prodPanels).forEach(function(key) {
+      prodPanels[key].style.display = key === panel ? 'grid' : 'none';
+    });
+  });
+});
+</script>
+</body>
+</html>

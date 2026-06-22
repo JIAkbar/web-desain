@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowTask — Manajemen Proyek Tim yang Cerdas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:      #060D0A;
+  --bg2:     #0D1A12;
+  --bg3:     #142418;
+  --text:    #F0FFF8;
+  --text2:   #7AB890;
+  --text3:   #3A6048;
+  --emerald: #10B981;
+  --emerald2:#34D399;
+  --amber:   #F59E0B;
+  --amber2:  #FCD34D;
+  --red:     #EF4444;
+  --border:  rgba(16,185,129,0.1);
+  --border2: rgba(16,185,129,0.22);
+  --glow:    0 0 28px rgba(16,185,129,0.14);
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+}
+[data-theme="light"] {
+  --bg: #F0FFF8; --bg2: #E0F5EB; --bg3: #C8E8D4;
+  --text: #052012; --text2: #1A5C38; --text3: #4A8A60;
+  --border: rgba(16,185,129,0.15); --border2: rgba(16,185,129,0.3);
+  --glow: 0 0 20px rgba(16,185,129,0.1);
+}
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
+
+/* NAVBAR */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 60px;
+  background: rgba(6,13,10,0.86); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+[data-theme="light"] .navbar { background: rgba(240,255,248,0.88); }
+.navbar-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--text); font-weight: 800; font-size: 1.05rem; letter-spacing: -0.02em; }
+.logo-icon { width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg,#10B981,#34D399); display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 800; color: #fff; }
+.navbar-nav { display: flex; align-items: center; gap: 1.75rem; list-style: none; }
+.navbar-nav a { text-decoration: none; color: var(--text2); font-size: 0.875rem; font-weight: 500; transition: color 0.2s; }
+.navbar-nav a:hover { color: var(--text); }
+.navbar-actions { display: flex; align-items: center; gap: 0.6rem; }
+.btn-ghost { background: none; border: 1px solid var(--border2); color: var(--text2); padding: 0.45rem 1rem; border-radius: 8px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+.btn-ghost:hover { color: var(--text); background: var(--bg3); }
+.btn-primary { background: linear-gradient(135deg,#10B981,#34D399); color: #fff; border: none; padding: 0.45rem 1.1rem; border-radius: 8px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+.btn-primary:hover { opacity: 0.85; }
+.theme-toggle { background: none; border: 1px solid var(--border2); color: var(--text2); width: 34px; height: 34px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: all 0.2s; }
+.theme-toggle:hover { background: var(--bg3); color: var(--text); }
+.hamburger { display: none; background: none; border: 1px solid var(--border2); color: var(--text); width: 34px; height: 34px; border-radius: 8px; cursor: pointer; font-size: 1rem; align-items: center; justify-content: center; }
+
+/* MOBILE MENU */
+.mobile-menu { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--bg2); border-bottom: 1px solid var(--border); z-index: 99; flex-direction: column; padding: 1rem 2rem; }
+.mobile-menu.open { display: flex; }
+.mobile-menu a { text-decoration: none; color: var(--text2); font-size: 0.95rem; padding: 0.6rem 0; border-bottom: 1px solid var(--border); }
+.mobile-menu a:last-child { border-bottom: none; }
+
+/* SECTIONS */
+.section-inner { max-width: 1120px; margin: 0 auto; padding: 5rem 2rem; }
+.section-tag { font-family: var(--font-mono); font-size: 0.75rem; color: var(--emerald); letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+.section-title { font-size: clamp(1.9rem,4vw,2.8rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 1rem; }
+.section-sub { color: var(--text2); font-size: 1.05rem; max-width: 560px; line-height: 1.7; margin-bottom: 2.5rem; }
+.gradient-text { background: linear-gradient(135deg,#10B981,#34D399,#FCD34D); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+/* HERO */
+.hero { padding-top: 100px; background: radial-gradient(ellipse 80% 55% at 50% -10%, rgba(16,185,129,0.12) 0%, transparent 65%); }
+.hero-inner { max-width: 1120px; margin: 0 auto; padding: 4rem 2rem 2rem; text-align: center; }
+.hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(16,185,129,0.1); border: 1px solid var(--border2); color: var(--emerald2); font-size: 0.78rem; font-weight: 600; padding: 0.35rem 0.85rem; border-radius: 999px; margin-bottom: 1.5rem; }
+.hero-badge span { width: 6px; height: 6px; border-radius: 50%; background: var(--emerald); animation: blink 1.6s infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:0.3} }
+.hero h1 { font-size: clamp(2.4rem,6vw,4rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 1.25rem; }
+.hero p { color: var(--text2); font-size: 1.1rem; line-height: 1.75; max-width: 560px; margin: 0 auto 2rem; }
+.hero-cta { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem; }
+.btn-hero-primary { background: linear-gradient(135deg,#10B981,#34D399); color: #fff; border: none; padding: 0.8rem 1.75rem; border-radius: 10px; font-family: var(--font-body); font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 20px rgba(16,185,129,0.3); }
+.btn-hero-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(16,185,129,0.4); }
+.btn-hero-secondary { background: none; border: 1px solid var(--border2); color: var(--text); padding: 0.8rem 1.75rem; border-radius: 10px; font-family: var(--font-body); font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.btn-hero-secondary:hover { background: var(--bg3); }
+.hero-sub { color: var(--text3); font-size: 0.8rem; margin-bottom: 3.5rem; }
+
+/* BENTO GRID */
+.bento-wrap { max-width: 1120px; margin: 0 auto; padding: 0 2rem 4rem; }
+.bento-grid { display: grid; grid-template-columns: repeat(12,1fr); gap: 12px; }
+.bento-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; overflow: hidden; transition: border-color 0.3s, box-shadow 0.3s; }
+.bento-card:hover { border-color: var(--border2); box-shadow: var(--glow); }
+.bento-wide   { grid-column: span 8; }
+.bento-medium { grid-column: span 4; }
+.bento-half   { grid-column: span 6; }
+.bento-quarter{ grid-column: span 3; }
+.bento-nine   { grid-column: span 9; }
+.bento-label { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text3); letter-spacing: 0.06em; margin-bottom: 0.75rem; text-transform: uppercase; }
+
+/* KANBAN MINI */
+.kanban-mini { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; height: 100%; min-height: 160px; }
+.kanban-col { display: flex; flex-direction: column; gap: 6px; }
+.kanban-lbl { font-size: 0.68rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 5px; margin-bottom: 4px; width: fit-content; }
+.kanban-lbl.todo { background: rgba(245,158,11,0.15); color: var(--amber); }
+.kanban-lbl.progress { background: rgba(16,185,129,0.15); color: var(--emerald); }
+.kanban-lbl.done { background: rgba(52,211,153,0.1); color: var(--emerald2); }
+.kanban-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 0.45rem 0.6rem; font-size: 0.7rem; color: var(--text2); line-height: 1.4; transition: border-color 0.2s; }
+.kanban-card.active { border-color: rgba(16,185,129,0.3); color: var(--text); }
+.kanban-card.done-card { opacity: 0.5; text-decoration: line-through; }
+.k-bar { display: block; height: 3px; background: linear-gradient(90deg,var(--emerald),var(--emerald2)); border-radius: 2px; margin-top: 0.4rem; }
+.k-avt { display: inline-block; width: 16px; height: 16px; border-radius: 50%; background: linear-gradient(135deg,var(--emerald),var(--amber)); font-size: 0.5rem; font-weight: 700; color: #fff; text-align: center; line-height: 16px; margin-top: 0.3rem; }
+
+/* SPRINT RING */
+.sprint-ring-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.7rem; height: 100%; justify-content: center; }
+.progress-ring { width: 88px; height: 88px; border-radius: 50%; background: conic-gradient(var(--emerald) 0% 72%, var(--bg3) 72% 100%); display: flex; align-items: center; justify-content: center; position: relative; }
+.progress-ring::before { content: ''; position: absolute; inset: 12px; border-radius: 50%; background: var(--bg2); }
+.ring-label { position: relative; z-index: 1; font-size: 1.1rem; font-weight: 800; color: var(--emerald); }
+.sprint-name { font-size: 0.82rem; font-weight: 700; color: var(--text); text-align: center; }
+.sprint-days { font-size: 0.68rem; color: var(--text3); text-align: center; }
+.sprint-breakdown { display: flex; gap: 0.6rem; margin-top: 0.25rem; }
+.sprint-stat { text-align: center; flex: 1; }
+.sprint-stat .sv { font-size: 1rem; font-weight: 800; }
+.sprint-stat .sk { font-size: 0.6rem; color: var(--text3); }
+
+/* TASK STATS */
+.task-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; height: calc(100% - 28px); }
+.task-stat { background: var(--bg3); border-radius: 10px; padding: 0.75rem; text-align: center; }
+.ts-val { font-size: 1.6rem; font-weight: 800; font-family: var(--font-mono); }
+.ts-key { font-size: 0.62rem; color: var(--text3); margin-top: 0.1rem; }
+.c-open { color: var(--amber); } .c-prog { color: var(--emerald); } .c-blk { color: var(--red); } .c-done { color: var(--emerald2); }
+
+/* TEAM AVATARS */
+.team-section { display: flex; flex-direction: column; gap: 0.65rem; height: 100%; }
+.team-title { font-size: 0.88rem; font-weight: 700; }
+.team-avatars { display: flex; }
+.team-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--bg2); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; color: #fff; margin-left: -7px; }
+.team-avatar:first-child { margin-left: 0; }
+.av1{background:linear-gradient(135deg,#10B981,#059669)}.av2{background:linear-gradient(135deg,#F59E0B,#D97706)}.av3{background:linear-gradient(135deg,#8B5CF6,#7C3AED)}.av4{background:linear-gradient(135deg,#EC4899,#DB2777)}.av5{background:linear-gradient(135deg,#06B6D4,#0891B2)}
+.av-more { width: 32px; height: 32px; border-radius: 50%; background: var(--bg3); border: 2px solid var(--bg2); display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: var(--text2); font-weight: 700; margin-left: -7px; }
+.team-roles { display: flex; flex-direction: column; gap: 0.3rem; }
+.team-role-row { display: flex; align-items: center; gap: 0.45rem; font-size: 0.7rem; color: var(--text2); }
+.role-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.role-count { margin-left: auto; font-weight: 700; color: var(--text); font-size: 0.75rem; }
+
+/* VELOCITY CHART */
+.velocity-chart { display: flex; align-items: flex-end; gap: 6px; height: 80px; margin-top: 0.5rem; }
+.vel-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; }
+.vel-bar { width: 100%; border-radius: 4px 4px 0 0; background: linear-gradient(180deg,var(--emerald),rgba(16,185,129,0.35)); min-height: 4px; }
+.vel-lbl { font-size: 0.58rem; color: var(--text3); }
+.velocity-meta { display: flex; justify-content: space-between; margin-top: 0.5rem; }
+.velocity-meta span { font-size: 0.68rem; color: var(--text3); }
+.velocity-meta strong { color: var(--text2); }
+
+/* ACTIVITY FEED */
+.activity-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.activity-item { display: flex; align-items: flex-start; gap: 0.55rem; }
+.activity-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 0.3rem; flex-shrink: 0; }
+.activity-text { font-size: 0.7rem; color: var(--text2); line-height: 1.4; }
+.activity-text strong { color: var(--text); }
+.activity-time { font-size: 0.6rem; color: var(--text3); }
+
+/* SOCIAL PROOF */
+.social-proof { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg2); }
+.social-proof-inner { max-width: 1120px; margin: 0 auto; padding: 1.5rem 2rem; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; justify-content: space-between; }
+.proof-text { font-size: 0.85rem; color: var(--text2); }
+.proof-text strong { color: var(--text); }
+.proof-logos { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+.proof-logo { font-size: 0.78rem; font-weight: 700; color: var(--text3); letter-spacing: 0.05em; text-transform: uppercase; }
+
+/* COUNTER */
+.counter-section { background: var(--bg2); border-top: 1px solid var(--border); }
+.counter-inner { max-width: 1120px; margin: 0 auto; padding: 3.5rem 2rem; display: grid; grid-template-columns: repeat(4,1fr); gap: 1.5rem; }
+.counter-card { text-align: center; }
+.counter-val { font-size: 2.5rem; font-weight: 800; font-family: var(--font-mono); }
+.counter-val span { color: var(--emerald); }
+.counter-key { font-size: 0.82rem; color: var(--text3); margin-top: 0.25rem; }
+
+/* PROBLEM */
+.problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 2.5rem; }
+.problem-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+.problem-emoji { font-size: 1.4rem; margin-bottom: 0.65rem; }
+.problem-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.35rem; }
+.problem-card p { font-size: 0.83rem; color: var(--text2); line-height: 1.65; }
+
+/* HOW IT WORKS */
+.steps-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; margin-top: 2.5rem; }
+.step-card { text-align: center; padding: 2rem 1.5rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; position: relative; }
+.step-card::after { content: '→'; position: absolute; right: -0.85rem; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 1.1rem; z-index: 1; }
+.step-card:last-child::after { display: none; }
+.step-num { width: 44px; height: 44px; border-radius: 12px; background: rgba(16,185,129,0.1); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; color: var(--emerald); margin: 0 auto 1rem; }
+.step-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; }
+.step-card p { font-size: 0.82rem; color: var(--text2); line-height: 1.6; }
+
+/* FEATURE BENTO */
+.feat-bento { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-top: 2rem; }
+.feat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; transition: border-color 0.3s, box-shadow 0.3s; }
+.feat-card:hover { border-color: var(--border2); box-shadow: var(--glow); }
+.feat-card.wide { grid-column: span 2; }
+.feat-icon { width: 40px; height: 40px; border-radius: 10px; background: rgba(16,185,129,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: 0.9rem; }
+.feat-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; }
+.feat-card p { font-size: 0.82rem; color: var(--text2); line-height: 1.6; }
+
+/* INTEGRATIONS */
+.integrations-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 2rem; }
+.integration-chip { display: flex; align-items: center; gap: 0.45rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 0.55rem 0.95rem; font-size: 0.82rem; font-weight: 600; color: var(--text2); transition: all 0.2s; cursor: default; }
+.integration-chip:hover { border-color: var(--border2); color: var(--text); }
+
+/* TESTIMONIALS */
+.testimonials-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; }
+.testi-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+.stars { color: var(--amber); font-size: 0.8rem; margin-bottom: 0.75rem; }
+.testi-quote { font-size: 0.88rem; color: var(--text2); line-height: 1.7; margin-bottom: 1.25rem; }
+.testi-author { display: flex; align-items: center; gap: 0.75rem; }
+.testi-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,var(--emerald),var(--amber)); display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 700; color: #fff; flex-shrink: 0; }
+.testi-name { font-size: 0.85rem; font-weight: 700; }
+.testi-role { font-size: 0.72rem; color: var(--text3); }
+
+/* PRICING */
+.pricing-toggle-wrap { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2.5rem; justify-content: center; }
+.pricing-lbl { font-size: 0.88rem; color: var(--text2); font-weight: 500; transition: color 0.2s; }
+.pricing-lbl.active-lbl { color: var(--text); font-weight: 700; }
+.toggle-track { width: 44px; height: 24px; border-radius: 12px; background: var(--bg3); border: 1px solid var(--border2); position: relative; cursor: pointer; transition: background 0.3s; }
+.toggle-track.active { background: var(--emerald); }
+.toggle-thumb { position: absolute; width: 18px; height: 18px; border-radius: 50%; background: #fff; top: 2px; left: 2px; transition: left 0.3s; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+.toggle-track.active .toggle-thumb { left: 22px; }
+.annual-badge { background: rgba(16,185,129,0.15); color: var(--emerald); border: 1px solid var(--border2); font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px; }
+.pricing-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; }
+.pricing-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; }
+.pricing-card.featured { border-color: var(--emerald); box-shadow: 0 0 30px rgba(16,185,129,0.12); position: relative; }
+.pricing-featured-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg,#10B981,#34D399); color: #fff; font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.9rem; border-radius: 999px; white-space: nowrap; }
+.pricing-name { font-size: 0.78rem; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+.pricing-price { display: flex; align-items: baseline; gap: 0.2rem; margin-bottom: 0.25rem; }
+.price-curr { font-size: 0.95rem; color: var(--text2); }
+.price-val { font-size: 2.1rem; font-weight: 800; font-family: var(--font-mono); }
+.price-period { font-size: 0.75rem; color: var(--text3); }
+.pricing-desc { font-size: 0.78rem; color: var(--text3); margin-bottom: 1.25rem; }
+.pricing-divider { height: 1px; background: var(--border); margin-bottom: 1.25rem; }
+.pricing-features { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; }
+.pf-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--text2); }
+.pf-check { color: var(--emerald); font-size: 0.82rem; } .pf-x { color: var(--text3); font-size: 0.82rem; }
+.pricing-btn { width: 100%; padding: 0.7rem; border-radius: 10px; font-family: var(--font-body); font-size: 0.88rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.pricing-btn-primary { background: linear-gradient(135deg,#10B981,#34D399); color: #fff; border: none; }
+.pricing-btn-ghost { background: none; border: 1px solid var(--border2); color: var(--text); }
+.pricing-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+/* COMPARISON TABLE */
+.compare-table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+.compare-table th, .compare-table td { padding: 0.85rem 1rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+.compare-table th { color: var(--text2); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.compare-table td:first-child { color: var(--text); font-weight: 500; }
+.compare-table td:not(:first-child) { text-align: center; }
+.compare-table tr:hover td { background: var(--bg2); }
+.col-us { color: var(--emerald); font-weight: 700; }
+.col-no { color: var(--text3); }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 0; max-width: 720px; }
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-q { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 1.1rem 0; background: none; border: none; color: var(--text); font-family: var(--font-body); font-size: 0.92rem; font-weight: 600; cursor: pointer; text-align: left; }
+.faq-icon { color: var(--text3); font-size: 1.1rem; transition: transform 0.3s; flex-shrink: 0; margin-left: 1rem; }
+.faq-item.open .faq-icon { transform: rotate(45deg); color: var(--emerald); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+.faq-item.open .faq-a { max-height: 220px; }
+.faq-a-inner { padding-bottom: 1rem; font-size: 0.85rem; color: var(--text2); line-height: 1.7; }
+
+/* CTA BAND */
+.cta-band { background: linear-gradient(135deg,rgba(16,185,129,0.1),rgba(52,211,153,0.05)); border-top: 1px solid var(--border); text-align: center; padding: 5rem 2rem; }
+.cta-band h2 { font-size: clamp(1.8rem,4vw,2.8rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.75rem; }
+.cta-band p { color: var(--text2); margin-bottom: 2rem; font-size: 1rem; }
+.cta-band-actions { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem; }
+.cta-sub { color: var(--text3); font-size: 0.78rem; }
+
+/* FOOTER */
+.footer { background: var(--bg2); border-top: 1px solid var(--border); }
+.footer-inner { max-width: 1120px; margin: 0 auto; padding: 3rem 2rem 1.5rem; }
+.footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2rem; margin-bottom: 2.5rem; }
+.footer-brand p { font-size: 0.82rem; color: var(--text3); line-height: 1.7; margin-top: 0.75rem; max-width: 260px; }
+.footer-col h4 { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text2); margin-bottom: 0.85rem; }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.footer-col a { text-decoration: none; color: var(--text3); font-size: 0.82rem; transition: color 0.2s; }
+.footer-col a:hover { color: var(--text); }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 1.5rem; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--text3); }
+.footer-links { display: flex; gap: 1.25rem; }
+.footer-links a { color: var(--text3); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--text); }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .navbar-nav, .navbar-actions .btn-ghost, .navbar-actions .btn-primary { display: none; }
+  .hamburger { display: flex; }
+  .bento-wide, .bento-medium, .bento-half, .bento-quarter, .bento-nine { grid-column: span 12; }
+  .problem-grid { grid-template-columns: 1fr; }
+  .steps-grid { grid-template-columns: 1fr; }
+  .step-card::after { display: none; }
+  .feat-bento { grid-template-columns: 1fr; }
+  .feat-card.wide { grid-column: span 1; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .counter-inner { grid-template-columns: 1fr 1fr; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .footer-bottom { flex-direction: column; gap: 0.75rem; text-align: center; }
+}
+@media (max-width: 600px) {
+  .section-inner { padding: 3.5rem 1.25rem; }
+  .bento-wrap { padding: 0 1.25rem 3rem; }
+  .hero-inner { padding: 3rem 1.25rem 1.5rem; }
+  .counter-inner { grid-template-columns: 1fr 1fr; gap: 1rem; padding: 2.5rem 1.25rem; }
+  .footer-top { grid-template-columns: 1fr; }
+  .compare-table { font-size: 0.73rem; }
+  .compare-table th, .compare-table td { padding: 0.6rem 0.45rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="#" class="navbar-logo">
+    <div class="logo-icon">FT</div>
+    FlowTask
+  </a>
+  <ul class="navbar-nav">
+    <li><a href="#fitur">Fitur</a></li>
+    <li><a href="#integrasi">Integrasi</a></li>
+    <li><a href="#testimoni">Testimoni</a></li>
+    <li><a href="#harga">Harga</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <div class="navbar-actions">
+    <button class="theme-toggle" id="themeBtn">☀</button>
+    <button class="btn-ghost">Masuk</button>
+    <button class="btn-primary">Coba Gratis 14 Hari</button>
+    <button class="hamburger" id="hamburger">☰</button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#fitur">Fitur</a>
+  <a href="#integrasi">Integrasi</a>
+  <a href="#testimoni">Testimoni</a>
+  <a href="#harga">Harga</a>
+  <a href="#faq">FAQ</a>
+  <a href="#">Masuk</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge"><span></span> Baru — Sprint Automation AI sudah tersedia</div>
+    <h1>Semua Proyek,<br><span class="gradient-text">Satu Tempat</span></h1>
+    <p>FlowTask menyatukan kanban, sprint, timeline, dan laporan tim dalam satu dashboard cerdas. Cocok untuk tim produk, agensi, dan startup Indonesia.</p>
+    <div class="hero-cta">
+      <button class="btn-hero-primary">Mulai Gratis 14 Hari →</button>
+      <button class="btn-hero-secondary">▶ Lihat Demo</button>
+    </div>
+    <p class="hero-sub">Tidak perlu kartu kredit · Setup 2 menit · 1.200+ tim aktif</p>
+  </div>
+
+  <!-- BENTO GRID -->
+  <div class="bento-wrap">
+    <div class="bento-grid">
+
+      <!-- Kanban Board Mini (span 8) -->
+      <div class="bento-card bento-wide">
+        <div class="bento-label">// kanban board — sprint 12</div>
+        <div class="kanban-mini">
+          <div class="kanban-col">
+            <div class="kanban-lbl todo">To Do</div>
+            <div class="kanban-card">Design sistem baru<br><span class="k-avt">AR</span></div>
+            <div class="kanban-card">Review proposal klien<br><span class="k-avt">DN</span></div>
+            <div class="kanban-card">Audit keamanan Q3</div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-lbl progress">In Progress</div>
+            <div class="kanban-card active">Integrasi API pembayaran<span class="k-bar" style="width:65%"></span><span class="k-avt">BW</span></div>
+            <div class="kanban-card active">Optimasi performa DB<span class="k-bar" style="width:40%;background:linear-gradient(90deg,var(--amber),var(--amber2))"></span></div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-lbl done">Done ✓</div>
+            <div class="kanban-card done-card">Setup database cluster</div>
+            <div class="kanban-card done-card">Wireframe halaman login</div>
+            <div class="kanban-card done-card">Migrasi server produksi</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sprint Progress Ring (span 4) -->
+      <div class="bento-card bento-medium">
+        <div class="bento-label">// sprint progress</div>
+        <div class="sprint-ring-wrap">
+          <div class="progress-ring"><span class="ring-label">72%</span></div>
+          <div class="sprint-name">Sprint 12</div>
+          <div class="sprint-days">5 hari tersisa</div>
+          <div class="sprint-breakdown">
+            <div class="sprint-stat"><div class="sv" style="color:var(--emerald)">18</div><div class="sk">Done</div></div>
+            <div class="sprint-stat"><div class="sv" style="color:var(--amber)">5</div><div class="sk">Active</div></div>
+            <div class="sprint-stat"><div class="sv" style="color:var(--text3)">7</div><div class="sk">Todo</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Task Stats (span 6) -->
+      <div class="bento-card bento-half">
+        <div class="bento-label">// statistik tugas hari ini</div>
+        <div class="task-stats-grid">
+          <div class="task-stat"><div class="ts-val c-open" id="statOpen">0</div><div class="ts-key">Open</div></div>
+          <div class="task-stat"><div class="ts-val c-prog" id="statProg">0</div><div class="ts-key">In Progress</div></div>
+          <div class="task-stat"><div class="ts-val c-blk" id="statBlk">0</div><div class="ts-key">Blocked</div></div>
+          <div class="task-stat"><div class="ts-val c-done" id="statDone">0</div><div class="ts-key">Done</div></div>
+        </div>
+      </div>
+
+      <!-- Team Members (span 6) -->
+      <div class="bento-card bento-half">
+        <div class="bento-label">// anggota tim aktif</div>
+        <div class="team-section">
+          <div class="team-title">Tim Produk · 12 Anggota</div>
+          <div class="team-avatars">
+            <div class="team-avatar av1">AR</div>
+            <div class="team-avatar av2">DN</div>
+            <div class="team-avatar av3">BW</div>
+            <div class="team-avatar av4">SR</div>
+            <div class="team-avatar av5">YP</div>
+            <div class="av-more">+7</div>
+          </div>
+          <div class="team-roles">
+            <div class="team-role-row"><span class="role-dot" style="background:var(--emerald)"></span>Product Manager<span class="role-count">2</span></div>
+            <div class="team-role-row"><span class="role-dot" style="background:var(--amber)"></span>Frontend Developer<span class="role-count">4</span></div>
+            <div class="team-role-row"><span class="role-dot" style="background:#8B5CF6"></span>Backend Developer<span class="role-count">3</span></div>
+            <div class="team-role-row"><span class="role-dot" style="background:#EC4899"></span>UI/UX Designer<span class="role-count">3</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Velocity Chart (span 9) -->
+      <div class="bento-card bento-nine">
+        <div class="bento-label">// velocity chart — 8 sprint terakhir</div>
+        <div class="velocity-chart" id="velocityChart"></div>
+        <div class="velocity-meta">
+          <span>Sprint 5 – 12</span>
+          <span>Rata-rata: <strong>20.6 poin/sprint</strong></span>
+          <span>Tertinggi: <strong>28 poin (Sprint 11)</strong></span>
+        </div>
+      </div>
+
+      <!-- Activity Feed (span 3) -->
+      <div class="bento-card bento-quarter">
+        <div class="bento-label">// aktivitas terbaru</div>
+        <div class="activity-list">
+          <div class="activity-item">
+            <span class="activity-dot" style="background:var(--emerald)"></span>
+            <div><div class="activity-text"><strong>Budi W.</strong> selesaikan "Setup DB"</div><div class="activity-time">2 menit lalu</div></div>
+          </div>
+          <div class="activity-item">
+            <span class="activity-dot" style="background:var(--amber)"></span>
+            <div><div class="activity-text"><strong>Dewi N.</strong> tambah task baru</div><div class="activity-time">18 menit lalu</div></div>
+          </div>
+          <div class="activity-item">
+            <span class="activity-dot" style="background:#8B5CF6"></span>
+            <div><div class="activity-text"><strong>Andi R.</strong> pindah ke In Progress</div><div class="activity-time">1 jam lalu</div></div>
+          </div>
+          <div class="activity-item">
+            <span class="activity-dot" style="background:var(--red)"></span>
+            <div><div class="activity-text"><strong>Sari Y.</strong> tandai task blocked</div><div class="activity-time">2 jam lalu</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<div class="social-proof">
+  <div class="social-proof-inner">
+    <p class="proof-text">Dipercaya <strong>1.200+ tim</strong> di seluruh Indonesia</p>
+    <div class="proof-logos">
+      <span class="proof-logo">Tokosaya</span>
+      <span class="proof-logo">Mediakita</span>
+      <span class="proof-logo">DigitalMaju</span>
+      <span class="proof-logo">Nusantara Tech</span>
+      <span class="proof-logo">Arjuna Studio</span>
+    </div>
+  </div>
+</div>
+
+<!-- COUNTER -->
+<div class="counter-section">
+  <div class="counter-inner">
+    <div class="counter-card"><div class="counter-val"><span id="c1">0</span>+</div><div class="counter-key">Tim Aktif</div></div>
+    <div class="counter-card"><div class="counter-val"><span id="c2">0</span>rb+</div><div class="counter-key">Task Diselesaikan</div></div>
+    <div class="counter-card"><div class="counter-val"><span id="c3">0</span>%</div><div class="counter-key">Peningkatan Produktivitas</div></div>
+    <div class="counter-card"><div class="counter-val"><span id="c4">0</span></div><div class="counter-key">Rating App Store</div></div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section>
+  <div class="section-inner">
+    <div class="section-tag">// masalah yang kami selesaikan</div>
+    <h2 class="section-title">Tim Anda Masih Pakai<br><span class="gradient-text">Spreadsheet?</span></h2>
+    <p class="section-sub">Mengelola proyek dengan spreadsheet, chat terpisah, dan email berceceran bikin tim kehilangan fokus dan deadline meleset.</p>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="problem-emoji">📋</div>
+        <h4>Update Status Manual</h4>
+        <p>Meeting status 1 jam setiap hari hanya untuk tahu siapa mengerjakan apa — padahal semua sudah ada di spreadsheet yang tidak pernah ter-update.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-emoji">💬</div>
+        <h4>Konteks Tersebar di Chat</h4>
+        <p>Brief di email, revisi di WhatsApp, keputusan di Zoom, file di Drive — tidak ada satu tempat yang jadi sumber kebenaran untuk tim.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-emoji">🔴</div>
+        <h4>Deadline Meleset Tanpa Peringatan</h4>
+        <p>Tidak ada visibilitas blockers lebih awal. Tim baru tahu ada masalah saat deadline sudah lewat dan klien mulai mempertanyakan progress.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-emoji">📊</div>
+        <h4>Laporan yang Makan Waktu</h4>
+        <p>Menyusun laporan mingguan perlu 2–3 jam mengumpulkan data dari berbagai platform — padahal manajer butuh insight real-time kapan saja.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section style="background:var(--bg2);border-top:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-tag">// cara kerja</div>
+    <h2 class="section-title">Tiga Langkah Menuju<br>Tim yang Efisien</h2>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <h4>Buat Proyek</h4>
+        <p>Import dari Trello, Jira, atau Notion dalam sekali klik. Atau mulai dari template sprint yang sudah kami siapkan untuk berbagai industri.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <h4>Assign Tim</h4>
+        <p>Undang anggota tim, atur role dan permission, lalu bagi tugas langsung dari kanban. AI FlowTask otomatis menyeimbangkan beban kerja.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <h4>Track Progress</h4>
+        <p>Dashboard real-time, velocity chart, dan laporan otomatis. Tahu kapan proyek on-track dan kapan perlu eskalasi — sebelum terlambat.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="fitur">
+  <div class="section-inner">
+    <div class="section-tag">// fitur unggulan</div>
+    <h2 class="section-title">Semua yang Dibutuhkan<br><span class="gradient-text">Tim Produk Modern</span></h2>
+    <div class="feat-bento">
+      <div class="feat-card wide">
+        <div class="feat-icon">🗂️</div>
+        <h4>Multi-View: Kanban, Timeline & List</h4>
+        <p>Lihat proyek dari berbagai perspektif. Gunakan kanban untuk sprint harian, timeline Gantt untuk perencanaan kuartal, atau list view untuk backlog grooming. Semua tersinkron real-time antar anggota tim.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🤖</div>
+        <h4>Sprint Automation AI</h4>
+        <p>AI menganalisis velocity historis dan kapasitas tim, lalu menyarankan distribusi task optimal untuk sprint berikutnya secara otomatis.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔔</div>
+        <h4>Smart Notifications</h4>
+        <p>Notifikasi cerdas yang hanya muncul saat relevan, terintegrasi langsung ke WhatsApp Business dan Slack — bebas spam.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📈</div>
+        <h4>Laporan Otomatis</h4>
+        <p>Burndown chart dan ringkasan sprint otomatis dikirim ke email tim setiap akhir sprint, tanpa perlu dibuat manual.</p>
+      </div>
+      <div class="feat-card wide">
+        <div class="feat-icon">🔒</div>
+        <h4>Keamanan & Kepatuhan Data Indonesia</h4>
+        <p>Server di Jakarta IDC. Enkripsi AES-256, audit log lengkap, dan patuh pada regulasi Kominfo PP No. 71/2019. Data bisnis Anda tidak pernah keluar dari wilayah Indonesia.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🗓️</div>
+        <h4>Kalender Libur Nasional</h4>
+        <p>Otomatis memperhitungkan hari libur nasional Indonesia dalam kalkulasi deadline dan kapasitas sprint setiap tim.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTEGRATIONS -->
+<section id="integrasi" style="background:var(--bg2);border-top:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-tag">// integrasi</div>
+    <h2 class="section-title">Terhubung ke Tools<br>yang Sudah Anda Pakai</h2>
+    <p class="section-sub">FlowTask terintegrasi dengan 40+ aplikasi populer. Tidak perlu ganti workflow — cukup tambahkan FlowTask ke dalamnya.</p>
+    <div class="integrations-grid">
+      <div class="integration-chip">💬 Slack</div>
+      <div class="integration-chip">📹 Zoom</div>
+      <div class="integration-chip">📁 Google Drive</div>
+      <div class="integration-chip">🐙 GitHub</div>
+      <div class="integration-chip">📧 Gmail</div>
+      <div class="integration-chip">📱 WhatsApp Business</div>
+      <div class="integration-chip">🎨 Figma</div>
+      <div class="integration-chip">🗃️ Notion</div>
+      <div class="integration-chip">📋 Trello</div>
+      <div class="integration-chip">⚡ Jira</div>
+      <div class="integration-chip">🔷 Microsoft Teams</div>
+      <div class="integration-chip">📊 Google Sheets</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimoni">
+  <div class="section-inner">
+    <div class="section-tag">// testimoni</div>
+    <h2 class="section-title">Project Manager Indonesia<br><span class="gradient-text">Berbicara</span></h2>
+    <div class="testimonials-grid">
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-quote">"Sprint planning yang biasanya makan 3 jam kini selesai dalam 40 menit. FlowTask benar-benar mengubah cara kerja tim produk kami. Velocity naik 35% dalam 2 bulan pertama."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">AR</div>
+          <div><div class="testi-name">Andi Raharjo</div><div class="testi-role">Senior PM · Tokosaya.id</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-quote">"Akhirnya ada tools project management yang paham konteks Indonesia — kalender libur, notifikasi WA, server lokal. Tim developer dari 3 kota berbeda bisa kolaborasi tanpa hambatan."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">DN</div>
+          <div><div class="testi-name">Dina Nugroho</div><div class="testi-role">Engineering Lead · Mediakita Group</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-quote">"Laporan sprint yang dulu saya susun manual 2 jam per minggu, sekarang otomatis terkirim ke inbox klien. FlowTask menghemat 8 jam/minggu untuk tim agensi kami."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">YP</div>
+          <div><div class="testi-name">Yusuf Pratama</div><div class="testi-role">Direktur Operasi · Arjuna Digital Agency</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="harga" style="background:var(--bg2);border-top:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-tag">// harga</div>
+    <h2 class="section-title">Pilih Paket yang Tepat<br>untuk Tim Anda</h2>
+    <div class="pricing-toggle-wrap">
+      <span class="pricing-lbl active-lbl" id="lbl-monthly">Bulanan</span>
+      <div class="toggle-track" id="pricingToggle"><div class="toggle-thumb"></div></div>
+      <span class="pricing-lbl" id="lbl-annual">Tahunan</span>
+      <span class="annual-badge">Hemat 25%</span>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-name">Starter</div>
+        <div class="pricing-price"><span class="price-curr">Rp</span><span class="price-val" id="price-0">0</span><span class="price-period">/bulan</span></div>
+        <div class="pricing-desc">Untuk tim kecil hingga 5 orang. Gratis selamanya.</div>
+        <div class="pricing-divider"></div>
+        <div class="pricing-features">
+          <div class="pf-item"><span class="pf-check">✓</span> Hingga 5 anggota tim</div>
+          <div class="pf-item"><span class="pf-check">✓</span> 3 proyek aktif</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Kanban & List view</div>
+          <div class="pf-item"><span class="pf-check">✓</span> 1 GB penyimpanan</div>
+          <div class="pf-item"><span class="pf-x">✕</span> <span style="color:var(--text3)">Sprint AI</span></div>
+          <div class="pf-item"><span class="pf-x">✕</span> <span style="color:var(--text3)">Laporan otomatis</span></div>
+        </div>
+        <button class="pricing-btn pricing-btn-ghost">Mulai Gratis</button>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-featured-badge">⭐ Paling Populer</div>
+        <div class="pricing-name">Pro</div>
+        <div class="pricing-price"><span class="price-curr">Rp</span><span class="price-val" id="price-1">149.000</span><span class="price-period">/user/bln</span></div>
+        <div class="pricing-desc">Untuk tim produk yang serius. Semua fitur inti.</div>
+        <div class="pricing-divider"></div>
+        <div class="pricing-features">
+          <div class="pf-item"><span class="pf-check">✓</span> Anggota tak terbatas</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Proyek tak terbatas</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Semua view + Timeline Gantt</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Sprint Automation AI</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Laporan & analytics penuh</div>
+          <div class="pf-item"><span class="pf-check">✓</span> 40+ integrasi</div>
+        </div>
+        <button class="pricing-btn pricing-btn-primary">Coba 14 Hari Gratis</button>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-name">Enterprise</div>
+        <div class="pricing-price"><span class="price-val" style="font-size:1.8rem">Custom</span></div>
+        <div class="pricing-desc">Untuk korporat dengan kebutuhan skala besar dan kepatuhan khusus.</div>
+        <div class="pricing-divider"></div>
+        <div class="pricing-features">
+          <div class="pf-item"><span class="pf-check">✓</span> Semua fitur Pro</div>
+          <div class="pf-item"><span class="pf-check">✓</span> SLA 99.9% uptime</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Dedicated server lokal</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Onboarding & training</div>
+          <div class="pf-item"><span class="pf-check">✓</span> SSO & audit log</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Account manager khusus</div>
+        </div>
+        <button class="pricing-btn pricing-btn-ghost">Hubungi Sales</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section>
+  <div class="section-inner">
+    <div class="section-tag">// perbandingan</div>
+    <h2 class="section-title">FlowTask vs Kompetitor</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Fitur</th>
+          <th style="color:var(--emerald)">FlowTask</th>
+          <th>Trello</th>
+          <th>Asana</th>
+          <th>Jira</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Server data di Indonesia</td><td class="col-us">✓</td><td class="col-no">✕</td><td class="col-no">✕</td><td class="col-no">✕</td></tr>
+        <tr><td>Notifikasi WhatsApp</td><td class="col-us">✓</td><td class="col-no">✕</td><td class="col-no">✕</td><td class="col-no">✕</td></tr>
+        <tr><td>Kalender libur nasional</td><td class="col-us">✓</td><td class="col-no">✕</td><td class="col-no">✕</td><td class="col-no">✕</td></tr>
+        <tr><td>Sprint Automation AI</td><td class="col-us">✓</td><td class="col-no">✕</td><td class="col-no">✕</td><td style="color:var(--text2)">Terbatas</td></tr>
+        <tr><td>Laporan sprint otomatis</td><td class="col-us">✓</td><td class="col-no">✕</td><td class="col-us">✓</td><td class="col-us">✓</td></tr>
+        <tr><td>Paket gratis (tim ≤5)</td><td class="col-us">✓</td><td class="col-us">✓</td><td class="col-no">✕</td><td class="col-us">✓</td></tr>
+        <tr><td>Antarmuka Bahasa Indonesia</td><td class="col-us">✓</td><td class="col-no">✕</td><td class="col-no">✕</td><td class="col-no">✕</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" style="background:var(--bg2);border-top:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-tag">// pertanyaan umum</div>
+    <h2 class="section-title">Ada Pertanyaan?</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q">Apakah paket Starter benar-benar gratis selamanya? <span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Ya. Paket Starter gratis selamanya untuk tim hingga 5 orang dengan 3 proyek aktif. Tidak ada kartu kredit yang dibutuhkan dan tidak ada biaya tersembunyi.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Bisakah saya impor data dari Trello atau Jira? <span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Tentu. FlowTask menyediakan import satu klik dari Trello, Jira, Asana, Notion, dan spreadsheet Excel/CSV. Tim onboarding kami siap membantu migrasi gratis untuk paket Pro ke atas.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Di mana data saya disimpan? <span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Semua data disimpan di server yang berlokasi di Jakarta, Indonesia, dikelola oleh Nusacloud IDC. Terenkripsi AES-256 dan patuh pada regulasi Kominfo PP No. 71/2019.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Apakah tersedia aplikasi mobile? <span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Ya, aplikasi iOS dan Android tersedia dengan mode offline penuh. Update task saat tidak ada koneksi, dan perubahan otomatis tersinkron saat online kembali.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Bagaimana cara kerja trial 14 hari? <span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Daftar dan nikmati semua fitur Pro selama 14 hari tanpa kartu kredit. Setelah trial berakhir, akun otomatis kembali ke Starter jika tidak melanjutkan berlangganan.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band">
+  <h2>Siap Tingkatkan Produktivitas<br><span class="gradient-text">Tim Anda Hari Ini?</span></h2>
+  <p>Bergabung dengan 1.200+ tim di Indonesia yang sudah mempercayai FlowTask.</p>
+  <div class="cta-band-actions">
+    <button class="btn-hero-primary">Mulai Gratis Sekarang →</button>
+    <button class="btn-hero-secondary">Jadwalkan Demo</button>
+  </div>
+  <p class="cta-sub">Gratis selamanya · Tidak perlu kartu kredit · Setup dalam 2 menit</p>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="navbar-logo" style="display:inline-flex;margin-bottom:0.75rem">
+          <div class="logo-icon">FT</div>
+          FlowTask
+        </a>
+        <p>Platform manajemen proyek tim yang dibangun khusus untuk ekosistem kerja Indonesia.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Produk</h4>
+        <ul><li><a href="#">Fitur</a></li><li><a href="#">Integrasi</a></li><li><a href="#">Changelog</a></li><li><a href="#">Roadmap</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <ul><li><a href="#">Tentang Kami</a></li><li><a href="#">Blog</a></li><li><a href="#">Karir</a></li><li><a href="#">Pers</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Bantuan</h4>
+        <ul><li><a href="#">Dokumentasi</a></li><li><a href="#">Status</a></li><li><a href="#">Kontak</a></li><li><a href="#">Keamanan</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 FlowTask Technologies, PT. Jakarta, Indonesia.</p>
+      <div class="footer-links">
+        <a href="#">Privasi</a><a href="#">Syarat</a><a href="#">Cookie</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// THEME TOGGLE
+const themeBtn = document.getElementById('themeBtn');
+themeBtn.addEventListener('click', () => {
+  const html = document.documentElement;
+  const isDark = html.dataset.theme === 'dark';
+  html.dataset.theme = isDark ? 'light' : 'dark';
+  themeBtn.textContent = isDark ? '🌙' : '☀';
+});
+
+// MOBILE MENU
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+  hamburger.textContent = mobileMenu.classList.contains('open') ? '✕' : '☰';
+});
+mobileMenu.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => { mobileMenu.classList.remove('open'); hamburger.textContent = '☰'; });
+});
+
+// VELOCITY CHART
+const velocityData = [14, 19, 22, 17, 24, 21, 28, 20];
+const vcEl = document.getElementById('velocityChart');
+const maxV = Math.max(...velocityData);
+velocityData.forEach((v, i) => {
+  const wrap = document.createElement('div');
+  wrap.className = 'vel-bar-wrap';
+  const pct = Math.round((v / maxV) * 100);
+  wrap.innerHTML = `<div class="vel-bar" style="height:${pct}%"></div><div class="vel-lbl">S${i + 5}</div>`;
+  vcEl.appendChild(wrap);
+});
+
+// PRICING TOGGLE
+const pricingToggle = document.getElementById('pricingToggle');
+const lblMonthly = document.getElementById('lbl-monthly');
+const lblAnnual = document.getElementById('lbl-annual');
+const prices = [
+  { monthly: '0', annual: '0' },
+  { monthly: '149.000', annual: '112.000' }
+];
+let isAnnual = false;
+pricingToggle.addEventListener('click', () => {
+  isAnnual = !isAnnual;
+  pricingToggle.classList.toggle('active', isAnnual);
+  lblMonthly.classList.toggle('active-lbl', !isAnnual);
+  lblAnnual.classList.toggle('active-lbl', isAnnual);
+  prices.forEach((p, i) => {
+    const el = document.getElementById('price-' + i);
+    if (el) el.textContent = isAnnual ? p.annual : p.monthly;
+  });
+});
+
+// FAQ ACCORDION
+document.querySelectorAll('.faq-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.closest('.faq-item');
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+
+// COUNTER ANIMATION
+function animateCounter(el, target, duration) {
+  duration = duration || 1800;
+  const isFloat = !Number.isInteger(target);
+  let start = 0;
+  const step = target / (duration / 16);
+  const timer = setInterval(() => {
+    start = Math.min(start + step, target);
+    el.textContent = isFloat ? start.toFixed(1) : Math.floor(start);
+    if (start >= target) clearInterval(timer);
+  }, 16);
+}
+
+const counterTargets = [
+  { id: 'c1', val: 1200 }, { id: 'c2', val: 850 },
+  { id: 'c3', val: 40 }, { id: 'c4', val: 4.9 }
+];
+const statTargets = [
+  { id: 'statOpen', val: 23 }, { id: 'statProg', val: 5 },
+  { id: 'statBlk', val: 2 }, { id: 'statDone', val: 18 }
+];
+let countersRan = false;
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && !countersRan) {
+      countersRan = true;
+      counterTargets.forEach(c => { const el = document.getElementById(c.id); if (el) animateCounter(el, c.val); });
+      statTargets.forEach(s => { const el = document.getElementById(s.id); if (el) animateCounter(el, s.val, 1200); });
+    }
+  });
+}, { threshold: 0.3 });
+const counterSection = document.querySelector('.counter-section');
+if (counterSection) obs.observe(counterSection);
+
+// SMOOTH SCROLL
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+</script>
+</body>
+</html>

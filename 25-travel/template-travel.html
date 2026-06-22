@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jelajah Nusantara — Tour &amp; Travel Adventure Indonesia</title>
+<meta name="description" content="Paket wisata petualangan terbaik ke destinasi-destinasi ikonik Indonesia. Pantai, gunung, budaya, kuliner, dan petualangan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   RESET
+============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;}
+a{text-decoration:none;color:inherit;}
+ul{list-style:none;}
+img{display:block;max-width:100%;}
+
+/* ============================================================
+   CSS TOKENS
+============================================================ */
+:root{
+  --bg:#120C08;--bg2:#1C1208;--bg3:#261A0C;
+  --text:#F5EDE0;--text2:#C4A882;--text3:#7A6248;
+  --sunset:#E8821A;--amber:#F5C842;--teal:#2DD4BF;
+  --border:rgba(255,255,255,0.08);
+  --border2:rgba(232,130,26,0.18);
+  --font-display:'Syne',sans-serif;--font-body:'Plus Jakarta Sans',sans-serif;
+}
+[data-theme="light"]{
+  --bg:#FDFAF5;--bg2:#F5EDE0;--bg3:#EDE0CC;
+  --text:#1A0E08;--text2:#5C3C20;--text3:#9A7250;
+  --border:rgba(0,0,0,0.08);--border2:rgba(232,130,26,0.2);
+}
+
+/* ============================================================
+   NAVBAR
+============================================================ */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.25rem 3rem;background:rgba(18,12,8,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);transition:background .4s;}
+[data-theme="light"] .navbar{background:rgba(253,250,245,.92);}
+.nav-logo{font-family:var(--font-display);font-weight:800;font-size:1.2rem;color:var(--text);display:flex;align-items:center;gap:.4rem;}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--sunset);display:inline-block;}
+.nav-links{display:flex;gap:2rem;}
+.nav-links a{font-size:.85rem;color:var(--text2);font-weight:500;transition:color .2s;}
+.nav-links a:hover{color:var(--text);}
+.nav-right{display:flex;align-items:center;gap:1rem;}
+.nav-currency{font-size:.75rem;font-family:monospace;color:var(--text3);padding:.3rem .7rem;border:1px solid var(--border);border-radius:4px;cursor:pointer;}
+.btn-book{padding:.6rem 1.4rem;background:var(--sunset);color:#fff;border:none;border-radius:6px;font-family:var(--font-body);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:.02em;}
+.btn-book:hover{background:#d4720f;box-shadow:0 4px 20px rgba(232,130,26,.35);}
+.theme-toggle{background:none;border:1px solid var(--border);color:var(--text2);padding:.4rem .7rem;border-radius:4px;cursor:pointer;font-size:.85rem;}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;}
+.hamburger span{display:block;width:22px;height:1.5px;background:var(--text2);}
+@media(max-width:768px){.navbar{padding:1rem 1.5rem;}.nav-links{display:none;}.nav-currency{display:none;}.hamburger{display:flex;}}
+
+/* Mobile Menu */
+.mobile-menu{position:fixed;inset:0;z-index:99;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.5rem;opacity:0;pointer-events:none;transition:opacity .3s;}
+.mobile-menu.open{opacity:1;pointer-events:all;}
+.mobile-menu a{font-family:var(--font-display);font-size:1.6rem;font-weight:700;color:var(--text2);transition:color .2s;}
+.mobile-menu a:hover{color:var(--text);}
+
+/* ============================================================
+   HERO
+============================================================ */
+.hero{position:relative;height:100dvh;min-height:640px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:0 3rem 0 3rem;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,#2a1805 0%,#1a0d04 30%,#0e0803 60%,#1a1005 100%);}
+.hero-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 75% 35%,rgba(232,130,26,.18) 0%,rgba(245,200,66,.08) 35%,transparent 65%),radial-gradient(ellipse at 20% 70%,rgba(45,212,191,.08) 0%,transparent 50%);}
+.hero-bg::after{content:'';position:absolute;bottom:0;left:0;right:0;height:55%;background:linear-gradient(to top,var(--bg) 0%,transparent 100%);}
+.hero-content{position:relative;z-index:2;max-width:760px;padding-bottom:3rem;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:.6rem;background:rgba(232,130,26,.12);border:1px solid rgba(232,130,26,.25);border-radius:100px;padding:.35rem 1rem .35rem .5rem;margin-bottom:1.75rem;}
+.eyebrow-badge{background:var(--sunset);color:#fff;font-size:.6rem;font-weight:700;padding:.2rem .5rem;border-radius:100px;text-transform:uppercase;letter-spacing:.08em;}
+.eyebrow-text{font-size:.78rem;color:var(--text2);font-weight:500;}
+.hero-h1{font-family:var(--font-display);font-size:clamp(3.2rem,8.5vw,7.5rem);font-weight:800;line-height:.95;letter-spacing:-.025em;color:var(--text);margin-bottom:1.25rem;}
+.hero-h1 .accent{color:var(--sunset);}
+.hero-sub{font-size:clamp(.95rem,1.5vw,1.1rem);color:var(--text2);max-width:500px;line-height:1.7;margin-bottom:2.5rem;font-weight:400;}
+
+/* Search form */
+.search-bar{display:flex;background:rgba(26,18,8,.85);backdrop-filter:blur(12px);border:1px solid var(--border2);border-radius:10px;overflow:hidden;max-width:680px;}
+.search-field{flex:1;display:flex;flex-direction:column;padding:.9rem 1.25rem;border-right:1px solid var(--border);min-width:0;}
+.search-field:last-of-type{border-right:none;flex:0 0 auto;min-width:120px;}
+.search-label{font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:.2rem;}
+.search-input{background:none;border:none;outline:none;font-family:var(--font-body);font-size:.88rem;color:var(--text);width:100%;font-weight:500;}
+.search-input::placeholder{color:var(--text3);}
+.search-btn{padding:1rem 1.5rem;background:var(--sunset);border:none;color:#fff;font-family:var(--font-display);font-size:.82rem;font-weight:700;cursor:pointer;transition:background .2s;letter-spacing:.04em;white-space:nowrap;display:flex;align-items:center;gap:.4rem;}
+.search-btn:hover{background:#d4720f;}
+.search-btn svg{width:16px;height:16px;}
+@media(max-width:768px){.hero{padding:0 1.5rem;}.hero-content{padding-bottom:3rem;}.search-bar{flex-direction:column;}.search-field{border-right:none;border-bottom:1px solid var(--border);}.search-field:last-of-type{border-bottom:none;}.search-btn{width:100%;justify-content:center;}}
+
+/* ============================================================
+   DESTINASI UNGGULAN
+============================================================ */
+.destinasi{padding:6rem 3rem;}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3rem;flex-wrap:wrap;gap:1rem;}
+.section-eyebrow{font-family:monospace;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sunset);margin-bottom:.5rem;}
+.section-title{font-family:var(--font-display);font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;color:var(--text);line-height:1.1;}
+.link-all{font-size:.82rem;color:var(--text3);font-weight:500;display:flex;align-items:center;gap:.4rem;transition:color .2s;white-space:nowrap;}
+.link-all:hover{color:var(--sunset);}
+.dest-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+.dest-card{position:relative;border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .3s;}
+.dest-card:hover{transform:translateY(-4px);}
+.dest-card:first-child{grid-column:span 2;}
+.dest-placeholder{width:100%;background:var(--bg3);display:block;}
+.dest-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,5,2,.88) 0%,rgba(10,5,2,.2) 50%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:1.5rem;}
+.dest-badge{display:inline-flex;align-items:center;gap:.3rem;background:rgba(232,130,26,.85);color:#fff;font-size:.62rem;font-weight:700;padding:.25rem .6rem;border-radius:100px;margin-bottom:.6rem;width:fit-content;backdrop-filter:blur(4px);}
+.dest-name{font-family:var(--font-display);font-size:1.3rem;font-weight:700;color:#fff;margin-bottom:.3rem;}
+.dest-card:first-child .dest-name{font-size:1.8rem;}
+.dest-info{display:flex;align-items:center;justify-content:space-between;}
+.dest-from{font-size:.75rem;color:rgba(255,255,255,.65);}
+.dest-from strong{color:var(--amber);font-size:.85rem;}
+.dest-rating{display:flex;align-items:center;gap:.3rem;font-size:.75rem;color:rgba(255,255,255,.65);}
+.dest-rating span{color:var(--amber);}
+@media(max-width:768px){.destinasi{padding:4rem 1.5rem;}.dest-grid{grid-template-columns:1fr;}.dest-card:first-child{grid-column:span 1;}}
+
+/* ============================================================
+   KATEGORI WISATA
+============================================================ */
+.kategori{padding:0 3rem 6rem;}
+.kat-scroll{display:flex;gap:1rem;overflow-x:auto;padding-bottom:.5rem;scrollbar-width:none;}
+.kat-scroll::-webkit-scrollbar{display:none;}
+.kat-card{flex:0 0 auto;width:140px;padding:1.5rem 1.25rem;background:var(--bg2);border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column;align-items:center;gap:.75rem;cursor:pointer;transition:all .25s;text-align:center;}
+.kat-card:hover,.kat-card.active{background:var(--bg3);border-color:var(--sunset);}
+.kat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;}
+.kat-label{font-size:.8rem;font-weight:600;color:var(--text);font-family:var(--font-display);}
+.kat-count{font-size:.68rem;color:var(--text3);}
+@media(max-width:768px){.kategori{padding:0 1.5rem 4rem;}.kat-card{width:120px;}}
+
+/* ============================================================
+   PAKET TOUR
+============================================================ */
+.paket{padding:6rem 3rem;background:var(--bg2);}
+.paket-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem;}
+.paket-card{border-radius:14px;overflow:hidden;background:var(--bg3);border:1px solid var(--border);transition:transform .3s,box-shadow .3s;}
+.paket-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,.3);}
+.paket-img{position:relative;}
+.paket-placeholder{width:100%;display:block;background:var(--bg);}
+.paket-tag{position:absolute;top:.85rem;left:.85rem;background:var(--sunset);color:#fff;font-size:.6rem;font-weight:700;padding:.25rem .6rem;border-radius:4px;text-transform:uppercase;letter-spacing:.06em;}
+.paket-fav{position:absolute;top:.85rem;right:.85rem;width:32px;height:32px;background:rgba(255,255,255,.12);backdrop-filter:blur(6px);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;transition:background .2s;}
+.paket-fav:hover{background:rgba(255,255,255,.2);}
+.paket-body{padding:1.25rem;}
+.paket-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;}
+.paket-dur{font-size:.7rem;color:var(--text3);font-weight:500;display:flex;align-items:center;gap:.3rem;}
+.paket-rating{font-size:.72rem;color:var(--amber);font-weight:600;}
+.paket-name{font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.6rem;line-height:1.3;}
+.paket-itinerary{display:flex;flex-direction:column;gap:.3rem;margin-bottom:1.1rem;}
+.itinerary-item{font-size:.75rem;color:var(--text2);display:flex;align-items:center;gap:.4rem;}
+.itinerary-item::before{content:'›';color:var(--sunset);font-weight:700;flex-shrink:0;}
+.paket-foot{display:flex;align-items:center;justify-content:space-between;}
+.paket-price{font-family:var(--font-display);}
+.price-from{font-size:.62rem;color:var(--text3);display:block;line-height:1;}
+.price-val{font-size:1.15rem;font-weight:800;color:var(--sunset);}
+.btn-paket{padding:.55rem 1.1rem;background:var(--sunset);color:#fff;border:none;border-radius:6px;font-size:.75rem;font-weight:600;cursor:pointer;font-family:var(--font-body);transition:background .2s;}
+.btn-paket:hover{background:#d4720f;}
+@media(max-width:768px){.paket{padding:4rem 1.5rem;}.paket-grid{grid-template-columns:1fr;}}
+
+/* ============================================================
+   KENAPA KAMI
+============================================================ */
+.kenapa{padding:6rem 3rem;}
+.kenapa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:3rem;}
+.kenapa-card{padding:1.75rem;border:1px solid var(--border);border-radius:12px;background:var(--bg2);transition:border-color .25s;}
+.kenapa-card:hover{border-color:var(--border2);}
+.kenapa-icon{width:48px;height:48px;border-radius:10px;background:rgba(232,130,26,.1);border:1px solid rgba(232,130,26,.15);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;font-size:1.3rem;}
+.kenapa-num{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--sunset);line-height:1;margin-bottom:.25rem;}
+.kenapa-label{font-size:.78rem;font-weight:600;color:var(--text);margin-bottom:.4rem;}
+.kenapa-desc{font-size:.78rem;color:var(--text2);line-height:1.6;}
+@media(max-width:768px){.kenapa{padding:4rem 1.5rem;}.kenapa-grid{grid-template-columns:1fr 1fr;gap:1rem;}}
+@media(max-width:480px){.kenapa-grid{grid-template-columns:1fr;}}
+
+/* ============================================================
+   DESTINASI POPULER BULAN INI
+============================================================ */
+.populer{padding:0 0 6rem;}
+.populer .section-head{padding:0 3rem;margin-bottom:2rem;}
+.pop-scroll{display:flex;gap:1.25rem;overflow-x:auto;padding:0 3rem 1rem;scrollbar-width:none;}
+.pop-scroll::-webkit-scrollbar{display:none;}
+.pop-card{flex:0 0 220px;border-radius:12px;overflow:hidden;position:relative;cursor:pointer;transition:transform .3s;}
+.pop-card:hover{transform:translateY(-4px);}
+.pop-placeholder{width:100%;display:block;}
+.pop-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,5,2,.85) 0%,transparent 55%);display:flex;flex-direction:column;justify-content:flex-end;padding:1rem;}
+.pop-name{font-family:var(--font-display);font-size:.9rem;font-weight:700;color:#fff;margin-bottom:.2rem;}
+.pop-price{font-size:.72rem;color:var(--amber);font-weight:600;}
+@media(max-width:768px){.populer .section-head{padding:0 1.5rem;}.pop-scroll{padding:0 1.5rem 1rem;}.pop-card{flex:0 0 170px;}}
+
+/* ============================================================
+   TESTIMONIALS
+============================================================ */
+.testi{padding:6rem 3rem;background:var(--bg2);}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem;}
+.testi-card{padding:1.75rem;border:1px solid var(--border);border-radius:12px;background:var(--bg3);}
+.testi-top{display:flex;align-items:center;gap:.85rem;margin-bottom:1rem;}
+.testi-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--sunset),var(--amber));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:.85rem;color:#fff;flex-shrink:0;}
+.testi-author{font-size:.88rem;font-weight:600;color:var(--text);}
+.testi-dest{font-size:.72rem;color:var(--text3);}
+.testi-stars{display:flex;gap:.1rem;margin-bottom:.75rem;}
+.testi-stars span{color:var(--amber);font-size:.8rem;}
+.testi-text{font-size:.85rem;color:var(--text2);line-height:1.7;}
+@media(max-width:768px){.testi{padding:4rem 1.5rem;}.testi-grid{grid-template-columns:1fr;}}
+
+/* ============================================================
+   PARTNERS
+============================================================ */
+.partners{padding:4rem 3rem;border-top:1px solid var(--border);}
+.partners-label{font-family:monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);text-align:center;margin-bottom:2rem;}
+.partners-row{display:flex;align-items:center;justify-content:center;gap:3.5rem;flex-wrap:wrap;}
+.partner-logo{font-family:monospace;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);font-weight:700;opacity:.45;transition:opacity .2s;}
+.partner-logo:hover{opacity:.9;}
+@media(max-width:768px){.partners{padding:3rem 1.5rem;}.partners-row{gap:2rem;}}
+
+/* ============================================================
+   BLOG / TIPS
+============================================================ */
+.blog{padding:6rem 3rem;}
+.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem;}
+.blog-card{border-radius:12px;overflow:hidden;background:var(--bg2);border:1px solid var(--border);transition:transform .3s;}
+.blog-card:hover{transform:translateY(-4px);}
+.blog-img{position:relative;}
+.blog-placeholder{width:100%;display:block;}
+.blog-cat{position:absolute;top:.75rem;left:.75rem;background:rgba(45,212,191,.85);color:#022c22;font-size:.6rem;font-weight:700;padding:.25rem .6rem;border-radius:4px;text-transform:uppercase;letter-spacing:.06em;}
+.blog-body{padding:1.25rem;}
+.blog-date{font-family:monospace;font-size:.62rem;color:var(--text3);letter-spacing:.06em;margin-bottom:.6rem;}
+.blog-title{font-family:var(--font-display);font-size:.95rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:.6rem;}
+.blog-excerpt{font-size:.78rem;color:var(--text2);line-height:1.6;margin-bottom:1rem;}
+.blog-read{font-size:.75rem;color:var(--sunset);font-weight:600;display:flex;align-items:center;gap:.3rem;transition:gap .2s;}
+.blog-card:hover .blog-read{gap:.5rem;}
+@media(max-width:768px){.blog{padding:4rem 1.5rem;}.blog-grid{grid-template-columns:1fr;}}
+
+/* ============================================================
+   NEWSLETTER
+============================================================ */
+.newsletter{padding:6rem 3rem;background:var(--bg2);}
+.newsletter-inner{max-width:600px;margin:0 auto;text-align:center;}
+.newsletter-icon{width:60px;height:60px;background:rgba(232,130,26,.12);border:1px solid rgba(232,130,26,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:1.4rem;}
+.newsletter-h2{font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2rem);font-weight:800;color:var(--text);margin-bottom:.75rem;}
+.newsletter-sub{font-size:.9rem;color:var(--text2);line-height:1.7;margin-bottom:2rem;}
+.newsletter-form{display:flex;gap:.75rem;max-width:440px;margin:0 auto;}
+.newsletter-input{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:.8rem 1.1rem;font-family:var(--font-body);font-size:.88rem;border-radius:7px;outline:none;transition:border-color .2s;}
+.newsletter-input:focus{border-color:rgba(232,130,26,.4);}
+.newsletter-input::placeholder{color:var(--text3);}
+.btn-subscribe{padding:.8rem 1.5rem;background:var(--sunset);color:#fff;border:none;border-radius:7px;font-family:var(--font-body);font-size:.85rem;font-weight:600;cursor:pointer;transition:background .2s;white-space:nowrap;}
+.btn-subscribe:hover{background:#d4720f;}
+.newsletter-note{font-size:.72rem;color:var(--text3);margin-top:1rem;}
+@media(max-width:600px){.newsletter-form{flex-direction:column;}.btn-subscribe{width:100%;}}
+
+/* ============================================================
+   FOOTER
+============================================================ */
+.footer{padding:4rem 3rem 2rem;border-top:1px solid var(--border);}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem;}
+.footer-brand .brand-logo{font-family:var(--font-display);font-size:1.2rem;font-weight:800;color:var(--text);display:flex;align-items:center;gap:.4rem;margin-bottom:.85rem;}
+.footer-tagline{font-size:.82rem;color:var(--text3);line-height:1.6;max-width:230px;margin-bottom:1.25rem;}
+.footer-socials{display:flex;gap:.75rem;}
+.footer-social{width:34px;height:34px;background:var(--bg2);border:1px solid var(--border);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--text3);transition:all .2s;cursor:pointer;}
+.footer-social:hover{border-color:var(--sunset);color:var(--sunset);}
+.footer-col-title{font-family:var(--font-display);font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin-bottom:1.25rem;}
+.footer-links{display:flex;flex-direction:column;gap:.65rem;}
+.footer-links a{font-size:.82rem;color:var(--text3);transition:color .2s;}
+.footer-links a:hover{color:var(--text);}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:2rem;border-top:1px solid var(--border);font-size:.75rem;color:var(--text3);flex-wrap:wrap;gap:1rem;}
+@media(max-width:768px){.footer{padding:3rem 1.5rem 2rem;}.footer-top{grid-template-columns:1fr;gap:2rem;}}
+
+/* ============================================================
+   FLOATING WHATSAPP
+============================================================ */
+.wa-float{position:fixed;bottom:2rem;right:2rem;z-index:200;display:flex;align-items:center;gap:.6rem;background:#25D366;color:#fff;border-radius:50px;padding:.75rem 1.25rem .75rem .85rem;font-size:.82rem;font-weight:600;box-shadow:0 4px 20px rgba(37,211,102,.4);cursor:pointer;transition:all .3s;animation:waPulse 2.5s ease-in-out infinite;font-family:var(--font-body);}
+.wa-float:hover{transform:scale(1.05);box-shadow:0 6px 28px rgba(37,211,102,.55);animation:none;}
+.wa-float svg{width:20px;height:20px;flex-shrink:0;}
+.wa-float .wa-text{white-space:nowrap;}
+@keyframes waPulse{0%,100%{box-shadow:0 4px 20px rgba(37,211,102,.4);}50%{box-shadow:0 4px 30px rgba(37,211,102,.7),0 0 0 8px rgba(37,211,102,.08);}}
+@media(max-width:480px){.wa-float .wa-text{display:none;}.wa-float{padding:.8rem;border-radius:50%;}}
+
+/* ============================================================
+   TOAST
+============================================================ */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(1rem);background:var(--sunset);color:#fff;padding:.75rem 1.75rem;font-size:.8rem;font-weight:600;border-radius:7px;opacity:0;transition:all .3s;z-index:1000;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(232,130,26,.4);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#destinasi" onclick="closeMm()">Destinasi</a>
+  <a href="#paket" onclick="closeMm()">Paket Tour</a>
+  <a href="#blog" onclick="closeMm()">Tips</a>
+  <a href="#kontak" onclick="closeMm()">Kontak</a>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-logo"><div class="logo-dot"></div>Jelajah Nusantara</div>
+  <ul class="nav-links">
+    <li><a href="#destinasi">Destinasi</a></li>
+    <li><a href="#paket">Paket Tour</a></li>
+    <li><a href="#kenapa">Tentang</a></li>
+    <li><a href="#blog">Tips</a></li>
+    <li><a href="#kontak">Kontak</a></li>
+  </ul>
+  <div class="nav-right">
+    <span class="nav-currency">IDR &#9660;</span>
+    <button class="theme-toggle" onclick="toggleTheme()">&#9788;</button>
+    <button class="btn-book" onclick="showToast('Menuju halaman pemesanan...')">Pesan Sekarang</button>
+    <button class="hamburger" onclick="toggleMm()"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <span class="eyebrow-badge">NEW</span>
+      <span class="eyebrow-text">Paket Raja Ampat tersedia mulai Oktober 2025</span>
+    </div>
+    <h1 class="hero-h1">Jelajahi<br><span class="accent">Indonesia</span></h1>
+    <p class="hero-sub">Temukan keajaiban 17.000 pulau. Dari puncak Rinjani hingga bawah laut Raja Ampat, dari hiruk-pikuk Yogyakarta hingga sunyi Flores — kami antar Anda ke sana.</p>
+    <form class="search-bar" onsubmit="handleSearch(event)">
+      <div class="search-field">
+        <span class="search-label">Destinasi</span>
+        <input class="search-input" type="text" placeholder="Bali, Raja Ampat, Komodo...">
+      </div>
+      <div class="search-field">
+        <span class="search-label">Tanggal Berangkat</span>
+        <input class="search-input" type="text" placeholder="Pilih tanggal">
+      </div>
+      <div class="search-field" style="flex:0 0 auto;min-width:100px;">
+        <span class="search-label">Wisatawan</span>
+        <input class="search-input" type="text" placeholder="2 orang">
+      </div>
+      <button type="submit" class="search-btn">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="white" stroke-width="1.5"/><path d="M10.5 10.5l3.5 3.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Cari
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- DESTINASI UNGGULAN -->
+<section class="destinasi" id="destinasi">
+  <div class="section-head">
+    <div>
+      <div class="section-eyebrow">Destinasi Pilihan</div>
+      <h2 class="section-title">Tempat-tempat yang wajib<br>ada di bucket list Anda</h2>
+    </div>
+    <a href="#" class="link-all">Lihat semua destinasi &#8594;</a>
+  </div>
+  <div class="dest-grid">
+
+    <!-- Card Besar -->
+    <div class="dest-card">
+      <svg class="dest-placeholder" viewBox="0 0 600 380" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="380" fill="#1a0d04"/><rect x="0" y="220" width="600" height="160" fill="#0e0803"/><ellipse cx="300" cy="200" rx="250" ry="120" fill="#2a1508" opacity="0.6"/><path d="M0 300 Q150 220 300 260 Q450 300 600 240 L600 380 L0 380 Z" fill="#1a0d04"/><circle cx="480" cy="90" r="45" fill="#E8821A" opacity="0.25"/><circle cx="480" cy="90" r="25" fill="#F5C842" opacity="0.15"/><path d="M200 260 Q220 200 240 210 Q260 220 280 190 Q300 160 320 180 Q340 200 360 195 Q380 190 400 210 L400 380 L200 380 Z" fill="#261A0C" opacity="0.7"/><text x="300" y="355" font-family="monospace" font-size="11" fill="#3d2208" text-anchor="middle">RAJA AMPAT — PAPUA BARAT</text></svg>
+      <div class="dest-overlay">
+        <span class="dest-badge">&#9733; Pilihan Editor</span>
+        <div class="dest-name">Raja Ampat</div>
+        <div class="dest-info">
+          <div class="dest-from">Mulai dari <strong>Rp 4.200.000</strong> / orang</div>
+          <div class="dest-rating"><span>&#9733;</span> 4.9 (312 ulasan)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dest-card">
+      <svg class="dest-placeholder" viewBox="0 0 280 380" xmlns="http://www.w3.org/2000/svg"><rect width="280" height="380" fill="#0d1a14"/><rect x="0" y="200" width="280" height="180" fill="#08120e"/><path d="M40 240 L80 160 L120 200 L160 140 L200 180 L240 150 L280 200 L280 380 L40 380 Z" fill="#0e1f18" opacity="0.8"/><circle cx="200" cy="80" r="40" fill="#2DD4BF" opacity="0.08"/><path d="M90 280 Q130 260 170 270 Q210 280 250 265 L250 380 L90 380 Z" fill="#0a1710" opacity="0.6"/><text x="140" y="360" font-family="monospace" font-size="10" fill="#1a2e24" text-anchor="middle">LABUAN BAJO</text></svg>
+      <div class="dest-overlay">
+        <span class="dest-badge">&#128016; Petualangan</span>
+        <div class="dest-name">Labuan Bajo</div>
+        <div class="dest-info">
+          <div class="dest-from">Mulai dari <strong>Rp 2.800.000</strong></div>
+          <div class="dest-rating"><span>&#9733;</span> 4.8</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dest-card">
+      <svg class="dest-placeholder" viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg"><rect width="280" height="280" fill="#1a1205"/><rect x="0" y="170" width="280" height="110" fill="#120c03"/><path d="M60 180 L100 120 L140 150 L180 100 L220 135 L280 120 L280 280 L60 280 Z" fill="#221608" opacity="0.8"/><path d="M0 220 Q70 200 140 210 Q210 220 280 205 L280 280 L0 280 Z" fill="#1a0d04" opacity="0.7"/><text x="140" y="262" font-family="monospace" font-size="10" fill="#2e1a08" text-anchor="middle">RINJANI — LOMBOK</text></svg>
+      <div class="dest-overlay">
+        <span class="dest-badge">&#9968; Mendaki</span>
+        <div class="dest-name">Gunung Rinjani</div>
+        <div class="dest-info">
+          <div class="dest-from">Mulai dari <strong>Rp 1.950.000</strong></div>
+          <div class="dest-rating"><span>&#9733;</span> 4.7</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dest-card">
+      <svg class="dest-placeholder" viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg"><rect width="280" height="280" fill="#100a04"/><path d="M0 180 Q70 150 140 165 Q210 180 280 155 L280 280 L0 280 Z" fill="#1c1005"/><rect x="80" y="80" width="40" height="100" fill="#1e140a" rx="2"/><rect x="130" y="60" width="30" height="120" fill="#241808" rx="2"/><rect x="170" y="90" width="35" height="90" fill="#1a1006" rx="2"/><path d="M80 130 L110 90 L140 110 L170 80 L205 100" stroke="#3d2208" stroke-width="1" fill="none"/><text x="140" y="262" font-family="monospace" font-size="10" fill="#2a1a06" text-anchor="middle">YOGYAKARTA</text></svg>
+      <div class="dest-overlay">
+        <span class="dest-badge">&#127963; Budaya</span>
+        <div class="dest-name">Yogyakarta</div>
+        <div class="dest-info">
+          <div class="dest-from">Mulai dari <strong>Rp 1.200.000</strong></div>
+          <div class="dest-rating"><span>&#9733;</span> 4.9</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dest-card">
+      <svg class="dest-placeholder" viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg"><rect width="280" height="280" fill="#050e1a"/><rect x="0" y="160" width="280" height="120" fill="#020810"/><path d="M0 200 Q70 170 140 185 Q210 200 280 175 L280 280 L0 280 Z" fill="#040d1a" opacity="0.8"/><circle cx="140" cy="100" r="60" fill="#2DD4BF" opacity="0.06"/><ellipse cx="140" cy="170" rx="100" ry="40" fill="#06111f" opacity="0.5"/><text x="140" y="262" font-family="monospace" font-size="10" fill="#0e2030" text-anchor="middle">DANAU TOBA — SUMATRA</text></svg>
+      <div class="dest-overlay">
+        <span class="dest-badge">&#128274; Hidden Gem</span>
+        <div class="dest-name">Danau Toba</div>
+        <div class="dest-info">
+          <div class="dest-from">Mulai dari <strong>Rp 1.650.000</strong></div>
+          <div class="dest-rating"><span>&#9733;</span> 4.8</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dest-card">
+      <svg class="dest-placeholder" viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg"><rect width="280" height="280" fill="#0d0804"/><path d="M0 150 Q90 120 180 140 Q240 155 280 135 L280 280 L0 280 Z" fill="#180e06"/><path d="M60 160 Q100 140 140 148 Q180 156 220 144 L220 280 L60 280 Z" fill="#1c1207" opacity="0.7"/><circle cx="230" cy="80" r="35" fill="#E8821A" opacity="0.12"/><text x="140" y="262" font-family="monospace" font-size="10" fill="#261606" text-anchor="middle">WAKATOBI</text></svg>
+      <div class="dest-overlay">
+        <span class="dest-badge">&#127994; Diving</span>
+        <div class="dest-name">Wakatobi</div>
+        <div class="dest-info">
+          <div class="dest-from">Mulai dari <strong>Rp 3.100.000</strong></div>
+          <div class="dest-rating"><span>&#9733;</span> 4.9</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- KATEGORI WISATA -->
+<section class="kategori">
+  <div class="section-head">
+    <div>
+      <div class="section-eyebrow">Jelajahi Berdasarkan</div>
+      <h2 class="section-title">Kategori Wisata</h2>
+    </div>
+  </div>
+  <div class="kat-scroll">
+    <div class="kat-card active">
+      <div class="kat-icon">&#127958;</div>
+      <div class="kat-label">Pantai</div>
+      <div class="kat-count">124 destinasi</div>
+    </div>
+    <div class="kat-card">
+      <div class="kat-icon">&#9968;</div>
+      <div class="kat-label">Gunung</div>
+      <div class="kat-count">58 destinasi</div>
+    </div>
+    <div class="kat-card">
+      <div class="kat-icon">&#127963;</div>
+      <div class="kat-label">Budaya</div>
+      <div class="kat-count">87 destinasi</div>
+    </div>
+    <div class="kat-card">
+      <div class="kat-icon">&#127829;</div>
+      <div class="kat-label">Kuliner</div>
+      <div class="kat-count">210 destinasi</div>
+    </div>
+    <div class="kat-card">
+      <div class="kat-icon">&#129704;</div>
+      <div class="kat-label">Petualangan</div>
+      <div class="kat-count">43 destinasi</div>
+    </div>
+  </div>
+</section>
+
+<!-- PAKET TOUR -->
+<section class="paket" id="paket">
+  <div class="section-head">
+    <div>
+      <div class="section-eyebrow">Paket Tour Pilihan</div>
+      <h2 class="section-title">Perjalanan yang sudah<br>direncanakan untuk Anda</h2>
+    </div>
+    <a href="#" class="link-all">Lihat semua paket &#8594;</a>
+  </div>
+  <div class="paket-grid">
+
+    <div class="paket-card">
+      <div class="paket-img">
+        <svg class="paket-placeholder" viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="240" fill="#0d1a14"/><path d="M0 160 Q100 130 200 145 Q300 160 400 135 L400 240 L0 240 Z" fill="#0a1710" opacity="0.8"/><circle cx="300" cy="80" r="35" fill="#2DD4BF" opacity="0.08"/><text x="200" y="225" font-family="monospace" font-size="10" fill="#1a2e24" text-anchor="middle">KOMODO NATIONAL PARK</text></svg>
+        <span class="paket-tag">Best Seller</span>
+        <div class="paket-fav">&#9825;</div>
+      </div>
+      <div class="paket-body">
+        <div class="paket-meta">
+          <span class="paket-dur">&#9201; 5 Hari 4 Malam</span>
+          <span class="paket-rating">&#9733; 4.9 (128)</span>
+        </div>
+        <div class="paket-name">Ekspedisi Komodo &amp; Labuan Bajo Ultimate</div>
+        <div class="paket-itinerary">
+          <div class="itinerary-item">Trekking Pulau Komodo &amp; melihat komodo liar</div>
+          <div class="itinerary-item">Snorkeling di Pink Beach &amp; Crystal Bay</div>
+          <div class="itinerary-item">Sunset di Bukit Sylvia &amp; Goa Rangko</div>
+          <div class="itinerary-item">Makan malam di atas kapal phinisi</div>
+        </div>
+        <div class="paket-foot">
+          <div class="paket-price"><span class="price-from">Mulai dari</span><span class="price-val">Rp 3.850.000</span></div>
+          <button class="btn-paket" onclick="showToast('Memesan paket Komodo...')">Pesan</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="paket-card">
+      <div class="paket-img">
+        <svg class="paket-placeholder" viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="240" fill="#1a0d04"/><path d="M0 170 Q100 145 200 158 Q300 170 400 148 L400 240 L0 240 Z" fill="#150a03"/><circle cx="310" cy="75" r="40" fill="#E8821A" opacity="0.14"/><rect x="80" y="90" width="35" height="90" fill="#221508" rx="2"/><rect x="130" y="70" width="28" height="110" fill="#281a0a" rx="2"/><rect x="200" y="80" width="32" height="100" fill="#1e1206" rx="2"/><text x="200" y="225" font-family="monospace" font-size="10" fill="#2e1a08" text-anchor="middle">YOGYAKARTA — SOLO</text></svg>
+        <span class="paket-tag">Budaya</span>
+        <div class="paket-fav">&#9825;</div>
+      </div>
+      <div class="paket-body">
+        <div class="paket-meta">
+          <span class="paket-dur">&#9201; 4 Hari 3 Malam</span>
+          <span class="paket-rating">&#9733; 4.8 (94)</span>
+        </div>
+        <div class="paket-name">Jawa Tengah Heritage — Yogya, Solo &amp; Borobudur</div>
+        <div class="paket-itinerary">
+          <div class="itinerary-item">Sunrise di Candi Borobudur (jalur khusus)</div>
+          <div class="itinerary-item">Tur Keraton Yogyakarta &amp; Prambanan</div>
+          <div class="itinerary-item">Workshop batik &amp; wayang kulit</div>
+          <div class="itinerary-item">Wisata kuliner pasar tradisional Solo</div>
+        </div>
+        <div class="paket-foot">
+          <div class="paket-price"><span class="price-from">Mulai dari</span><span class="price-val">Rp 2.100.000</span></div>
+          <button class="btn-paket" onclick="showToast('Memesan paket Jawa Tengah...')">Pesan</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="paket-card">
+      <div class="paket-img">
+        <svg class="paket-placeholder" viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="240" fill="#050e1a"/><path d="M0 160 Q100 130 200 145 Q300 160 400 130 L400 240 L0 240 Z" fill="#040c18"/><circle cx="200" cy="90" r="55" fill="#2DD4BF" opacity="0.05"/><ellipse cx="200" cy="170" rx="120" ry="50" fill="#060e1a" opacity="0.5"/><text x="200" y="225" font-family="monospace" font-size="10" fill="#0c1e34" text-anchor="middle">RAJA AMPAT — SORONG</text></svg>
+        <span class="paket-tag" style="background:#2DD4BF;color:#022c22;">Premium</span>
+        <div class="paket-fav">&#9825;</div>
+      </div>
+      <div class="paket-body">
+        <div class="paket-meta">
+          <span class="paket-dur">&#9201; 7 Hari 6 Malam</span>
+          <span class="paket-rating">&#9733; 5.0 (67)</span>
+        </div>
+        <div class="paket-name">Raja Ampat Liveaboard — Surga Bawah Laut Papua</div>
+        <div class="paket-itinerary">
+          <div class="itinerary-item">Diving 3x sehari di spot terbaik Raja Ampat</div>
+          <div class="itinerary-item">Mengunjungi Pulau Pianemo &amp; Wayag</div>
+          <div class="itinerary-item">Bertemu manta ray di Manta Sandy</div>
+          <div class="itinerary-item">Akomodasi liveaboard premium all-inclusive</div>
+        </div>
+        <div class="paket-foot">
+          <div class="paket-price"><span class="price-from">Mulai dari</span><span class="price-val">Rp 7.500.000</span></div>
+          <button class="btn-paket" onclick="showToast('Memesan paket Raja Ampat...')">Pesan</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- KENAPA KAMI -->
+<section class="kenapa" id="kenapa">
+  <div class="section-head">
+    <div>
+      <div class="section-eyebrow">Keunggulan Kami</div>
+      <h2 class="section-title">Mengapa ribuan traveler<br>memilih kami</h2>
+    </div>
+  </div>
+  <div class="kenapa-grid">
+    <div class="kenapa-card">
+      <div class="kenapa-icon">&#128206;</div>
+      <div class="kenapa-num">IATA</div>
+      <div class="kenapa-label">Berlisensi Resmi</div>
+      <div class="kenapa-desc">Terdaftar dan berlisensi IATA, anggota ASITA, dan telah tersertifikasi oleh Kemenparekraf RI.</div>
+    </div>
+    <div class="kenapa-card">
+      <div class="kenapa-icon">&#127758;</div>
+      <div class="kenapa-num">10+</div>
+      <div class="kenapa-label">Tahun Pengalaman</div>
+      <div class="kenapa-desc">Sejak 2014 kami telah melayani lebih dari 48.000 wisatawan ke seluruh pelosok nusantara dan mancanegara.</div>
+    </div>
+    <div class="kenapa-card">
+      <div class="kenapa-icon">&#128222;</div>
+      <div class="kenapa-num">24/7</div>
+      <div class="kenapa-label">Dukungan Perjalanan</div>
+      <div class="kenapa-desc">Tim emergency response kami siap membantu 24 jam sehari, 7 hari seminggu selama perjalanan Anda.</div>
+    </div>
+    <div class="kenapa-card">
+      <div class="kenapa-icon">&#127881;</div>
+      <div class="kenapa-num">Best</div>
+      <div class="kenapa-label">Garansi Harga Terbaik</div>
+      <div class="kenapa-desc">Temukan harga lebih murah untuk paket yang sama? Kami kembalikan selisihnya tanpa pertanyaan.</div>
+    </div>
+  </div>
+</section>
+
+<!-- DESTINASI POPULER BULAN INI -->
+<section class="populer">
+  <div class="section-head">
+    <div>
+      <div class="section-eyebrow">Trending Sekarang</div>
+      <h2 class="section-title">Populer bulan ini</h2>
+    </div>
+    <a href="#" class="link-all">Lihat semua &#8594;</a>
+  </div>
+  <div class="pop-scroll">
+
+    <div class="pop-card">
+      <svg class="pop-placeholder" viewBox="0 0 220 280" xmlns="http://www.w3.org/2000/svg"><rect width="220" height="280" fill="#0d1a14"/><path d="M0 180 Q55 155 110 165 Q165 175 220 155 L220 280 L0 280 Z" fill="#0a1610"/><circle cx="165" cy="80" r="30" fill="#2DD4BF" opacity="0.07"/><text x="110" y="265" font-family="monospace" font-size="9" fill="#1a2a1e" text-anchor="middle">BALI</text></svg>
+      <div class="pop-overlay"><div class="pop-name">Bali</div><div class="pop-price">Rp 1.800.000 / orang</div></div>
+    </div>
+
+    <div class="pop-card">
+      <svg class="pop-placeholder" viewBox="0 0 220 280" xmlns="http://www.w3.org/2000/svg"><rect width="220" height="280" fill="#1a0d04"/><path d="M0 190 Q55 165 110 175 Q165 185 220 165 L220 280 L0 280 Z" fill="#150a03"/><circle cx="160" cy="75" r="28" fill="#E8821A" opacity="0.12"/><text x="110" y="265" font-family="monospace" font-size="9" fill="#2a1508" text-anchor="middle">LOMBOK</text></svg>
+      <div class="pop-overlay"><div class="pop-name">Lombok</div><div class="pop-price">Rp 2.100.000 / orang</div></div>
+    </div>
+
+    <div class="pop-card">
+      <svg class="pop-placeholder" viewBox="0 0 220 280" xmlns="http://www.w3.org/2000/svg"><rect width="220" height="280" fill="#100a04"/><path d="M0 185 Q55 165 110 172 Q165 180 220 162 L220 280 L0 280 Z" fill="#0e0803"/><text x="110" y="265" font-family="monospace" font-size="9" fill="#201006" text-anchor="middle">FLORES</text></svg>
+      <div class="pop-overlay"><div class="pop-name">Flores</div><div class="pop-price">Rp 2.650.000 / orang</div></div>
+    </div>
+
+    <div class="pop-card">
+      <svg class="pop-placeholder" viewBox="0 0 220 280" xmlns="http://www.w3.org/2000/svg"><rect width="220" height="280" fill="#050e1a"/><path d="M0 180 Q55 155 110 165 Q165 175 220 155 L220 280 L0 280 Z" fill="#040b17"/><text x="110" y="265" font-family="monospace" font-size="9" fill="#0c1c2e" text-anchor="middle">MANADO</text></svg>
+      <div class="pop-overlay"><div class="pop-name">Manado</div><div class="pop-price">Rp 3.200.000 / orang</div></div>
+    </div>
+
+    <div class="pop-card">
+      <svg class="pop-placeholder" viewBox="0 0 220 280" xmlns="http://www.w3.org/2000/svg"><rect width="220" height="280" fill="#0d1a14"/><path d="M0 175 Q55 150 110 162 Q165 174 220 152 L220 280 L0 280 Z" fill="#0a1510"/><text x="110" y="265" font-family="monospace" font-size="9" fill="#162814" text-anchor="middle">BANDA NEIRA</text></svg>
+      <div class="pop-overlay"><div class="pop-name">Banda Neira</div><div class="pop-price">Rp 3.900.000 / orang</div></div>
+    </div>
+
+    <div class="pop-card">
+      <svg class="pop-placeholder" viewBox="0 0 220 280" xmlns="http://www.w3.org/2000/svg"><rect width="220" height="280" fill="#1a0d04"/><path d="M0 185 Q55 165 110 173 Q165 181 220 162 L220 280 L0 280 Z" fill="#150a03"/><circle cx="150" cy="70" r="25" fill="#F5C842" opacity="0.08"/><text x="110" y="265" font-family="monospace" font-size="9" fill="#261606" text-anchor="middle">TORAJA</text></svg>
+      <div class="pop-overlay"><div class="pop-name">Toraja</div><div class="pop-price">Rp 2.450.000 / orang</div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testi">
+  <div class="section-head">
+    <div>
+      <div class="section-eyebrow">Cerita Traveler</div>
+      <h2 class="section-title">Kata mereka tentang<br>perjalanan bersama kami</h2>
+    </div>
+  </div>
+  <div class="testi-grid">
+
+    <div class="testi-card">
+      <div class="testi-top">
+        <div class="testi-avatar">RW</div>
+        <div>
+          <div class="testi-author">Riana Wulandari</div>
+          <div class="testi-dest">Raja Ampat, Juli 2025</div>
+        </div>
+      </div>
+      <div class="testi-stars"><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span></div>
+      <p class="testi-text">"Liveaboard Raja Ampat adalah pengalaman terbaik dalam hidup saya. Pemandunya sangat profesional dan tahu persis lokasi diving terbaik. Kapal bersih, makanan enak, organisasinya rapi. Sudah booking lagi untuk tahun depan!"</p>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-top">
+        <div class="testi-avatar" style="background:linear-gradient(135deg,#2DD4BF,#3B82F6);">DS</div>
+        <div>
+          <div class="testi-author">Dimas Santoso</div>
+          <div class="testi-dest">Labuan Bajo, Mei 2025</div>
+        </div>
+      </div>
+      <div class="testi-stars"><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span></div>
+      <p class="testi-text">"Paket Komodo melampaui ekspektasi saya. Bisa melihat komodo dari jarak dekat, snorkeling di Pink Beach, dan matahari terbenam yang luar biasa dari Bukit Sylvia — semuanya dalam satu paket yang sangat worth it."</p>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-top">
+        <div class="testi-avatar" style="background:linear-gradient(135deg,#8B5CF6,#EC4899);">NP</div>
+        <div>
+          <div class="testi-author">Nurul Pratiwi</div>
+          <div class="testi-dest">Yogyakarta, April 2025</div>
+        </div>
+      </div>
+      <div class="testi-stars"><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span></div>
+      <p class="testi-text">"Paket heritage Jawa Tengah sangat autentik. Workshop batik bersama pengrajin asli Yogyakarta jadi highlight terbaik. Pemandu lokal kami sangat berpengetahuan dan menyenangkan. Highly recommended untuk yang suka budaya!"</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- PARTNERS -->
+<section class="partners">
+  <div class="partners-label">Mitra Perjalanan Resmi</div>
+  <div class="partners-row">
+    <span class="partner-logo">Garuda Indonesia</span>
+    <span class="partner-logo">Lion Air</span>
+    <span class="partner-logo">Traveloka</span>
+    <span class="partner-logo">Asuransi Jasindo</span>
+    <span class="partner-logo">Marriott Hotels</span>
+    <span class="partner-logo">Pelni</span>
+  </div>
+</section>
+
+<!-- BLOG / TIPS -->
+<section class="blog" id="blog">
+  <div class="section-head">
+    <div>
+      <div class="section-eyebrow">Tips &amp; Inspirasi</div>
+      <h2 class="section-title">Panduan perjalanan<br>dari para expert</h2>
+    </div>
+    <a href="#" class="link-all">Lihat semua artikel &#8594;</a>
+  </div>
+  <div class="blog-grid">
+
+    <div class="blog-card">
+      <div class="blog-img">
+        <svg class="blog-placeholder" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="200" fill="#0d1a14"/><path d="M0 140 Q100 110 200 125 Q300 140 400 115 L400 200 L0 200 Z" fill="#0a1710"/><circle cx="300" cy="70" r="30" fill="#2DD4BF" opacity="0.07"/><text x="200" y="185" font-family="monospace" font-size="9" fill="#1a2a1e" text-anchor="middle">SNORKELING</text></svg>
+        <span class="blog-cat" style="background:rgba(45,212,191,.85);color:#022c22;">Petualangan</span>
+      </div>
+      <div class="blog-body">
+        <div class="blog-date">12 Juni 2025</div>
+        <div class="blog-title">10 Spot Snorkeling Terbaik di Indonesia yang Wajib Dikunjungi</div>
+        <p class="blog-excerpt">Dari kedalaman Raja Ampat hingga terumbu karang Bunaken — inilah panduan lengkap spot snorkeling terbaik Indonesia untuk semua level perenang.</p>
+        <a href="#" class="blog-read">Baca Selengkapnya &#8594;</a>
+      </div>
+    </div>
+
+    <div class="blog-card">
+      <div class="blog-img">
+        <svg class="blog-placeholder" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="200" fill="#1a0d04"/><path d="M0 145 Q100 120 200 133 Q300 145 400 122 L400 200 L0 200 Z" fill="#150a03"/><circle cx="290" cy="65" r="28" fill="#E8821A" opacity="0.14"/><text x="200" y="185" font-family="monospace" font-size="9" fill="#2a1508" text-anchor="middle">BACKPACKER</text></svg>
+        <span class="blog-cat" style="background:rgba(245,200,66,.85);color:#3d2208;">Budget</span>
+      </div>
+      <div class="blog-body">
+        <div class="blog-date">5 Juni 2025</div>
+        <div class="blog-title">Backpacker Jawa-Bali dengan Budget Rp 1,5 Juta: Panduan Lengkap</div>
+        <p class="blog-excerpt">Membuktikan bahwa menjelajahi Jawa dan Bali tidak harus mahal. Panduan hari per hari dengan tips akomodasi murah dan makanan enak di jalur ini.</p>
+        <a href="#" class="blog-read">Baca Selengkapnya &#8594;</a>
+      </div>
+    </div>
+
+    <div class="blog-card">
+      <div class="blog-img">
+        <svg class="blog-placeholder" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="200" fill="#100a04"/><path d="M0 148 Q100 125 200 137 Q300 148 400 125 L400 200 L0 200 Z" fill="#0d0803"/><text x="200" y="185" font-family="monospace" font-size="9" fill="#1e1006" text-anchor="middle">WISATA BUDAYA</text></svg>
+        <span class="blog-cat" style="background:rgba(232,130,26,.85);color:#fff;">Budaya</span>
+      </div>
+      <div class="blog-body">
+        <div class="blog-date">28 Mei 2025</div>
+        <div class="blog-title">Mengenal 7 Ritual Adat Unik yang Masih Dijaga di Pelosok Nusantara</div>
+        <p class="blog-excerpt">Indonesia menyimpan kekayaan tradisi yang tak tertandingi. Tujuh ritual adat ini masih hidup dan bisa Anda saksikan langsung — cara terbaik mengenal Indonesia yang sesungguhnya.</p>
+        <a href="#" class="blog-read">Baca Selengkapnya &#8594;</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter" id="kontak">
+  <div class="newsletter-inner">
+    <div class="newsletter-icon">&#9993;</div>
+    <h2 class="newsletter-h2">Dapat Promo Eksklusif</h2>
+    <p class="newsletter-sub">Daftarkan email Anda dan dapatkan penawaran perjalanan eksklusif, tips destinasi tersembunyi, dan diskon early bird sebelum siapapun.</p>
+    <form class="newsletter-form" onsubmit="handleNewsletter(event)">
+      <input class="newsletter-input" type="email" placeholder="nama@email.com" required>
+      <button type="submit" class="btn-subscribe">Daftar Sekarang</button>
+    </form>
+    <p class="newsletter-note">Lebih dari 28.000 traveler sudah bergabung. Unsubscribe kapan saja.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="brand-logo"><div class="logo-dot"></div>Jelajah Nusantara</div>
+      <p class="footer-tagline">Tour &amp; travel agency terpercaya yang membawa Anda menjelajahi keajaiban Indonesia sejak 2014.</p>
+      <div class="footer-socials">
+        <div class="footer-social">&#8203;ig</div>
+        <div class="footer-social">fb</div>
+        <div class="footer-social">yt</div>
+        <div class="footer-social">tk</div>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Destinasi</div>
+      <div class="footer-links">
+        <a href="#">Bali &amp; Lombok</a>
+        <a href="#">Raja Ampat</a>
+        <a href="#">Labuan Bajo</a>
+        <a href="#">Jawa Tengah</a>
+        <a href="#">Sulawesi</a>
+        <a href="#">Sumatra</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Layanan</div>
+      <div class="footer-links">
+        <a href="#">Paket Tour</a>
+        <a href="#">Private Trip</a>
+        <a href="#">Honeymoon Package</a>
+        <a href="#">Wisata Sekolah</a>
+        <a href="#">MICE</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Ikuti Kami</div>
+      <div class="footer-links">
+        <a href="#">Blog &amp; Tips</a>
+        <a href="#">FAQ</a>
+        <a href="#">Tentang Kami</a>
+        <a href="#">Karir</a>
+        <a href="#">Kontak</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2025 Jelajah Nusantara. PT Jelajah Wisata Nusantara. SIUP: 503/JWN/2014</span>
+    <span>Jakarta &middot; Bali &middot; Labuan Bajo</span>
+  </div>
+</footer>
+
+<!-- FLOATING WHATSAPP -->
+<a href="#" class="wa-float" onclick="showToast('Menghubungkan ke WhatsApp...'); return false;">
+  <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M20.52 3.48A11.93 11.93 0 0012 0C5.37 0 0 5.37 0 12c0 2.12.55 4.19 1.6 6.02L0 24l6.12-1.6A11.94 11.94 0 0012 24c6.63 0 12-5.37 12-12 0-3.2-1.25-6.22-3.48-8.52zM12 22c-1.85 0-3.66-.5-5.25-1.44l-.38-.22-3.9 1.02 1.04-3.8-.25-.4A9.96 9.96 0 012 12c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10zm5.47-7.4c-.3-.15-1.77-.87-2.04-.97-.28-.1-.47-.15-.67.15-.2.3-.77.97-.95 1.17-.17.2-.35.22-.65.07-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.5-1.79-1.67-2.09-.18-.3-.02-.46.13-.6.14-.14.3-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.6-.92-2.2-.24-.57-.49-.5-.67-.5h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.87 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.7.3 1.25.48 1.68.62.7.22 1.34.19 1.84.11.56-.08 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35z"/></svg>
+  <span class="wa-text">Chat WhatsApp</span>
+</a>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* THEME TOGGLE */
+function toggleTheme() {
+  const h = document.documentElement;
+  h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+/* MOBILE MENU */
+const mm = document.getElementById('mobileMenu');
+function toggleMm() { mm.classList.toggle('open'); }
+function closeMm() { mm.classList.remove('open'); }
+
+/* SEARCH FORM */
+function handleSearch(e) {
+  e.preventDefault();
+  showToast('Mencari paket wisata terbaik untuk Anda...');
+}
+
+/* NEWSLETTER */
+function handleNewsletter(e) {
+  e.preventDefault();
+  showToast('Berhasil! Cek email Anda untuk konfirmasi.');
+  e.target.reset();
+}
+
+/* KATEGORI CARDS */
+document.querySelectorAll('.kat-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.kat-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+  });
+});
+
+/* PAKET FAV */
+document.querySelectorAll('.paket-fav').forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.textContent = btn.textContent.trim() === '♡' ? '♥' : '♡';
+    if (btn.textContent.trim() === '♥') {
+      btn.style.color = '#E8821A';
+      showToast('Ditambahkan ke favorit!');
+    }
+  });
+});
+
+/* TOAST */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+/* SCROLL REVEAL */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.dest-card,.paket-card,.kenapa-card,.testi-card,.blog-card,.pop-card,.kat-card').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(16px)';
+  el.style.transition = 'opacity .5s ease, transform .5s ease';
+  obs.observe(el);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Desa Sumbersari — Kota Malang</title>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;0,7..72,700;1,7..72,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F5F9F2;--bg2:#EBF3E4;--bg3:#D8EAC8;
+  --text:#0E1E08;--text2:#2C4E1A;--text3:#6A8A50;
+  --green:#1B5E20;--green2:#2E7D32;--gold:#D4A017;--brown:#5D4037;
+  --red:#DC2626;
+  --border:rgba(27,94,32,0.12);--shadow:0 2px 12px rgba(27,94,32,0.08);
+  --font-serif:'Literata',serif;--font-body:'Plus Jakarta Sans',sans-serif;
+  --r:10px;--tr:.25s ease;
+}
+[data-theme="dark"]{
+  --bg:#081004;--bg2:#0E1C08;--bg3:#16280E;
+  --text:#D8F0C8;--text2:#70A850;--text3:#3A6028;
+  --border:rgba(46,125,50,0.2);--shadow:0 2px 12px rgba(0,0,0,.35);
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);font-size:16px;line-height:1.65;transition:background var(--tr),color var(--tr)}
+a{text-decoration:none;color:inherit}
+.wrap{max-width:1140px;margin:0 auto;padding:0 1.5rem}
+section{padding:4rem 0}
+.lbl{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green2);margin-bottom:.4rem}
+.sec-title{font-family:var(--font-serif);font-size:2rem;font-weight:700;color:var(--text);margin-bottom:.65rem}
+.sec-sub{color:var(--text3);max-width:520px}
+.sec-hd{text-align:center;margin-bottom:2.5rem}
+
+/* RIBBON MERAH-PUTIH */
+.ribbon{height:4px;background:linear-gradient(90deg,#DC2626 50%,#ffffff 50%)}
+
+/* TOP BAR */
+.topbar{background:var(--green);color:#fff;padding:.6rem 0}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.tb-left{display:flex;align-items:center;gap:.75rem}
+.tb-logo{width:32px;height:32px;background:rgba(255,255,255,.2);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.tb-info h2{font-family:var(--font-serif);font-size:.9rem;font-weight:700;color:#fff}
+.tb-info p{font-size:.7rem;color:rgba(255,255,255,.8)}
+.tb-right{font-size:.76rem;color:rgba(255,255,255,.85)}
+
+/* NAVBAR */
+.navbar{background:var(--bg);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+.nav-wrap{display:flex;align-items:center;justify-content:space-between;padding:.7rem 0;gap:1rem;position:relative}
+.brand{display:flex;align-items:center;gap:.75rem}
+.brand-logo{width:44px;height:44px;background:linear-gradient(135deg,var(--green),var(--green2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#fff;flex-shrink:0}
+.brand-text h1{font-family:var(--font-serif);font-size:.93rem;font-weight:700;color:var(--text);line-height:1.2}
+.brand-text p{font-size:.7rem;color:var(--text3)}
+.nav-links{display:flex;list-style:none;gap:.2rem}
+.nav-links a{padding:.4rem .72rem;border-radius:6px;font-size:.85rem;font-weight:500;color:var(--text2);transition:all var(--tr)}
+.nav-links a:hover,.nav-links a.active{background:var(--bg2);color:var(--green)}
+.nav-acts{display:flex;align-items:center;gap:.6rem}
+.btn-surat{background:var(--green);color:#fff;border:none;padding:.46rem 1.05rem;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:var(--font-body);transition:background var(--tr);white-space:nowrap}
+.btn-surat:hover{background:var(--green2)}
+.tog{background:var(--bg2);border:1px solid var(--border);border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem}
+.tog:hover{background:var(--bg3)}
+.burger{display:none;background:none;border:1px solid var(--border);border-radius:8px;padding:.36rem .58rem;cursor:pointer;font-size:1.2rem;color:var(--text)}
+.mob-menu{display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg);border-bottom:1px solid var(--border);padding:1rem 0;z-index:99}
+.mob-menu.open{display:flex;flex-direction:column;gap:.25rem}
+.mob-menu a{padding:.52rem 1rem;font-size:.9rem;font-weight:500;color:var(--text2);border-radius:6px}
+.mob-menu a:hover{background:var(--bg2);color:var(--green)}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0D3312 0%,#1B5E20 55%,#2A4A14 100%);padding:5rem 0 4rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 60%,rgba(212,160,23,.08),transparent 55%)}
+.hero-in{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;position:relative;z-index:1}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(212,160,23,.2);border:1px solid rgba(212,160,23,.35);color:#F0C84A;font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.28rem .9rem;border-radius:999px;margin-bottom:1.1rem}
+.hero h2{font-family:var(--font-serif);font-size:2.6rem;font-weight:700;color:#fff;line-height:1.22;margin-bottom:.75rem}
+.hero h2 em{font-style:italic;color:#A8E090}
+.hero p{color:rgba(255,255,255,.82);font-size:.98rem;margin-bottom:1.8rem;max-width:420px}
+.hero-cta{display:flex;gap:.85rem;flex-wrap:wrap}
+.hero-cta a{display:flex;align-items:center;gap:.5rem;padding:.7rem 1.3rem;border-radius:8px;font-weight:700;font-size:.88rem;transition:all var(--tr)}
+.hcta-1{background:var(--gold);color:#1A0800}
+.hcta-1:hover{background:#B8860B;color:#fff}
+.hcta-2{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25)}
+.hcta-2:hover{background:rgba(255,255,255,.22)}
+/* Ilustrasi desa CSS */
+.hero-vis{display:flex;align-items:center;justify-content:center}
+.desa-ilus{position:relative;width:280px;height:220px}
+.di-base{position:absolute;bottom:0;left:0;right:0;height:40px;background:rgba(100,180,80,.3);border-radius:8px}
+.di-house{position:absolute;bottom:38px;left:50%;transform:translateX(-50%);width:80px;text-align:center}
+.di-house .roof{width:0;height:0;border-left:44px solid transparent;border-right:44px solid transparent;border-bottom:30px solid rgba(200,90,30,.6);margin:0 auto}
+.di-house .wall{width:66px;height:40px;background:rgba(255,255,255,.2);margin:0 auto;border-radius:0 0 4px 4px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.di-tree{position:absolute;bottom:36px;font-size:2.2rem}
+.di-tree:nth-child(1){left:10px;bottom:36px}
+.di-tree:nth-child(2){right:10px;bottom:36px}
+.di-sun{position:absolute;top:20px;right:30px;width:52px;height:52px;background:rgba(212,160,23,.3);border-radius:50%;border:2px solid rgba(212,160,23,.5)}
+.di-cloud{position:absolute;top:28px;left:25px;background:rgba(255,255,255,.15);border-radius:999px;padding:.35rem 1rem;font-size:.78rem;color:rgba(255,255,255,.7)}
+.di-badges{position:absolute;top:0;right:0;display:flex;flex-direction:column;gap:.5rem}
+.di-b{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:.4rem .75rem;text-align:center;color:#fff}
+.di-b .dn{font-family:var(--font-serif);font-size:1.1rem;font-weight:700}
+.di-b .dl{font-size:.65rem;opacity:.8}
+
+/* STATISTIK DESA */
+.stat-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:1rem}
+.stat-c{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.4rem 1rem;text-align:center;position:relative;overflow:hidden}
+.stat-c::before{content:'';position:absolute;top:-20px;right:-20px;width:56px;height:56px;background:var(--green);opacity:.07;border-radius:50%}
+.stat-c .ico{font-size:1.5rem;margin-bottom:.35rem}
+.stat-c .snum{font-family:var(--font-serif);font-size:1.7rem;font-weight:700;color:var(--green);line-height:1}
+.stat-c .slab{font-size:.75rem;color:var(--text3);margin-top:.3rem;line-height:1.3}
+
+/* LAYANAN SURAT */
+.lay-sec{background:var(--bg2)}
+.lay-tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem}
+.lay-tab{padding:.48rem .9rem;border-radius:8px;border:1px solid var(--border);background:var(--bg);font-size:.82rem;font-weight:600;color:var(--text2);cursor:pointer;transition:all var(--tr)}
+.lay-tab:hover,.lay-tab.active{background:var(--green);color:#fff;border-color:var(--green)}
+.lay-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem}
+.lay-c{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:1.3rem;text-align:center;cursor:pointer;transition:all var(--tr)}
+.lay-c:hover{border-color:var(--green);transform:translateY(-3px);box-shadow:var(--shadow)}
+.lay-c.hidden{display:none}
+.lay-icon{width:52px;height:52px;border-radius:14px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin:0 auto .75rem;transition:all var(--tr)}
+.lay-name{font-weight:700;font-size:.88rem;color:var(--text);margin-bottom:.3rem}
+.lay-req{font-size:.74rem;color:var(--text3)}
+
+/* BERITA DESA */
+.ber-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+.ber-c{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:all var(--tr)}
+.ber-c:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.ber-img{height:150px;display:flex;align-items:center;justify-content:center;font-size:2.2rem}
+.ber-body{padding:1.1rem}
+.ber-tag{font-size:.7rem;font-weight:700;color:var(--green2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem}
+.ber-title{font-family:var(--font-serif);font-size:.96rem;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:.35rem}
+.ber-date{font-size:.75rem;color:var(--text3)}
+.ber-ex{font-size:.82rem;color:var(--text3);line-height:1.5;margin-top:.35rem}
+
+/* PROFIL DESA */
+.profil-in{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
+.profil-txt{font-size:.9rem;color:var(--text2);line-height:1.75}
+.profil-txt p{margin-bottom:.85rem}
+.vm-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.3rem;margin-top:1.2rem}
+.vm-card h4{font-family:var(--font-serif);font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.5rem}
+.vm-card p{font-size:.85rem;color:var(--text3);line-height:1.6}
+.kades-card{background:var(--green);color:#fff;border-radius:var(--r);padding:1.5rem;text-align:center;margin-top:1.2rem}
+.kades-ava{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.2);margin:0 auto .9rem;display:flex;align-items:center;justify-content:center;font-size:2rem}
+.kades-name{font-family:var(--font-serif);font-size:1.1rem;font-weight:700}
+.kades-pos{font-size:.78rem;opacity:.85;margin-top:.2rem}
+.kades-since{font-size:.74rem;opacity:.7;margin-top:.2rem}
+
+/* APBDES */
+.apb-sec{background:var(--bg2)}
+.apb-in{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.apb-tbl{width:100%;border-collapse:collapse}
+.apb-tbl th{text-align:left;padding:.55rem .9rem;background:var(--green);color:#fff;font-size:.8rem;font-weight:700}
+.apb-tbl th:first-child{border-radius:8px 0 0 0}
+.apb-tbl th:last-child{border-radius:0 8px 0 0;text-align:right}
+.apb-tbl td{padding:.65rem .9rem;border-bottom:1px solid var(--border);font-size:.85rem;color:var(--text2)}
+.apb-tbl td:last-child{text-align:right;font-weight:700;color:var(--green)}
+.apb-tbl tr:last-child td{border-bottom:none;font-weight:800;color:var(--gold)}
+.bar-wrap{display:flex;flex-direction:column;gap:.9rem}
+.bar-item{display:flex;flex-direction:column;gap:.35rem}
+.bar-lbl{display:flex;justify-content:space-between;font-size:.82rem;font-weight:600;color:var(--text2)}
+.bar-bg{height:10px;background:var(--bg3);border-radius:999px;overflow:hidden}
+.bar-fill{height:100%;border-radius:999px;transition:width 1.5s ease}
+
+/* AGENDA */
+.agenda-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.1rem}
+.ag-c{display:flex;gap:1rem;align-items:flex-start;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem;transition:all var(--tr)}
+.ag-c:hover{border-color:var(--green);transform:translateX(4px)}
+.ag-date{background:var(--green);color:#fff;border-radius:8px;padding:.5rem .75rem;text-align:center;flex-shrink:0;min-width:50px}
+.ag-date .day{font-family:var(--font-serif);font-size:1.4rem;font-weight:700;line-height:1}
+.ag-date .mon{font-size:.68rem;opacity:.85;text-transform:uppercase}
+.ag-info h4{font-weight:700;font-size:.9rem;color:var(--text);margin-bottom:.25rem}
+.ag-info p{font-size:.8rem;color:var(--text3)}
+.ag-type{display:inline-block;font-size:.68rem;font-weight:700;padding:.15rem .5rem;border-radius:999px;margin-top:.3rem;text-transform:uppercase;letter-spacing:.04em}
+.agt-wajib{background:rgba(220,38,38,.08);color:var(--red)}
+.agt-sosial{background:rgba(27,94,32,.1);color:var(--green)}
+.agt-rapat{background:rgba(212,160,23,.1);color:#B8860B}
+.agt-olahraga{background:rgba(8,145,178,.1);color:#0891B2}
+
+/* POTENSI DESA */
+.pot-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem}
+.pot-c{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:all var(--tr)}
+.pot-c:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:var(--green)}
+.pot-img{height:110px;display:flex;align-items:center;justify-content:center;font-size:2.5rem}
+.pot-body{padding:1rem}
+.pot-tag{font-size:.68rem;font-weight:700;color:var(--green2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem}
+.pot-name{font-family:var(--font-serif);font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:.3rem}
+.pot-desc{font-size:.8rem;color:var(--text3);line-height:1.5}
+
+/* PENGUMUMAN */
+.peng-list{display:flex;flex-direction:column;gap:.65rem}
+.peng-it{display:flex;align-items:flex-start;gap:.9rem;padding:1rem 1.1rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);transition:all var(--tr);cursor:pointer}
+.peng-it:hover{border-color:var(--green)}
+.peng-it.penting{border-left:3px solid var(--red)}
+.ping-ico{font-size:1.2rem;flex-shrink:0;margin-top:.1rem}
+.peng-txt h4{font-weight:700;font-size:.9rem;color:var(--text);margin-bottom:.2rem}
+.peng-txt p{font-size:.8rem;color:var(--text3)}
+.peng-badge{font-size:.65rem;font-weight:700;padding:.15rem .55rem;border-radius:999px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;flex-shrink:0}
+.pb-penting{background:rgba(220,38,38,.1);color:var(--red);border:1px solid rgba(220,38,38,.2)}
+.pb-biasa{background:rgba(27,94,32,.08);color:var(--green);border:1px solid rgba(27,94,32,.15)}
+
+/* PENGADUAN */
+.peng-sec{background:var(--bg2)}
+.peng-in{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
+.form-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:1.8rem;box-shadow:var(--shadow)}
+.form-card h3{font-family:var(--font-serif);font-size:1.15rem;margin-bottom:1.1rem;color:var(--text)}
+.fg{margin-bottom:1rem}
+.fg label{display:block;font-size:.82rem;font-weight:700;color:var(--text2);margin-bottom:.35rem}
+.fg input,.fg select,.fg textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:.6rem .9rem;font-family:var(--font-body);font-size:.88rem;background:var(--bg2);color:var(--text);outline:none;transition:border-color var(--tr)}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--green);background:var(--bg)}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.btn-sub{width:100%;background:var(--green);color:#fff;border:none;padding:.8rem;border-radius:8px;font-weight:700;font-size:.92rem;cursor:pointer;font-family:var(--font-body);transition:background var(--tr)}
+.btn-sub:hover{background:var(--green2)}
+.sukses-msg{display:none;background:rgba(22,163,74,.1);border:1px solid rgba(22,163,74,.25);color:var(--green);border-radius:8px;padding:1rem;text-align:center;margin-top:.75rem;font-weight:600}
+.sukses-msg.on{display:block}
+.peng-info{display:flex;flex-direction:column;gap:.9rem}
+.pinfo-c{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem;display:flex;gap:.85rem}
+.pinfo-ico{width:40px;height:40px;border-radius:10px;background:rgba(27,94,32,.1);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.pinfo-t h4{font-weight:700;font-size:.86rem;color:var(--text);margin-bottom:.2rem}
+.pinfo-t p{font-size:.82rem;color:var(--text3);line-height:1.5}
+
+/* PERANGKAT DESA */
+.perangkat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}
+.pg-c{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;text-align:center;transition:all var(--tr)}
+.pg-c:hover{border-color:var(--green);transform:translateY(-3px);box-shadow:var(--shadow)}
+.pg-c.kepala{border-top:3px solid var(--gold);background:linear-gradient(135deg,var(--bg2),var(--bg3))}
+.pg-ava{width:68px;height:68px;border-radius:50%;margin:0 auto .85rem;display:flex;align-items:center;justify-content:center;font-size:1.8rem;border:3px solid var(--bg3)}
+.pg-name{font-family:var(--font-serif);font-size:.96rem;font-weight:700;color:var(--text);margin-bottom:.2rem}
+.pg-pos{font-size:.78rem;font-weight:700;color:var(--green2)}
+.pg-since{font-size:.72rem;color:var(--text3);margin-top:.2rem}
+
+/* KONTAK */
+.kon-sec{background:var(--bg2)}
+.kon-in{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start}
+.map-ph{background:linear-gradient(135deg,#1B5E20,#2E7D32);border-radius:var(--r);height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;gap:.6rem;text-align:center;padding:1.5rem}
+.map-ph .mi{font-size:2.8rem}
+.map-ph h3{font-family:var(--font-serif);font-size:1.05rem}
+.map-ph p{font-size:.84rem;opacity:.82}
+.map-ph a{color:#A8E090;font-size:.83rem;margin-top:.3rem}
+.kon-items{display:flex;flex-direction:column;gap:.85rem}
+.kon-it{display:flex;gap:.9rem;align-items:flex-start;padding:.9rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--r)}
+.kon-ico{width:38px;height:38px;border-radius:9px;background:rgba(27,94,32,.1);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.kon-t h4{font-weight:700;font-size:.86rem;color:var(--text);margin-bottom:.12rem}
+.kon-t p{font-size:.83rem;color:var(--text3)}
+
+/* FOOTER */
+footer{background:#061008;color:rgba(255,255,255,.65);padding:3rem 0 1.5rem}
+.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:2.5rem;margin-bottom:2rem}
+.foot-brand h3{font-family:var(--font-serif);font-size:1rem;color:#fff;margin-bottom:.45rem}
+.foot-brand p{font-size:.83rem;line-height:1.6;max-width:280px}
+.foot-ico-row{display:flex;gap:.6rem;margin-top:.85rem}
+.foot-ico-row a{color:rgba(255,255,255,.5);font-size:1.15rem;transition:color var(--tr)}
+.foot-ico-row a:hover{color:#A8E090}
+.fcol h4{color:#fff;font-size:.86rem;font-weight:700;margin-bottom:.9rem}
+.fcol ul{list-style:none;display:flex;flex-direction:column;gap:.45rem}
+.fcol ul a{color:rgba(255,255,255,.58);font-size:.83rem;transition:color var(--tr)}
+.fcol ul a:hover{color:#A8E090}
+.foot-bot{border-top:1px solid rgba(255,255,255,.1);padding-top:1.1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.65rem;font-size:.8rem}
+
+@media(max-width:960px){
+  .stat-grid{grid-template-columns:repeat(3,1fr)}
+  .hero-in{grid-template-columns:1fr}.hero-vis{display:none}
+  .profil-in,.apb-in,.peng-in,.kon-in{grid-template-columns:1fr}
+  .pot-grid{grid-template-columns:repeat(2,1fr)}
+  .perangkat-grid{grid-template-columns:repeat(2,1fr)}
+  .lay-grid{grid-template-columns:repeat(3,1fr)}
+  .foot-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  .stat-grid{grid-template-columns:repeat(3,1fr)}
+  .lay-grid{grid-template-columns:repeat(2,1fr)}
+  .ber-grid{grid-template-columns:1fr}
+  .agenda-grid{grid-template-columns:1fr}
+  .nav-links,.btn-surat{display:none}
+  .burger{display:block}
+  .topbar .wrap{flex-direction:column;gap:.3rem;text-align:center}
+  .sec-title{font-size:1.65rem}
+  .hero h2{font-size:2rem}
+  .fg-row{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+  .lay-grid{grid-template-columns:1fr 1fr}
+  .pot-grid{grid-template-columns:1fr 1fr}
+  .perangkat-grid{grid-template-columns:1fr}
+  .foot-grid{grid-template-columns:1fr}
+  section{padding:2.5rem 0}
+}
+</style>
+</head>
+<body>
+
+<!-- RIBBON MERAH-PUTIH -->
+<div class="ribbon"></div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="wrap">
+    <div class="tb-left">
+      <div class="tb-logo">🏠</div>
+      <div class="tb-info">
+        <h2>Kelurahan Sumbersari</h2>
+        <p>Kecamatan Lowokwaru · Kota Malang · Jawa Timur, Indonesia</p>
+      </div>
+    </div>
+    <div class="tb-right">📞 (0341) 551-6688 &nbsp;|&nbsp; 🕐 Sen–Jum 08.00–16.00</div>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="wrap nav-wrap">
+    <a class="brand" href="#">
+      <div class="brand-logo">🌾</div>
+      <div class="brand-text">
+        <h1>Portal Desa Sumbersari</h1>
+        <p>Melayani dengan Hati, Membangun Bersama</p>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#" class="active">Beranda</a></li>
+      <li><a href="#profil">Profil</a></li>
+      <li><a href="#layanan">Layanan</a></li>
+      <li><a href="#berita">Berita</a></li>
+      <li><a href="#apbdes">APBDES</a></li>
+      <li><a href="#kontak">Kontak</a></li>
+    </ul>
+    <div class="nav-acts">
+      <button class="tog" onclick="toggleTheme()" id="togBtn" title="Ganti tema">🌙</button>
+      <button class="btn-surat" onclick="document.getElementById('layanan').scrollIntoView({behavior:'smooth'})">📄 Layanan Surat Online</button>
+      <button class="burger" onclick="toggleMob()">☰</button>
+    </div>
+    <div class="mob-menu" id="mobMenu">
+      <a href="#">Beranda</a>
+      <a href="#profil">Profil</a>
+      <a href="#layanan">Layanan</a>
+      <a href="#berita">Berita</a>
+      <a href="#apbdes">APBDES</a>
+      <a href="#kontak">Kontak</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-in">
+    <div>
+      <div class="hero-badge">🌾 Kelurahan Terbaik 2024</div>
+      <h2>Melayani dengan Hati,<br><em>Membangun Bersama</em></h2>
+      <p>Portal resmi Kelurahan Sumbersari. Akses layanan surat, informasi warga, berita desa, dan ajukan pengaduan — semuanya secara digital.</p>
+      <div class="hero-cta">
+        <a href="#layanan" class="hcta-1">📄 Layanan Surat Online</a>
+        <a href="#pengaduan" class="hcta-2">📢 Kirim Pengaduan</a>
+      </div>
+    </div>
+    <div class="hero-vis">
+      <div class="desa-ilus">
+        <div class="di-cloud">☁️ Sumbersari</div>
+        <div class="di-sun"></div>
+        <div class="di-tree" style="left:10px">🌳</div>
+        <div class="di-tree" style="right:10px">🌿</div>
+        <div class="di-house">
+          <div class="roof"></div>
+          <div class="wall">🏠</div>
+        </div>
+        <div class="di-base"></div>
+        <div class="di-badges">
+          <div class="di-b"><div class="dn">47.8k</div><div class="dl">Jiwa</div></div>
+          <div class="di-b"><div class="dn">14.2k</div><div class="dl">KK</div></div>
+          <div class="di-b"><div class="dn">12</div><div class="dl">RW</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATISTIK DESA -->
+<section>
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="lbl">Data Kependudukan</div>
+      <h2 class="sec-title">Sumbersari dalam Angka</h2>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-c"><div class="ico">👥</div><div class="snum" data-count="47840">0</div><div class="slab">Jumlah Penduduk</div></div>
+      <div class="stat-c"><div class="ico">🏠</div><div class="snum" data-count="14280">0</div><div class="slab">Kepala Keluarga</div></div>
+      <div class="stat-c"><div class="ico">🏘️</div><div class="snum" data-count="12">0</div><div class="slab">Jumlah RW</div></div>
+      <div class="stat-c"><div class="ico">🛖</div><div class="snum" data-count="48">0</div><div class="slab">Jumlah RT</div></div>
+      <div class="stat-c"><div class="ico">📐</div><div class="snum" data-count="572">0</div><div class="slab">Luas Wilayah (Ha)</div></div>
+      <div class="stat-c"><div class="ico">📅</div><div class="snum" data-count="1946">0</div><div class="slab">Tahun Berdiri</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LAYANAN SURAT -->
+<section id="layanan" class="lay-sec">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="lbl">Pelayanan Warga</div>
+      <h2 class="sec-title">Layanan Surat Online</h2>
+      <p class="sec-sub" style="margin:0 auto">Ajukan permohonan surat keterangan tanpa antre. Proses 1–2 hari kerja.</p>
+    </div>
+    <div class="lay-tabs">
+      <button class="lay-tab active" onclick="filterLay('semua',this)">Semua Layanan</button>
+      <button class="lay-tab" onclick="filterLay('kependudukan',this)">Kependudukan</button>
+      <button class="lay-tab" onclick="filterLay('usaha',this)">Usaha &amp; Sosial</button>
+      <button class="lay-tab" onclick="filterLay('pernikahan',this)">Pernikahan &amp; Keluarga</button>
+    </div>
+    <div class="lay-grid">
+      <div class="lay-c" data-kat="kependudukan">
+        <div class="lay-icon">🏠</div>
+        <div class="lay-name">Surat Keterangan Domisili</div>
+        <div class="lay-req">KTP + KK</div>
+      </div>
+      <div class="lay-c" data-kat="kependudukan">
+        <div class="lay-icon">🪪</div>
+        <div class="lay-name">Keterangan Pindah Sementara</div>
+        <div class="lay-req">KTP + KK + Surat Pernyataan</div>
+      </div>
+      <div class="lay-c" data-kat="kependudukan">
+        <div class="lay-icon">👮</div>
+        <div class="lay-name">Pengantar SKCK</div>
+        <div class="lay-req">KTP + KK</div>
+      </div>
+      <div class="lay-c" data-kat="usaha">
+        <div class="lay-icon">🏪</div>
+        <div class="lay-name">Keterangan Usaha</div>
+        <div class="lay-req">KTP + Foto Tempat Usaha</div>
+      </div>
+      <div class="lay-c" data-kat="usaha">
+        <div class="lay-icon">💼</div>
+        <div class="lay-name">Keterangan Tidak Mampu</div>
+        <div class="lay-req">KTP + KK + Surat RT/RW</div>
+      </div>
+      <div class="lay-c" data-kat="pernikahan">
+        <div class="lay-icon">💍</div>
+        <div class="lay-name">Pengantar Nikah</div>
+        <div class="lay-req">KTP + KK + Akte Lahir</div>
+      </div>
+      <div class="lay-c" data-kat="pernikahan">
+        <div class="lay-icon">👶</div>
+        <div class="lay-name">Keterangan Kelahiran</div>
+        <div class="lay-req">KTP Orang Tua + Surat Lahir RS</div>
+      </div>
+      <div class="lay-c" data-kat="pernikahan">
+        <div class="lay-icon">🕊️</div>
+        <div class="lay-name">Keterangan Kematian</div>
+        <div class="lay-req">KTP + Surat Keterangan Dokter</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.8rem">
+      <p style="font-size:.85rem;color:var(--text3);margin-bottom:.85rem">Isi formulir online atau datang langsung ke kantor kelurahan dengan membawa dokumen yang diperlukan.</p>
+      <button class="btn-surat" style="font-size:.92rem;padding:.65rem 1.8rem">📲 Ajukan Surat via WhatsApp</button>
+    </div>
+  </div>
+</section>
+
+<!-- BERITA DESA -->
+<section id="berita">
+  <div class="wrap">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:2rem">
+      <div><div class="lbl">Terkini</div><h2 class="sec-title">Berita Desa</h2></div>
+      <a href="#" style="color:var(--green);font-weight:700;font-size:.86rem;border-bottom:1px solid var(--green);padding-bottom:1px">Semua Berita →</a>
+    </div>
+    <div class="ber-grid">
+      <div class="ber-c">
+        <div class="ber-img" style="background:linear-gradient(135deg,#1B5E20,#66BB6A)">🌿</div>
+        <div class="ber-body">
+          <div class="ber-tag">Kegiatan Warga</div>
+          <div class="ber-title">Gotong Royong Massal Bersihkan Saluran Air RW 05 &amp; 06</div>
+          <div class="ber-date">14 Juni 2025</div>
+          <div class="ber-ex">Ratusan warga bersatu membersihkan saluran air yang tersumbat di wilayah RW 05 dan 06 untuk mencegah banjir musim hujan.</div>
+        </div>
+      </div>
+      <div class="ber-c">
+        <div class="ber-img" style="background:linear-gradient(135deg,#D4A017,#E8C040)">💰</div>
+        <div class="ber-body">
+          <div class="ber-tag">Program Bantuan</div>
+          <div class="ber-title">Penyaluran BLT-Dana Desa Tahap II Tahun 2025 Dimulai</div>
+          <div class="ber-date">8 Juni 2025</div>
+          <div class="ber-ex">Sebanyak 248 KPM (Keluarga Penerima Manfaat) menerima BLT-DD tahap II. Penyaluran dilakukan di balai kelurahan mulai 10 Juni 2025.</div>
+        </div>
+      </div>
+      <div class="ber-c">
+        <div class="ber-img" style="background:linear-gradient(135deg,#1A237E,#3949AB)">🏛️</div>
+        <div class="ber-body">
+          <div class="ber-tag">Musyawarah</div>
+          <div class="ber-title">Musrenbang Kelurahan 2026: Warga Usulkan Pelebaran Jalan Gang Mawar</div>
+          <div class="ber-date">3 Juni 2025</div>
+          <div class="ber-ex">Musyawarah perencanaan pembangunan dihadiri 120 perwakilan warga. Prioritas 2026 mencakup perbaikan infrastruktur jalan dan drainase.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROFIL DESA -->
+<section id="profil" style="background:var(--bg2)">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="lbl">Tentang Kami</div>
+      <h2 class="sec-title">Profil Kelurahan</h2>
+    </div>
+    <div class="profil-in">
+      <div>
+        <div class="profil-txt">
+          <p>Kelurahan Sumbersari merupakan salah satu dari 12 kelurahan di Kecamatan Lowokwaru, Kota Malang, Jawa Timur. Terletak di ketinggian 440–460 meter di atas permukaan laut, wilayah ini dikenal sebagai kawasan pendidikan dan permukiman padat namun asri.</p>
+          <p>Dengan populasi hampir 48.000 jiwa dan luas wilayah 572 hektare, Sumbersari menjadi salah satu kelurahan dengan kepadatan penduduk tinggi di Kota Malang. Lokasinya yang strategis berdekatan dengan kawasan kampus menjadikannya pusat mobilitas akademik dan ekonomi.</p>
+          <p>Berbagai program pemberdayaan masyarakat aktif berjalan, termasuk PKK, Karang Taruna, BUMDes Sumbersari Sejahtera, dan komunitas petani urban yang memanfaatkan pekarangan.</p>
+        </div>
+        <div class="vm-card">
+          <h4>🎯 Visi Kelurahan</h4>
+          <p>"Mewujudkan Kelurahan Sumbersari yang sejahtera, berdaya, dan berdaya saing melalui pelayanan prima dan pembangunan berkelanjutan."</p>
+        </div>
+        <div class="vm-card" style="margin-top:.65rem">
+          <h4>📌 Misi</h4>
+          <p>1. Meningkatkan kualitas pelayanan publik yang cepat, transparan, dan akuntabel.<br>2. Mengembangkan potensi ekonomi lokal dan UMKM warga.<br>3. Membangun infrastruktur yang ramah lingkungan dan merata.<br>4. Memberdayakan masyarakat melalui pendidikan dan pelatihan keterampilan.</p>
+        </div>
+      </div>
+      <div>
+        <div class="kades-card">
+          <div class="kades-ava">👨‍💼</div>
+          <div class="kades-name">Drs. Heri Prabowo, M.Si</div>
+          <div class="kades-pos">Lurah Sumbersari</div>
+          <div class="kades-since">Menjabat sejak: April 2022</div>
+        </div>
+        <div style="margin-top:1.2rem">
+          <div class="lbl" style="margin-bottom:.75rem">Tim Perangkat</div>
+          <div class="perangkat-grid" style="grid-template-columns:1fr 1fr">
+            <div class="pg-c"><div class="pg-ava" style="background:var(--bg3)">👨</div><div class="pg-name">Ahmad Fauzi, SE</div><div class="pg-pos">Seklur</div></div>
+            <div class="pg-c"><div class="pg-ava" style="background:var(--bg3)">👩</div><div class="pg-name">Siti Aminah</div><div class="pg-pos">Kaur Keuangan</div></div>
+            <div class="pg-c"><div class="pg-ava" style="background:var(--bg3)">👨</div><div class="pg-name">Budi Hartono</div><div class="pg-pos">Kaur Umum</div></div>
+            <div class="pg-c"><div class="pg-ava" style="background:var(--bg3)">👩</div><div class="pg-name">Rina Wahyuni</div><div class="pg-pos">Kasi Pelayanan</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APBDES -->
+<section id="apbdes" class="apb-sec">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="lbl">Transparansi Anggaran</div>
+      <h2 class="sec-title">APBDES 2025 — Ringkasan</h2>
+    </div>
+    <div class="apb-in">
+      <div>
+        <div style="overflow-x:auto">
+          <table class="apb-tbl">
+            <thead><tr><th>Pos Anggaran</th><th>Pagu (Rp)</th></tr></thead>
+            <tbody>
+              <tr><td>🟢 Pendapatan Asli Desa</td><td>125.000.000</td></tr>
+              <tr><td>🔵 Dana Desa (APBN)</td><td>890.000.000</td></tr>
+              <tr><td>🟡 ADD (APBD Kota)</td><td>320.000.000</td></tr>
+              <tr><td>🔴 Belanja Operasional</td><td>285.000.000</td></tr>
+              <tr><td>🔴 Belanja Pembangunan</td><td>760.000.000</td></tr>
+              <tr><td>🔴 Belanja Pemberdayaan</td><td>175.000.000</td></tr>
+              <tr><td style="font-weight:800">Saldo Akhir</td><td>115.000.000</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:.76rem;color:var(--text3);margin-top:.75rem">*Laporan lengkap tersedia di papan informasi kantor kelurahan dan portal JDIH Kota Malang.</p>
+      </div>
+      <div>
+        <div class="lbl" style="margin-bottom:1rem">Realisasi Pembangunan 2025</div>
+        <div class="bar-wrap" id="barWrap">
+          <div class="bar-item">
+            <div class="bar-lbl"><span>Infrastruktur Jalan</span><span>78%</span></div>
+            <div class="bar-bg"><div class="bar-fill" style="width:0%;background:var(--green)" data-w="78"></div></div>
+          </div>
+          <div class="bar-item">
+            <div class="bar-lbl"><span>Drainase &amp; Sanitasi</span><span>65%</span></div>
+            <div class="bar-bg"><div class="bar-fill" style="width:0%;background:var(--green2)" data-w="65"></div></div>
+          </div>
+          <div class="bar-item">
+            <div class="bar-lbl"><span>Fasilitas Posyandu</span><span>92%</span></div>
+            <div class="bar-bg"><div class="bar-fill" style="width:0%;background:var(--gold)" data-w="92"></div></div>
+          </div>
+          <div class="bar-item">
+            <div class="bar-lbl"><span>Taman &amp; Ruang Terbuka</span><span>55%</span></div>
+            <div class="bar-bg"><div class="bar-fill" style="width:0%;background:#0891B2" data-w="55"></div></div>
+          </div>
+          <div class="bar-item">
+            <div class="bar-lbl"><span>Digitalisasi Layanan</span><span>88%</span></div>
+            <div class="bar-bg"><div class="bar-fill" style="width:0%;background:#7C3AED" data-w="88"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AGENDA -->
+<section>
+  <div class="wrap">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start">
+      <div>
+        <div class="lbl">Kalender Kegiatan</div>
+        <h2 class="sec-title">Agenda Mendatang</h2>
+        <div class="agenda-grid" style="margin-top:1.4rem">
+          <div class="ag-c">
+            <div class="ag-date"><div class="day">20</div><div class="mon">Jun</div></div>
+            <div class="ag-info">
+              <h4>Rapat Koordinasi RT/RW Se-Kelurahan</h4>
+              <p>Balai Kelurahan Sumbersari, Pukul 19.00</p>
+              <span class="ag-type agt-rapat">Rapat</span>
+            </div>
+          </div>
+          <div class="ag-c">
+            <div class="ag-date"><div class="day">22</div><div class="mon">Jun</div></div>
+            <div class="ag-info">
+              <h4>Posyandu Balita RW 03, 07, 09</h4>
+              <p>Rumah Kader Posyandu Melati, 08.00–11.00</p>
+              <span class="ag-type agt-sosial">Kesehatan</span>
+            </div>
+          </div>
+          <div class="ag-c">
+            <div class="ag-date"><div class="day">25</div><div class="mon">Jun</div></div>
+            <div class="ag-info">
+              <h4>Pelatihan UMKM Digital Marketing</h4>
+              <p>Aula Kelurahan Lt.2, 09.00–15.00 WIB</p>
+              <span class="ag-type agt-sosial">Pelatihan</span>
+            </div>
+          </div>
+          <div class="ag-c">
+            <div class="ag-date"><div class="day">29</div><div class="mon">Jun</div></div>
+            <div class="ag-info">
+              <h4>Turnamen Voli Antarkampung 2025</h4>
+              <p>Lapangan Sumbersari, 07.00 s.d. selesai</p>
+              <span class="ag-type agt-olahraga">Olahraga</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="lbl">Informasi Penting</div>
+        <h2 class="sec-title">Pengumuman Warga</h2>
+        <div class="peng-list" id="pengList" style="margin-top:1.4rem">
+          <div class="peng-it penting" onclick="togPeng(this)">
+            <span class="ping-ico">🚨</span>
+            <div class="peng-txt" style="flex:1">
+              <h4>Pemadaman Listrik Bergilir Area Sumbersari</h4>
+              <p>PLN menjadwalkan pemadaman 20–21 Juni 2025, 09.00–15.00.</p>
+            </div>
+            <span class="peng-badge pb-penting">PENTING</span>
+          </div>
+          <div class="peng-it" onclick="togPeng(this)">
+            <span class="ping-ico">📋</span>
+            <div class="peng-txt" style="flex:1">
+              <h4>Pendataan Warga Miskin Ekstrem 2025</h4>
+              <p>Harap melapor ke kantor RT masing-masing sebelum 30 Juni.</p>
+            </div>
+            <span class="peng-badge pb-biasa">INFO</span>
+          </div>
+          <div class="peng-it penting" onclick="togPeng(this)">
+            <span class="ping-ico">🚧</span>
+            <div class="peng-txt" style="flex:1">
+              <h4>Perbaikan Jalan Jl. Veteran No. 14–28</h4>
+              <p>Perbaikan dimulai 25 Juni s.d. 5 Juli 2025. Mohon gunakan jalur alternatif.</p>
+            </div>
+            <span class="peng-badge pb-penting">PENTING</span>
+          </div>
+          <div class="peng-it" onclick="togPeng(this)">
+            <span class="ping-ico">💉</span>
+            <div class="peng-txt" style="flex:1">
+              <h4>Jadwal Imunisasi MR untuk Balita</h4>
+              <p>Posyandu Kenanga: 22 Juni 2025, pukul 08.00–11.00 WIB.</p>
+            </div>
+            <span class="peng-badge pb-biasa">INFO</span>
+          </div>
+          <div class="peng-it" onclick="togPeng(this)">
+            <span class="ping-ico">📦</span>
+            <div class="peng-txt" style="flex:1">
+              <h4>Distribusi Beras Bansos BPNT Juli 2025</h4>
+              <p>Penerima manfaat harap membawa KKS ke agen e-warong terdekat, 1–10 Juli.</p>
+            </div>
+            <span class="peng-badge pb-biasa">INFO</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POTENSI DESA -->
+<section style="background:var(--bg2)">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="lbl">Keunggulan</div>
+      <h2 class="sec-title">Potensi Kelurahan Sumbersari</h2>
+    </div>
+    <div class="pot-grid">
+      <div class="pot-c">
+        <div class="pot-img" style="background:linear-gradient(135deg,#E65100,#FF8F00)">🏪</div>
+        <div class="pot-body">
+          <div class="pot-tag">UMKM</div>
+          <div class="pot-name">UMKM Kuliner &amp; Kerajinan</div>
+          <div class="pot-desc">120+ UMKM aktif di bidang kuliner, fashion, dan kerajinan tangan. Omset bulanan total Rp 850 juta.</div>
+        </div>
+      </div>
+      <div class="pot-c">
+        <div class="pot-img" style="background:linear-gradient(135deg,#1B5E20,#66BB6A)">🌿</div>
+        <div class="pot-body">
+          <div class="pot-tag">Pertanian Urban</div>
+          <div class="pot-name">Kebun Sayur Hidroponik</div>
+          <div class="pot-desc">Komunitas urban farming dengan 15 titik kebun sayur hidroponik dan aquaponik di RW 04, 08, dan 11.</div>
+        </div>
+      </div>
+      <div class="pot-c">
+        <div class="pot-img" style="background:linear-gradient(135deg,#4A148C,#7B1FA2)">🎨</div>
+        <div class="pot-body">
+          <div class="pot-tag">Seni Budaya</div>
+          <div class="pot-name">Sanggar Tari &amp; Karawitan</div>
+          <div class="pot-desc">Sanggar seni Gita Nusantara aktif menampilkan pertunjukan tari tradisional dan modern di berbagai event.</div>
+        </div>
+      </div>
+      <div class="pot-c">
+        <div class="pot-img" style="background:linear-gradient(135deg,#0891B2,#0D9488)">🏫</div>
+        <div class="pot-body">
+          <div class="pot-tag">Pendidikan</div>
+          <div class="pot-name">Zona Kampus &amp; Pendidikan</div>
+          <div class="pot-desc">Berbatasan dengan 3 perguruan tinggi ternama. Mendukung ekonomi kos-kosan, kuliner, dan jasa pendidikan.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PENGADUAN -->
+<section id="pengaduan" class="peng-sec">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="lbl">Partisipasi Warga</div>
+      <h2 class="sec-title">Sampaikan Pengaduan</h2>
+    </div>
+    <div class="peng-in">
+      <div class="form-card">
+        <h3>Formulir Pengaduan Warga</h3>
+        <div class="fg-row">
+          <div class="fg"><label>Nama Lengkap *</label><input type="text" id="pg-nama" placeholder="Nama Anda"></div>
+          <div class="fg"><label>RT / RW *</label>
+            <select id="pg-rtrw">
+              <option>Pilih RT/RW</option>
+              <option>RT 01 / RW 01</option><option>RT 02 / RW 01</option>
+              <option>RT 01 / RW 02</option><option>RT 02 / RW 02</option>
+              <option>RT 01 / RW 03</option><option>Lainnya</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg"><label>Jenis Pengaduan *</label>
+          <select id="pg-jenis">
+            <option>Pilih Jenis</option>
+            <option>Infrastruktur Jalan / Drainase</option>
+            <option>Keamanan &amp; Ketertiban</option>
+            <option>Pelayanan Kelurahan</option>
+            <option>Kebersihan &amp; Sampah</option>
+            <option>Penerangan Jalan Umum</option>
+            <option>UMKM &amp; Sosial Ekonomi</option>
+            <option>Lainnya</option>
+          </select>
+        </div>
+        <div class="fg"><label>Deskripsi Pengaduan *</label>
+          <textarea id="pg-desc" rows="4" placeholder="Jelaskan masalah yang Anda temui, termasuk lokasi spesifik jika ada..."></textarea>
+        </div>
+        <button class="btn-sub" onclick="kirimPengaduan()">📢 Kirim Pengaduan</button>
+        <div class="sukses-msg" id="suksesMsg">✅ Pengaduan berhasil dikirim! Kami akan menindaklanjuti dalam 3 hari kerja. Terima kasih.</div>
+      </div>
+      <div class="peng-info">
+        <div class="pinfo-c"><div class="pinfo-ico">⏱️</div><div class="pinfo-t"><h4>Waktu Respons</h4><p>Pengaduan akan ditindaklanjuti dalam 3 hari kerja. Pengaduan darurat (kebakaran, longsor, banjir) hubungi langsung 0341-551-6688.</p></div></div>
+        <div class="pinfo-c"><div class="pinfo-ico">🔒</div><div class="pinfo-t"><h4>Kerahasiaan Terjaga</h4><p>Identitas pelapor dijaga kerahasiaannya sesuai UU Perlindungan Data Pribadi. Pengaduan anonim juga diterima.</p></div></div>
+        <div class="pinfo-c"><div class="pinfo-ico">📱</div><div class="pinfo-t"><h4>Alternatif Pengaduan</h4><p>Via WhatsApp: 0812-5555-6688<br>Email: pengaduan@sumbersari.malangkota.go.id<br>Kotak Saran: Lobi Kantor Kelurahan</p></div></div>
+        <div class="pinfo-c"><div class="pinfo-ico">📊</div><div class="pinfo-t"><h4>Statistik Pengaduan</h4><p>Bulan ini: 42 pengaduan masuk, 38 selesai ditindaklanjuti (90,5%). Rata-rata penyelesaian: 2,3 hari kerja.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PERANGKAT DESA -->
+<section>
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="lbl">Struktur Organisasi</div>
+      <h2 class="sec-title">Perangkat Kelurahan</h2>
+    </div>
+    <div class="perangkat-grid">
+      <div class="pg-c kepala">
+        <div class="pg-ava" style="background:#D8EAC8">👨‍💼</div>
+        <div class="pg-name">Drs. Heri Prabowo, M.Si</div>
+        <div class="pg-pos" style="color:var(--gold)">Lurah / Kepala Kelurahan</div>
+        <div class="pg-since">SK No. 820/108/2022</div>
+      </div>
+      <div class="pg-c">
+        <div class="pg-ava" style="background:var(--bg3)">👨</div>
+        <div class="pg-name">Ahmad Fauzi, SE</div>
+        <div class="pg-pos">Sekretaris Kelurahan</div>
+        <div class="pg-since">Bid.: Administrasi Umum</div>
+      </div>
+      <div class="pg-c">
+        <div class="pg-ava" style="background:var(--bg3)">👩</div>
+        <div class="pg-name">Siti Aminah, S.AP</div>
+        <div class="pg-pos">Kaur Keuangan</div>
+        <div class="pg-since">Bid.: Pelaporan Keuangan</div>
+      </div>
+      <div class="pg-c">
+        <div class="pg-ava" style="background:var(--bg3)">👨</div>
+        <div class="pg-name">Budi Hartono</div>
+        <div class="pg-pos">Kaur Umum &amp; Perencanaan</div>
+        <div class="pg-since">Bid.: Perlengkapan &amp; IT</div>
+      </div>
+      <div class="pg-c">
+        <div class="pg-ava" style="background:var(--bg3)">👩</div>
+        <div class="pg-name">Rina Wahyuni, SH</div>
+        <div class="pg-pos">Kasi Pelayanan Publik</div>
+        <div class="pg-since">Bid.: Administrasi Warga</div>
+      </div>
+      <div class="pg-c">
+        <div class="pg-ava" style="background:var(--bg3)">👨</div>
+        <div class="pg-name">Teguh Prasetya</div>
+        <div class="pg-pos">Kasi Pemberdayaan Masyarakat</div>
+        <div class="pg-since">Bid.: UMKM &amp; PKK</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KONTAK -->
+<section id="kontak" class="kon-sec">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="lbl">Kantor</div>
+      <h2 class="sec-title">Lokasi &amp; Jam Pelayanan</h2>
+    </div>
+    <div class="kon-in">
+      <div class="map-ph">
+        <div class="mi">🗺️</div>
+        <h3>Jl. Veteran No. 55A, Sumbersari</h3>
+        <p>Kec. Lowokwaru, Kota Malang 65145</p>
+        <a href="#">Buka di Google Maps →</a>
+      </div>
+      <div class="kon-items">
+        <div class="kon-it"><div class="kon-ico">📍</div><div class="kon-t"><h4>Alamat</h4><p>Jl. Veteran No. 55A, Kel. Sumbersari, Kec. Lowokwaru, Kota Malang 65145</p></div></div>
+        <div class="kon-it"><div class="kon-ico">📞</div><div class="kon-t"><h4>Telepon</h4><p>(0341) 551-6688 | WA: 0812-5555-6688</p></div></div>
+        <div class="kon-it"><div class="kon-ico">📧</div><div class="kon-t"><h4>Email</h4><p>sumbersari@malangkota.go.id</p></div></div>
+        <div class="kon-it"><div class="kon-ico">⏰</div><div class="kon-t"><h4>Jam Pelayanan</h4><p>Senin – Kamis: 08.00 – 15.30 WIB<br>Jumat: 08.00 – 11.30 WIB | Sabtu–Minggu: Tutup</p></div></div>
+        <div class="kon-it"><div class="kon-ico">🌐</div><div class="kon-t"><h4>Website &amp; Sosmed</h4><p>sumbersari.malangkota.go.id<br>@kel_sumbersari (Instagram)</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <h3>🌾 Kelurahan Sumbersari</h3>
+        <p>Portal resmi Kelurahan Sumbersari, Kecamatan Lowokwaru, Kota Malang. Melayani dengan hati, membangun bersama warga.</p>
+        <div class="foot-ico-row">
+          <a href="#">📘</a><a href="#">📸</a><a href="#">📺</a>
+        </div>
+      </div>
+      <div class="fcol">
+        <h4>Navigasi</h4>
+        <ul>
+          <li><a href="#">Beranda</a></li>
+          <li><a href="#profil">Profil Kelurahan</a></li>
+          <li><a href="#layanan">Layanan Surat</a></li>
+          <li><a href="#berita">Berita</a></li>
+          <li><a href="#apbdes">APBDES</a></li>
+          <li><a href="#kontak">Kontak</a></li>
+        </ul>
+      </div>
+      <div class="fcol">
+        <h4>Layanan Digital</h4>
+        <ul>
+          <li><a href="#">Surat Online</a></li>
+          <li><a href="#">Pengaduan Warga</a></li>
+          <li><a href="#">PPID / Keterbukaan Info</a></li>
+          <li><a href="#">Statistik Desa</a></li>
+          <li><a href="#">Laporan APBDES</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>© 2025 Kelurahan Sumbersari — Pemerintah Kota Malang</span>
+      <span>🇮🇩 Melayani Warga dengan Sepenuh Hati</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// THEME
+function toggleTheme(){
+  const h=document.documentElement;
+  const dark=h.getAttribute('data-theme')==='dark';
+  h.setAttribute('data-theme',dark?'light':'dark');
+  document.getElementById('togBtn').textContent=dark?'🌙':'☀️';
+}
+// MOBILE NAV
+function toggleMob(){document.getElementById('mobMenu').classList.toggle('open')}
+// COUNTER
+function runCounters(){
+  document.querySelectorAll('[data-count]').forEach(el=>{
+    const t=parseInt(el.dataset.count),step=Math.ceil(t/60);
+    let c=0;
+    const iv=setInterval(()=>{c=Math.min(c+step,t);el.textContent=c.toLocaleString('id-ID');if(c>=t)clearInterval(iv);},30);
+  });
+}
+const ob=new IntersectionObserver(en=>{en.forEach(e=>{if(e.isIntersecting){runCounters();ob.disconnect();}});},{threshold:.3});
+const sg=document.querySelector('.stat-grid');if(sg)ob.observe(sg);
+// BAR CHART ANIMASI
+const bo=new IntersectionObserver(en=>{
+  en.forEach(e=>{
+    if(e.isIntersecting){
+      document.querySelectorAll('.bar-fill').forEach(b=>{
+        b.style.width=b.dataset.w+'%';
+      });
+      bo.disconnect();
+    }
+  });
+},{threshold:.4});
+const bw=document.getElementById('barWrap');if(bw)bo.observe(bw);
+// FILTER LAYANAN SURAT
+function filterLay(kat,el){
+  document.querySelectorAll('.lay-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.lay-c').forEach(c=>{
+    if(kat==='semua'){c.classList.remove('hidden');}
+    else{c.classList.toggle('hidden',c.dataset.kat!==kat);}
+  });
+}
+// KIRIM PENGADUAN
+function kirimPengaduan(){
+  const nama=document.getElementById('pg-nama').value.trim();
+  const rtrw=document.getElementById('pg-rtrw').value;
+  const jenis=document.getElementById('pg-jenis').value;
+  const desc=document.getElementById('pg-desc').value.trim();
+  if(!nama||rtrw==='Pilih RT/RW'||jenis==='Pilih Jenis'||!desc){
+    alert('Harap isi semua field yang wajib diisi.');return;
+  }
+  document.getElementById('suksesMsg').classList.add('on');
+  document.getElementById('pg-nama').value='';
+  document.getElementById('pg-rtrw').value='Pilih RT/RW';
+  document.getElementById('pg-jenis').value='Pilih Jenis';
+  document.getElementById('pg-desc').value='';
+}
+// TOGGLE PENGUMUMAN (visual highlight)
+function togPeng(el){
+  el.style.background=el.style.background?'':'rgba(27,94,32,.05)';
+}
+</script>
+</body>
+</html>

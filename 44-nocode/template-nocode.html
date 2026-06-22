@@ -1,0 +1,1974 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GridBase — Database Visual yang Terasa Seperti Spreadsheet</title>
+<meta name="description" content="Buat database powerful tanpa satu baris kode. Tampilan spreadsheet, kekuatan database. GridBase untuk tim Indonesia.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --bg:      #FFFFFF;
+  --bg2:     #F8F8F8;
+  --bg3:     #F0F0F0;
+  --bg4:     #E8E8E8;
+  --text:    #111111;
+  --text2:   #444444;
+  --text3:   #888888;
+  --col-text:   #3B82F6;
+  --col-num:    #10B981;
+  --col-select: #8B5CF6;
+  --col-date:   #F59E0B;
+  --col-check:  #EF4444;
+  --col-link:   #06B6D4;
+  --col-attach: #F97316;
+  --col-formula:#EC4899;
+  --border:  #E5E7EB;
+  --shadow:  0 1px 3px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.05);
+  --shadow-lg: 0 4px 24px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.05);
+  --font-body: 'DM Sans', sans-serif;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --transition: 0.2s ease;
+}
+[data-theme="dark"] {
+  --bg:    #111111;
+  --bg2:   #1A1A1A;
+  --bg3:   #222222;
+  --bg4:   #2A2A2A;
+  --text:  #FFFFFF;
+  --text2: #AAAAAA;
+  --text3: #666666;
+  --border: #333333;
+  --shadow: 0 1px 3px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.3);
+  --shadow-lg: 0 4px 24px rgba(0,0,0,0.5);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  transition: background var(--transition), color var(--transition);
+}
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+button { font-family: var(--font-body); cursor: pointer; }
+ul { list-style: none; }
+
+/* ============================================================
+   LAYOUT UTILITIES
+   ============================================================ */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+.section { padding: 5rem 0; }
+.section-alt { background: var(--bg2); }
+.section-label {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--text3);
+  margin-bottom: 1rem;
+}
+.section-label .dot {
+  width: 6px; height: 6px; border-radius: 50%; background: currentColor;
+}
+.section-title {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 800; line-height: 1.2;
+  color: var(--text); margin-bottom: 1rem;
+}
+.section-sub {
+  font-size: 1rem; color: var(--text2); max-width: 560px; line-height: 1.7;
+}
+.text-center { text-align: center; }
+.text-center .section-sub { margin: 0 auto; }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.65rem 1.4rem; border-radius: var(--radius-sm);
+  font-size: 0.9rem; font-weight: 600; border: none;
+  transition: all var(--transition); cursor: pointer;
+}
+.btn-primary {
+  background: #111; color: #fff;
+}
+.btn-primary:hover { background: #333; transform: translateY(-1px); }
+[data-theme="dark"] .btn-primary { background: #fff; color: #111; }
+[data-theme="dark"] .btn-primary:hover { background: #e5e5e5; }
+.btn-outline {
+  background: transparent; color: var(--text);
+  border: 1.5px solid var(--border);
+}
+.btn-outline:hover { background: var(--bg2); border-color: var(--text3); }
+.btn-lg { padding: 0.85rem 1.8rem; font-size: 1rem; border-radius: 8px; }
+.btn-sm { padding: 0.45rem 1rem; font-size: 0.8rem; border-radius: var(--radius-sm); }
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+.navbar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg); border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.navbar-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.85rem 0; gap: 1rem;
+}
+.logo {
+  display: flex; align-items: center; gap: 0.6rem;
+  font-weight: 800; font-size: 1.15rem; color: var(--text);
+}
+.logo-icon {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 2px; width: 22px; height: 22px;
+}
+.logo-icon span {
+  border-radius: 2px; display: block;
+}
+.logo-icon span:nth-child(1) { background: var(--col-text); }
+.logo-icon span:nth-child(2) { background: var(--col-num); }
+.logo-icon span:nth-child(3) { background: var(--col-select); }
+.logo-icon span:nth-child(4) { background: var(--col-date); }
+.nav-links {
+  display: flex; align-items: center; gap: 0.2rem;
+}
+.nav-links a {
+  padding: 0.4rem 0.85rem; border-radius: var(--radius-sm);
+  font-size: 0.88rem; color: var(--text2); font-weight: 500;
+  transition: background var(--transition), color var(--transition);
+}
+.nav-links a:hover { background: var(--bg2); color: var(--text); }
+.nav-right {
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.theme-toggle {
+  width: 36px; height: 36px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border); background: var(--bg);
+  color: var(--text2); display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; cursor: pointer; transition: all var(--transition);
+}
+.theme-toggle:hover { background: var(--bg2); color: var(--text); }
+.nav-login {
+  font-size: 0.88rem; color: var(--text2); font-weight: 500;
+  padding: 0.4rem 0.85rem; border-radius: var(--radius-sm);
+  transition: background var(--transition);
+}
+.nav-login:hover { background: var(--bg2); color: var(--text); }
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  width: 36px; height: 36px; border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); background: var(--bg);
+  align-items: center; justify-content: center; cursor: pointer;
+}
+.hamburger span {
+  display: block; width: 16px; height: 1.5px;
+  background: var(--text2); transition: all 0.3s;
+}
+.mobile-menu {
+  display: none; flex-direction: column; gap: 0.2rem;
+  padding: 0.75rem 0; border-top: 1px solid var(--border);
+}
+.mobile-menu a {
+  padding: 0.55rem 0.85rem; border-radius: var(--radius-sm);
+  font-size: 0.9rem; color: var(--text2); font-weight: 500;
+}
+.mobile-menu a:hover { background: var(--bg2); color: var(--text); }
+.mobile-menu.open { display: flex; }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  padding: 4.5rem 0 3rem;
+  background: linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
+}
+.hero-content {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: 1.5rem; margin-bottom: 3.5rem;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--bg); border: 1.5px solid var(--border);
+  padding: 0.35rem 0.9rem; border-radius: 999px;
+  font-size: 0.78rem; font-weight: 500; color: var(--text2);
+}
+.hero-badge .badge-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: #10B981;
+}
+.hero-title {
+  font-size: clamp(2.2rem, 6vw, 3.8rem);
+  font-weight: 800; line-height: 1.1; color: var(--text);
+  max-width: 800px;
+}
+.hero-title .highlight {
+  background: linear-gradient(135deg, var(--col-text), var(--col-select));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: 1.05rem; color: var(--text2); max-width: 540px; line-height: 1.7;
+}
+.hero-cta { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; justify-content: center; }
+.hero-note { font-size: 0.78rem; color: var(--text3); }
+
+/* ============================================================
+   GRIDBASE APP MOCKUP
+   ============================================================ */
+.gb-app {
+  border: 1px solid var(--border); border-radius: 12px;
+  overflow: hidden; box-shadow: var(--shadow-lg);
+  max-width: 900px; margin: 0 auto;
+  font-size: 0.78rem; background: var(--bg);
+}
+.gb-topbar {
+  padding: 0.6rem 1rem; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  background: var(--bg);
+}
+.gb-breadcrumb {
+  color: var(--text3); display: flex; align-items: center;
+  gap: 0.3rem; font-size: 0.75rem;
+}
+.gb-base { color: var(--text2); }
+.active-tab { color: var(--text); font-weight: 600; }
+.gb-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.gb-btn-outline {
+  font-size: 0.72rem; padding: 0.3rem 0.7rem;
+  border: 1px solid var(--border); border-radius: 6px;
+  background: var(--bg); color: var(--text2); cursor: pointer;
+  transition: background var(--transition);
+}
+.gb-btn-outline:hover { background: var(--bg2); }
+.gb-btn-primary {
+  font-size: 0.72rem; padding: 0.3rem 0.7rem; border-radius: 6px;
+  background: #111; color: #fff; border: none; cursor: pointer;
+  transition: background var(--transition);
+}
+.gb-btn-primary:hover { background: #333; }
+[data-theme="dark"] .gb-btn-primary { background: #fff; color: #111; }
+[data-theme="dark"] .gb-btn-primary:hover { background: #e5e5e5; }
+.gb-views {
+  display: flex; gap: 0.1rem; padding: 0.4rem 1rem;
+  border-bottom: 1px solid var(--border); background: var(--bg2);
+}
+.gb-view {
+  padding: 0.35rem 0.75rem; border-radius: 6px;
+  color: var(--text3); cursor: pointer; font-size: 0.72rem;
+  transition: all var(--transition);
+}
+.gb-view.active {
+  background: var(--bg); color: var(--text);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-weight: 500;
+}
+.gb-view:hover:not(.active) { background: var(--bg3); color: var(--text2); }
+.gb-table-wrap { overflow-x: auto; }
+.gb-table { width: 100%; border-collapse: collapse; min-width: 560px; }
+.gb-table th, .gb-table td {
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 0.4rem 0.6rem; text-align: left; white-space: nowrap;
+}
+.gb-table th {
+  background: var(--bg2); color: var(--text3);
+  font-weight: 500; font-size: 0.7rem;
+}
+.th-check, .gb-table td:first-child { width: 32px; text-align: center; }
+.th-idx, .td-idx { width: 36px; text-align: center; color: var(--text3); font-size: 0.65rem; }
+.th-add { color: var(--text3); cursor: pointer; width: 40px; text-align: center; }
+.th-add:hover { background: var(--bg3); }
+.field-icon {
+  font-size: 0.65rem; padding: 0.1rem 0.25rem;
+  border-radius: 3px; margin-right: 0.25rem; font-weight: 700;
+}
+.field-icon.text   { background: rgba(59,130,246,0.12); color: var(--col-text); }
+.field-icon.select { background: rgba(139,92,246,0.12); color: var(--col-select); }
+.field-icon.num    { background: rgba(16,185,129,0.12); color: var(--col-num); }
+.field-icon.date   { background: rgba(245,158,11,0.12); color: var(--col-date); }
+.field-icon.link   { background: rgba(6,182,212,0.12); color: var(--col-link); }
+.select-chip {
+  font-size: 0.65rem; padding: 0.15rem 0.45rem;
+  border-radius: 999px; font-weight: 500;
+}
+.td-num { font-family: monospace; text-align: right; color: var(--text2); }
+.td-date { color: var(--text3); }
+.td-link a { color: var(--col-link); text-decoration: none; }
+.td-link a:hover { text-decoration: underline; }
+.tr-add { cursor: pointer; }
+.tr-add td { color: var(--text3); font-size: 0.72rem; padding: 0.5rem 0.8rem; }
+.tr-add:hover td { background: var(--bg2); }
+.gb-table tbody tr:not(.tr-add).selected { background: rgba(59,130,246,0.05); }
+.gb-table tbody tr:not(.tr-add):hover { background: var(--bg2); }
+.gb-statusbar {
+  padding: 0.35rem 1rem; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between;
+  color: var(--text3); font-size: 0.65rem; background: var(--bg2);
+}
+
+/* ============================================================
+   SOCIAL PROOF STRIP
+   ============================================================ */
+.proof-strip {
+  padding: 2rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+.proof-inner {
+  display: flex; align-items: center; justify-content: center;
+  gap: 2.5rem; flex-wrap: wrap;
+}
+.proof-stat { text-align: center; }
+.proof-stat .num {
+  font-size: 1.6rem; font-weight: 800; color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.proof-stat .lbl { font-size: 0.78rem; color: var(--text3); margin-top: 0.1rem; }
+.proof-divider {
+  width: 1px; height: 40px; background: var(--border);
+}
+
+/* ============================================================
+   FIELD TYPES SHOWCASE
+   ============================================================ */
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem; margin-top: 2.5rem;
+}
+.field-card {
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: var(--radius); padding: 1.1rem 1.2rem;
+  cursor: default; transition: all var(--transition);
+  position: relative; overflow: hidden;
+}
+.field-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.field-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--card-color);
+}
+.field-card-header {
+  display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem;
+}
+.field-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 7px;
+  font-size: 0.75rem; font-weight: 700;
+}
+.field-card-title { font-weight: 700; font-size: 0.9rem; color: var(--text); }
+.field-card-desc { font-size: 0.8rem; color: var(--text3); line-height: 1.5; }
+.field-preview { margin-top: 0.75rem; }
+.field-preview-chip {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  padding: 0.25rem 0.6rem; border-radius: 5px;
+  font-size: 0.72rem; font-weight: 600;
+}
+/* Tooltip on hover */
+.field-tooltip {
+  display: none; position: absolute; bottom: calc(100% + 8px); left: 50%;
+  transform: translateX(-50%); background: var(--text); color: var(--bg);
+  font-size: 0.72rem; padding: 0.4rem 0.75rem; border-radius: 6px;
+  white-space: nowrap; z-index: 20; pointer-events: none;
+}
+.field-tooltip::after {
+  content: ''; position: absolute; top: 100%; left: 50%;
+  transform: translateX(-50%); border: 5px solid transparent;
+  border-top-color: var(--text);
+}
+.field-card:hover .field-tooltip { display: block; }
+
+/* ============================================================
+   VIEW TYPES
+   ============================================================ */
+.views-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1.2rem; margin-top: 2.5rem;
+}
+.view-card {
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  transition: all var(--transition);
+}
+.view-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.view-preview {
+  height: 120px; background: var(--bg2);
+  display: flex; align-items: center; justify-content: center;
+  border-bottom: 1px solid var(--border); overflow: hidden; padding: 0.75rem;
+}
+.view-info { padding: 0.85rem 1rem; }
+.view-name { font-weight: 700; font-size: 0.9rem; color: var(--text); margin-bottom: 0.3rem; }
+.view-desc { font-size: 0.78rem; color: var(--text3); line-height: 1.5; }
+/* Mini previews */
+.mini-grid { width: 100%; }
+.mini-grid table { width: 100%; border-collapse: collapse; font-size: 0.55rem; }
+.mini-grid th, .mini-grid td {
+  border: 1px solid var(--border); padding: 3px 5px; white-space: nowrap;
+}
+.mini-grid th { background: var(--bg3); font-weight: 600; }
+.mini-kanban { display: flex; gap: 0.4rem; width: 100%; height: 100%; align-items: flex-start; }
+.mini-kanban-col { flex: 1; }
+.mini-kanban-col h6 {
+  font-size: 0.5rem; font-weight: 700; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 0.25rem; letter-spacing: 0.05em;
+}
+.mini-kanban-card {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 3px; padding: 4px 5px; font-size: 0.5rem;
+  color: var(--text2); margin-bottom: 0.25rem;
+}
+.mini-cal { width: 100%; }
+.mini-cal-header {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 2px; margin-bottom: 2px;
+}
+.mini-cal-header span {
+  font-size: 0.45rem; text-align: center; color: var(--text3); font-weight: 600;
+}
+.mini-cal-body { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.mini-cal-day {
+  aspect-ratio: 1; border-radius: 2px; background: var(--bg3);
+  font-size: 0.4rem; display: flex; align-items: center;
+  justify-content: center; color: var(--text3);
+}
+.mini-cal-day.has-event { background: rgba(59,130,246,0.2); color: var(--col-text); font-weight: 700; }
+.mini-cal-day.today { background: #111; color: #fff; }
+[data-theme="dark"] .mini-cal-day.today { background: #fff; color: #111; }
+.mini-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; width: 100%; }
+.mini-gallery-card {
+  border-radius: 4px; overflow: hidden;
+  border: 1px solid var(--border); background: var(--bg3);
+}
+.mini-gallery-img {
+  height: 36px; background: var(--bg4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+}
+.mini-gallery-label {
+  padding: 2px 4px; font-size: 0.42rem; color: var(--text3);
+  border-top: 1px solid var(--border);
+}
+
+/* ============================================================
+   USE CASES
+   ============================================================ */
+.usecase-tabs {
+  display: flex; gap: 0.3rem; flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+.usecase-tab {
+  padding: 0.4rem 1rem; border-radius: var(--radius-sm);
+  font-size: 0.82rem; font-weight: 500;
+  border: 1.5px solid var(--border); background: var(--bg);
+  color: var(--text2); cursor: pointer; transition: all var(--transition);
+}
+.usecase-tab.active {
+  background: var(--text); color: var(--bg); border-color: var(--text);
+}
+.usecase-tab:hover:not(.active) { background: var(--bg2); color: var(--text); }
+.usecase-panel { display: none; }
+.usecase-panel.active { display: block; }
+.usecase-content {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center;
+}
+.usecase-info h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.75rem; }
+.usecase-info p { font-size: 0.9rem; color: var(--text2); line-height: 1.7; margin-bottom: 1rem; }
+.usecase-fields { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.usecase-field-tag {
+  font-size: 0.72rem; padding: 0.2rem 0.6rem; border-radius: 999px;
+  font-weight: 500; border: 1.5px solid var(--border);
+  color: var(--text2); background: var(--bg);
+}
+.usecase-preview {
+  background: var(--bg2); border-radius: var(--radius);
+  border: 1px solid var(--border); overflow: hidden;
+}
+.usecase-preview-title {
+  padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border);
+  font-size: 0.72rem; font-weight: 600; color: var(--text3);
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.usecase-table { width: 100%; border-collapse: collapse; font-size: 0.72rem; }
+.usecase-table th, .usecase-table td {
+  padding: 0.4rem 0.6rem; text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.usecase-table th { color: var(--text3); font-weight: 500; font-size: 0.65rem; }
+
+/* ============================================================
+   COLLABORATION
+   ============================================================ */
+.collab-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem; margin-top: 2.5rem;
+}
+.collab-card {
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: var(--radius); padding: 1.2rem;
+  transition: all var(--transition);
+}
+.collab-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+.collab-icon {
+  font-size: 1.5rem; margin-bottom: 0.75rem;
+}
+.collab-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.35rem; }
+.collab-desc { font-size: 0.82rem; color: var(--text3); line-height: 1.5; }
+
+/* ============================================================
+   INTEGRATIONS
+   ============================================================ */
+.integration-logos {
+  display: flex; flex-wrap: wrap; gap: 0.75rem;
+  justify-content: center; margin: 2rem 0;
+}
+.int-badge {
+  display: flex; align-items: center; gap: 0.5rem;
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: 8px; padding: 0.55rem 1rem; font-size: 0.82rem;
+  font-weight: 500; color: var(--text2);
+  transition: all var(--transition);
+}
+.int-badge:hover { border-color: var(--text3); color: var(--text); transform: translateY(-2px); }
+.int-badge .int-icon { font-size: 1.1rem; }
+.api-box {
+  max-width: 600px; margin: 1.5rem auto 0;
+  background: var(--bg2); border: 1.5px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+}
+.api-box-title {
+  padding: 0.7rem 1rem; border-bottom: 1px solid var(--border);
+  font-size: 0.72rem; font-weight: 600; color: var(--text3);
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.api-box-title .api-method {
+  background: rgba(16,185,129,0.15); color: var(--col-num);
+  padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.68rem; font-weight: 700;
+}
+.api-code {
+  padding: 0.85rem 1rem; font-family: monospace;
+  font-size: 0.78rem; color: var(--text2); line-height: 1.7;
+  overflow-x: auto;
+}
+.api-code .api-key { color: var(--col-link); }
+.api-code .api-val { color: var(--col-num); }
+.api-code .api-str { color: var(--col-select); }
+
+/* ============================================================
+   COMPARISON TABLE
+   ============================================================ */
+.compare-wrap {
+  overflow-x: auto; margin-top: 2.5rem;
+}
+.compare-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+.compare-table th {
+  background: var(--bg2); padding: 0.75rem 1rem;
+  text-align: left; font-size: 0.82rem; border-bottom: 2px solid var(--border);
+  font-weight: 600; color: var(--text);
+}
+.compare-table th.highlighted { background: rgba(59,130,246,0.08); color: var(--col-text); }
+.compare-table td {
+  padding: 0.7rem 1rem; border-bottom: 1px solid var(--border);
+  font-size: 0.85rem; color: var(--text2);
+}
+.compare-table td.highlighted { background: rgba(59,130,246,0.04); }
+.compare-table tr:last-child td { border-bottom: none; }
+.check-yes { color: #10B981; font-weight: 700; }
+.check-no  { color: var(--text3); }
+.check-partial { color: var(--col-date); }
+
+/* ============================================================
+   PRICING
+   ============================================================ */
+.pricing-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 1.2rem; margin-top: 2.5rem; align-items: start;
+}
+.pricing-card {
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: var(--radius); padding: 1.5rem;
+  position: relative; transition: all var(--transition);
+}
+.pricing-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.pricing-card.popular {
+  border-color: #3B82F6; border-width: 2px;
+}
+.popular-badge {
+  position: absolute; top: -11px; left: 1.2rem;
+  background: var(--col-text); color: #fff;
+  font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.7rem;
+  border-radius: 999px; letter-spacing: 0.05em;
+}
+.plan-name { font-size: 0.82rem; font-weight: 600; color: var(--text3); margin-bottom: 0.5rem; }
+.plan-price { font-size: 2rem; font-weight: 800; color: var(--text); line-height: 1; }
+.plan-price span { font-size: 0.85rem; font-weight: 400; color: var(--text3); }
+.plan-desc { font-size: 0.8rem; color: var(--text3); margin: 0.6rem 0 1.2rem; }
+.plan-features { list-style: none; margin-bottom: 1.5rem; }
+.plan-features li {
+  font-size: 0.83rem; color: var(--text2); padding: 0.3rem 0;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.plan-features li::before { content: '✓'; color: #10B981; font-weight: 700; font-size: 0.75rem; }
+.plan-cta { display: block; text-align: center; }
+
+/* ============================================================
+   TESTIMONIALS
+   ============================================================ */
+.testi-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 1.2rem; margin-top: 2.5rem;
+}
+.testi-card {
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: var(--radius); padding: 1.5rem;
+  transition: all var(--transition);
+}
+.testi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.testi-stars { color: #F59E0B; font-size: 0.85rem; margin-bottom: 0.75rem; }
+.testi-quote {
+  font-size: 0.9rem; color: var(--text2); line-height: 1.7;
+  margin-bottom: 1.1rem; font-style: italic;
+}
+.testi-author { display: flex; align-items: center; gap: 0.7rem; }
+.testi-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.95rem; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.testi-name { font-weight: 700; font-size: 0.88rem; }
+.testi-role { font-size: 0.75rem; color: var(--text3); }
+
+/* ============================================================
+   FAQ
+   ============================================================ */
+.faq-list { margin-top: 2.5rem; max-width: 720px; margin-left: auto; margin-right: auto; }
+.faq-item {
+  border: 1.5px solid var(--border); border-radius: var(--radius);
+  margin-bottom: 0.6rem; overflow: hidden; transition: box-shadow var(--transition);
+}
+.faq-item:hover { box-shadow: var(--shadow); }
+.faq-q {
+  padding: 1rem 1.2rem; display: flex; justify-content: space-between;
+  align-items: center; cursor: pointer; font-weight: 600; font-size: 0.92rem;
+  background: var(--bg); color: var(--text);
+  transition: background var(--transition);
+}
+.faq-q:hover { background: var(--bg2); }
+.faq-q .faq-icon {
+  flex-shrink: 0; font-size: 1.1rem; color: var(--text3);
+  transition: transform 0.3s;
+}
+.faq-a {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+  font-size: 0.88rem; color: var(--text2); line-height: 1.7;
+  background: var(--bg);
+}
+.faq-item.open .faq-a {
+  max-height: 300px; padding: 0 1.2rem 1rem;
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+.faq-item.open .faq-q { background: var(--bg2); }
+
+/* ============================================================
+   CTA FINAL
+   ============================================================ */
+.cta-final {
+  background: var(--text); color: var(--bg);
+  padding: 5rem 0; text-align: center;
+}
+.cta-final h2 {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800; margin-bottom: 1rem; line-height: 1.2;
+}
+.cta-final p { font-size: 1rem; opacity: 0.7; margin-bottom: 2rem; }
+.cta-final .btn-primary { background: var(--bg); color: var(--text); }
+.cta-final .btn-primary:hover { background: #e5e5e5; }
+[data-theme="dark"] .cta-final .btn-primary { background: #111; color: #fff; }
+.cta-free-note { margin-top: 1rem; font-size: 0.78rem; opacity: 0.5; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  background: var(--bg2); border-top: 1px solid var(--border);
+  padding: 3rem 0 1.5rem;
+}
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 2rem; margin-bottom: 2.5rem;
+}
+.footer-brand p { font-size: 0.82rem; color: var(--text3); margin-top: 0.75rem; line-height: 1.6; max-width: 260px; }
+.footer-col h4 { font-size: 0.82rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text); }
+.footer-col ul li { margin-bottom: 0.4rem; }
+.footer-col ul li a { font-size: 0.82rem; color: var(--text3); transition: color var(--transition); }
+.footer-col ul li a:hover { color: var(--text); }
+.footer-bottom {
+  border-top: 1px solid var(--border); padding-top: 1.2rem;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 0.5rem;
+}
+.footer-bottom p { font-size: 0.78rem; color: var(--text3); }
+.footer-socials { display: flex; gap: 0.6rem; }
+.social-btn {
+  width: 32px; height: 32px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; color: var(--text3); cursor: pointer;
+  transition: all var(--transition); text-decoration: none;
+}
+.social-btn:hover { background: var(--bg3); color: var(--text); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 960px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .usecase-content { grid-template-columns: 1fr; }
+  .usecase-preview { display: none; }
+  .proof-inner { gap: 1.5rem; }
+  .proof-divider { display: none; }
+}
+@media (max-width: 768px) {
+  .section { padding: 3.5rem 0; }
+  .nav-links, .nav-login { display: none; }
+  .hamburger { display: flex; }
+  .hero { padding: 3rem 0 2rem; }
+  .hero-cta { flex-direction: column; align-items: center; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .testi-grid { grid-template-columns: 1fr; }
+  .gb-actions .gb-btn-outline:not(:last-child) { display: none; }
+  .views-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .footer-grid { grid-template-columns: 1fr; }
+  .field-grid { grid-template-columns: 1fr 1fr; }
+  .views-grid { grid-template-columns: 1fr; }
+  .collab-grid { grid-template-columns: 1fr; }
+  .gb-breadcrumb .gb-workspace { display: none; }
+  .section-title { font-size: 1.6rem; }
+  .proof-inner { flex-direction: column; align-items: center; gap: 1rem; }
+  .compare-table th, .compare-table td { padding: 0.55rem 0.6rem; font-size: 0.78rem; }
+  .usecase-tabs { gap: 0.2rem; }
+  .usecase-tab { padding: 0.35rem 0.7rem; font-size: 0.78rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<nav class="navbar">
+  <div class="container">
+    <div class="navbar-inner">
+      <a href="#" class="logo">
+        <div class="logo-icon">
+          <span></span><span></span>
+          <span></span><span></span>
+        </div>
+        GridBase
+      </a>
+      <div class="nav-links">
+        <a href="#field-types">Fitur</a>
+        <a href="#views">Tampilan</a>
+        <a href="#usecases">Use Cases</a>
+        <a href="#integrasi">Integrasi</a>
+        <a href="#pricing">Harga</a>
+      </div>
+      <div class="nav-right">
+        <button class="theme-toggle" id="themeToggle" title="Toggle dark/light mode">🌙</button>
+        <a href="#" class="nav-login">Masuk</a>
+        <a href="#" class="btn btn-primary btn-sm">Mulai Gratis</a>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#field-types">Fitur</a>
+      <a href="#views">Tampilan</a>
+      <a href="#usecases">Use Cases</a>
+      <a href="#integrasi">Integrasi</a>
+      <a href="#pricing">Harga</a>
+      <a href="#">Masuk</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Sekarang dengan AI Auto-Fill dan Formula Builder
+      </div>
+      <h1 class="hero-title">
+        Database-mu, tampil seperti
+        <span class="highlight">Spreadsheet</span>
+      </h1>
+      <p class="hero-sub">
+        Buat database powerful tanpa satu baris kode. GridBase menggabungkan familiar-nya spreadsheet dengan kekuatan database relasional — untuk tim Indonesia.
+      </p>
+      <div class="hero-cta">
+        <a href="#" class="btn btn-primary btn-lg">Mulai Gratis — Selamanya</a>
+        <a href="#views" class="btn btn-outline btn-lg">Lihat Demo ↓</a>
+      </div>
+      <p class="hero-note">Tidak perlu kartu kredit · Setup &lt; 2 menit · Import dari Excel</p>
+    </div>
+
+    <!-- GridBase App Mockup -->
+    <div class="gb-app">
+      <div class="gb-topbar">
+        <div class="gb-breadcrumb">
+          <span class="gb-workspace">Workspace Saya</span>
+          <span> › </span>
+          <span class="gb-base">CRM Pelanggan</span>
+          <span> › </span>
+          <span class="active-tab">Kontak</span>
+        </div>
+        <div class="gb-actions">
+          <button class="gb-btn-outline">⚙ Field</button>
+          <button class="gb-btn-outline">⊞ Filter</button>
+          <button class="gb-btn-outline">↕ Sort</button>
+          <button class="gb-btn-primary">+ Tambah</button>
+        </div>
+      </div>
+      <div class="gb-views">
+        <span class="gb-view active">⊞ Grid</span>
+        <span class="gb-view">⊟ Kanban</span>
+        <span class="gb-view">⊡ Gallery</span>
+        <span class="gb-view">📅 Calendar</span>
+      </div>
+      <div class="gb-table-wrap">
+        <table class="gb-table" id="heroTable">
+          <thead>
+            <tr>
+              <th class="th-check"><input type="checkbox" id="checkAll"></th>
+              <th class="th-idx">#</th>
+              <th><span class="field-icon text">Aa</span> Nama</th>
+              <th><span class="field-icon select">◉</span> Status</th>
+              <th><span class="field-icon num">1.2</span> Nilai</th>
+              <th><span class="field-icon date">📅</span> Terakhir Kontak</th>
+              <th><span class="field-icon link">🔗</span> Website</th>
+              <th class="th-add">+</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td class="td-idx">1</td>
+              <td class="td-name">PT Maju Bersama</td>
+              <td><span class="select-chip" style="background:#DCFCE7;color:#16A34A">Aktif</span></td>
+              <td class="td-num">Rp 48.500.000</td>
+              <td class="td-date">2026-06-10</td>
+              <td class="td-link"><a href="#">majubersama.id</a></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td class="td-idx">2</td>
+              <td class="td-name">CV Nusantara Jaya</td>
+              <td><span class="select-chip" style="background:#FEF3C7;color:#D97706">Follow-up</span></td>
+              <td class="td-num">Rp 12.000.000</td>
+              <td class="td-date">2026-06-05</td>
+              <td class="td-link"><a href="#">nusajayanet.com</a></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td class="td-idx">3</td>
+              <td class="td-name">Toko Sumber Rezeki</td>
+              <td><span class="select-chip" style="background:#FEE2E2;color:#DC2626">Batal</span></td>
+              <td class="td-num">—</td>
+              <td class="td-date">2026-05-20</td>
+              <td class="td-link">—</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"></td>
+              <td class="td-idx">4</td>
+              <td class="td-name">PT Digital Kreatif</td>
+              <td><span class="select-chip" style="background:#EDE9FE;color:#7C3AED">Prospek</span></td>
+              <td class="td-num">Rp 85.000.000</td>
+              <td class="td-date">2026-06-14</td>
+              <td class="td-link"><a href="#">digitalkreatif.co</a></td>
+              <td></td>
+            </tr>
+            <tr class="tr-add">
+              <td colspan="8"><span>+ Tambah record</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="gb-statusbar">
+        <span id="statusLeft">4 records · 0 dipilih</span>
+        <span>4 field · Diperbarui 2 menit lalu</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SOCIAL PROOF STRIP
+     ============================================================ -->
+<div class="proof-strip">
+  <div class="container">
+    <div class="proof-inner">
+      <div class="proof-stat">
+        <div class="num" data-target="45000" data-suffix="+">0</div>
+        <div class="lbl">Tim aktif</div>
+      </div>
+      <div class="proof-divider"></div>
+      <div class="proof-stat">
+        <div class="num" data-target="3200000" data-suffix="+">0</div>
+        <div class="lbl">Record dibuat</div>
+      </div>
+      <div class="proof-divider"></div>
+      <div class="proof-stat">
+        <div class="num" data-target="98" data-suffix="%">0</div>
+        <div class="lbl">Kepuasan pengguna</div>
+      </div>
+      <div class="proof-divider"></div>
+      <div class="proof-stat">
+        <div class="num" data-target="4.9" data-suffix="/5" data-decimal="1">0</div>
+        <div class="lbl">Rating rata-rata</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     FIELD TYPES SHOWCASE
+     ============================================================ -->
+<section class="section" id="field-types">
+  <div class="container">
+    <div class="section-label"><span class="dot"></span> Tipe Field</div>
+    <h2 class="section-title">8 tipe field, warna berbeda — <br>semua terasa intuitif</h2>
+    <p class="section-sub">Setiap kolom di GridBase punya tipe data yang spesifik, ditandai dengan warna unik agar langsung dikenali.</p>
+    <div class="field-grid">
+      <!-- Text -->
+      <div class="field-card" style="--card-color: var(--col-text)">
+        <div class="field-tooltip">Cocok untuk nama, deskripsi, catatan panjang</div>
+        <div class="field-card-header">
+          <div class="field-badge" style="background:rgba(59,130,246,0.12);color:var(--col-text)">Aa</div>
+          <div class="field-card-title">Text</div>
+        </div>
+        <div class="field-card-desc">Teks biasa, paragraf, hingga rich text dengan format bold dan italic.</div>
+        <div class="field-preview">
+          <span class="field-preview-chip" style="background:rgba(59,130,246,0.1);color:var(--col-text)">
+            Aa Teks singkat...
+          </span>
+        </div>
+      </div>
+      <!-- Number -->
+      <div class="field-card" style="--card-color: var(--col-num)">
+        <div class="field-tooltip">Format: angka, mata uang, persen, desimal</div>
+        <div class="field-card-header">
+          <div class="field-badge" style="background:rgba(16,185,129,0.12);color:var(--col-num)">1.2</div>
+          <div class="field-card-title">Number</div>
+        </div>
+        <div class="field-card-desc">Angka, mata uang Rupiah, persen, atau desimal — dengan format otomatis.</div>
+        <div class="field-preview">
+          <span class="field-preview-chip" style="background:rgba(16,185,129,0.1);color:var(--col-num)">
+            Rp 12.500.000
+          </span>
+        </div>
+      </div>
+      <!-- Single Select -->
+      <div class="field-card" style="--card-color: var(--col-select)">
+        <div class="field-tooltip">Pilihan tunggal dengan warna kustom per opsi</div>
+        <div class="field-card-header">
+          <div class="field-badge" style="background:rgba(139,92,246,0.12);color:var(--col-select)">◉</div>
+          <div class="field-card-title">Single Select</div>
+        </div>
+        <div class="field-card-desc">Dropdown pilihan dengan label berwarna — status, kategori, prioritas.</div>
+        <div class="field-preview">
+          <span class="select-chip" style="background:#EDE9FE;color:#7C3AED">Prospek</span>
+        </div>
+      </div>
+      <!-- Checkbox -->
+      <div class="field-card" style="--card-color: var(--col-check)">
+        <div class="field-tooltip">Toggle true/false — filter mudah berdasarkan status</div>
+        <div class="field-card-header">
+          <div class="field-badge" style="background:rgba(239,68,68,0.12);color:var(--col-check)">✓</div>
+          <div class="field-card-title">Checkbox</div>
+        </div>
+        <div class="field-card-desc">Boolean ya/tidak. Ideal untuk tugas selesai, konfirmasi, atau persetujuan.</div>
+        <div class="field-preview">
+          <span class="field-preview-chip" style="background:rgba(239,68,68,0.1);color:var(--col-check)">
+            ✓ Sudah dihubungi
+          </span>
+        </div>
+      </div>
+      <!-- Date -->
+      <div class="field-card" style="--card-color: var(--col-date)">
+        <div class="field-tooltip">Tanggal tunggal, range, atau deadline dengan reminder</div>
+        <div class="field-card-header">
+          <div class="field-badge" style="background:rgba(245,158,11,0.12);color:var(--col-date)">📅</div>
+          <div class="field-card-title">Date</div>
+        </div>
+        <div class="field-card-desc">Tanggal & waktu dengan date picker. Bisa tampil di Calendar view.</div>
+        <div class="field-preview">
+          <span class="field-preview-chip" style="background:rgba(245,158,11,0.1);color:var(--col-date)">
+            📅 16 Jun 2026
+          </span>
+        </div>
+      </div>
+      <!-- Link -->
+      <div class="field-card" style="--card-color: var(--col-link)">
+        <div class="field-tooltip">URL eksternal atau relasi ke tabel GridBase lain</div>
+        <div class="field-card-header">
+          <div class="field-badge" style="background:rgba(6,182,212,0.12);color:var(--col-link)">🔗</div>
+          <div class="field-card-title">Link</div>
+        </div>
+        <div class="field-card-desc">URL website atau relasi ke record di tabel lain (foreign key tanpa SQL).</div>
+        <div class="field-preview">
+          <span class="field-preview-chip" style="background:rgba(6,182,212,0.1);color:var(--col-link)">
+            🔗 gridbase.id/docs
+          </span>
+        </div>
+      </div>
+      <!-- Attachment -->
+      <div class="field-card" style="--card-color: var(--col-attach)">
+        <div class="field-tooltip">Upload file PDF, gambar, dokumen Word/Excel</div>
+        <div class="field-card-header">
+          <div class="field-badge" style="background:rgba(249,115,22,0.12);color:var(--col-attach)">📎</div>
+          <div class="field-card-title">Attachment</div>
+        </div>
+        <div class="field-card-desc">Upload file langsung ke record — PDF, gambar, dokumen, hingga ZIP.</div>
+        <div class="field-preview">
+          <span class="field-preview-chip" style="background:rgba(249,115,22,0.1);color:var(--col-attach)">
+            📎 proposal.pdf
+          </span>
+        </div>
+      </div>
+      <!-- Formula -->
+      <div class="field-card" style="--card-color: var(--col-formula)">
+        <div class="field-tooltip">Hitung otomatis: SUM, IF, CONCAT, DATEDIFF, dll.</div>
+        <div class="field-card-header">
+          <div class="field-badge" style="background:rgba(236,72,153,0.12);color:var(--col-formula)">ƒ</div>
+          <div class="field-card-title">Formula</div>
+        </div>
+        <div class="field-card-desc">Kalkulasi otomatis dari field lain — seperti Excel tapi lebih rapi.</div>
+        <div class="field-preview">
+          <span class="field-preview-chip" style="background:rgba(236,72,153,0.1);color:var(--col-formula)">
+            ƒ = Nilai × 0.11
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     VIEW TYPES
+     ============================================================ -->
+<section class="section section-alt" id="views">
+  <div class="container">
+    <div class="section-label"><span class="dot"></span> Tampilan</div>
+    <h2 class="section-title">4 cara melihat data yang sama</h2>
+    <p class="section-sub">Satu database, banyak tampilan. Pilih tampilan yang paling cocok untuk kebutuhan tim kamu.</p>
+    <div class="views-grid">
+      <!-- Grid -->
+      <div class="view-card">
+        <div class="view-preview">
+          <div class="mini-grid">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Aa Nama</th>
+                  <th>◉ Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td>PT Maju</td><td><span style="background:#DCFCE7;color:#16A34A;padding:1px 4px;border-radius:3px;font-size:0.45rem;">Aktif</span></td></tr>
+                <tr><td>2</td><td>CV Nusa</td><td><span style="background:#FEF3C7;color:#D97706;padding:1px 4px;border-radius:3px;font-size:0.45rem;">Follow-up</span></td></tr>
+                <tr><td>3</td><td>Toko SR</td><td><span style="background:#FEE2E2;color:#DC2626;padding:1px 4px;border-radius:3px;font-size:0.45rem;">Batal</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="view-info">
+          <div class="view-name">⊞ Grid</div>
+          <div class="view-desc">Tampilan spreadsheet klasik. Lihat dan edit banyak record sekaligus dalam satu layar.</div>
+        </div>
+      </div>
+      <!-- Kanban -->
+      <div class="view-card">
+        <div class="view-preview">
+          <div class="mini-kanban">
+            <div class="mini-kanban-col">
+              <h6>Prospek</h6>
+              <div class="mini-kanban-card">PT Digital</div>
+              <div class="mini-kanban-card">Toko XYZ</div>
+            </div>
+            <div class="mini-kanban-col">
+              <h6>Follow-up</h6>
+              <div class="mini-kanban-card">CV Nusa</div>
+            </div>
+            <div class="mini-kanban-col">
+              <h6>Aktif</h6>
+              <div class="mini-kanban-card">PT Maju</div>
+              <div class="mini-kanban-card">PT Karya</div>
+            </div>
+          </div>
+        </div>
+        <div class="view-info">
+          <div class="view-name">⊟ Kanban</div>
+          <div class="view-desc">Board drag-and-drop seperti Trello. Kelola pipeline penjualan atau alur kerja tim.</div>
+        </div>
+      </div>
+      <!-- Calendar -->
+      <div class="view-card">
+        <div class="view-preview">
+          <div class="mini-cal">
+            <div class="mini-cal-header">
+              <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+            </div>
+            <div class="mini-cal-body">
+              <div class="mini-cal-day">1</div><div class="mini-cal-day">2</div>
+              <div class="mini-cal-day has-event">3</div><div class="mini-cal-day">4</div>
+              <div class="mini-cal-day">5</div><div class="mini-cal-day has-event">6</div>
+              <div class="mini-cal-day">7</div><div class="mini-cal-day">8</div>
+              <div class="mini-cal-day">9</div><div class="mini-cal-day has-event">10</div>
+              <div class="mini-cal-day">11</div><div class="mini-cal-day">12</div>
+              <div class="mini-cal-day">13</div><div class="mini-cal-day has-event">14</div>
+              <div class="mini-cal-day today">15</div><div class="mini-cal-day">16</div>
+              <div class="mini-cal-day">17</div><div class="mini-cal-day has-event">18</div>
+              <div class="mini-cal-day">19</div><div class="mini-cal-day">20</div>
+              <div class="mini-cal-day">21</div>
+            </div>
+          </div>
+        </div>
+        <div class="view-info">
+          <div class="view-name">📅 Calendar</div>
+          <div class="view-desc">Visualisasi deadline dan jadwal dalam kalender bulanan. Cocok untuk project management.</div>
+        </div>
+      </div>
+      <!-- Gallery -->
+      <div class="view-card">
+        <div class="view-preview">
+          <div class="mini-gallery">
+            <div class="mini-gallery-card">
+              <div class="mini-gallery-img">🏢</div>
+              <div class="mini-gallery-label">PT Maju</div>
+            </div>
+            <div class="mini-gallery-card">
+              <div class="mini-gallery-img">📦</div>
+              <div class="mini-gallery-label">CV Nusa</div>
+            </div>
+            <div class="mini-gallery-card">
+              <div class="mini-gallery-img">🛍</div>
+              <div class="mini-gallery-label">Toko SR</div>
+            </div>
+            <div class="mini-gallery-card">
+              <div class="mini-gallery-img">💻</div>
+              <div class="mini-gallery-label">PT Digital</div>
+            </div>
+            <div class="mini-gallery-card">
+              <div class="mini-gallery-img">🏗</div>
+              <div class="mini-gallery-label">PT Karya</div>
+            </div>
+            <div class="mini-gallery-card">
+              <div class="mini-gallery-img">📱</div>
+              <div class="mini-gallery-label">CV Tech</div>
+            </div>
+          </div>
+        </div>
+        <div class="view-info">
+          <div class="view-name">⊡ Gallery</div>
+          <div class="view-desc">Card visual dengan foto utama. Ideal untuk katalog produk, portofolio, atau direktori.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     USE CASES
+     ============================================================ -->
+<section class="section" id="usecases">
+  <div class="container">
+    <div class="section-label"><span class="dot"></span> Template Siap Pakai</div>
+    <h2 class="section-title">Mulai dari template — <br>selesaikan dalam menit</h2>
+    <p class="section-sub">6 template populer siap digunakan. Satu klik impor, langsung bisa diedit.</p>
+    <div class="usecase-tabs">
+      <button class="usecase-tab active" data-tab="crm">CRM Pelanggan</button>
+      <button class="usecase-tab" data-tab="project">Manajemen Proyek</button>
+      <button class="usecase-tab" data-tab="inventory">Inventori</button>
+      <button class="usecase-tab" data-tab="hr">HR Database</button>
+      <button class="usecase-tab" data-tab="bug">Bug Tracker</button>
+      <button class="usecase-tab" data-tab="content">Content Calendar</button>
+    </div>
+    <!-- CRM -->
+    <div class="usecase-panel active" id="tab-crm">
+      <div class="usecase-content">
+        <div class="usecase-info">
+          <h3>CRM Pelanggan</h3>
+          <p>Kelola seluruh data pelanggan, pipeline penjualan, dan riwayat interaksi dalam satu tempat. Tidak perlu software CRM mahal — GridBase sudah cukup.</p>
+          <div class="usecase-fields">
+            <span class="usecase-field-tag" style="color:var(--col-text)">Aa Nama Kontak</span>
+            <span class="usecase-field-tag" style="color:var(--col-select)">◉ Status</span>
+            <span class="usecase-field-tag" style="color:var(--col-num)">1.2 Nilai Deal</span>
+            <span class="usecase-field-tag" style="color:var(--col-date)">📅 Follow-up</span>
+            <span class="usecase-field-tag" style="color:var(--col-link)">🔗 Perusahaan</span>
+            <span class="usecase-field-tag" style="color:var(--col-attach)">📎 Dokumen</span>
+          </div>
+        </div>
+        <div class="usecase-preview">
+          <div class="usecase-preview-title">
+            <span class="field-icon select" style="font-size:0.65rem">◉</span>
+            CRM Pelanggan — Kontak
+          </div>
+          <table class="usecase-table">
+            <thead><tr><th>Nama</th><th>Status</th><th>Nilai</th></tr></thead>
+            <tbody>
+              <tr><td>PT Maju Bersama</td><td><span class="select-chip" style="background:#DCFCE7;color:#16A34A">Aktif</span></td><td style="font-family:monospace;font-size:0.72rem">Rp 48jt</td></tr>
+              <tr><td>CV Nusantara</td><td><span class="select-chip" style="background:#FEF3C7;color:#D97706">Follow-up</span></td><td style="font-family:monospace;font-size:0.72rem">Rp 12jt</td></tr>
+              <tr><td>PT Digital</td><td><span class="select-chip" style="background:#EDE9FE;color:#7C3AED">Prospek</span></td><td style="font-family:monospace;font-size:0.72rem">Rp 85jt</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- Project -->
+    <div class="usecase-panel" id="tab-project">
+      <div class="usecase-content">
+        <div class="usecase-info">
+          <h3>Manajemen Proyek</h3>
+          <p>Pantau progress setiap task, assignee, dan deadline dalam satu base. Switch ke Kanban view untuk tampilan board yang lebih visual.</p>
+          <div class="usecase-fields">
+            <span class="usecase-field-tag" style="color:var(--col-text)">Aa Nama Task</span>
+            <span class="usecase-field-tag" style="color:var(--col-select)">◉ Prioritas</span>
+            <span class="usecase-field-tag" style="color:var(--col-link)">🔗 Assignee</span>
+            <span class="usecase-field-tag" style="color:var(--col-date)">📅 Deadline</span>
+            <span class="usecase-field-tag" style="color:var(--col-check)">✓ Selesai</span>
+            <span class="usecase-field-tag" style="color:var(--col-num)">1.2 Estimasi Jam</span>
+          </div>
+        </div>
+        <div class="usecase-preview">
+          <div class="usecase-preview-title">
+            <span class="field-icon check" style="font-size:0.65rem">✓</span>
+            Sprint Juni 2026
+          </div>
+          <table class="usecase-table">
+            <thead><tr><th>Task</th><th>Prioritas</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Desain UI Login</td><td><span class="select-chip" style="background:#FEE2E2;color:#DC2626">Tinggi</span></td><td><span class="select-chip" style="background:#DCFCE7;color:#16A34A">Selesai</span></td></tr>
+              <tr><td>API Integrasi</td><td><span class="select-chip" style="background:#FEF3C7;color:#D97706">Sedang</span></td><td><span class="select-chip" style="background:#FEF3C7;color:#D97706">On Progress</span></td></tr>
+              <tr><td>Testing UAT</td><td><span class="select-chip" style="background:#DCFCE7;color:#16A34A">Rendah</span></td><td><span class="select-chip" style="background:#EDE9FE;color:#7C3AED">Belum</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- Inventory -->
+    <div class="usecase-panel" id="tab-inventory">
+      <div class="usecase-content">
+        <div class="usecase-info">
+          <h3>Inventori Barang</h3>
+          <p>Kelola stok, lokasi gudang, harga, dan supplier dalam satu database yang bisa diakses seluruh tim — real-time, tanpa konflik data.</p>
+          <div class="usecase-fields">
+            <span class="usecase-field-tag" style="color:var(--col-text)">Aa Nama Barang</span>
+            <span class="usecase-field-tag" style="color:var(--col-num)">1.2 Stok</span>
+            <span class="usecase-field-tag" style="color:var(--col-num)">1.2 Harga Beli</span>
+            <span class="usecase-field-tag" style="color:var(--col-select)">◉ Kategori</span>
+            <span class="usecase-field-tag" style="color:var(--col-link)">🔗 Supplier</span>
+            <span class="usecase-field-tag" style="color:var(--col-formula)">ƒ Nilai Stok</span>
+          </div>
+        </div>
+        <div class="usecase-preview">
+          <div class="usecase-preview-title">📦 Inventori Gudang Utama</div>
+          <table class="usecase-table">
+            <thead><tr><th>Barang</th><th>Stok</th><th>Nilai</th></tr></thead>
+            <tbody>
+              <tr><td>Laptop ASUS</td><td style="font-family:monospace">12 unit</td><td style="font-family:monospace;font-size:0.72rem">Rp 96jt</td></tr>
+              <tr><td>Mouse Logitech</td><td style="font-family:monospace">45 unit</td><td style="font-family:monospace;font-size:0.72rem">Rp 6,7jt</td></tr>
+              <tr><td>Keyboard Mech.</td><td style="font-family:monospace">8 unit</td><td style="font-family:monospace;font-size:0.72rem">Rp 9,6jt</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- HR -->
+    <div class="usecase-panel" id="tab-hr">
+      <div class="usecase-content">
+        <div class="usecase-info">
+          <h3>HR Database</h3>
+          <p>Data karyawan terpusat — dari rekrutmen hingga offboarding. Rekap cuti, evaluasi kinerja, dan dokumen kontrak dalam satu base.</p>
+          <div class="usecase-fields">
+            <span class="usecase-field-tag" style="color:var(--col-text)">Aa Nama Karyawan</span>
+            <span class="usecase-field-tag" style="color:var(--col-select)">◉ Departemen</span>
+            <span class="usecase-field-tag" style="color:var(--col-date)">📅 Mulai Kerja</span>
+            <span class="usecase-field-tag" style="color:var(--col-num)">1.2 Gaji</span>
+            <span class="usecase-field-tag" style="color:var(--col-check)">✓ Aktif</span>
+            <span class="usecase-field-tag" style="color:var(--col-attach)">📎 Dokumen</span>
+          </div>
+        </div>
+        <div class="usecase-preview">
+          <div class="usecase-preview-title">👥 HR — Direktori Karyawan</div>
+          <table class="usecase-table">
+            <thead><tr><th>Nama</th><th>Dept.</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Andi Saputra</td><td>Engineering</td><td><span class="select-chip" style="background:#DCFCE7;color:#16A34A">Aktif</span></td></tr>
+              <tr><td>Sari Dewi</td><td>Marketing</td><td><span class="select-chip" style="background:#DCFCE7;color:#16A34A">Aktif</span></td></tr>
+              <tr><td>Budi Santoso</td><td>Finance</td><td><span class="select-chip" style="background:#FEF3C7;color:#D97706">Cuti</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- Bug Tracker -->
+    <div class="usecase-panel" id="tab-bug">
+      <div class="usecase-content">
+        <div class="usecase-info">
+          <h3>Bug Tracker</h3>
+          <p>Lacak bug, feature request, dan improvement dengan severity level dan assignee yang jelas. Cocok untuk tim developer kecil hingga menengah.</p>
+          <div class="usecase-fields">
+            <span class="usecase-field-tag" style="color:var(--col-text)">Aa Judul Bug</span>
+            <span class="usecase-field-tag" style="color:var(--col-select)">◉ Severity</span>
+            <span class="usecase-field-tag" style="color:var(--col-select)">◉ Jenis</span>
+            <span class="usecase-field-tag" style="color:var(--col-link)">🔗 Reporter</span>
+            <span class="usecase-field-tag" style="color:var(--col-date)">📅 Dilaporkan</span>
+            <span class="usecase-field-tag" style="color:var(--col-check)">✓ Fixed</span>
+          </div>
+        </div>
+        <div class="usecase-preview">
+          <div class="usecase-preview-title">🐛 Sprint Bug — Juni 2026</div>
+          <table class="usecase-table">
+            <thead><tr><th>Bug</th><th>Severity</th><th>Fixed</th></tr></thead>
+            <tbody>
+              <tr><td>Login loop</td><td><span class="select-chip" style="background:#FEE2E2;color:#DC2626">Critical</span></td><td style="text-align:center">✓</td></tr>
+              <tr><td>PDF tidak terbuka</td><td><span class="select-chip" style="background:#FEF3C7;color:#D97706">Major</span></td><td style="text-align:center">—</td></tr>
+              <tr><td>Font salah di mobile</td><td><span class="select-chip" style="background:#DCFCE7;color:#16A34A">Minor</span></td><td style="text-align:center">✓</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- Content Calendar -->
+    <div class="usecase-panel" id="tab-content">
+      <div class="usecase-content">
+        <div class="usecase-info">
+          <h3>Content Calendar</h3>
+          <p>Rencanakan konten media sosial, artikel blog, dan newsletter. Lacak status penulisan, editor, dan tanggal publish dalam satu view kalender.</p>
+          <div class="usecase-fields">
+            <span class="usecase-field-tag" style="color:var(--col-text)">Aa Judul Konten</span>
+            <span class="usecase-field-tag" style="color:var(--col-select)">◉ Platform</span>
+            <span class="usecase-field-tag" style="color:var(--col-select)">◉ Status</span>
+            <span class="usecase-field-tag" style="color:var(--col-date)">📅 Publish Date</span>
+            <span class="usecase-field-tag" style="color:var(--col-link)">🔗 Penulis</span>
+            <span class="usecase-field-tag" style="color:var(--col-attach)">📎 Aset Visual</span>
+          </div>
+        </div>
+        <div class="usecase-preview">
+          <div class="usecase-preview-title">📝 Konten Juni — Q2 2026</div>
+          <table class="usecase-table">
+            <thead><tr><th>Judul</th><th>Platform</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Tips No-Code 2026</td><td><span class="select-chip" style="background:#EDE9FE;color:#7C3AED">Instagram</span></td><td><span class="select-chip" style="background:#DCFCE7;color:#16A34A">Publish</span></td></tr>
+              <tr><td>Case Study CRM</td><td><span class="select-chip" style="background:#DBEAFE;color:#1D4ED8">Blog</span></td><td><span class="select-chip" style="background:#FEF3C7;color:#D97706">Review</span></td></tr>
+              <tr><td>Weekly Newsletter</td><td><span class="select-chip" style="background:#FEF9C3;color:#A16207">Email</span></td><td><span class="select-chip" style="background:#EDE9FE;color:#7C3AED">Draft</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     KOLABORASI
+     ============================================================ -->
+<section class="section section-alt" id="kolaborasi">
+  <div class="container">
+    <div class="section-label"><span class="dot"></span> Kolaborasi</div>
+    <h2 class="section-title">Bekerja bersama tim, <br>tanpa konflik data</h2>
+    <p class="section-sub">GridBase dirancang untuk kolaborasi real-time. Semua orang bekerja di data yang sama, tanpa khawatir file tertimpa atau versi tertukar.</p>
+    <div class="collab-grid">
+      <div class="collab-card">
+        <div class="collab-icon">⚡</div>
+        <div class="collab-title">Real-time Editing</div>
+        <div class="collab-desc">Lihat kursor rekan satu tim bergerak secara live. Setiap perubahan tersimpan otomatis tanpa tombol Save.</div>
+      </div>
+      <div class="collab-card">
+        <div class="collab-icon">💬</div>
+        <div class="collab-title">Komentar per Cell</div>
+        <div class="collab-desc">Tinggalkan komentar langsung di cell mana pun. Mention rekan tim dengan @nama untuk notifikasi instan.</div>
+      </div>
+      <div class="collab-card">
+        <div class="collab-icon">🕐</div>
+        <div class="collab-title">History Perubahan</div>
+        <div class="collab-desc">Lihat siapa yang mengubah apa dan kapan. Rollback ke versi sebelumnya dengan satu klik.</div>
+      </div>
+      <div class="collab-card">
+        <div class="collab-icon">🔒</div>
+        <div class="collab-title">Permission per View</div>
+        <div class="collab-desc">Atur siapa yang bisa edit, hanya lihat, atau tidak punya akses sama sekali — per view, per base, atau per field.</div>
+      </div>
+      <div class="collab-card">
+        <div class="collab-icon">🔗</div>
+        <div class="collab-title">Share Link Publik</div>
+        <div class="collab-desc">Bagikan view tertentu ke klien atau stakeholder eksternal tanpa perlu mereka daftar akun GridBase.</div>
+      </div>
+      <div class="collab-card">
+        <div class="collab-icon">📱</div>
+        <div class="collab-title">Mobile Ready</div>
+        <div class="collab-desc">Akses dan edit database dari smartphone. Semua perubahan tersinkron ke semua perangkat tim secara instan.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     INTEGRASI & API
+     ============================================================ -->
+<section class="section" id="integrasi">
+  <div class="container text-center">
+    <div class="section-label" style="justify-content:center"><span class="dot"></span> Integrasi</div>
+    <h2 class="section-title">Hubungkan dengan tools <br>yang sudah kamu pakai</h2>
+    <p class="section-sub">GridBase tersambung ke ratusan aplikasi via native integrasi, Zapier, Make, atau REST API.</p>
+    <div class="integration-logos">
+      <div class="int-badge"><span class="int-icon">⚡</span> Zapier</div>
+      <div class="int-badge"><span class="int-icon">🔧</span> Make (Integromat)</div>
+      <div class="int-badge"><span class="int-icon">📊</span> Google Sheets</div>
+      <div class="int-badge"><span class="int-icon">📁</span> Google Drive</div>
+      <div class="int-badge"><span class="int-icon">📧</span> Gmail</div>
+      <div class="int-badge"><span class="int-icon">💬</span> Slack</div>
+      <div class="int-badge"><span class="int-icon">📅</span> Google Calendar</div>
+      <div class="int-badge"><span class="int-icon">📄</span> Notion</div>
+      <div class="int-badge"><span class="int-icon">🔔</span> WhatsApp (via API)</div>
+      <div class="int-badge"><span class="int-icon">📦</span> Tokopedia API</div>
+      <div class="int-badge"><span class="int-icon">📱</span> Shopee API</div>
+      <div class="int-badge"><span class="int-icon">💳</span> Midtrans</div>
+    </div>
+    <div class="api-box">
+      <div class="api-box-title">
+        <span class="api-method">GET</span>
+        /api/v1/bases/:baseId/records
+      </div>
+      <div class="api-code">
+        <span class="api-key">curl</span> https://api.gridbase.id/v1/bases/<span class="api-str">your-base-id</span>/records \<br>
+        &nbsp;&nbsp;-H <span class="api-str">"Authorization: Bearer YOUR_API_KEY"</span> \<br>
+        &nbsp;&nbsp;-H <span class="api-str">"Content-Type: application/json"</span><br><br>
+        <span class="api-comment" style="color:var(--text3)">// Response: array of records dengan semua field values</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PERBANDINGAN
+     ============================================================ -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-label"><span class="dot"></span> Perbandingan</div>
+    <h2 class="section-title">GridBase vs Excel vs Airtable</h2>
+    <p class="section-sub">Kenapa tim Indonesia beralih ke GridBase? Ini perbandingan jujurnya.</p>
+    <div class="compare-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Fitur</th>
+            <th class="highlighted">GridBase ✦</th>
+            <th>Excel / Google Sheets</th>
+            <th>Airtable</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Kolaborasi real-time</td>
+            <td class="highlighted"><span class="check-yes">✓ Ya</span></td>
+            <td><span class="check-partial">∼ Terbatas</span></td>
+            <td><span class="check-yes">✓ Ya</span></td>
+          </tr>
+          <tr>
+            <td>Multiple view (Grid, Kanban, dll.)</td>
+            <td class="highlighted"><span class="check-yes">✓ 4 view</span></td>
+            <td><span class="check-no">✗ Tidak</span></td>
+            <td><span class="check-yes">✓ Ya</span></td>
+          </tr>
+          <tr>
+            <td>Relasi antar tabel</td>
+            <td class="highlighted"><span class="check-yes">✓ Ya</span></td>
+            <td><span class="check-no">✗ Manual (VLOOKUP)</span></td>
+            <td><span class="check-yes">✓ Ya</span></td>
+          </tr>
+          <tr>
+            <td>REST API bawaan</td>
+            <td class="highlighted"><span class="check-yes">✓ Semua plan</span></td>
+            <td><span class="check-no">✗ Tidak</span></td>
+            <td><span class="check-partial">∼ Plan berbayar</span></td>
+          </tr>
+          <tr>
+            <td>Bahasa antarmuka Indonesia</td>
+            <td class="highlighted"><span class="check-yes">✓ Ya</span></td>
+            <td><span class="check-partial">∼ Sebagian</span></td>
+            <td><span class="check-no">✗ Inggris saja</span></td>
+          </tr>
+          <tr>
+            <td>Harga Plan Gratis</td>
+            <td class="highlighted"><span class="check-yes">✓ 5 user, 5 base</span></td>
+            <td><span class="check-yes">✓ Tidak terbatas</span></td>
+            <td><span class="check-partial">∼ 1 user saja</span></td>
+          </tr>
+          <tr>
+            <td>Harga berbayar (per user/bln)</td>
+            <td class="highlighted"><span class="check-yes">Rp 89.000</span></td>
+            <td><span class="check-partial">Rp 85.000 (M365)</span></td>
+            <td><span class="check-no">~Rp 160.000</span></td>
+          </tr>
+          <tr>
+            <td>Server di Indonesia / Asia</td>
+            <td class="highlighted"><span class="check-yes">✓ Jakarta</span></td>
+            <td><span class="check-partial">∼ Asia Pacific</span></td>
+            <td><span class="check-no">✗ US only</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PRICING
+     ============================================================ -->
+<section class="section" id="pricing">
+  <div class="container">
+    <div class="section-label text-center" style="justify-content:center"><span class="dot"></span> Harga</div>
+    <h2 class="section-title text-center">Harga transparan, <br>bayar sesuai kebutuhan</h2>
+    <p class="section-sub text-center">Mulai gratis selamanya. Upgrade kapan saja tanpa biaya setup atau kontrak panjang.</p>
+    <div class="pricing-grid">
+      <!-- Free -->
+      <div class="pricing-card">
+        <div class="plan-name">GRATIS</div>
+        <div class="plan-price">Rp 0 <span>/bulan</span></div>
+        <div class="plan-desc">Untuk tim kecil yang baru memulai dengan database.</div>
+        <ul class="plan-features">
+          <li>Hingga 5 pengguna</li>
+          <li>5 base (database)</li>
+          <li>1.000 record per base</li>
+          <li>4 jenis view</li>
+          <li>REST API (100 req/hari)</li>
+          <li>Attachment 1 GB</li>
+          <li>Support komunitas</li>
+        </ul>
+        <a href="#" class="btn btn-outline plan-cta">Mulai Gratis</a>
+      </div>
+      <!-- Pro -->
+      <div class="pricing-card popular">
+        <div class="popular-badge">PALING POPULER</div>
+        <div class="plan-name">PRO</div>
+        <div class="plan-price">Rp 89rb <span>/user/bln</span></div>
+        <div class="plan-desc">Untuk tim profesional yang butuh lebih banyak data dan fitur kolaborasi.</div>
+        <ul class="plan-features">
+          <li>Pengguna tidak terbatas</li>
+          <li>Base tidak terbatas</li>
+          <li>50.000 record per base</li>
+          <li>History 6 bulan</li>
+          <li>REST API unlimited</li>
+          <li>Attachment 50 GB</li>
+          <li>Permission per view</li>
+          <li>Integrasi Zapier & Make</li>
+          <li>Priority email support</li>
+        </ul>
+        <a href="#" class="btn btn-primary plan-cta">Coba 14 Hari Gratis</a>
+      </div>
+      <!-- Business -->
+      <div class="pricing-card">
+        <div class="plan-name">BUSINESS</div>
+        <div class="plan-price">Rp 199rb <span>/user/bln</span></div>
+        <div class="plan-desc">Untuk perusahaan dengan kebutuhan keamanan dan kontrol data tinggi.</div>
+        <ul class="plan-features">
+          <li>Semua fitur Pro</li>
+          <li>500.000 record per base</li>
+          <li>History 24 bulan</li>
+          <li>Attachment 1 TB</li>
+          <li>SSO / SAML</li>
+          <li>Audit log lengkap</li>
+          <li>Custom domain</li>
+          <li>SLA 99.9% uptime</li>
+          <li>Dedicated account manager</li>
+        </ul>
+        <a href="#" class="btn btn-outline plan-cta">Hubungi Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TESTIMONIAL
+     ============================================================ -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-label text-center" style="justify-content:center"><span class="dot"></span> Testimoni</div>
+    <h2 class="section-title text-center">45.000+ tim sudah beralih dari Excel</h2>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Kami pakai GridBase untuk kelola pipeline sales 200+ klien. Sebelumnya spreadsheet Excel berantakan, sekarang semua terstruktur dan bisa difilter. Game changer buat tim marketing kami."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background: linear-gradient(135deg, #3B82F6, #8B5CF6)">R</div>
+          <div>
+            <div class="testi-name">Rizky Aditya</div>
+            <div class="testi-role">Head of Sales · Startup Fintech, Jakarta</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Agensi kami handle 15 klien sekaligus. GridBase jadi pusat operasional — dari content calendar, brief klien, sampai invoice tracker. Hemat 4 jam kerja per minggu dibanding Excel."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background: linear-gradient(135deg, #10B981, #06B6D4)">S</div>
+          <div>
+            <div class="testi-name">Sinta Rahayu</div>
+            <div class="testi-role">Founder · Digital Marketing Agency, Surabaya</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Toko online kami kelola 500+ SKU. Dengan GridBase, stok, harga, dan supplier terhubung satu sama lain. Integrasi ke Zapier bikin update stok otomatis masuk ke Tokopedia."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background: linear-gradient(135deg, #F59E0B, #F97316)">B</div>
+          <div>
+            <div class="testi-name">Bayu Nugroho</div>
+            <div class="testi-role">Owner · Toko Elektronik Online, Bandung</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FAQ
+     ============================================================ -->
+<section class="section">
+  <div class="container">
+    <div class="section-label text-center" style="justify-content:center"><span class="dot"></span> FAQ</div>
+    <h2 class="section-title text-center">Pertanyaan yang sering ditanya</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">
+          Apa bedanya GridBase dengan Excel atau Google Sheets?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          Excel dan Google Sheets adalah aplikasi pengolah angka yang dipaksakan jadi database. GridBase adalah database sesungguhnya yang tampilannya seperti spreadsheet. Bedanya: GridBase punya tipe data yang ketat (tidak ada salah tipe), relasi antar tabel native, multiple view (Kanban, Calendar, Gallery), permission granular, dan API bawaan — semua tanpa satu baris kode.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          Bisakah saya import data dari Excel atau Google Sheets yang sudah ada?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          Ya, sangat mudah. GridBase mendukung import dari file Excel (.xlsx), CSV, dan Google Sheets langsung via URL. Saat import, GridBase otomatis mendeteksi tipe data setiap kolom dan menyarankan field type yang tepat. Proses import 1.000 baris data hanya butuh kurang dari 30 detik.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          Berapa batas jumlah record dan data yang bisa disimpan?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          Plan Gratis: 1.000 record per base, attachment 1 GB total. Plan Pro: 50.000 record per base, attachment 50 GB. Plan Business: 500.000 record per base, attachment 1 TB. Tidak ada batasan jumlah field per tabel. Jika data kamu lebih besar, hubungi kami untuk paket Enterprise dengan kapasitas custom.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          Apakah GridBase bisa diakses offline?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          GridBase adalah aplikasi berbasis cloud, jadi membutuhkan koneksi internet untuk sinkronisasi real-time. Namun kami sedang mengembangkan mode offline untuk aplikasi mobile (estimasi rilis Q3 2026) yang memungkinkan kamu membaca dan mengedit data, dengan sinkronisasi otomatis saat koneksi tersedia kembali.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          Apakah ada REST API dan bagaimana cara menggunakannya?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          Ya. Setiap base di GridBase otomatis punya REST API endpoint. Kamu bisa GET, POST, PATCH, dan DELETE record via API key yang bisa dibuat di Settings. Dokumentasi API tersedia di docs.gridbase.id dengan contoh curl, JavaScript (fetch), Python, dan PHP. Rate limit: 100 req/hari (Gratis), unlimited (Pro & Business).
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CTA FINAL
+     ============================================================ -->
+<section class="cta-final">
+  <div class="container">
+    <h2>Buat Database Pertamamu —<br>Gratis Selamanya</h2>
+    <p>Tidak perlu kartu kredit. Tidak perlu pengalaman coding. Mulai dalam 2 menit.</p>
+    <a href="#" class="btn btn-primary btn-lg">Mulai Gratis Sekarang →</a>
+    <p class="cta-free-note">Atau hubungi tim kami di halo@gridbase.id untuk demo langsung</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <div class="logo-icon">
+            <span></span><span></span>
+            <span></span><span></span>
+          </div>
+          GridBase
+        </a>
+        <p>Database visual yang terasa seperti spreadsheet. Dibuat untuk tim Indonesia yang ingin kerja lebih rapi tanpa belajar SQL.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Produk</h4>
+        <ul>
+          <li><a href="#">Fitur</a></li>
+          <li><a href="#">Tampilan</a></li>
+          <li><a href="#">Integrasi</a></li>
+          <li><a href="#">Template</a></li>
+          <li><a href="#">API Docs</a></li>
+          <li><a href="#">Changelog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <ul>
+          <li><a href="#">Tentang Kami</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Karir</a></li>
+          <li><a href="#">Press Kit</a></li>
+          <li><a href="#">Kontak</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Bantuan</h4>
+        <ul>
+          <li><a href="#">Dokumentasi</a></li>
+          <li><a href="#">Community Forum</a></li>
+          <li><a href="#">Status Page</a></li>
+          <li><a href="#">Kebijakan Privasi</a></li>
+          <li><a href="#">Syarat & Ketentuan</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 GridBase. Dibuat dengan ♥ di Indonesia.</p>
+      <div class="footer-socials">
+        <a href="#" class="social-btn" title="Twitter">𝕏</a>
+        <a href="#" class="social-btn" title="LinkedIn">in</a>
+        <a href="#" class="social-btn" title="Instagram">▣</a>
+        <a href="#" class="social-btn" title="YouTube">▶</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   THEME TOGGLE
+   ============================================================ */
+const html = document.documentElement;
+const themeBtn = document.getElementById('themeToggle');
+function applyTheme(t) {
+  html.setAttribute('data-theme', t);
+  themeBtn.textContent = t === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('gridbase_theme', t);
+}
+themeBtn.addEventListener('click', () => {
+  applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+// Restore saved theme
+const saved = localStorage.getItem('gridbase_theme');
+if (saved) applyTheme(saved);
+
+/* ============================================================
+   HAMBURGER MENU
+   ============================================================ */
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+});
+// Close on link click
+mobileMenu.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+});
+
+/* ============================================================
+   GRIDBASE VIEW SWITCHER
+   ============================================================ */
+document.querySelectorAll('.gb-view').forEach(v => {
+  v.addEventListener('click', () => {
+    document.querySelectorAll('.gb-view').forEach(x => x.classList.remove('active'));
+    v.classList.add('active');
+  });
+});
+
+/* ============================================================
+   ROW SELECTION + STATUS BAR
+   ============================================================ */
+function updateStatusBar() {
+  const rows = document.querySelectorAll('.gb-table tbody tr:not(.tr-add)');
+  const selected = document.querySelectorAll('.gb-table tbody tr.selected');
+  const statusLeft = document.getElementById('statusLeft');
+  if (statusLeft) statusLeft.textContent = rows.length + ' records · ' + selected.length + ' dipilih';
+}
+document.querySelectorAll('.gb-table tbody tr:not(.tr-add)').forEach(row => {
+  row.addEventListener('click', function(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'A') return;
+    this.classList.toggle('selected');
+    updateStatusBar();
+  });
+});
+
+/* ============================================================
+   CHECK ALL
+   ============================================================ */
+const checkAll = document.getElementById('checkAll');
+if (checkAll) {
+  checkAll.addEventListener('change', function() {
+    document.querySelectorAll('.gb-table tbody tr:not(.tr-add) input[type="checkbox"]').forEach(cb => {
+      cb.checked = this.checked;
+      cb.closest('tr').classList.toggle('selected', this.checked);
+    });
+    updateStatusBar();
+  });
+}
+
+/* ============================================================
+   ADD RECORD
+   ============================================================ */
+document.querySelector('.tr-add').addEventListener('click', () => {
+  const tbody = document.querySelector('.gb-table tbody');
+  const rows = tbody.querySelectorAll('tr:not(.tr-add)');
+  const n = rows.length + 1;
+  const newRow = document.createElement('tr');
+  newRow.innerHTML = [
+    '<td><input type="checkbox"></td>',
+    '<td class="td-idx">' + n + '</td>',
+    '<td class="td-name" contenteditable="true" style="outline:2px solid var(--col-text);outline-offset:-1px;min-width:120px;">Nama baru...</td>',
+    '<td>—</td>',
+    '<td class="td-num">—</td>',
+    '<td class="td-date">—</td>',
+    '<td class="td-link">—</td>',
+    '<td></td>'
+  ].join('');
+  tbody.insertBefore(newRow, document.querySelector('.tr-add'));
+  // Attach click for selection
+  newRow.addEventListener('click', function(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'A' || e.target.contentEditable === 'true') return;
+    this.classList.toggle('selected');
+    updateStatusBar();
+  });
+  // Focus editable cell
+  newRow.querySelector('[contenteditable]').focus();
+  // Select all text in editable
+  const range = document.createRange();
+  const sel = window.getSelection();
+  range.selectNodeContents(newRow.querySelector('[contenteditable]'));
+  sel.removeAllRanges();
+  sel.addRange(range);
+  updateStatusBar();
+});
+
+/* ============================================================
+   USE CASE TABS
+   ============================================================ */
+document.querySelectorAll('.usecase-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.usecase-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.usecase-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    const target = document.getElementById('tab-' + tab.dataset.tab);
+    if (target) target.classList.add('active');
+  });
+});
+
+/* ============================================================
+   FAQ ACCORDION
+   ============================================================ */
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+});
+
+/* ============================================================
+   COUNTER ANIMATION
+   ============================================================ */
+function formatNum(val, suffix, decimal) {
+  if (decimal) return val.toFixed(decimal) + suffix;
+  if (val >= 1000000) return (val / 1000000).toFixed(1).replace('.0', '') + 'jt' + suffix;
+  if (val >= 1000) return (val / 1000).toFixed(0) + 'rb' + suffix;
+  return Math.floor(val) + suffix;
+}
+function animateCounter(el) {
+  const target = parseFloat(el.dataset.target);
+  const suffix = el.dataset.suffix || '';
+  const decimal = parseInt(el.dataset.decimal) || 0;
+  const duration = 1800;
+  const start = performance.now();
+  function step(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    // easeOutExpo
+    const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+    const current = target * ease;
+    el.textContent = formatNum(current, suffix, decimal);
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+// Intersection Observer for counters
+const counterEls = document.querySelectorAll('[data-target]');
+if ('IntersectionObserver' in window) {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCounter(entry.target);
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  counterEls.forEach(el => obs.observe(el));
+} else {
+  counterEls.forEach(animateCounter);
+}
+
+/* ============================================================
+   SMOOTH SCROLL FOR NAV LINKS
+   ============================================================ */
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>

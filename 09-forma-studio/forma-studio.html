@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forma — Design Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300;1,9..144,500&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       DESIGN TOKENS
+       Dark  → Gold amber (#FFD166) + Teal (#06C8A8)
+       Light → Burnt orange (#E8500A) + Electric blue (#1A6BFF)
+    ============================================================ */
+    :root[data-theme="dark"] {
+      --bg:           #09090F;
+      --bg-surface:   #13131F;
+      --bg-elevated:  #1C1C2E;
+      --text:         #EDE9E0;
+      --text-muted:   #7A7A96;
+      --accent:       #FFD166;
+      --accent-rgb:   255, 209, 102;
+      --accent2:      #06C8A8;
+      --accent2-rgb:  6, 200, 168;
+      --border:       rgba(255,255,255,0.07);
+      --border-strong:rgba(255,255,255,0.14);
+      --nav-bg:       rgba(9,9,15,0.82);
+      --shadow-card:  0 2px 20px rgba(0,0,0,0.5);
+      --glow:         0 0 60px rgba(255,209,102,0.12);
+    }
+    :root[data-theme="light"] {
+      --bg:           #F8F6F0;
+      --bg-surface:   #EFEDE6;
+      --bg-elevated:  #E5E2D8;
+      --text:         #17171A;
+      --text-muted:   #6A6A72;
+      --accent:       #E8500A;
+      --accent-rgb:   232, 80, 10;
+      --accent2:      #1A6BFF;
+      --accent2-rgb:  26, 107, 255;
+      --border:       rgba(0,0,0,0.08);
+      --border-strong:rgba(0,0,0,0.16);
+      --nav-bg:       rgba(248,246,240,0.82);
+      --shadow-card:  0 2px 20px rgba(0,0,0,0.08);
+      --glow:         0 0 60px rgba(232,80,10,0.08);
+    }
+
+    /* ============================================================ BASE */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      transition: background 0.45s ease, color 0.45s ease;
+    }
+
+    /* ============================================================ TYPOGRAPHY */
+    .f-display {
+      font-family: 'Fraunces', serif;
+      font-weight: 300;
+      letter-spacing: -0.03em;
+      line-height: 1.02;
+    }
+    .f-mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* ============================================================ NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 68px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 clamp(1.25rem, 5vw, 4rem);
+      background: var(--nav-bg);
+      backdrop-filter: blur(18px) saturate(180%);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.45s ease, border-color 0.45s ease;
+    }
+    .nav-logo {
+      font-family: 'Fraunces', serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-logo em { color: var(--accent); font-style: normal; }
+
+    .nav-links { display: flex; gap: 2.25rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.85rem; font-weight: 500; letter-spacing: 0.01em;
+      color: var(--text-muted); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-right { display: flex; align-items: center; gap: 0.75rem; }
+
+    .btn-toggle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem; letter-spacing: 0.07em;
+      background: var(--bg-elevated); color: var(--text-muted);
+      border: 1px solid var(--border-strong);
+      padding: 0.38rem 0.85rem; border-radius: 999px;
+      cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    }
+    .btn-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+    .btn-nav-cta {
+      font-size: 0.85rem; font-weight: 600;
+      background: var(--accent); color: var(--bg);
+      border: none; padding: 0.5rem 1.2rem; border-radius: 999px;
+      cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    }
+    .btn-nav-cta:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; padding: 4px; background: none; border: none;
+    }
+    .hamburger span {
+      width: 22px; height: 1.5px; background: var(--text);
+      border-radius: 2px; display: block; transition: all 0.3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4.5px, 4.5px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4.5px, -4.5px); }
+
+    /* Mobile Menu */
+    .mob-menu {
+      position: fixed; top: 68px; left: 0; right: 0; z-index: 190;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem clamp(1.25rem, 5vw, 4rem);
+      display: flex; flex-direction: column; gap: 0;
+      transform: translateY(-110%); transition: transform 0.35s ease;
+    }
+    .mob-menu.active { transform: translateY(0); }
+    .mob-menu a {
+      font-size: 1rem; font-weight: 500; color: var(--text-muted);
+      text-decoration: none; padding: 0.85rem 0;
+      border-bottom: 1px solid var(--border); transition: color 0.2s;
+    }
+    .mob-menu a:last-child { border-bottom: none; }
+    .mob-menu a:hover { color: var(--text); }
+
+    /* ============================================================ LAYOUT */
+    .section {
+      padding: clamp(4.5rem, 9vw, 8rem) clamp(1.25rem, 5vw, 4rem);
+    }
+
+    /* ============================================================ HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding-top: calc(68px + clamp(2.5rem, 6vw, 5rem));
+      padding-bottom: clamp(3rem, 6vw, 5rem);
+      padding-left: clamp(1.25rem, 5vw, 4rem);
+      padding-right: clamp(1.25rem, 5vw, 4rem);
+      position: relative; overflow: hidden;
+    }
+    .hero-glow {
+      position: absolute; pointer-events: none;
+      top: -10%; right: -5%;
+      width: clamp(300px, 50vw, 640px);
+      height: clamp(300px, 50vw, 640px);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(var(--accent-rgb),0.08) 0%, transparent 70%);
+    }
+    .hero-glow2 {
+      position: absolute; pointer-events: none;
+      bottom: 10%; left: -8%;
+      width: 400px; height: 400px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(var(--accent2-rgb),0.06) 0%, transparent 70%);
+    }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      margin-bottom: 2rem;
+      opacity: 0; transform: translateY(16px);
+      animation: fadeUp 0.55s ease 0.1s forwards;
+    }
+    .eyebrow-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0;
+      box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.5);
+    }
+    .eyebrow-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--text-muted);
+    }
+
+    .hero-title {
+      font-size: clamp(3.2rem, 9.5vw, 8.5rem);
+      max-width: 16ch;
+      margin-bottom: 2.5rem;
+      opacity: 0; transform: translateY(28px);
+      animation: fadeUp 0.65s ease 0.25s forwards;
+    }
+    .hero-title .italic { font-style: italic; color: var(--accent); }
+
+    .hero-bottom {
+      display: flex; align-items: flex-start; gap: clamp(2rem, 5vw, 6rem);
+      flex-wrap: wrap;
+      opacity: 0; transform: translateY(20px);
+      animation: fadeUp 0.55s ease 0.45s forwards;
+    }
+    .hero-desc {
+      max-width: 36ch; color: var(--text-muted);
+      font-size: 1rem; line-height: 1.75;
+    }
+    .hero-actions {
+      display: flex; gap: 0.85rem; align-items: center; flex-wrap: wrap; flex-shrink: 0;
+    }
+
+    /* Floating stat cards */
+    .hero-stats {
+      position: absolute; right: clamp(1.25rem, 6vw, 5rem); top: 50%;
+      transform: translateY(-45%);
+      display: flex; flex-direction: column; gap: 1rem;
+      opacity: 0; animation: fadeIn 0.8s ease 0.75s forwards;
+    }
+    .stat-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 14px; padding: 1rem 1.35rem;
+      min-width: 138px;
+      box-shadow: var(--shadow-card);
+    }
+    .stat-card-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.9rem; line-height: 1; font-weight: 500;
+      color: var(--text);
+    }
+    .stat-card-num sup { font-size: 1rem; color: var(--accent); }
+    .stat-card-label { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+    /* ============================================================ BUTTONS */
+    .btn-primary {
+      font-size: 0.9rem; font-weight: 600;
+      background: var(--accent); color: var(--bg);
+      border: none; padding: 0.8rem 1.9rem; border-radius: 999px;
+      cursor: pointer; transition: all 0.25s;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(var(--accent-rgb), 0.38);
+    }
+    .btn-outline {
+      font-size: 0.9rem; font-weight: 500;
+      background: transparent; color: var(--text);
+      border: 1px solid var(--border-strong);
+      padding: 0.8rem 1.9rem; border-radius: 999px;
+      cursor: pointer; transition: all 0.25s;
+    }
+    .btn-outline:hover { border-color: var(--text-muted); }
+
+    /* ============================================================ MARQUEE */
+    .marquee-wrap {
+      padding: 1.1rem 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden; white-space: nowrap;
+    }
+    .marquee-inner {
+      display: inline-flex; gap: 2.5rem;
+      animation: marquee 28s linear infinite;
+    }
+    .marquee-item {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--text-muted);
+      display: inline-flex; align-items: center; gap: 1.5rem;
+      flex-shrink: 0;
+    }
+    .marquee-item::after { content: '◆'; color: var(--accent); font-size: 0.45rem; }
+
+    /* ============================================================ SECTION HEADER */
+    .sec-head {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: clamp(2rem, 4vw, 3.5rem); gap: 2rem; flex-wrap: wrap;
+    }
+    .sec-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 0.65rem;
+    }
+    .sec-title { font-size: clamp(1.85rem, 4.5vw, 3.25rem); max-width: 20ch; }
+    .sec-link {
+      font-size: 0.85rem; color: var(--text-muted);
+      text-decoration: none; display: inline-flex; align-items: center; gap: 0.35rem;
+      transition: color 0.2s; flex-shrink: 0; white-space: nowrap;
+    }
+    .sec-link:hover { color: var(--accent); }
+
+    /* ============================================================ SERVICES */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      border: 1px solid var(--border-strong); border-radius: 18px; overflow: hidden;
+      gap: 1px; background: var(--border-strong);
+    }
+    .svc-card {
+      background: var(--bg); padding: clamp(1.75rem, 3.5vw, 2.5rem);
+      position: relative; transition: background 0.3s; cursor: default;
+      display: flex; flex-direction: column;
+    }
+    .svc-card:hover { background: var(--bg-surface); }
+    .svc-card:hover .svc-arrow { opacity: 1; transform: translate(0,0); }
+
+    .svc-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.1em;
+      margin-bottom: 1.75rem;
+    }
+    .svc-icon { font-size: 1.6rem; margin-bottom: 0.85rem; }
+    .svc-name {
+      font-family: 'Fraunces', serif;
+      font-size: 1.35rem; font-weight: 500; letter-spacing: -0.02em;
+      margin-bottom: 0.65rem;
+    }
+    .svc-desc { font-size: 0.875rem; color: var(--text-muted); line-height: 1.7; flex: 1; }
+    .svc-tags {
+      display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.5rem;
+    }
+    .tag {
+      font-size: 0.68rem; padding: 0.28rem 0.65rem;
+      border: 1px solid var(--border-strong); border-radius: 999px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em;
+    }
+    .svc-arrow {
+      position: absolute; top: 1.75rem; right: 1.75rem;
+      color: var(--accent); font-size: 1.15rem;
+      opacity: 0; transform: translate(-4px, 4px); transition: all 0.25s;
+    }
+
+    /* ============================================================ WORK */
+    .work-grid {
+      display: grid;
+      grid-template-columns: 1.55fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 1.25rem;
+    }
+    .work-card {
+      background: var(--bg-surface); border-radius: 16px;
+      overflow: hidden; position: relative; cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .work-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-card); }
+    .work-card:first-child { grid-row: span 2; }
+
+    .work-vis {
+      position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      aspect-ratio: 4/3;
+    }
+    .work-card:first-child .work-vis { aspect-ratio: unset; min-height: 320px; flex: 1; }
+
+    /* Visual gradients per card */
+    .work-card:nth-child(1) .work-vis { background: linear-gradient(145deg, #12092A 0%, #0A1830 100%); }
+    .work-card:nth-child(2) .work-vis { background: linear-gradient(145deg, #112211 0%, #091509 100%); }
+    .work-card:nth-child(3) .work-vis { background: linear-gradient(145deg, #2A1005 0%, #1A0A0A 100%); }
+    [data-theme="light"] .work-card:nth-child(1) .work-vis { background: linear-gradient(145deg, #D6C8F5 0%, #C8D6F5 100%); }
+    [data-theme="light"] .work-card:nth-child(2) .work-vis { background: linear-gradient(145deg, #C5F0C5 0%, #D0F0C5 100%); }
+    [data-theme="light"] .work-card:nth-child(3) .work-vis { background: linear-gradient(145deg, #F5D0B0 0%, #F5C5B0 100%); }
+
+    .work-vis-label {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(3rem, 6vw, 5.5rem); font-style: italic;
+      opacity: 0.12; letter-spacing: -0.05em; color: var(--text);
+    }
+    .work-hover-overlay {
+      position: absolute; inset: 0;
+      background: rgba(var(--accent-rgb), 0.07);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .work-card:hover .work-hover-overlay { opacity: 1; }
+
+    .work-info { padding: 1.1rem 1.4rem 1.3rem; }
+    .work-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--accent2); margin-bottom: 0.35rem;
+    }
+    .work-title {
+      font-family: 'Fraunces', serif;
+      font-size: 1.05rem; font-weight: 500; letter-spacing: -0.015em;
+    }
+
+    /* ============================================================ STATS BAND */
+    .stats-band {
+      background: var(--bg-surface);
+      border-radius: 22px;
+      margin: 0 clamp(1.25rem, 5vw, 4rem);
+      padding: clamp(2.5rem, 5vw, 4.5rem) clamp(2rem, 5vw, 4rem);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 2rem;
+    }
+    .stat-item { display: flex; flex-direction: column; gap: 0.2rem; }
+    .stat-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(2.25rem, 4.5vw, 3.25rem);
+      font-weight: 500; line-height: 1; color: var(--text);
+    }
+    .stat-val em { color: var(--accent); font-style: normal; }
+    .stat-lbl { font-size: 0.85rem; color: var(--text-muted); }
+
+    /* ============================================================ QUOTE */
+    .quote-block { max-width: 780px; margin: 0 auto; text-align: center; }
+    .quote-text {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.4rem, 3.2vw, 2.35rem);
+      font-weight: 300; font-style: italic; line-height: 1.45;
+      margin-bottom: 2rem; color: var(--text);
+    }
+    .quote-author { display: flex; align-items: center; justify-content: center; gap: 0.9rem; }
+    .author-av {
+      width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+    }
+    .author-name { font-weight: 600; font-size: 0.88rem; }
+    .author-role { font-size: 0.78rem; color: var(--text-muted); }
+
+    /* ============================================================ CTA */
+    .cta-box {
+      background: var(--bg-surface);
+      border-radius: 22px; text-align: center;
+      padding: clamp(3rem, 7vw, 5.5rem) clamp(1.5rem, 5vw, 4rem);
+      position: relative; overflow: hidden;
+    }
+    .cta-box::before {
+      content: '';
+      position: absolute; top: -30%; left: 50%; transform: translateX(-50%);
+      width: 55%; height: 260px;
+      background: radial-gradient(ellipse, rgba(var(--accent-rgb),0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.9rem; }
+    .cta-title { font-size: clamp(1.9rem, 4.5vw, 3.5rem); max-width: 18ch; margin: 0 auto 1.25rem; }
+    .cta-desc { color: var(--text-muted); max-width: 38ch; margin: 0 auto 2.5rem; font-size: 1rem; line-height: 1.7; }
+    .cta-actions { display: flex; gap: 0.85rem; justify-content: center; flex-wrap: wrap; }
+
+    /* ============================================================ FOOTER */
+    footer {
+      padding: clamp(3rem, 6vw, 5rem) clamp(1.25rem, 5vw, 4rem) 2rem;
+      border-top: 1px solid var(--border);
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.6fr repeat(3, 1fr);
+      gap: 3rem; margin-bottom: 3rem;
+    }
+    .footer-brand p { font-size: 0.875rem; color: var(--text-muted); margin-top: 0.65rem; max-width: 26ch; line-height: 1.7; }
+    .footer-col h4 { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.1rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; }
+    .footer-col a { color: var(--text-muted); text-decoration: none; font-size: 0.875rem; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--text); }
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 1.75rem; border-top: 1px solid var(--border); gap: 1rem; flex-wrap: wrap;
+    }
+    .footer-bottom p { font-size: 0.78rem; color: var(--text-muted); }
+    .socials { display: flex; gap: 0.75rem; }
+    .soc {
+      width: 34px; height: 34px; border-radius: 50%;
+      border: 1px solid var(--border-strong);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted); text-decoration: none; font-size: 0.72rem;
+      transition: all 0.2s; font-family: 'JetBrains Mono', monospace;
+    }
+    .soc:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ============================================================ SCROLL REVEAL */
+    .reveal {
+      opacity: 0; transform: translateY(22px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.vis { opacity: 1; transform: translateY(0); }
+    .d1 { transition-delay: 0.08s; }
+    .d2 { transition-delay: 0.16s; }
+    .d3 { transition-delay: 0.24s; }
+    .d4 { transition-delay: 0.32s; }
+
+    /* ============================================================ ANIMATIONS */
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ============================================================ SCROLLBAR */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+
+    /* ============================================================ RESPONSIVE */
+    @media (max-width: 960px) {
+      .hero-stats { display: none; }
+      .work-grid { grid-template-columns: 1fr; }
+      .work-card:first-child { grid-row: span 1; }
+      .work-card:first-child .work-vis { min-height: 220px; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    }
+    @media (max-width: 720px) {
+      .nav-links, .btn-nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .hero-bottom { flex-direction: column; gap: 1.75rem; }
+    }
+    @media (max-width: 480px) {
+      .footer-top { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .sec-head { flex-direction: column; align-items: flex-start; }
+      .work-grid { gap: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ──────────────────────────────────────── -->
+<nav>
+  <a href="#" class="nav-logo">Forma<em>.</em></a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="btn-toggle" id="themeBtn">☀ Light</button>
+    <button class="btn-nav-cta">Start a Project →</button>
+  </div>
+  <button class="hamburger" id="hamBtn" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile Menu -->
+<nav class="mob-menu" id="mobMenu">
+  <a href="#services">Services</a>
+  <a href="#work">Work</a>
+  <a href="#about">About</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<!-- ── HERO ──────────────────────────────────────── -->
+<section class="hero" id="home">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+
+  <div class="hero-eyebrow">
+    <div class="eyebrow-dot"></div>
+    <span class="eyebrow-text f-mono">Design Studio — Est. 2019</span>
+  </div>
+
+  <h1 class="f-display hero-title">
+    We craft <span class="italic">digital</span><br>
+    experiences<br>that endure
+  </h1>
+
+  <div class="hero-bottom">
+    <p class="hero-desc">
+      Forma is a design studio at the intersection of brand identity, product design, and digital craft. We build things that last.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-primary">See Our Work →</button>
+      <button class="btn-outline">About Us</button>
+    </div>
+  </div>
+
+  <!-- Floating stat cards (desktop only) -->
+  <aside class="hero-stats">
+    <div class="stat-card">
+      <div class="stat-card-num f-mono">120<sup>+</sup></div>
+      <div class="stat-card-label">Projects Delivered</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-num f-mono">6<sup>yr</sup></div>
+      <div class="stat-card-label">In Business</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-num f-mono">98<sup>%</sup></div>
+      <div class="stat-card-label">Client Retention</div>
+    </div>
+  </aside>
+</section>
+
+<!-- ── MARQUEE ────────────────────────────────────── -->
+<div class="marquee-wrap">
+  <div class="marquee-inner" aria-hidden="true">
+    <span class="marquee-item f-mono">Brand Identity</span>
+    <span class="marquee-item f-mono">Product Design</span>
+    <span class="marquee-item f-mono">UI / UX Research</span>
+    <span class="marquee-item f-mono">Web Development</span>
+    <span class="marquee-item f-mono">Motion Design</span>
+    <span class="marquee-item f-mono">Design Systems</span>
+    <span class="marquee-item f-mono">Figma</span>
+    <span class="marquee-item f-mono">React · Next.js</span>
+    <span class="marquee-item f-mono">Framer · Spline</span>
+    <span class="marquee-item f-mono">Brand Identity</span>
+    <span class="marquee-item f-mono">Product Design</span>
+    <span class="marquee-item f-mono">UI / UX Research</span>
+    <span class="marquee-item f-mono">Web Development</span>
+    <span class="marquee-item f-mono">Motion Design</span>
+    <span class="marquee-item f-mono">Design Systems</span>
+    <span class="marquee-item f-mono">Figma</span>
+    <span class="marquee-item f-mono">React · Next.js</span>
+    <span class="marquee-item f-mono">Framer · Spline</span>
+  </div>
+</div>
+
+<!-- ── SERVICES ──────────────────────────────────── -->
+<section class="section" id="services">
+  <div class="sec-head reveal">
+    <div>
+      <p class="sec-label">What We Do</p>
+      <h2 class="f-display sec-title">Services built for the long run</h2>
+    </div>
+    <a href="#" class="sec-link">View All →</a>
+  </div>
+
+  <div class="services-grid">
+    <div class="svc-card reveal d1">
+      <span class="svc-num f-mono">01</span>
+      <span class="svc-icon">◈</span>
+      <h3 class="svc-name">Brand Identity</h3>
+      <p class="svc-desc">Logo systems to full brand books — identities that speak volumes without saying a word.</p>
+      <div class="svc-tags">
+        <span class="tag">Logo Design</span>
+        <span class="tag">Guidelines</span>
+        <span class="tag">Typography</span>
+      </div>
+      <span class="svc-arrow">↗</span>
+    </div>
+    <div class="svc-card reveal d2">
+      <span class="svc-num f-mono">02</span>
+      <span class="svc-icon">⬡</span>
+      <h3 class="svc-name">Product Design</h3>
+      <p class="svc-desc">Research-backed UX and pixel-perfect UI. Products people actually want to use.</p>
+      <div class="svc-tags">
+        <span class="tag">UX Research</span>
+        <span class="tag">Prototyping</span>
+        <span class="tag">Systems</span>
+      </div>
+      <span class="svc-arrow">↗</span>
+    </div>
+    <div class="svc-card reveal d3">
+      <span class="svc-num f-mono">03</span>
+      <span class="svc-icon">⬙</span>
+      <h3 class="svc-name">Web & Digital</h3>
+      <p class="svc-desc">High-performance websites and apps. Code as clean as the design it brings to life.</p>
+      <div class="svc-tags">
+        <span class="tag">React</span>
+        <span class="tag">Next.js</span>
+        <span class="tag">Framer</span>
+      </div>
+      <span class="svc-arrow">↗</span>
+    </div>
+    <div class="svc-card reveal d4">
+      <span class="svc-num f-mono">04</span>
+      <span class="svc-icon">◎</span>
+      <h3 class="svc-name">Motion & 3D</h3>
+      <p class="svc-desc">Animation, micro-interactions, and 3D experiences that make your product unforgettable.</p>
+      <div class="svc-tags">
+        <span class="tag">After Effects</span>
+        <span class="tag">Three.js</span>
+        <span class="tag">Spline</span>
+      </div>
+      <span class="svc-arrow">↗</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── WORK ──────────────────────────────────────── -->
+<section class="section" id="work">
+  <div class="sec-head reveal">
+    <div>
+      <p class="sec-label">Selected Work</p>
+      <h2 class="f-display sec-title">Projects we're proud of</h2>
+    </div>
+    <a href="#" class="sec-link">All Projects →</a>
+  </div>
+
+  <div class="work-grid">
+    <div class="work-card reveal">
+      <div class="work-vis">
+        <span class="work-vis-label">Forma</span>
+        <div class="work-hover-overlay"></div>
+      </div>
+      <div class="work-info">
+        <p class="work-cat">Brand Identity · 2024</p>
+        <h3 class="f-display work-title">Lumina Health — Complete Brand Overhaul</h3>
+      </div>
+    </div>
+    <div class="work-card reveal d1">
+      <div class="work-vis">
+        <span class="work-vis-label" style="font-size:3rem">◈</span>
+        <div class="work-hover-overlay"></div>
+      </div>
+      <div class="work-info">
+        <p class="work-cat">Product Design · 2024</p>
+        <h3 class="f-display work-title">Verdant — Finance Dashboard</h3>
+      </div>
+    </div>
+    <div class="work-card reveal d2">
+      <div class="work-vis">
+        <span class="work-vis-label" style="font-size:3rem">⬡</span>
+        <div class="work-hover-overlay"></div>
+      </div>
+      <div class="work-info">
+        <p class="work-cat">Web Development · 2023</p>
+        <h3 class="f-display work-title">Orbit — E-Commerce Platform</h3>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS ──────────────────────────────────────── -->
+<div class="stats-band reveal" id="about">
+  <div class="stats-grid">
+    <div class="stat-item">
+      <span class="stat-val f-mono">120<em>+</em></span>
+      <span class="stat-lbl">Projects completed</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-val f-mono">98<em>%</em></span>
+      <span class="stat-lbl">Client satisfaction</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-val f-mono">6<em>yr</em></span>
+      <span class="stat-lbl">In business</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-val f-mono">40<em>+</em></span>
+      <span class="stat-lbl">Countries reached</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── QUOTE ──────────────────────────────────────── -->
+<section class="section">
+  <div class="quote-block reveal">
+    <p class="quote-text">"Forma didn't just deliver a brand — they gave us a language. Every touchpoint now feels coherent, intentional, and unmistakably ours."</p>
+    <div class="quote-author">
+      <div class="author-av"></div>
+      <div>
+        <p class="author-name">Sarah Chen</p>
+        <p class="author-role">CEO, Lumina Health</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ───────────────────────────────────────── -->
+<section class="section" id="contact">
+  <div class="cta-box reveal">
+    <p class="cta-label f-mono">Ready to Build?</p>
+    <h2 class="f-display cta-title">Let's make something remarkable</h2>
+    <p class="cta-desc">Whether you're launching a new product or reimagining an existing one — we'd love to hear about it.</p>
+    <div class="cta-actions">
+      <button class="btn-primary">Start a Conversation →</button>
+      <button class="btn-outline">View Our Process</button>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────── -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo" style="font-family:'Fraunces',serif;font-size:1.45rem;font-weight:700;letter-spacing:-0.04em;color:var(--text);text-decoration:none;">Forma<em style="color:var(--accent);font-style:normal;">.</em></a>
+      <p>A design studio crafting digital experiences since 2019. Based in Jakarta, working globally.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#">Brand Identity</a></li>
+        <li><a href="#">Product Design</a></li>
+        <li><a href="#">Web Development</a></li>
+        <li><a href="#">Motion Design</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Work</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Journal</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="#">hello@forma.co</a></li>
+        <li><a href="#">+62 21 000 0000</a></li>
+        <li><a href="#">Jakarta, Indonesia</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Forma Studio. All rights reserved.</p>
+    <div class="socials">
+      <a href="#" class="soc" aria-label="Twitter">tw</a>
+      <a href="#" class="soc" aria-label="Instagram">ig</a>
+      <a href="#" class="soc" aria-label="LinkedIn">li</a>
+      <a href="#" class="soc" aria-label="Dribbble">dr</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ── Theme Toggle ── */
+  const btn = document.getElementById('themeBtn');
+  const root = document.documentElement;
+  btn.addEventListener('click', () => {
+    const dark = root.getAttribute('data-theme') === 'dark';
+    root.setAttribute('data-theme', dark ? 'light' : 'dark');
+    btn.textContent = dark ? '☾ Dark' : '☀ Light';
+  });
+
+  /* ── Hamburger ── */
+  const ham = document.getElementById('hamBtn');
+  const mob = document.getElementById('mobMenu');
+  ham.addEventListener('click', () => {
+    ham.classList.toggle('open');
+    mob.classList.toggle('active');
+  });
+  mob.querySelectorAll('a').forEach(a =>
+    a.addEventListener('click', () => {
+      ham.classList.remove('open');
+      mob.classList.remove('active');
+    })
+  );
+
+  /* ── Scroll Reveal ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  /* ── Active nav on scroll ── */
+  window.addEventListener('scroll', () => {
+    document.querySelector('nav').style.borderBottomColor =
+      window.scrollY > 10 ? 'var(--border-strong)' : 'var(--border)';
+  }, { passive: true });
+</script>
+</body>
+</html>

@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RIZKY.DEV — Independent Maker & Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #FFFCE8;
+  --bg2: #FFF9D0;
+  --bg3: #F5F0C0;
+  --text: #0A0A0A;
+  --text2: #2A2A2A;
+  --yellow: #FFE500;
+  --blue: #0055FF;
+  --red: #FF2200;
+  --green: #00CC44;
+  --border: #0A0A0A;
+  --shadow: 4px 4px 0px #0A0A0A;
+  --shadow-lg: 6px 6px 0px #0A0A0A;
+  --shadow-xl: 8px 8px 0px #0A0A0A;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+}
+[data-theme="dark"] {
+  --bg: #0A0A0A;
+  --bg2: #141414;
+  --bg3: #1E1E1E;
+  --text: #FFFCE8;
+  --text2: #D0CCA0;
+  --border: #FFE500;
+  --shadow: 4px 4px 0px #FFE500;
+  --shadow-lg: 6px 6px 0px #FFE500;
+  --shadow-xl: 8px 8px 0px #FFE500;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-display);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* ── CARD & BUTTON BASE ── */
+.card {
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow);
+  border-radius: 0;
+  background: var(--bg2);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-lg);
+}
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow);
+  border-radius: 0;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.12s, box-shadow 0.12s;
+  background: var(--yellow);
+  color: #0A0A0A;
+  padding: 0.7rem 1.5rem;
+  font-size: 0.85rem;
+}
+.btn:hover { transform: translate(-2px, -2px); box-shadow: var(--shadow-lg); }
+.btn:active { transform: translate(2px, 2px); box-shadow: none; }
+.btn-blue { background: var(--blue); color: #FFFCE8; }
+.btn-red { background: var(--red); color: #FFFCE8; }
+.btn-dark { background: var(--text); color: var(--bg); }
+.btn-outline { background: transparent; color: var(--text); }
+.btn-sm { padding: 0.4rem 0.85rem; font-size: 0.72rem; }
+
+/* ── NAVBAR ── */
+.navbar {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 64px;
+  background: var(--yellow);
+  border-bottom: 2px solid var(--border);
+}
+[data-theme="dark"] .navbar { background: #0A0A0A; border-bottom: 2px solid var(--border); }
+.navbar-logo {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text);
+  text-decoration: none;
+}
+.navbar-logo span { color: var(--blue); }
+[data-theme="dark"] .navbar-logo span { color: var(--border); }
+.navbar-nav { display: flex; align-items: center; gap: 0; list-style: none; }
+.navbar-nav a {
+  display: block; padding: 0.5rem 0.9rem;
+  text-decoration: none; color: var(--text);
+  font-family: var(--font-mono); font-size: 0.78rem;
+  font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  border-left: 2px solid transparent;
+  transition: background 0.15s;
+}
+.navbar-nav li:first-child a { border-left: 2px solid var(--border); }
+.navbar-nav a:hover { background: var(--bg); }
+[data-theme="dark"] .navbar-nav a:hover { background: var(--bg3); }
+.navbar-actions { display: flex; align-items: center; gap: 0.5rem; }
+.dark-toggle {
+  border: 2px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  width: 40px; height: 40px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.dark-toggle:hover { transform: translate(-2px,-2px); box-shadow: var(--shadow-lg); }
+.hamburger-nb { display: none; }
+
+/* ── HERO ── */
+.hero {
+  padding: 5rem 2rem 4rem;
+  border-bottom: 2px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.hero-bg-text {
+  position: absolute; top: -0.2em; right: -0.05em;
+  font-size: clamp(6rem, 18vw, 14rem);
+  font-weight: 700; font-family: var(--font-mono);
+  color: var(--bg3); line-height: 1;
+  user-select: none; pointer-events: none;
+  letter-spacing: -0.05em;
+  z-index: 0;
+}
+[data-theme="dark"] .hero-bg-text { color: var(--bg2); }
+.hero-inner { max-width: 1000px; margin: 0 auto; position: relative; z-index: 1; }
+.hero-tag {
+  display: inline-block;
+  background: var(--yellow); border: 2px solid var(--border);
+  box-shadow: var(--shadow);
+  font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  padding: 0.3rem 0.75rem; margin-bottom: 1.75rem;
+  color: #0A0A0A;
+}
+.hero h1 {
+  font-size: clamp(2.75rem, 7vw, 5.5rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  line-height: 1.0;
+  margin-bottom: 1.5rem;
+  font-family: var(--font-display);
+}
+.hero h1 .underline-yellow {
+  text-decoration: none;
+  background: linear-gradient(to bottom, transparent 55%, var(--yellow) 55%);
+  background-size: 100% 100%;
+}
+.hero-sub {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--text2);
+  max-width: 52ch;
+  line-height: 1.8;
+  margin-bottom: 2.5rem;
+}
+.hero-ctas { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2.5rem; align-items: center; }
+.hero-avail {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow);
+  background: var(--bg2);
+  padding: 0.5rem 1rem;
+  font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.avail-dot {
+  width: 10px; height: 10px; background: var(--green);
+  border-radius: 50%;
+  animation: blink-dot 1.5s infinite;
+}
+@keyframes blink-dot { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* ── TICKER ── */
+.ticker {
+  background: var(--yellow); border-top: 2px solid var(--border); border-bottom: 2px solid var(--border);
+  padding: 0.75rem 0; overflow: hidden; position: relative;
+}
+[data-theme="dark"] .ticker { background: var(--border); }
+.ticker-track {
+  display: flex; width: max-content; gap: 0;
+  animation: ticker-scroll 18s linear infinite;
+}
+@keyframes ticker-scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.ticker-item {
+  font-family: var(--font-mono); font-weight: 700;
+  font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em;
+  white-space: nowrap; padding: 0 2rem; color: #0A0A0A;
+}
+.ticker-dot { color: var(--red); }
+
+/* ── ABOUT ── */
+.about-section {
+  padding: 5rem 2rem;
+  border-bottom: 2px solid var(--border);
+}
+.about-inner { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+.about-text h2 {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  font-weight: 700; text-transform: uppercase;
+  letter-spacing: -0.02em; line-height: 1.1;
+  margin-bottom: 1.25rem;
+}
+.about-text p {
+  font-size: 0.9rem; color: var(--text2); line-height: 1.8;
+  font-family: var(--font-mono); margin-bottom: 1rem;
+}
+.stats-boxes { display: flex; flex-direction: column; gap: 0.75rem; }
+.stat-box {
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow);
+  background: var(--bg2);
+  padding: 1.25rem 1.5rem;
+  display: flex; align-items: center; gap: 1.25rem;
+}
+.stat-num-nb {
+  font-size: 2.25rem; font-weight: 700; font-family: var(--font-mono);
+  letter-spacing: -0.04em; flex-shrink: 0;
+}
+.stat-label-nb { font-size: 0.8rem; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text2); }
+
+/* ── WORK ── */
+.work-section {
+  padding: 5rem 2rem;
+  border-bottom: 2px solid var(--border);
+  background: var(--bg3);
+}
+[data-theme="dark"] .work-section { background: var(--bg2); }
+.section-header { max-width: 1000px; margin: 0 auto 2.5rem; display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+.section-h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 700; text-transform: uppercase; letter-spacing: -0.02em; }
+.work-grid { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.project-card {
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow);
+  background: var(--bg);
+  padding: 1.75rem;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.project-card:hover { transform: translate(-3px,-3px); box-shadow: var(--shadow-xl); }
+.proj-num {
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
+  color: var(--text2); text-transform: uppercase; letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+}
+.proj-name {
+  font-size: 1.35rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: -0.01em; margin-bottom: 0.6rem; line-height: 1.15;
+}
+.proj-desc { font-size: 0.82rem; color: var(--text2); font-family: var(--font-mono); line-height: 1.7; margin-bottom: 1.25rem; }
+.tech-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.25rem; }
+.tech-tag {
+  border: 2px solid var(--border);
+  background: var(--bg3);
+  font-family: var(--font-mono); font-size: 0.65rem;
+  text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700;
+  padding: 0.2rem 0.55rem; color: var(--text);
+}
+.proj-link { font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--blue); text-decoration: none; border-bottom: 2px solid var(--blue); }
+.proj-link:hover { color: var(--red); border-bottom-color: var(--red); }
+
+/* ── SERVICES ── */
+.services-section {
+  padding: 5rem 2rem;
+  border-bottom: 2px solid var(--border);
+}
+.services-inner { max-width: 1000px; margin: 0 auto; }
+.services-table { border: 2px solid var(--border); box-shadow: var(--shadow-xl); }
+.svc-row {
+  display: grid; grid-template-columns: 3rem 1fr 1fr auto;
+  gap: 0; border-bottom: 2px solid var(--border);
+  transition: background 0.15s;
+}
+.svc-row:last-child { border-bottom: none; }
+.svc-row:hover { background: var(--bg3); }
+.svc-num {
+  border-right: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
+  color: var(--text2); padding: 1.25rem 0;
+  background: var(--bg2);
+}
+.svc-name {
+  padding: 1.25rem 1.25rem;
+  font-weight: 700; font-size: 0.95rem; text-transform: uppercase;
+  letter-spacing: -0.01em; display: flex; align-items: center;
+  border-right: 2px solid var(--border);
+}
+.svc-desc {
+  padding: 1.25rem 1.25rem;
+  font-family: var(--font-mono); font-size: 0.8rem; color: var(--text2);
+  line-height: 1.65; display: flex; align-items: center;
+  border-right: 2px solid var(--border);
+}
+.svc-price {
+  padding: 1.25rem 1.25rem;
+  font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700;
+  display: flex; align-items: center; white-space: nowrap; min-width: 120px;
+}
+
+/* ── SKILLS ── */
+.skills-section {
+  padding: 4rem 2rem;
+  background: var(--bg2);
+  border-bottom: 2px solid var(--border);
+}
+.skills-inner { max-width: 1000px; margin: 0 auto; }
+.skill-cloud { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.5rem; }
+.skill-tag {
+  border: 2px solid var(--border);
+  font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  padding: 0.4rem 0.85rem;
+  box-shadow: var(--shadow);
+  background: var(--bg);
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.skill-tag:hover { transform: translate(-2px,-2px); box-shadow: var(--shadow-lg); }
+.skill-tag.highlight { background: var(--yellow); }
+[data-theme="dark"] .skill-tag.highlight { color: #0A0A0A; }
+.skill-tag.blue { background: var(--blue); color: #FFFCE8; }
+.skill-tag.red { background: var(--red); color: #FFFCE8; }
+
+/* ── PRICING ── */
+.pricing-section {
+  padding: 5rem 2rem;
+  border-bottom: 2px solid var(--border);
+  background: var(--bg3);
+}
+[data-theme="dark"] .pricing-section { background: var(--bg2); }
+.pricing-nb-grid { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.pricing-nb-card {
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow-xl);
+  background: var(--bg);
+  padding: 2.25rem;
+  position: relative;
+}
+.pricing-nb-card.popular { background: var(--text); color: var(--bg); }
+.pricing-nb-card.popular .pr-tier,
+.pricing-nb-card.popular .pr-feature,
+.pricing-nb-card.popular .pr-period { color: var(--bg2) !important; }
+[data-theme="dark"] .pricing-nb-card.popular { background: var(--border); color: #0A0A0A; }
+[data-theme="dark"] .pricing-nb-card.popular .pr-tier,
+[data-theme="dark"] .pricing-nb-card.popular .pr-feature,
+[data-theme="dark"] .pricing-nb-card.popular .pr-period { color: #2A2A2A !important; }
+.pr-badge {
+  position: absolute; top: 1.25rem; right: 1.25rem;
+  background: var(--yellow); border: 2px solid #0A0A0A;
+  font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+  text-transform: uppercase; padding: 0.25rem 0.6rem; color: #0A0A0A;
+}
+.pr-tier { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text2); margin-bottom: 0.5rem; }
+.pr-name { font-size: 1.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+.pr-price { font-family: var(--font-mono); font-size: 2.5rem; font-weight: 700; letter-spacing: -0.04em; margin-bottom: 0.25rem; line-height: 1; }
+.pr-period { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text2); margin-bottom: 1.75rem; }
+.pr-divider { border: none; border-top: 2px solid var(--border); margin: 1.5rem 0; }
+.pr-features { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 2rem; }
+.pr-feature { font-family: var(--font-mono); font-size: 0.8rem; display: flex; gap: 0.6rem; color: var(--text2); }
+.pr-check { color: var(--green); font-weight: 700; flex-shrink: 0; }
+.pr-cross { color: var(--red); font-weight: 700; flex-shrink: 0; }
+.btn-nb-full { width: 100%; padding: 0.85rem; text-align: center; }
+
+/* ── BLOG ── */
+.blog-section {
+  padding: 5rem 2rem;
+  border-bottom: 2px solid var(--border);
+}
+.blog-grid { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.blog-card {
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow);
+  background: var(--bg2);
+  padding: 1.5rem;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.blog-card:hover { transform: translate(-2px,-2px); box-shadow: var(--shadow-lg); }
+.blog-cat {
+  display: inline-block; background: var(--blue); color: #FFFCE8;
+  font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em; padding: 0.2rem 0.6rem;
+  margin-bottom: 0.9rem; border: 2px solid var(--border);
+}
+.blog-title { font-size: 0.95rem; font-weight: 700; text-transform: uppercase; letter-spacing: -0.01em; line-height: 1.3; margin-bottom: 0.6rem; }
+.blog-date { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* ── TESTIMONIALS ── */
+.testi-section {
+  padding: 5rem 2rem;
+  background: var(--bg3);
+  border-bottom: 2px solid var(--border);
+}
+[data-theme="dark"] .testi-section { background: var(--bg2); }
+.testi-grid { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.testi-nb-card {
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow);
+  background: var(--bg);
+  padding: 1.75rem;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.testi-nb-card:hover { transform: translate(-2px,-2px); box-shadow: var(--shadow-lg); }
+.testi-nb-card blockquote {
+  font-family: var(--font-mono); font-size: 0.82rem;
+  line-height: 1.75; color: var(--text2);
+  border-left: 4px solid var(--border);
+  padding-left: 1rem; margin-bottom: 1.25rem;
+  font-style: italic;
+}
+.testi-by { font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.testi-by strong { color: var(--text); font-weight: 700; }
+.testi-by span { color: var(--text2); display: block; margin-top: 0.2rem; }
+
+/* ── CONTACT ── */
+.contact-section {
+  padding: 5rem 2rem;
+  border-bottom: 2px solid var(--border);
+}
+.contact-inner { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+.contact-left h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 700; text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: 1rem; }
+.contact-left p { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text2); line-height: 1.8; margin-bottom: 1.5rem; }
+.contact-info { display: flex; flex-direction: column; gap: 0.75rem; }
+.contact-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  border: 2px solid var(--border); background: var(--bg2);
+  box-shadow: var(--shadow); padding: 0.75rem 1rem;
+  font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.contact-icon { font-size: 1rem; }
+.contact-form { display: flex; flex-direction: column; gap: 0.75rem; }
+.form-label { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.35rem; display: block; }
+.form-input, .form-textarea {
+  width: 100%; padding: 0.75rem 1rem;
+  border: 2px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  outline: none;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+.form-input:focus, .form-textarea:focus { transform: translate(-2px,-2px); box-shadow: var(--shadow-lg); }
+.form-textarea { resize: vertical; min-height: 120px; }
+
+/* ── FOOTER ── */
+.footer {
+  background: var(--text);
+  color: var(--bg);
+  border-top: 2px solid var(--border);
+  padding: 2rem;
+}
+[data-theme="dark"] .footer { background: var(--bg2); border-top: 2px solid var(--border); }
+.footer-inner { max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem; }
+.footer-logo { font-family: var(--font-mono); font-weight: 700; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.footer-logo span { color: var(--yellow); }
+.footer-copy { font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.6; }
+.footer-links { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.footer-links a {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px;
+  border: 2px solid var(--bg2);
+  color: var(--bg);
+  text-decoration: none; font-size: 0.9rem;
+  box-shadow: 3px 3px 0 var(--yellow);
+  transition: transform 0.12s, box-shadow 0.12s;
+  background: var(--text);
+}
+[data-theme="dark"] .footer-links a { border-color: var(--border); box-shadow: 3px 3px 0 var(--border); color: var(--text); background: var(--bg); }
+.footer-links a:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--yellow); }
+[data-theme="dark"] .footer-links a:hover { box-shadow: 5px 5px 0 var(--border); }
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .navbar-nav { display: none; }
+  .hamburger-nb { display: flex; }
+  .hamburger-nb {
+    border: 2px solid var(--border); background: var(--bg);
+    color: var(--text); width: 40px; height: 40px;
+    box-shadow: var(--shadow); align-items: center; justify-content: center;
+    font-size: 1.1rem; cursor: pointer;
+    font-family: var(--font-mono); font-weight: 700;
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .hamburger-nb:hover { transform: translate(-2px,-2px); box-shadow: var(--shadow-lg); }
+  .mobile-nb {
+    position: fixed; top: 64px; left: 0; right: 0; z-index: 99;
+    background: var(--yellow); border-bottom: 2px solid var(--border);
+    display: none; flex-direction: column;
+  }
+  [data-theme="dark"] .mobile-nb { background: var(--bg2); }
+  .mobile-nb.open { display: flex; }
+  .mobile-nb a {
+    padding: 1rem 2rem; text-decoration: none;
+    font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--text);
+    border-bottom: 2px solid var(--border);
+  }
+  .mobile-nb a:hover { background: var(--bg); }
+  .about-inner { grid-template-columns: 1fr; gap: 2rem; }
+  .work-grid { grid-template-columns: 1fr; }
+  .svc-row { grid-template-columns: 3rem 1fr; }
+  .svc-desc, .svc-price { display: none; }
+  .svc-name { border-right: none; }
+  .svc-num { border-right: 2px solid var(--border); }
+  .pricing-nb-grid { grid-template-columns: 1fr; }
+  .blog-grid { grid-template-columns: 1fr; }
+  .testi-grid { grid-template-columns: 1fr; }
+  .contact-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 3.5rem 1.25rem 3rem; }
+  .hero h1 { font-size: 2.5rem; }
+  .about-section, .work-section, .services-section,
+  .skills-section, .pricing-section, .blog-section,
+  .testi-section, .contact-section { padding: 3.5rem 1.25rem; }
+  .footer { padding: 1.5rem 1.25rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="#" class="navbar-logo">RIZKY<span>.DEV</span></a>
+  <ul class="navbar-nav">
+    <li><a href="#tentang">Tentang</a></li>
+    <li><a href="#proyek">Proyek</a></li>
+    <li><a href="#layanan">Layanan</a></li>
+    <li><a href="#blog">Blog</a></li>
+    <li><a href="#kontak">Kontak</a></li>
+  </ul>
+  <div class="navbar-actions">
+    <button class="dark-toggle" id="darkToggle" title="Toggle tema">🌙</button>
+    <button class="hamburger-nb" id="hamburgerNb">☰</button>
+  </div>
+</nav>
+<div class="mobile-nb" id="mobileNb">
+  <a href="#tentang">Tentang</a>
+  <a href="#proyek">Proyek</a>
+  <a href="#layanan">Layanan</a>
+  <a href="#blog">Blog</a>
+  <a href="#kontak">Kontak</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-text">CODE</div>
+  <div class="hero-inner">
+    <div class="hero-tag">&#9679; Indie Maker & Developer</div>
+    <h1>BUAT.<br><span class="underline-yellow">LAUNCH.</span><br>REPEAT.</h1>
+    <p class="hero-sub">// Halo, saya Rizky — developer full-stack dari Bandung.<br>Saya membangun produk digital, tools kecil yang berguna,<br>dan menulis tentang proses di baliknya.</p>
+    <div class="hero-ctas">
+      <a href="#proyek" class="btn btn-dark">Lihat Proyek ↓</a>
+      <a href="#kontak" class="btn btn-blue">Hire Me →</a>
+      <div class="hero-avail">
+        <span class="avail-dot"></span>
+        Tersedia untuk proyek baru
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="ticker-item">DESIGN</span><span class="ticker-item ticker-dot"> · </span>
+    <span class="ticker-item">CODE</span><span class="ticker-item ticker-dot"> · </span>
+    <span class="ticker-item">BUILD</span><span class="ticker-item ticker-dot"> · </span>
+    <span class="ticker-item">LAUNCH</span><span class="ticker-item ticker-dot"> · </span>
+    <span class="ticker-item">REPEAT</span><span class="ticker-item ticker-dot"> · </span>
+    <span class="ticker-item">SHIP IT</span><span class="ticker-item ticker-dot"> · </span>
+    <span class="ticker-item">INDIE</span><span class="ticker-item ticker-dot"> · </span>
+    <span class="ticker-item">MAKER</span><span class="ticker-item ticker-dot"> · </span>
+    <span class="ticker-item">NO MEETINGS</span><span class="ticker-item ticker-dot"> · </span>
+    <span class="ticker-item">JUST BUILD</span><span class="ticker-item ticker-dot"> · </span>
+    <!-- duplicate -->
+    <span class="ticker-item">DESIGN</span><span class="ticker-item ticker-dot"> · </span>
+    <span class="ticker-item">CODE</span><span class="ticker-item ticker-dot"> · </span>
+    <span class="ticker-item">BUILD</span><span class="ticker-item ticker-dot"> · </span>
+    <span class="ticker-item">LAUNCH</span><span class="ticker-item ticker-dot"> · </span>
+    <span class="ticker-item">REPEAT</span><span class="ticker-item ticker-dot"> · </span>
+    <span class="ticker-item">SHIP IT</span><span class="ticker-item ticker-dot"> · </span>
+    <span class="ticker-item">INDIE</span><span class="ticker-item ticker-dot"> · </span>
+    <span class="ticker-item">MAKER</span><span class="ticker-item ticker-dot"> · </span>
+    <span class="ticker-item">NO MEETINGS</span><span class="ticker-item ticker-dot"> · </span>
+    <span class="ticker-item">JUST BUILD</span><span class="ticker-item ticker-dot"> · </span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about-section" id="tentang">
+  <div class="about-inner">
+    <div class="about-text">
+      <h2>Hai, saya<br>Rizky Pratama.</h2>
+      <p>Full-stack developer dengan 6 tahun pengalaman membangun produk digital dari nol. Spesialis di web app performa tinggi, SaaS tools, dan automasi.</p>
+      <p>Saya percaya pada "ship fast, iterate often" — lebih baik deploy sekarang dan perbaiki dari feedback nyata daripada sempurna tapi tidak pernah rilis.</p>
+      <div style="margin-top: 1.5rem;">
+        <a href="#kontak" class="btn">Diskusi Proyek →</a>
+      </div>
+    </div>
+    <div class="stats-boxes">
+      <div class="stat-box">
+        <div class="stat-num-nb">47+</div>
+        <div>
+          <div style="font-family:var(--font-mono); font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em;">Proyek Diselesaikan</div>
+          <div class="stat-label-nb">Sejak 2018</div>
+        </div>
+      </div>
+      <div class="stat-box" style="background:var(--yellow)">
+        <div class="stat-num-nb">6</div>
+        <div>
+          <div style="font-family:var(--font-mono); font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em;">Produk Diluncurkan</div>
+          <div class="stat-label-nb">Produk aktif di pasar</div>
+        </div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num-nb">3rb+</div>
+        <div>
+          <div style="font-family:var(--font-mono); font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em;">Pengguna Aktif</div>
+          <div class="stat-label-nb">Dari semua produk</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORK -->
+<section class="work-section" id="proyek">
+  <div class="section-header">
+    <h2 class="section-h2">Proyek Pilihan</h2>
+    <a href="#" class="btn btn-sm btn-outline">Lihat Semua →</a>
+  </div>
+  <div class="work-grid">
+    <div class="project-card">
+      <div class="proj-num">#01 — 2026</div>
+      <div class="proj-name">KASIRKU</div>
+      <p class="proj-desc">Aplikasi kasir offline-first untuk warung dan UMKM. Sync ke cloud saat ada koneksi. Dipakai 1.200+ pedagang di Jawa Barat.</p>
+      <div class="tech-tags">
+        <span class="tech-tag">React</span>
+        <span class="tech-tag">IndexedDB</span>
+        <span class="tech-tag">Supabase</span>
+        <span class="tech-tag">PWA</span>
+      </div>
+      <a href="#" class="proj-link">Lihat Proyek ↗</a>
+    </div>
+    <div class="project-card">
+      <div class="proj-num">#02 — 2025</div>
+      <div class="proj-name">JADWALKU</div>
+      <p class="proj-desc">SaaS scheduling sederhana untuk tutor dan konsultan freelance. Booking, reminder WhatsApp, dan invoice otomatis.</p>
+      <div class="tech-tags">
+        <span class="tech-tag">Next.js</span>
+        <span class="tech-tag">Prisma</span>
+        <span class="tech-tag">WA API</span>
+        <span class="tech-tag">Stripe</span>
+      </div>
+      <a href="#" class="proj-link">Lihat Proyek ↗</a>
+    </div>
+    <div class="project-card">
+      <div class="proj-num">#03 — 2025</div>
+      <div class="proj-name">CATATANKU</div>
+      <p class="proj-desc">Markdown note-taking app dengan AI summarizer. Export ke PDF, Notion, dan Google Docs. 400+ pengguna aktif harian.</p>
+      <div class="tech-tags">
+        <span class="tech-tag">SvelteKit</span>
+        <span class="tech-tag">Deno</span>
+        <span class="tech-tag">OpenAI API</span>
+      </div>
+      <a href="#" class="proj-link">Lihat Proyek ↗</a>
+    </div>
+    <div class="project-card">
+      <div class="proj-num">#04 — 2024</div>
+      <div class="proj-name">DEPLOYHUB.ID</div>
+      <p class="proj-desc">Platform deploy website statis untuk developer Indonesia. Alternatif Vercel dengan harga rupiah dan server lokal.</p>
+      <div class="tech-tags">
+        <span class="tech-tag">Go</span>
+        <span class="tech-tag">Docker</span>
+        <span class="tech-tag">Caddy</span>
+        <span class="tech-tag">Vue 3</span>
+      </div>
+      <a href="#" class="proj-link">Lihat Proyek ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services-section" id="layanan">
+  <div class="services-inner">
+    <div class="section-header" style="max-width:100%; margin-bottom:1.5rem;">
+      <h2 class="section-h2">Layanan</h2>
+    </div>
+    <div class="services-table">
+      <div class="svc-row">
+        <div class="svc-num">01</div>
+        <div class="svc-name">Web App Development</div>
+        <div class="svc-desc">Bangun dari nol: landing page, dashboard, SaaS, atau marketplace. Teknologi modern, performa tinggi.</div>
+        <div class="svc-price">Rp 5 jt+</div>
+      </div>
+      <div class="svc-row">
+        <div class="svc-num">02</div>
+        <div class="svc-name">MVP Sprint (2 Minggu)</div>
+        <div class="svc-desc">Wujudkan ide menjadi produk yang bisa diuji pengguna nyata dalam 14 hari kerja dengan fitur inti.</div>
+        <div class="svc-price">Rp 12 jt+</div>
+      </div>
+      <div class="svc-row">
+        <div class="svc-num">03</div>
+        <div class="svc-name">API Integration & Automasi</div>
+        <div class="svc-desc">Hubungkan sistem yang ada, buat webhook, automasi workflow, integrasi WhatsApp / payment gateway.</div>
+        <div class="svc-price">Rp 3 jt+</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section class="skills-section">
+  <div class="skills-inner">
+    <h2 class="section-h2">Toolkit</h2>
+    <div class="skill-cloud">
+      <span class="skill-tag highlight">JavaScript</span>
+      <span class="skill-tag highlight">TypeScript</span>
+      <span class="skill-tag blue">React</span>
+      <span class="skill-tag blue">Next.js</span>
+      <span class="skill-tag">SvelteKit</span>
+      <span class="skill-tag">Vue 3</span>
+      <span class="skill-tag red">Node.js</span>
+      <span class="skill-tag">Go</span>
+      <span class="skill-tag">PostgreSQL</span>
+      <span class="skill-tag">Supabase</span>
+      <span class="skill-tag">Prisma</span>
+      <span class="skill-tag highlight">Tailwind CSS</span>
+      <span class="skill-tag">Docker</span>
+      <span class="skill-tag blue">Vercel</span>
+      <span class="skill-tag">Figma</span>
+      <span class="skill-tag">REST API</span>
+      <span class="skill-tag red">GraphQL</span>
+      <span class="skill-tag">PWA</span>
+      <span class="skill-tag">Midtrans</span>
+      <span class="skill-tag">WhatsApp API</span>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section">
+  <div style="max-width:1000px; margin:0 auto;">
+    <div class="section-header" style="max-width:100%; margin-bottom:2rem;">
+      <h2 class="section-h2">Paket Jasa</h2>
+    </div>
+    <div class="pricing-nb-grid">
+      <div class="pricing-nb-card">
+        <div class="pr-tier">Paket Ringan</div>
+        <div class="pr-name">STARTER</div>
+        <div class="pr-price">Rp 3 jt</div>
+        <div class="pr-period">per proyek / mulai dari</div>
+        <hr class="pr-divider">
+        <ul class="pr-features">
+          <li class="pr-feature"><span class="pr-check">✓</span> Landing page 1 halaman</li>
+          <li class="pr-feature"><span class="pr-check">✓</span> Mobile responsive</li>
+          <li class="pr-feature"><span class="pr-check">✓</span> Kontak & WhatsApp CTA</li>
+          <li class="pr-feature"><span class="pr-check">✓</span> Deploy ke domain kamu</li>
+          <li class="pr-feature"><span class="pr-cross">✗</span> Backend / database</li>
+          <li class="pr-feature"><span class="pr-cross">✗</span> Revisi lebih dari 2x</li>
+        </ul>
+        <button class="btn btn-outline btn-nb-full">Pilih Starter →</button>
+      </div>
+      <div class="pricing-nb-card popular">
+        <div class="pr-badge">TERLARIS</div>
+        <div class="pr-tier">Paket Penuh</div>
+        <div class="pr-name">FULL BUILD</div>
+        <div class="pr-price">Rp 12 jt</div>
+        <div class="pr-period">per MVP / mulai dari</div>
+        <hr class="pr-divider" style="border-color: rgba(255,255,255,0.2)">
+        <ul class="pr-features">
+          <li class="pr-feature"><span class="pr-check">✓</span> Semua halaman yang dibutuhkan</li>
+          <li class="pr-feature"><span class="pr-check">✓</span> Backend + database</li>
+          <li class="pr-feature"><span class="pr-check">✓</span> Autentikasi pengguna</li>
+          <li class="pr-feature"><span class="pr-check">✓</span> Integrasi API pihak ketiga</li>
+          <li class="pr-feature"><span class="pr-check">✓</span> Revisi hingga 5x</li>
+          <li class="pr-feature"><span class="pr-check">✓</span> 1 bulan support pasca-launch</li>
+        </ul>
+        <button class="btn btn-yellow btn-nb-full" style="background:#FFE500; color:#0A0A0A; border-color:#0A0A0A;">Pilih Full Build →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BLOG -->
+<section class="blog-section" id="blog">
+  <div style="max-width:1000px; margin:0 auto;">
+    <div class="section-header" style="max-width:100%; margin-bottom:2rem;">
+      <h2 class="section-h2">Tulisan Terbaru</h2>
+      <a href="#" class="btn btn-sm btn-outline">Semua Tulisan →</a>
+    </div>
+    <div class="blog-grid">
+      <div class="blog-card">
+        <div class="blog-cat">Dev</div>
+        <div class="blog-title">Kenapa Saya Tinggalkan MySQL dan Tidak Pernah Kembali</div>
+        <div class="blog-date">12 Jun 2026</div>
+      </div>
+      <div class="blog-card">
+        <div class="blog-cat" style="background:var(--red)">Maker</div>
+        <div class="blog-title">Dari Idea ke Rp 10 Juta ARR: Timeline KASIRKU Selama 8 Bulan</div>
+        <div class="blog-date">3 Jun 2026</div>
+      </div>
+      <div class="blog-card">
+        <div class="blog-cat" style="background:var(--green); color:#0A0A0A;">Tips</div>
+        <div class="blog-title">Cara Setup Supabase RLS yang Tidak Membuat Kamu Stres</div>
+        <div class="blog-date">22 Mei 2026</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testi-section">
+  <div style="max-width:1000px; margin:0 auto;">
+    <div class="section-header" style="max-width:100%; margin-bottom:2rem;">
+      <h2 class="section-h2">Kata Mereka</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-nb-card">
+        <blockquote>"Rizky deliver tepat waktu dan kodenya bersih banget. KASIRKU versi kami jalan tanpa masalah selama 6 bulan. Will definitely hire again."</blockquote>
+        <div class="testi-by"><strong>BINTANG NUGRAHA</strong><span>Pemilik Warung Makan Sederhana, Bandung</span></div>
+      </div>
+      <div class="testi-nb-card" style="background:var(--yellow)">
+        <blockquote>"MVP kami selesai dalam 13 hari — satu hari lebih cepat dari estimasi. Dan yang lebih penting, investor kami terkesan dengan kualitasnya."</blockquote>
+        <div class="testi-by"><strong>ARINDA DEWI</strong><span>Founder TukarBarang.id</span></div>
+      </div>
+      <div class="testi-nb-card">
+        <blockquote>"Komunikasinya jelas, tidak pakai bahasa teknis yang berlebihan, dan mau revisi dengan sabar. Recommended buat yang baru mulai digitalisasi bisnis."</blockquote>
+        <div class="testi-by"><strong>HENDRA KUSUMA</strong><span>Owner Klinik Fisio Sehat, Jakarta</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="kontak">
+  <div class="contact-inner">
+    <div class="contact-left">
+      <h2>Punya Proyek?<br>Ngobrol Dulu.</h2>
+      <p>Tidak perlu brief yang sempurna — ceritakan saja ide kamu, dan kita cari tahu bersama apakah saya orang yang tepat untuk mewujudkannya.</p>
+      <div class="contact-info">
+        <div class="contact-item"><span class="contact-icon">✉</span> halo@rizky.dev</div>
+        <div class="contact-item"><span class="contact-icon">💬</span> WhatsApp: +62 812-3456-7890</div>
+        <div class="contact-item"><span class="contact-icon">📍</span> Bandung, Jawa Barat 🇮🇩</div>
+        <div class="contact-item"><span class="contact-icon">⏱</span> Respon dalam 24 jam kerja</div>
+      </div>
+    </div>
+    <form class="contact-form" onsubmit="handleFormNb(event)">
+      <div>
+        <label class="form-label">Nama *</label>
+        <input type="text" class="form-input" placeholder="Budi Santoso" required>
+      </div>
+      <div>
+        <label class="form-label">Email *</label>
+        <input type="email" class="form-input" placeholder="budi@perusahaan.id" required>
+      </div>
+      <div>
+        <label class="form-label">Jenis Proyek</label>
+        <input type="text" class="form-input" placeholder="Web App / Landing Page / API / ...">
+      </div>
+      <div>
+        <label class="form-label">Ceritakan Proyek Kamu *</label>
+        <textarea class="form-textarea" placeholder="Ide kamu, target pengguna, timeline, dan budget (kalau ada)..." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-dark" style="width:100%; justify-content:center;">KIRIM PESAN →</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">RIZKY<span>.DEV</span></div>
+    <div class="footer-copy">© 2026 — DIBUAT DENGAN ☕ DI BANDUNG</div>
+    <div class="footer-links">
+      <a href="#" title="Twitter">𝕏</a>
+      <a href="#" title="GitHub">⌥</a>
+      <a href="#" title="LinkedIn">in</a>
+      <a href="#" title="Instagram">◎</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── DARK TOGGLE
+const darkToggle = document.getElementById('darkToggle');
+darkToggle.addEventListener('click', () => {
+  const html = document.documentElement;
+  const isDark = html.dataset.theme === 'dark';
+  html.dataset.theme = isDark ? 'light' : 'dark';
+  darkToggle.textContent = isDark ? '🌙' : '☀';
+});
+
+// ── MOBILE MENU
+const hamburgerNb = document.getElementById('hamburgerNb');
+const mobileNb = document.getElementById('mobileNb');
+hamburgerNb.addEventListener('click', () => {
+  mobileNb.classList.toggle('open');
+  hamburgerNb.textContent = mobileNb.classList.contains('open') ? '✕' : '☰';
+});
+mobileNb.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => {
+    mobileNb.classList.remove('open');
+    hamburgerNb.textContent = '☰';
+  });
+});
+
+// ── FORM SUBMIT
+function handleFormNb(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('[type="submit"]');
+  const orig = btn.textContent;
+  btn.textContent = 'TERKIRIM! ✓';
+  btn.style.background = '#00CC44';
+  btn.style.borderColor = '#0A0A0A';
+  btn.style.color = '#0A0A0A';
+  setTimeout(() => {
+    btn.textContent = orig;
+    btn.style.background = '';
+    btn.style.borderColor = '';
+    btn.style.color = '';
+    e.target.reset();
+  }, 3000);
+}
+
+// ── SMOOTH SCROLL
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+</script>
+</body>
+</html>

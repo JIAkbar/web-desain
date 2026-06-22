@@ -1,0 +1,1748 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PixelMind — Buat Gambar AI Menakjubkan dalam Detik</title>
+<meta name="description" content="PixelMind — Platform AI image generator terbaik. Dari teks ke visual dalam hitungan detik. Tanpa skill desain. Coba gratis sekarang.">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* === RESET & BASE === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); transition: background 0.3s, color 0.3s; line-height: 1.6; }
+
+/* === CSS VARIABLES === */
+:root {
+  --bg:      #FFFFFF;
+  --bg2:     #FDF8FF;
+  --bg3:     #F5EEFF;
+  --bg4:     #EAD8FF;
+  --text:    #1A0833;
+  --text2:   #5A3A88;
+  --text3:   #9A7AB8;
+  --purple:  #8B5CF6;
+  --pink:    #EC4899;
+  --grad:    linear-gradient(135deg, #8B5CF6, #EC4899);
+  --grad2:   linear-gradient(135deg, #A78BFA, #F472B6);
+  --border:  rgba(139,92,246,0.12);
+  --shadow:  0 4px 32px rgba(139,92,246,0.15);
+  --shadow2: 0 8px 48px rgba(139,92,246,0.2);
+  --font-body: 'Outfit', sans-serif;
+  --font-head: 'Space Grotesk', sans-serif;
+}
+[data-theme="dark"] {
+  --bg: #0B0515;
+  --bg2: #120A22;
+  --bg3: #1C1035;
+  --bg4: #261545;
+  --text: #F0E8FF;
+  --text2: #C0A8F0;
+  --text3: #8060B8;
+  --border: rgba(139,92,246,0.2);
+  --shadow: 0 4px 32px rgba(139,92,246,0.25);
+  --shadow2: 0 8px 48px rgba(139,92,246,0.3);
+}
+
+/* === ANNOUNCEMENT BAR === */
+.announce-bar {
+  background: var(--grad);
+  color: #fff;
+  text-align: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+.announce-bar a { color: #fff; text-decoration: underline; cursor: pointer; }
+
+/* === NAVBAR === */
+.navbar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.9rem 2rem;
+  display: flex; align-items: center; gap: 2rem;
+  transition: background 0.3s;
+}
+[data-theme="dark"] .navbar {
+  background: rgba(11,5,21,0.92);
+}
+.nav-logo {
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: 1.4rem;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  white-space: nowrap;
+}
+.nav-links {
+  display: flex; gap: 1.6rem; list-style: none; flex: 1;
+  margin-left: 1rem;
+}
+.nav-links a {
+  text-decoration: none; color: var(--text2);
+  font-size: 0.92rem; font-weight: 500;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--purple); }
+.nav-actions { display: flex; align-items: center; gap: 0.75rem; margin-left: auto; }
+.btn-ghost {
+  background: none; border: 1.5px solid var(--border);
+  color: var(--text2); padding: 0.45rem 1rem;
+  border-radius: 8px; cursor: pointer; font-size: 0.88rem;
+  font-family: var(--font-body); font-weight: 500;
+  transition: all 0.2s;
+}
+.btn-ghost:hover { border-color: var(--purple); color: var(--purple); }
+.btn-primary {
+  background: var(--grad); color: #fff;
+  border: none; padding: 0.5rem 1.2rem;
+  border-radius: 8px; cursor: pointer;
+  font-size: 0.88rem; font-family: var(--font-body); font-weight: 600;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+.theme-toggle {
+  background: var(--bg3); border: 1px solid var(--border);
+  color: var(--text); padding: 0.45rem 0.65rem;
+  border-radius: 8px; cursor: pointer; font-size: 1rem;
+  transition: background 0.2s;
+}
+.theme-toggle:hover { background: var(--bg4); }
+.nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 0.3rem; }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); margin: 5px 0; border-radius: 2px; transition: all 0.3s; }
+
+/* === HERO === */
+.hero {
+  padding: 4rem 2rem 2rem;
+  text-align: center;
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: -120px; left: 50%; transform: translateX(-50%);
+  width: 900px; height: 500px;
+  background: radial-gradient(ellipse at center, rgba(139,92,246,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: var(--bg3); border: 1px solid var(--border);
+  color: var(--purple); font-size: 0.8rem; font-weight: 600;
+  padding: 0.35rem 0.9rem; border-radius: 100px; margin-bottom: 1.5rem;
+}
+.hero h1 {
+  font-family: var(--font-head);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--text);
+  margin-bottom: 1rem;
+  max-width: 780px;
+  margin-left: auto; margin-right: auto;
+}
+.hero h1 em {
+  font-style: normal;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: 1.08rem; color: var(--text2);
+  max-width: 540px; margin: 0 auto 2rem;
+}
+.hero-cta { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem; }
+.btn-hero {
+  background: var(--grad); color: #fff;
+  border: none; padding: 0.75rem 2rem;
+  border-radius: 10px; cursor: pointer;
+  font-size: 1rem; font-family: var(--font-body); font-weight: 700;
+  box-shadow: 0 4px 24px rgba(139,92,246,0.35);
+  transition: all 0.2s;
+}
+.btn-hero:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(139,92,246,0.45); }
+.btn-hero-ghost {
+  background: none; border: 2px solid var(--border);
+  color: var(--text2); padding: 0.75rem 2rem;
+  border-radius: 10px; cursor: pointer;
+  font-size: 1rem; font-family: var(--font-body); font-weight: 600;
+  transition: all 0.2s;
+}
+.btn-hero-ghost:hover { border-color: var(--purple); color: var(--purple); }
+.hero-note { font-size: 0.78rem; color: var(--text3); margin-bottom: 2.5rem; }
+
+/* === IMAGE GENERATOR MOCKUP === */
+.hero-mockup {
+  max-width: 900px; margin: 0 auto 2rem;
+  border-radius: 16px;
+  box-shadow: var(--shadow2);
+  overflow: hidden;
+}
+.imggen-app {
+  border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+  font-size: 0.72rem; background: var(--bg);
+  box-shadow: var(--shadow); max-width: 900px; margin: 0 auto;
+}
+.ig-topbar {
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  padding: 0.6rem 1rem; display: flex; align-items: center; gap: 1rem;
+}
+.ig-logo {
+  font-weight: 800;
+  background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 0.9rem;
+}
+.ig-tabs { display: flex; gap: 0.2rem; flex: 1; }
+.ig-tab { font-size: 0.65rem; padding: 0.25rem 0.65rem; border-radius: 6px; cursor: pointer; color: var(--text3); transition: all 0.2s; }
+.ig-tab.active { background: var(--bg3); color: var(--purple); font-weight: 600; }
+.ig-credits { font-size: 0.65rem; color: var(--text2); white-space: nowrap; }
+.ig-main { display: flex; height: 340px; }
+.ig-controls {
+  width: 200px; flex-shrink: 0; border-right: 1px solid var(--border);
+  padding: 0.75rem; overflow-y: auto; background: var(--bg2);
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.ctrl-label {
+  font-size: 0.58rem; font-weight: 600; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.35rem;
+}
+.ig-prompt {
+  width: 100%; height: 70px; background: var(--bg3);
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 0.4rem; font-size: 0.62rem; color: var(--text);
+  resize: none; font-family: var(--font-body); line-height: 1.5; outline: none;
+  transition: border-color 0.2s;
+}
+.ig-prompt:focus { border-color: var(--purple); }
+.style-grid { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+.style-btn {
+  font-size: 0.6rem; padding: 0.2rem 0.45rem;
+  border: 1px solid var(--border); border-radius: 6px;
+  cursor: pointer; color: var(--text3); background: none;
+  font-family: var(--font-body); transition: all 0.15s;
+}
+.style-btn:hover { border-color: var(--purple); color: var(--purple); }
+.style-btn.active { background: var(--grad); color: #fff; border-color: transparent; }
+.ratio-group { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+.ratio-btn {
+  font-size: 0.6rem; padding: 0.2rem 0.45rem;
+  border: 1px solid var(--border); border-radius: 6px;
+  cursor: pointer; color: var(--text3);
+  font-family: var(--font-head); background: none;
+  transition: all 0.15s;
+}
+.ratio-btn:hover { border-color: var(--purple); color: var(--purple); }
+.ratio-btn.active { background: var(--purple); color: #fff; border-color: var(--purple); }
+.ig-generate-btn {
+  width: 100%; margin-top: 0.75rem; padding: 0.45rem;
+  background: var(--grad); color: #fff; border: none; border-radius: 8px;
+  font-weight: 700; font-size: 0.72rem; cursor: pointer;
+  font-family: var(--font-body); transition: opacity 0.2s;
+}
+.ig-generate-btn:hover { opacity: 0.88; }
+.ig-results {
+  flex: 1; display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem; padding: 0.75rem; overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.img-card {
+  border-radius: 8px; overflow: hidden;
+  position: relative; border: 1px solid var(--border);
+  cursor: pointer;
+}
+.img-preview { aspect-ratio: 1; width: 100%; }
+.img-actions {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.6));
+  padding: 0.35rem; display: flex; justify-content: flex-end; gap: 0.2rem;
+  opacity: 0; transition: opacity 0.2s;
+}
+.img-card:hover .img-actions { opacity: 1; }
+.img-actions button {
+  background: rgba(255,255,255,0.2); border: none; color: #fff;
+  font-size: 0.65rem; width: 22px; height: 22px;
+  border-radius: 4px; cursor: pointer; transition: background 0.15s;
+}
+.img-actions button:hover { background: rgba(255,255,255,0.35); }
+
+/* === SOCIAL PROOF === */
+.social-proof {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 1.4rem 2rem;
+  display: flex; align-items: center; justify-content: center;
+  gap: 3rem; flex-wrap: wrap;
+}
+.sp-item {
+  text-align: center;
+}
+.sp-num {
+  font-family: var(--font-head);
+  font-size: 1.5rem; font-weight: 800;
+  background: var(--grad);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: block;
+}
+.sp-label { font-size: 0.78rem; color: var(--text3); }
+.sp-divider { width: 1px; height: 40px; background: var(--border); }
+
+/* === SECTION GENERIC === */
+.section { padding: 5rem 2rem; }
+.section-alt { background: var(--bg2); }
+.container { max-width: 1100px; margin: 0 auto; }
+.section-tag {
+  display: inline-block;
+  font-size: 0.75rem; font-weight: 700;
+  color: var(--purple); letter-spacing: 0.1em;
+  text-transform: uppercase; margin-bottom: 0.6rem;
+}
+.section-title {
+  font-family: var(--font-head);
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 800; color: var(--text);
+  line-height: 1.25; margin-bottom: 0.75rem;
+}
+.section-title em {
+  font-style: normal;
+  background: var(--grad);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.section-sub { font-size: 1rem; color: var(--text2); max-width: 560px; margin-bottom: 2.5rem; }
+
+/* === GALLERY HASIL === */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.2rem;
+}
+.gallery-card {
+  border-radius: 14px; overflow: hidden;
+  position: relative; cursor: pointer;
+  border: 1px solid var(--border);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.gallery-card:hover { transform: translateY(-4px); box-shadow: var(--shadow2); }
+.gallery-preview {
+  aspect-ratio: 4/5;
+  width: 100%;
+}
+.gallery-info {
+  padding: 0.65rem 0.75rem;
+  background: var(--bg2);
+}
+.gallery-prompt {
+  font-size: 0.75rem; color: var(--text); font-weight: 500;
+  margin-bottom: 0.2rem; line-height: 1.4;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.gallery-style {
+  font-size: 0.65rem; color: var(--text3);
+}
+.gallery-badge {
+  position: absolute; top: 0.5rem; left: 0.5rem;
+  background: rgba(0,0,0,0.55); color: #fff;
+  font-size: 0.58rem; font-weight: 600;
+  padding: 0.15rem 0.45rem; border-radius: 4px;
+  backdrop-filter: blur(4px);
+}
+
+/* === STYLE PRESETS === */
+.presets-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+.preset-card {
+  border: 2px solid var(--border);
+  border-radius: 14px; overflow: hidden;
+  cursor: pointer; transition: all 0.25s;
+  text-align: center;
+}
+.preset-card:hover, .preset-card.active {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(139,92,246,0.12);
+  transform: translateY(-2px);
+}
+.preset-preview {
+  height: 90px; width: 100%;
+}
+.preset-name {
+  padding: 0.5rem;
+  font-size: 0.82rem; font-weight: 600; color: var(--text);
+  background: var(--bg2);
+}
+
+/* === FITUR === */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.feat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.75rem 1.5rem;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+.feat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--grad);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s;
+}
+.feat-card:hover::before { transform: scaleX(1); }
+.feat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: rgba(139,92,246,0.25); }
+.feat-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: var(--bg3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; margin-bottom: 1rem;
+}
+.feat-title { font-family: var(--font-head); font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 0.4rem; }
+.feat-desc { font-size: 0.87rem; color: var(--text2); line-height: 1.55; }
+
+/* === USE CASES === */
+.usecases-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+.uc-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.5rem;
+  text-align: center; transition: all 0.25s;
+}
+.uc-card:hover { border-color: var(--purple); transform: translateY(-3px); box-shadow: var(--shadow); }
+.uc-icon { font-size: 2.2rem; margin-bottom: 0.75rem; display: block; }
+.uc-name {
+  font-family: var(--font-head);
+  font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 0.4rem;
+}
+.uc-desc { font-size: 0.82rem; color: var(--text2); line-height: 1.5; margin-bottom: 0.8rem; }
+.uc-tag {
+  display: inline-block;
+  font-size: 0.7rem; font-weight: 600;
+  background: var(--bg3); color: var(--purple);
+  padding: 0.25rem 0.65rem; border-radius: 100px;
+}
+
+/* === MODEL COMPARISON === */
+.comparison-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.comparison-table th {
+  font-family: var(--font-head);
+  font-size: 0.85rem; font-weight: 700;
+  padding: 1rem 1.25rem;
+  text-align: center; border-bottom: 2px solid var(--border);
+  background: var(--bg2);
+}
+.comparison-table th.highlight {
+  background: var(--bg3);
+  color: var(--purple);
+  position: relative;
+}
+.comparison-table th.highlight::after {
+  content: 'Terbaru';
+  position: absolute; top: -0.6rem; left: 50%; transform: translateX(-50%);
+  background: var(--grad); color: #fff;
+  font-size: 0.6rem; padding: 0.1rem 0.5rem; border-radius: 100px;
+  white-space: nowrap;
+}
+.comparison-table td {
+  padding: 0.85rem 1.25rem;
+  text-align: center; border-bottom: 1px solid var(--border);
+  color: var(--text2);
+}
+.comparison-table td:first-child { text-align: left; color: var(--text); font-weight: 500; }
+.comparison-table td.highlight { background: var(--bg3); font-weight: 600; color: var(--text); }
+.comparison-table tr:last-child td { border-bottom: none; }
+.comparison-table tr:hover td { background: var(--bg3); }
+.comparison-table tr:hover td.highlight { background: var(--bg4); }
+.check-yes { color: #22c55e; font-size: 1rem; }
+.check-no { color: var(--text3); font-size: 1rem; }
+.comp-wrap {
+  border: 1px solid var(--border); border-radius: 16px;
+  overflow: hidden; box-shadow: var(--shadow);
+}
+
+/* === PRICING === */
+.pricing-toggle-wrap {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0.75rem; margin-bottom: 2.5rem;
+}
+.toggle-label { font-size: 0.9rem; color: var(--text2); font-weight: 500; }
+.toggle-label.active-label { color: var(--purple); font-weight: 700; }
+.toggle-switch {
+  width: 48px; height: 26px;
+  background: var(--grad); border-radius: 100px;
+  position: relative; cursor: pointer; border: none;
+  transition: background 0.3s;
+}
+.toggle-switch::after {
+  content: '';
+  position: absolute; top: 3px; left: 3px;
+  width: 20px; height: 20px;
+  background: #fff; border-radius: 50%;
+  transition: transform 0.3s;
+}
+.toggle-switch.yearly::after { transform: translateX(22px); }
+.toggle-badge {
+  background: #dcfce7; color: #15803d;
+  font-size: 0.7rem; font-weight: 700;
+  padding: 0.15rem 0.5rem; border-radius: 100px;
+}
+[data-theme="dark"] .toggle-badge { background: rgba(21,128,61,0.25); color: #4ade80; }
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem; align-items: start;
+}
+.price-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px; padding: 2rem;
+  transition: all 0.25s;
+  position: relative;
+}
+.price-card.popular {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 4px rgba(139,92,246,0.1);
+  transform: scale(1.02);
+}
+.popular-badge {
+  position: absolute; top: -0.6rem; left: 50%; transform: translateX(-50%);
+  background: var(--grad); color: #fff;
+  font-size: 0.7rem; font-weight: 700;
+  padding: 0.2rem 0.85rem; border-radius: 100px;
+  white-space: nowrap;
+}
+.price-plan { font-size: 0.8rem; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+.price-name { font-family: var(--font-head); font-size: 1.3rem; font-weight: 800; color: var(--text); margin-bottom: 0.3rem; }
+.price-num {
+  font-family: var(--font-head);
+  font-size: 2.6rem; font-weight: 800; color: var(--text);
+  line-height: 1; margin: 0.6rem 0 0.2rem;
+}
+.price-num sup { font-size: 1.1rem; vertical-align: top; margin-top: 0.5rem; color: var(--text2); }
+.price-num span { font-size: 0.9rem; font-weight: 500; color: var(--text3); }
+.price-period { font-size: 0.8rem; color: var(--text3); margin-bottom: 1.2rem; }
+.price-desc { font-size: 0.87rem; color: var(--text2); margin-bottom: 1.5rem; line-height: 1.5; }
+.price-divider { border: none; border-top: 1px solid var(--border); margin-bottom: 1.2rem; }
+.price-features { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.5rem; }
+.price-features li {
+  font-size: 0.87rem; color: var(--text2);
+  display: flex; align-items: flex-start; gap: 0.5rem;
+}
+.price-features li::before { content: '✓'; color: var(--purple); font-weight: 700; flex-shrink: 0; margin-top: 0.05rem; }
+.btn-plan {
+  width: 100%; padding: 0.75rem;
+  border-radius: 10px; font-size: 0.92rem; font-weight: 700;
+  cursor: pointer; font-family: var(--font-body);
+  transition: all 0.2s;
+}
+.btn-plan-outline {
+  background: none; border: 2px solid var(--border); color: var(--text2);
+}
+.btn-plan-outline:hover { border-color: var(--purple); color: var(--purple); }
+.btn-plan-fill {
+  background: var(--grad); border: none; color: #fff;
+  box-shadow: 0 4px 20px rgba(139,92,246,0.3);
+}
+.btn-plan-fill:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* === API SECTION === */
+.api-section {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 3rem; align-items: center;
+}
+.api-info .section-title { text-align: left; }
+.api-info .section-sub { text-align: left; }
+.api-features { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 1.5rem; }
+.api-features li {
+  font-size: 0.9rem; color: var(--text2);
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.api-features li::before { content: '→'; color: var(--purple); font-weight: 700; }
+.api-snippet {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.snippet-topbar {
+  background: var(--bg3); padding: 0.6rem 1rem;
+  display: flex; align-items: center; gap: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot-r { background: #ff5f57; }
+.dot-y { background: #febc2e; }
+.dot-g { background: #28c840; }
+.snippet-label { margin-left: auto; font-size: 0.7rem; color: var(--text3); font-family: 'Space Grotesk', monospace; }
+.snippet-body {
+  padding: 1.2rem 1.4rem;
+  font-family: 'Space Grotesk', monospace;
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: var(--text2);
+  overflow-x: auto;
+}
+.code-c { color: #9A7AB8; }
+.code-k { color: #8B5CF6; font-weight: 600; }
+.code-s { color: #EC4899; }
+.code-n { color: #06b6d4; }
+.code-v { color: #f59e0b; }
+
+/* === TESTIMONIALS === */
+.testi-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.testi-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.75rem;
+  transition: all 0.25s; position: relative;
+}
+.testi-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: rgba(139,92,246,0.25); }
+.testi-quote {
+  font-size: 2rem; color: var(--purple);
+  line-height: 1; margin-bottom: 0.75rem;
+}
+.testi-text {
+  font-size: 0.92rem; color: var(--text2);
+  line-height: 1.65; margin-bottom: 1.25rem; font-style: italic;
+}
+.testi-author { display: flex; align-items: center; gap: 0.75rem; }
+.testi-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0;
+}
+.testi-name { font-size: 0.9rem; font-weight: 700; color: var(--text); }
+.testi-role { font-size: 0.75rem; color: var(--text3); }
+.testi-stars { color: #f59e0b; font-size: 0.75rem; margin-bottom: 0.1rem; }
+
+/* === FAQ === */
+.faq-list { max-width: 740px; margin: 0 auto; display: flex; flex-direction: column; gap: 0.75rem; }
+.faq-item {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+  transition: border-color 0.2s;
+}
+.faq-item.open { border-color: rgba(139,92,246,0.3); }
+.faq-q {
+  padding: 1.1rem 1.4rem;
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer; gap: 1rem;
+  font-size: 0.95rem; font-weight: 600; color: var(--text);
+}
+.faq-icon {
+  width: 24px; height: 24px; border-radius: 6px;
+  background: var(--bg3); display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; color: var(--purple); flex-shrink: 0;
+  transition: all 0.3s;
+}
+.faq-item.open .faq-icon { background: var(--grad); color: #fff; transform: rotate(45deg); }
+.faq-a {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.25s;
+  font-size: 0.9rem; color: var(--text2); line-height: 1.65;
+  padding: 0 1.4rem;
+}
+.faq-item.open .faq-a { max-height: 300px; padding: 0 1.4rem 1.1rem; }
+
+/* === CTA SECTION === */
+.cta-section {
+  padding: 5rem 2rem;
+  text-align: center;
+  background: var(--bg3);
+  position: relative; overflow: hidden;
+}
+.cta-section::before {
+  content: '';
+  position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+  width: 700px; height: 500px;
+  background: radial-gradient(ellipse, rgba(139,92,246,0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cta-section::after {
+  content: '';
+  position: absolute; bottom: -150px; right: 5%;
+  width: 400px; height: 400px;
+  background: radial-gradient(ellipse, rgba(236,72,153,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cta-section h2 {
+  font-family: var(--font-head);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 800; color: var(--text);
+  line-height: 1.2; margin-bottom: 0.75rem;
+  position: relative; z-index: 1;
+}
+.cta-section h2 em {
+  font-style: normal;
+  background: var(--grad);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.cta-section p { font-size: 1.05rem; color: var(--text2); margin-bottom: 2rem; position: relative; z-index: 1; }
+.cta-note { font-size: 0.78rem; color: var(--text3); margin-top: 0.75rem; position: relative; z-index: 1; }
+.cta-actions { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
+
+/* === FOOTER === */
+.footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 3rem 2rem 1.5rem;
+}
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 2rem; margin-bottom: 2.5rem;
+}
+.footer-brand-name {
+  font-family: var(--font-head); font-size: 1.3rem; font-weight: 800;
+  background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 0.6rem;
+}
+.footer-brand-desc { font-size: 0.85rem; color: var(--text2); line-height: 1.6; margin-bottom: 1rem; }
+.footer-social { display: flex; gap: 0.5rem; }
+.social-btn {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: var(--bg3); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; text-decoration: none; color: var(--text2);
+  transition: all 0.2s;
+}
+.social-btn:hover { background: var(--bg4); color: var(--purple); border-color: var(--purple); }
+.footer-col-title { font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 0.9rem; }
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.footer-links a {
+  font-size: 0.83rem; color: var(--text3);
+  text-decoration: none; transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--purple); }
+.footer-bottom {
+  border-top: 1px solid var(--border); padding-top: 1.25rem;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 0.75rem;
+}
+.footer-copy { font-size: 0.8rem; color: var(--text3); }
+
+/* === MOBILE NAV === */
+.mobile-menu {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: var(--bg); flex-direction: column;
+  padding: 1.5rem 2rem;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+.mobile-menu-logo {
+  font-family: var(--font-head); font-size: 1.3rem; font-weight: 800;
+  background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.mobile-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text); }
+.mobile-nav-links { list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
+.mobile-nav-links a {
+  display: block; text-decoration: none; color: var(--text);
+  font-size: 1.1rem; font-weight: 500; padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.mobile-actions { margin-top: 2rem; display: flex; flex-direction: column; gap: 0.75rem; }
+
+/* === RESPONSIVE === */
+@media (max-width: 960px) {
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+  .presets-grid { grid-template-columns: repeat(4, 1fr); }
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .usecases-grid { grid-template-columns: repeat(2, 1fr); }
+  .api-section { grid-template-columns: 1fr; gap: 2rem; }
+  .testi-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .ig-main { height: 300px; }
+  .ig-controls { width: 170px; }
+  .ig-results { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .btn-ghost { display: none; }
+  .nav-hamburger { display: block; }
+  .social-proof { gap: 1.5rem; }
+  .sp-divider { display: none; }
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+  .presets-grid { grid-template-columns: repeat(2, 1fr); }
+  .features-grid { grid-template-columns: 1fr; }
+  .usecases-grid { grid-template-columns: repeat(2, 1fr); }
+  .testi-grid { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .price-card.popular { transform: none; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; text-align: center; }
+  .ig-main { flex-direction: column; height: auto; }
+  .ig-controls { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+  .ig-results { grid-template-columns: repeat(3, 1fr); height: 220px; }
+  .section { padding: 3.5rem 1.25rem; }
+}
+@media (max-width: 600px) {
+  .navbar { padding: 0.75rem 1.25rem; gap: 1rem; }
+  .hero { padding: 2.5rem 1.25rem 1.5rem; }
+  .announce-bar { font-size: 0.73rem; }
+  .gallery-grid { grid-template-columns: 1fr 1fr; }
+  .presets-grid { grid-template-columns: repeat(2, 1fr); }
+  .usecases-grid { grid-template-columns: 1fr 1fr; }
+  .comparison-table { font-size: 0.78rem; }
+  .comparison-table th, .comparison-table td { padding: 0.65rem 0.75rem; }
+  .ig-results { grid-template-columns: repeat(2, 1fr); }
+  .section-title { font-size: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- 1. ANNOUNCEMENT BAR -->
+<div class="announce-bar">
+  🎉 Model PixelMind v3.0 rilis — kualitas 4x lebih baik &amp; generasi 2x lebih cepat &nbsp;·&nbsp; <a>Coba Sekarang →</a>
+</div>
+
+<!-- 2. NAVBAR -->
+<nav class="navbar">
+  <div class="nav-logo">PixelMind</div>
+  <ul class="nav-links">
+    <li><a href="#">Generate</a></li>
+    <li><a href="#">Gallery</a></li>
+    <li><a href="#">Pricing</a></li>
+    <li><a href="#">Blog</a></li>
+    <li><a href="#">API</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-ghost">Masuk</button>
+    <button class="btn-primary">Coba Gratis</button>
+    <button class="theme-toggle" id="themeToggle" title="Toggle tema">🌙</button>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-menu-header">
+    <div class="mobile-menu-logo">PixelMind</div>
+    <button class="mobile-close" id="mobileClose">✕</button>
+  </div>
+  <ul class="mobile-nav-links">
+    <li><a href="#">Generate</a></li>
+    <li><a href="#">Gallery</a></li>
+    <li><a href="#">Pricing</a></li>
+    <li><a href="#">Blog</a></li>
+    <li><a href="#">API</a></li>
+  </ul>
+  <div class="mobile-actions">
+    <button class="btn-ghost" style="text-align:center">Masuk</button>
+    <button class="btn-primary">Coba Gratis</button>
+  </div>
+</div>
+
+<!-- 3. HERO -->
+<section class="hero">
+  <div class="hero-badge">✦ AI Image Generator #1 Indonesia</div>
+  <h1>Buat <em>Gambar Memukau</em><br>dari Sekedar Teks</h1>
+  <p class="hero-sub">Dari Teks ke Visual — Tanpa Skill Desain. Cukup deskripsikan imajinasimu, PixelMind wujudkan dalam hitungan detik.</p>
+  <div class="hero-cta">
+    <button class="btn-hero">✨ Generate Gratis Sekarang</button>
+    <button class="btn-hero-ghost">▶ Lihat Demo</button>
+  </div>
+  <p class="hero-note">✓ Gratis 10 gambar/hari &nbsp;·&nbsp; ✓ Tanpa kartu kredit &nbsp;·&nbsp; ✓ Langsung pakai</p>
+
+  <!-- IMAGE GENERATOR MOCKUP -->
+  <div class="hero-mockup">
+    <div class="imggen-app">
+      <div class="ig-topbar">
+        <span class="ig-logo">PixelMind</span>
+        <div class="ig-tabs">
+          <span class="ig-tab active">Generate</span>
+          <span class="ig-tab">Edit</span>
+          <span class="ig-tab">Galeri</span>
+        </div>
+        <div class="ig-credits"><span>⚡ 450 kredit</span></div>
+      </div>
+      <div class="ig-main">
+        <div class="ig-controls">
+          <div class="ctrl-label">Prompt</div>
+          <textarea class="ig-prompt">Pemandangan sawah di Bali saat matahari terbenam, warna emas dan jingga, fotorealistis, 4K detail</textarea>
+          <div class="ctrl-label" style="margin-top:0.6rem">Gaya</div>
+          <div class="style-grid">
+            <button class="style-btn active">Fotorealis</button>
+            <button class="style-btn">Anime</button>
+            <button class="style-btn">Digital Art</button>
+            <button class="style-btn">Watercolor</button>
+            <button class="style-btn">3D Render</button>
+            <button class="style-btn">Sketsa</button>
+          </div>
+          <div class="ctrl-label" style="margin-top:0.6rem">Rasio</div>
+          <div class="ratio-group">
+            <button class="ratio-btn active">1:1</button>
+            <button class="ratio-btn">4:3</button>
+            <button class="ratio-btn">16:9</button>
+            <button class="ratio-btn">9:16</button>
+          </div>
+          <div class="ctrl-label" style="margin-top:0.6rem">Jumlah</div>
+          <div class="ratio-group">
+            <button class="ratio-btn">1</button>
+            <button class="ratio-btn active">4</button>
+            <button class="ratio-btn">6</button>
+          </div>
+          <button class="ig-generate-btn" id="generateBtn">✨ Generate Gambar</button>
+        </div>
+        <div class="ig-results">
+          <div class="img-card">
+            <div class="img-preview" style="background: linear-gradient(135deg, #FF6B35 0%, #F7C59F 30%, #FFDB8B 60%, #FF9A3C 100%)"></div>
+            <div class="img-actions"><button>⬇</button><button>❤</button><button>⋮</button></div>
+          </div>
+          <div class="img-card">
+            <div class="img-preview" style="background: linear-gradient(160deg, #1a1a2e 0%, #16213e 40%, #0f3460 70%, #e94560 100%)"></div>
+            <div class="img-actions"><button>⬇</button><button>❤</button><button>⋮</button></div>
+          </div>
+          <div class="img-card">
+            <div class="img-preview" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f5576c 100%)"></div>
+            <div class="img-actions"><button>⬇</button><button>❤</button><button>⋮</button></div>
+          </div>
+          <div class="img-card">
+            <div class="img-preview" style="background: linear-gradient(135deg, #0f9b58 0%, #00bf8f 50%, #7BFF8B 100%)"></div>
+            <div class="img-actions"><button>⬇</button><button>❤</button><button>⋮</button></div>
+          </div>
+          <div class="img-card">
+            <div class="img-preview" style="background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)"></div>
+            <div class="img-actions"><button>⬇</button><button>❤</button><button>⋮</button></div>
+          </div>
+          <div class="img-card">
+            <div class="img-preview" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%)"></div>
+            <div class="img-actions"><button>⬇</button><button>❤</button><button>⋮</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. SOCIAL PROOF -->
+<div class="social-proof">
+  <div class="sp-item">
+    <span class="sp-num" data-count="8000000" data-prefix="" data-suffix="M+">0</span>
+    <span class="sp-label">Gambar dibuat</span>
+  </div>
+  <div class="sp-divider"></div>
+  <div class="sp-item">
+    <span class="sp-num" data-count="320000" data-prefix="" data-suffix="rb+">0</span>
+    <span class="sp-label">Pengguna aktif</span>
+  </div>
+  <div class="sp-divider"></div>
+  <div class="sp-item">
+    <span class="sp-num" data-count="49" data-prefix="" data-suffix="/5">0</span>
+    <span class="sp-label">Rating App Store</span>
+  </div>
+  <div class="sp-divider"></div>
+  <div class="sp-item">
+    <span class="sp-num" data-count="3" data-prefix="" data-suffix=" detik">0</span>
+    <span class="sp-label">Rata-rata waktu generate</span>
+  </div>
+</div>
+
+<!-- 5. CONTOH HASIL -->
+<section class="section">
+  <div class="container">
+    <div style="text-align:center">
+      <span class="section-tag">Hasil nyata dari PixelMind</span>
+      <h2 class="section-title">Lihat Apa yang Bisa <em>Kamu Buat</em></h2>
+      <p class="section-sub" style="margin:0 auto 2.5rem">Semua gambar berikut dibuat oleh pengguna nyata hanya dari teks deskripsi — tanpa skill desain sama sekali.</p>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-card">
+        <div class="gallery-badge">Fotorealis</div>
+        <div class="gallery-preview" style="background: linear-gradient(135deg, #FF6B35 0%, #F7C59F 25%, #FFDB8B 55%, #FF8C42 80%, #E05B00 100%)"></div>
+        <div class="gallery-info">
+          <div class="gallery-prompt">Batik motif geometri modern dengan warna neon cerah</div>
+          <div class="gallery-style">Fotorealis · 1024px</div>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <div class="gallery-badge">Digital Art</div>
+        <div class="gallery-preview" style="background: linear-gradient(135deg, #0D0221 0%, #1a1a2e 30%, #16213e 55%, #e94560 80%, #ff2d55 100%)"></div>
+        <div class="gallery-info">
+          <div class="gallery-prompt">Karakter wayang futuristik bersenjata laser, dark dramatic</div>
+          <div class="gallery-style">Digital Art · 1024px</div>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <div class="gallery-badge">Fotorealis</div>
+        <div class="gallery-preview" style="background: linear-gradient(160deg, #006994 0%, #0099CC 30%, #00D4FF 55%, #64E8DE 80%, #A8F0FF 100%)"></div>
+        <div class="gallery-info">
+          <div class="gallery-prompt">Pantai Raja Ampat dari sudut drone, teal bening</div>
+          <div class="gallery-style">Fotorealis · 4K</div>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <div class="gallery-badge">Watercolor</div>
+        <div class="gallery-preview" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 30%, #fda085 60%, #f6d365 100%)"></div>
+        <div class="gallery-info">
+          <div class="gallery-prompt">Bunga teratai mekar di kolam bambu, gaya cat air</div>
+          <div class="gallery-style">Watercolor · 1024px</div>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <div class="gallery-badge">3D Render</div>
+        <div class="gallery-preview" style="background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 35%, #533483 65%, #e94560 100%)"></div>
+        <div class="gallery-info">
+          <div class="gallery-prompt">Maskot burung Garuda versi robot 3D chrome</div>
+          <div class="gallery-style">3D Render · 1024px</div>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <div class="gallery-badge">Anime</div>
+        <div class="gallery-preview" style="background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 40%, #ffecd2 70%, #fcb69f 100%)"></div>
+        <div class="gallery-info">
+          <div class="gallery-prompt">Gadis anime di tengah hutan bambu sakura, pastel</div>
+          <div class="gallery-style">Anime · 1024px</div>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <div class="gallery-badge">Pixel Art</div>
+        <div class="gallery-preview" style="background: linear-gradient(135deg, #0f2027 0%, #203a43 40%, #2c5364 70%, #00D4FF 100%)"></div>
+        <div class="gallery-info">
+          <div class="gallery-prompt">Kota Jakarta pixel art cyberpunk malam hari</div>
+          <div class="gallery-style">Pixel Art · 512px</div>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <div class="gallery-badge">Oil Painting</div>
+        <div class="gallery-preview" style="background: linear-gradient(135deg, #2D6A2F 0%, #4CAF50 35%, #8BC34A 60%, #CDDC39 80%, #FFD700 100%)"></div>
+        <div class="gallery-info">
+          <div class="gallery-prompt">Petani padi Jawa gaya lukisan cat minyak klasik</div>
+          <div class="gallery-style">Oil Painting · 1024px</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. STYLE PRESETS -->
+<section class="section section-alt">
+  <div class="container">
+    <div style="text-align:center">
+      <span class="section-tag">8 Gaya Artistik</span>
+      <h2 class="section-title">Pilih <em>Gaya Visualmu</em></h2>
+      <p class="section-sub" style="margin:0 auto 2.5rem">Setiap gaya dioptimasi dengan model AI khusus untuk hasil terbaik di kategorinya.</p>
+    </div>
+    <div class="presets-grid">
+      <div class="preset-card active" data-preset="Fotorealis">
+        <div class="preset-preview" style="background: linear-gradient(135deg, #FF6B35, #F7C59F, #FFDB8B)"></div>
+        <div class="preset-name">Fotorealis</div>
+      </div>
+      <div class="preset-card" data-preset="Anime">
+        <div class="preset-preview" style="background: linear-gradient(135deg, #a18cd1, #fbc2eb, #ffecd2)"></div>
+        <div class="preset-name">Anime</div>
+      </div>
+      <div class="preset-card" data-preset="Oil Painting">
+        <div class="preset-preview" style="background: linear-gradient(135deg, #2D6A2F, #4CAF50, #FFD700)"></div>
+        <div class="preset-name">Oil Painting</div>
+      </div>
+      <div class="preset-card" data-preset="Watercolor">
+        <div class="preset-preview" style="background: linear-gradient(135deg, #f093fb, #f5576c, #fda085)"></div>
+        <div class="preset-name">Watercolor</div>
+      </div>
+      <div class="preset-card" data-preset="3D Render">
+        <div class="preset-preview" style="background: linear-gradient(135deg, #1a1a2e, #533483, #e94560)"></div>
+        <div class="preset-name">3D Render</div>
+      </div>
+      <div class="preset-card" data-preset="Pixel Art">
+        <div class="preset-preview" style="background: linear-gradient(135deg, #0f2027, #2c5364, #00D4FF)"></div>
+        <div class="preset-name">Pixel Art</div>
+      </div>
+      <div class="preset-card" data-preset="Sketsa">
+        <div class="preset-preview" style="background: linear-gradient(135deg, #e0e0e0, #9e9e9e, #424242)"></div>
+        <div class="preset-name">Sketsa</div>
+      </div>
+      <div class="preset-card" data-preset="Digital Art">
+        <div class="preset-preview" style="background: linear-gradient(135deg, #667eea, #764ba2, #f5576c)"></div>
+        <div class="preset-name">Digital Art</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. FITUR UNGGULAN -->
+<section class="section">
+  <div class="container">
+    <div style="text-align:center">
+      <span class="section-tag">Kenapa PixelMind?</span>
+      <h2 class="section-title">Fitur yang <em>Tidak Ada di Tempat Lain</em></h2>
+      <p class="section-sub" style="margin:0 auto 2.5rem">Teknologi generasi terbaru dalam paket yang mudah dipakai siapapun.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon">🧠</div>
+        <div class="feat-title">Model AI Terkini</div>
+        <div class="feat-desc">Didukung PixelMind v3.0 dengan arsitektur diffusion terbaru. Memahami konteks bahasa Indonesia secara native.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🖼️</div>
+        <div class="feat-title">Ultra HD 4K</div>
+        <div class="feat-desc">Generate gambar hingga resolusi 4096×4096 piksel. Detail sempurna untuk print besar, billboard, dan konten profesional.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">⚡</div>
+        <div class="feat-title">Batch Generate</div>
+        <div class="feat-desc">Buat hingga 6 variasi sekaligus dalam sekali klik. Hemat waktu, eksplorasi lebih banyak pilihan kreasi.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">✏️</div>
+        <div class="feat-title">Edit Inpainting</div>
+        <div class="feat-desc">Pilih area gambar tertentu dan edit hanya bagian itu. Ganti background, tambah objek, hapus elemen — semua presisi.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔲</div>
+        <div class="feat-title">Background Remover</div>
+        <div class="feat-desc">Hapus background dalam 1 klik dengan akurasi AI. Langsung siap untuk produk e-commerce, stiker, atau desain.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📜</div>
+        <div class="feat-title">Commercial License</div>
+        <div class="feat-desc">Semua gambar yang kamu buat adalah milikmu sepenuhnya. Gunakan untuk keperluan komersial, jual, atau cetak — bebas royalti.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. USE CASES -->
+<section class="section section-alt">
+  <div class="container">
+    <div style="text-align:center">
+      <span class="section-tag">Untuk Siapa?</span>
+      <h2 class="section-title">Solusi Visual untuk <em>Semua Kebutuhan</em></h2>
+      <p class="section-sub" style="margin:0 auto 2.5rem">PixelMind dirancang untuk berbagai profesi dan industri.</p>
+    </div>
+    <div class="usecases-grid">
+      <div class="uc-card">
+        <span class="uc-icon">🎬</span>
+        <div class="uc-name">Content Creator</div>
+        <div class="uc-desc">Thumbnail YouTube viral, cover Instagram yang stop-scrolling, dan konten visual TikTok — tanpa tunggu desainer.</div>
+        <span class="uc-tag">Konten &amp; Media</span>
+      </div>
+      <div class="uc-card">
+        <span class="uc-icon">🛍️</span>
+        <div class="uc-name">E-Commerce &amp; Toko</div>
+        <div class="uc-desc">Foto produk profesional dari prompt teks. Background putih, lifestyle shot, atau studio — semuanya instan.</div>
+        <span class="uc-tag">Bisnis Online</span>
+      </div>
+      <div class="uc-card">
+        <span class="uc-icon">🎨</span>
+        <div class="uc-name">Desainer &amp; Agensi</div>
+        <div class="uc-desc">Ideasi cepat, moodboard, dan aset visual untuk pitch klien. Eksplorasi 100 konsep dalam waktu 1 jam.</div>
+        <span class="uc-tag">Kreatif</span>
+      </div>
+      <div class="uc-card">
+        <span class="uc-icon">💻</span>
+        <div class="uc-name">Developer &amp; Startup</div>
+        <div class="uc-desc">Integrasikan image generation langsung ke aplikasimu via REST API. Skalabel, murah, dokumentasi lengkap.</div>
+        <span class="uc-tag">Developer</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9. PERBANDINGAN MODEL -->
+<section class="section">
+  <div class="container">
+    <div style="text-align:center">
+      <span class="section-tag">Evolusi PixelMind</span>
+      <h2 class="section-title">Perbandingan <em>Versi Model</em></h2>
+      <p class="section-sub" style="margin:0 auto 2.5rem">Setiap generasi membawa lompatan kualitas yang signifikan.</p>
+    </div>
+    <div class="comp-wrap">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th style="text-align:left">Fitur</th>
+            <th>v1.0</th>
+            <th>v2.0</th>
+            <th class="highlight">v3.0</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Resolusi maksimal</td>
+            <td>512×512</td>
+            <td>1024×1024</td>
+            <td class="highlight">4096×4096 (4K)</td>
+          </tr>
+          <tr>
+            <td>Waktu generate</td>
+            <td>~12 detik</td>
+            <td>~6 detik</td>
+            <td class="highlight">~3 detik</td>
+          </tr>
+          <tr>
+            <td>Jumlah gaya artistik</td>
+            <td>3 gaya</td>
+            <td>6 gaya</td>
+            <td class="highlight">8 gaya (+ custom)</td>
+          </tr>
+          <tr>
+            <td>Dukungan bahasa Indonesia</td>
+            <td><span class="check-no">✕</span></td>
+            <td>Sebagian</td>
+            <td class="highlight"><span class="check-yes">✓</span> Native</td>
+          </tr>
+          <tr>
+            <td>Edit inpainting</td>
+            <td><span class="check-no">✕</span></td>
+            <td><span class="check-no">✕</span></td>
+            <td class="highlight"><span class="check-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Batch generate</td>
+            <td><span class="check-no">✕</span></td>
+            <td>Maks. 2</td>
+            <td class="highlight">Maks. 6</td>
+          </tr>
+          <tr>
+            <td>Background remover</td>
+            <td><span class="check-no">✕</span></td>
+            <td><span class="check-no">✕</span></td>
+            <td class="highlight"><span class="check-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Commercial license</td>
+            <td><span class="check-no">✕</span></td>
+            <td><span class="check-yes">✓</span></td>
+            <td class="highlight"><span class="check-yes">✓</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 10. PRICING -->
+<section class="section section-alt" id="pricing">
+  <div class="container">
+    <div style="text-align:center">
+      <span class="section-tag">Harga Transparan</span>
+      <h2 class="section-title">Paket yang <em>Sesuai Kebutuhanmu</em></h2>
+      <p class="section-sub" style="margin:0 auto 1.5rem">Mulai gratis, upgrade kapan saja. Tidak ada kontrak, bisa batal kapanpun.</p>
+      <div class="pricing-toggle-wrap">
+        <span class="toggle-label active-label" id="labelMonthly">Bulanan</span>
+        <button class="toggle-switch" id="pricingToggle" aria-label="Toggle harga tahunan"></button>
+        <span class="toggle-label" id="labelYearly">Tahunan</span>
+        <span class="toggle-badge">Hemat 25%</span>
+      </div>
+    </div>
+    <div class="pricing-grid">
+      <!-- Free -->
+      <div class="price-card">
+        <div class="price-plan">Pemula</div>
+        <div class="price-name">Free</div>
+        <div class="price-num"><sup>Rp</sup> 0 <span>/bulan</span></div>
+        <div class="price-period">Selamanya gratis</div>
+        <div class="price-desc">Cocok untuk mencoba dan penggunaan ringan sehari-hari.</div>
+        <hr class="price-divider">
+        <ul class="price-features">
+          <li>10 gambar/hari (300/bulan)</li>
+          <li>Resolusi hingga 512×512</li>
+          <li>3 gaya artistik dasar</li>
+          <li>Watermark PixelMind</li>
+          <li>Format PNG &amp; JPG</li>
+        </ul>
+        <button class="btn-plan btn-plan-outline">Mulai Gratis</button>
+      </div>
+      <!-- Pro -->
+      <div class="price-card popular">
+        <div class="popular-badge">Paling Populer</div>
+        <div class="price-plan">Kreator</div>
+        <div class="price-name">Pro</div>
+        <div class="price-num" id="proPriceNum"><sup>Rp</sup> 79rb <span>/bulan</span></div>
+        <div class="price-period" id="proPricePeriod">Ditagih bulanan</div>
+        <div class="price-desc">Untuk content creator dan desainer yang butuh volume lebih tinggi.</div>
+        <hr class="price-divider">
+        <ul class="price-features">
+          <li>200 gambar/bulan</li>
+          <li>Resolusi hingga 1024×1024</li>
+          <li>8 gaya artistik lengkap</li>
+          <li>Tanpa watermark</li>
+          <li>Batch generate (maks. 4)</li>
+          <li>Background remover</li>
+          <li>Commercial license</li>
+        </ul>
+        <button class="btn-plan btn-plan-fill">Pilih Pro</button>
+      </div>
+      <!-- Creator -->
+      <div class="price-card">
+        <div class="price-plan">Profesional</div>
+        <div class="price-name">Creator</div>
+        <div class="price-num" id="creatorPriceNum"><sup>Rp</sup> 199rb <span>/bulan</span></div>
+        <div class="price-period" id="creatorPricePeriod">Ditagih bulanan</div>
+        <div class="price-desc">Untuk agensi, startup, dan pengguna intensif tanpa batas kreativitas.</div>
+        <hr class="price-divider">
+        <ul class="price-features">
+          <li>Gambar <strong>unlimited</strong></li>
+          <li>Resolusi hingga 4K (4096px)</li>
+          <li>Semua gaya + model custom</li>
+          <li>Edit inpainting penuh</li>
+          <li>Batch generate (maks. 6)</li>
+          <li>API akses 50.000 req/bln</li>
+          <li>Priority queue generasi</li>
+          <li>Commercial license enterprise</li>
+        </ul>
+        <button class="btn-plan btn-plan-outline">Pilih Creator</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11. API SECTION -->
+<section class="section" id="api">
+  <div class="container">
+    <div class="api-section">
+      <div class="api-info">
+        <span class="section-tag">Untuk Developer</span>
+        <h2 class="section-title">Integrasikan AI Image<br>ke <em>Aplikasimu</em></h2>
+        <p class="section-sub">REST API yang sederhana, dokumentasi lengkap, dan SDK tersedia untuk Node.js, Python, dan PHP.</p>
+        <ul class="api-features">
+          <li>Endpoint sederhana — 1 POST request, langsung dapat gambar</li>
+          <li>Response &lt;3 detik untuk model standar</li>
+          <li>Webhook support untuk async batch generation</li>
+          <li>Rate limit fleksibel sesuai paket</li>
+          <li>99.9% uptime SLA dengan CDN global</li>
+          <li>Sandbox mode gratis untuk development</li>
+        </ul>
+        <button class="btn-primary" style="font-size:0.95rem; padding:0.65rem 1.5rem">Baca Dokumentasi API →</button>
+      </div>
+      <div class="api-snippet">
+        <div class="snippet-topbar">
+          <span class="dot dot-r"></span>
+          <span class="dot dot-y"></span>
+          <span class="dot dot-g"></span>
+          <span class="snippet-label">POST /v1/generate</span>
+        </div>
+        <div class="snippet-body">
+<span class="code-c">// Request</span><br>
+<span class="code-k">const</span> response = <span class="code-k">await</span> fetch(<span class="code-s">'https://api.pixelmind.id/v1/generate'</span>, {<br>
+&nbsp;&nbsp;method: <span class="code-s">'POST'</span>,<br>
+&nbsp;&nbsp;headers: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-s">'Authorization'</span>: <span class="code-s">`Bearer ${</span><span class="code-n">API_KEY</span><span class="code-s">}`</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-s">'Content-Type'</span>: <span class="code-s">'application/json'</span><br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;body: JSON.stringify({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-n">prompt</span>: <span class="code-s">"Sawah Bali sunset, 4K"</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-n">style</span>: <span class="code-s">"photorealistic"</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-n">width</span>: <span class="code-v">1024</span>, <span class="code-n">height</span>: <span class="code-v">1024</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-n">count</span>: <span class="code-v">4</span><br>
+&nbsp;&nbsp;})<br>
+});<br><br>
+<span class="code-c">// Response</span><br>
+{<br>
+&nbsp;&nbsp;<span class="code-s">"status"</span>: <span class="code-s">"success"</span>,<br>
+&nbsp;&nbsp;<span class="code-s">"images"</span>: [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="code-s">"url"</span>: <span class="code-s">"https://cdn.pixelmind.id/..."</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-s">"seed"</span>: <span class="code-v">4829301</span> }<br>
+&nbsp;&nbsp;],<br>
+&nbsp;&nbsp;<span class="code-s">"credits_used"</span>: <span class="code-v">4</span><br>
+}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 12. TESTIMONIALS -->
+<section class="section section-alt">
+  <div class="container">
+    <div style="text-align:center">
+      <span class="section-tag">Kata Mereka</span>
+      <h2 class="section-title">Dicintai oleh <em>Ribuan Pengguna</em></h2>
+      <p class="section-sub" style="margin:0 auto 2.5rem">Dari kreator konten hingga pengusaha — PixelMind mengubah cara mereka bekerja.</p>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">PixelMind literally menyelamatkan channel YouTube-ku. Dulu spend 3 jam buat satu thumbnail, sekarang 3 menit. CTR naik 40% dalam sebulan pertama — gila sih ini.</div>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background: linear-gradient(135deg, #667eea, #764ba2)">🎬</div>
+          <div>
+            <div class="testi-name">Rizky Ananda</div>
+            <div class="testi-role">YouTuber · 580K subscribers</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">Toko Shopee-ku jualan kaos custom. Dulu foto produk pakai jasa fotografer mahal. Sekarang semua foto produk dari PixelMind — hemat jutaan rupiah, kualitas jauh lebih bagus.</div>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background: linear-gradient(135deg, #f093fb, #f5576c)">🛍️</div>
+          <div>
+            <div class="testi-name">Dewi Kusuma</div>
+            <div class="testi-role">Seller Shopee · Top Seller Malang</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">Sebagai desainer freelance, PixelMind jadi senjata rahasia buat ideasi cepat. Sekarang bisa handle 3x lebih banyak klien karena proses visual jauh lebih efisien.</div>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background: linear-gradient(135deg, #0f9b58, #7BFF8B)">🎨</div>
+          <div>
+            <div class="testi-name">Arya Pratama</div>
+            <div class="testi-role">Freelance Designer · Bandung</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13. FAQ -->
+<section class="section">
+  <div class="container">
+    <div style="text-align:center">
+      <span class="section-tag">Pertanyaan Umum</span>
+      <h2 class="section-title">Ada yang <em>Ingin Ditanyakan?</em></h2>
+      <p class="section-sub" style="margin:0 auto 2.5rem">Jawaban untuk pertanyaan yang paling sering muncul.</p>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">
+          Siapa yang memiliki hak cipta gambar yang saya buat?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          Kamu memiliki hak penuh atas semua gambar yang dibuat menggunakan akun PixelMind-mu. Untuk paket Pro dan Creator, gambar dapat digunakan untuk keperluan komersial termasuk dijual, diprint, atau dipublikasikan tanpa royalti tambahan. Paket Free termasuk watermark PixelMind.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          Apakah ada batasan konten yang tidak boleh dibuat?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          Ya. PixelMind memiliki sistem filter otomatis yang mencegah pembuatan konten kekerasan, konten seksual eksplisit, pelecehan, atau konten yang melanggar hak cipta pihak lain. Setiap prompt diproses melalui safety layer sebelum generasi dimulai. Pelanggaran berulang akan mengakibatkan suspensi akun.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          Bagaimana kualitas gambar dibandingkan Midjourney atau DALL-E?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          PixelMind v3.0 menggunakan arsitektur yang setara dengan model terkini di industri, dengan keunggulan spesifik di pemahaman konteks bahasa Indonesia dan referensi budaya lokal. Untuk subjek seperti batik, wayang, atau lanskap Nusantara, PixelMind secara konsisten menghasilkan kualitas yang lebih relevan secara kultural.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          Format apa saja yang tersedia untuk download?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          Semua paket mendukung download PNG dan JPG. Paket Pro dan Creator juga mendukung WebP (lebih kecil untuk web), serta PNG transparan (background transparan setelah background remover). Format RAW tersedia sebagai beta feature untuk paket Creator.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">
+          Apakah API tersedia untuk integrasi ke aplikasi saya?
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          Ya! REST API tersedia untuk semua pengguna terdaftar. Paket Free mendapat 100 API request/bulan untuk testing. Paket Pro mendapat 10.000 request/bulan, dan Creator mendapat 50.000 request/bulan. Dokumentasi lengkap, SDK untuk Node.js, Python, dan PHP, serta sandbox environment gratis tersedia di developer.pixelmind.id.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 14. CTA -->
+<section class="cta-section">
+  <div class="container">
+    <h2>Generate <em>10 Gambar Gratis</em><br>Sekarang Juga</h2>
+    <p>Tidak perlu kartu kredit. Tidak perlu install apapun. Langsung buat dari browser.</p>
+    <div class="cta-actions">
+      <button class="btn-hero">✨ Mulai Generate Gratis</button>
+      <button class="btn-hero-ghost">Lihat Contoh Hasil →</button>
+    </div>
+    <p class="cta-note">✓ 10 gambar/hari selamanya &nbsp;·&nbsp; ✓ Upgrade kapan saja &nbsp;·&nbsp; ✓ Tanpa risiko</p>
+  </div>
+</section>
+
+<!-- 15. FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-name">PixelMind</div>
+        <div class="footer-brand-desc">Platform AI image generator #1 Indonesia. Wujudkan imajinasimu menjadi visual memukau dalam hitungan detik — tanpa skill desain.</div>
+        <div class="footer-social">
+          <a class="social-btn" href="#" title="Instagram">📸</a>
+          <a class="social-btn" href="#" title="Twitter/X">✖</a>
+          <a class="social-btn" href="#" title="TikTok">🎵</a>
+          <a class="social-btn" href="#" title="YouTube">▶</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Produk</div>
+        <ul class="footer-links">
+          <li><a href="#">Generate</a></li>
+          <li><a href="#">Edit &amp; Inpaint</a></li>
+          <li><a href="#">Background Remover</a></li>
+          <li><a href="#">Galeri Publik</a></li>
+          <li><a href="#">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Developer</div>
+        <ul class="footer-links">
+          <li><a href="#">Dokumentasi API</a></li>
+          <li><a href="#">SDK Node.js</a></li>
+          <li><a href="#">SDK Python</a></li>
+          <li><a href="#">Status &amp; Uptime</a></li>
+          <li><a href="#">Changelog</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Perusahaan</div>
+        <ul class="footer-links">
+          <li><a href="#">Tentang Kami</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Karir</a></li>
+          <li><a href="#">Kebijakan Privasi</a></li>
+          <li><a href="#">Syarat &amp; Ketentuan</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 PixelMind. Hak cipta dilindungi.</div>
+      <div class="footer-copy" style="color:var(--text3)">Dibuat dengan ❤ untuk kreator Indonesia</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// =================== DARK/LIGHT TOGGLE ===================
+const themeToggle = document.getElementById('themeToggle');
+const html = document.documentElement;
+
+function setTheme(theme) {
+  html.setAttribute('data-theme', theme);
+  themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('pixelmind-theme', theme);
+}
+
+themeToggle.addEventListener('click', () => {
+  const current = html.getAttribute('data-theme');
+  setTheme(current === 'dark' ? 'light' : 'dark');
+});
+
+// Init theme
+const savedTheme = localStorage.getItem('pixelmind-theme') || 'light';
+setTheme(savedTheme);
+
+// =================== MOBILE MENU ===================
+const navHamburger = document.getElementById('navHamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+const mobileClose = document.getElementById('mobileClose');
+
+navHamburger.addEventListener('click', () => mobileMenu.classList.add('open'));
+mobileClose.addEventListener('click', () => mobileMenu.classList.remove('open'));
+mobileMenu.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => mobileMenu.classList.remove('open'));
+});
+
+// =================== STYLE BUTTONS (MOCKUP) ===================
+document.querySelectorAll('.style-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.style-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+  });
+});
+
+// =================== RATIO/COUNT BUTTONS ===================
+document.querySelectorAll('.ratio-group').forEach(group => {
+  group.querySelectorAll('.ratio-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      group.querySelectorAll('.ratio-btn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+    });
+  });
+});
+
+// =================== TAB SWITCHER (MOCKUP) ===================
+document.querySelectorAll('.ig-tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.ig-tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+  });
+});
+
+// =================== GENERATE BUTTON ANIMATION ===================
+const generateBtn = document.getElementById('generateBtn');
+generateBtn.addEventListener('click', function() {
+  this.textContent = '⏳ Generating...';
+  this.disabled = true;
+  this.style.opacity = '0.7';
+  // Shimmer effect on image cards
+  document.querySelectorAll('.img-preview').forEach(card => {
+    card.style.opacity = '0.5';
+    card.style.transition = 'opacity 0.3s';
+  });
+  setTimeout(() => {
+    this.textContent = '✨ Generate Gambar';
+    this.disabled = false;
+    this.style.opacity = '';
+    document.querySelectorAll('.img-preview').forEach(card => {
+      card.style.opacity = '';
+    });
+  }, 2200);
+});
+
+// =================== PRESET CARDS ===================
+document.querySelectorAll('.preset-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+  });
+});
+
+// =================== COUNTER ANIMATION ===================
+function animateCounter(el) {
+  const target = parseInt(el.dataset.count);
+  const suffix = el.dataset.suffix;
+  const duration = 1800;
+  const start = performance.now();
+
+  function update(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.floor(eased * target);
+
+    // Format display
+    let display;
+    if (target >= 1000000) {
+      display = (current / 1000000).toFixed(1);
+      el.textContent = display + (suffix || '');
+    } else if (target >= 1000) {
+      display = (current / 1000).toFixed(0);
+      el.textContent = display + (suffix || '');
+    } else if (target === 49) {
+      el.textContent = (current / 10).toFixed(1) + (suffix || '');
+    } else {
+      el.textContent = current + (suffix || '');
+    }
+
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+// Intersection Observer for counters
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && !entry.target.dataset.animated) {
+      entry.target.dataset.animated = 'true';
+      animateCounter(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.sp-num[data-count]').forEach(el => {
+  el.textContent = '0';
+  counterObserver.observe(el);
+});
+
+// =================== PRICING TOGGLE ===================
+const pricingToggle = document.getElementById('pricingToggle');
+const labelMonthly = document.getElementById('labelMonthly');
+const labelYearly = document.getElementById('labelYearly');
+const proPriceNum = document.getElementById('proPriceNum');
+const creatorPriceNum = document.getElementById('creatorPriceNum');
+const proPricePeriod = document.getElementById('proPricePeriod');
+const creatorPricePeriod = document.getElementById('creatorPricePeriod');
+
+let isYearly = false;
+
+pricingToggle.addEventListener('click', () => {
+  isYearly = !isYearly;
+  pricingToggle.classList.toggle('yearly', isYearly);
+
+  if (isYearly) {
+    labelMonthly.classList.remove('active-label');
+    labelYearly.classList.add('active-label');
+    proPriceNum.innerHTML = '<sup>Rp</sup> 59rb <span>/bulan</span>';
+    creatorPriceNum.innerHTML = '<sup>Rp</sup> 149rb <span>/bulan</span>';
+    proPricePeriod.textContent = 'Ditagih Rp 708.000/tahun';
+    creatorPricePeriod.textContent = 'Ditagih Rp 1.788.000/tahun';
+  } else {
+    labelYearly.classList.remove('active-label');
+    labelMonthly.classList.add('active-label');
+    proPriceNum.innerHTML = '<sup>Rp</sup> 79rb <span>/bulan</span>';
+    creatorPriceNum.innerHTML = '<sup>Rp</sup> 199rb <span>/bulan</span>';
+    proPricePeriod.textContent = 'Ditagih bulanan';
+    creatorPricePeriod.textContent = 'Ditagih bulanan';
+  }
+});
+
+// =================== FAQ ACCORDION ===================
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    // Toggle current
+    if (!isOpen) item.classList.add('open');
+  });
+});
+
+// =================== SCROLL REVEAL ===================
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08 });
+
+const revealTargets = document.querySelectorAll(
+  '.feat-card, .uc-card, .gallery-card, .preset-card, .testi-card, .price-card, .faq-item'
+);
+revealTargets.forEach((el, i) => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(22px)';
+  el.style.transition = `opacity 0.5s ease ${i * 0.05}s, transform 0.5s ease ${i * 0.05}s`;
+  revealObserver.observe(el);
+});
+</script>
+</body>
+</html>

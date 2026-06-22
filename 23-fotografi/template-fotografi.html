@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rendra Satria — Fotografer Profesional</title>
+<meta name="description" content="Fotografer profesional spesialis wedding, komersial, dan street photography di Indonesia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   RESET & BASE
+============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);transition:background .4s,color .4s;overflow-x:hidden;cursor:none;}
+@media(pointer:coarse){body{cursor:auto;}}
+a{text-decoration:none;color:inherit;}
+img{display:block;width:100%;object-fit:cover;}
+ul{list-style:none;}
+
+/* ============================================================
+   CSS TOKENS
+============================================================ */
+:root{
+  --bg:#080808;--bg2:#101010;--bg3:#181818;
+  --text:#F0F0F0;--text2:#888888;--text3:#444444;
+  --accent:#E8E8E8;--border:rgba(255,255,255,0.07);
+  --font-body:'Outfit',sans-serif;--font-mono:'Space Mono',monospace;
+}
+[data-theme="light"]{
+  --bg:#F5F5F5;--bg2:#EBEBEB;--bg3:#E0E0E0;
+  --text:#0A0A0A;--text2:#555555;--text3:#999999;
+  --accent:#111111;--border:rgba(0,0,0,0.08);
+}
+
+/* ============================================================
+   CUSTOM CURSOR
+============================================================ */
+.cursor-dot{position:fixed;width:6px;height:6px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .05s,opacity .2s;}
+.cursor-ring{position:fixed;width:30px;height:30px;border:1px solid rgba(232,232,232,0.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .12s ease-out,width .2s,height .2s,border-color .2s;}
+.cursor-ring.hover{width:50px;height:50px;border-color:var(--accent);}
+@media(pointer:coarse){.cursor-dot,.cursor-ring{display:none;}}
+
+/* ============================================================
+   NAVBAR
+============================================================ */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.5rem 3rem;background:rgba(8,8,8,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);transition:background .4s,border-color .4s;}
+[data-theme="light"] .navbar{background:rgba(245,245,245,0.92);}
+.nav-logo{font-family:var(--font-body);font-weight:300;font-size:1rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text);}
+.nav-logo span{font-weight:600;color:var(--accent);}
+.nav-links{display:flex;align-items:center;gap:2.5rem;}
+.nav-links a{font-size:.8rem;font-weight:400;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);transition:color .2s;}
+.nav-links a:hover{color:var(--text);}
+.nav-contact{font-family:var(--font-mono);font-size:.7rem;color:var(--text3);letter-spacing:.05em;}
+.nav-right{display:flex;align-items:center;gap:1.5rem;}
+.theme-btn{background:none;border:none;cursor:none;color:var(--text3);font-size:1rem;transition:color .2s;padding:.25rem;}
+.theme-btn:hover{color:var(--text);}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:none;padding:4px;}
+.hamburger span{display:block;width:22px;height:1px;background:var(--text);transition:all .3s;}
+@media(max-width:768px){.navbar{padding:1.25rem 1.5rem;}.nav-links{display:none;}.nav-contact{display:none;}.hamburger{display:flex;}}
+
+/* Mobile Menu */
+.mobile-menu{position:fixed;inset:0;z-index:99;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.5rem;opacity:0;pointer-events:none;transition:opacity .3s;}
+.mobile-menu.open{opacity:1;pointer-events:all;}
+.mobile-menu a{font-size:1.5rem;font-weight:300;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);transition:color .2s;}
+.mobile-menu a:hover{color:var(--text);}
+
+/* ============================================================
+   HERO
+============================================================ */
+.hero{position:relative;height:100dvh;min-height:600px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:0 3rem 5rem;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(to top,var(--bg) 0%,rgba(8,8,8,.3) 50%,transparent 100%),linear-gradient(135deg,#1a1a1a 0%,#0d0d0d 50%,#141414 100%);}
+.hero-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 40%,rgba(60,60,60,.3) 0%,transparent 60%);pointer-events:none;}
+.hero-content{position:relative;z-index:2;max-width:700px;}
+.hero-tag{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:1.5rem;display:flex;align-items:center;gap:.75rem;}
+.hero-tag::before{content:'';display:block;width:30px;height:1px;background:var(--text3);}
+.hero-name{font-size:clamp(3.5rem,9vw,8rem);font-weight:700;line-height:.9;letter-spacing:-.02em;color:var(--text);margin-bottom:1.5rem;}
+.hero-name .line2{color:var(--text3);}
+.hero-spec{font-family:var(--font-mono);font-size:.75rem;color:var(--text2);letter-spacing:.15em;text-transform:uppercase;}
+.scroll-indicator{position:absolute;bottom:2.5rem;right:3rem;display:flex;flex-direction:column;align-items:center;gap:.5rem;font-family:var(--font-mono);font-size:.65rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;}
+.scroll-line{width:1px;height:60px;background:linear-gradient(to bottom,transparent,var(--text3));animation:scrollAnim 2s infinite;}
+@keyframes scrollAnim{0%{transform:scaleY(0);transform-origin:top;}50%{transform:scaleY(1);transform-origin:top;}50.01%{transform:scaleY(1);transform-origin:bottom;}100%{transform:scaleY(0);transform-origin:bottom;}}
+@media(max-width:768px){.hero{padding:0 1.5rem 4rem;}.scroll-indicator{display:none;}}
+
+/* ============================================================
+   SECTION HELPERS
+============================================================ */
+.section-label{font-family:var(--font-mono);font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--text3);margin-bottom:2rem;display:flex;align-items:center;gap:.75rem;}
+.section-label::before{content:'';display:block;width:20px;height:1px;background:var(--text3);}
+.section-heading{font-size:clamp(1.5rem,3vw,2rem);font-weight:300;color:var(--text);}
+
+/* ============================================================
+   ABOUT
+============================================================ */
+.about{padding:7rem 3rem;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;border-top:1px solid var(--border);}
+.about-heading{font-size:clamp(1.8rem,3vw,2.5rem);font-weight:300;line-height:1.3;color:var(--text);margin-bottom:2rem;}
+.about-heading strong{font-weight:600;}
+.about-text{font-size:.95rem;line-height:1.8;color:var(--text2);margin-bottom:1.25rem;}
+.about-stats{display:flex;gap:3rem;margin-top:3rem;}
+.stat-num{font-size:2.5rem;font-weight:700;color:var(--text);line-height:1;}
+.stat-label{font-family:var(--font-mono);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-top:.4rem;}
+.about-philosophy{padding:2.5rem;border:1px solid var(--border);background:var(--bg2);}
+.philosophy-item{padding:1.5rem 0;border-bottom:1px solid var(--border);}
+.philosophy-item:last-child{border-bottom:none;}
+.philosophy-num{font-family:var(--font-mono);font-size:.65rem;color:var(--text3);margin-bottom:.5rem;}
+.philosophy-title{font-size:.9rem;font-weight:500;color:var(--text);margin-bottom:.4rem;}
+.philosophy-desc{font-size:.82rem;color:var(--text2);line-height:1.6;}
+@media(max-width:768px){.about{grid-template-columns:1fr;gap:3rem;padding:4rem 1.5rem;}}
+
+/* ============================================================
+   GALLERY
+============================================================ */
+.gallery{padding:4rem 3rem 7rem;}
+.gallery-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3rem;gap:1rem;flex-wrap:wrap;}
+.gallery-title{font-size:clamp(1.5rem,3vw,2rem);font-weight:300;color:var(--text);}
+.filter-tabs{display:flex;gap:.25rem;flex-wrap:wrap;}
+.filter-btn{padding:.5rem 1.1rem;font-family:var(--font-mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;background:none;border:1px solid var(--border);color:var(--text3);cursor:none;transition:all .2s;}
+.filter-btn:hover{border-color:var(--text2);color:var(--text2);}
+.filter-btn.active{background:var(--text);color:var(--bg);border-color:var(--text);}
+.masonry{columns:3;column-gap:.75rem;}
+.masonry-item{break-inside:avoid;margin-bottom:.75rem;position:relative;overflow:hidden;display:block;cursor:none;}
+.masonry-item.hidden{display:none;}
+.photo-placeholder{width:100%;background:var(--bg3);display:block;transition:transform .6s ease;}
+.masonry-item:hover .photo-placeholder{transform:scale(1.03);}
+.photo-overlay{position:absolute;inset:0;background:rgba(0,0,0,0);display:flex;flex-direction:column;justify-content:flex-end;padding:1.25rem;transition:background .4s;}
+.masonry-item:hover .photo-overlay{background:rgba(0,0,0,.32);}
+.photo-title{font-size:.82rem;font-weight:500;color:#fff;opacity:0;transform:translateY(6px);transition:opacity .3s,transform .3s;}
+.photo-num{font-family:var(--font-mono);font-size:.65rem;color:rgba(255,255,255,.5);opacity:0;transition:opacity .3s .05s;margin-top:.25rem;}
+.masonry-item:hover .photo-title,.masonry-item:hover .photo-num{opacity:1;transform:translateY(0);}
+@media(max-width:768px){.gallery{padding:3rem 1.5rem;}.masonry{columns:2;}}
+@media(max-width:480px){.masonry{columns:1;}}
+
+/* ============================================================
+   SERVICES
+============================================================ */
+.services{padding:7rem 3rem;border-top:1px solid var(--border);}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:3rem;border:1px solid var(--border);}
+.service-card{padding:2.5rem;border-right:1px solid var(--border);transition:background .25s;}
+.service-card:last-child{border-right:none;}
+.service-card:hover{background:var(--bg2);}
+.service-icon{width:36px;height:36px;margin-bottom:1.5rem;color:var(--text3);}
+.service-name{font-size:1.1rem;font-weight:500;color:var(--text);margin-bottom:.75rem;}
+.service-desc{font-size:.85rem;color:var(--text2);line-height:1.7;margin-bottom:1.5rem;}
+.service-price{font-family:var(--font-mono);font-size:.72rem;color:var(--text3);letter-spacing:.05em;}
+.service-price strong{color:var(--text);font-size:.85rem;}
+@media(max-width:768px){.services{padding:4rem 1.5rem;}.services-grid{grid-template-columns:1fr;}.service-card{border-right:none;border-bottom:1px solid var(--border);}.service-card:last-child{border-bottom:none;}}
+
+/* ============================================================
+   PROCESS
+============================================================ */
+.process{padding:7rem 3rem;border-top:1px solid var(--border);background:var(--bg2);}
+.process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);margin-top:3rem;}
+.process-step{background:var(--bg2);padding:2.5rem 2rem;}
+.step-num{font-family:var(--font-mono);font-size:.7rem;color:var(--text3);letter-spacing:.1em;margin-bottom:1.25rem;}
+.step-title{font-size:1.05rem;font-weight:600;color:var(--text);margin-bottom:.75rem;}
+.step-desc{font-size:.82rem;color:var(--text2);line-height:1.6;}
+@media(max-width:768px){.process{padding:4rem 1.5rem;}.process-steps{grid-template-columns:1fr 1fr;}}
+@media(max-width:480px){.process-steps{grid-template-columns:1fr;}}
+
+/* ============================================================
+   FEATURED PROJECT
+============================================================ */
+.featured{padding:7rem 3rem;border-top:1px solid var(--border);}
+.featured-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;margin-top:3rem;}
+.featured-image{aspect-ratio:4/3;background:var(--bg3);overflow:hidden;position:relative;}
+.featured-image svg{position:absolute;inset:0;width:100%;height:100%;}
+.featured-cat{font-family:var(--font-mono);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:1rem;}
+.featured-title{font-size:clamp(1.5rem,2.5vw,2rem);font-weight:600;color:var(--text);line-height:1.2;margin-bottom:1.25rem;}
+.featured-desc{font-size:.9rem;color:var(--text2);line-height:1.8;margin-bottom:2rem;}
+.featured-meta{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem;}
+.meta-label{font-family:var(--font-mono);font-size:.62rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.25rem;}
+.meta-val{font-size:.88rem;color:var(--text);font-weight:500;}
+.btn-outline{display:inline-block;padding:.8rem 2rem;border:1px solid var(--text3);font-family:var(--font-mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text2);transition:all .25s;cursor:none;}
+.btn-outline:hover{border-color:var(--text);color:var(--text);}
+@media(max-width:768px){.featured{padding:4rem 1.5rem;}.featured-inner{grid-template-columns:1fr;gap:2.5rem;}}
+
+/* ============================================================
+   CLIENT LOGOS
+============================================================ */
+.clients{padding:4rem 3rem;border-top:1px solid var(--border);background:var(--bg2);}
+.clients-label{font-family:var(--font-mono);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);text-align:center;margin-bottom:2.5rem;}
+.clients-row{display:flex;align-items:center;justify-content:center;gap:4rem;flex-wrap:wrap;}
+.client-logo{font-family:var(--font-mono);font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);font-weight:700;opacity:.5;transition:opacity .2s;}
+.client-logo:hover{opacity:1;}
+@media(max-width:768px){.clients{padding:3rem 1.5rem;}.clients-row{gap:2rem;}}
+
+/* ============================================================
+   TESTIMONIALS
+============================================================ */
+.testimonials{padding:7rem 3rem;border-top:1px solid var(--border);}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3rem;margin-top:3rem;}
+.testi-divider{width:30px;height:1px;background:var(--border);margin-bottom:1.5rem;}
+.testi-quote{font-size:.95rem;line-height:1.8;color:var(--text2);margin-bottom:1.5rem;font-style:italic;}
+.testi-author{font-size:.85rem;font-weight:500;color:var(--text);margin-bottom:.2rem;}
+.testi-meta{font-family:var(--font-mono);font-size:.62rem;color:var(--text3);letter-spacing:.08em;}
+@media(max-width:768px){.testimonials{padding:4rem 1.5rem;}.testi-grid{grid-template-columns:1fr;gap:2.5rem;}}
+
+/* ============================================================
+   CONTACT
+============================================================ */
+.contact{padding:7rem 3rem;border-top:1px solid var(--border);background:var(--bg2);}
+.contact-inner{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start;}
+.contact-info-head{font-size:clamp(1.8rem,3vw,2.5rem);font-weight:300;color:var(--text);line-height:1.3;margin-bottom:1.5rem;}
+.contact-info-head strong{font-weight:600;}
+.contact-info-sub{font-size:.88rem;color:var(--text2);line-height:1.7;margin-bottom:2.5rem;}
+.contact-details{display:flex;flex-direction:column;gap:1rem;}
+.contact-detail{display:flex;align-items:flex-start;gap:1rem;}
+.detail-label{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);min-width:70px;padding-top:.1rem;}
+.detail-val{font-size:.88rem;color:var(--text2);}
+.booking-form{display:flex;flex-direction:column;gap:1rem;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.form-group{display:flex;flex-direction:column;gap:.4rem;}
+.form-label{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);}
+.form-input,.form-select,.form-textarea{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:.8rem 1rem;font-family:var(--font-body);font-size:.88rem;outline:none;transition:border-color .2s;appearance:none;-webkit-appearance:none;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--text3);}
+.form-textarea{resize:vertical;min-height:100px;}
+.btn-submit{margin-top:.5rem;padding:1rem 2rem;background:var(--text);color:var(--bg);border:none;font-family:var(--font-mono);font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;cursor:none;transition:opacity .2s;align-self:flex-start;}
+.btn-submit:hover{opacity:.85;}
+@media(max-width:768px){.contact{padding:4rem 1.5rem;}.contact-inner{grid-template-columns:1fr;gap:3rem;}.form-row{grid-template-columns:1fr;}}
+
+/* ============================================================
+   FOOTER
+============================================================ */
+.footer{padding:2.5rem 3rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.footer-name{font-family:var(--font-mono);font-size:.7rem;color:var(--text3);letter-spacing:.1em;}
+.footer-socials{display:flex;gap:1.5rem;}
+.footer-socials a{font-family:var(--font-mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);transition:color .2s;}
+.footer-socials a:hover{color:var(--text);}
+.footer-copy{font-family:var(--font-mono);font-size:.62rem;color:var(--text3);}
+@media(max-width:600px){.footer{flex-direction:column;align-items:flex-start;gap:1rem;padding:2rem 1.5rem;}}
+
+/* Toast */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(1rem);background:var(--text);color:var(--bg);padding:.75rem 1.75rem;font-family:var(--font-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;opacity:0;transition:all .3s;z-index:1000;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#galeri" onclick="closeMobileMenu()">Galeri</a>
+  <a href="#layanan" onclick="closeMobileMenu()">Layanan</a>
+  <a href="#tentang" onclick="closeMobileMenu()">Tentang</a>
+  <a href="#kontak" onclick="closeMobileMenu()">Kontak</a>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="nav-logo"><span>Rendra</span> Satria</div>
+  <ul class="nav-links">
+    <li><a href="#galeri">Galeri</a></li>
+    <li><a href="#layanan">Layanan</a></li>
+    <li><a href="#tentang">Tentang</a></li>
+    <li><a href="#kontak">Kontak</a></li>
+  </ul>
+  <div class="nav-right">
+    <span class="nav-contact">+62 812 9000 7654</span>
+    <button class="theme-btn" id="themeToggle" aria-label="Toggle tema">&#9788;</button>
+    <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMobileMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Portfolio Fotografer &mdash; Jakarta, Indonesia</div>
+    <h1 class="hero-name">Rendra<br><span class="line2">Satria</span></h1>
+    <p class="hero-spec">Wedding &middot; Komersial &middot; Street &middot; Portrait</p>
+  </div>
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="tentang">
+  <div class="about-left">
+    <div class="section-label">Tentang Saya</div>
+    <h2 class="about-heading">Setiap momen<br><strong>layak diabadikan</strong><br>dengan jujur.</h2>
+    <p class="about-text">Saya adalah fotografer berbasis Jakarta dengan spesialisasi di wedding, komersial, dan street photography. Pendekatan saya sederhana: mengabadikan momen nyata tanpa dramatisasi berlebihan.</p>
+    <p class="about-text">Setelah 8 tahun berkarier dan lebih dari 150 proyek, saya masih percaya bahwa foto terbaik lahir dari koneksi tulus antara fotografer dan subjeknya.</p>
+    <div class="about-stats">
+      <div class="stat-item"><div class="stat-num">150+</div><div class="stat-label">Proyek Selesai</div></div>
+      <div class="stat-item"><div class="stat-num">8</div><div class="stat-label">Tahun Pengalaman</div></div>
+      <div class="stat-item"><div class="stat-num">24</div><div class="stat-label">Kota di Indonesia</div></div>
+    </div>
+  </div>
+  <div class="about-right">
+    <div class="about-philosophy">
+      <div class="philosophy-item">
+        <div class="philosophy-num">01</div>
+        <div class="philosophy-title">Kejujuran Visual</div>
+        <div class="philosophy-desc">Saya tidak memperindah realitas secara berlebihan. Foto yang jujur selalu lebih kuat dari foto yang dipoles.</div>
+      </div>
+      <div class="philosophy-item">
+        <div class="philosophy-num">02</div>
+        <div class="philosophy-title">Momen Organik</div>
+        <div class="philosophy-desc">Momen terbaik tidak bisa disutradarai sepenuhnya. Saya hadir, menunggu, dan menangkap ketika terjadi.</div>
+      </div>
+      <div class="philosophy-item">
+        <div class="philosophy-num">03</div>
+        <div class="philosophy-title">Detail yang Diabaikan</div>
+        <div class="philosophy-desc">Detail kecil yang orang lewatkan sering menjadi foto yang paling dikenang. Saya melatih mata untuk hal itu.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery" id="galeri">
+  <div class="gallery-header">
+    <h2 class="gallery-title">Galeri</h2>
+    <div class="filter-tabs">
+      <button class="filter-btn active" data-filter="semua">Semua</button>
+      <button class="filter-btn" data-filter="wedding">Wedding</button>
+      <button class="filter-btn" data-filter="komersial">Komersial</button>
+      <button class="filter-btn" data-filter="street">Street</button>
+      <button class="filter-btn" data-filter="portrait">Portrait</button>
+    </div>
+  </div>
+  <div class="masonry" id="masonryGrid">
+
+    <div class="masonry-item" data-cat="wedding">
+      <svg class="photo-placeholder" viewBox="0 0 400 560" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="560" fill="#181818"/><rect x="80" y="60" width="240" height="320" fill="#222" rx="2"/><circle cx="200" cy="200" r="70" fill="#2a2a2a"/><rect x="120" y="340" width="160" height="8" fill="#2a2a2a" rx="4"/><rect x="140" y="360" width="120" height="6" fill="#222" rx="3"/><text x="200" y="510" font-family="monospace" font-size="11" fill="#2e2e2e" text-anchor="middle">WEDDING — BALI 2024</text></svg>
+      <div class="photo-overlay"><div class="photo-title">Pernikahan Adat Bali</div><div class="photo-num">01 / 24</div></div>
+    </div>
+
+    <div class="masonry-item" data-cat="street">
+      <svg class="photo-placeholder" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="300" fill="#141414"/><rect x="0" y="200" width="400" height="100" fill="#1a1a1a"/><rect x="50" y="80" width="60" height="140" fill="#222" rx="1"/><rect x="150" y="60" width="80" height="160" fill="#252525" rx="1"/><rect x="280" y="90" width="70" height="130" fill="#1e1e1e" rx="1"/><circle cx="130" cy="200" r="12" fill="#333"/><text x="200" y="275" font-family="monospace" font-size="10" fill="#2a2a2a" text-anchor="middle">STREET — JAKARTA 2024</text></svg>
+      <div class="photo-overlay"><div class="photo-title">Senja di Kota Tua</div><div class="photo-num">02 / 24</div></div>
+    </div>
+
+    <div class="masonry-item" data-cat="portrait">
+      <svg class="photo-placeholder" viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="500" fill="#161616"/><circle cx="200" cy="170" r="100" fill="#222"/><circle cx="200" cy="140" r="60" fill="#2a2a2a"/><rect x="80" y="280" width="240" height="160" fill="#1e1e1e" rx="4"/><text x="200" y="470" font-family="monospace" font-size="10" fill="#2a2a2a" text-anchor="middle">PORTRAIT — STUDIO</text></svg>
+      <div class="photo-overlay"><div class="photo-title">Portrait Studiolo</div><div class="photo-num">03 / 24</div></div>
+    </div>
+
+    <div class="masonry-item" data-cat="komersial">
+      <svg class="photo-placeholder" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="400" fill="#121212"/><rect x="100" y="80" width="200" height="240" fill="#1e1e1e" rx="8"/><circle cx="200" cy="185" r="55" fill="#2a2a2a"/><rect x="140" y="260" width="120" height="6" fill="#252525" rx="3"/><text x="200" y="375" font-family="monospace" font-size="10" fill="#272727" text-anchor="middle">KOMERSIAL — PRODUK</text></svg>
+      <div class="photo-overlay"><div class="photo-title">Editorial Produk Fashion</div><div class="photo-num">04 / 24</div></div>
+    </div>
+
+    <div class="masonry-item" data-cat="wedding">
+      <svg class="photo-placeholder" viewBox="0 0 400 480" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="480" fill="#181818"/><ellipse cx="200" cy="155" rx="130" ry="145" fill="#1e1e1e"/><ellipse cx="200" cy="135" rx="75" ry="85" fill="#252525"/><rect x="50" y="310" width="300" height="130" fill="#1a1a1a" rx="2"/><text x="200" y="455" font-family="monospace" font-size="10" fill="#2a2a2a" text-anchor="middle">WEDDING — JOGJA 2023</text></svg>
+      <div class="photo-overlay"><div class="photo-title">Akad Nikah Prawisuda</div><div class="photo-num">05 / 24</div></div>
+    </div>
+
+    <div class="masonry-item" data-cat="street">
+      <svg class="photo-placeholder" viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="260" fill="#101010"/><rect x="0" y="170" width="400" height="90" fill="#181818"/><rect x="20" y="60" width="40" height="130" fill="#1e1e1e"/><rect x="180" y="40" width="30" height="150" fill="#222"/><rect x="340" y="70" width="40" height="120" fill="#1a1a1a"/><text x="200" y="240" font-family="monospace" font-size="10" fill="#2a2a2a" text-anchor="middle">STREET — BANDUNG</text></svg>
+      <div class="photo-overlay"><div class="photo-title">Denyut Pasar Pagi</div><div class="photo-num">06 / 24</div></div>
+    </div>
+
+    <div class="masonry-item" data-cat="komersial">
+      <svg class="photo-placeholder" viewBox="0 0 400 540" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="540" fill="#0e0e0e"/><rect x="70" y="40" width="260" height="380" fill="#191919" rx="2"/><circle cx="200" cy="180" r="75" fill="#222"/><rect x="110" y="300" width="180" height="8" fill="#2a2a2a" rx="4"/><rect x="130" y="320" width="140" height="6" fill="#222" rx="3"/><text x="200" y="510" font-family="monospace" font-size="10" fill="#272727" text-anchor="middle">KOMERSIAL — LOOKBOOK</text></svg>
+      <div class="photo-overlay"><div class="photo-title">Lookbook Batik Modern</div><div class="photo-num">07 / 24</div></div>
+    </div>
+
+    <div class="masonry-item" data-cat="portrait">
+      <svg class="photo-placeholder" viewBox="0 0 400 340" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="340" fill="#141414"/><rect x="0" y="0" width="210" height="340" fill="#191919"/><circle cx="105" cy="140" r="75" fill="#222"/><circle cx="105" cy="115" r="45" fill="#2a2a2a"/><rect x="15" y="240" width="180" height="75" fill="#1e1e1e" rx="2"/><text x="305" y="175" font-family="monospace" font-size="10" fill="#2a2a2a" text-anchor="middle">PORTRAIT</text></svg>
+      <div class="photo-overlay"><div class="photo-title">Seniman Kota — Series</div><div class="photo-num">08 / 24</div></div>
+    </div>
+
+    <div class="masonry-item" data-cat="wedding">
+      <svg class="photo-placeholder" viewBox="0 0 400 440" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="440" fill="#161616"/><rect x="40" y="60" width="320" height="260" fill="#1e1e1e" rx="2"/><circle cx="150" cy="185" r="55" fill="#252525"/><circle cx="255" cy="185" r="55" fill="#252525"/><rect x="80" y="280" width="240" height="6" fill="#2a2a2a" rx="3"/><text x="200" y="415" font-family="monospace" font-size="10" fill="#272727" text-anchor="middle">WEDDING — SURABAYA</text></svg>
+      <div class="photo-overlay"><div class="photo-title">Resepsi Keluarga Harmoni</div><div class="photo-num">09 / 24</div></div>
+    </div>
+
+    <div class="masonry-item" data-cat="street">
+      <svg class="photo-placeholder" viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="320" fill="#0d0d0d"/><rect x="0" y="220" width="400" height="100" fill="#151515"/><rect x="30" y="100" width="50" height="140" fill="#1a1a1a"/><rect x="120" y="80" width="60" height="160" fill="#181818"/><rect x="220" y="110" width="45" height="130" fill="#1e1e1e"/><rect x="310" y="90" width="55" height="150" fill="#1a1a1a"/><text x="200" y="298" font-family="monospace" font-size="10" fill="#262626" text-anchor="middle">STREET — MALAM HARI</text></svg>
+      <div class="photo-overlay"><div class="photo-title">Lampu Kota Setelah Hujan</div><div class="photo-num">10 / 24</div></div>
+    </div>
+
+    <div class="masonry-item" data-cat="komersial">
+      <svg class="photo-placeholder" viewBox="0 0 400 460" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="460" fill="#131313"/><rect x="60" y="50" width="280" height="300" fill="#1c1c1c" rx="4"/><rect x="100" y="90" width="200" height="140" fill="#242424" rx="2"/><rect x="100" y="250" width="130" height="8" fill="#2a2a2a" rx="4"/><text x="200" y="430" font-family="monospace" font-size="10" fill="#272727" text-anchor="middle">KOMERSIAL — ARSITEKTUR</text></svg>
+      <div class="photo-overlay"><div class="photo-title">Ruang Publik Baru Jakarta</div><div class="photo-num">11 / 24</div></div>
+    </div>
+
+    <div class="masonry-item" data-cat="portrait">
+      <svg class="photo-placeholder" viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="500" fill="#111"/><rect x="100" y="60" width="200" height="300" fill="#1a1a1a" rx="2"/><circle cx="200" cy="165" r="70" fill="#222"/><circle cx="200" cy="140" r="43" fill="#2a2a2a"/><rect x="120" y="270" width="160" height="60" fill="#1e1e1e" rx="2"/><text x="200" y="467" font-family="monospace" font-size="10" fill="#262626" text-anchor="middle">PORTRAIT — OUTDOOR</text></svg>
+      <div class="photo-overlay"><div class="photo-title">Pembatik Lasem</div><div class="photo-num">12 / 24</div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="layanan">
+  <div class="section-label">Layanan</div>
+  <h2 class="section-heading">Apa yang Saya Tawarkan</h2>
+  <div class="services-grid">
+    <div class="service-card">
+      <svg class="service-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="8" width="28" height="20" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="18" cy="18" r="5" stroke="currentColor" stroke-width="1.5"/><circle cx="27" cy="11" r="1.5" fill="currentColor"/></svg>
+      <div class="service-name">Wedding Photography</div>
+      <div class="service-desc">Dokumentasi hari spesial dari awal hingga akhir. Meliputi akad, resepsi, detail dekorasi, dan momen keluarga. Tersedia paket tunggal maupun lengkap dengan video.</div>
+      <div class="service-price">Mulai dari <strong>Rp 8.500.000</strong> / hari</div>
+    </div>
+    <div class="service-card">
+      <svg class="service-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="6" width="24" height="24" rx="2" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="11" width="14" height="14" rx="1" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3 2"/><circle cx="18" cy="18" r="3" fill="currentColor" opacity="0.4"/></svg>
+      <div class="service-name">Komersial &amp; Editorial</div>
+      <div class="service-desc">Foto produk, lookbook fashion, arsitektur, kuliner, dan editorial majalah. Bekerja sama dengan brand lokal maupun internasional yang beroperasi di Indonesia.</div>
+      <div class="service-price">Mulai dari <strong>Rp 3.500.000</strong> / sesi</div>
+    </div>
+    <div class="service-card">
+      <svg class="service-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="18" cy="14" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 30c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <div class="service-name">Portrait &amp; Personal</div>
+      <div class="service-desc">Portrait profesional untuk kebutuhan personal, corporate headshot, keluarga, dan momen ulang tahun. Sesi studio maupun outdoor di lokasi pilihan Anda.</div>
+      <div class="service-price">Mulai dari <strong>Rp 1.800.000</strong> / sesi</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process">
+  <div class="section-label">Proses Kerja</div>
+  <h2 class="section-heading">Sederhana, Jelas, Efektif</h2>
+  <div class="process-steps">
+    <div class="process-step"><div class="step-num">01 &mdash; Brief</div><div class="step-title">Diskusi Awal</div><div class="step-desc">Kita bicara tentang kebutuhan, gaya yang diinginkan, lokasi, dan anggaran. Tidak ada pertanyaan yang terlalu kecil.</div></div>
+    <div class="process-step"><div class="step-num">02 &mdash; Shoot</div><div class="step-title">Pemotretan</div><div class="step-desc">Hari-H pemotretan berlangsung natural dan nyaman. Saya tidak membuat situasi jadi kaku dengan arahan berlebihan.</div></div>
+    <div class="process-step"><div class="step-num">03 &mdash; Edit</div><div class="step-title">Editing &amp; Seleksi</div><div class="step-desc">Proses post-processing minimal tapi terukur. Warna dijaga natural, detail dipertajam tanpa manipulasi berlebihan.</div></div>
+    <div class="process-step"><div class="step-num">04 &mdash; Deliver</div><div class="step-title">Pengiriman</div><div class="step-desc">File resolusi penuh dikirim via Google Drive dalam 7&ndash;14 hari kerja. Tersedia juga cetak langsung atas permintaan.</div></div>
+  </div>
+</section>
+
+<!-- FEATURED -->
+<section class="featured">
+  <div class="section-label">Proyek Unggulan</div>
+  <div class="featured-inner">
+    <div class="featured-image">
+      <svg viewBox="0 0 600 450" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect width="600" height="450" fill="#141414"/><rect x="0" y="0" width="300" height="450" fill="#191919"/><circle cx="150" cy="175" r="110" fill="#222"/><circle cx="150" cy="148" r="68" fill="#2a2a2a"/><rect x="30" y="300" width="240" height="120" fill="#1e1e1e" rx="2"/><rect x="320" y="60" width="240" height="185" fill="#1a1a1a" rx="2"/><rect x="320" y="265" width="120" height="155" fill="#181818" rx="2"/><rect x="460" y="265" width="100" height="155" fill="#1c1c1c" rx="2"/></svg>
+    </div>
+    <div class="featured-info">
+      <div class="featured-cat">Wedding Photography &middot; 2024</div>
+      <h3 class="featured-title">Pernikahan Adat Jawa &mdash; Seri Lengkap Dewi &amp; Aryo</h3>
+      <p class="featured-desc">Proyek dokumentasi pernikahan adat Jawa selama dua hari penuh di Yogyakarta. Meliputi prosesi siraman, midodareni, akad nikah, dan resepsi. Total 480 foto final terseleksi dari lebih dari 2.000 frame.</p>
+      <div class="featured-meta">
+        <div class="meta-item"><div class="meta-label">Lokasi</div><div class="meta-val">Yogyakarta</div></div>
+        <div class="meta-item"><div class="meta-label">Durasi</div><div class="meta-val">2 Hari</div></div>
+        <div class="meta-item"><div class="meta-label">Foto Final</div><div class="meta-val">480 File</div></div>
+        <div class="meta-item"><div class="meta-label">Tahun</div><div class="meta-val">2024</div></div>
+      </div>
+      <a href="#kontak" class="btn-outline">Diskusikan Proyek Serupa</a>
+    </div>
+  </div>
+</section>
+
+<!-- CLIENTS -->
+<section class="clients">
+  <div class="clients-label">Dipercaya oleh</div>
+  <div class="clients-row">
+    <div class="client-logo">Kompas</div>
+    <div class="client-logo">Nat Geo ID</div>
+    <div class="client-logo">Tokopedia</div>
+    <div class="client-logo">Batik Keris</div>
+    <div class="client-logo">KAI</div>
+    <div class="client-logo">Tempo</div>
+    <div class="client-logo">Garuda Indonesia</div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="section-label">Kata Mereka</div>
+  <div class="testi-grid">
+    <div class="testi-item">
+      <div class="testi-divider"></div>
+      <p class="testi-quote">"Rendra benar-benar memahami apa yang kami inginkan tanpa harus kami jelaskan panjang lebar. Foto-foto pernikahan kami terasa hidup dan jujur &mdash; bukan sekadar dokumentasi biasa."</p>
+      <div class="testi-author">Sari &amp; Baskara Nugraha</div>
+      <div class="testi-meta">Wedding &mdash; Bandung &middot; April 2024</div>
+    </div>
+    <div class="testi-item">
+      <div class="testi-divider"></div>
+      <p class="testi-quote">"Hasil editorial produk kami naik kelas berkat kolaborasi dengan Rendra. Gaya fotografinya bersih, konsisten, dan tidak pernah terlihat generik. Sangat rekomendasikan untuk brand yang serius."</p>
+      <div class="testi-author">Dian Pertiwi</div>
+      <div class="testi-meta">Creative Director, Wastra Studio &middot; Maret 2024</div>
+    </div>
+    <div class="testi-item">
+      <div class="testi-divider"></div>
+      <p class="testi-quote">"Portrait session paling nyaman yang pernah saya jalani. Rendra tidak pernah membuat saya merasa tidak natural. Hasilnya jauh melampaui ekspektasi."</p>
+      <div class="testi-author">Ahmad Fadhillah</div>
+      <div class="testi-meta">Pengusaha &amp; Penulis &middot; Februari 2024</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="kontak">
+  <div class="contact-inner">
+    <div>
+      <div class="section-label">Kontak &amp; Booking</div>
+      <h2 class="contact-info-head">Punya proyek<br><strong>dalam pikiran?</strong></h2>
+      <p class="contact-info-sub">Ceritakan kepada saya. Saya selalu terbuka untuk diskusi tentang project baru &mdash; baik wedding, komersial, maupun portrait. Slot terbatas, booking minimal 2 minggu sebelum tanggal.</p>
+      <div class="contact-details">
+        <div class="contact-detail"><div class="detail-label">Email</div><div class="detail-val">rendra@rendrasatria.id</div></div>
+        <div class="contact-detail"><div class="detail-label">WhatsApp</div><div class="detail-val">+62 812 9000 7654</div></div>
+        <div class="contact-detail"><div class="detail-label">Instagram</div><div class="detail-val">@rendrasatria</div></div>
+        <div class="contact-detail"><div class="detail-label">Lokasi</div><div class="detail-val">Jakarta &mdash; tersedia ke seluruh Indonesia</div></div>
+      </div>
+    </div>
+    <form class="booking-form" id="bookingForm" onsubmit="handleBooking(event)">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Nama</label><input class="form-input" type="text" placeholder="Nama lengkap" required></div>
+        <div class="form-group"><label class="form-label">Telepon / WA</label><input class="form-input" type="tel" placeholder="+62 ..."></div>
+      </div>
+      <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="email@domain.com" required></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Jenis Foto</label><select class="form-select" required><option value="">Pilih layanan</option><option>Wedding</option><option>Komersial</option><option>Portrait</option><option>Lainnya</option></select></div>
+        <div class="form-group"><label class="form-label">Tanggal</label><input class="form-input" type="date"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Estimasi Budget</label><select class="form-select"><option value="">Pilih range</option><option>Di bawah Rp 2.000.000</option><option>Rp 2.000.000 &ndash; Rp 5.000.000</option><option>Rp 5.000.000 &ndash; Rp 10.000.000</option><option>Rp 10.000.000 &ndash; Rp 20.000.000</option><option>Di atas Rp 20.000.000</option></select></div>
+      <div class="form-group"><label class="form-label">Ceritakan Proyek Anda</label><textarea class="form-textarea" placeholder="Konsep, lokasi, tanggal, jumlah tamu, atau detail lain..."></textarea></div>
+      <button type="submit" class="btn-submit">Kirim Permintaan</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-name">&copy; 2024 Rendra Satria</div>
+  <div class="footer-socials">
+    <a href="#">Instagram</a>
+    <a href="#">Behance</a>
+    <a href="#">WhatsApp</a>
+  </div>
+  <div class="footer-copy">Jakarta, Indonesia</div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* CUSTOM CURSOR */
+const dot = document.getElementById('cursorDot');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+if (window.matchMedia('(pointer:fine)').matches) {
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+  });
+  (function animateRing() {
+    rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  })();
+  document.querySelectorAll('a,button,.masonry-item,.btn-outline,.btn-submit').forEach(el => {
+    el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+  });
+}
+
+/* THEME TOGGLE */
+const themeToggle = document.getElementById('themeToggle');
+themeToggle.addEventListener('click', () => {
+  const t = document.documentElement.getAttribute('data-theme');
+  document.documentElement.setAttribute('data-theme', t === 'dark' ? 'light' : 'dark');
+  themeToggle.textContent = t === 'dark' ? '☽' : '☀';
+});
+
+/* MOBILE MENU */
+const mobileMenu = document.getElementById('mobileMenu');
+function toggleMobileMenu() { mobileMenu.classList.toggle('open'); }
+function closeMobileMenu() { mobileMenu.classList.remove('open'); }
+
+/* GALLERY FILTER */
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.getAttribute('data-filter');
+    document.querySelectorAll('.masonry-item').forEach(item => {
+      item.classList.toggle('hidden', f !== 'semua' && item.getAttribute('data-cat') !== f);
+    });
+  });
+});
+
+/* BOOKING FORM */
+function handleBooking(e) {
+  e.preventDefault();
+  showToast('Permintaan terkirim! Kami akan menghubungi dalam 24 jam.');
+  e.target.reset();
+}
+
+/* TOAST */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+/* SCROLL REVEAL */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.service-card,.process-step,.testi-item').forEach(el => {
+  el.style.opacity = '0'; el.style.transform = 'translateY(20px)';
+  el.style.transition = 'opacity .5s ease,transform .5s ease';
+  obs.observe(el);
+});
+</script>
+</body>
+</html>

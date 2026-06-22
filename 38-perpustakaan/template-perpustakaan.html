@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perpustakaan Daerah Kota Blitar — Sistem Katalog Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FAF7F0;--bg2:#F2EDE0;--bg3:#E8E0CC;
+  --text:#1A1208;--text2:#4A3820;--text3:#8A7060;
+  --green:#2D6A2F;--green2:#3D8A3F;--gold:#B8860B;--brown:#7B4F2E;
+  --border:rgba(45,106,47,0.15);--shadow:0 2px 12px rgba(45,106,47,0.08);
+  --font-serif:'Lora',serif;--font-body:'Plus Jakarta Sans',sans-serif;
+  --r:10px;--tr:0.25s ease;
+}
+[data-theme="dark"]{
+  --bg:#0E1208;--bg2:#161A0E;--bg3:#1E2414;
+  --text:#E8F0D8;--text2:#90A870;--text3:#507040;
+  --border:rgba(61,138,63,0.2);--shadow:0 2px 12px rgba(0,0,0,0.3);
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);font-size:16px;line-height:1.6;transition:background var(--tr),color var(--tr)}
+a{text-decoration:none;color:inherit}
+
+/* TOP BAR */
+.topbar{background:var(--green);color:#fff;font-size:0.78rem;padding:0.45rem 0}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.topbar a{color:#fff;opacity:.85;transition:opacity var(--tr)}
+.topbar a:hover{opacity:1;text-decoration:underline}
+.tb-sep{opacity:.35;margin:0 0.3rem}
+
+/* NAVBAR */
+.navbar{background:var(--bg);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+.nav-wrap{display:flex;align-items:center;justify-content:space-between;padding:.75rem 0;gap:1rem;position:relative}
+.brand{display:flex;align-items:center;gap:.75rem}
+.brand-logo{width:44px;height:44px;background:var(--green);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.4rem;color:#fff}
+.brand-text h1{font-family:var(--font-serif);font-size:.95rem;font-weight:700;color:var(--text);line-height:1.2}
+.brand-text p{font-size:.72rem;color:var(--text3)}
+.nav-links{display:flex;list-style:none;gap:.2rem}
+.nav-links a{padding:.42rem .78rem;border-radius:6px;font-size:.86rem;font-weight:500;color:var(--text2);transition:all var(--tr)}
+.nav-links a:hover,.nav-links a.active{background:var(--bg2);color:var(--green)}
+.nav-acts{display:flex;align-items:center;gap:.6rem}
+.btn-login{background:var(--green);color:#fff;border:none;padding:.48rem 1.1rem;border-radius:8px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:var(--font-body);transition:background var(--tr)}
+.btn-login:hover{background:var(--green2)}
+.tog{background:var(--bg2);border:1px solid var(--border);border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;transition:background var(--tr)}
+.tog:hover{background:var(--bg3)}
+.burger{display:none;background:none;border:1px solid var(--border);border-radius:8px;padding:.38rem .6rem;cursor:pointer;font-size:1.2rem;color:var(--text)}
+.mob-menu{display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg);border-bottom:1px solid var(--border);padding:1rem 0;z-index:99}
+.mob-menu.open{display:flex;flex-direction:column;gap:.25rem}
+.mob-menu a{padding:.55rem 1rem;font-size:.9rem;font-weight:500;color:var(--text2);border-radius:6px;transition:all var(--tr)}
+.mob-menu a:hover{background:var(--bg2);color:var(--green)}
+
+.wrap{max-width:1140px;margin:0 auto;padding:0 1.5rem}
+section{padding:4rem 0}
+.lbl{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:.45rem}
+.sec-title{font-family:var(--font-serif);font-size:2rem;font-weight:700;color:var(--text);margin-bottom:.6rem}
+.sec-sub{color:var(--text3);max-width:520px}
+.sec-hd{text-align:center;margin-bottom:2.5rem}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#173A17 0%,#2D6A2F 55%,#3A5A1A 100%);padding:5rem 0 4rem;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(255,255,255,.04),transparent 60%);pointer-events:none}
+.hero-in{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;position:relative;z-index:1}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:.76rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.28rem .9rem;border-radius:999px;margin-bottom:1rem}
+.hero h2{font-family:var(--font-serif);font-size:2.6rem;font-weight:700;color:#fff;line-height:1.22;margin-bottom:.75rem}
+.hero h2 em{font-style:italic;color:#A8E090}
+.hero p{color:rgba(255,255,255,.8);font-size:.98rem;margin-bottom:1.8rem;max-width:400px}
+.hero-search{background:rgba(255,255,255,.96);border-radius:12px;padding:1rem;display:flex;gap:.75rem;flex-wrap:wrap;box-shadow:0 8px 32px rgba(0,0,0,.22)}
+.hero-search input{flex:1;min-width:160px;border:1px solid #D8CDB8;border-radius:8px;padding:.62rem .9rem;font-family:var(--font-body);font-size:.88rem;color:#1A1208;outline:none;background:#fff}
+.hero-search input:focus{border-color:var(--green)}
+.hero-search select{border:1px solid #D8CDB8;border-radius:8px;padding:.62rem .8rem;font-family:var(--font-body);font-size:.86rem;color:#4A3820;cursor:pointer;outline:none;background:#fff}
+.hero-search button{background:var(--green);color:#fff;border:none;padding:.62rem 1.3rem;border-radius:8px;font-weight:700;font-size:.88rem;cursor:pointer;font-family:var(--font-body);transition:background var(--tr);white-space:nowrap}
+.hero-search button:hover{background:var(--green2)}
+.hero-vis{display:flex;flex-direction:column;align-items:center;gap:2rem}
+.shelf{display:flex;gap:.6rem;justify-content:center;align-items:flex-end}
+.hbook{display:flex;border-radius:4px;overflow:hidden;box-shadow:3px 3px 0 rgba(0,0,0,.18)}
+.hbook .sp{width:10px;flex-shrink:0}
+.hbook .cv{min-height:80px;min-width:44px}
+.hero-nums{display:flex;gap:1.2rem}
+.hnum{text-align:center;background:rgba(255,255,255,.1);border-radius:10px;padding:.8rem 1.1rem;border:1px solid rgba(255,255,255,.1)}
+.hnum .n{font-family:var(--font-serif);font-size:1.5rem;font-weight:700;color:#fff}
+.hnum .l{font-size:.7rem;color:rgba(255,255,255,.7)}
+
+/* STATISTIK */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem}
+.stat-c{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.8rem 1.5rem;text-align:center;position:relative;overflow:hidden}
+.stat-c::before{content:'';position:absolute;top:-28px;right:-28px;width:76px;height:76px;background:var(--green);opacity:.06;border-radius:50%}
+.stat-c .ico{font-size:1.8rem;margin-bottom:.4rem}
+.stat-c .num{font-family:var(--font-serif);font-size:2.4rem;font-weight:700;color:var(--green);line-height:1}
+.stat-c .lab{font-size:.82rem;color:var(--text3);margin-top:.35rem}
+
+/* BUKU TERBARU */
+.bk-hd{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:2rem}
+.lnk-all{color:var(--green);font-weight:600;font-size:.86rem;border-bottom:1px solid currentColor;padding-bottom:1px;transition:opacity var(--tr)}
+.lnk-all:hover{opacity:.7}
+.search-info{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.65rem 1rem;margin-bottom:1.2rem;font-size:.86rem;color:var(--text2);display:none}
+.search-info.on{display:block}
+.buku-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem}
+.book-card{display:flex;border-radius:8px;box-shadow:3px 3px 0 rgba(0,0,0,.1),6px 6px 0 rgba(0,0,0,.05);overflow:hidden;transition:transform .3s,box-shadow .3s;background:var(--bg2);border:1px solid var(--border)}
+.book-card:hover{transform:translateY(-4px) rotate(-1deg);box-shadow:6px 8px 0 rgba(0,0,0,.12),10px 12px 0 rgba(0,0,0,.06)}
+.book-card.hidden{display:none}
+.bk-spine{width:12px;flex-shrink:0}
+.bk-body{padding:.85rem;flex:1;display:flex;flex-direction:column;gap:.35rem}
+.bk-cover{height:88px;border-radius:4px;margin-bottom:.4rem}
+.bk-kat{font-size:.68rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.06em}
+.bk-judul{font-family:var(--font-serif);font-size:.86rem;font-weight:600;color:var(--text);line-height:1.3}
+.bk-author{font-size:.76rem;color:var(--text3);font-style:italic}
+.bk-year{font-size:.7rem;color:var(--text3)}
+.rdbar{height:3px;background:var(--green);border-radius:999px;margin-top:.4rem;opacity:.4}
+
+/* KATEGORI */
+.kat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.kat-c{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.3rem 1rem;text-align:center;cursor:pointer;transition:all var(--tr)}
+.kat-c:hover,.kat-c.active{background:var(--green);border-color:var(--green)}
+.kat-c:hover .ki,.kat-c.active .ki{background:rgba(255,255,255,.18);color:#fff}
+.kat-c:hover .kn,.kat-c.active .kn,.kat-c:hover .kc,.kat-c.active .kc{color:#fff}
+.ki{width:46px;height:46px;border-radius:11px;background:rgba(45,106,47,.1);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin:0 auto .65rem;transition:all var(--tr)}
+.kn{font-weight:600;font-size:.88rem;color:var(--text);transition:color var(--tr)}
+.kc{font-size:.76rem;color:var(--text3);margin-top:.15rem;transition:color var(--tr)}
+
+/* LAYANAN */
+.lay-sec{background:var(--bg2)}
+.lay-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+.lay-c{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:1.6rem;display:flex;gap:.9rem;transition:all var(--tr)}
+.lay-c:hover{border-color:var(--green);transform:translateY(-3px);box-shadow:var(--shadow)}
+.lay-ico{width:50px;height:50px;border-radius:11px;background:rgba(45,106,47,.1);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.lay-t h4{font-weight:700;font-size:.9rem;color:var(--text);margin-bottom:.25rem}
+.lay-t p{font-size:.82rem;color:var(--text3);line-height:1.55}
+
+/* JAM */
+.jam-wrap{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start}
+.jam-tbl{width:100%;border-collapse:collapse}
+.jam-tbl th{text-align:left;padding:.58rem 1rem;background:var(--green);color:#fff;font-size:.82rem;font-weight:600}
+.jam-tbl th:first-child{border-radius:8px 0 0 0}
+.jam-tbl th:last-child{border-radius:0 8px 0 0}
+.jam-tbl td{padding:.65rem 1rem;border-bottom:1px solid var(--border);font-size:.86rem;color:var(--text2)}
+.jam-tbl tr:last-child td{border-bottom:none}
+.jam-tbl tr:nth-child(even) td{background:var(--bg2)}
+.bdg{display:inline-block;padding:.18rem .6rem;border-radius:999px;font-size:.7rem;font-weight:700}
+.bdg-o{background:rgba(45,106,47,.1);color:var(--green)}
+.bdg-c{background:rgba(123,79,46,.1);color:var(--brown)}
+.jam-info{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.4rem}
+.jam-info h4{font-family:var(--font-serif);font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:.9rem}
+.irow{display:flex;gap:.7rem;margin-bottom:.65rem;font-size:.86rem;color:var(--text2)}
+.iem{font-size:.95rem;flex-shrink:0;margin-top:.1rem}
+
+/* PALING DIMINATI + ACCORDION side-by-side */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
+.rank-list{display:flex;flex-direction:column;gap:.9rem;margin-top:1.4rem}
+.rank-item{display:flex;align-items:center;gap:.9rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:.9rem 1.1rem;transition:all var(--tr)}
+.rank-item:hover{border-color:var(--green);transform:translateX(4px)}
+.rk-n{font-family:var(--font-serif);font-size:1.5rem;font-weight:700;color:var(--border);width:30px;text-align:center;flex-shrink:0}
+.rk-n.top{color:var(--gold)}
+.rk-cov{width:38px;height:52px;border-radius:4px;flex-shrink:0}
+.rk-inf{flex:1}
+.rk-t{font-weight:600;font-size:.88rem;color:var(--text);margin-bottom:.15rem}
+.rk-a{font-size:.76rem;color:var(--text3);font-style:italic}
+.rk-s{font-size:.75rem;color:var(--green);font-weight:600;margin-top:.2rem}
+
+/* ACCORDION */
+.acc{display:flex;flex-direction:column;gap:.65rem;margin-top:1.4rem}
+.acc-it{border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.acc-hd{width:100%;background:var(--bg2);border:none;display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.1rem;cursor:pointer;font-family:var(--font-body);font-size:.88rem;font-weight:600;color:var(--text);transition:background var(--tr)}
+.acc-hd:hover{background:var(--bg3)}
+.acc-icon{transition:transform .3s;font-size:1.1rem;color:var(--green)}
+.acc-it.open .acc-icon{transform:rotate(45deg)}
+.acc-bd{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.acc-it.open .acc-bd{max-height:240px}
+.acc-ct{padding:.9rem 1.1rem 1.1rem;font-size:.86rem;color:var(--text2);line-height:1.7;border-top:1px solid var(--border)}
+
+/* PENDAFTARAN */
+.dft-sec{background:var(--bg2)}
+.dft-in{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
+.ben-list{display:flex;flex-direction:column;gap:.65rem;margin-top:1.4rem}
+.ben-it{display:flex;align-items:flex-start;gap:.7rem;font-size:.88rem;color:var(--text2)}
+.ben-chk{width:22px;height:22px;border-radius:6px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.72rem;flex-shrink:0;margin-top:.1rem}
+.form-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:1.8rem;box-shadow:var(--shadow)}
+.form-card h3{font-family:var(--font-serif);font-size:1.15rem;margin-bottom:1.1rem;color:var(--text)}
+.fg{margin-bottom:1.1rem}
+.fg label{display:block;font-size:.83rem;font-weight:600;color:var(--text2);margin-bottom:.35rem}
+.fg input,.fg select,.fg textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:.6rem .9rem;font-family:var(--font-body);font-size:.88rem;background:var(--bg2);color:var(--text);outline:none;transition:border-color var(--tr)}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--green);background:var(--bg)}
+.fg textarea{resize:vertical}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.btn-sub{width:100%;background:var(--green);color:#fff;border:none;padding:.82rem;border-radius:8px;font-weight:700;font-size:.92rem;cursor:pointer;font-family:var(--font-body);transition:background var(--tr)}
+.btn-sub:hover{background:var(--green2)}
+.fn{font-size:.76rem;color:var(--text3);text-align:center;margin-top:.65rem}
+
+/* BERITA */
+.ber-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+.ber-c{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:all var(--tr)}
+.ber-c:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.ber-img{height:155px;display:flex;align-items:center;justify-content:center;font-size:2rem}
+.ber-body{padding:1.1rem}
+.ber-tag{font-size:.7rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem}
+.ber-title{font-family:var(--font-serif);font-size:.96rem;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:.4rem}
+.ber-date{font-size:.76rem;color:var(--text3)}
+.ber-ex{font-size:.83rem;color:var(--text3);line-height:1.55;margin-top:.35rem}
+
+/* GALERI */
+.gal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem}
+.gal-it{border-radius:var(--r);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:rgba(255,255,255,.85);cursor:pointer;transition:transform .3s;min-height:140px}
+.gal-it:hover{transform:scale(1.03)}
+.gal-it.lg{grid-row:span 2;min-height:auto}
+
+/* KONTAK */
+.kon-in{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start}
+.map-ph{background:linear-gradient(135deg,#2D6A2F,#3D8A3F);border-radius:var(--r);height:270px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;gap:.65rem;text-align:center;padding:1.5rem}
+.map-ph .mi{font-size:3rem}
+.map-ph h3{font-family:var(--font-serif);font-size:1.05rem}
+.map-ph p{font-size:.85rem;opacity:.82}
+.map-ph a{color:#A8E090;font-size:.84rem;margin-top:.3rem}
+.kon-items{display:flex;flex-direction:column;gap:.9rem}
+.kon-it{display:flex;gap:.9rem;align-items:flex-start;padding:.9rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r)}
+.kon-ico{width:38px;height:38px;border-radius:9px;background:rgba(45,106,47,.1);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.kon-t h4{font-weight:700;font-size:.86rem;color:var(--text);margin-bottom:.15rem}
+.kon-t p{font-size:.83rem;color:var(--text3)}
+
+/* FOOTER */
+footer{background:#0E2010;color:rgba(255,255,255,.68);padding:3rem 0 1.5rem}
+.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:2.5rem;margin-bottom:2rem}
+.foot-brand h3{font-family:var(--font-serif);font-size:1.05rem;color:#fff;margin-bottom:.45rem}
+.foot-brand p{font-size:.84rem;line-height:1.6;max-width:280px}
+.foot-ico-row{display:flex;gap:.65rem;margin-top:.9rem}
+.foot-ico-row a{color:rgba(255,255,255,.55);font-size:1.15rem;transition:color var(--tr)}
+.foot-ico-row a:hover{color:#A8E090}
+.fcol h4{color:#fff;font-size:.86rem;font-weight:700;margin-bottom:.9rem}
+.fcol ul{list-style:none;display:flex;flex-direction:column;gap:.45rem}
+.fcol ul a{color:rgba(255,255,255,.62);font-size:.83rem;transition:color var(--tr)}
+.fcol ul a:hover{color:#A8E090}
+.foot-bot{border-top:1px solid rgba(255,255,255,.1);padding-top:1.1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.65rem;font-size:.8rem}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  .buku-grid{grid-template-columns:repeat(3,1fr)}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .lay-grid{grid-template-columns:repeat(2,1fr)}
+  .jam-wrap{grid-template-columns:1fr}
+  .two-col{grid-template-columns:1fr}
+  .dft-in{grid-template-columns:1fr}
+  .kon-in{grid-template-columns:1fr}
+  .hero-in{grid-template-columns:1fr}
+  .hero-vis{display:none}
+  .foot-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  .buku-grid{grid-template-columns:repeat(2,1fr)}
+  .kat-grid{grid-template-columns:repeat(2,1fr)}
+  .lay-grid{grid-template-columns:1fr}
+  .ber-grid{grid-template-columns:1fr}
+  .gal-grid{grid-template-columns:repeat(2,1fr)}
+  .nav-links,.btn-login{display:none}
+  .burger{display:block}
+  .topbar .wrap{flex-direction:column;gap:.25rem;text-align:center}
+  .sec-title{font-size:1.65rem}
+  .hero h2{font-size:2rem}
+  .fg-row{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .buku-grid,.stats{grid-template-columns:1fr 1fr}
+  .kat-grid{grid-template-columns:repeat(2,1fr)}
+  .foot-grid{grid-template-columns:1fr}
+  section{padding:2.5rem 0}
+  .gal-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="wrap">
+    <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+      <span>🕐 Sen–Jum 08.00–20.00 | Sab 08.00–16.00</span>
+      <span class="tb-sep">|</span>
+      <span>📞 (0342) 801-2345</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+      <a href="#">OPAC Online</a>
+      <span class="tb-sep">|</span>
+      <a href="#">Koleksi Digital</a>
+      <span class="tb-sep">|</span>
+      <a href="#">Perpanjang Pinjaman</a>
+    </div>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="wrap nav-wrap">
+    <a class="brand" href="#">
+      <div class="brand-logo">📚</div>
+      <div class="brand-text">
+        <h1>Perpustakaan Daerah Kota Blitar</h1>
+        <p>Sistem Katalog Digital</p>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#" class="active">Beranda</a></li>
+      <li><a href="#koleksi">Koleksi</a></li>
+      <li><a href="#anggota">Keanggotaan</a></li>
+      <li><a href="#layanan">Layanan</a></li>
+      <li><a href="#berita">Berita</a></li>
+      <li><a href="#kontak">Kontak</a></li>
+    </ul>
+    <div class="nav-acts">
+      <button class="tog" onclick="toggleTheme()" id="togBtn" title="Ganti tema">🌙</button>
+      <button class="btn-login">Login Anggota</button>
+      <button class="burger" onclick="toggleMob()">☰</button>
+    </div>
+    <div class="mob-menu" id="mobMenu">
+      <a href="#">Beranda</a>
+      <a href="#koleksi">Koleksi</a>
+      <a href="#anggota">Keanggotaan</a>
+      <a href="#layanan">Layanan</a>
+      <a href="#berita">Berita</a>
+      <a href="#kontak">Kontak</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-in">
+    <div>
+      <div class="hero-badge">Katalog Digital 2025</div>
+      <h2>Temukan Pengetahuan,<br><em>Perluas Wawasan</em></h2>
+      <p>Akses 48.000+ koleksi buku, jurnal, dan referensi digital Perpustakaan Daerah Kota Blitar. Daftar gratis, pinjam mudah.</p>
+      <div class="hero-search">
+        <input type="text" id="heroQ" placeholder="Cari judul buku, pengarang, atau ISBN..." oninput="cariBuku(this.value)">
+        <select id="heroKat" onchange="cariKat()">
+          <option value="">Semua Kategori</option>
+          <option>Umum</option><option>Anak-anak</option>
+          <option>Sains &amp; Teknologi</option><option>Sejarah</option>
+          <option>Sastra</option><option>Hukum</option>
+          <option>Agama</option><option>Referensi</option>
+        </select>
+        <button onclick="cariBuku(document.getElementById('heroQ').value)">🔍 Cari</button>
+      </div>
+    </div>
+    <div class="hero-vis">
+      <div class="shelf">
+        <div class="hbook"><div class="sp" style="background:#8B4513"></div><div class="cv" style="background:linear-gradient(160deg,#8B4513,#D2691E);height:110px;width:52px"></div></div>
+        <div class="hbook"><div class="sp" style="background:#1A237E"></div><div class="cv" style="background:linear-gradient(160deg,#1A237E,#3949AB);height:130px;width:48px"></div></div>
+        <div class="hbook"><div class="sp" style="background:#1B5E20"></div><div class="cv" style="background:linear-gradient(160deg,#1B5E20,#43A047);height:105px;width:50px"></div></div>
+        <div class="hbook"><div class="sp" style="background:#880E4F"></div><div class="cv" style="background:linear-gradient(160deg,#880E4F,#E91E63);height:120px;width:46px"></div></div>
+        <div class="hbook"><div class="sp" style="background:#E65100"></div><div class="cv" style="background:linear-gradient(160deg,#E65100,#FF8F00);height:100px;width:50px"></div></div>
+        <div class="hbook"><div class="sp" style="background:#311B92"></div><div class="cv" style="background:linear-gradient(160deg,#311B92,#7B1FA2);height:118px;width:48px"></div></div>
+      </div>
+      <div class="hero-nums">
+        <div class="hnum"><div class="n">48.250</div><div class="l">Koleksi</div></div>
+        <div class="hnum"><div class="n">12.400</div><div class="l">Anggota</div></div>
+        <div class="hnum"><div class="n">3.180</div><div class="l">Peminjaman/bln</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATISTIK -->
+<section>
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="lbl">Angka Kami</div>
+      <h2 class="sec-title">Koleksi &amp; Layanan Terlengkap di Kota Blitar</h2>
+    </div>
+    <div class="stats">
+      <div class="stat-c"><div class="ico">📚</div><div class="num" data-count="48250">0</div><div class="lab">Total Koleksi Buku</div></div>
+      <div class="stat-c"><div class="ico">👥</div><div class="num" data-count="12480">0</div><div class="lab">Anggota Aktif</div></div>
+      <div class="stat-c"><div class="ico">🔄</div><div class="num" data-count="3180">0</div><div class="lab">Peminjaman Bulan Ini</div></div>
+      <div class="stat-c"><div class="ico">🏛️</div><div class="num" data-count="1978">0</div><div class="lab">Tahun Berdiri</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BUKU TERBARU -->
+<section id="koleksi" style="background:var(--bg2)">
+  <div class="wrap">
+    <div class="bk-hd">
+      <div><div class="lbl">Koleksi Terbaru</div><h2 class="sec-title">Buku Baru Tiba</h2></div>
+      <a href="#" class="lnk-all">Lihat Semua Koleksi →</a>
+    </div>
+    <div class="search-info" id="srInfo"></div>
+    <div class="buku-grid" id="bukuGrid">
+      <div class="book-card" data-judul="bumi manusia" data-kat="Sastra">
+        <div class="bk-spine" style="background:#8B4513"></div>
+        <div class="bk-body">
+          <div class="bk-cover" style="background:linear-gradient(135deg,#8B4513,#D2691E)"></div>
+          <div class="bk-kat">Sastra</div>
+          <div class="bk-judul">Bumi Manusia</div>
+          <div class="bk-author">Pramoedya Ananta Toer</div>
+          <div class="bk-year">1980 · Edisi Baru 2024</div>
+          <div class="rdbar" style="width:78%"></div>
+        </div>
+      </div>
+      <div class="book-card" data-judul="sapiens" data-kat="Sejarah">
+        <div class="bk-spine" style="background:#1A237E"></div>
+        <div class="bk-body">
+          <div class="bk-cover" style="background:linear-gradient(135deg,#1A237E,#3949AB)"></div>
+          <div class="bk-kat">Sejarah</div>
+          <div class="bk-judul">Sapiens: Riwayat Singkat Umat Manusia</div>
+          <div class="bk-author">Yuval Noah Harari</div>
+          <div class="bk-year">2024</div>
+          <div class="rdbar" style="width:92%"></div>
+        </div>
+      </div>
+      <div class="book-card" data-judul="kecerdasan buatan" data-kat="Sains & Teknologi">
+        <div class="bk-spine" style="background:#1B5E20"></div>
+        <div class="bk-body">
+          <div class="bk-cover" style="background:linear-gradient(135deg,#1B5E20,#43A047)"></div>
+          <div class="bk-kat">Sains &amp; Teknologi</div>
+          <div class="bk-judul">Kecerdasan Buatan untuk Pemula</div>
+          <div class="bk-author">Dr. Budi Santoso</div>
+          <div class="bk-year">2024</div>
+          <div class="rdbar" style="width:55%"></div>
+        </div>
+      </div>
+      <div class="book-card" data-judul="laskar pelangi" data-kat="Sastra">
+        <div class="bk-spine" style="background:#880E4F"></div>
+        <div class="bk-body">
+          <div class="bk-cover" style="background:linear-gradient(135deg,#880E4F,#E91E63)"></div>
+          <div class="bk-kat">Sastra</div>
+          <div class="bk-judul">Laskar Pelangi</div>
+          <div class="bk-author">Andrea Hirata</div>
+          <div class="bk-year">2005 · Edisi Kolektor</div>
+          <div class="rdbar" style="width:85%"></div>
+        </div>
+      </div>
+      <div class="book-card" data-judul="hukum perdata indonesia" data-kat="Hukum">
+        <div class="bk-spine" style="background:#E65100"></div>
+        <div class="bk-body">
+          <div class="bk-cover" style="background:linear-gradient(135deg,#E65100,#FF8F00)"></div>
+          <div class="bk-kat">Hukum</div>
+          <div class="bk-judul">Hukum Perdata Indonesia</div>
+          <div class="bk-author">Prof. Subekti, SH</div>
+          <div class="bk-year">2023 · Edisi Revisi</div>
+          <div class="rdbar" style="width:45%"></div>
+        </div>
+      </div>
+      <div class="book-card" data-judul="sains data modern" data-kat="Sains & Teknologi">
+        <div class="bk-spine" style="background:#311B92"></div>
+        <div class="bk-body">
+          <div class="bk-cover" style="background:linear-gradient(135deg,#311B92,#7B1FA2)"></div>
+          <div class="bk-kat">Sains &amp; Teknologi</div>
+          <div class="bk-judul">Pengantar Sains Data Modern</div>
+          <div class="bk-author">Reza Firmansyah, M.Kom</div>
+          <div class="bk-year">2024</div>
+          <div class="rdbar" style="width:62%"></div>
+        </div>
+      </div>
+      <div class="book-card" data-judul="sejarah kota blitar" data-kat="Sejarah">
+        <div class="bk-spine" style="background:#4A148C"></div>
+        <div class="bk-body">
+          <div class="bk-cover" style="background:linear-gradient(135deg,#4A148C,#6A1B9A)"></div>
+          <div class="bk-kat">Sejarah</div>
+          <div class="bk-judul">Sejarah Kota Blitar: Dari Zaman ke Zaman</div>
+          <div class="bk-author">Dinas Kebudayaan Kota Blitar</div>
+          <div class="bk-year">2023</div>
+          <div class="rdbar" style="width:38%"></div>
+        </div>
+      </div>
+      <div class="book-card" data-judul="ensiklopedia anak" data-kat="Anak-anak">
+        <div class="bk-spine" style="background:#F57F17"></div>
+        <div class="bk-body">
+          <div class="bk-cover" style="background:linear-gradient(135deg,#F57F17,#FFCA28)"></div>
+          <div class="bk-kat">Anak-anak</div>
+          <div class="bk-judul">Ensiklopedia Ilmu Pengetahuan Anak</div>
+          <div class="bk-author">Tim Pustaka Nusantara</div>
+          <div class="bk-year">2024</div>
+          <div class="rdbar" style="width:70%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KATEGORI -->
+<section>
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="lbl">Jelajahi</div>
+      <h2 class="sec-title">Kategori Koleksi</h2>
+      <p class="sec-sub" style="margin:0 auto">Temukan buku sesuai minat dan kebutuhan dari berbagai bidang ilmu</p>
+    </div>
+    <div class="kat-grid">
+      <div class="kat-c" onclick="filterKat('Umum',this)"><div class="ki">📖</div><div class="kn">Umum</div><div class="kc">8.420 judul</div></div>
+      <div class="kat-c" onclick="filterKat('Anak-anak',this)"><div class="ki">🧒</div><div class="kn">Anak-anak</div><div class="kc">5.230 judul</div></div>
+      <div class="kat-c" onclick="filterKat('Sains & Teknologi',this)"><div class="ki">🔬</div><div class="kn">Sains &amp; Teknologi</div><div class="kc">6.840 judul</div></div>
+      <div class="kat-c" onclick="filterKat('Sejarah',this)"><div class="ki">🏛️</div><div class="kn">Sejarah</div><div class="kc">4.190 judul</div></div>
+      <div class="kat-c" onclick="filterKat('Sastra',this)"><div class="ki">✍️</div><div class="kn">Sastra</div><div class="kc">7.350 judul</div></div>
+      <div class="kat-c" onclick="filterKat('Hukum',this)"><div class="ki">⚖️</div><div class="kn">Hukum</div><div class="kc">3.660 judul</div></div>
+      <div class="kat-c" onclick="filterKat('Agama',this)"><div class="ki">🕌</div><div class="kn">Agama</div><div class="kc">5.920 judul</div></div>
+      <div class="kat-c" onclick="filterKat('Referensi',this)"><div class="ki">📑</div><div class="kn">Referensi</div><div class="kc">6.640 judul</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LAYANAN -->
+<section id="layanan" class="lay-sec">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="lbl">Fasilitas</div>
+      <h2 class="sec-title">Layanan Perpustakaan</h2>
+    </div>
+    <div class="lay-grid">
+      <div class="lay-c"><div class="lay-ico">📗</div><div class="lay-t"><h4>Peminjaman Buku</h4><p>Pinjam hingga 5 buku sekaligus dengan durasi 14 hari kalender. Perpanjang 2 kali via aplikasi atau datang langsung.</p></div></div>
+      <div class="lay-c"><div class="lay-ico">↩️</div><div class="lay-t"><h4>Pengembalian</h4><p>Kembalikan di konter layanan atau kotak pengembalian mandiri di lobi yang tersedia 24 jam setiap hari.</p></div></div>
+      <div class="lay-c"><div class="lay-ico">📄</div><div class="lay-t"><h4>Fotokopi &amp; Cetak</h4><p>Layanan fotokopi di lantai 1. Tarif Rp 300/lembar hitam-putih, Rp 800/lembar berwarna.</p></div></div>
+      <div class="lay-c"><div class="lay-ico">🌐</div><div class="lay-t"><h4>Internet &amp; Wi-Fi</h4><p>Akses internet gratis untuk anggota aktif. Wi-Fi tersedia di seluruh area dengan kecepatan hingga 50 Mbps.</p></div></div>
+      <div class="lay-c"><div class="lay-ico">🪑</div><div class="lay-t"><h4>Ruang Baca</h4><p>Ruang baca berkapasitas 120 orang. Tersedia carrel individual, ruang diskusi grup, dan bean bag corner.</p></div></div>
+      <div class="lay-c"><div class="lay-ico">💾</div><div class="lay-t"><h4>Koleksi Digital</h4><p>Akses 4.200+ e-book dan jurnal digital melalui portal OPAC. Unduh dan baca offline dengan akun anggota.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- JAM OPERASIONAL -->
+<section>
+  <div class="wrap">
+    <div class="lbl">Jadwal</div>
+    <h2 class="sec-title" style="margin-bottom:2rem">Jam Operasional</h2>
+    <div class="jam-wrap">
+      <div>
+        <table class="jam-tbl">
+          <thead><tr><th>Hari</th><th>Jam Buka</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Senin</td><td>08.00 – 20.00 WIB</td><td><span class="bdg bdg-o">Buka</span></td></tr>
+            <tr><td>Selasa</td><td>08.00 – 20.00 WIB</td><td><span class="bdg bdg-o">Buka</span></td></tr>
+            <tr><td>Rabu</td><td>08.00 – 20.00 WIB</td><td><span class="bdg bdg-o">Buka</span></td></tr>
+            <tr><td>Kamis</td><td>08.00 – 20.00 WIB</td><td><span class="bdg bdg-o">Buka</span></td></tr>
+            <tr><td>Jumat</td><td>08.00 – 17.00 WIB</td><td><span class="bdg bdg-o">Buka</span></td></tr>
+            <tr><td>Sabtu</td><td>08.00 – 16.00 WIB</td><td><span class="bdg bdg-o">Buka</span></td></tr>
+            <tr><td>Minggu</td><td>—</td><td><span class="bdg bdg-c">Tutup</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="jam-info">
+        <h4>📌 Informasi Penting</h4>
+        <div class="irow"><span class="iem">🎉</span><span>Tutup pada hari libur nasional resmi. Pantau pengumuman di website dan media sosial kami.</span></div>
+        <div class="irow"><span class="iem">💾</span><span>Koleksi digital dapat diakses 24 jam melalui portal OPAC online.</span></div>
+        <div class="irow"><span class="iem">📬</span><span>Kotak pengembalian buku di pintu masuk, tersedia 24 jam.</span></div>
+        <div class="irow"><span class="iem">🅿️</span><span>Parkir gratis: kapasitas 60 motor dan 15 mobil di halaman perpustakaan.</span></div>
+        <div class="irow"><span class="iem">♿</span><span>Fasilitas ramah disabilitas: ramp, lift, dan toilet khusus di semua lantai.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PALING DIMINATI + ACCORDION -->
+<section style="background:var(--bg2)">
+  <div class="wrap">
+    <div class="two-col">
+      <div>
+        <div class="lbl">Terpopuler</div>
+        <h2 class="sec-title">Buku Paling Diminati</h2>
+        <p class="sec-sub">Peringkat berdasarkan jumlah peminjaman bulan ini</p>
+        <div class="rank-list">
+          <div class="rank-item">
+            <div class="rk-n top">#1</div>
+            <div class="rk-cov" style="background:linear-gradient(135deg,#8B4513,#D2691E)"></div>
+            <div class="rk-inf"><div class="rk-t">Bumi Manusia</div><div class="rk-a">Pramoedya Ananta Toer</div><div class="rk-s">🔖 247 peminjaman</div></div>
+          </div>
+          <div class="rank-item">
+            <div class="rk-n top">#2</div>
+            <div class="rk-cov" style="background:linear-gradient(135deg,#1A237E,#3949AB)"></div>
+            <div class="rk-inf"><div class="rk-t">Sapiens: Riwayat Singkat Umat Manusia</div><div class="rk-a">Yuval Noah Harari</div><div class="rk-s">🔖 198 peminjaman</div></div>
+          </div>
+          <div class="rank-item">
+            <div class="rk-n top">#3</div>
+            <div class="rk-cov" style="background:linear-gradient(135deg,#880E4F,#E91E63)"></div>
+            <div class="rk-inf"><div class="rk-t">Laskar Pelangi</div><div class="rk-a">Andrea Hirata</div><div class="rk-s">🔖 184 peminjaman</div></div>
+          </div>
+          <div class="rank-item">
+            <div class="rk-n">#4</div>
+            <div class="rk-cov" style="background:linear-gradient(135deg,#1B5E20,#43A047)"></div>
+            <div class="rk-inf"><div class="rk-t">Kecerdasan Buatan untuk Pemula</div><div class="rk-a">Dr. Budi Santoso</div><div class="rk-s">🔖 156 peminjaman</div></div>
+          </div>
+          <div class="rank-item">
+            <div class="rk-n">#5</div>
+            <div class="rk-cov" style="background:linear-gradient(135deg,#4A148C,#6A1B9A)"></div>
+            <div class="rk-inf"><div class="rk-t">Sejarah Kota Blitar</div><div class="rk-a">Dinas Kebudayaan Kota Blitar</div><div class="rk-s">🔖 132 peminjaman</div></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="lbl">Syarat &amp; Prosedur</div>
+        <h2 class="sec-title">Aturan Peminjaman</h2>
+        <div class="acc">
+          <div class="acc-it open">
+            <button class="acc-hd" onclick="togAcc(this)">
+              <span>Cara Mendaftar Jadi Anggota</span>
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-bd"><div class="acc-ct">Isi formulir pendaftaran online atau datang ke konter. Bawa fotokopi KTP/KTM, 1 lembar foto 3×4. Keanggotaan gratis — kartu anggota diterbitkan hari itu juga.</div></div>
+          </div>
+          <div class="acc-it">
+            <button class="acc-hd" onclick="togAcc(this)">
+              <span>Batas Peminjaman &amp; Durasi</span>
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-bd"><div class="acc-ct">Maksimal 5 buku sekaligus, durasi 14 hari kalender. Perpanjangan dilakukan 2 kali (masing-masing 14 hari) selama buku tidak dipesan anggota lain.</div></div>
+          </div>
+          <div class="acc-it">
+            <button class="acc-hd" onclick="togAcc(this)">
+              <span>Denda Keterlambatan</span>
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-bd"><div class="acc-ct">Denda Rp 500 per buku per hari keterlambatan. Buku hilang atau rusak berat dikenakan ganti rugi senilai harga buku terkini atau buku pengganti judul sama.</div></div>
+          </div>
+          <div class="acc-it">
+            <button class="acc-hd" onclick="togAcc(this)">
+              <span>Perpanjangan Masa Pinjam</span>
+              <span class="acc-icon">+</span>
+            </button>
+            <div class="acc-bd"><div class="acc-ct">Perpanjang via portal OPAC online, WhatsApp ke 0812-3456-7890, atau datang langsung. Hanya bisa dilakukan sebelum tanggal jatuh tempo.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PENDAFTARAN -->
+<section id="anggota">
+  <div class="wrap dft-in">
+    <div>
+      <div class="lbl">Keanggotaan</div>
+      <h2 class="sec-title">Daftar Jadi Anggota</h2>
+      <p class="sec-sub">Gratis selamanya. Akses penuh ke koleksi fisik dan digital.</p>
+      <div class="ben-list">
+        <div class="ben-it"><div class="ben-chk">✓</div><span>Akses 48.000+ koleksi buku fisik dan 4.200+ e-book</span></div>
+        <div class="ben-it"><div class="ben-chk">✓</div><span>Pinjam hingga 5 buku sekaligus selama 14 hari</span></div>
+        <div class="ben-it"><div class="ben-chk">✓</div><span>Wi-Fi gratis di seluruh area perpustakaan</span></div>
+        <div class="ben-it"><div class="ben-chk">✓</div><span>Reservasi ruang diskusi grup secara online</span></div>
+        <div class="ben-it"><div class="ben-chk">✓</div><span>Notifikasi buku baru dan agenda kegiatan via WA</span></div>
+        <div class="ben-it"><div class="ben-chk">✓</div><span>Akses portal jurnal ilmiah Garuda &amp; e-Resources</span></div>
+      </div>
+    </div>
+    <div class="form-card">
+      <h3>Formulir Pendaftaran</h3>
+      <div class="fg-row">
+        <div class="fg"><label>Nama Lengkap *</label><input type="text" placeholder="Budi Santoso"></div>
+        <div class="fg"><label>NIK *</label><input type="text" placeholder="35XX XXXX XXXX XXXX"></div>
+      </div>
+      <div class="fg"><label>Email *</label><input type="email" placeholder="budi@email.com"></div>
+      <div class="fg-row">
+        <div class="fg"><label>No. HP *</label><input type="tel" placeholder="08XX-XXXX-XXXX"></div>
+        <div class="fg"><label>Pekerjaan</label>
+          <select>
+            <option>Pelajar / Mahasiswa</option>
+            <option>Pegawai Negeri</option>
+            <option>Swasta</option>
+            <option>Wirausaha</option>
+            <option>Lainnya</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-sub">Daftar Sekarang — Gratis</button>
+      <p class="fn">Data Anda aman dan tidak dibagikan ke pihak ketiga.</p>
+    </div>
+  </div>
+</section>
+
+<!-- BERITA -->
+<section id="berita" style="background:var(--bg2)">
+  <div class="wrap">
+    <div class="bk-hd">
+      <div><div class="lbl">Terkini</div><h2 class="sec-title">Berita &amp; Program</h2></div>
+      <a href="#" class="lnk-all">Lihat Semua Berita →</a>
+    </div>
+    <div class="ber-grid">
+      <div class="ber-c">
+        <div class="ber-img" style="background:linear-gradient(135deg,#1B5E20,#66BB6A)">📚</div>
+        <div class="ber-body">
+          <div class="ber-tag">Program Literasi</div>
+          <div class="ber-title">Reading Challenge 2025: Baca 12 Buku Sepanjang Tahun</div>
+          <div class="ber-date">12 Juni 2025</div>
+          <div class="ber-ex">Perpustakaan kembali menggelar Reading Challenge. Daftar dan menangkan voucher belanja senilai Rp 500.000 untuk juara pertama.</div>
+        </div>
+      </div>
+      <div class="ber-c">
+        <div class="ber-img" style="background:linear-gradient(135deg,#4A148C,#AB47BC)">🎙️</div>
+        <div class="ber-body">
+          <div class="ber-tag">Bedah Buku</div>
+          <div class="ber-title">Bedah Buku "Sapiens" bersama Prof. Ahmad Zainuddin</div>
+          <div class="ber-date">5 Juni 2025</div>
+          <div class="ber-ex">Diskusi mendalam tentang evolusi manusia dan peradaban modern bersama pakar sejarah dari Universitas Negeri Malang. Gratis untuk anggota aktif.</div>
+        </div>
+      </div>
+      <div class="ber-c">
+        <div class="ber-img" style="background:linear-gradient(135deg,#E65100,#FFA726)">💻</div>
+        <div class="ber-body">
+          <div class="ber-tag">Workshop</div>
+          <div class="ber-title">Literasi Digital untuk Lansia — Batch III Dibuka</div>
+          <div class="ber-date">1 Juni 2025</div>
+          <div class="ber-ex">Pelatihan penggunaan smartphone dan internet untuk warga senior. Peserta mendapat sertifikat dan bimbingan dari relawan mahasiswa sukarela.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALERI -->
+<section>
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="lbl">Suasana</div>
+      <h2 class="sec-title">Galeri Perpustakaan</h2>
+    </div>
+    <div class="gal-grid">
+      <div class="gal-it lg" style="background:linear-gradient(135deg,#1B5E20,#388E3C);font-size:1.3rem">🏛️ Ruang Utama</div>
+      <div class="gal-it" style="background:linear-gradient(135deg,#8B4513,#D2691E)">📚 Rak Koleksi</div>
+      <div class="gal-it" style="background:linear-gradient(135deg,#1A237E,#3949AB)">🪑 Area Baca</div>
+      <div class="gal-it" style="background:linear-gradient(135deg,#4A148C,#7B1FA2)">💻 Pojok Digital</div>
+      <div class="gal-it" style="background:linear-gradient(135deg,#880E4F,#C2185B)">👨‍👩‍👧 Ruang Anak</div>
+      <div class="gal-it" style="background:linear-gradient(135deg,#E65100,#FB8C00)">🎙️ Ruang Diskusi</div>
+    </div>
+  </div>
+</section>
+
+<!-- KONTAK -->
+<section id="kontak" style="background:var(--bg2)">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="lbl">Hubungi Kami</div>
+      <h2 class="sec-title">Lokasi &amp; Kontak</h2>
+    </div>
+    <div class="kon-in">
+      <div>
+        <div class="map-ph">
+          <div class="mi">🗺️</div>
+          <h3>Jl. Merdeka No. 15, Kota Blitar</h3>
+          <p>Jawa Timur, Indonesia 66112</p>
+          <a href="#">Buka di Google Maps →</a>
+        </div>
+      </div>
+      <div class="kon-items">
+        <div class="kon-it"><div class="kon-ico">📍</div><div class="kon-t"><h4>Alamat</h4><p>Jl. Merdeka No. 15, Kel. Karangsari, Kec. Sukorejo, Kota Blitar, Jawa Timur 66112</p></div></div>
+        <div class="kon-it"><div class="kon-ico">📞</div><div class="kon-t"><h4>Telepon &amp; WhatsApp</h4><p>(0342) 801-2345 | WA: 0812-3456-7890</p></div></div>
+        <div class="kon-it"><div class="kon-ico">📧</div><div class="kon-t"><h4>Email</h4><p>info@perpusblitar.go.id | opac@perpusblitar.go.id</p></div></div>
+        <div class="kon-it"><div class="kon-ico">🌐</div><div class="kon-t"><h4>Portal Online</h4><p>www.perpusblitar.go.id | opac.perpusblitar.go.id</p></div></div>
+        <div style="padding:1.1rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--r)">
+          <h4 style="font-size:.86rem;font-weight:700;color:var(--text);margin-bottom:.75rem">Kirim Pertanyaan</h4>
+          <div class="fg"><input type="text" placeholder="Nama Anda"></div>
+          <div class="fg"><input type="email" placeholder="Alamat email"></div>
+          <div class="fg"><textarea rows="3" placeholder="Pertanyaan atau saran..."></textarea></div>
+          <button class="btn-sub" style="padding:.6rem">Kirim Pertanyaan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <h3>📚 Perpustakaan Daerah Kota Blitar</h3>
+        <p>Pusat literasi masyarakat Kota Blitar sejak 1978. Melayani dengan tulus untuk mencerdaskan kehidupan bangsa.</p>
+        <div class="foot-ico-row">
+          <a href="#">📘</a><a href="#">📸</a><a href="#">📺</a><a href="#">🐦</a>
+        </div>
+      </div>
+      <div class="fcol">
+        <h4>Navigasi</h4>
+        <ul>
+          <li><a href="#">Beranda</a></li>
+          <li><a href="#">Koleksi Buku</a></li>
+          <li><a href="#">Keanggotaan</a></li>
+          <li><a href="#">Layanan</a></li>
+          <li><a href="#">Berita &amp; Program</a></li>
+          <li><a href="#">Kontak</a></li>
+        </ul>
+      </div>
+      <div class="fcol">
+        <h4>Layanan Digital</h4>
+        <ul>
+          <li><a href="#">Portal OPAC</a></li>
+          <li><a href="#">E-book &amp; Jurnal</a></li>
+          <li><a href="#">Perpanjang Pinjaman</a></li>
+          <li><a href="#">Cek Denda</a></li>
+          <li><a href="#">Reservasi Ruang</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>© 2025 Perpustakaan Daerah Kota Blitar — Pemerintah Kota Blitar</span>
+      <span>📞 (0342) 801-2345</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// THEME
+function toggleTheme(){
+  const h=document.documentElement;
+  const dark=h.getAttribute('data-theme')==='dark';
+  h.setAttribute('data-theme',dark?'light':'dark');
+  document.getElementById('togBtn').textContent=dark?'🌙':'☀️';
+}
+// MOBILE NAV
+function toggleMob(){document.getElementById('mobMenu').classList.toggle('open')}
+// COUNTER
+function runCounters(){
+  document.querySelectorAll('[data-count]').forEach(el=>{
+    const t=parseInt(el.dataset.count),d=1800,step=Math.ceil(t/60);
+    let c=0;
+    const iv=setInterval(()=>{c=Math.min(c+step,t);el.textContent=c.toLocaleString('id-ID');if(c>=t)clearInterval(iv);},30);
+  });
+}
+const ob=new IntersectionObserver(en=>{en.forEach(e=>{if(e.isIntersecting){runCounters();ob.disconnect();}});},{threshold:.3});
+const sg=document.querySelector('.stats');if(sg)ob.observe(sg);
+// SEARCH BUKU
+function cariBuku(q){
+  const kw=q.toLowerCase().trim();
+  const kat=document.getElementById('heroKat').value;
+  let vis=0;
+  document.querySelectorAll('#bukuGrid .book-card').forEach(c=>{
+    const j=(c.dataset.judul||'').toLowerCase();
+    const k=c.dataset.kat||'';
+    const ok=(!kw||j.includes(kw))&&(!kat||k===kat);
+    c.classList.toggle('hidden',!ok);
+    if(ok)vis++;
+  });
+  const info=document.getElementById('srInfo');
+  if(kw||kat){
+    info.textContent=`Menampilkan ${vis} hasil${kw?' untuk "'+q+'"':''}${kat?' · Kategori: '+kat:''}`;
+    info.classList.add('on');
+  }else info.classList.remove('on');
+}
+function cariKat(){cariBuku(document.getElementById('heroQ').value)}
+// FILTER KATEGORI CARD
+function filterKat(kat,el){
+  document.querySelectorAll('.kat-c').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('heroKat').value=kat;
+  document.getElementById('heroQ').value='';
+  cariBuku('');
+  document.getElementById('koleksi').scrollIntoView({behavior:'smooth'});
+}
+// ACCORDION
+function togAcc(btn){
+  const it=btn.closest('.acc-it');
+  const open=it.classList.contains('open');
+  document.querySelectorAll('.acc-it').forEach(i=>i.classList.remove('open'));
+  if(!open)it.classList.add('open');
+}
+</script>
+</body>
+</html>

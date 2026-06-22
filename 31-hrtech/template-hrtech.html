@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TalentOS — Platform HR & Talent untuk Perusahaan Berkembang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:      #080612;
+  --bg2:     #10091E;
+  --bg3:     #180F2A;
+  --text:    #F5F0FF;
+  --text2:   #A088C8;
+  --text3:   #584878;
+  --violet:  #8B5CF6;
+  --violet2: #A78BFA;
+  --pink:    #EC4899;
+  --cyan:    #06B6D4;
+  --green:   #10B981;
+  --amber:   #F59E0B;
+  --border:  rgba(139,92,246,0.12);
+  --border2: rgba(139,92,246,0.28);
+  --glow:    0 0 28px rgba(139,92,246,0.18);
+  --font-body: 'Nunito', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+}
+[data-theme="light"] {
+  --bg: #F8F5FF; --bg2: #EEE8FF; --bg3: #E0D4FF;
+  --text: #120830; --text2: #4A2888; --text3: #8060B0;
+  --border: rgba(139,92,246,0.14); --border2: rgba(139,92,246,0.32);
+  --glow: 0 0 20px rgba(139,92,246,0.1);
+}
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
+
+/* NAVBAR */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 60px;
+  background: rgba(8,6,18,0.88); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+[data-theme="light"] .navbar { background: rgba(248,245,255,0.9); }
+.navbar-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--text); font-weight: 900; font-size: 1.05rem; letter-spacing: -0.02em; }
+.logo-icon { width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg,#8B5CF6,#EC4899); display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 900; color: #fff; }
+.navbar-nav { display: flex; align-items: center; gap: 1.75rem; list-style: none; }
+.navbar-nav a { text-decoration: none; color: var(--text2); font-size: 0.875rem; font-weight: 600; transition: color 0.2s; }
+.navbar-nav a:hover { color: var(--text); }
+.navbar-actions { display: flex; align-items: center; gap: 0.6rem; }
+.btn-ghost { background: none; border: 1px solid var(--border2); color: var(--text2); padding: 0.45rem 1rem; border-radius: 8px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.btn-ghost:hover { color: var(--text); background: var(--bg3); }
+.btn-primary { background: linear-gradient(135deg,#8B5CF6,#EC4899); color: #fff; border: none; padding: 0.45rem 1.1rem; border-radius: 8px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 800; cursor: pointer; transition: opacity 0.2s; }
+.btn-primary:hover { opacity: 0.85; }
+.theme-toggle { background: none; border: 1px solid var(--border2); color: var(--text2); width: 34px; height: 34px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: all 0.2s; }
+.theme-toggle:hover { background: var(--bg3); color: var(--text); }
+.hamburger { display: none; background: none; border: 1px solid var(--border2); color: var(--text); width: 34px; height: 34px; border-radius: 8px; cursor: pointer; font-size: 1rem; align-items: center; justify-content: center; }
+.mobile-menu { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--bg2); border-bottom: 1px solid var(--border); z-index: 99; flex-direction: column; padding: 1rem 2rem; }
+.mobile-menu.open { display: flex; }
+.mobile-menu a { text-decoration: none; color: var(--text2); font-size: 0.95rem; padding: 0.6rem 0; border-bottom: 1px solid var(--border); }
+.mobile-menu a:last-child { border-bottom: none; }
+
+/* SECTIONS */
+.section-inner { max-width: 1120px; margin: 0 auto; padding: 5rem 2rem; }
+.section-tag { font-family: var(--font-mono); font-size: 0.75rem; color: var(--violet); letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+.section-title { font-size: clamp(1.9rem,4vw,2.8rem); font-weight: 900; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 1rem; }
+.section-sub { color: var(--text2); font-size: 1.05rem; max-width: 560px; line-height: 1.7; margin-bottom: 2.5rem; }
+.gradient-text { background: linear-gradient(135deg,#8B5CF6,#EC4899,#06B6D4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+/* HERO */
+.hero { padding-top: 100px; background: radial-gradient(ellipse 80% 55% at 50% -10%, rgba(139,92,246,0.14) 0%, transparent 65%); }
+.hero-inner { max-width: 1120px; margin: 0 auto; padding: 4rem 2rem 2rem; text-align: center; }
+.hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(139,92,246,0.1); border: 1px solid var(--border2); color: var(--violet2); font-size: 0.78rem; font-weight: 700; padding: 0.35rem 0.85rem; border-radius: 999px; margin-bottom: 1.5rem; }
+.hero-badge span { width: 6px; height: 6px; border-radius: 50%; background: var(--violet); animation: blink 1.6s infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:0.25} }
+.hero h1 { font-size: clamp(2.4rem,6vw,4rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 1.25rem; }
+.hero p { color: var(--text2); font-size: 1.1rem; line-height: 1.75; max-width: 560px; margin: 0 auto 2rem; }
+.hero-cta { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem; }
+.btn-hero-primary { background: linear-gradient(135deg,#8B5CF6,#EC4899); color: #fff; border: none; padding: 0.8rem 1.75rem; border-radius: 10px; font-family: var(--font-body); font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 20px rgba(139,92,246,0.3); }
+.btn-hero-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(139,92,246,0.4); }
+.btn-hero-secondary { background: none; border: 1px solid var(--border2); color: var(--text); padding: 0.8rem 1.75rem; border-radius: 10px; font-family: var(--font-body); font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.btn-hero-secondary:hover { background: var(--bg3); }
+.hero-sub { color: var(--text3); font-size: 0.8rem; margin-bottom: 3.5rem; }
+
+/* BENTO GRID */
+.bento-wrap { max-width: 1120px; margin: 0 auto; padding: 0 2rem 4rem; }
+.bento-grid { display: grid; grid-template-columns: repeat(12,1fr); gap: 12px; }
+.bento-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; overflow: hidden; transition: border-color 0.3s, box-shadow 0.3s; }
+.bento-card:hover { border-color: var(--border2); box-shadow: var(--glow); }
+.bento-wide   { grid-column: span 8; }
+.bento-medium { grid-column: span 4; }
+.bento-half   { grid-column: span 6; }
+.bento-third  { grid-column: span 4; }
+.bento-quarter{ grid-column: span 3; }
+.bento-label { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text3); letter-spacing: 0.06em; margin-bottom: 0.75rem; text-transform: uppercase; }
+
+/* ORG CHART */
+.org-tree { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.org-level { display: flex; gap: 12px; justify-content: center; position: relative; }
+.org-level.l2 { gap: 10px; }
+.org-connector { width: 1px; height: 20px; background: var(--border2); margin: 0 auto; }
+.org-card { display: flex; flex-direction: column; align-items: center; gap: 4px; background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 0.5rem 0.65rem; min-width: 70px; position: relative; transition: border-color 0.2s; }
+.org-card:hover { border-color: var(--border2); }
+.org-card.ceo { border-color: rgba(139,92,246,0.4); background: rgba(139,92,246,0.08); }
+.org-avatar { width: 28px; height: 28px; border-radius: 50%; }
+.ceo .org-avatar { background: linear-gradient(135deg,#8B5CF6,#EC4899); }
+.org-card:not(.ceo) .org-avatar { background: linear-gradient(135deg,var(--bg3),var(--text3)); }
+.av-tech { background: linear-gradient(135deg,#06B6D4,#3B82F6) !important; }
+.av-ops { background: linear-gradient(135deg,#10B981,#06B6D4) !important; }
+.av-hr { background: linear-gradient(135deg,#EC4899,#F59E0B) !important; }
+.org-name { font-size: 0.62rem; font-weight: 800; color: var(--text); text-align: center; line-height: 1.2; }
+.org-role { font-size: 0.55rem; color: var(--text3); text-align: center; font-family: var(--font-mono); }
+.l2-connector { display: flex; justify-content: center; position: relative; height: 20px; margin: 0; }
+.l2-connector::before { content: ''; position: absolute; top: 0; left: 20%; right: 20%; height: 1px; background: var(--border2); }
+.l2-connector::after { content: ''; position: absolute; top: 0; left: 50%; width: 1px; height: 100%; background: var(--border2); }
+
+/* HIRING PIPELINE */
+.pipeline { display: flex; flex-direction: column; gap: 8px; }
+.pipeline-row { display: flex; align-items: center; gap: 0.5rem; }
+.pipeline-stage { font-size: 0.68rem; color: var(--text2); width: 68px; flex-shrink: 0; }
+.pipeline-dots { display: flex; gap: 3px; flex: 1; }
+.pipeline-dot { width: 8px; height: 8px; border-radius: 2px; }
+.pipeline-count { font-size: 0.68rem; font-weight: 800; color: var(--text); font-family: var(--font-mono); width: 28px; text-align: right; }
+
+/* HEADCOUNT CHART */
+.headcount-chart { display: flex; align-items: flex-end; gap: 6px; height: 80px; margin-top: 0.5rem; }
+.hc-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; }
+.hc-bar { width: 100%; border-radius: 4px 4px 0 0; background: linear-gradient(180deg,#8B5CF6,rgba(139,92,246,0.3)); min-height: 4px; }
+.hc-lbl { font-size: 0.6rem; color: var(--text3); }
+
+/* EMPLOYEE NPS */
+.nps-wrap { display: flex; flex-direction: column; gap: 0.75rem; }
+.nps-score-row { display: flex; align-items: center; gap: 1.25rem; }
+.nps-big { font-size: 3.5rem; font-weight: 900; font-family: var(--font-mono); color: var(--violet); line-height: 1; }
+.nps-gauge { flex: 1; }
+.nps-gauge-track { height: 10px; border-radius: 5px; background: var(--bg3); overflow: hidden; }
+.nps-gauge-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg,var(--pink),var(--violet),var(--cyan)); width: 72%; }
+.nps-gauge-label { font-size: 0.68rem; color: var(--text3); margin-top: 0.35rem; }
+.nps-breakdown { display: flex; gap: 0.5rem; }
+.nps-seg { flex: 1; background: var(--bg3); border-radius: 8px; padding: 0.5rem; text-align: center; }
+.nps-seg .ns-val { font-size: 1rem; font-weight: 800; font-family: var(--font-mono); }
+.nps-seg .ns-key { font-size: 0.6rem; color: var(--text3); margin-top: 0.1rem; }
+
+/* RECENT HIRES */
+.hires-list { display: flex; flex-direction: column; gap: 0.55rem; }
+.hire-item { display: flex; align-items: center; gap: 0.65rem; padding: 0.5rem; background: var(--bg3); border-radius: 8px; }
+.hire-avatar { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 800; color: #fff; flex-shrink: 0; }
+.hire-info { flex: 1; }
+.hire-name { font-size: 0.75rem; font-weight: 800; color: var(--text); }
+.hire-role { font-size: 0.65rem; color: var(--text3); }
+.hire-badge { font-size: 0.6rem; background: rgba(139,92,246,0.15); color: var(--violet2); border-radius: 5px; padding: 0.15rem 0.45rem; font-weight: 700; flex-shrink: 0; }
+
+/* LEAVE CALENDAR */
+.cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
+.cal-month { font-size: 0.78rem; font-weight: 800; color: var(--text); }
+.cal-nav { font-size: 0.7rem; color: var(--text3); cursor: pointer; }
+.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
+.cal-day-name { font-size: 0.55rem; color: var(--text3); text-align: center; font-weight: 700; padding: 0.15rem 0; font-family: var(--font-mono); }
+.cal-day { font-size: 0.62rem; color: var(--text2); text-align: center; padding: 0.2rem; border-radius: 4px; cursor: default; }
+.cal-day.empty { opacity: 0; }
+.cal-day.today { background: var(--violet); color: #fff; font-weight: 800; }
+.cal-day.leave { background: rgba(236,72,153,0.2); color: var(--pink); font-weight: 700; }
+.cal-day.holiday { background: rgba(6,182,212,0.15); color: var(--cyan); }
+
+/* DEPT DISTRIBUTION */
+.dept-list { display: flex; flex-direction: column; gap: 8px; }
+.dept-row { display: flex; align-items: center; gap: 0.5rem; }
+.dept-name { font-size: 0.68rem; color: var(--text2); width: 80px; flex-shrink: 0; }
+.dept-bar-wrap { flex: 1; background: var(--bg3); border-radius: 3px; height: 8px; overflow: hidden; }
+.dept-bar { height: 100%; border-radius: 3px; }
+.dept-count { font-size: 0.65rem; font-weight: 700; color: var(--text); font-family: var(--font-mono); width: 24px; text-align: right; }
+
+/* STATS SECTION */
+.stats-section { background: var(--bg2); border-top: 1px solid var(--border); }
+.stats-inner { max-width: 1120px; margin: 0 auto; padding: 3.5rem 2rem; display: grid; grid-template-columns: repeat(4,1fr); gap: 1.5rem; }
+.stat-card { text-align: center; }
+.stat-val { font-size: 2.5rem; font-weight: 900; font-family: var(--font-mono); color: var(--text); }
+.stat-val span { color: var(--violet); }
+.stat-key { font-size: 0.82rem; color: var(--text3); margin-top: 0.25rem; }
+
+/* MODULES */
+.modules-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; margin-top: 2rem; }
+.module-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; transition: all 0.3s; }
+.module-card:hover { border-color: var(--border2); box-shadow: var(--glow); }
+.module-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+.module-card h4 { font-size: 0.95rem; font-weight: 800; margin-bottom: 0.35rem; }
+.module-card p { font-size: 0.82rem; color: var(--text2); line-height: 1.6; }
+.module-tag { display: inline-block; font-size: 0.65rem; background: rgba(139,92,246,0.12); color: var(--violet2); border: 1px solid var(--border2); border-radius: 5px; padding: 0.15rem 0.5rem; margin-top: 0.75rem; font-weight: 700; }
+
+/* PROBLEM */
+.problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 2.5rem; }
+.problem-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+.problem-emoji { font-size: 1.4rem; margin-bottom: 0.65rem; }
+.problem-card h4 { font-size: 0.95rem; font-weight: 800; margin-bottom: 0.35rem; }
+.problem-card p { font-size: 0.83rem; color: var(--text2); line-height: 1.65; }
+
+/* FEAT BENTO */
+.feat-bento { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-top: 2rem; }
+.feat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; transition: border-color 0.3s, box-shadow 0.3s; }
+.feat-card:hover { border-color: var(--border2); box-shadow: var(--glow); }
+.feat-card.wide { grid-column: span 2; }
+.feat-icon { width: 40px; height: 40px; border-radius: 10px; background: rgba(139,92,246,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: 0.9rem; }
+.feat-card h4 { font-size: 0.95rem; font-weight: 800; margin-bottom: 0.4rem; }
+.feat-card p { font-size: 0.82rem; color: var(--text2); line-height: 1.6; }
+
+/* INTEGRATIONS */
+.integrations-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 2rem; }
+.integration-chip { display: flex; align-items: center; gap: 0.45rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 0.55rem 0.95rem; font-size: 0.82rem; font-weight: 700; color: var(--text2); transition: all 0.2s; }
+.integration-chip:hover { border-color: var(--border2); color: var(--text); }
+
+/* TESTIMONIALS */
+.testimonials-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; }
+.testi-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+.stars { color: var(--amber); font-size: 0.8rem; margin-bottom: 0.75rem; }
+.testi-quote { font-size: 0.88rem; color: var(--text2); line-height: 1.7; margin-bottom: 1.25rem; }
+.testi-author { display: flex; align-items: center; gap: 0.75rem; }
+.testi-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,var(--violet),var(--pink)); display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 800; color: #fff; flex-shrink: 0; }
+.testi-name { font-size: 0.85rem; font-weight: 800; }
+.testi-role { font-size: 0.72rem; color: var(--text3); }
+
+/* PRICING */
+.pricing-toggle-wrap { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2.5rem; justify-content: center; }
+.pricing-lbl { font-size: 0.88rem; color: var(--text2); font-weight: 600; transition: color 0.2s; }
+.pricing-lbl.active-lbl { color: var(--text); font-weight: 800; }
+.toggle-track { width: 44px; height: 24px; border-radius: 12px; background: var(--bg3); border: 1px solid var(--border2); position: relative; cursor: pointer; transition: background 0.3s; }
+.toggle-track.active { background: var(--violet); }
+.toggle-thumb { position: absolute; width: 18px; height: 18px; border-radius: 50%; background: #fff; top: 2px; left: 2px; transition: left 0.3s; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+.toggle-track.active .toggle-thumb { left: 22px; }
+.annual-badge { background: rgba(139,92,246,0.12); color: var(--violet2); border: 1px solid var(--border2); font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px; }
+.pricing-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; }
+.pricing-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; }
+.pricing-card.featured { border-color: var(--violet); box-shadow: 0 0 30px rgba(139,92,246,0.12); position: relative; }
+.pricing-featured-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg,#8B5CF6,#EC4899); color: #fff; font-size: 0.7rem; font-weight: 800; padding: 0.25rem 0.9rem; border-radius: 999px; white-space: nowrap; }
+.pricing-name { font-size: 0.78rem; font-weight: 800; color: var(--text2); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+.pricing-price { display: flex; align-items: baseline; gap: 0.2rem; margin-bottom: 0.25rem; }
+.price-curr { font-size: 0.95rem; color: var(--text2); }
+.price-val { font-size: 2.1rem; font-weight: 900; font-family: var(--font-mono); }
+.price-period { font-size: 0.75rem; color: var(--text3); }
+.pricing-desc { font-size: 0.78rem; color: var(--text3); margin-bottom: 1.25rem; }
+.pricing-divider { height: 1px; background: var(--border); margin-bottom: 1.25rem; }
+.pricing-features { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; }
+.pf-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--text2); }
+.pf-check { color: var(--violet); font-size: 0.82rem; } .pf-x { color: var(--text3); font-size: 0.82rem; }
+.pricing-btn { width: 100%; padding: 0.7rem; border-radius: 10px; font-family: var(--font-body); font-size: 0.88rem; font-weight: 800; cursor: pointer; transition: all 0.2s; }
+.pricing-btn-primary { background: linear-gradient(135deg,#8B5CF6,#EC4899); color: #fff; border: none; }
+.pricing-btn-ghost { background: none; border: 1px solid var(--border2); color: var(--text); }
+.pricing-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+/* COMPARISON */
+.compare-table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+.compare-table th, .compare-table td { padding: 0.85rem 1rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+.compare-table th { color: var(--text2); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.compare-table td:first-child { color: var(--text); font-weight: 600; }
+.compare-table td:not(:first-child) { text-align: center; }
+.compare-table tr:hover td { background: var(--bg2); }
+.col-us { color: var(--violet); font-weight: 700; }
+.col-no { color: var(--text3); }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; max-width: 720px; }
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-q { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 1.1rem 0; background: none; border: none; color: var(--text); font-family: var(--font-body); font-size: 0.92rem; font-weight: 700; cursor: pointer; text-align: left; }
+.faq-icon { color: var(--text3); font-size: 1.1rem; transition: transform 0.3s; flex-shrink: 0; margin-left: 1rem; }
+.faq-item.open .faq-icon { transform: rotate(45deg); color: var(--violet); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+.faq-item.open .faq-a { max-height: 220px; }
+.faq-a-inner { padding-bottom: 1rem; font-size: 0.85rem; color: var(--text2); line-height: 1.7; }
+
+/* CTA */
+.cta-band { background: linear-gradient(135deg,rgba(139,92,246,0.1),rgba(236,72,153,0.05)); border-top: 1px solid var(--border); text-align: center; padding: 5rem 2rem; }
+.cta-band h2 { font-size: clamp(1.8rem,4vw,2.8rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 0.75rem; }
+.cta-band p { color: var(--text2); margin-bottom: 2rem; font-size: 1rem; }
+.cta-band-actions { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem; }
+.cta-sub { color: var(--text3); font-size: 0.78rem; }
+
+/* FOOTER */
+.footer { background: var(--bg2); border-top: 1px solid var(--border); }
+.footer-inner { max-width: 1120px; margin: 0 auto; padding: 3rem 2rem 1.5rem; }
+.footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2rem; margin-bottom: 2.5rem; }
+.footer-brand p { font-size: 0.82rem; color: var(--text3); line-height: 1.7; margin-top: 0.75rem; max-width: 260px; }
+.footer-col h4 { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text2); margin-bottom: 0.85rem; }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.footer-col a { text-decoration: none; color: var(--text3); font-size: 0.82rem; transition: color 0.2s; }
+.footer-col a:hover { color: var(--text); }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 1.5rem; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--text3); }
+.footer-links { display: flex; gap: 1.25rem; }
+.footer-links a { color: var(--text3); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--text); }
+
+/* SOCIAL PROOF */
+.social-proof { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg2); }
+.social-proof-inner { max-width: 1120px; margin: 0 auto; padding: 1.5rem 2rem; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; justify-content: space-between; }
+.proof-text { font-size: 0.85rem; color: var(--text2); }
+.proof-text strong { color: var(--text); }
+.proof-logos { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+.proof-logo { font-size: 0.78rem; font-weight: 800; color: var(--text3); letter-spacing: 0.05em; text-transform: uppercase; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .navbar-nav, .navbar-actions .btn-ghost, .navbar-actions .btn-primary { display: none; }
+  .hamburger { display: flex; }
+  .bento-wide, .bento-medium, .bento-half, .bento-third, .bento-quarter { grid-column: span 12; }
+  .problem-grid, .modules-grid { grid-template-columns: 1fr; }
+  .feat-bento { grid-template-columns: 1fr; }
+  .feat-card.wide { grid-column: span 1; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .stats-inner { grid-template-columns: 1fr 1fr; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .footer-bottom { flex-direction: column; gap: 0.75rem; text-align: center; }
+}
+@media (max-width: 600px) {
+  .section-inner { padding: 3.5rem 1.25rem; }
+  .bento-wrap { padding: 0 1.25rem 3rem; }
+  .hero-inner { padding: 3rem 1.25rem 1.5rem; }
+  .stats-inner { padding: 2.5rem 1.25rem; }
+  .footer-top { grid-template-columns: 1fr; }
+  .modules-grid { grid-template-columns: 1fr; }
+  .compare-table { font-size: 0.73rem; }
+  .compare-table th, .compare-table td { padding: 0.6rem 0.45rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="#" class="navbar-logo">
+    <div class="logo-icon">TO</div>
+    TalentOS
+  </a>
+  <ul class="navbar-nav">
+    <li><a href="#modul">Modul</a></li>
+    <li><a href="#fitur">Fitur</a></li>
+    <li><a href="#testimoni">Testimoni</a></li>
+    <li><a href="#harga">Harga</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <div class="navbar-actions">
+    <button class="theme-toggle" id="themeBtn">☀</button>
+    <button class="btn-ghost">Masuk</button>
+    <button class="btn-primary">Demo Gratis</button>
+    <button class="hamburger" id="hamburger">☰</button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#modul">Modul</a>
+  <a href="#fitur">Fitur</a>
+  <a href="#testimoni">Testimoni</a>
+  <a href="#harga">Harga</a>
+  <a href="#faq">FAQ</a>
+  <a href="#">Masuk</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge"><span></span> AI Screening · Hemat 60% Waktu Rekrutmen</div>
+    <h1>Rekrut Lebih Cepat,<br><span class="gradient-text">Kelola Lebih Mudah</span></h1>
+    <p>TalentOS adalah platform HR & Talent Management all-in-one yang membantu perusahaan Indonesia merekrut, onboarding, dan mengembangkan karyawan — dalam satu sistem terpadu.</p>
+    <div class="hero-cta">
+      <button class="btn-hero-primary">Jadwalkan Demo Gratis →</button>
+      <button class="btn-hero-secondary">▶ Lihat Fitur</button>
+    </div>
+    <p class="hero-sub">Tidak perlu kartu kredit · Implementasi 1 hari · 500+ perusahaan aktif</p>
+  </div>
+
+  <!-- BENTO GRID -->
+  <div class="bento-wrap">
+    <div class="bento-grid">
+
+      <!-- Org Chart Preview (span 8) -->
+      <div class="bento-card bento-wide">
+        <div class="bento-label">// struktur organisasi — PT Nusantara Jaya</div>
+        <div class="org-tree">
+          <div class="org-level">
+            <div class="org-card ceo">
+              <div class="org-avatar"></div>
+              <div class="org-name">Budi Santoso</div>
+              <div class="org-role">CEO</div>
+            </div>
+          </div>
+          <div class="org-connector"></div>
+          <div class="l2-connector"></div>
+          <div class="org-level l2">
+            <div class="org-card">
+              <div class="org-avatar av-tech"></div>
+              <div class="org-name">Rina Dewi</div>
+              <div class="org-role">Dir. Teknologi</div>
+            </div>
+            <div class="org-card">
+              <div class="org-avatar av-ops"></div>
+              <div class="org-name">Ahmad F.</div>
+              <div class="org-role">Dir. Operasi</div>
+            </div>
+            <div class="org-card">
+              <div class="org-avatar av-hr"></div>
+              <div class="org-name">Sari Indah</div>
+              <div class="org-role">CHRO</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:4px;justify-content:center">
+            <div style="font-size:0.6rem;color:var(--text3);font-family:var(--font-mono);text-align:center">48 orang</div>
+            <div style="font-size:0.6rem;color:var(--text3);font-family:var(--font-mono);text-align:center">62 orang</div>
+            <div style="font-size:0.6rem;color:var(--text3);font-family:var(--font-mono);text-align:center">15 orang</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hiring Pipeline (span 4) -->
+      <div class="bento-card bento-medium">
+        <div class="bento-label">// hiring pipeline — Jun 2026</div>
+        <div class="pipeline">
+          <div class="pipeline-row">
+            <span class="pipeline-stage">Applied</span>
+            <div class="pipeline-dots" id="pipe0"></div>
+            <span class="pipeline-count">127</span>
+          </div>
+          <div class="pipeline-row">
+            <span class="pipeline-stage">Screened</span>
+            <div class="pipeline-dots" id="pipe1"></div>
+            <span class="pipeline-count">84</span>
+          </div>
+          <div class="pipeline-row">
+            <span class="pipeline-stage">Interview</span>
+            <div class="pipeline-dots" id="pipe2"></div>
+            <span class="pipeline-count">42</span>
+          </div>
+          <div class="pipeline-row">
+            <span class="pipeline-stage">Offer</span>
+            <div class="pipeline-dots" id="pipe3"></div>
+            <span class="pipeline-count">12</span>
+          </div>
+          <div class="pipeline-row">
+            <span class="pipeline-stage">Hired</span>
+            <div class="pipeline-dots" id="pipe4"></div>
+            <span class="pipeline-count">8</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Employee NPS (span 6) -->
+      <div class="bento-card bento-half">
+        <div class="bento-label">// employee NPS score</div>
+        <div class="nps-wrap">
+          <div class="nps-score-row">
+            <div class="nps-big">72</div>
+            <div class="nps-gauge">
+              <div class="nps-gauge-track"><div class="nps-gauge-fill"></div></div>
+              <div class="nps-gauge-label">Skor industri rata-rata: 34 · Kamu: 72</div>
+            </div>
+          </div>
+          <div class="nps-breakdown">
+            <div class="nps-seg">
+              <div class="ns-val" style="color:var(--green)">68%</div>
+              <div class="ns-key">Promoters</div>
+            </div>
+            <div class="nps-seg">
+              <div class="ns-val" style="color:var(--amber)">24%</div>
+              <div class="ns-key">Passive</div>
+            </div>
+            <div class="nps-seg">
+              <div class="ns-val" style="color:var(--pink)">8%</div>
+              <div class="ns-key">Detractors</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Headcount Chart (span 6) -->
+      <div class="bento-card bento-half">
+        <div class="bento-label">// pertumbuhan headcount — Q1 s.d. Q4</div>
+        <div class="headcount-chart" id="headcountChart"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:0.5rem">
+          <span style="font-size:0.65rem;color:var(--text3)">Q1 2025 — Q4 2026</span>
+          <span style="font-size:0.65rem;color:var(--text2)">Total: <strong>125 karyawan</strong></span>
+        </div>
+      </div>
+
+      <!-- Recent Hires (span 3) -->
+      <div class="bento-card bento-quarter">
+        <div class="bento-label">// karyawan baru</div>
+        <div class="hires-list">
+          <div class="hire-item">
+            <div class="hire-avatar" style="background:linear-gradient(135deg,#8B5CF6,#EC4899)">RD</div>
+            <div class="hire-info"><div class="hire-name">Rizky Dwi</div><div class="hire-role">Backend Engineer</div></div>
+            <span class="hire-badge">Teknologi</span>
+          </div>
+          <div class="hire-item">
+            <div class="hire-avatar" style="background:linear-gradient(135deg,#06B6D4,#3B82F6)">NA</div>
+            <div class="hire-info"><div class="hire-name">Nadia A.</div><div class="hire-role">Product Designer</div></div>
+            <span class="hire-badge">Produk</span>
+          </div>
+          <div class="hire-item">
+            <div class="hire-avatar" style="background:linear-gradient(135deg,#10B981,#06B6D4)">FP</div>
+            <div class="hire-info"><div class="hire-name">Farhan P.</div><div class="hire-role">Data Analyst</div></div>
+            <span class="hire-badge">Analitik</span>
+          </div>
+          <div class="hire-item">
+            <div class="hire-avatar" style="background:linear-gradient(135deg,#F59E0B,#EF4444)">YS</div>
+            <div class="hire-info"><div class="hire-name">Yuni S.</div><div class="hire-role">HR Business Partner</div></div>
+            <span class="hire-badge">HR</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leave Calendar (span 3) -->
+      <div class="bento-card bento-quarter">
+        <div class="bento-label">// kalender cuti — Juni</div>
+        <div class="cal-header">
+          <span class="cal-month">Juni 2026</span>
+          <span class="cal-nav">◀ ▶</span>
+        </div>
+        <div class="cal-grid">
+          <div class="cal-day-name">Min</div><div class="cal-day-name">Sen</div><div class="cal-day-name">Sel</div>
+          <div class="cal-day-name">Rab</div><div class="cal-day-name">Kam</div><div class="cal-day-name">Jum</div><div class="cal-day-name">Sab</div>
+          <div class="cal-day empty"></div><div class="cal-day">1</div><div class="cal-day">2</div>
+          <div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day">5</div><div class="cal-day">6</div>
+          <div class="cal-day">7</div><div class="cal-day leave">8</div><div class="cal-day leave">9</div>
+          <div class="cal-day">10</div><div class="cal-day">11</div><div class="cal-day">12</div><div class="cal-day">13</div>
+          <div class="cal-day">14</div><div class="cal-day today">15</div><div class="cal-day">16</div>
+          <div class="cal-day holiday">17</div><div class="cal-day">18</div><div class="cal-day">19</div><div class="cal-day">20</div>
+          <div class="cal-day">21</div><div class="cal-day leave">22</div><div class="cal-day leave">23</div>
+          <div class="cal-day leave">24</div><div class="cal-day">25</div><div class="cal-day">26</div><div class="cal-day">27</div>
+          <div class="cal-day">28</div><div class="cal-day">29</div><div class="cal-day">30</div>
+        </div>
+        <div style="display:flex;gap:0.75rem;margin-top:0.6rem;flex-wrap:wrap">
+          <span style="font-size:0.6rem;color:var(--pink)">■ Cuti karyawan</span>
+          <span style="font-size:0.6rem;color:var(--cyan)">■ Libur nasional</span>
+        </div>
+      </div>
+
+      <!-- Dept Distribution (span 6) -->
+      <div class="bento-card bento-half">
+        <div class="bento-label">// distribusi per departemen</div>
+        <div class="dept-list">
+          <div class="dept-row">
+            <span class="dept-name">Teknologi</span>
+            <div class="dept-bar-wrap"><div class="dept-bar" style="width:38%;background:linear-gradient(90deg,#8B5CF6,#A78BFA)"></div></div>
+            <span class="dept-count">48</span>
+          </div>
+          <div class="dept-row">
+            <span class="dept-name">Operasi</span>
+            <div class="dept-bar-wrap"><div class="dept-bar" style="width:49%;background:linear-gradient(90deg,#06B6D4,#3B82F6)"></div></div>
+            <span class="dept-count">62</span>
+          </div>
+          <div class="dept-row">
+            <span class="dept-name">Marketing</span>
+            <div class="dept-bar-wrap"><div class="dept-bar" style="width:18%;background:linear-gradient(90deg,#EC4899,#F59E0B)"></div></div>
+            <span class="dept-count">22</span>
+          </div>
+          <div class="dept-row">
+            <span class="dept-name">Finance</span>
+            <div class="dept-bar-wrap"><div class="dept-bar" style="width:10%;background:linear-gradient(90deg,#10B981,#06B6D4)"></div></div>
+            <span class="dept-count">12</span>
+          </div>
+          <div class="dept-row">
+            <span class="dept-name">HR & GA</span>
+            <div class="dept-bar-wrap"><div class="dept-bar" style="width:12%;background:linear-gradient(90deg,#F59E0B,#EF4444)"></div></div>
+            <span class="dept-count">15</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<div class="social-proof">
+  <div class="social-proof-inner">
+    <p class="proof-text">Dipercaya <strong>500+ perusahaan</strong> Indonesia dari startup hingga korporat</p>
+    <div class="proof-logos">
+      <span class="proof-logo">Nusantara Jaya</span>
+      <span class="proof-logo">Samudera Group</span>
+      <span class="proof-logo">TechVenture ID</span>
+      <span class="proof-logo">Maju Bersama</span>
+      <span class="proof-logo">Karya Digital</span>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-section">
+  <div class="stats-inner">
+    <div class="stat-card"><div class="stat-val"><span id="c1">0</span>+</div><div class="stat-key">Perusahaan Aktif</div></div>
+    <div class="stat-card"><div class="stat-val"><span id="c2">0</span>rb+</div><div class="stat-key">Karyawan Dikelola</div></div>
+    <div class="stat-card"><div class="stat-val"><span id="c3">0</span>%</div><div class="stat-key">Pengurangan Time-to-Hire</div></div>
+    <div class="stat-card"><div class="stat-val"><span id="c4">0</span>%</div><div class="stat-key">Kepuasan Pengguna HR</div></div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section>
+  <div class="section-inner">
+    <div class="section-tag">// masalah yang kami selesaikan</div>
+    <h2 class="section-title">HR Manual<br><span class="gradient-text">= Chaos</span></h2>
+    <p class="section-sub">Tim HR yang hebat tidak seharusnya tenggelam dalam spreadsheet, email CV, dan rekap absensi manual setiap hari.</p>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="problem-emoji">📥</div>
+        <h4>Ribuan CV Tidak Terstruktur</h4>
+        <p>CV masuk dari berbagai kanal — email, LinkedIn, Jobstreet, referral — tidak ada cara mudah untuk mensortir, menilai, dan menelusuri status kandidat secara terpusat.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-emoji">📝</div>
+        <h4>Onboarding Penuh Kertas</h4>
+        <p>Kontrak print → tanda tangan → scan → kirim email → arsip fisik. Proses yang memakan waktu 3–5 hari ini bisa membuat kesan pertama karyawan baru menjadi buruk.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-emoji">💸</div>
+        <h4>Payroll Rawan Kesalahan</h4>
+        <p>Rekap absensi manual, lembur dihitung di Excel, potongan BPJS dihitung ulang setiap bulan — satu kesalahan kecil bisa berujung pada masalah kepatuhan pajak dan ketenagakerjaan.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-emoji">📊</div>
+        <h4>Tidak Ada Data Talent Analytics</h4>
+        <p>Pertanyaan seperti "siapa yang berisiko resign?" atau "departemen mana yang underperform?" tidak bisa dijawab karena data karyawan tersebar di banyak sistem berbeda.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES -->
+<section id="modul" style="background:var(--bg2);border-top:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-tag">// modul platform</div>
+    <h2 class="section-title">Enam Modul untuk Siklus<br><span class="gradient-text">Lengkap Talent Management</span></h2>
+    <div class="modules-grid">
+      <div class="module-card">
+        <div class="module-icon">🎯</div>
+        <h4>Rekrutmen & ATS</h4>
+        <p>Publikasi lowongan multi-kanal, AI screening CV, pipeline kandidat visual, jadwal interview otomatis, dan offer letter digital.</p>
+        <span class="module-tag">AI-Powered</span>
+      </div>
+      <div class="module-card">
+        <div class="module-icon">🚀</div>
+        <h4>Onboarding Digital</h4>
+        <p>Checklist onboarding otomatis, pengisian dokumen digital, e-sign kontrak, dan welcome journey yang bisa dikustomisasi per divisi.</p>
+        <span class="module-tag">E-Sign</span>
+      </div>
+      <div class="module-card">
+        <div class="module-icon">💳</div>
+        <h4>Payroll & HRIS</h4>
+        <p>Hitung gaji, lembur, BPJS Ketenagakerjaan, BPJS Kesehatan, dan PPh 21 secara otomatis. Slip gaji digital langsung ke email karyawan.</p>
+        <span class="module-tag">BPJS Otomatis</span>
+      </div>
+      <div class="module-card">
+        <div class="module-icon">⭐</div>
+        <h4>Performance Management</h4>
+        <p>Set OKR/KPI per individu dan tim, review 360°, mid-year check-in, dan kalibrase performa akhir tahun dengan tampilan visual yang mudah dipahami.</p>
+        <span class="module-tag">OKR & KPI</span>
+      </div>
+      <div class="module-card">
+        <div class="module-icon">📚</div>
+        <h4>Learning & Development</h4>
+        <p>LMS terintegrasi, assignment pelatihan per role, tracking progress karyawan, dan sertifikat digital yang tersimpan di profil.</p>
+        <span class="module-tag">LMS Built-in</span>
+      </div>
+      <div class="module-card">
+        <div class="module-icon">📈</div>
+        <h4>HR Analytics</h4>
+        <p>Dashboard turnover, eNPS, time-to-hire, absensi, dan prediksi risiko resign berbasis AI — semua dalam satu tampilan eksekutif.</p>
+        <span class="module-tag">Predictive AI</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES BENTO -->
+<section id="fitur">
+  <div class="section-inner">
+    <div class="section-tag">// fitur unggulan</div>
+    <h2 class="section-title">Lebih dari Sekedar<br><span class="gradient-text">Sistem Absensi</span></h2>
+    <div class="feat-bento">
+      <div class="feat-card wide">
+        <div class="feat-icon">🤖</div>
+        <h4>AI CV Screening & Talent Matching</h4>
+        <p>AI TalentOS menganalisis ratusan CV dalam hitungan menit, menilai kesesuaian dengan job description, dan meranking kandidat secara otomatis. Hemat 70% waktu tim rekrutmen untuk fokus pada hal yang lebih strategis.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📱</div>
+        <h4>Employee Self-Service App</h4>
+        <p>Karyawan bisa ajukan cuti, lihat slip gaji, update data diri, dan check-in absensi GPS dari smartphone — tanpa perlu repotkan HR.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔐</div>
+        <h4>Kepatuhan Ketenagakerjaan</h4>
+        <p>Template kontrak sesuai UU Cipta Kerja, perhitungan pesangon otomatis, dan reminder compliance BPJS agar tidak ada denda dan sanksi.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🌐</div>
+        <h4>Multi-Lokasi & Multi-Entitas</h4>
+        <p>Kelola karyawan di banyak kota dan entitas perusahaan dari satu platform — cocok untuk grup bisnis dan perusahaan dengan cabang di seluruh Indonesia.</p>
+      </div>
+      <div class="feat-card wide">
+        <div class="feat-icon">🔮</div>
+        <h4>Predictive Attrition — Kenali Siapa yang Akan Resign Sebelum Terjadi</h4>
+        <p>AI menganalisis pola absensi, perubahan engagement score, lama masa kerja, dan sinyal lainnya untuk memprediksi risiko resign karyawan 30–60 hari sebelumnya — sehingga HR punya waktu untuk intervensi yang tepat.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📋</div>
+        <h4>Exit Interview Otomatis</h4>
+        <p>Survey exit interview digital, analisis sentimen otomatis, dan laporan tren alasan resign per departemen untuk perbaikan berkelanjutan.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTEGRATIONS -->
+<section style="background:var(--bg2);border-top:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-tag">// integrasi</div>
+    <h2 class="section-title">Terhubung ke Ekosistem<br>HR Indonesia</h2>
+    <p class="section-sub">TalentOS terintegrasi dengan platform rekrutmen, payroll, dan komunikasi yang sudah Anda gunakan.</p>
+    <div class="integrations-grid">
+      <div class="integration-chip">💼 Jobstreet</div>
+      <div class="integration-chip">🔵 LinkedIn</div>
+      <div class="integration-chip">🧧 Glints</div>
+      <div class="integration-chip">💬 Slack</div>
+      <div class="integration-chip">📧 Gmail / Outlook</div>
+      <div class="integration-chip">📱 WhatsApp Business</div>
+      <div class="integration-chip">🏦 Bank BCA / Mandiri</div>
+      <div class="integration-chip">🔒 BPJS Online</div>
+      <div class="integration-chip">📊 SAP HR</div>
+      <div class="integration-chip">🗃️ Oracle HCM</div>
+      <div class="integration-chip">📋 Google Workspace</div>
+      <div class="integration-chip">🔑 Microsoft Entra ID</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimoni">
+  <div class="section-inner">
+    <div class="section-tag">// testimoni</div>
+    <h2 class="section-title">HR Manager & CHRO<br><span class="gradient-text">Indonesia Berbicara</span></h2>
+    <div class="testimonials-grid">
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-quote">"Proses rekrutmen yang biasanya 45 hari kini turun menjadi 18 hari. AI screening TalentOS memfilter 300 CV dalam waktu 2 jam — pekerjaan yang dulu butuh 1 minggu untuk tim HRD kami."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">SR</div>
+          <div><div class="testi-name">Sri Rahayu</div><div class="testi-role">HR Manager · Nusantara Jaya Group</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-quote">"Payroll 800 karyawan di 5 kota dulu butuh waktu 5 hari. Sekarang selesai dalam 6 jam dan slip gaji langsung terkirim otomatis. Zero komplain dari karyawan dalam 8 bulan terakhir."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">AP</div>
+          <div><div class="testi-name">Andi Prasetyo</div><div class="testi-role">CHRO · Samudera Logistik Indonesia</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-quote">"Fitur Predictive Attrition membantu kami retain 3 key engineer yang diprediksi akan resign. Kami berhasil lakukan intervensi tepat waktu — menghemat biaya rekrutmen sekitar Rp 120 juta."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">DK</div>
+          <div><div class="testi-name">Dian Kusuma</div><div class="testi-role">People Operations Lead · TechVenture ID</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="harga" style="background:var(--bg2);border-top:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-tag">// harga</div>
+    <h2 class="section-title">Harga Transparan<br>per Karyawan</h2>
+    <div class="pricing-toggle-wrap">
+      <span class="pricing-lbl active-lbl" id="lbl-monthly">Bulanan</span>
+      <div class="toggle-track" id="pricingToggle"><div class="toggle-thumb"></div></div>
+      <span class="pricing-lbl" id="lbl-annual">Tahunan</span>
+      <span class="annual-badge">Hemat 2 Bulan</span>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-name">Growth</div>
+        <div class="pricing-price"><span class="price-curr">Rp</span><span class="price-val" id="price-0">35.000</span><span class="price-period">/karyawan/bln</span></div>
+        <div class="pricing-desc">Untuk perusahaan hingga 100 karyawan. Semua modul dasar.</div>
+        <div class="pricing-divider"></div>
+        <div class="pricing-features">
+          <div class="pf-item"><span class="pf-check">✓</span> Rekrutmen & ATS</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Onboarding digital</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Payroll & slip gaji</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Self-service app</div>
+          <div class="pf-item"><span class="pf-x">✕</span> <span style="color:var(--text3)">AI CV Screening</span></div>
+          <div class="pf-item"><span class="pf-x">✕</span> <span style="color:var(--text3)">Predictive Attrition</span></div>
+        </div>
+        <button class="pricing-btn pricing-btn-ghost">Demo Gratis</button>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-featured-badge">⭐ Paling Dipilih</div>
+        <div class="pricing-name">Scale</div>
+        <div class="pricing-price"><span class="price-curr">Rp</span><span class="price-val" id="price-1">55.000</span><span class="price-period">/karyawan/bln</span></div>
+        <div class="pricing-desc">Untuk perusahaan 100–500 karyawan. Semua modul + AI.</div>
+        <div class="pricing-divider"></div>
+        <div class="pricing-features">
+          <div class="pf-item"><span class="pf-check">✓</span> Semua modul Growth</div>
+          <div class="pf-item"><span class="pf-check">✓</span> AI CV Screening</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Performance OKR/KPI</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Learning & LMS</div>
+          <div class="pf-item"><span class="pf-check">✓</span> HR Analytics dashboard</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Predictive Attrition AI</div>
+        </div>
+        <button class="pricing-btn pricing-btn-primary">Demo Gratis</button>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-name">Enterprise</div>
+        <div class="pricing-price"><span class="price-val" style="font-size:1.8rem">Custom</span></div>
+        <div class="pricing-desc">Untuk korporat 500+ karyawan, multi-entitas, atau kebutuhan on-premise.</div>
+        <div class="pricing-divider"></div>
+        <div class="pricing-features">
+          <div class="pf-item"><span class="pf-check">✓</span> Semua modul Scale</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Multi-entitas & holding</div>
+          <div class="pf-item"><span class="pf-check">✓</span> On-premise tersedia</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Integrasi SAP / Oracle</div>
+          <div class="pf-item"><span class="pf-check">✓</span> SLA 99.9% + support 24/7</div>
+          <div class="pf-item"><span class="pf-check">✓</span> Dedicated implementasi</div>
+        </div>
+        <button class="pricing-btn pricing-btn-ghost">Hubungi Sales</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section>
+  <div class="section-inner">
+    <div class="section-tag">// perbandingan</div>
+    <h2 class="section-title">TalentOS vs<br>HR Manual & Kompetitor</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Kemampuan</th>
+          <th style="color:var(--violet)">TalentOS</th>
+          <th>Excel & Email</th>
+          <th>HRIS Global</th>
+          <th>HRIS Lokal Lain</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>AI CV Screening B. Indonesia</td><td class="col-us">✓</td><td class="col-no">✕</td><td class="col-no">✕</td><td class="col-no">✕</td></tr>
+        <tr><td>Predictive Attrition AI</td><td class="col-us">✓</td><td class="col-no">✕</td><td style="color:var(--text2)">Terbatas</td><td class="col-no">✕</td></tr>
+        <tr><td>Payroll otomatis BPJS & PPh 21</td><td class="col-us">✓</td><td class="col-no">Manual</td><td style="color:var(--text2)">Partial</td><td class="col-us">✓</td></tr>
+        <tr><td>Modul LMS terintegrasi</td><td class="col-us">✓</td><td class="col-no">✕</td><td style="color:var(--text2)">Add-on berbayar</td><td class="col-no">✕</td></tr>
+        <tr><td>Employee self-service mobile</td><td class="col-us">✓</td><td class="col-no">✕</td><td class="col-us">✓</td><td style="color:var(--text2)">Terbatas</td></tr>
+        <tr><td>Harga mulai (per karyawan)</td><td class="col-us">Rp 35.000</td><td style="color:var(--text2)">Gratis (waktu mahal)</td><td class="col-no">$8–15/user</td><td style="color:var(--text2)">Rp 40.000–70.000</td></tr>
+        <tr><td>Dukungan UU Cipta Kerja</td><td class="col-us">✓</td><td class="col-no">Manual</td><td class="col-no">✕</td><td style="color:var(--text2)">Sebagian</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" style="background:var(--bg2);border-top:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-tag">// pertanyaan umum</div>
+    <h2 class="section-title">Ada Pertanyaan?</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q">Berapa lama implementasi TalentOS? <span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Untuk perusahaan hingga 200 karyawan, implementasi penuh biasanya selesai dalam 1–3 hari kerja. Tim implementasi kami akan membantu migrasi data dari sistem lama, konfigurasi payroll, dan pelatihan awal untuk tim HR Anda.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Apakah payroll TalentOS sudah patuh PPh 21 dan BPJS? <span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Ya. TalentOS menggunakan aturan PPh 21 terbaru (termasuk TER 2024), menghitung BPJS Ketenagakerjaan dan Kesehatan secara otomatis, dan selalu diperbarui ketika ada perubahan regulasi dari pemerintah — tanpa perlu konfigurasi ulang dari Anda.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Bisakah TalentOS diintegrasikan dengan ERP atau sistem custom kami? <span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Ya. TalentOS menyediakan REST API lengkap dan konektor resmi untuk SAP HR, Oracle HCM, dan Odoo. Untuk sistem custom, tim engineer kami bisa membantu pengembangan konektor khusus (tersedia untuk paket Enterprise).</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Bagaimana keamanan data karyawan kami? <span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Data karyawan adalah data sensitif yang kami lindungi dengan enkripsi AES-256, akses berbasis peran (RBAC), audit log lengkap, dan server yang berlokasi di Indonesia. Kami mematuhi UU No. 27 Tahun 2022 tentang Perlindungan Data Pribadi.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Apakah ada minimum kontrak atau lock-in? <span class="faq-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Tidak ada lock-in untuk paket Growth dan Scale — bisa dibayar bulanan dan dibatalkan kapan saja. Paket tahunan mendapatkan diskon 2 bulan gratis. Untuk Enterprise, kontrak minimum 12 bulan dengan dukungan implementasi penuh.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band">
+  <h2>Bangun Tim Terbaik Anda<br><span class="gradient-text">Mulai Hari Ini</span></h2>
+  <p>Bergabung dengan 500+ perusahaan Indonesia yang sudah mempercayai TalentOS.</p>
+  <div class="cta-band-actions">
+    <button class="btn-hero-primary">Jadwalkan Demo Gratis →</button>
+    <button class="btn-hero-secondary">Hubungi Sales</button>
+  </div>
+  <p class="cta-sub">Implementasi 1 hari · Tidak perlu kartu kredit · Support 24/7</p>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="navbar-logo" style="display:inline-flex;margin-bottom:0.75rem">
+          <div class="logo-icon">TO</div>
+          TalentOS
+        </a>
+        <p>Platform HR & Talent Management all-in-one yang dibangun untuk perusahaan Indonesia berkembang.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Produk</h4>
+        <ul><li><a href="#">Rekrutmen</a></li><li><a href="#">Payroll</a></li><li><a href="#">Performance</a></li><li><a href="#">Analytics</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <ul><li><a href="#">Tentang Kami</a></li><li><a href="#">Blog HR</a></li><li><a href="#">Karir</a></li><li><a href="#">Mitra</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Bantuan</h4>
+        <ul><li><a href="#">Dokumentasi</a></li><li><a href="#">Webinar</a></li><li><a href="#">Kontak</a></li><li><a href="#">Status</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 TalentOS Indonesia, PT. Jakarta, Indonesia.</p>
+      <div class="footer-links">
+        <a href="#">Privasi</a><a href="#">Syarat</a><a href="#">Cookie</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// THEME TOGGLE
+const themeBtn = document.getElementById('themeBtn');
+themeBtn.addEventListener('click', () => {
+  const html = document.documentElement;
+  const isDark = html.dataset.theme === 'dark';
+  html.dataset.theme = isDark ? 'light' : 'dark';
+  themeBtn.textContent = isDark ? '🌙' : '☀';
+});
+
+// MOBILE MENU
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+  hamburger.textContent = mobileMenu.classList.contains('open') ? '✕' : '☰';
+});
+mobileMenu.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => { mobileMenu.classList.remove('open'); hamburger.textContent = '☰'; });
+});
+
+// HEADCOUNT CHART
+const headcountData = [52, 58, 63, 70, 75, 82, 90, 98, 108, 115, 120, 125];
+const hcLabels = ['Q1\'25','Q2\'25','Q3\'25','Q4\'25','Q1\'26','Q2\'26','Q3\'26','Q4\'26'];
+const hcEl = document.getElementById('headcountChart');
+const maxHC = Math.max(...headcountData);
+const hcShow = headcountData.slice(-8);
+hcShow.forEach((v, i) => {
+  const wrap = document.createElement('div');
+  wrap.className = 'hc-bar-wrap';
+  const pct = Math.round((v / maxHC) * 100);
+  wrap.innerHTML = `<div class="hc-bar" style="height:${pct}%"></div><div class="hc-lbl">${hcLabels[i]}</div>`;
+  hcEl.appendChild(wrap);
+});
+
+// PIPELINE DOTS
+const pipelineData = [
+  { id: 'pipe0', count: 127, max: 127, color: '#8B5CF6' },
+  { id: 'pipe1', count: 84, max: 127, color: '#A78BFA' },
+  { id: 'pipe2', count: 42, max: 127, color: '#EC4899' },
+  { id: 'pipe3', count: 12, max: 127, color: '#06B6D4' },
+  { id: 'pipe4', count: 8, max: 127, color: '#10B981' }
+];
+pipelineData.forEach(p => {
+  const el = document.getElementById(p.id);
+  if (!el) return;
+  const dots = Math.round((p.count / p.max) * 10);
+  for (let i = 0; i < 10; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'pipeline-dot';
+    dot.style.background = i < dots ? p.color : 'var(--bg3)';
+    el.appendChild(dot);
+  }
+});
+
+// COUNTER ANIMATION
+function animateCounter(el, target, duration, isFloat) {
+  duration = duration || 1800;
+  let start = 0;
+  const step = target / (duration / 16);
+  const timer = setInterval(() => {
+    start = Math.min(start + step, target);
+    el.textContent = isFloat ? start.toFixed(1) : Math.floor(start);
+    if (start >= target) clearInterval(timer);
+  }, 16);
+}
+
+const counterTargets = [
+  { id: 'c1', val: 500 }, { id: 'c2', val: 85 },
+  { id: 'c3', val: 60 }, { id: 'c4', val: 97 }
+];
+let countersRan = false;
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && !countersRan) {
+      countersRan = true;
+      counterTargets.forEach(c => {
+        const el = document.getElementById(c.id);
+        if (el) animateCounter(el, c.val);
+      });
+    }
+  });
+}, { threshold: 0.3 });
+const statsSection = document.querySelector('.stats-section');
+if (statsSection) obs.observe(statsSection);
+
+// PRICING TOGGLE
+const pricingToggle = document.getElementById('pricingToggle');
+const lblMonthly = document.getElementById('lbl-monthly');
+const lblAnnual = document.getElementById('lbl-annual');
+const prices = [
+  { monthly: '35.000', annual: '29.000' },
+  { monthly: '55.000', annual: '46.000' }
+];
+let isAnnual = false;
+pricingToggle.addEventListener('click', () => {
+  isAnnual = !isAnnual;
+  pricingToggle.classList.toggle('active', isAnnual);
+  lblMonthly.classList.toggle('active-lbl', !isAnnual);
+  lblAnnual.classList.toggle('active-lbl', isAnnual);
+  prices.forEach((p, i) => {
+    const el = document.getElementById('price-' + i);
+    if (el) el.textContent = isAnnual ? p.annual : p.monthly;
+  });
+});
+
+// FAQ ACCORDION
+document.querySelectorAll('.faq-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.closest('.faq-item');
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+
+// SMOOTH SCROLL
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+</script>
+</body>
+</html>

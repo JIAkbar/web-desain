@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Narasi.id — Jurnalisme yang Bernyawa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* LIGHT ONLY */
+:root {
+  --bg: #FAFAF8;
+  --bg-surface: #F0EDE8;
+  --bg-elevated: #E8E4DC;
+  --text: #1A1A1A;
+  --text-muted: #555555;
+  --text-subtle: #999999;
+  --accent: #E03A2F;
+  --accent-light: rgba(224,58,47,0.08);
+  --border: #E0DBD3;
+  --border-strong: #C8C2B8;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Libre Franklin', sans-serif;
+  background: var(--bg); color: var(--text);
+  overflow-x: hidden;
+}
+
+/* TOPBAR */
+.topbar {
+  background: var(--text); color: var(--bg);
+  padding: 0 2rem; height: 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  overflow: hidden;
+}
+.topbar-left {
+  display: flex; gap: 0; overflow-x: auto;
+  scrollbar-width: none;
+}
+.topbar-left::-webkit-scrollbar { display: none; }
+.topbar-cat {
+  background: none; border: none; color: rgba(250,250,248,0.65);
+  padding: 0 1rem; height: 40px; font-family: 'Libre Franklin', sans-serif;
+  font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer; white-space: nowrap; border-right: 1px solid rgba(255,255,255,0.1);
+  transition: color 0.2s, background 0.2s;
+}
+.topbar-cat:hover, .topbar-cat.on { color: var(--bg); background: var(--accent); }
+.topbar-right {
+  font-size: 0.68rem; color: rgba(250,250,248,0.5);
+  letter-spacing: 0.06em; white-space: nowrap; flex-shrink: 0; margin-left: 2rem;
+}
+
+/* HEADER */
+header {
+  border-bottom: 2px solid var(--text);
+  padding: 1.5rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 2rem; flex-wrap: wrap;
+}
+.header-logo {
+  font-family: 'Merriweather', serif; font-size: 2.25rem; font-weight: 700;
+  color: var(--text); text-decoration: none; letter-spacing: -0.02em; flex-shrink: 0;
+}
+.header-logo span { color: var(--accent); }
+.header-right {
+  display: flex; align-items: center; gap: 1.25rem;
+}
+.search-wrap {
+  display: flex; align-items: center; border: 1px solid var(--border-strong);
+  overflow: hidden;
+}
+.search-wrap input {
+  border: none; background: none; padding: 0.5rem 0.875rem;
+  font-family: 'Libre Franklin', sans-serif; font-size: 0.82rem; color: var(--text);
+  outline: none; width: 200px;
+}
+.search-wrap input::placeholder { color: var(--text-subtle); }
+.search-btn {
+  background: var(--text); color: var(--bg); border: none; padding: 0.5rem 0.875rem;
+  font-size: 0.8rem; cursor: pointer; font-weight: 600;
+}
+.subscribe-btn {
+  background: var(--accent); color: #fff; border: none;
+  padding: 0.5rem 1.25rem; font-family: 'Libre Franklin', sans-serif;
+  font-size: 0.8rem; font-weight: 700; letter-spacing: 0.04em; cursor: pointer; white-space: nowrap;
+  transition: opacity 0.2s;
+}
+.subscribe-btn:hover { opacity: 0.88; }
+.ham-btn { display: none; background: none; border: none; color: var(--text); font-size: 1.4rem; cursor: pointer; }
+.mob-nav-blog {
+  display: none; background: var(--bg-surface); border-bottom: 1px solid var(--border);
+  padding: 1rem 2rem; flex-direction: column; gap: 0.5rem;
+}
+.mob-nav-blog.open { display: flex; }
+.mob-nav-blog a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; padding: 0.4rem 0; border-bottom: 1px solid var(--border); }
+
+/* MAIN LAYOUT */
+main { max-width: 1280px; margin: 0 auto; padding: 0 2rem; }
+
+/* FEATURED ARTICLE */
+.featured { padding: 3rem 0 2.5rem; border-bottom: 1px solid var(--border); }
+.featured-inner {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: center;
+}
+.featured-img {
+  aspect-ratio: 16/10; background: var(--bg-elevated);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem;
+  position: relative; overflow: hidden;
+}
+.featured-img-inner {
+  width: 100%; height: 100%;
+  background: linear-gradient(160deg, #2A2A2A 0%, #1A1A1A 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem;
+}
+.fi-icon { font-size: 2.5rem; opacity: 0.3; }
+.fi-label { font-size: 0.68rem; color: rgba(255,255,255,0.3); letter-spacing: 0.1em; text-transform: uppercase; }
+.featured-img .cat-badge {
+  position: absolute; top: 1.25rem; left: 1.25rem;
+  background: var(--accent); color: #fff;
+  font-family: 'Libre Franklin', sans-serif; font-size: 0.65rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; padding: 0.3rem 0.75rem;
+}
+.featured-content {}
+.art-category {
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 0.875rem;
+}
+.art-title-xl {
+  font-family: 'Merriweather', serif; font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 700;
+  line-height: 1.25; margin-bottom: 1rem; letter-spacing: -0.02em;
+}
+.art-excerpt { font-size: 0.95rem; color: var(--text-muted); line-height: 1.75; margin-bottom: 1.25rem; }
+.art-meta { display: flex; align-items: center; gap: 1rem; font-size: 0.75rem; color: var(--text-subtle); flex-wrap: wrap; }
+.art-author { font-weight: 600; color: var(--text-muted); }
+.art-meta-dot { color: var(--border-strong); }
+.read-link {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  color: var(--accent); text-decoration: none; font-weight: 700; font-size: 0.875rem;
+  border-bottom: 1px solid var(--accent); padding-bottom: 1px; transition: opacity 0.2s;
+}
+.read-link:hover { opacity: 0.75; }
+
+/* EDITORIAL PICKS */
+.section-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  border-bottom: 2px solid var(--text); padding-bottom: 0.625rem; margin-bottom: 2rem;
+}
+.sh-title {
+  font-family: 'Merriweather', serif; font-size: 0.8rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+.sh-more {
+  font-size: 0.72rem; color: var(--accent); font-weight: 700; text-decoration: none;
+  letter-spacing: 0.04em;
+}
+.editorial-section { padding: 2.5rem 0; border-bottom: 1px solid var(--border); }
+.editorial-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+.ed-card { display: flex; gap: 1.25rem; align-items: flex-start; }
+.ed-img {
+  width: 120px; flex-shrink: 0; aspect-ratio: 4/3;
+  background: var(--bg-elevated);
+  display: flex; align-items: center; justify-content: center;
+}
+.ed-img-inner {
+  width: 100%; height: 100%;
+  background: linear-gradient(135deg, var(--bg-elevated), var(--bg-surface));
+  display: flex; align-items: center; justify-content: center; font-size: 1.5rem; opacity: 0.4;
+}
+.ed-cat { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.4rem; }
+.ed-title { font-family: 'Merriweather', serif; font-size: 0.95rem; font-weight: 700; line-height: 1.4; margin-bottom: 0.4rem; }
+.ed-excerpt { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
+.ed-meta { font-size: 0.68rem; color: var(--text-subtle); margin-top: 0.5rem; }
+
+/* KATEGORI */
+.kategori-section { padding: 2.5rem 0; border-bottom: 1px solid var(--border); }
+.kat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5px; background: var(--border); }
+.kat-item {
+  background: var(--bg); padding: 1.75rem 1.5rem;
+  border-top: 3px solid transparent; transition: border-color 0.2s;
+}
+.kat-item:hover { border-top-color: var(--accent); }
+.kat-item:nth-child(1) { border-top-color: #E03A2F; }
+.kat-item:nth-child(2) { border-top-color: #2563EB; }
+.kat-item:nth-child(3) { border-top-color: #059669; }
+.kat-item:nth-child(4) { border-top-color: #9333EA; }
+.kat-name { font-family: 'Merriweather', serif; font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+.kat-count { font-size: 0.72rem; color: var(--text-subtle); margin-bottom: 1rem; }
+.kat-headlines { display: flex; flex-direction: column; gap: 0.6rem; }
+.kat-headline { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; text-decoration: none; display: block; transition: color 0.2s; }
+.kat-headline:hover { color: var(--accent); }
+
+/* GRID ARTIKEL */
+.grid-section { padding: 2.5rem 0; border-bottom: 1px solid var(--border); }
+.art-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 2rem;
+}
+.art-card { display: flex; flex-direction: column; }
+.art-card.large .ac-img { aspect-ratio: 16/9; }
+.art-card.small .ac-img { aspect-ratio: 4/3; }
+.ac-img {
+  background: var(--bg-elevated); margin-bottom: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.ac-img-inner {
+  width: 100%; height: 100%;
+  background: linear-gradient(135deg, var(--bg-elevated), var(--bg-surface));
+  display: flex; align-items: center; justify-content: center; font-size: 2rem; opacity: 0.35;
+  transition: transform 0.3s;
+}
+.art-card:hover .ac-img-inner { transform: scale(1.04); }
+.ac-cat { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.4rem; }
+.ac-title { font-family: 'Merriweather', serif; font-weight: 700; line-height: 1.35; margin-bottom: 0.5rem; }
+.art-card.large .ac-title { font-size: 1.25rem; }
+.art-card.small .ac-title { font-size: 0.95rem; }
+.ac-excerpt { font-size: 0.82rem; color: var(--text-muted); line-height: 1.65; }
+.ac-meta { font-size: 0.7rem; color: var(--text-subtle); margin-top: 0.625rem; }
+.art-sidebar { grid-column: 2; grid-row: 1 / 3; display: flex; flex-direction: column; gap: 2rem; }
+.art-main { display: flex; flex-direction: column; gap: 2rem; }
+
+/* NEWSLETTER */
+.newsletter-section {
+  background: var(--text); padding: 4rem 2rem; text-align: center; margin: 0 -2rem;
+}
+.newsletter-section h2 {
+  font-family: 'Merriweather', serif; font-size: 1.75rem; font-weight: 700;
+  color: var(--bg); margin-bottom: 0.75rem;
+}
+.newsletter-section p { font-size: 0.9rem; color: rgba(250,250,248,0.6); margin-bottom: 2rem; }
+.nl-form { display: flex; max-width: 440px; margin: 0 auto; }
+.nl-form input {
+  flex: 1; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+  color: var(--bg); padding: 0.75rem 1rem; font-family: 'Libre Franklin', sans-serif;
+  font-size: 0.875rem; outline: none;
+}
+.nl-form input::placeholder { color: rgba(255,255,255,0.4); }
+.nl-form button {
+  background: var(--accent); color: #fff; border: none; padding: 0.75rem 1.5rem;
+  font-family: 'Libre Franklin', sans-serif; font-weight: 700; font-size: 0.82rem;
+  cursor: pointer; white-space: nowrap; letter-spacing: 0.04em; transition: opacity 0.2s;
+}
+.nl-form button:hover { opacity: 0.85; }
+
+/* POPULER */
+.populer-section { padding: 2.5rem 0; border-bottom: 1px solid var(--border); }
+.populer-list { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.populer-item {
+  display: flex; align-items: flex-start; gap: 1.25rem;
+  padding: 1.25rem; border: 1px solid var(--border); margin: -1px -1px 0 0;
+  transition: background 0.2s;
+}
+.populer-item:hover { background: var(--bg-surface); }
+.pop-num {
+  font-family: 'Merriweather', serif; font-size: 2rem; font-weight: 700;
+  color: var(--border-strong); line-height: 1; flex-shrink: 0; min-width: 1.5ch;
+}
+.pop-cat { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.3rem; }
+.pop-title { font-family: 'Merriweather', serif; font-size: 0.9rem; font-weight: 700; line-height: 1.4; margin-bottom: 0.3rem; }
+.pop-meta { font-size: 0.68rem; color: var(--text-subtle); }
+
+/* OPINI */
+.opini-section { padding: 2.5rem 0; border-bottom: 1px solid var(--border); }
+.opini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+.opini-card { border-top: 3px solid var(--text); padding-top: 1.5rem; }
+.op-portrait {
+  display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem;
+}
+.op-av {
+  width: 52px; height: 52px; background: var(--bg-elevated);
+  border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+  font-family: 'Merriweather', serif; font-weight: 700; font-size: 1.1rem; color: var(--text-muted);
+  flex-shrink: 0;
+}
+.op-name { font-family: 'Merriweather', serif; font-weight: 700; font-size: 0.95rem; }
+.op-role { font-size: 0.72rem; color: var(--text-subtle); margin-top: 0.2rem; }
+.op-quote {
+  font-family: 'Merriweather', serif; font-size: 1.05rem; font-style: italic;
+  line-height: 1.65; color: var(--text); margin-bottom: 1rem;
+}
+.op-quote::before { content: '\201C'; font-size: 1.5rem; color: var(--accent); line-height: 0; vertical-align: -0.3em; }
+.op-cat { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
+.op-title { font-family: 'Merriweather', serif; font-size: 1.1rem; font-weight: 700; line-height: 1.35; margin-bottom: 0.75rem; }
+.op-excerpt { font-size: 0.82rem; color: var(--text-muted); line-height: 1.7; }
+
+/* VIDEO / PODCAST */
+.media-section { padding: 2.5rem 0; border-bottom: 1px solid var(--border); }
+.media-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+.media-card { position: relative; }
+.media-thumb {
+  aspect-ratio: 16/9; background: var(--bg-elevated);
+  display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+  cursor: pointer;
+}
+.media-thumb-inner {
+  width: 100%; height: 100%;
+  background: linear-gradient(135deg, #1A1A1A, #2A2A2A);
+  display: flex; align-items: center; justify-content: center;
+}
+.play-btn {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: rgba(224,58,47,0.9); display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 1.2rem; transition: transform 0.2s, background 0.2s;
+}
+.media-thumb:hover .play-btn { transform: scale(1.1); background: var(--accent); }
+.media-type {
+  position: absolute; top: 0.75rem; right: 0.75rem;
+  background: rgba(26,26,26,0.8); color: rgba(255,255,255,0.8);
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+}
+.media-title { font-family: 'Merriweather', serif; font-size: 1rem; font-weight: 700; line-height: 1.4; margin: 0.875rem 0 0.4rem; }
+.media-meta { font-size: 0.72rem; color: var(--text-subtle); }
+
+/* FOOTER */
+footer {
+  background: var(--text); color: var(--bg);
+  padding: 4rem 2rem 2rem;
+}
+.footer-top {
+  max-width: 1280px; margin: 0 auto;
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  gap: 3rem; margin-bottom: 3rem;
+}
+.fl-logo { font-family: 'Merriweather', serif; font-size: 1.5rem; font-weight: 700; color: var(--bg); margin-bottom: 0.75rem; }
+.fl-logo span { color: var(--accent); }
+.fl-about { font-size: 0.82rem; color: rgba(250,250,248,0.55); line-height: 1.7; max-width: 230px; }
+.fl-head { font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250,250,248,0.4); margin-bottom: 1rem; }
+.fl-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+.fl-list a { font-size: 0.82rem; color: rgba(250,250,248,0.55); text-decoration: none; transition: color 0.2s; }
+.fl-list a:hover { color: var(--accent); }
+.footer-bottom {
+  max-width: 1280px; margin: 0 auto; padding-top: 2rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+}
+.footer-bottom p { font-size: 0.75rem; color: rgba(250,250,248,0.35); }
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .footer-top { grid-template-columns: 1fr 1fr 1fr; }
+}
+@media (max-width: 900px) {
+  .featured-inner { grid-template-columns: 1fr; }
+  .editorial-grid { grid-template-columns: 1fr; }
+  .kat-grid { grid-template-columns: 1fr 1fr; }
+  .art-grid { grid-template-columns: 1fr; }
+  .art-sidebar { grid-column: 1; grid-row: auto; }
+  .populer-list { grid-template-columns: 1fr; }
+  .opini-grid { grid-template-columns: 1fr; }
+  .media-grid { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
+}
+@media (max-width: 768px) {
+  main { padding: 0 1.25rem; }
+  header { padding: 1.25rem 1.25rem; }
+  .topbar { padding: 0 1.25rem; }
+  .header-right .search-wrap { display: none; }
+  .ham-btn { display: block; }
+  .kat-grid { grid-template-columns: 1fr; }
+  footer { padding: 3rem 1.25rem 2rem; }
+  .footer-top { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .topbar-right { display: none; }
+  .nl-form { flex-direction: column; }
+  .nl-form input, .nl-form button { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <button class="topbar-cat on">Nasional</button>
+    <button class="topbar-cat">Ekonomi</button>
+    <button class="topbar-cat">Teknologi</button>
+    <button class="topbar-cat">Budaya</button>
+    <button class="topbar-cat">Lingkungan</button>
+    <button class="topbar-cat">Hukum</button>
+    <button class="topbar-cat">Kesehatan</button>
+    <button class="topbar-cat">Dunia</button>
+  </div>
+  <div class="topbar-right">Senin, 15 Juni 2026</div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <a href="#" class="header-logo">Narasi<span>.id</span></a>
+  <div class="header-right">
+    <div class="search-wrap">
+      <input type="text" placeholder="Cari berita...">
+      <button class="search-btn">↵</button>
+    </div>
+    <button class="subscribe-btn">Langganan</button>
+    <button class="ham-btn" id="hambtn" aria-label="Menu">☰</button>
+  </div>
+</header>
+<div class="mob-nav-blog" id="mobnav">
+  <a href="#">Nasional</a>
+  <a href="#">Ekonomi</a>
+  <a href="#">Teknologi</a>
+  <a href="#">Budaya</a>
+  <a href="#">Lingkungan</a>
+</div>
+
+<main>
+
+<!-- FEATURED ARTICLE -->
+<div class="featured">
+  <div class="featured-inner">
+    <div class="featured-img">
+      <div class="featured-img-inner">
+        <span class="fi-icon">🏛</span>
+        <span class="fi-label">Foto: Narasi.id / Hendra Gunawan</span>
+      </div>
+      <span class="cat-badge">Nasional</span>
+    </div>
+    <div class="featured-content">
+      <div class="art-category">Laporan Utama</div>
+      <h2 class="art-title-xl">Di Balik Senyum Investor: Pertarungan Regulasi Teknologi yang Menentukan Nasib Startup Indonesia</h2>
+      <p class="art-excerpt">Selama tiga tahun terakhir, lebih dari 40 regulasi baru menyentuh sektor teknologi Indonesia. Sebagian disambut, sebagian ditentang keras. Laporan investigasi Narasi.id mengungkap lobi, kompromi, dan kepentingan yang membentuk kebijakan digital nasional.</p>
+      <div class="art-meta">
+        <span class="art-author">Fauziah Ramadhani</span>
+        <span class="art-meta-dot">·</span>
+        <span>14 Juni 2026</span>
+        <span class="art-meta-dot">·</span>
+        <span>12 menit baca</span>
+      </div>
+      <br>
+      <a href="#" class="read-link">Baca Selengkapnya →</a>
+    </div>
+  </div>
+</div>
+
+<!-- EDITORIAL PICKS -->
+<div class="editorial-section">
+  <div class="section-head">
+    <span class="sh-title">Pilihan Editor</span>
+    <a href="#" class="sh-more">Lihat Semua →</a>
+  </div>
+  <div class="editorial-grid">
+    <div class="ed-card">
+      <div class="ed-img"><div class="ed-img-inner">📈</div></div>
+      <div>
+        <div class="ed-cat">Ekonomi</div>
+        <div class="ed-title">Rupiah di Persimpangan: Proyeksi Kurs dan Inflasi Semester Kedua 2026</div>
+        <div class="ed-excerpt">Bank Indonesia kembali menahan suku bunga acuan. Pasar bereaksi beragam.</div>
+        <div class="ed-meta">Rizki Prabowo · 13 Juni 2026</div>
+      </div>
+    </div>
+    <div class="ed-card">
+      <div class="ed-img"><div class="ed-img-inner">🌿</div></div>
+      <div>
+        <div class="ed-cat">Lingkungan</div>
+        <div class="ed-title">Karhutla 2026: Mengapa Prediksi Terburuk Bisa Menjadi Kenyataan</div>
+        <div class="ed-excerpt">El Niño dan kelalaian pengelolaan lahan gambut menjadi kombinasi berbahaya.</div>
+        <div class="ed-meta">Sinta Meliana · 12 Juni 2026</div>
+      </div>
+    </div>
+    <div class="ed-card">
+      <div class="ed-img"><div class="ed-img-inner">⚖️</div></div>
+      <div>
+        <div class="ed-cat">Hukum</div>
+        <div class="ed-title">Kasus Korupsi Infrastruktur: Tiga Nama Baru Disebut dalam Sidang Praperadilan</div>
+        <div class="ed-excerpt">KPK memperluas cakupan penyelidikan ke proyek-proyek jalan tol Trans Sumatera.</div>
+        <div class="ed-meta">Bagas Wiratama · 11 Juni 2026</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- KATEGORI -->
+<div class="kategori-section">
+  <div class="section-head">
+    <span class="sh-title">Jelajahi Kategori</span>
+  </div>
+  <div class="kat-grid">
+    <div class="kat-item">
+      <div class="kat-name">Nasional</div>
+      <div class="kat-count">847 artikel</div>
+      <div class="kat-headlines">
+        <a href="#" class="kat-headline">Sidang Paripurna DPR Tetapkan Anggaran Pendidikan 25%</a>
+        <a href="#" class="kat-headline">Vaksin COVID-25 Mulai Didistribusikan ke 27 Provinsi</a>
+        <a href="#" class="kat-headline">Pilgub Jawa Tengah: Empat Paslon Resmi Mendaftar</a>
+      </div>
+    </div>
+    <div class="kat-item">
+      <div class="kat-name">Ekonomi</div>
+      <div class="kat-count">634 artikel</div>
+      <div class="kat-headlines">
+        <a href="#" class="kat-headline">IHSG Tembus 8.200 Pertama Kali dalam Sejarah</a>
+        <a href="#" class="kat-headline">Ekspor Sawit Turun, Harga CPO Global Melemah</a>
+        <a href="#" class="kat-headline">Startup Unicorn Baru Lahir dari Ekosistem Surabaya</a>
+      </div>
+    </div>
+    <div class="kat-item">
+      <div class="kat-name">Teknologi</div>
+      <div class="kat-count">512 artikel</div>
+      <div class="kat-headlines">
+        <a href="#" class="kat-headline">OpenAI Buka Kantor Asia Tenggara di Jakarta</a>
+        <a href="#" class="kat-headline">Permen AI Kominfo: Kontroversi dalam 100 Pasal</a>
+        <a href="#" class="kat-headline">Startup AI Lokal Raih Pendanaan Rp 380 Miliar</a>
+      </div>
+    </div>
+    <div class="kat-item">
+      <div class="kat-name">Budaya</div>
+      <div class="kat-count">389 artikel</div>
+      <div class="kat-headlines">
+        <a href="#" class="kat-headline">Film Indonesia Raih Seleksi Official di Cannes 2026</a>
+        <a href="#" class="kat-headline">Batik Tulis Pekalongan Masuk Daftar UNESCO 2026</a>
+        <a href="#" class="kat-headline">Generasi Z dan Identitas: Antara Global dan Lokal</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GRID ARTIKEL -->
+<div class="grid-section">
+  <div class="section-head">
+    <span class="sh-title">Berita Terkini</span>
+    <a href="#" class="sh-more">Lihat Semua →</a>
+  </div>
+  <div class="art-grid">
+    <div class="art-main">
+      <div class="art-card large">
+        <div class="ac-img"><div class="ac-img-inner">🗳</div></div>
+        <div class="ac-cat">Politik</div>
+        <div class="ac-title">Survei Terbaru: Tingkat Kepuasan Publik terhadap Pemerintah Capai 64 Persen</div>
+        <div class="ac-excerpt">Lembaga survei independen mencatat lonjakan kepuasan signifikan, didorong program beasiswa dan infrastruktur desa.</div>
+        <div class="ac-meta">Yanti Kusumastuti · 14 Juni 2026 · 6 mnt baca</div>
+      </div>
+      <div class="art-card small">
+        <div class="ac-img"><div class="ac-img-inner">💊</div></div>
+        <div class="ac-cat">Kesehatan</div>
+        <div class="ac-title">BPJS Kesehatan Tambah 12 Jenis Obat Kanker dalam Daftar Tanggungan</div>
+        <div class="ac-meta">Dini Pertiwi · 13 Juni 2026 · 4 mnt baca</div>
+      </div>
+    </div>
+    <div class="art-sidebar">
+      <div>
+        <div class="section-head" style="margin-bottom:1.25rem">
+          <span class="sh-title">Populer Hari Ini</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0">
+          <div class="populer-item" style="grid-template-columns:unset">
+            <span class="pop-num">1</span>
+            <div><div class="pop-cat">Nasional</div><div class="pop-title" style="font-size:0.82rem">Daftar Lengkap Penerima Beasiswa LPDP 2026 Tahap Kedua</div><div class="pop-meta">15.482 pembaca</div></div>
+          </div>
+          <div class="populer-item" style="grid-template-columns:unset">
+            <span class="pop-num">2</span>
+            <div><div class="pop-cat">Teknologi</div><div class="pop-title" style="font-size:0.82rem">Ini Daftar Startup yang PHK Massal pada Kuartal II 2026</div><div class="pop-meta">12.310 pembaca</div></div>
+          </div>
+          <div class="populer-item" style="grid-template-columns:unset">
+            <span class="pop-num">3</span>
+            <div><div class="pop-cat">Ekonomi</div><div class="pop-title" style="font-size:0.82rem">Harga BBM Non-Subsidi Naik Rp 500 Mulai 1 Juli</div><div class="pop-meta">10.875 pembaca</div></div>
+          </div>
+          <div class="populer-item" style="grid-template-columns:unset">
+            <span class="pop-num">4</span>
+            <div><div class="pop-cat">Hukum</div><div class="pop-title" style="font-size:0.82rem">MK Kabulkan Sebagian Gugatan UU Cipta Kerja</div><div class="pop-meta">9.234 pembaca</div></div>
+          </div>
+          <div class="populer-item" style="grid-template-columns:unset">
+            <span class="pop-num">5</span>
+            <div><div class="pop-cat">Budaya</div><div class="pop-title" style="font-size:0.82rem">Konser Band Legendaris Indonesia Dijual Habis dalam 4 Menit</div><div class="pop-meta">7.891 pembaca</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NEWSLETTER -->
+<div class="newsletter-section">
+  <h2>Jangan Lewatkan Satu Berita Pun</h2>
+  <p>Newsletter harian kami merangkum 5 berita terpenting yang Anda perlu tahu. Gratis, setiap pagi.</p>
+  <form class="nl-form" onsubmit="handleNL(event)">
+    <input type="email" placeholder="alamat@email.anda" id="nl-email">
+    <button type="submit">Langganan Gratis</button>
+  </form>
+</div>
+
+<!-- POPULER (numbered grid) -->
+<div class="populer-section">
+  <div class="section-head">
+    <span class="sh-title">Paling Banyak Dibaca Pekan Ini</span>
+    <a href="#" class="sh-more">Arsip →</a>
+  </div>
+  <div class="populer-list">
+    <div class="populer-item">
+      <div class="pop-num">01</div>
+      <div>
+        <div class="pop-cat">Nasional</div>
+        <div class="pop-title">Proyek Ibu Kota Nusantara: Status Terkini dan Tantangan yang Tersisa</div>
+        <div class="pop-meta">Diterbitkan 10 Juni · 24.541 pembaca</div>
+      </div>
+    </div>
+    <div class="populer-item">
+      <div class="pop-num">02</div>
+      <div>
+        <div class="pop-cat">Teknologi</div>
+        <div class="pop-title">AI dan Pasar Kerja Indonesia: Profesi Apa yang Paling Terancam?</div>
+        <div class="pop-meta">Diterbitkan 8 Juni · 19.888 pembaca</div>
+      </div>
+    </div>
+    <div class="populer-item">
+      <div class="pop-num">03</div>
+      <div>
+        <div class="pop-cat">Ekonomi</div>
+        <div class="pop-title">Investasi Asing 2026: Indonesia Unggul di ASEAN, Tapi Tantangan Datang</div>
+        <div class="pop-meta">Diterbitkan 7 Juni · 17.240 pembaca</div>
+      </div>
+    </div>
+    <div class="populer-item">
+      <div class="pop-num">04</div>
+      <div>
+        <div class="pop-cat">Hukum</div>
+        <div class="pop-title">Pendapat Hukum: Bisakah AI Dituntut atas Kesalahan Keputusan Medis?</div>
+        <div class="pop-meta">Diterbitkan 6 Juni · 14.102 pembaca</div>
+      </div>
+    </div>
+    <div class="populer-item">
+      <div class="pop-num">05</div>
+      <div>
+        <div class="pop-cat">Lingkungan</div>
+        <div class="pop-title">Laut Jawa Terus Naik: Peta Risiko Banjir Rob 10 Kota Pesisir Indonesia</div>
+        <div class="pop-meta">Diterbitkan 5 Juni · 12.877 pembaca</div>
+      </div>
+    </div>
+    <div class="populer-item">
+      <div class="pop-num">06</div>
+      <div>
+        <div class="pop-cat">Budaya</div>
+        <div class="pop-title">Bahasa Daerah yang Hampir Punah: 11 Bahasa Tersisa Kurang dari 1.000 Penutur</div>
+        <div class="pop-meta">Diterbitkan 4 Juni · 11.450 pembaca</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OPINI -->
+<div class="opini-section">
+  <div class="section-head">
+    <span class="sh-title">Opini & Kolom</span>
+    <a href="#" class="sh-more">Semua Opini →</a>
+  </div>
+  <div class="opini-grid">
+    <div class="opini-card">
+      <div class="op-portrait">
+        <div class="op-av">PR</div>
+        <div>
+          <div class="op-name">Prof. Dr. Paramita Rahayu</div>
+          <div class="op-role">Ekonom, Universitas Indonesia</div>
+        </div>
+      </div>
+      <div class="op-cat">Ekonomi</div>
+      <div class="op-title">Hilirisasi Mimpi: Antara Target Ambisius dan Realita Industri</div>
+      <p class="op-excerpt">Kebijakan hilirisasi mineral bisa menjadi fondasi industrialisasi Indonesia abad 21 — atau hanya jebakan lain dari paradoks sumber daya alam. Jawabannya ada pada detail implementasi yang kerap terabaikan dalam debat publik.</p>
+      <br>
+      <a href="#" class="read-link" style="font-size:0.82rem">Baca Kolom →</a>
+    </div>
+    <div class="opini-card">
+      <div class="op-portrait">
+        <div class="op-av">BS</div>
+        <div>
+          <div class="op-name">Baskara Surya</div>
+          <div class="op-role">Kolumnis Budaya, Peneliti LIPI</div>
+        </div>
+      </div>
+      <div class="op-cat">Budaya & Identitas</div>
+      <div class="op-title">Ketika Algoritma Memilih Budaya Kita: Homogenisasi Tanpa Kita Sadari</div>
+      <p class="op-excerpt">Platform global tidak hanya mendistribusikan konten — mereka secara aktif membentuk apa yang kita anggap "relevan". Bagi Indonesia dengan 700+ bahasa daerah, ini bukan soal nostalgia; ini soal kelangsungan identitas kolektif.</p>
+      <br>
+      <a href="#" class="read-link" style="font-size:0.82rem">Baca Kolom →</a>
+    </div>
+  </div>
+</div>
+
+<!-- VIDEO/PODCAST -->
+<div class="media-section">
+  <div class="section-head">
+    <span class="sh-title">Video & Podcast</span>
+    <a href="#" class="sh-more">Kanal YouTube →</a>
+  </div>
+  <div class="media-grid">
+    <div class="media-card">
+      <div class="media-thumb">
+        <div class="media-thumb-inner">
+          <div class="play-btn">▶</div>
+        </div>
+        <span class="media-type">Video · 18:42</span>
+      </div>
+      <div class="media-title">Di Balik Layar: Investigasi Korupsi Infrastruktur yang Memakan Waktu 2 Tahun</div>
+      <div class="media-meta">Narasi Documentary · 14 Juni 2026 · 28.491 penonton</div>
+    </div>
+    <div class="media-card">
+      <div class="media-thumb">
+        <div class="media-thumb-inner">
+          <div class="play-btn">▶</div>
+        </div>
+        <span class="media-type">Podcast · 54:18</span>
+      </div>
+      <div class="media-title">Narasi Bicara Ep. 87: Masa Depan Startup Indonesia Bersama 3 Founder Terkemuka</div>
+      <div class="media-meta">Narasi Podcast · 12 Juni 2026 · 14.230 pendengar</div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="fl-logo">Narasi<span>.id</span></div>
+      <p class="fl-about">Jurnalisme independen yang bernyawa. Kami percaya bahwa informasi yang baik adalah hak warga negara, bukan hak istimewa.</p>
+    </div>
+    <div>
+      <div class="fl-head">Kategori</div>
+      <ul class="fl-list">
+        <li><a href="#">Nasional</a></li>
+        <li><a href="#">Ekonomi</a></li>
+        <li><a href="#">Teknologi</a></li>
+        <li><a href="#">Budaya</a></li>
+        <li><a href="#">Lingkungan</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="fl-head">Konten</div>
+      <ul class="fl-list">
+        <li><a href="#">Opini</a></li>
+        <li><a href="#">Investigasi</a></li>
+        <li><a href="#">Podcast</a></li>
+        <li><a href="#">Video</a></li>
+        <li><a href="#">Newsletter</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="fl-head">Tentang</div>
+      <ul class="fl-list">
+        <li><a href="#">Redaksi</a></li>
+        <li><a href="#">Etika Jurnalistik</a></li>
+        <li><a href="#">Karier</a></li>
+        <li><a href="#">Hubungi Kami</a></li>
+        <li><a href="#">Advertorial</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="fl-head">Ikuti Kami</div>
+      <ul class="fl-list">
+        <li><a href="#">Twitter / X</a></li>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">YouTube</a></li>
+        <li><a href="#">TikTok</a></li>
+        <li><a href="#">Telegram</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Narasi.id. Terverifikasi Dewan Pers Indonesia.</p>
+    <p>Jl. Kebayoran Baru No. 21, Jakarta Selatan</p>
+  </div>
+</footer>
+
+<script>
+// TOPBAR CATEGORIES
+document.querySelectorAll('.topbar-cat').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.topbar-cat').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+  });
+});
+
+// HAMBURGER
+const hb = document.getElementById('hambtn');
+const mn = document.getElementById('mobnav');
+hb.addEventListener('click', () => {
+  mn.classList.toggle('open');
+  hb.textContent = mn.classList.contains('open') ? '✕' : '☰';
+});
+
+// NEWSLETTER
+function handleNL(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('button');
+  const input = document.getElementById('nl-email');
+  if (!input.value) return;
+  const orig = btn.textContent;
+  btn.textContent = 'Berhasil! Cek email Anda ✓';
+  btn.style.background = '#2A9D5C';
+  input.value = '';
+  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 4000);
+}
+</script>
+</body>
+</html>
