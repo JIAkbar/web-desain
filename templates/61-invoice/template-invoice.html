@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InvoiceKit — Invoice & Finance Management untuk Freelancer</title>
+<meta name="description" content="Buat invoice profesional dalam 30 detik. Kelola tagihan, klien, dan keuangan freelance Anda dengan mudah.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #FFFFFF;
+  --bg2: #F8F8F8;
+  --bg3: #F0F0F0;
+  --text: #111111;
+  --text2: #444444;
+  --text3: #888888;
+  --border: #E5E7EB;
+  --accent: #10B981;
+  --r: 10px;
+  --r-sm: 6px;
+  --r-pill: 999px;
+  --shadow: 0 1px 3px rgba(0,0,0,.08);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.10);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,.12);
+}
+
+[data-theme="dark"] {
+  --bg: #111111;
+  --bg2: #1A1A1A;
+  --bg3: #222222;
+  --text: #FFFFFF;
+  --text2: #AAAAAA;
+  --text3: #666666;
+  --border: #333333;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  transition: background .3s, color .3s;
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+ul { list-style: none; }
+
+/* ─────────── NAVBAR ─────────── */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255,255,255,.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  transition: background .3s;
+}
+[data-theme="dark"] .navbar {
+  background: rgba(17,17,17,.85);
+}
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+.nav-logo {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.nav-links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text2);
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ─────────── BUTTONS ─────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: var(--r-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  border: none;
+  text-decoration: none;
+}
+.btn-primary {
+  background: #111;
+  color: #fff;
+}
+[data-theme="dark"] .btn-primary {
+  background: #fff;
+  color: #111;
+}
+.btn-primary:hover { opacity: .85; transform: translateY(-1px); }
+.btn-accent {
+  background: var(--accent);
+  color: #fff;
+}
+.btn-accent:hover {
+  opacity: .9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(16,185,129,.35);
+}
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border: 1.5px solid var(--border);
+}
+.btn-outline:hover {
+  border-color: var(--text3);
+  background: var(--bg2);
+}
+.btn-lg {
+  padding: 13px 28px;
+  font-size: 16px;
+  border-radius: var(--r);
+}
+.theme-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-sm);
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: background .2s;
+}
+.theme-btn:hover { background: var(--bg3); }
+
+/* ─────────── MOBILE MENU ─────────── */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px;
+  background: none;
+  border: none;
+}
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: all .3s;
+}
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 64px;
+  left: 0; right: 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 24px;
+  z-index: 99;
+  flex-direction: column;
+  gap: 16px;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text2);
+  padding: 4px 0;
+}
+
+/* ─────────── HERO ─────────── */
+.hero {
+  padding: 80px 24px 64px;
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16,185,129,.1);
+  color: var(--accent);
+  padding: 5px 14px;
+  border-radius: var(--r-pill);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  border: 1px solid rgba(16,185,129,.2);
+}
+.hero h1 {
+  font-size: clamp(36px, 6vw, 64px);
+  font-weight: 700;
+  letter-spacing: -.03em;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hero h1 em {
+  font-style: normal;
+  color: var(--accent);
+}
+.hero-sub {
+  font-size: 18px;
+  color: var(--text2);
+  max-width: 520px;
+  margin: 0 auto 36px;
+  line-height: 1.7;
+}
+.hero-ctas {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 56px;
+}
+.hero-stats {
+  display: flex;
+  gap: 48px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.stat-item { text-align: center; }
+.stat-num {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+.stat-label {
+  font-size: 13px;
+  color: var(--text3);
+  margin-top: 2px;
+}
+
+/* ─────────── SECTION COMMON ─────────── */
+section { padding: 80px 24px; }
+.container { max-width: 1200px; margin: 0 auto; }
+.section-label {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.section-title {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  margin-bottom: 16px;
+}
+.section-sub {
+  font-size: 16px;
+  color: var(--text2);
+  max-width: 520px;
+  line-height: 1.7;
+}
+.text-center { text-align: center; }
+.text-center .section-sub { margin: 0 auto; }
+
+/* ─────────── INVOICE MOCKUP ─────────── */
+.invoice-section { background: var(--bg2); }
+.invoice-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 48px;
+}
+.invoice-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  padding: 40px;
+  max-width: 560px;
+  width: 100%;
+  border: 1px solid #E5E7EB;
+}
+[data-theme="dark"] .invoice-card {
+  background: #1C1C1E;
+  border-color: #2C2C2E;
+}
+.inv-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+.inv-logo {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  color: #111;
+}
+[data-theme="dark"] .inv-logo { color: #fff; }
+.inv-logo span { color: var(--accent); }
+.inv-meta { text-align: right; }
+.inv-meta .inv-num {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 4px;
+}
+[data-theme="dark"] .inv-meta .inv-num { color: #fff; }
+.inv-meta p { font-size: 12px; color: #888; margin-bottom: 2px; }
+.inv-client { margin-bottom: 24px; }
+.inv-client-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: #888;
+  margin-bottom: 6px;
+}
+.inv-client-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 2px;
+}
+[data-theme="dark"] .inv-client-name { color: #fff; }
+.inv-client p { font-size: 13px; color: #666; }
+
+/* ─────────── INVOICE TABLE CSS ─────────── */
+.invoice-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+.invoice-table th {
+  background: var(--bg2);
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+[data-theme="dark"] .invoice-table th { background: #222; }
+.invoice-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text2);
+}
+.invoice-table tr:last-child td { border-bottom: none; }
+.invoice-table .td-right { text-align: right; }
+
+.inv-summary {
+  margin-top: 16px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+.inv-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  font-size: 13px;
+  color: var(--text2);
+}
+.inv-row.total {
+  background: var(--accent);
+  color: #fff;
+  padding: 12px 14px;
+  border-radius: var(--r-sm);
+  margin-top: 8px;
+  font-weight: 700;
+  font-size: 15px;
+}
+.inv-payment {
+  margin-top: 24px;
+  padding: 14px;
+  background: var(--bg2);
+  border-radius: var(--r-sm);
+}
+[data-theme="dark"] .inv-payment { background: #222; }
+.inv-payment-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: #888;
+  margin-bottom: 6px;
+}
+.inv-payment p { font-size: 13px; color: var(--text2); }
+.inv-footer {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 13px;
+  color: #888;
+  font-style: italic;
+}
+
+/* ─────────── CARA KERJA ─────────── */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-top: 48px;
+}
+.step-card {
+  text-align: center;
+  padding: 32px 24px;
+  background: var(--bg2);
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+}
+.step-num {
+  width: 40px; height: 40px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+.step-icon { width: 48px; height: 48px; margin: 0 auto 16px; }
+.step-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.step-card p { font-size: 14px; color: var(--text2); line-height: 1.6; }
+
+/* ─────────── FITUR ─────────── */
+.fitur-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 48px;
+}
+.fitur-card {
+  padding: 28px;
+  background: var(--bg2);
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  transition: all .2s;
+}
+.fitur-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.fitur-icon {
+  width: 44px; height: 44px;
+  background: rgba(16,185,129,.1);
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.fitur-icon svg {
+  width: 22px; height: 22px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.fitur-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+.fitur-card p { font-size: 14px; color: var(--text2); line-height: 1.6; }
+
+/* ─────────── TEMPLATE ─────────── */
+.template-section { background: var(--bg2); }
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 48px;
+}
+.tmpl-card {
+  background: var(--bg);
+  border-radius: var(--r);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  transition: all .2s;
+  cursor: pointer;
+}
+.tmpl-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.tmpl-preview {
+  height: 160px;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+.tmpl-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.tmpl-preview-logo { font-size: 11px; font-weight: 700; color: #fff; }
+.tmpl-preview-badge {
+  font-size: 9px;
+  color: rgba(255,255,255,.8);
+  background: rgba(255,255,255,.2);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+.tmpl-line {
+  height: 5px;
+  border-radius: 2px;
+  background: rgba(255,255,255,.3);
+  margin-bottom: 6px;
+}
+.tmpl-line.short { width: 60%; }
+.tmpl-line.med { width: 80%; }
+.tmpl-lines-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: auto;
+}
+.tmpl-row-line {
+  height: 3px;
+  border-radius: 1px;
+  background: rgba(255,255,255,.2);
+  margin-bottom: 4px;
+}
+.tmpl-info { padding: 14px; }
+.tmpl-info h4 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.tmpl-info p { font-size: 12px; color: var(--text3); }
+
+/* ─────────── STATISTIK STRIP ─────────── */
+.stats-strip {
+  background: #111;
+  padding: 64px 24px;
+  text-align: center;
+}
+[data-theme="dark"] .stats-strip { background: #0A0A0A; }
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.stat-big-num {
+  font-size: clamp(36px, 5vw, 52px);
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -.03em;
+}
+.stat-big-label {
+  font-size: 15px;
+  color: #aaa;
+  margin-top: 4px;
+}
+
+/* ─────────── TESTIMONI ─────────── */
+.testi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 48px;
+}
+.testi-card {
+  padding: 28px;
+  background: var(--bg2);
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+}
+.testi-stars { color: #F59E0B; font-size: 16px; margin-bottom: 12px; letter-spacing: 2px; }
+.testi-text {
+  font-size: 15px;
+  color: var(--text2);
+  line-height: 1.7;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+.testi-author { display: flex; align-items: center; gap: 12px; }
+.testi-avatar {
+  width: 40px; height: 40px;
+  border-radius: var(--r-pill);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+.testi-name { font-size: 14px; font-weight: 700; }
+.testi-role { font-size: 12px; color: var(--text3); }
+
+/* ─────────── HARGA ─────────── */
+.pricing-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  margin: 36px 0 48px;
+}
+.toggle-label { font-size: 14px; font-weight: 500; color: var(--text2); }
+.toggle-label.active { color: var(--text); }
+.toggle-switch {
+  width: 48px; height: 26px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background .2s;
+}
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 20px; height: 20px;
+  border-radius: var(--r-pill);
+  background: #fff;
+  transition: transform .2s;
+}
+.toggle-switch.yearly::after { transform: translateX(22px); }
+.discount-badge {
+  background: rgba(16,185,129,.15);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+}
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.price-card {
+  padding: 32px;
+  background: var(--bg2);
+  border-radius: var(--r);
+  border: 2px solid var(--border);
+  position: relative;
+  transition: all .2s;
+}
+.price-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.price-card.popular {
+  border-color: var(--accent);
+  background: var(--bg);
+}
+.popular-badge {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: var(--r-pill);
+  white-space: nowrap;
+}
+.price-name {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--text3);
+  margin-bottom: 12px;
+}
+.price-amount { display: flex; align-items: baseline; gap: 4px; margin-bottom: 6px; }
+.price-main { font-size: 36px; font-weight: 700; letter-spacing: -.03em; }
+.price-period { font-size: 14px; color: var(--text3); }
+.price-original {
+  font-size: 13px;
+  color: var(--text3);
+  text-decoration: line-through;
+  margin-bottom: 20px;
+  min-height: 20px;
+}
+.price-features {
+  margin: 20px 0 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.price-feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text2);
+}
+.price-feature-check {
+  width: 18px; height: 18px;
+  border-radius: var(--r-pill);
+  background: rgba(16,185,129,.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.price-feature-check svg {
+  width: 10px; height: 10px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.price-note { font-size: 12px; color: var(--text3); text-align: center; margin-top: 12px; }
+
+/* ─────────── INTEGRASI ─────────── */
+.integrations-section { background: var(--bg2); }
+.integ-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 48px;
+}
+.integ-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: var(--shadow);
+  transition: all .2s;
+}
+.integ-pill:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.integ-icon {
+  width: 20px; height: 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* ─────────── FAQ ─────────── */
+.faq-list {
+  max-width: 720px;
+  margin: 48px auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.faq-item {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+.faq-q {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 22px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: left;
+  gap: 16px;
+}
+.faq-chevron { width: 20px; height: 20px; flex-shrink: 0; transition: transform .3s; }
+.faq-chevron svg {
+  width: 20px; height: 20px;
+  stroke: var(--text3);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.faq-item.open .faq-chevron { transform: rotate(180deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height .35s ease, padding .35s ease; }
+.faq-a-inner { padding: 0 22px 18px; font-size: 14px; color: var(--text2); line-height: 1.7; }
+.faq-item.open .faq-a { max-height: 200px; }
+
+/* ─────────── CTA ─────────── */
+.cta-section {
+  background: var(--accent);
+  padding: 80px 24px;
+  text-align: center;
+}
+.cta-section h2 {
+  font-size: clamp(28px, 5vw, 44px);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  color: #fff;
+  margin-bottom: 12px;
+}
+.cta-section p { font-size: 16px; color: rgba(255,255,255,.8); margin-bottom: 36px; }
+.btn-cta-white {
+  background: #fff;
+  color: var(--accent);
+  font-size: 16px;
+  font-weight: 700;
+  padding: 14px 36px;
+  border-radius: var(--r);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s;
+  border: none;
+  cursor: pointer;
+}
+.btn-cta-white:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.2);
+}
+
+/* ─────────── FOOTER ─────────── */
+.footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 64px 24px 32px;
+}
+.footer-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+.footer-brand p {
+  font-size: 14px;
+  color: var(--text3);
+  margin-top: 10px;
+  line-height: 1.7;
+  max-width: 240px;
+}
+.footer-col h4 { font-size: 14px; font-weight: 700; margin-bottom: 16px; }
+.footer-col ul { display: flex; flex-direction: column; gap: 10px; }
+.footer-col ul li a { font-size: 14px; color: var(--text3); transition: color .2s; }
+.footer-col ul li a:hover { color: var(--text); }
+.footer-contact p { font-size: 14px; color: var(--text3); margin-bottom: 8px; }
+.footer-bottom {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.footer-bottom p { font-size: 13px; color: var(--text3); }
+.footer-links { display: flex; gap: 20px; }
+.footer-links a { font-size: 13px; color: var(--text3); transition: color .2s; }
+.footer-links a:hover { color: var(--text); }
+
+/* ─────────── SCROLL REVEAL ─────────── */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ─────────── RESPONSIVE ─────────── */
+@media (max-width: 900px) {
+  .fitur-grid, .pricing-grid, .testi-grid { grid-template-columns: repeat(2, 1fr); }
+  .template-grid { grid-template-columns: repeat(2, 1fr); }
+  .steps { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  .nav-links, .nav-actions .btn-primary { display: none; }
+  .hamburger { display: flex; }
+  .hero { padding: 48px 24px 40px; }
+  .hero-stats { gap: 24px; }
+  .fitur-grid, .pricing-grid, .testi-grid,
+  .template-grid, .steps, .stats-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     NAVBAR
+═══════════════════════════════════════════════════ -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">InvoiceKit &#x1F9FE;</a>
+    <div class="nav-links">
+      <a href="#fitur">Fitur</a>
+      <a href="#template">Template</a>
+      <a href="#harga">Harga</a>
+      <a href="#faq">Blog</a>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-btn" onclick="toggleTheme()" aria-label="Toggle dark mode" id="themeBtn">&#x1F319;</button>
+      <a href="#harga" class="btn btn-primary">Mulai Gratis</a>
+      <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#fitur" onclick="toggleMenu()">Fitur</a>
+    <a href="#template" onclick="toggleMenu()">Template</a>
+    <a href="#harga" onclick="toggleMenu()">Harga</a>
+    <a href="#faq" onclick="toggleMenu()">Blog</a>
+    <a href="#harga" class="btn btn-accent" style="margin-top:4px" onclick="toggleMenu()">Mulai Gratis</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════════ -->
+<section class="hero reveal">
+  <div class="badge">&#10022; Khusus Freelancer &amp; UMKM</div>
+  <h1>Buat Invoice <em>Profesional</em><br>dalam 30 Detik</h1>
+  <p class="hero-sub">
+    Kelola tagihan, klien, dan keuangan freelance Anda dengan mudah.
+    Kirim invoice PDF langsung ke klien &mdash; tanpa ribet, tanpa Excel.
+  </p>
+  <div class="hero-ctas">
+    <a href="#harga" class="btn btn-accent btn-lg">&#x1F680; Mulai Gratis</a>
+    <a href="#mockup" class="btn btn-outline btn-lg">Lihat Demo</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">50k+</div>
+      <div class="stat-label">Invoice Dibuat</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">Rp&nbsp;2M+</div>
+      <div class="stat-label">Tagihan Dikelola</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">4.9&#9733;</div>
+      <div class="stat-label">Rating Pengguna</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     INVOICE MOCKUP
+═══════════════════════════════════════════════════ -->
+<section class="invoice-section" id="mockup">
+  <div class="container text-center reveal">
+    <span class="section-label">Preview</span>
+    <h2 class="section-title">Invoice Siap Kirim dalam Hitungan Detik</h2>
+    <p class="section-sub">Tampilan profesional yang membuat klien percaya pada kualitas kerja Anda.</p>
+    <div class="invoice-wrap">
+      <div class="invoice-card">
+        <!-- Invoice Header -->
+        <div class="inv-header">
+          <div>
+            <div class="inv-logo">ABC <span>Studio</span></div>
+            <p style="font-size:12px;color:#888;margin-top:4px">Jasa Desain &amp; Pengembangan Digital</p>
+          </div>
+          <div class="inv-meta">
+            <div class="inv-num">INVOICE #2024-001</div>
+            <p>Tanggal: 1 Januari 2024</p>
+            <p>Jatuh Tempo: 15 Januari 2024</p>
+            <span style="display:inline-block;margin-top:6px;padding:3px 10px;background:#FEF3C7;color:#B45309;border-radius:4px;font-size:11px;font-weight:700">MENUNGGU PEMBAYARAN</span>
+          </div>
+        </div>
+        <!-- Tagihan Kepada -->
+        <div class="inv-client">
+          <div class="inv-client-label">Tagihan Kepada:</div>
+          <div class="inv-client-name">PT Maju Bersama</div>
+          <p>Jl. Sudirman No. 1, Jakarta Pusat 10220</p>
+          <p>info@majubersama.co.id &nbsp;|&nbsp; +62 21 5555 0001</p>
+        </div>
+        <!-- Line Items -->
+        <table class="invoice-table">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Deskripsi</th>
+              <th>Qty</th>
+              <th>Harga Satuan</th>
+              <th class="td-right">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>UI/UX Design</td>
+              <td>1</td>
+              <td>Rp 5.000.000</td>
+              <td class="td-right">Rp 5.000.000</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Web Development</td>
+              <td>1</td>
+              <td>Rp 8.000.000</td>
+              <td class="td-right">Rp 8.000.000</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Konsultasi</td>
+              <td>3 jam</td>
+              <td>Rp 500.000</td>
+              <td class="td-right">Rp 1.500.000</td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- Summary -->
+        <div class="inv-summary">
+          <div class="inv-row"><span>Subtotal</span><span>Rp 14.500.000</span></div>
+          <div class="inv-row"><span>PPN 11%</span><span>Rp 1.595.000</span></div>
+          <div class="inv-row total"><span>Total</span><span>Rp 16.095.000</span></div>
+        </div>
+        <!-- Payment Info -->
+        <div class="inv-payment">
+          <div class="inv-payment-label">Informasi Pembayaran</div>
+          <p><strong>Bank BCA</strong> &mdash; No. Rekening: <strong>1234567890</strong></p>
+          <p>a/n ABC Studio</p>
+        </div>
+        <div class="inv-footer">Terima kasih atas kepercayaan Anda &#x1F64F;</div>
+      </div><!-- /.invoice-card -->
+    </div><!-- /.invoice-wrap -->
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     CARA KERJA
+═══════════════════════════════════════════════════ -->
+<section id="cara-kerja">
+  <div class="container text-center reveal">
+    <span class="section-label">Cara Kerja</span>
+    <h2 class="section-title">3 Langkah Mudah, Invoice Langsung Terkirim</h2>
+    <p class="section-sub">Tidak perlu keahlian desain atau akuntansi. Cukup isi, kirim, dan tagihan Anda sudah sampai.</p>
+    <div class="steps">
+
+      <!-- Step 1 -->
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
+            <circle cx="24" cy="16" r="8" stroke="#10B981" stroke-width="2.5" fill="rgba(16,185,129,.12)"/>
+            <path d="M8 40c0-8.837 7.163-16 16-16s16 7.163 16 16" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Isi Data Klien</h3>
+        <p>Tambahkan nama, alamat, dan kontak klien. Data tersimpan otomatis untuk invoice berikutnya.</p>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
+            <rect x="8" y="8" width="32" height="32" rx="4" stroke="#10B981" stroke-width="2.5" fill="rgba(16,185,129,.12)"/>
+            <line x1="16" y1="20" x2="32" y2="20" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
+            <line x1="16" y1="27" x2="28" y2="27" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
+            <line x1="16" y1="34" x2="24" y2="34" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Tambah Item Pekerjaan</h3>
+        <p>Daftarkan deskripsi pekerjaan, jumlah, dan harga. Pajak dan total dihitung otomatis.</p>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
+            <rect x="6" y="6" width="36" height="36" rx="6" stroke="#10B981" stroke-width="2.5" fill="rgba(16,185,129,.12)"/>
+            <path d="M24 16v16M17 29l7 7 7-7" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Kirim PDF / Link</h3>
+        <p>Unduh sebagai PDF atau kirim link invoice langsung via WhatsApp dan Email ke klien.</p>
+      </div>
+
+    </div><!-- /.steps -->
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     FITUR UNGGULAN
+═══════════════════════════════════════════════════ -->
+<section id="fitur" style="background:var(--bg2)">
+  <div class="container reveal">
+    <div class="text-center">
+      <span class="section-label">Fitur</span>
+      <h2 class="section-title">Semua yang Kamu Butuhkan</h2>
+      <p class="section-sub">Dari buat invoice hingga laporan keuangan &mdash; semua dalam satu platform yang sederhana.</p>
+    </div>
+    <div class="fitur-grid">
+
+      <!-- Fitur 1: Invoice PDF -->
+      <div class="fitur-card">
+        <div class="fitur-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+            <polyline points="14,2 14,8 20,8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10,9 9,9 8,9"/>
+          </svg>
+        </div>
+        <h3>Buat Invoice PDF</h3>
+        <p>Generate invoice profesional dalam format PDF siap cetak hanya dalam beberapa klik.</p>
+      </div>
+
+      <!-- Fitur 2: Multi Mata Uang -->
+      <div class="fitur-card">
+        <div class="fitur-icon">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/>
+          </svg>
+        </div>
+        <h3>Multi-Mata Uang</h3>
+        <p>Dukung IDR, USD, EUR, dan mata uang lainnya untuk klien lokal maupun internasional.</p>
+      </div>
+
+      <!-- Fitur 3: Pengingat -->
+      <div class="fitur-card">
+        <div class="fitur-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 01-3.46 0"/>
+          </svg>
+        </div>
+        <h3>Pengingat Otomatis</h3>
+        <p>Kirim pengingat pembayaran otomatis via WhatsApp dan Email saat tagihan mendekati jatuh tempo.</p>
+      </div>
+
+      <!-- Fitur 4: Laporan -->
+      <div class="fitur-card">
+        <div class="fitur-icon">
+          <svg viewBox="0 0 24 24">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+        </div>
+        <h3>Laporan Keuangan</h3>
+        <p>Pantau pemasukan, status pembayaran, dan ringkasan keuangan bulanan dengan grafik interaktif.</p>
+      </div>
+
+      <!-- Fitur 5: Klien -->
+      <div class="fitur-card">
+        <div class="fitur-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+        </div>
+        <h3>Kelola Klien</h3>
+        <p>Database klien terpusat dengan riwayat invoice, status pembayaran, dan kontak lengkap.</p>
+      </div>
+
+      <!-- Fitur 6: TTD Digital -->
+      <div class="fitur-card">
+        <div class="fitur-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 20h9"/>
+            <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+        </div>
+        <h3>Tanda Tangan Digital</h3>
+        <p>Tambahkan tanda tangan digital Anda ke setiap invoice untuk tampilan yang lebih profesional.</p>
+      </div>
+
+    </div><!-- /.fitur-grid -->
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     TEMPLATE INVOICE
+═══════════════════════════════════════════════════ -->
+<section class="template-section" id="template">
+  <div class="container text-center reveal">
+    <span class="section-label">Template</span>
+    <h2 class="section-title">4 Gaya Invoice Pilihan</h2>
+    <p class="section-sub">Pilih template yang sesuai dengan identitas bisnis Anda &mdash; semuanya bisa dikustomisasi.</p>
+    <div class="template-grid">
+
+      <!-- Template: Minimal (Green) -->
+      <div class="tmpl-card">
+        <div class="tmpl-preview" style="background:linear-gradient(135deg,#10B981 0%,#059669 100%)">
+          <div class="tmpl-preview-header">
+            <div class="tmpl-preview-logo">Studio</div>
+            <div class="tmpl-preview-badge">INVOICE</div>
+          </div>
+          <div class="tmpl-line" style="width:70%"></div>
+          <div class="tmpl-line short" style="margin-top:4px"></div>
+          <div class="tmpl-lines-group">
+            <div class="tmpl-row-line"></div>
+            <div class="tmpl-row-line"></div>
+            <div class="tmpl-row-line" style="width:60%"></div>
+          </div>
+        </div>
+        <div class="tmpl-info"><h4>Minimal</h4><p>Bersih &amp; modern</p></div>
+      </div>
+
+      <!-- Template: Professional (Navy) -->
+      <div class="tmpl-card">
+        <div class="tmpl-preview" style="background:linear-gradient(135deg,#1E3A5F 0%,#0F2340 100%)">
+          <div class="tmpl-preview-header">
+            <div class="tmpl-preview-logo">Corp</div>
+            <div class="tmpl-preview-badge">INVOICE</div>
+          </div>
+          <div class="tmpl-line"></div>
+          <div class="tmpl-line short" style="margin-top:4px"></div>
+          <div class="tmpl-lines-group">
+            <div class="tmpl-row-line"></div>
+            <div class="tmpl-row-line"></div>
+            <div class="tmpl-row-line" style="width:50%"></div>
+          </div>
+        </div>
+        <div class="tmpl-info"><h4>Professional</h4><p>Korporat &amp; formal</p></div>
+      </div>
+
+      <!-- Template: Creative (Purple) -->
+      <div class="tmpl-card">
+        <div class="tmpl-preview" style="background:linear-gradient(135deg,#7C3AED 0%,#5B21B6 100%)">
+          <div class="tmpl-preview-header">
+            <div class="tmpl-preview-logo">Creative</div>
+            <div class="tmpl-preview-badge">INVOICE</div>
+          </div>
+          <div class="tmpl-line med"></div>
+          <div class="tmpl-line short" style="margin-top:4px"></div>
+          <div class="tmpl-lines-group">
+            <div class="tmpl-row-line"></div>
+            <div class="tmpl-row-line"></div>
+            <div class="tmpl-row-line" style="width:45%"></div>
+          </div>
+        </div>
+        <div class="tmpl-info"><h4>Creative</h4><p>Berani &amp; ekspresif</p></div>
+      </div>
+
+      <!-- Template: Modern (Orange) -->
+      <div class="tmpl-card">
+        <div class="tmpl-preview" style="background:linear-gradient(135deg,#F97316 0%,#EA580C 100%)">
+          <div class="tmpl-preview-header">
+            <div class="tmpl-preview-logo">Modern</div>
+            <div class="tmpl-preview-badge">INVOICE</div>
+          </div>
+          <div class="tmpl-line"></div>
+          <div class="tmpl-line short" style="margin-top:4px"></div>
+          <div class="tmpl-lines-group">
+            <div class="tmpl-row-line"></div>
+            <div class="tmpl-row-line"></div>
+            <div class="tmpl-row-line" style="width:55%"></div>
+          </div>
+        </div>
+        <div class="tmpl-info"><h4>Modern</h4><p>Hangat &amp; dinamis</p></div>
+      </div>
+
+    </div><!-- /.template-grid -->
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     STATISTIK STRIP
+═══════════════════════════════════════════════════ -->
+<div class="stats-strip">
+  <div class="stats-grid">
+    <div>
+      <div class="stat-big-num" data-counter="50000" data-suffix="+">0</div>
+      <div class="stat-big-label">Invoice Dibuat</div>
+    </div>
+    <div>
+      <div class="stat-big-num" data-counter="2" data-prefix="Rp " data-suffix=" Miliar+">0</div>
+      <div class="stat-big-label">Tagihan Dikelola</div>
+    </div>
+    <div>
+      <div class="stat-big-num" data-counter="15000" data-suffix="+">0</div>
+      <div class="stat-big-label">Freelancer Aktif</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     TESTIMONI
+═══════════════════════════════════════════════════ -->
+<section>
+  <div class="container reveal">
+    <div class="text-center">
+      <span class="section-label">Testimoni</span>
+      <h2 class="section-title">Dipercaya Ribuan Freelancer</h2>
+      <p class="section-sub">Lihat apa kata mereka yang sudah merasakan manfaat InvoiceKit.</p>
+    </div>
+    <div class="testi-grid">
+
+      <!-- Testimoni 1 -->
+      <div class="testi-card">
+        <div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="testi-text">"InvoiceKit mengubah cara saya mengelola pembayaran. Sekarang klien langsung bayar begitu terima invoice &mdash; tampilannya profesional banget!"</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#10B981,#059669)">R</div>
+          <div>
+            <div class="testi-name">Rina Sari</div>
+            <div class="testi-role">Graphic Designer, Jakarta</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimoni 2 -->
+      <div class="testi-card">
+        <div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="testi-text">"Tidak ada lagi tagihan yang terlambat dibayar sejak pakai InvoiceKit. Fitur pengingat otomatisnya benar-benar menghemat waktu dan energi saya."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#3B82F6,#1D4ED8)">B</div>
+          <div>
+            <div class="testi-name">Budi Santoso</div>
+            <div class="testi-role">Web Developer, Bandung</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimoni 3 -->
+      <div class="testi-card">
+        <div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="testi-text">"Template invoicenya profesional banget dan mudah dikustomisasi. Klien saya sampai tanya pakai software apa &mdash; padahal cuma InvoiceKit!"</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9)">D</div>
+          <div>
+            <div class="testi-name">Dewi Lestari</div>
+            <div class="testi-role">Fotografer, Surabaya</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.testi-grid -->
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     HARGA
+═══════════════════════════════════════════════════ -->
+<section id="harga" style="background:var(--bg2)">
+  <div class="container reveal">
+    <div class="text-center">
+      <span class="section-label">Harga</span>
+      <h2 class="section-title">Pilih Paket yang Tepat</h2>
+      <p class="section-sub">Mulai gratis, upgrade kapanpun. Tidak ada kontrak, tidak ada biaya tersembunyi.</p>
+    </div>
+    <div class="pricing-toggle">
+      <span class="toggle-label active" id="lblMonthly">Bulanan</span>
+      <button class="toggle-switch" id="pricingToggle" onclick="togglePricing()" aria-label="Toggle pricing"></button>
+      <span class="toggle-label" id="lblYearly">Tahunan</span>
+      <span class="discount-badge">Hemat 20%</span>
+    </div>
+    <div class="pricing-grid">
+
+      <!-- FREE -->
+      <div class="price-card">
+        <div class="price-name">Free</div>
+        <div class="price-amount">
+          <span class="price-main">Rp 0</span>
+          <span class="price-period">/bln</span>
+        </div>
+        <div class="price-original">&nbsp;</div>
+        <div class="price-features">
+          <div class="price-feature">
+            <div class="price-feature-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+            5 invoice per bulan
+          </div>
+          <div class="price-feature">
+            <div class="price-feature-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+            2 template dasar
+          </div>
+          <div class="price-feature">
+            <div class="price-feature-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+            Unduh PDF
+          </div>
+          <div class="price-feature">
+            <div class="price-feature-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+            1 pengguna
+          </div>
+        </div>
+        <a href="#" class="btn btn-outline" style="width:100%;justify-content:center">Mulai Gratis</a>
+        <p class="price-note">Tidak perlu kartu kredit</p>
+      </div>
+
+      <!-- PRO -->
+      <div class="price-card popular">
+        <span class="popular-badge">Paling Populer</span>
+        <div class="price-name">Pro</div>
+        <div class="price-amount">
+          <span class="price-main" id="proPriceMain">Rp 79.000</span>
+          <span class="price-period">/bln</span>
+        </div>
+        <div class="price-original" id="proOriginal">&nbsp;</div>
+        <div class="price-features">
+          <div class="price-feature">
+            <div class="price-feature-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+            Invoice tak terbatas
+          </div>
+          <div class="price-feature">
+            <div class="price-feature-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+            Semua template (4 gaya)
+          </div>
+          <div class="price-feature">
+            <div class="price-feature-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+            Pengingat otomatis
+          </div>
+          <div class="price-feature">
+            <div class="price-feature-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+            Laporan keuangan
+          </div>
+          <div class="price-feature">
+            <div class="price-feature-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+            Multi-mata uang
+          </div>
+        </div>
+        <a href="#" class="btn btn-accent" style="width:100%;justify-content:center">Coba 14 Hari Gratis</a>
+        <p class="price-note">Kartu kredit opsional</p>
+      </div>
+
+      <!-- BUSINESS -->
+      <div class="price-card">
+        <div class="price-name">Business</div>
+        <div class="price-amount">
+          <span class="price-main" id="bizPriceMain">Rp 199.000</span>
+          <span class="price-period">/bln</span>
+        </div>
+        <div class="price-original" id="bizOriginal">&nbsp;</div>
+        <div class="price-features">
+          <div class="price-feature">
+            <div class="price-feature-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+            Semua fitur Pro
+          </div>
+          <div class="price-feature">
+            <div class="price-feature-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+            5 anggota tim
+          </div>
+          <div class="price-feature">
+            <div class="price-feature-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+            Tanda tangan digital
+          </div>
+          <div class="price-feature">
+            <div class="price-feature-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+            API akses
+          </div>
+          <div class="price-feature">
+            <div class="price-feature-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+            Prioritas support
+          </div>
+        </div>
+        <a href="#" class="btn btn-primary" style="width:100%;justify-content:center">Mulai Sekarang</a>
+        <p class="price-note">Ideal untuk tim &amp; agensi</p>
+      </div>
+
+    </div><!-- /.pricing-grid -->
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     INTEGRASI
+═══════════════════════════════════════════════════ -->
+<section class="integrations-section">
+  <div class="container text-center reveal">
+    <span class="section-label">Integrasi</span>
+    <h2 class="section-title">Terhubung ke Platform Favoritmu</h2>
+    <p class="section-sub">InvoiceKit terintegrasi dengan payment gateway, bank, dan aplikasi populer di Indonesia.</p>
+    <div class="integ-pills">
+      <div class="integ-pill">
+        <div class="integ-icon" style="background:#1A4FA0">M</div>
+        Midtrans
+      </div>
+      <div class="integ-pill">
+        <div class="integ-icon" style="background:#00449E">X</div>
+        Xendit
+      </div>
+      <div class="integ-pill">
+        <div class="integ-icon" style="background:#005BAC">&#x1F3E6;</div>
+        BCA
+      </div>
+      <div class="integ-pill">
+        <div class="integ-icon" style="background:#F7A800">M</div>
+        Mandiri
+      </div>
+      <div class="integ-pill">
+        <div class="integ-icon" style="background:#108DE8">D</div>
+        DANA
+      </div>
+      <div class="integ-pill">
+        <div class="integ-icon" style="background:#00AED6">G</div>
+        GoPay
+      </div>
+      <div class="integ-pill">
+        <div class="integ-icon" style="background:#25D366">W</div>
+        WhatsApp
+      </div>
+      <div class="integ-pill">
+        <div class="integ-icon" style="background:#EA4335">&#x2709;</div>
+        Email
+      </div>
+    </div><!-- /.integ-pills -->
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     FAQ
+═══════════════════════════════════════════════════ -->
+<section style="background:var(--bg2)" id="faq">
+  <div class="container reveal">
+    <div class="text-center">
+      <span class="section-label">FAQ</span>
+      <h2 class="section-title">Pertanyaan yang Sering Ditanya</h2>
+      <p class="section-sub">Tidak menemukan jawaban? Hubungi tim support kami yang siap membantu.</p>
+    </div>
+    <div class="faq-list">
+
+      <!-- FAQ 1 -->
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Apakah InvoiceKit gratis?
+          <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6,9 12,15 18,9"/></svg></span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Ya! Paket Free kami benar-benar gratis selamanya, termasuk pembuatan hingga 5 invoice per bulan dan 2 template dasar. Tidak perlu memasukkan kartu kredit untuk mendaftar.
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ 2 -->
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Apakah invoice bisa dikirim langsung ke klien?
+          <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6,9 12,15 18,9"/></svg></span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Tentu! InvoiceKit memungkinkan Anda mengirim invoice via WhatsApp, Email, atau membagikan link invoice yang bisa dibuka klien langsung di browser. Klien dapat melihat dan mengunduh invoice tanpa perlu membuat akun.
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ 3 -->
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Format file apa yang didukung?
+          <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6,9 12,15 18,9"/></svg></span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            InvoiceKit mendukung ekspor ke PDF untuk semua paket. Paket Pro dan Business juga mendukung ekspor ke format Excel (.xlsx) untuk laporan keuangan, serta berbagi via link HTML yang dapat dicetak.
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ 4 -->
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Apakah data saya aman?
+          <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6,9 12,15 18,9"/></svg></span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Keamanan data adalah prioritas utama kami. Semua data dienkripsi menggunakan SSL/TLS 256-bit dan disimpan di server yang tersertifikasi ISO 27001. Kami tidak pernah menjual atau membagikan data Anda kepada pihak ketiga manapun.
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ 5 -->
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Bisa digunakan untuk tim?
+          <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6,9 12,15 18,9"/></svg></span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Ya! Paket Business mendukung hingga 5 anggota tim dengan hak akses berbeda. Admin bisa mengelola semua invoice, sementara anggota tim hanya bisa membuat dan mengelola invoice mereka sendiri. Cocok untuk agensi dan studio kreatif.
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.faq-list -->
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     CTA SECTION
+═══════════════════════════════════════════════════ -->
+<section class="cta-section">
+  <h2>Mulai 14 Hari Gratis</h2>
+  <p>Tidak perlu kartu kredit. Batalkan kapanpun.</p>
+  <button class="btn-cta-white" onclick="window.location.href='#harga'">Daftar Sekarang &mdash; Gratis</button>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="footer-grid">
+    <!-- Brand -->
+    <div class="footer-brand">
+      <div class="nav-logo">InvoiceKit &#x1F9FE;</div>
+      <p>Platform invoice dan manajemen keuangan untuk freelancer dan UMKM Indonesia. Profesional, mudah, terjangkau.</p>
+    </div>
+    <!-- Produk -->
+    <div class="footer-col">
+      <h4>Produk</h4>
+      <ul>
+        <li><a href="#">Fitur</a></li>
+        <li><a href="#">Template</a></li>
+        <li><a href="#">Harga</a></li>
+        <li><a href="#">Integrasi</a></li>
+        <li><a href="#">API</a></li>
+      </ul>
+    </div>
+    <!-- Perusahaan -->
+    <div class="footer-col">
+      <h4>Perusahaan</h4>
+      <ul>
+        <li><a href="#">Tentang Kami</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Karier</a></li>
+        <li><a href="#">Kebijakan Privasi</a></li>
+        <li><a href="#">Syarat &amp; Ketentuan</a></li>
+      </ul>
+    </div>
+    <!-- Kontak -->
+    <div class="footer-col footer-contact">
+      <h4>Kontak</h4>
+      <p>&#x1F4E7; hello@invoicekit.id</p>
+      <p>&#x1F4AC; WhatsApp: +62 812 3456 7890</p>
+      <p>&#x1F4CD; Jakarta, Indonesia</p>
+      <p style="margin-top:12px;font-size:13px;color:var(--text3)">Senin&ndash;Jumat, 09.00&ndash;17.00 WIB</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; <span id="footerYear"></span> InvoiceKit. Hak cipta dilindungi.</p>
+    <div class="footer-links">
+      <a href="#">Privasi</a>
+      <a href="#">Ketentuan</a>
+      <a href="#">Cookie</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   DARK MODE TOGGLE
+═══════════════════════════════════════════════════ */
+function toggleTheme() {
+  var h = document.documentElement;
+  var isDark = h.getAttribute('data-theme') === 'dark';
+  h.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+  localStorage.setItem('ik_theme', isDark ? 'light' : 'dark');
+}
+
+(function initTheme() {
+  var t = localStorage.getItem('ik_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', t);
+  document.getElementById('themeBtn').textContent = t === 'dark' ? '☀️' : '🌙';
+})();
+
+/* ═══════════════════════════════════════════════════
+   MOBILE MENU
+═══════════════════════════════════════════════════ */
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+/* ═══════════════════════════════════════════════════
+   PRICING TOGGLE — Monthly / Yearly
+═══════════════════════════════════════════════════ */
+var isYearly = false;
+
+function togglePricing() {
+  isYearly = !isYearly;
+  var btn = document.getElementById('pricingToggle');
+  var lblM = document.getElementById('lblMonthly');
+  var lblY = document.getElementById('lblYearly');
+  var proMain = document.getElementById('proPriceMain');
+  var proOrig = document.getElementById('proOriginal');
+  var bizMain = document.getElementById('bizPriceMain');
+  var bizOrig = document.getElementById('bizOriginal');
+
+  btn.classList.toggle('yearly', isYearly);
+  lblM.classList.toggle('active', !isYearly);
+  lblY.classList.toggle('active', isYearly);
+
+  if (isYearly) {
+    proMain.textContent = 'Rp 63.000';
+    proOrig.textContent = 'Rp 79.000/bln';
+    bizMain.textContent = 'Rp 159.000';
+    bizOrig.textContent = 'Rp 199.000/bln';
+  } else {
+    proMain.textContent = 'Rp 79.000';
+    proOrig.innerHTML = '&nbsp;';
+    bizMain.textContent = 'Rp 199.000';
+    bizOrig.innerHTML = '&nbsp;';
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   FAQ ACCORDION — One open at a time
+═══════════════════════════════════════════════════ */
+function toggleFaq(btn) {
+  var item = btn.closest('.faq-item');
+  var isOpen = item.classList.contains('open');
+  // close all
+  document.querySelectorAll('.faq-item.open').forEach(function(el) {
+    el.classList.remove('open');
+  });
+  // open clicked if it was closed
+  if (!isOpen) {
+    item.classList.add('open');
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   COUNTER ANIMATION — IntersectionObserver
+═══════════════════════════════════════════════════ */
+function animateCounter(el) {
+  var target = parseInt(el.dataset.counter) || 0;
+  var prefix = el.dataset.prefix || '';
+  var suffix = el.dataset.suffix || '';
+  var duration = 1800;
+  var start = performance.now();
+
+  function update(now) {
+    var elapsed = now - start;
+    var progress = Math.min(elapsed / duration, 1);
+    // ease-out cubic
+    var eased = 1 - Math.pow(1 - progress, 3);
+    var current = Math.floor(eased * target);
+    var formatted = (target >= 1000) ? current.toLocaleString('id-ID') : current;
+    el.textContent = prefix + formatted + suffix;
+    if (progress < 1) {
+      requestAnimationFrame(update);
+    }
+  }
+  requestAnimationFrame(update);
+}
+
+var counterObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting && !e.target.dataset.done) {
+      e.target.dataset.done = '1';
+      animateCounter(e.target);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('[data-counter]').forEach(function(el) {
+  counterObs.observe(el);
+});
+
+/* ═══════════════════════════════════════════════════
+   SCROLL REVEAL — fade-in sections on scroll
+═══════════════════════════════════════════════════ */
+var revealObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(function(el) {
+  revealObs.observe(el);
+});
+
+/* ═══════════════════════════════════════════════════
+   FOOTER YEAR — dynamic
+═══════════════════════════════════════════════════ */
+document.getElementById('footerYear').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

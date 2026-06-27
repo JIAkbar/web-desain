@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DocsHub — Dokumentasi Lengkap untuk Developer</title>
+  <meta name="description" content="DocsHub adalah platform dokumentasi modern yang lengkap, cepat, dan mudah digunakan untuk developer." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== CSS VARIABLES ===== */
+    :root {
+      --bg:      #FFFFFF;
+      --bg2:     #F8F8F8;
+      --bg3:     #F0F0F0;
+      --text:    #111111;
+      --text2:   #444444;
+      --text3:   #888888;
+      --border:  #E5E7EB;
+      --accent:  #059669;
+      --accent2: #047857;
+      --accent-bg: rgba(5,150,105,0.08);
+      --btn-bg:  #111111;
+      --btn-text:#FFFFFF;
+      --r:       10px;
+      --rs:      6px;
+      --rpill:   999px;
+      --shadow:  0 1px 4px rgba(0,0,0,0.07);
+      --shadow2: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    [data-theme="dark"] {
+      --bg:      #111111;
+      --bg2:     #1A1A1A;
+      --bg3:     #222222;
+      --text:    #FFFFFF;
+      --text2:   #AAAAAA;
+      --text3:   #666666;
+      --border:  #333333;
+      --accent-bg: rgba(5,150,105,0.12);
+      --btn-bg:  #FFFFFF;
+      --btn-text:#111111;
+      --shadow:  0 1px 4px rgba(0,0,0,0.3);
+      --shadow2: 0 4px 16px rgba(0,0,0,0.4);
+    }
+
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 16px;
+      transition: background 0.25s, color 0.25s;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    img { max-width: 100%; }
+    ul { list-style: none; }
+
+    /* ===== CODE BLOCK ===== */
+    .code-block {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 20px;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+    .code-keyword  { color: #6366F1; }
+    .code-string   { color: #059669; }
+    .code-comment  { color: var(--text3); font-style: italic; }
+    .code-function { color: #0EA5E9; }
+
+    /* ===== SCROLL REVEAL ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .nav-logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      text-decoration: none;
+    }
+    .nav-logo:hover { text-decoration: none; }
+    .nav-search {
+      flex: 1;
+      max-width: 360px;
+      position: relative;
+    }
+    .nav-search input {
+      width: 100%;
+      padding: 8px 14px 8px 38px;
+      border: 1px solid var(--border);
+      border-radius: var(--rpill);
+      background: var(--bg2);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .nav-search input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(5,150,105,0.12);
+    }
+    .nav-search input::placeholder { color: var(--text3); }
+    .nav-search svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text3);
+      pointer-events: none;
+    }
+    .nav-spacer { flex: 1; }
+    .version-badge {
+      padding: 3px 10px;
+      background: var(--accent-bg);
+      color: var(--accent);
+      border-radius: var(--rpill);
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .nav-icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--rs);
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      color: var(--text2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .nav-icon-btn:hover { background: var(--bg3); border-color: var(--accent); }
+    .btn-primary {
+      padding: 8px 18px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border: none;
+      border-radius: var(--rs);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+    .btn-primary:hover { opacity: 0.85; text-decoration: none; }
+    .btn-outline {
+      padding: 8px 18px;
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--rs);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s, border-color 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+    .btn-outline:hover { background: var(--bg2); border-color: var(--accent); text-decoration: none; }
+    .hamburger {
+      display: none;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border);
+      border-radius: var(--rs);
+      background: var(--bg2);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+    .hamburger span {
+      display: block;
+      width: 18px;
+      height: 2px;
+      background: var(--text2);
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      padding: 96px 24px 80px;
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      background: var(--accent-bg);
+      color: var(--accent);
+      border-radius: var(--rpill);
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+    .hero-badge::before { content: '✦'; font-size: 10px; }
+    .hero h1 {
+      font-size: clamp(36px, 5vw, 58px);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+    .hero h1 strong { color: var(--accent); font-weight: 700; }
+    .hero p {
+      font-size: 18px;
+      color: var(--text2);
+      max-width: 540px;
+      margin: 0 auto 36px;
+      line-height: 1.75;
+    }
+    .hero-btns {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+    .hero-btns .btn-primary { padding: 12px 28px; font-size: 15px; border-radius: var(--rs); }
+    .hero-btns .btn-outline  { padding: 12px 28px; font-size: 15px; border-radius: var(--rs); }
+    .hero-stats {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .stat-pill {
+      padding: 6px 16px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--rpill);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text2);
+    }
+
+    /* ===== SEARCH BAR ===== */
+    .search-section {
+      padding: 0 24px 80px;
+    }
+    .search-center {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .search-label {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text3);
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+    .big-search {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .big-search svg {
+      position: absolute;
+      left: 20px;
+      color: var(--text3);
+      pointer-events: none;
+    }
+    .big-search input {
+      width: 100%;
+      padding: 16px 120px 16px 52px;
+      border: 2px solid var(--border);
+      border-radius: var(--r);
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      outline: none;
+      box-shadow: var(--shadow2);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .big-search input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(5,150,105,0.10);
+    }
+    .big-search input::placeholder { color: var(--text3); }
+    .kbd-hint {
+      position: absolute;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    kbd {
+      padding: 2px 7px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 12px;
+      color: var(--text3);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+    }
+
+    /* ===== SECTION WRAPPER ===== */
+    .section {
+      padding: 64px 24px;
+    }
+    .section-alt { background: var(--bg2); }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .section-header h2 {
+      font-size: clamp(26px, 3vw, 36px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+    .section-header p {
+      font-size: 16px;
+      color: var(--text2);
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* ===== QUICK START CARDS ===== */
+    .quickstart-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .qs-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+      cursor: pointer;
+    }
+    .qs-card:hover {
+      box-shadow: var(--shadow2);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .qs-icon {
+      font-size: 28px;
+      margin-bottom: 14px;
+      display: block;
+    }
+    .qs-card h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .qs-card p {
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.65;
+      margin-bottom: 16px;
+    }
+    .qs-link {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .qs-link:hover { text-decoration: underline; }
+
+    /* ===== DOCS BROWSER MOCKUP ===== */
+    .docs-mockup {
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      overflow: hidden;
+      box-shadow: var(--shadow2);
+      background: var(--bg);
+    }
+    .mockup-bar {
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mockup-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .mockup-dot:nth-child(1) { background: #FF5F57; }
+    .mockup-dot:nth-child(2) { background: #FEBC2E; }
+    .mockup-dot:nth-child(3) { background: #28C840; }
+    .mockup-url {
+      flex: 1;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--rs);
+      padding: 4px 12px;
+      font-size: 12px;
+      color: var(--text3);
+      margin-left: 8px;
+    }
+    .mockup-body {
+      display: grid;
+      grid-template-columns: 220px 1fr 180px;
+      min-height: 440px;
+    }
+    /* Left sidebar */
+    .mock-sidebar {
+      border-right: 1px solid var(--border);
+      padding: 20px 0;
+      overflow-y: auto;
+    }
+    .mock-sidebar-section {
+      margin-bottom: 4px;
+    }
+    .mock-sidebar-title {
+      padding: 6px 16px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .mock-nav-item {
+      padding: 6px 16px 6px 24px;
+      font-size: 13px;
+      color: var(--text2);
+      cursor: pointer;
+      border-radius: 0;
+      transition: background 0.15s, color 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .mock-nav-item:hover { background: var(--bg2); color: var(--text); }
+    .mock-nav-item.active {
+      background: var(--accent-bg);
+      color: var(--accent);
+      font-weight: 600;
+      border-right: 2px solid var(--accent);
+    }
+    .mock-nav-item .dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.6;
+      flex-shrink: 0;
+    }
+    /* Center article */
+    .mock-article {
+      padding: 28px 32px;
+      overflow-y: auto;
+    }
+    .mock-breadcrumb {
+      font-size: 12px;
+      color: var(--text3);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .mock-breadcrumb span { color: var(--text2); }
+    .mock-article h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+    .mock-article p {
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.75;
+      margin-bottom: 14px;
+    }
+    .mock-article code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      color: var(--accent);
+    }
+    .mock-code-block {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--rs);
+      padding: 14px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      margin-top: 14px;
+      overflow-x: auto;
+    }
+    /* Right TOC */
+    .mock-toc {
+      border-left: 1px solid var(--border);
+      padding: 20px 16px;
+    }
+    .mock-toc-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+    .mock-toc-item {
+      font-size: 12px;
+      color: var(--text2);
+      padding: 4px 0;
+      border-left: 2px solid transparent;
+      padding-left: 10px;
+      margin-left: -10px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .mock-toc-item:hover { color: var(--accent); }
+    .mock-toc-item.active { color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+    .mock-toc-item.sub { padding-left: 20px; margin-left: -10px; font-size: 11px; }
+
+    /* ===== KATEGORI DOCS ===== */
+    .kategori-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .kat-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+      cursor: pointer;
+    }
+    .kat-card:hover {
+      box-shadow: var(--shadow2);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .kat-icon {
+      font-size: 26px;
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      background: var(--bg2);
+      border-radius: var(--rs);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .kat-body { flex: 1; min-width: 0; }
+    .kat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .kat-body h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .kat-count {
+      padding: 2px 9px;
+      background: var(--accent-bg);
+      color: var(--accent);
+      border-radius: var(--rpill);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .kat-body p {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.5;
+    }
+
+    /* ===== CODE BLOCK SHOWCASE ===== */
+    .code-showcase {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      overflow: hidden;
+    }
+    .code-tabs {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding: 0 8px;
+      gap: 2px;
+      background: var(--bg3);
+    }
+    .code-tab {
+      padding: 12px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text3);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .code-tab:hover { color: var(--text); }
+    .code-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+    .code-tab-actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      padding-right: 8px;
+    }
+    .copy-btn {
+      padding: 5px 14px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border: none;
+      border-radius: var(--rs);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: opacity 0.2s;
+    }
+    .copy-btn:hover { opacity: 0.8; }
+    .code-panel { display: none; padding: 24px; }
+    .code-panel.active { display: block; }
+
+    /* ===== FITUR DOCSHUB ===== */
+    .fitur-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .fitur-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .fitur-card:hover { box-shadow: var(--shadow2); transform: translateY(-2px); }
+    .fitur-icon {
+      font-size: 24px;
+      width: 50px;
+      height: 50px;
+      background: var(--accent-bg);
+      border-radius: var(--rs);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .fitur-body h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .fitur-body p {
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.65;
+    }
+
+    /* ===== KOMUNITAS ===== */
+    .komunitas-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .kom-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 28px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+    }
+    .kom-card:hover {
+      box-shadow: var(--shadow2);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .kom-icon {
+      font-size: 32px;
+      margin-bottom: 14px;
+      display: block;
+    }
+    .kom-card h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .kom-card p {
+      font-size: 14px;
+      color: var(--text2);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    /* ===== CHANGELOG ===== */
+    .changelog-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .changelog-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 20px;
+    }
+    .changelog-meta { text-align: right; }
+    .changelog-date {
+      display: inline-block;
+      padding: 4px 10px;
+      background: var(--bg3);
+      border-radius: var(--rpill);
+      font-size: 12px;
+      color: var(--text3);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .changelog-version {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+    .changelog-content h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+    .changelog-content ul {
+      list-style: disc;
+      padding-left: 18px;
+    }
+    .changelog-content li {
+      font-size: 14px;
+      color: var(--text2);
+      margin-bottom: 6px;
+      line-height: 1.6;
+    }
+
+    /* ===== CTA SECTION ===== */
+    .cta-section {
+      padding: 80px 24px;
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      text-align: center;
+    }
+    .cta-section h2 {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 14px;
+      letter-spacing: -0.02em;
+    }
+    .cta-section p {
+      font-size: 17px;
+      color: rgba(255,255,255,0.82);
+      max-width: 480px;
+      margin: 0 auto 36px;
+      line-height: 1.7;
+    }
+    .cta-btns {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-white {
+      padding: 12px 28px;
+      background: #FFFFFF;
+      color: #059669;
+      border: none;
+      border-radius: var(--rs);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+    .btn-white:hover { opacity: 0.9; text-decoration: none; }
+    .btn-ghost-white {
+      padding: 12px 28px;
+      background: rgba(255,255,255,0.15);
+      color: #FFFFFF;
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: var(--rs);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+    .btn-ghost-white:hover { background: rgba(255,255,255,0.22); text-decoration: none; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 56px 24px 32px;
+    }
+    .footer-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+    .footer-brand .logo {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 12px;
+      display: block;
+    }
+    .footer-brand p {
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.65;
+      max-width: 260px;
+    }
+    .footer-col h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 16px;
+    }
+    .footer-col ul li {
+      margin-bottom: 10px;
+    }
+    .footer-col ul li a {
+      font-size: 14px;
+      color: var(--text2);
+      transition: color 0.2s;
+    }
+    .footer-col ul li a:hover { color: var(--accent); text-decoration: none; }
+    .footer-bottom {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-bottom p {
+      font-size: 13px;
+      color: var(--text3);
+    }
+    .footer-bottom a { color: var(--text3); }
+    .footer-bottom a:hover { color: var(--accent); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .quickstart-grid  { grid-template-columns: 1fr; }
+      .kategori-grid    { grid-template-columns: repeat(2, 1fr); }
+      .fitur-grid       { grid-template-columns: 1fr; }
+      .komunitas-grid   { grid-template-columns: 1fr; }
+      .footer-grid      { grid-template-columns: 1fr 1fr; }
+      .changelog-item   { grid-template-columns: 1fr; }
+      .changelog-meta   { text-align: left; }
+      .mockup-body      { grid-template-columns: 180px 1fr; }
+      .mock-toc         { display: none; }
+    }
+    @media (max-width: 640px) {
+      .hero { padding: 64px 20px 48px; }
+      .nav-search { display: none; }
+      .version-badge { display: none; }
+      .hamburger { display: flex; }
+      .nav-cta { display: none; }
+      .kategori-grid    { grid-template-columns: 1fr; }
+      .footer-grid      { grid-template-columns: 1fr; }
+      .mockup-body      { grid-template-columns: 1fr; }
+      .mock-sidebar     { display: none; }
+      .hero-btns .btn-primary,
+      .hero-btns .btn-outline { padding: 11px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">DocsHub 📚</a>
+    <div class="nav-search">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Cari dokumentasi..." aria-label="Cari dokumentasi" />
+    </div>
+    <div class="nav-spacer"></div>
+    <span class="version-badge">v2.1.0</span>
+    <button class="nav-icon-btn" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">
+      <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+    </button>
+    <a class="nav-icon-btn" href="#" title="GitHub" aria-label="GitHub Repository">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+    </a>
+    <a class="btn-primary nav-cta" href="#">Mulai</a>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero reveal">
+  <div class="hero-badge">Dokumentasi Lengkap</div>
+  <h1>Semua yang Anda Butuhkan untuk <strong>Memulai</strong></h1>
+  <p>Dokumentasi developer yang komprehensif, selalu diperbarui, dan mudah dinavigasi. Temukan panduan, referensi API, dan contoh kode dalam satu tempat.</p>
+  <div class="hero-btns">
+    <a href="#" class="btn-primary">Mulai Baca →</a>
+    <a href="#" class="btn-outline">GitHub ↗</a>
+  </div>
+  <div class="hero-stats">
+    <span class="stat-pill">📄 200+ Halaman</span>
+    <span class="stat-pill">🌐 15 Bahasa</span>
+    <span class="stat-pill">🔓 Open Source</span>
+  </div>
+</section>
+
+<!-- ===== LARGE SEARCH BAR ===== -->
+<div class="search-section reveal">
+  <div class="search-center">
+    <p class="search-label">Tekan <kbd>⌘</kbd><kbd>K</kbd> untuk membuka pencarian cepat</p>
+    <div class="big-search">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Cari panduan, API, contoh kode..." aria-label="Cari dokumentasi" />
+      <div class="kbd-hint">
+        <kbd>⌘</kbd><kbd>K</kbd>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== QUICK START CARDS ===== -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2>Mulai dengan Cepat</h2>
+      <p>Pilih topik yang Anda butuhkan dan langsung terjun ke dokumentasinya.</p>
+    </div>
+    <div class="quickstart-grid">
+      <div class="qs-card reveal">
+        <span class="qs-icon">🚀</span>
+        <h3>Instalasi</h3>
+        <p>Panduan langkah demi langkah untuk menginstal DocsHub di berbagai environment: Node.js, Docker, atau cloud platform pilihan Anda.</p>
+        <a href="#" class="qs-link">Baca → </a>
+      </div>
+      <div class="qs-card reveal">
+        <span class="qs-icon">⚙️</span>
+        <h3>Konfigurasi</h3>
+        <p>Pelajari semua opsi konfigurasi yang tersedia, mulai dari tema, navigasi, plugin, hingga integrasi dengan sistem yang sudah Anda gunakan.</p>
+        <a href="#" class="qs-link">Baca → </a>
+      </div>
+      <div class="qs-card reveal">
+        <span class="qs-icon">📖</span>
+        <h3>API Reference</h3>
+        <p>Referensi lengkap untuk semua endpoint API, parameter, respons, dan kode error. Dilengkapi contoh request dan response nyata.</p>
+        <a href="#" class="qs-link">Baca → </a>
+      </div>
+      <div class="qs-card reveal">
+        <span class="qs-icon">💻</span>
+        <h3>Contoh Kode</h3>
+        <p>Kumpulan snippet dan proyek contoh siap pakai dalam berbagai bahasa pemrograman: JavaScript, Python, Go, PHP, dan banyak lagi.</p>
+        <a href="#" class="qs-link">Baca → </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DOCS BROWSER MOCKUP ===== -->
+<section class="section">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2>Tampilan Dokumentasi yang Nyaman</h2>
+      <p>Navigasi tiga panel yang intuitif memudahkan Anda menemukan dan membaca konten dokumentasi.</p>
+    </div>
+    <div class="docs-mockup reveal">
+      <div class="mockup-bar">
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+        <div class="mockup-url">docs.docshub.io/panduan/memulai/instalasi</div>
+      </div>
+      <div class="mockup-body">
+        <!-- Left Sidebar Nav -->
+        <div class="mock-sidebar">
+          <div class="mock-sidebar-section">
+            <div class="mock-sidebar-title">Panduan Memulai</div>
+            <div class="mock-nav-item"><span class="dot"></span> Pengenalan</div>
+            <div class="mock-nav-item active"><span class="dot"></span> Instalasi</div>
+            <div class="mock-nav-item"><span class="dot"></span> Konfigurasi Awal</div>
+            <div class="mock-nav-item"><span class="dot"></span> Tutorial Pertama</div>
+          </div>
+          <div class="mock-sidebar-section">
+            <div class="mock-sidebar-title">Konsep Dasar</div>
+            <div class="mock-nav-item"><span class="dot"></span> Arsitektur</div>
+            <div class="mock-nav-item"><span class="dot"></span> Plugin System</div>
+            <div class="mock-nav-item"><span class="dot"></span> Theming</div>
+          </div>
+          <div class="mock-sidebar-section">
+            <div class="mock-sidebar-title">API Reference</div>
+            <div class="mock-nav-item"><span class="dot"></span> Endpoint Utama</div>
+            <div class="mock-nav-item"><span class="dot"></span> Authentication</div>
+            <div class="mock-nav-item"><span class="dot"></span> Webhooks</div>
+            <div class="mock-nav-item"><span class="dot"></span> Rate Limiting</div>
+          </div>
+          <div class="mock-sidebar-section">
+            <div class="mock-sidebar-title">Deployment</div>
+            <div class="mock-nav-item"><span class="dot"></span> Vercel</div>
+            <div class="mock-nav-item"><span class="dot"></span> Docker</div>
+            <div class="mock-nav-item"><span class="dot"></span> Kubernetes</div>
+          </div>
+        </div>
+        <!-- Center Article -->
+        <div class="mock-article">
+          <div class="mock-breadcrumb">
+            Panduan Memulai <span>›</span> <span style="color:var(--accent)">Instalasi</span>
+          </div>
+          <h2>Instalasi DocsHub</h2>
+          <p>Sebelum memulai, pastikan Anda sudah menginstal <code>Node.js</code> versi 18 ke atas dan <code>npm</code> atau <code>yarn</code> sebagai package manager.</p>
+          <p>Instal DocsHub secara global menggunakan npm, kemudian inisialisasi proyek baru Anda dengan satu perintah:</p>
+          <div class="mock-code-block">
+            <span class="code-comment"># Install DocsHub CLI secara global</span><br>
+            <span class="code-keyword">npm</span> install <span class="code-string">-g</span> @docshub/cli<br><br>
+            <span class="code-comment"># Inisialisasi proyek baru</span><br>
+            <span class="code-function">docshub</span> init my-docs<br>
+            <span class="code-keyword">cd</span> my-docs<br>
+            <span class="code-function">docshub</span> dev
+          </div>
+        </div>
+        <!-- Right TOC -->
+        <div class="mock-toc">
+          <div class="mock-toc-title">Di Halaman Ini</div>
+          <div class="mock-toc-item active">Prasyarat</div>
+          <div class="mock-toc-item sub">Node.js & npm</div>
+          <div class="mock-toc-item sub">Git</div>
+          <div class="mock-toc-item">Instalasi Global</div>
+          <div class="mock-toc-item">Proyek Baru</div>
+          <div class="mock-toc-item sub">Struktur Folder</div>
+          <div class="mock-toc-item sub">File Konfigurasi</div>
+          <div class="mock-toc-item">Mode Pengembangan</div>
+          <div class="mock-toc-item">Build & Deploy</div>
+          <div class="mock-toc-item">Troubleshooting</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== KATEGORI DOCS ===== -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2>Jelajahi Dokumentasi</h2>
+      <p>Temukan topik yang Anda butuhkan dari koleksi dokumentasi lengkap kami.</p>
+    </div>
+    <div class="kategori-grid">
+      <div class="kat-card reveal">
+        <div class="kat-icon">🚀</div>
+        <div class="kat-body">
+          <div class="kat-header">
+            <h3>Panduan Memulai</h3>
+            <span class="kat-count">12</span>
+          </div>
+          <p>Instalasi, konfigurasi awal, dan tutorial pertama Anda.</p>
+        </div>
+      </div>
+      <div class="kat-card reveal">
+        <div class="kat-icon">📖</div>
+        <div class="kat-body">
+          <div class="kat-header">
+            <h3>API Reference</h3>
+            <span class="kat-count">45</span>
+          </div>
+          <p>Dokumentasi lengkap endpoint, parameter, dan respons API.</p>
+        </div>
+      </div>
+      <div class="kat-card reveal">
+        <div class="kat-icon">💻</div>
+        <div class="kat-body">
+          <div class="kat-header">
+            <h3>Contoh Kode</h3>
+            <span class="kat-count">28</span>
+          </div>
+          <p>Snippet dan proyek contoh dalam berbagai bahasa pemrograman.</p>
+        </div>
+      </div>
+      <div class="kat-card reveal">
+        <div class="kat-icon">🔌</div>
+        <div class="kat-body">
+          <div class="kat-header">
+            <h3>Integrasi</h3>
+            <span class="kat-count">16</span>
+          </div>
+          <p>Panduan integrasi dengan Slack, GitHub, Jira, dan banyak lagi.</p>
+        </div>
+      </div>
+      <div class="kat-card reveal">
+        <div class="kat-icon">🚢</div>
+        <div class="kat-body">
+          <div class="kat-header">
+            <h3>Deployment</h3>
+            <span class="kat-count">9</span>
+          </div>
+          <p>Deploy ke Vercel, Docker, Kubernetes, atau cloud platform lainnya.</p>
+        </div>
+      </div>
+      <div class="kat-card reveal">
+        <div class="kat-icon">❓</div>
+        <div class="kat-body">
+          <div class="kat-header">
+            <h3>FAQ</h3>
+            <span class="kat-count">34</span>
+          </div>
+          <p>Pertanyaan yang sering diajukan dan jawaban lengkapnya.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CODE BLOCK SHOWCASE ===== -->
+<section class="section">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2>Contoh Kode Siap Pakai</h2>
+      <p>Snippet kode yang bisa langsung Anda salin dan gunakan dalam proyek Anda.</p>
+    </div>
+    <div class="code-showcase reveal">
+      <div class="code-tabs">
+        <button class="code-tab active" data-tab="js">JavaScript</button>
+        <button class="code-tab" data-tab="py">Python</button>
+        <button class="code-tab" data-tab="curl">cURL</button>
+        <div class="code-tab-actions">
+          <button class="copy-btn" id="copyBtn">Salin</button>
+        </div>
+      </div>
+
+      <!-- JavaScript Panel -->
+      <div class="code-panel active" id="panel-js">
+        <div class="code-block">
+<span class="code-comment">// Inisialisasi DocsHub Client</span>
+<span class="code-keyword">import</span> { DocsHub } <span class="code-keyword">from</span> <span class="code-string">'@docshub/sdk'</span>;
+
+<span class="code-keyword">const</span> client = <span class="code-keyword">new</span> <span class="code-function">DocsHub</span>({
+  apiKey: <span class="code-string">'dh_live_your_api_key_here'</span>,
+  version: <span class="code-string">'v2'</span>,
+  timeout: <span class="code-keyword">5000</span>,
+});
+
+<span class="code-comment">// Ambil dokumen berdasarkan slug</span>
+<span class="code-keyword">async function</span> <span class="code-function">getDocument</span>(slug) {
+  <span class="code-keyword">try</span> {
+    <span class="code-keyword">const</span> doc = <span class="code-keyword">await</span> client.docs.<span class="code-function">get</span>(slug);
+    console.<span class="code-function">log</span>(<span class="code-string">`Judul: </span>${doc.title}<span class="code-string">`</span>);
+    <span class="code-keyword">return</span> doc;
+  } <span class="code-keyword">catch</span> (err) {
+    console.<span class="code-function">error</span>(<span class="code-string">'Error:'</span>, err.message);
+    <span class="code-keyword">throw</span> err;
+  }
+}
+
+<span class="code-comment">// Cari dokumen dengan full-text search</span>
+<span class="code-keyword">const</span> results = <span class="code-keyword">await</span> client.search.<span class="code-function">query</span>({
+  q: <span class="code-string">'instalasi konfigurasi'</span>,
+  limit: <span class="code-keyword">10</span>,
+  lang: <span class="code-string">'id'</span>,
+});</div>
+      </div>
+
+      <!-- Python Panel -->
+      <div class="code-panel" id="panel-py">
+        <div class="code-block">
+<span class="code-comment"># Instalasi: pip install docshub-sdk</span>
+<span class="code-keyword">from</span> docshub <span class="code-keyword">import</span> DocsHubClient
+<span class="code-keyword">from</span> docshub.exceptions <span class="code-keyword">import</span> DocsHubError
+
+<span class="code-comment"># Inisialisasi client</span>
+client = <span class="code-function">DocsHubClient</span>(
+    api_key=<span class="code-string">"dh_live_your_api_key_here"</span>,
+    version=<span class="code-string">"v2"</span>,
+)
+
+<span class="code-comment"># Ambil dokumen berdasarkan slug</span>
+<span class="code-keyword">def</span> <span class="code-function">get_document</span>(slug: str) -> dict:
+    <span class="code-keyword">try</span>:
+        doc = client.docs.<span class="code-function">get</span>(slug=slug)
+        <span class="code-function">print</span>(<span class="code-string">f"Judul: {doc['title']}"</span>)
+        <span class="code-keyword">return</span> doc
+    <span class="code-keyword">except</span> DocsHubError <span class="code-keyword">as</span> e:
+        <span class="code-function">print</span>(<span class="code-string">f"Error: {e.message}"</span>)
+        <span class="code-keyword">raise</span>
+
+<span class="code-comment"># Cari dokumen dengan filter bahasa</span>
+results = client.search.<span class="code-function">query</span>(
+    q=<span class="code-string">"instalasi konfigurasi"</span>,
+    limit=<span class="code-keyword">10</span>,
+    lang=<span class="code-string">"id"</span>,
+)
+<span class="code-function">print</span>(<span class="code-string">f"Ditemukan: {results['total']} dokumen"</span>)</div>
+      </div>
+
+      <!-- cURL Panel -->
+      <div class="code-panel" id="panel-curl">
+        <div class="code-block">
+<span class="code-comment"># Ambil dokumen berdasarkan slug</span>
+<span class="code-function">curl</span> <span class="code-string">-X GET</span> \
+  <span class="code-string">"https://api.docshub.io/v2/docs/panduan-memulai/instalasi"</span> \
+  <span class="code-keyword">-H</span> <span class="code-string">"Authorization: Bearer dh_live_your_api_key_here"</span> \
+  <span class="code-keyword">-H</span> <span class="code-string">"Content-Type: application/json"</span>
+
+<span class="code-comment"># Cari dokumen (full-text search)</span>
+<span class="code-function">curl</span> <span class="code-string">-X GET</span> \
+  <span class="code-string">"https://api.docshub.io/v2/search?q=instalasi&limit=10&lang=id"</span> \
+  <span class="code-keyword">-H</span> <span class="code-string">"Authorization: Bearer dh_live_your_api_key_here"</span>
+
+<span class="code-comment"># Response contoh:</span>
+<span class="code-comment"># {</span>
+<span class="code-comment">#   "total": 3,</span>
+<span class="code-comment">#   "results": [</span>
+<span class="code-comment">#     { "slug": "panduan-memulai/instalasi", "title": "Instalasi DocsHub", "score": 0.98 },</span>
+<span class="code-comment">#     ...</span>
+<span class="code-comment">#   ]</span>
+<span class="code-comment"># }</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FITUR DOCSHUB ===== -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2>Fitur DocsHub</h2>
+      <p>Dibangun untuk developer yang menghargai kecepatan, keterbacaan, dan kemudahan navigasi.</p>
+    </div>
+    <div class="fitur-grid">
+      <div class="fitur-card reveal">
+        <div class="fitur-icon">🔍</div>
+        <div class="fitur-body">
+          <h3>Full-text Search</h3>
+          <p>Cari konten apa pun di seluruh dokumentasi dalam milidetik. Didukung algoritma pencarian canggih dengan dukungan bahasa alami dan highlighting hasil pencarian.</p>
+        </div>
+      </div>
+      <div class="fitur-card reveal">
+        <div class="fitur-icon">🌐</div>
+        <div class="fitur-body">
+          <h3>Multi-bahasa</h3>
+          <p>Dokumentasi tersedia dalam 15 bahasa termasuk Bahasa Indonesia, Inggris, Mandarin, Jepang, dan lainnya. Kontribusi terjemahan terbuka untuk komunitas.</p>
+        </div>
+      </div>
+      <div class="fitur-card reveal">
+        <div class="fitur-icon">🌙</div>
+        <div class="fitur-body">
+          <h3>Dark Mode</h3>
+          <p>Tampilan gelap yang nyaman untuk mata, dengan kontras yang dioptimalkan dan transisi warna yang mulus. Preferensi disimpan otomatis di browser Anda.</p>
+        </div>
+      </div>
+      <div class="fitur-card reveal">
+        <div class="fitur-icon">📋</div>
+        <div class="fitur-body">
+          <h3>Versi Kontrol</h3>
+          <p>Akses dokumentasi untuk setiap versi produk Anda. Navigasi antar versi dengan mudah, dan lihat perubahan yang terjadi di setiap rilis secara jelas.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== KOMUNITAS ===== -->
+<section class="section">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2>Bergabung dengan Komunitas</h2>
+      <p>Dapatkan bantuan, berbagi pengalaman, dan berkontribusi bersama ribuan developer lainnya.</p>
+    </div>
+    <div class="komunitas-grid">
+      <div class="kom-card reveal">
+        <span class="kom-icon">💬</span>
+        <h3>Forum Diskusi</h3>
+        <p>Tanyakan pertanyaan, bagikan solusi, dan diskusikan ide dengan komunitas aktif di forum resmi kami.</p>
+        <a href="#" class="btn-outline" style="justify-content:center;">Kunjungi Forum →</a>
+      </div>
+      <div class="kom-card reveal">
+        <span class="kom-icon">🐛</span>
+        <h3>GitHub Issues</h3>
+        <p>Laporkan bug, usulkan fitur baru, dan lihat roadmap pengembangan DocsHub langsung di GitHub kami.</p>
+        <a href="#" class="btn-outline" style="justify-content:center;">Buka GitHub →</a>
+      </div>
+      <div class="kom-card reveal">
+        <span class="kom-icon">🎮</span>
+        <h3>Discord Server</h3>
+        <p>Chat real-time dengan tim inti dan komunitas developer. Dapatkan bantuan cepat dan update terbaru.</p>
+        <a href="#" class="btn-outline" style="justify-content:center;">Gabung Discord →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CHANGELOG ===== -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2>Changelog</h2>
+      <p>Riwayat perubahan dan pembaruan terbaru DocsHub.</p>
+    </div>
+    <div class="changelog-list">
+      <div class="changelog-item reveal">
+        <div class="changelog-meta">
+          <span class="changelog-date">15 Juni 2026</span><br>
+          <span class="changelog-version">v2.1.0</span>
+        </div>
+        <div class="changelog-content">
+          <h3>✨ Fitur Baru &amp; Perbaikan</h3>
+          <ul>
+            <li>Tambah dukungan multi-bahasa untuk 5 bahasa baru (Thai, Vietnam, Hindi, Arab, Turki)</li>
+            <li>Peningkatan performa pencarian full-text hingga 3x lebih cepat</li>
+            <li>Komponen callout baru: info, warning, danger, success, dan tip</li>
+            <li>Integrasi baru dengan Notion, Confluence, dan Gitbook untuk import konten</li>
+            <li>Perbaikan rendering kode untuk bahasa Rust, Swift, dan Kotlin</li>
+          </ul>
+        </div>
+      </div>
+      <div class="changelog-item reveal">
+        <div class="changelog-meta">
+          <span class="changelog-date">1 Mei 2026</span><br>
+          <span class="changelog-version">v2.0.0</span>
+        </div>
+        <div class="changelog-content">
+          <h3>🚀 Major Release</h3>
+          <ul>
+            <li>Desain ulang antarmuka secara menyeluruh — lebih bersih dan minimal</li>
+            <li>API v2 yang lebih konsisten dengan dokumentasi yang lengkap</li>
+            <li>Plugin system baru — buat dan distribusikan plugin komunitas</li>
+            <li>Dark mode native dengan deteksi preferensi sistem otomatis</li>
+            <li>Performa rendering halaman meningkat 60% berkat arsitektur baru</li>
+          </ul>
+        </div>
+      </div>
+      <div class="changelog-item reveal">
+        <div class="changelog-meta">
+          <span class="changelog-date">20 Maret 2026</span><br>
+          <span class="changelog-version">v1.9.0</span>
+        </div>
+        <div class="changelog-content">
+          <h3>🔧 Peningkatan &amp; Perbaikan Bug</h3>
+          <ul>
+            <li>Tambah shortcut keyboard ⌘K untuk pencarian cepat di seluruh platform</li>
+            <li>Perbaikan navigasi sidebar pada layar mobile dan tablet</li>
+            <li>Export dokumentasi ke PDF dengan format yang rapi dan terstruktur</li>
+            <li>Webhook untuk notifikasi saat konten diperbarui secara real-time</li>
+            <li>Perbaikan 12 bug kritis yang dilaporkan komunitas</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA SECTION ===== -->
+<section class="cta-section">
+  <div class="container">
+    <h2 class="reveal">Mulai Dokumentasi Anda</h2>
+    <p class="reveal">Bergabunglah dengan ribuan developer yang sudah mempercayai DocsHub untuk mendokumentasikan proyek mereka.</p>
+    <div class="cta-btns reveal">
+      <a href="#" class="btn-white">Mulai Gratis →</a>
+      <a href="#" class="btn-ghost-white">Lihat Demo ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="logo">DocsHub 📚</span>
+      <p>Platform dokumentasi modern yang bersih, cepat, dan mudah digunakan untuk developer dan tim teknis di seluruh dunia.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Produk</h4>
+      <ul>
+        <li><a href="#">Fitur</a></li>
+        <li><a href="#">Harga</a></li>
+        <li><a href="#">Changelog</a></li>
+        <li><a href="#">Roadmap</a></li>
+        <li><a href="#">Status</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Developer</h4>
+      <ul>
+        <li><a href="#">Dokumentasi</a></li>
+        <li><a href="#">API Reference</a></li>
+        <li><a href="#">SDK &amp; Library</a></li>
+        <li><a href="#">CLI Tool</a></li>
+        <li><a href="#">Open Source</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Komunitas</h4>
+      <ul>
+        <li><a href="#">Forum Diskusi</a></li>
+        <li><a href="#">Discord</a></li>
+        <li><a href="#">GitHub</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Newsletter</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; <span id="year"></span> DocsHub. Dibuat dengan ❤️ untuk developer.</p>
+    <p>
+      <a href="#">Kebijakan Privasi</a> &nbsp;·&nbsp;
+      <a href="#">Syarat Layanan</a> &nbsp;·&nbsp;
+      <a href="#">Cookie</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+  // ===== DARK MODE TOGGLE =====
+  const html = document.documentElement;
+  const themeToggle = document.getElementById('themeToggle');
+  const themeIcon = document.getElementById('themeIcon');
+
+  const sunSVG = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+  const moonSVG = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+
+  function applyTheme(theme) {
+    html.setAttribute('data-theme', theme);
+    themeIcon.innerHTML = theme === 'dark' ? sunSVG : moonSVG;
+    localStorage.setItem('dh-theme', theme);
+  }
+
+  const saved = localStorage.getItem('dh-theme');
+  const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  applyTheme(saved || preferred);
+
+  themeToggle.addEventListener('click', () => {
+    const current = html.getAttribute('data-theme');
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  });
+
+  // ===== CODE TAB SWITCHER =====
+  const tabs = document.querySelectorAll('.code-tab');
+  const panels = document.querySelectorAll('.code-panel');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      const target = document.getElementById('panel-' + tab.dataset.tab);
+      if (target) target.classList.add('active');
+    });
+  });
+
+  // ===== COPY TO CLIPBOARD =====
+  const copyBtn = document.getElementById('copyBtn');
+  copyBtn.addEventListener('click', () => {
+    const activePanel = document.querySelector('.code-panel.active .code-block');
+    if (!activePanel) return;
+    const text = activePanel.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      copyBtn.textContent = 'Disalin ✓';
+      copyBtn.style.background = '#059669';
+      copyBtn.style.color = '#fff';
+      setTimeout(() => {
+        copyBtn.textContent = 'Salin';
+        copyBtn.style.background = '';
+        copyBtn.style.color = '';
+      }, 2000);
+    }).catch(() => {
+      // Fallback for browsers without clipboard API
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      copyBtn.textContent = 'Disalin ✓';
+      setTimeout(() => { copyBtn.textContent = 'Salin'; }, 2000);
+    });
+  });
+
+  // ===== HAMBURGER (MOBILE SIDEBAR TOGGLE) =====
+  const hamburger = document.getElementById('hamburger');
+  let menuOpen = false;
+  hamburger.addEventListener('click', () => {
+    menuOpen = !menuOpen;
+    const spans = hamburger.querySelectorAll('span');
+    if (menuOpen) {
+      spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+      spans[1].style.opacity = '0';
+      spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+    } else {
+      spans[0].style.transform = '';
+      spans[1].style.opacity = '';
+      spans[2].style.transform = '';
+    }
+  });
+
+  // ===== SCROLL REVEAL =====
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  revealEls.forEach(el => revealObserver.observe(el));
+
+  // ===== FOOTER YEAR =====
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // ===== KEYBOARD SHORTCUT ⌘K =====
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      const bigInput = document.querySelector('.big-search input');
+      if (bigInput) {
+        bigInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => bigInput.focus(), 300);
+      }
+    }
+  });
+</script>
+</body>
+</html>

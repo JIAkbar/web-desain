@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BookEase — Sistem Booking Online untuk Bisnis Anda</title>
+<meta name="description" content="BookEase memudahkan pelanggan menjadwalkan janji temu secara online. Cocok untuk klinik, salon, konsultan, tutor, dan bisnis berbasis jadwal lainnya.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+/* === CSS Variables === */
+:root {
+  --bg:      #FFFFFF;
+  --bg2:     #F8F8F8;
+  --bg3:     #F0F0F0;
+  --text:    #111111;
+  --text2:   #444444;
+  --text3:   #888888;
+  --border:  #E5E7EB;
+  --accent:  #F59E0B;
+  --accent2: #D97706;
+  --shadow:  0 1px 3px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.05);
+  --radius:  10px;
+  --radius-sm: 6px;
+}
+[data-theme="dark"] {
+  --bg:      #111111;
+  --bg2:     #1A1A1A;
+  --bg3:     #222222;
+  --text:    #FFFFFF;
+  --text2:   #AAAAAA;
+  --text3:   #666666;
+  --border:  #333333;
+  --shadow:  0 1px 3px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* === Reset & Base === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  transition: background 0.3s, color 0.3s;
+}
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+
+/* === Layout === */
+.container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+.section { padding: 80px 0; }
+.section-label {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(245,158,11,0.1);
+  border: 1px solid rgba(245,158,11,0.25);
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+.section-title {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+.section-sub {
+  font-size: 1.05rem;
+  color: var(--text2);
+  max-width: 560px;
+}
+.text-center { text-align: center; }
+.text-center .section-sub { margin: 0 auto; }
+
+/* === Buttons === */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.btn-primary { background: #111; color: #fff; }
+[data-theme="dark"] .btn-primary { background: #fff; color: #111; }
+.btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+.btn-outline { background: transparent; color: var(--text); border: 1.5px solid var(--border); }
+.btn-outline:hover { border-color: var(--text); }
+.btn-accent { background: var(--accent); color: #fff; }
+.btn-accent:hover { background: var(--accent2); transform: translateY(-1px); }
+.btn-lg { padding: 14px 32px; font-size: 15px; }
+
+/* === Navbar === */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.3s;
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  gap: 32px;
+}
+.nav-logo { font-size: 1.2rem; font-weight: 700; white-space: nowrap; }
+.nav-links { display: flex; align-items: center; gap: 28px; }
+.nav-links a { font-size: 14px; font-weight: 500; color: var(--text2); transition: color 0.2s; }
+.nav-links a:hover { color: var(--text); }
+.nav-right { display: flex; align-items: center; gap: 12px; }
+.theme-toggle {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  width: 38px; height: 38px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px; transition: background 0.2s;
+}
+.theme-toggle:hover { background: var(--bg2); }
+.hamburger {
+  display: none;
+  background: none; border: none; cursor: pointer;
+  flex-direction: column; gap: 5px; padding: 4px;
+}
+.hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: all 0.3s; }
+.mobile-menu {
+  display: none; flex-direction: column; gap: 0;
+  border-top: 1px solid var(--border); background: var(--bg);
+}
+.mobile-menu a { padding: 14px 24px; font-size: 15px; font-weight: 500; color: var(--text2); border-bottom: 1px solid var(--border); }
+.mobile-menu.open { display: flex; }
+
+/* === Hero === */
+.hero { padding: 90px 0 60px; }
+.hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 500; color: var(--accent);
+  background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.25);
+  padding: 5px 14px; border-radius: 999px; margin-bottom: 20px;
+}
+.hero-title { font-size: clamp(2rem, 4.5vw, 3rem); font-weight: 700; line-height: 1.15; margin-bottom: 20px; }
+.hero-title em { font-style: normal; color: var(--accent); }
+.hero-sub { font-size: 1.05rem; color: var(--text2); margin-bottom: 32px; max-width: 480px; }
+.hero-cta { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
+.hero-stats { display: flex; gap: 32px; padding-top: 24px; border-top: 1px solid var(--border); }
+.stat-item .stat-val { font-size: 1.35rem; font-weight: 700; }
+.stat-item .stat-label { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+/* === Booking Widget === */
+.booking-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow);
+}
+.booking-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.booking-card-title { font-size: 15px; font-weight: 700; }
+.booking-badge { font-size: 11px; font-weight: 600; color: #16a34a; background: rgba(22,163,74,0.1); padding: 3px 10px; border-radius: 999px; }
+.cal-month { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.cal-month span { font-size: 13px; font-weight: 600; }
+.cal-nav {
+  background: none; border: 1px solid var(--border); border-radius: 4px;
+  width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 14px; color: var(--text2); transition: background 0.2s;
+}
+.cal-nav:hover { background: var(--bg3); }
+.cal-weekdays { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; margin-bottom: 6px; }
+.cal-weekdays span { text-align: center; font-size: 11px; font-weight: 600; color: var(--text3); padding: 4px 0; }
+.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
+.cal-day {
+  aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+  border-radius: 6px; font-size: 13px; cursor: pointer; transition: all 0.2s;
+}
+.cal-day.available:hover { background: var(--bg3); }
+.cal-day.selected { background: var(--accent); color: #fff; font-weight: 600; }
+.cal-day.disabled { color: var(--text3); cursor: not-allowed; opacity: 0.5; }
+.cal-day.empty { cursor: default; }
+.time-section { margin-top: 20px; }
+.time-section-title {
+  font-size: 12px; font-weight: 600; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;
+}
+.time-slots { display: flex; flex-wrap: wrap; gap: 8px; }
+.time-slot {
+  padding: 8px 16px; border: 1px solid var(--border); border-radius: 6px;
+  font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s;
+  background: var(--bg); color: var(--text);
+}
+.time-slot:hover { border-color: var(--accent); color: var(--accent); }
+.time-slot.selected { border-color: var(--accent); background: var(--accent); color: #fff; }
+.time-slot.disabled { opacity: 0.4; cursor: not-allowed; }
+.booking-divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+.service-select {
+  width: 100%; padding: 10px 14px; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); background: var(--bg); color: var(--text);
+  font-family: 'DM Sans', sans-serif; font-size: 14px; margin-bottom: 12px; cursor: pointer;
+}
+.booking-continue {
+  width: 100%; padding: 12px; background: var(--accent); color: #fff;
+  border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.2s, transform 0.2s; margin-top: 16px;
+}
+.booking-continue:hover { background: var(--accent2); transform: translateY(-1px); }
+
+/* === Cara Kerja === */
+.how-it-works { background: var(--bg2); }
+.steps-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
+  margin-top: 48px; position: relative;
+}
+.steps-grid::before {
+  content: ''; position: absolute; top: 28px;
+  left: calc(16.666% + 16px); right: calc(16.666% + 16px);
+  border-top: 2px dashed var(--border); pointer-events: none;
+}
+.step-card {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 32px 24px; text-align: center; box-shadow: var(--shadow);
+}
+.step-num {
+  width: 48px; height: 48px; border-radius: 999px;
+  background: var(--accent); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 700; margin: 0 auto 16px;
+}
+.step-icon { font-size: 28px; margin-bottom: 12px; }
+.step-title { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+.step-desc { font-size: 14px; color: var(--text2); line-height: 1.6; }
+
+/* === Layanan === */
+.service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 48px; }
+.service-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 28px 24px; transition: all 0.2s; cursor: pointer;
+}
+.service-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(245,158,11,0.1), var(--shadow);
+  transform: translateY(-2px);
+}
+.service-icon { font-size: 36px; margin-bottom: 14px; }
+.service-name { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+.service-desc { font-size: 13px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
+.service-link { font-size: 13px; font-weight: 600; color: var(--accent); display: inline-flex; align-items: center; gap: 4px; }
+
+/* === Fitur === */
+.features { background: var(--bg2); }
+.features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 48px; }
+.feature-card {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 28px; display: flex; gap: 20px;
+  align-items: flex-start; box-shadow: var(--shadow); transition: all 0.2s;
+}
+.feature-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+.feature-icon {
+  width: 48px; height: 48px; border-radius: var(--radius-sm);
+  background: rgba(245,158,11,0.1); display: flex; align-items: center;
+  justify-content: center; font-size: 22px; flex-shrink: 0;
+}
+.feature-info .feature-title { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+.feature-info .feature-desc { font-size: 14px; color: var(--text2); line-height: 1.5; }
+.feature-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.feature-tag {
+  font-size: 11px; font-weight: 600; color: var(--text3);
+  background: var(--bg3); border: 1px solid var(--border);
+  padding: 2px 8px; border-radius: 999px;
+}
+
+/* === Testimoni === */
+.testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 48px; }
+.testi-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 28px 24px; box-shadow: var(--shadow);
+}
+.testi-stars { color: var(--accent); font-size: 16px; margin-bottom: 14px; }
+.testi-quote { font-size: 14px; color: var(--text2); line-height: 1.65; margin-bottom: 20px; font-style: italic; }
+.testi-author { display: flex; align-items: center; gap: 12px; }
+.testi-avatar {
+  width: 40px; height: 40px; border-radius: 999px;
+  background: var(--accent); display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: #fff; font-weight: 700; flex-shrink: 0;
+}
+.testi-name { font-size: 14px; font-weight: 700; }
+.testi-biz { font-size: 12px; color: var(--text3); }
+
+/* === Counter === */
+.counter-section { background: var(--accent); padding: 60px 0; }
+.counter-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; text-align: center; }
+.counter-item .counter-val {
+  font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; color: #fff; line-height: 1; margin-bottom: 8px;
+}
+.counter-item .counter-label { font-size: 14px; color: rgba(255,255,255,0.8); font-weight: 500; }
+
+/* === Harga === */
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 48px; align-items: start; }
+.pricing-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 32px 28px; position: relative; box-shadow: var(--shadow); transition: all 0.2s;
+}
+.pricing-card:hover { transform: translateY(-3px); }
+.pricing-card.popular {
+  border-color: var(--accent); background: var(--bg);
+  box-shadow: 0 0 0 2px var(--accent), var(--shadow);
+}
+.popular-badge {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: var(--accent); color: #fff; font-size: 11px; font-weight: 700;
+  padding: 3px 14px; border-radius: 999px; white-space: nowrap;
+}
+.pricing-name { font-size: 14px; font-weight: 600; color: var(--text3); margin-bottom: 8px; }
+.pricing-price { font-size: 2rem; font-weight: 700; margin-bottom: 4px; line-height: 1; }
+.pricing-price span { font-size: 14px; font-weight: 400; color: var(--text3); }
+.pricing-desc { font-size: 13px; color: var(--text2); margin-bottom: 24px; margin-top: 8px; }
+.pricing-features { margin-bottom: 28px; }
+.pricing-feature { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text2); margin-bottom: 10px; }
+.pricing-feature .check { color: var(--accent); font-weight: 700; flex-shrink: 0; }
+.pricing-btn { width: 100%; text-align: center; }
+.pricing-card.popular .pricing-btn .btn { background: var(--accent); color: #fff; border: none; }
+[data-theme="dark"] .pricing-card.popular .pricing-btn .btn { background: var(--accent); color: #fff; }
+
+/* === Integrasi === */
+.integrations { background: var(--bg2); }
+.integration-grid { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 40px; }
+.integration-badge {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 18px; font-size: 14px; font-weight: 600;
+  box-shadow: var(--shadow); transition: all 0.2s;
+}
+.integration-badge:hover { border-color: var(--accent); transform: translateY(-2px); }
+.integration-badge .i-icon { font-size: 20px; }
+
+/* === FAQ === */
+.faq-list { max-width: 720px; margin: 48px auto 0; }
+.faq-item {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  margin-bottom: 12px; overflow: hidden; background: var(--bg2);
+}
+.faq-q {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px; background: none; border: none; font-family: 'DM Sans', sans-serif;
+  font-size: 15px; font-weight: 600; color: var(--text); text-align: left; cursor: pointer; gap: 16px;
+}
+.faq-q .faq-chevron { font-size: 18px; color: var(--text3); transition: transform 0.3s; flex-shrink: 0; }
+.faq-item.open .faq-chevron { transform: rotate(180deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+.faq-a-inner { padding: 0 20px 18px; font-size: 14px; color: var(--text2); line-height: 1.7; }
+
+/* === CTA === */
+.cta-section {
+  background: var(--bg2); border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border); padding: 80px 0; text-align: center;
+}
+.cta-title { font-size: clamp(1.75rem, 3.5vw, 2.25rem); font-weight: 700; margin-bottom: 16px; }
+.cta-sub { font-size: 1rem; color: var(--text2); margin-bottom: 32px; }
+.cta-note { margin-top: 14px; font-size: 13px; color: var(--text3); }
+.cta-note span { color: #16a34a; font-weight: 600; }
+
+/* === Footer === */
+footer { background: var(--bg); border-top: 1px solid var(--border); padding: 56px 0 32px; }
+.footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+.footer-brand .brand-logo { font-size: 1.15rem; font-weight: 700; margin-bottom: 12px; }
+.footer-brand p { font-size: 14px; color: var(--text2); line-height: 1.65; max-width: 240px; }
+.footer-col h4 { font-size: 13px; font-weight: 700; margin-bottom: 16px; }
+.footer-col ul li { margin-bottom: 10px; }
+.footer-col ul li a { font-size: 13px; color: var(--text2); transition: color 0.2s; }
+.footer-col ul li a:hover { color: var(--text); }
+.footer-bottom {
+  border-top: 1px solid var(--border); padding-top: 24px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+.footer-bottom p { font-size: 13px; color: var(--text3); }
+.footer-bottom-links { display: flex; gap: 20px; }
+.footer-bottom-links a { font-size: 13px; color: var(--text3); transition: color 0.2s; }
+.footer-bottom-links a:hover { color: var(--text); }
+
+/* === Scroll Reveal === */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s; }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* === Responsive === */
+@media (max-width: 1024px) {
+  .hero-inner { gap: 40px; }
+  .service-grid { grid-template-columns: repeat(2, 1fr); }
+  .pricing-grid { grid-template-columns: 1fr 1fr; }
+  .pricing-grid .pricing-card:last-child { grid-column: span 2; max-width: 400px; margin: 0 auto; width: 100%; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .section { padding: 56px 0; }
+  .hero { padding: 60px 0 40px; }
+  .hero-inner { grid-template-columns: 1fr; }
+  .steps-grid { grid-template-columns: 1fr; }
+  .steps-grid::before { display: none; }
+  .service-grid { grid-template-columns: 1fr 1fr; }
+  .features-grid { grid-template-columns: 1fr; }
+  .testi-grid { grid-template-columns: 1fr; }
+  .counter-grid { grid-template-columns: 1fr; gap: 20px; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .pricing-grid .pricing-card:last-child { grid-column: auto; max-width: none; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .nav-right .btn { display: none; }
+}
+@media (max-width: 480px) {
+  .service-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .hero-stats { flex-direction: column; gap: 16px; }
+  .hero-cta { flex-direction: column; }
+  .hero-cta .btn { justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">BookEase &#128197;</a>
+      <ul class="nav-links">
+        <li><a href="#cara-kerja">Cara Kerja</a></li>
+        <li><a href="#layanan">Layanan</a></li>
+        <li><a href="#harga">Harga</a></li>
+        <li><a href="#kontak">Kontak</a></li>
+      </ul>
+      <div class="nav-right">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">&#127769;</button>
+        <a href="#harga" class="btn btn-primary">Daftar Gratis</a>
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#cara-kerja">Cara Kerja</a>
+      <a href="#layanan">Layanan</a>
+      <a href="#harga">Harga</a>
+      <a href="#kontak">Kontak</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-badge">&#10022; Booking Online Jadi Mudah</div>
+        <h1 class="hero-title">Jadwalkan <em>Janji Temu</em><br>Tanpa Drama</h1>
+        <p class="hero-sub">Sistem booking otomatis untuk bisnis Anda &mdash; pelanggan bisa memilih jadwal 24/7, notifikasi otomatis terkirim, dan kalender Anda selalu terorganisir.</p>
+        <div class="hero-cta">
+          <a href="#harga" class="btn btn-primary btn-lg">Mulai Gratis &rarr;</a>
+          <a href="#cara-kerja" class="btn btn-outline btn-lg">Lihat Cara Kerja</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-val">10rb+</div>
+            <div class="stat-label">Booking/Bulan</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-val">500+</div>
+            <div class="stat-label">Bisnis Aktif</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-val">4.8&#9733;</div>
+            <div class="stat-label">Rating Pengguna</div>
+          </div>
+        </div>
+      </div>
+      <!-- Booking Widget Mockup -->
+      <div class="booking-card reveal">
+        <div class="booking-card-header">
+          <span class="booking-card-title">Pilih Jadwal</span>
+          <span class="booking-badge">&#9679; Tersedia</span>
+        </div>
+        <select class="service-select" aria-label="Pilih layanan">
+          <option>&#9986; Potong Rambut &mdash; 30 mnt</option>
+          <option>&#128134; Creambath &mdash; 60 mnt</option>
+          <option>&#129488; Facial &mdash; 45 mnt</option>
+        </select>
+        <div class="cal-month">
+          <button class="cal-nav" aria-label="Bulan sebelumnya">&lsaquo;</button>
+          <span>Juli 2026</span>
+          <button class="cal-nav" aria-label="Bulan berikutnya">&rsaquo;</button>
+        </div>
+        <div class="cal-weekdays">
+          <span>Min</span><span>Sen</span><span>Sel</span><span>Rab</span>
+          <span>Kam</span><span>Jum</span><span>Sab</span>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+        <hr class="booking-divider">
+        <div class="time-section">
+          <div class="time-section-title">Pilih Jam</div>
+          <div class="time-slots">
+            <button class="time-slot available" data-time="09:00">09:00</button>
+            <button class="time-slot available" data-time="10:00">10:00</button>
+            <button class="time-slot selected"  data-time="11:00">11:00</button>
+            <button class="time-slot disabled"  data-time="12:00" disabled>12:00</button>
+            <button class="time-slot available" data-time="14:00">14:00</button>
+            <button class="time-slot available" data-time="15:00">15:00</button>
+            <button class="time-slot available" data-time="16:00">16:00</button>
+          </div>
+        </div>
+        <button class="booking-continue">Lanjutkan Pemesanan &rarr;</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CARA KERJA -->
+<section class="section how-it-works" id="cara-kerja">
+  <div class="container">
+    <div class="text-center">
+      <div class="section-label">Cara Kerja</div>
+      <h2 class="section-title">Booking dalam 3 Langkah Mudah</h2>
+      <p class="section-sub">Tidak perlu telepon, tidak perlu antri. Pelanggan bisa booking kapan saja, dari mana saja.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card reveal">
+        <div class="step-num">1</div>
+        <div class="step-icon">&#128269;</div>
+        <div class="step-title">Pilih Layanan</div>
+        <p class="step-desc">Pelanggan membuka halaman booking bisnis Anda, lalu memilih layanan yang tersedia beserta durasi dan harganya.</p>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">2</div>
+        <div class="step-icon">&#128197;</div>
+        <div class="step-title">Pilih Jadwal</div>
+        <p class="step-desc">Kalender real-time menampilkan slot yang masih kosong. Pelanggan memilih tanggal dan jam yang paling sesuai.</p>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">3</div>
+        <div class="step-icon">&#9989;</div>
+        <div class="step-title">Konfirmasi Otomatis</div>
+        <p class="step-desc">Notifikasi langsung terkirim via WhatsApp &amp; Email ke pelanggan dan pemilik bisnis. Tidak perlu konfirmasi manual.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LAYANAN -->
+<section class="section" id="layanan">
+  <div class="container">
+    <div class="text-center">
+      <div class="section-label">Cocok untuk</div>
+      <h2 class="section-title">Berbagai Jenis Bisnis</h2>
+      <p class="section-sub">Apapun bidang bisnis Anda, BookEase siap menyesuaikan sistem booking sesuai kebutuhan.</p>
+    </div>
+    <div class="service-grid">
+      <div class="service-card reveal">
+        <div class="service-icon">&#127973;</div>
+        <div class="service-name">Klinik &amp; Dokter</div>
+        <p class="service-desc">Kelola antrean pasien, jadwal dokter, dan rekam medis ringan dalam satu platform terpadu.</p>
+        <span class="service-link">Lihat Demo &rarr;</span>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">&#9986;</div>
+        <div class="service-name">Salon &amp; Barber</div>
+        <p class="service-desc">Booking stylist pilihan, pilih layanan spesifik, dan terima pengingat otomatis sebelum jadwal tiba.</p>
+        <span class="service-link">Lihat Demo &rarr;</span>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">&#128188;</div>
+        <div class="service-name">Konsultan</div>
+        <p class="service-desc">Tampilkan ketersediaan jadwal konsultasi secara transparan. Klien bisa booking sesi langsung dari website Anda.</p>
+        <span class="service-link">Lihat Demo &rarr;</span>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">&#128218;</div>
+        <div class="service-name">Tutor &amp; Les Privat</div>
+        <p class="service-desc">Atur jadwal belajar, kelola banyak murid, dan kirim pengingat sesi belajar otomatis setiap minggunya.</p>
+        <span class="service-link">Lihat Demo &rarr;</span>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">&#129496;</div>
+        <div class="service-name">Fitness &amp; Yoga</div>
+        <p class="service-desc">Booking kelas grup, sesi personal training, dan pantau kapasitas studio secara real-time dengan mudah.</p>
+        <span class="service-link">Lihat Demo &rarr;</span>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">&#128134;</div>
+        <div class="service-name">Spa &amp; Wellness</div>
+        <p class="service-desc">Suguhkan pengalaman booking mewah &mdash; pilih terapis, paket treatment, dan tambahkan catatan khusus untuk tamu.</p>
+        <span class="service-link">Lihat Demo &rarr;</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FITUR UNGGULAN -->
+<section class="section features">
+  <div class="container">
+    <div class="text-center">
+      <div class="section-label">Fitur</div>
+      <h2 class="section-title">Semua yang Anda Butuhkan</h2>
+      <p class="section-sub">Dibangun untuk pemilik bisnis yang ingin efisiensi tanpa kerumitan teknis.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon">&#128276;</div>
+        <div class="feature-info">
+          <div class="feature-title">Notifikasi Otomatis</div>
+          <p class="feature-desc">Pengingat booking terkirim otomatis via SMS dan Email ke pelanggan maupun pemilik bisnis &mdash; tidak ada janji temu yang terlupakan.</p>
+          <div class="feature-tags">
+            <span class="feature-tag">SMS</span>
+            <span class="feature-tag">Email</span>
+            <span class="feature-tag">WhatsApp</span>
+          </div>
+        </div>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">&#128198;</div>
+        <div class="feature-info">
+          <div class="feature-title">Sinkronisasi Kalender</div>
+          <p class="feature-desc">Terhubung langsung ke Google Calendar. Setiap booking baru otomatis muncul di kalender Anda, bebas konflik jadwal.</p>
+          <div class="feature-tags">
+            <span class="feature-tag">Google Cal</span>
+            <span class="feature-tag">iCal</span>
+            <span class="feature-tag">Outlook</span>
+          </div>
+        </div>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">&#128179;</div>
+        <div class="feature-info">
+          <div class="feature-title">Pembayaran Online</div>
+          <p class="feature-desc">Terima DP atau pembayaran penuh langsung saat booking melalui Midtrans &mdash; transfer bank, e-wallet, hingga QRIS semua didukung.</p>
+          <div class="feature-tags">
+            <span class="feature-tag">Midtrans</span>
+            <span class="feature-tag">QRIS</span>
+            <span class="feature-tag">GoPay</span>
+          </div>
+        </div>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">&#128202;</div>
+        <div class="feature-info">
+          <div class="feature-title">Laporan Bisnis</div>
+          <p class="feature-desc">Dashboard analytics menampilkan jumlah booking, pendapatan, layanan terpopuler, dan tingkat pembatalan dalam tampilan mudah dipahami.</p>
+          <div class="feature-tags">
+            <span class="feature-tag">Revenue</span>
+            <span class="feature-tag">Retensi</span>
+            <span class="feature-tag">Export CSV</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONI -->
+<section class="section">
+  <div class="container">
+    <div class="text-center">
+      <div class="section-label">Testimoni</div>
+      <h2 class="section-title">Kata Mereka yang Sudah Pakai BookEase</h2>
+      <p class="section-sub">Lebih dari 500 bisnis telah mempercayai BookEase untuk manajemen janji temu mereka.</p>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="testi-quote">&ldquo;Dulu saya ngatur jadwal manual pakai buku &mdash; ribet banget. Sekarang pelanggan bisa booking sendiri kapanpun dan saya dapat notifikasi langsung. Nggak ada lagi yang double-booking!&rdquo;</p>
+        <div class="testi-author">
+          <div class="testi-avatar">D</div>
+          <div>
+            <div class="testi-name">Dewi Kusuma</div>
+            <div class="testi-biz">Pemilik Salon Cantika, Malang</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal">
+        <div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="testi-quote">&ldquo;Sebagai dokter gigi dengan 3 klinik, saya butuh sistem yang bisa handle ratusan pasien. BookEase bisa integrasi ke semua cabang dan laporan hariannya sangat membantu manajemen.&rdquo;</p>
+        <div class="testi-author">
+          <div class="testi-avatar">R</div>
+          <div>
+            <div class="testi-name">drg. Rizki Pratama</div>
+            <div class="testi-biz">Klinik Gigi Senyum Sehat, Jakarta</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal">
+        <div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+        <p class="testi-quote">&ldquo;Fitur pembayaran DP saat booking mengubah segalanya. Tingkat pembatalan turun drastis dari 40% jadi hanya 8%. Revenue naik signifikan karena slot tidak terbuang sia-sia.&rdquo;</p>
+        <div class="testi-author">
+          <div class="testi-avatar">A</div>
+          <div>
+            <div class="testi-name">Andika Wijaya</div>
+            <div class="testi-biz">Yoga Studio Flow, Bali</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COUNTER -->
+<section class="counter-section" id="counterSection">
+  <div class="container">
+    <div class="counter-grid">
+      <div class="counter-item">
+        <div class="counter-val" data-target="10000" data-suffix="+">0</div>
+        <div class="counter-label">Booking per Bulan</div>
+      </div>
+      <div class="counter-item">
+        <div class="counter-val" data-target="500" data-suffix="+">0</div>
+        <div class="counter-label">Bisnis Aktif</div>
+      </div>
+      <div class="counter-item">
+        <div class="counter-val" data-target="98" data-suffix="%">0</div>
+        <div class="counter-label">Kepuasan Pelanggan</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HARGA -->
+<section class="section" id="harga">
+  <div class="container">
+    <div class="text-center">
+      <div class="section-label">Harga</div>
+      <h2 class="section-title">Harga Transparan, Tidak Ada Biaya Tersembunyi</h2>
+      <p class="section-sub">Mulai gratis, upgrade kapanpun saat bisnis Anda berkembang.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal">
+        <div class="pricing-name">Basic</div>
+        <div class="pricing-price">Gratis</div>
+        <p class="pricing-desc">Untuk bisnis yang baru mulai testing sistem booking online.</p>
+        <ul class="pricing-features">
+          <li class="pricing-feature"><span class="check">&#10003;</span> 50 booking per bulan</li>
+          <li class="pricing-feature"><span class="check">&#10003;</span> 1 layanan aktif</li>
+          <li class="pricing-feature"><span class="check">&#10003;</span> Notifikasi Email</li>
+          <li class="pricing-feature"><span class="check">&#10003;</span> Halaman booking publik</li>
+          <li class="pricing-feature"><span class="check">&#10003;</span> Dashboard dasar</li>
+        </ul>
+        <div class="pricing-btn">
+          <a href="#" class="btn btn-outline" style="width:100%;justify-content:center;">Mulai Gratis</a>
+        </div>
+      </div>
+      <div class="pricing-card popular reveal">
+        <div class="popular-badge">&#9889; Paling Populer</div>
+        <div class="pricing-name">Pro</div>
+        <div class="pricing-price">Rp&nbsp;99k <span>/ bulan</span></div>
+        <p class="pricing-desc">Untuk bisnis aktif yang butuh fitur lengkap dan booking tanpa batas.</p>
+        <ul class="pricing-features">
+          <li class="pricing-feature"><span class="check">&#10003;</span> Booking tidak terbatas</li>
+          <li class="pricing-feature"><span class="check">&#10003;</span> Layanan tidak terbatas</li>
+          <li class="pricing-feature"><span class="check">&#10003;</span> Notifikasi WhatsApp + SMS</li>
+          <li class="pricing-feature"><span class="check">&#10003;</span> Sinkronisasi Google Calendar</li>
+          <li class="pricing-feature"><span class="check">&#10003;</span> Pembayaran DP (Midtrans)</li>
+          <li class="pricing-feature"><span class="check">&#10003;</span> Laporan &amp; Analytics</li>
+          <li class="pricing-feature"><span class="check">&#10003;</span> Custom domain</li>
+        </ul>
+        <div class="pricing-btn">
+          <a href="#" class="btn btn-accent" style="width:100%;justify-content:center;">Coba 30 Hari Gratis</a>
+        </div>
+      </div>
+      <div class="pricing-card reveal">
+        <div class="pricing-name">Enterprise</div>
+        <div class="pricing-price">Custom</div>
+        <p class="pricing-desc">Untuk jaringan klinik, chain salon, atau bisnis multi-cabang dengan kebutuhan khusus.</p>
+        <ul class="pricing-features">
+          <li class="pricing-feature"><span class="check">&#10003;</span> Semua fitur Pro</li>
+          <li class="pricing-feature"><span class="check">&#10003;</span> Multi-cabang &amp; multi-staff</li>
+          <li class="pricing-feature"><span class="check">&#10003;</span> API akses penuh</li>
+          <li class="pricing-feature"><span class="check">&#10003;</span> White-label branding</li>
+          <li class="pricing-feature"><span class="check">&#10003;</span> Dedicated account manager</li>
+          <li class="pricing-feature"><span class="check">&#10003;</span> SLA &amp; Priority support</li>
+        </ul>
+        <div class="pricing-btn">
+          <a href="#kontak" class="btn btn-outline" style="width:100%;justify-content:center;">Hubungi Kami</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTEGRASI -->
+<section class="section integrations">
+  <div class="container">
+    <div class="text-center">
+      <div class="section-label">Integrasi</div>
+      <h2 class="section-title">Terhubung dengan Tools Favorit Anda</h2>
+      <p class="section-sub">BookEase bekerja mulus bersama platform yang sudah Anda gunakan sehari-hari.</p>
+    </div>
+    <div class="integration-grid">
+      <div class="integration-badge reveal"><span class="i-icon">&#128197;</span> Google Calendar</div>
+      <div class="integration-badge reveal"><span class="i-icon">&#128172;</span> WhatsApp</div>
+      <div class="integration-badge reveal"><span class="i-icon">&#128179;</span> Midtrans</div>
+      <div class="integration-badge reveal"><span class="i-icon">&#127909;</span> Zoom</div>
+      <div class="integration-badge reveal"><span class="i-icon">&#128231;</span> Gmail</div>
+      <div class="integration-badge reveal"><span class="i-icon">&#128248;</span> Instagram</div>
+      <div class="integration-badge reveal"><span class="i-icon">&#128661;</span> Gojek</div>
+      <div class="integration-badge reveal"><span class="i-icon">&#128717;</span> Tokopedia</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="kontak">
+  <div class="container">
+    <div class="text-center">
+      <div class="section-label">FAQ</div>
+      <h2 class="section-title">Pertanyaan yang Sering Ditanyakan</h2>
+      <p class="section-sub">Belum menemukan jawaban? Hubungi kami via WhatsApp dan kami siap membantu.</p>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span>Apakah BookEase bisa digunakan tanpa keahlian teknis?</span>
+          <span class="faq-chevron">&#8964;</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Ya, tentu saja! BookEase dirancang untuk pemilik bisnis, bukan developer. Setup awal hanya butuh 15 menit &mdash; isi profil bisnis, tambah layanan, dan halaman booking Anda langsung siap dibagikan ke pelanggan. Tidak perlu coding sama sekali.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span>Bagaimana pelanggan saya bisa melakukan booking?</span>
+          <span class="faq-chevron">&#8964;</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Setiap bisnis di BookEase mendapatkan link halaman booking unik (misalnya: bookease.id/salon-cantika). Anda bisa bagikan link ini via Instagram bio, WhatsApp, atau pasang tombol booking di website Anda. Pelanggan tidak perlu download aplikasi apapun.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span>Apakah ada biaya transaksi untuk pembayaran online?</span>
+          <span class="faq-chevron">&#8964;</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">BookEase tidak mengenakan biaya tambahan di atas biaya standar Midtrans (1.5&ndash;2.5% per transaksi, sudah termasuk PPN). Anda menerima dana langsung ke rekening bisnis tanpa potongan dari kami.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span>Bisa tidak jika pelanggan ingin reschedule atau cancel booking?</span>
+          <span class="faq-chevron">&#8964;</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Bisa. Pelanggan bisa reschedule atau cancel via link yang ada di email/WhatsApp konfirmasi mereka, sesuai kebijakan yang Anda atur (misalnya: hanya boleh cancel H-24 jam). Jika ada DP, kebijakan refund juga bisa Anda tentukan sendiri.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span>Apakah data booking pelanggan saya aman?</span>
+          <span class="faq-chevron">&#8964;</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Data Anda dienkripsi dan disimpan di server berlokasi di Indonesia. BookEase tidak pernah menjual atau membagikan data pelanggan Anda ke pihak ketiga. Anda memiliki hak penuh atas data bisnis Anda dan bisa export kapanpun dalam format CSV.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <h2 class="cta-title">Siap Menghilangkan Kerepotan<br>Mengatur Jadwal Manual?</h2>
+    <p class="cta-sub">Bergabung bersama 500+ bisnis yang sudah lebih terorganisir dengan BookEase.</p>
+    <a href="#harga" class="btn btn-accent btn-lg">Mulai 30 Hari Gratis &rarr;</a>
+    <p class="cta-note"><span>&#10003;</span> Tidak perlu kartu kredit &nbsp;&nbsp;<span>&#10003;</span> Setup 15 menit &nbsp;&nbsp;<span>&#10003;</span> Batalkan kapanpun</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand-logo">BookEase &#128197;</div>
+        <p>Sistem booking online yang memudahkan bisnis Anda menerima janji temu 24/7 &mdash; tanpa telepon, tanpa antri, tanpa drama.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Produk</h4>
+        <ul>
+          <li><a href="#">Fitur</a></li>
+          <li><a href="#">Harga</a></li>
+          <li><a href="#">Integrasi</a></li>
+          <li><a href="#">API</a></li>
+          <li><a href="#">Changelog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Bisnis</h4>
+        <ul>
+          <li><a href="#">Klinik &amp; Dokter</a></li>
+          <li><a href="#">Salon &amp; Barber</a></li>
+          <li><a href="#">Konsultan</a></li>
+          <li><a href="#">Tutor &amp; Les</a></li>
+          <li><a href="#">Fitness &amp; Spa</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <ul>
+          <li><a href="#">Tentang Kami</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Karier</a></li>
+          <li><a href="#">Hubungi Kami</a></li>
+          <li><a href="#">Kebijakan Privasi</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; <span id="footerYear"></span> BookEase. Hak cipta dilindungi undang-undang.</p>
+      <div class="footer-bottom-links">
+        <a href="#">Syarat &amp; Ketentuan</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Keamanan</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Dark Mode Toggle
+const html = document.documentElement;
+const themeToggle = document.getElementById('themeToggle');
+
+function setTheme(dark) {
+  html.setAttribute('data-theme', dark ? 'dark' : 'light');
+  themeToggle.textContent = dark ? '☀️' : '🌙';
+  localStorage.setItem('bookease_theme', dark ? 'dark' : 'light');
+}
+
+const savedTheme = localStorage.getItem('bookease_theme');
+if (savedTheme) {
+  setTheme(savedTheme === 'dark');
+} else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  setTheme(true);
+}
+
+themeToggle.addEventListener('click', function() {
+  setTheme(html.getAttribute('data-theme') !== 'dark');
+});
+
+// Mobile Menu
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', function() {
+  mobileMenu.classList.toggle('open');
+});
+mobileMenu.querySelectorAll('a').forEach(function(a) {
+  a.addEventListener('click', function() { mobileMenu.classList.remove('open'); });
+});
+
+// Calendar Grid
+(function buildCalendar() {
+  var grid = document.getElementById('calGrid');
+  if (!grid) return;
+  var startDay = 3; // Juli 2026 starts Wednesday
+  var totalDays = 31;
+  var today = 27;
+  var disabledDays = [6, 7, 12, 13, 19, 20, 26, 27]; // weekends
+  var unavailable = [8, 9, 16, 23];
+
+  for (var i = 0; i < startDay; i++) {
+    var el = document.createElement('div');
+    el.className = 'cal-day empty';
+    grid.appendChild(el);
+  }
+
+  for (var d = 1; d <= totalDays; d++) {
+    var el = document.createElement('div');
+    el.textContent = d;
+    if (d < today) {
+      el.className = 'cal-day disabled';
+    } else if (disabledDays.indexOf(d) >= 0) {
+      el.className = 'cal-day disabled';
+    } else if (unavailable.indexOf(d) >= 0) {
+      el.className = 'cal-day disabled';
+    } else if (d === today) {
+      el.className = 'cal-day selected';
+    } else {
+      el.className = 'cal-day available';
+      (function(elem) {
+        elem.addEventListener('click', function() {
+          grid.querySelectorAll('.cal-day.selected').forEach(function(s) {
+            s.classList.remove('selected');
+            s.classList.add('available');
+          });
+          this.classList.remove('available');
+          this.classList.add('selected');
+        });
+      })(el);
+    }
+    grid.appendChild(el);
+  }
+})();
+
+// Time Slot Selection
+document.querySelectorAll('.time-slot:not(.disabled)').forEach(function(slot) {
+  slot.addEventListener('click', function() {
+    document.querySelectorAll('.time-slot').forEach(function(s) { s.classList.remove('selected'); });
+    this.classList.add('selected');
+  });
+});
+
+// FAQ Accordion
+document.querySelectorAll('.faq-q').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var item = this.closest('.faq-item');
+    var answer = item.querySelector('.faq-a');
+    var isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(function(fi) {
+      fi.classList.remove('open');
+      fi.querySelector('.faq-a').style.maxHeight = null;
+      fi.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+    });
+    if (!isOpen) {
+      item.classList.add('open');
+      answer.style.maxHeight = answer.scrollHeight + 'px';
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  });
+});
+
+// Counter Animation
+function animateCounter(el) {
+  var target = parseInt(el.getAttribute('data-target'), 10);
+  var suffix = el.getAttribute('data-suffix') || '';
+  var duration = 1800;
+  var start = performance.now();
+  function tick(now) {
+    var elapsed = now - start;
+    var progress = Math.min(elapsed / duration, 1);
+    var eased = 1 - Math.pow(1 - progress, 3);
+    var current = Math.round(eased * target);
+    if (target >= 1000) {
+      el.textContent = (current >= 1000)
+        ? (current / 1000).toFixed(0) + 'rb' + suffix
+        : current + suffix;
+    } else {
+      el.textContent = current + suffix;
+    }
+    if (progress < 1) {
+      requestAnimationFrame(tick);
+    } else {
+      el.textContent = (target >= 1000) ? (target / 1000) + 'rb' + suffix : target + suffix;
+    }
+  }
+  requestAnimationFrame(tick);
+}
+
+var counterSection = document.getElementById('counterSection');
+var countersDone = false;
+var counterObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting && !countersDone) {
+      countersDone = true;
+      document.querySelectorAll('.counter-val[data-target]').forEach(function(el) {
+        animateCounter(el);
+      });
+      counterObserver.disconnect();
+    }
+  });
+}, { threshold: 0.3 });
+if (counterSection) counterObserver.observe(counterSection);
+
+// Scroll Reveal
+var revealObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(function(el) { revealObserver.observe(el); });
+
+// Footer Year
+document.getElementById('footerYear').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

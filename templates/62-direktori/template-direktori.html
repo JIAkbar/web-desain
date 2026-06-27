@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ListingHub — Temukan Bisnis Terbaik di Sekitar Anda</title>
+<meta name="description" content="ListingHub adalah portal direktori bisnis terlengkap. Temukan restoran, salon, bengkel, apotek, dan ribuan bisnis lainnya di kota Anda.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+/* ==================== CSS VARIABLES ==================== */
+:root {
+  --bg: #FFFFFF;
+  --bg2: #F8F8F8;
+  --bg3: #F0F0F0;
+  --text: #111111;
+  --text2: #444444;
+  --text3: #888888;
+  --border: #E5E7EB;
+  --accent: #F97316;
+  --accent-hover: #EA6C10;
+  --accent-light: rgba(249,115,22,0.1);
+  --btn-bg: #111111;
+  --btn-text: #ffffff;
+  --r: 10px;
+  --r-sm: 6px;
+  --r-pill: 999px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.05);
+  --shadow-lg: 0 4px 6px rgba(0,0,0,0.07), 0 10px 25px rgba(0,0,0,0.1);
+  --nav-h: 64px;
+  --transition: 0.2s ease;
+}
+[data-theme="dark"] {
+  --bg: #111111;
+  --bg2: #1A1A1A;
+  --bg3: #222222;
+  --text: #FFFFFF;
+  --text2: #AAAAAA;
+  --text3: #666666;
+  --border: #333333;
+  --btn-bg: #ffffff;
+  --btn-text: #111111;
+  --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2);
+  --shadow-lg: 0 4px 6px rgba(0,0,0,0.3), 0 10px 25px rgba(0,0,0,0.4);
+}
+
+/* ==================== RESET & BASE ==================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  transition: background var(--transition), color var(--transition);
+}
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+img { display: block; max-width: 100%; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+/* ==================== UTILITIES ==================== */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.section { padding: 80px 0; }
+.section-sm { padding: 60px 0; }
+.section-title { font-size: 32px; font-weight: 700; color: var(--text); line-height: 1.2; }
+.section-subtitle { font-size: 16px; color: var(--text2); margin-top: 12px; max-width: 600px; }
+.section-header { text-align: center; margin-bottom: 48px; }
+.section-header .section-subtitle { margin-left: auto; margin-right: auto; }
+.accent { color: var(--accent); }
+.badge { display: inline-flex; align-items: center; gap: 4px; border-radius: var(--r-pill); padding: 3px 12px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; }
+.badge-accent { background: var(--accent-light); color: var(--accent); }
+.badge-green { background: rgba(16,185,129,0.12); color: #059669; }
+.badge-red { background: rgba(239,68,68,0.12); color: #DC2626; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: var(--r-sm); font-size: 14px; font-weight: 600; transition: all var(--transition); cursor: pointer; }
+.btn-primary { background: var(--btn-bg); color: var(--btn-text); }
+.btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn-accent { background: var(--accent); color: #fff; }
+.btn-accent:hover { background: var(--accent-hover); transform: translateY(-1px); }
+.btn-outline { background: transparent; color: var(--text); border: 1.5px solid var(--border); }
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+
+/* ==================== NAVBAR ==================== */
+.navbar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  height: var(--nav-h);
+  backdrop-filter: blur(10px);
+  transition: background var(--transition), border-color var(--transition);
+}
+.nav-inner { display: flex; align-items: center; justify-content: space-between; height: 100%; }
+.nav-logo { font-size: 20px; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 6px; }
+.nav-logo span { color: var(--accent); }
+.nav-links { display: flex; align-items: center; gap: 6px; }
+.nav-links a { font-size: 14px; font-weight: 500; color: var(--text2); padding: 8px 14px; border-radius: var(--r-sm); transition: all var(--transition); }
+.nav-links a:hover { color: var(--text); background: var(--bg2); }
+.nav-right { display: flex; align-items: center; gap: 10px; }
+.dark-toggle {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--bg2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; transition: all var(--transition);
+}
+.dark-toggle:hover { background: var(--bg3); }
+.nav-cta { background: var(--accent); color: #fff; padding: 8px 18px; border-radius: var(--r-sm); font-size: 14px; font-weight: 600; transition: all var(--transition); }
+.nav-cta:hover { background: var(--accent-hover); transform: translateY(-1px); }
+.hamburger { display: none; width: 36px; height: 36px; flex-direction: column; justify-content: center; align-items: center; gap: 5px; background: var(--bg2); border-radius: var(--r-sm); border: 1px solid var(--border); }
+.hamburger span { display: block; width: 18px; height: 2px; background: var(--text); border-radius: 2px; transition: all 0.3s; }
+.mobile-menu { display: none; position: fixed; top: var(--nav-h); left: 0; right: 0; background: var(--bg); border-bottom: 1px solid var(--border); padding: 16px 24px; z-index: 99; flex-direction: column; gap: 4px; }
+.mobile-menu.open { display: flex; }
+.mobile-menu a { font-size: 15px; font-weight: 500; color: var(--text2); padding: 12px 16px; border-radius: var(--r-sm); transition: all var(--transition); }
+.mobile-menu a:hover { background: var(--bg2); color: var(--text); }
+
+/* ==================== HERO ==================== */
+.hero { background: var(--bg2); padding: 80px 0 72px; border-bottom: 1px solid var(--border); }
+.hero-content { text-align: center; max-width: 720px; margin: 0 auto; }
+.hero-eyebrow { font-size: 13px; font-weight: 600; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+.hero-title { font-size: clamp(36px, 5vw, 56px); font-weight: 800; line-height: 1.1; color: var(--text); margin-bottom: 16px; }
+.hero-subtitle { font-size: 18px; color: var(--text2); margin-bottom: 40px; line-height: 1.6; }
+.search-bar { display: flex; background: var(--bg); border: 2px solid var(--border); border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow-lg); transition: border-color var(--transition); max-width: 680px; margin: 0 auto 20px; }
+.search-bar:focus-within { border-color: var(--accent); }
+.search-select { appearance: none; background: var(--bg3); border: none; border-right: 2px solid var(--border); padding: 0 20px; font-family: inherit; font-size: 14px; font-weight: 500; color: var(--text2); cursor: pointer; min-width: 140px; outline: none; }
+.search-input { flex: 1; border: none; background: transparent; padding: 16px 20px; font-family: inherit; font-size: 15px; color: var(--text); outline: none; }
+.search-input::placeholder { color: var(--text3); }
+.search-btn { background: var(--accent); color: #fff; padding: 0 28px; font-size: 15px; font-weight: 700; border: none; cursor: pointer; transition: background var(--transition); white-space: nowrap; }
+.search-btn:hover { background: var(--accent-hover); }
+.search-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.search-tag { background: var(--bg); border: 1.5px solid var(--border); color: var(--text2); padding: 6px 16px; border-radius: var(--r-pill); font-size: 13px; font-weight: 500; cursor: pointer; transition: all var(--transition); }
+.search-tag:hover, .search-tag.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+
+/* ==================== KATEGORI GRID ==================== */
+.category-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 24px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: var(--shadow);
+}
+.category-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--accent); }
+.category-icon { font-size: 36px; margin-bottom: 12px; display: block; }
+.category-name { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.category-count { font-size: 12px; color: var(--text3); }
+
+/* ==================== BUSINESS CARDS ==================== */
+.biz-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; box-shadow: var(--shadow); }
+.biz-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.biz-card-img { height: 160px; background: linear-gradient(135deg, var(--c1), var(--c2)); display: flex; align-items: center; justify-content: center; position: relative; }
+.biz-card-body { padding: 16px; }
+.biz-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(249,115,22,0.1); color: var(--accent); border-radius: 999px; padding: 2px 10px; font-size: 11px; font-weight: 600; }
+.biz-rating { color: #F59E0B; font-weight: 600; }
+.biz-name { font-size: 16px; font-weight: 700; color: var(--text); margin: 10px 0 6px; }
+.biz-cat { font-size: 12px; color: var(--text3); background: var(--bg2); padding: 2px 10px; border-radius: var(--r-pill); display: inline-block; margin-bottom: 8px; }
+.biz-address { font-size: 13px; color: var(--text2); margin-bottom: 12px; display: flex; align-items: flex-start; gap: 4px; }
+.biz-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--border); }
+.biz-link { font-size: 13px; font-weight: 600; color: var(--accent); transition: opacity var(--transition); }
+.biz-link:hover { opacity: 0.75; }
+.biz-img-overlay { position: absolute; top: 12px; right: 12px; display: flex; flex-direction: column; gap: 4px; }
+.biz-img-label { font-size: 28px; }
+
+/* ==================== HOW IT WORKS ==================== */
+.steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; position: relative; }
+.steps-grid::before { content: ""; position: absolute; top: 28px; left: calc(33.33% + 10px); right: calc(33.33% + 10px); height: 2px; background: linear-gradient(90deg, var(--accent), var(--border)); border-radius: 2px; }
+.step-card { text-align: center; padding: 32px 24px; }
+.step-num { width: 56px; height: 56px; background: var(--accent); color: #fff; border-radius: 50%; font-size: 22px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 4px 12px rgba(249,115,22,0.3); }
+.step-icon { font-size: 32px; margin-bottom: 16px; display: block; }
+.step-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.step-desc { font-size: 14px; color: var(--text2); line-height: 1.7; }
+
+/* ==================== STATS ==================== */
+.stats-section { background: var(--accent); padding: 60px 0; }
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
+.stat-item { text-align: center; }
+.stat-number { font-size: 42px; font-weight: 800; color: #fff; display: block; line-height: 1; margin-bottom: 8px; }
+.stat-label { font-size: 14px; color: rgba(255,255,255,0.85); font-weight: 500; }
+
+/* ==================== FILTER SHOWCASE ==================== */
+.filter-showcase { background: var(--bg2); border-radius: var(--r); border: 1px solid var(--border); overflow: hidden; display: grid; grid-template-columns: 260px 1fr; min-height: 420px; }
+.filter-sidebar { background: var(--bg); border-right: 1px solid var(--border); padding: 24px; }
+.filter-sidebar-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 20px; }
+.filter-group { margin-bottom: 24px; }
+.filter-group-label { font-size: 12px; font-weight: 700; color: var(--text3); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 12px; display: block; }
+.filter-check { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; cursor: pointer; }
+.filter-check input { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+.filter-check span { font-size: 13px; color: var(--text2); }
+.filter-check .count { margin-left: auto; font-size: 11px; color: var(--text3); background: var(--bg2); padding: 1px 7px; border-radius: var(--r-pill); }
+.rating-filter { display: flex; gap: 4px; }
+.rating-star-btn { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 5px 10px; font-size: 13px; cursor: pointer; color: var(--text2); transition: all var(--transition); }
+.rating-star-btn.active, .rating-star-btn:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+.distance-slider { width: 100%; appearance: none; height: 4px; background: linear-gradient(90deg, var(--accent) 60%, var(--bg3) 60%); border-radius: var(--r-pill); outline: none; cursor: pointer; }
+.distance-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text3); margin-top: 8px; }
+.filter-results { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.filter-results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.filter-results-count { font-size: 14px; color: var(--text2); }
+.filter-results-sort { font-size: 13px; color: var(--accent); font-weight: 600; cursor: pointer; }
+.result-item { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; display: flex; align-items: center; gap: 16px; transition: all var(--transition); }
+.result-item:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+.result-avatar { width: 52px; height: 52px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+.result-info { flex: 1; }
+.result-name { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.result-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
+.result-tag { font-size: 11px; color: var(--text3); background: var(--bg2); padding: 2px 8px; border-radius: var(--r-pill); }
+.result-rating-row { display: flex; align-items: center; gap: 6px; }
+.result-meta { text-align: right; }
+.result-dist { font-size: 13px; color: var(--text3); margin-bottom: 6px; }
+
+/* ==================== PREMIUM CARDS ==================== */
+.premium-card { background: var(--bg); border: 2px solid var(--accent); border-radius: var(--r); overflow: hidden; box-shadow: 0 0 0 3px rgba(249,115,22,0.1); transition: all var(--transition); }
+.premium-card:hover { transform: translateY(-3px); box-shadow: 0 0 0 3px rgba(249,115,22,0.15), var(--shadow-lg); }
+.premium-header { padding: 20px 20px 0; display: flex; align-items: flex-start; justify-content: space-between; }
+.premium-badge { background: linear-gradient(135deg, #F97316, #F59E0B); color: #fff; border-radius: var(--r-pill); padding: 4px 12px; font-size: 12px; font-weight: 700; }
+.premium-img { height: 140px; background: linear-gradient(135deg, var(--c1), var(--c2)); margin: 16px 0 0; }
+.premium-body { padding: 16px; }
+
+/* ==================== TESTIMONI ==================== */
+.testimonial-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); padding: 28px; box-shadow: var(--shadow); transition: all var(--transition); }
+.testimonial-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.testimonial-quote { font-size: 32px; color: var(--accent); line-height: 1; margin-bottom: 12px; }
+.testimonial-text { font-size: 15px; color: var(--text2); line-height: 1.8; margin-bottom: 20px; font-style: italic; }
+.testimonial-author { display: flex; align-items: center; gap: 12px; }
+.author-avatar { width: 44px; height: 44px; border-radius: 50%; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.author-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.author-role { font-size: 12px; color: var(--text3); }
+.star-row { color: #F59E0B; font-size: 13px; margin-bottom: 4px; }
+
+/* ==================== PRICING ==================== */
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.pricing-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); padding: 32px 28px; text-align: center; transition: all var(--transition); position: relative; overflow: hidden; }
+.pricing-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.pricing-card.featured { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(249,115,22,0.1); }
+.pricing-featured-tag { position: absolute; top: 0; left: 0; right: 0; background: var(--accent); color: #fff; font-size: 12px; font-weight: 700; padding: 5px; text-align: center; letter-spacing: 0.5px; }
+.pricing-name { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 8px; margin-top: 16px; }
+.pricing-price { font-size: 38px; font-weight: 800; color: var(--text); line-height: 1; }
+.pricing-price sup { font-size: 18px; font-weight: 600; vertical-align: top; margin-top: 8px; display: inline-block; color: var(--text2); }
+.pricing-period { font-size: 13px; color: var(--text3); margin-bottom: 28px; }
+.pricing-features { list-style: none; text-align: left; margin-bottom: 28px; }
+.pricing-features li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text2); margin-bottom: 12px; line-height: 1.5; }
+.pricing-features li .check { color: #10B981; font-size: 15px; flex-shrink: 0; }
+.pricing-features li .cross { color: var(--text3); font-size: 15px; flex-shrink: 0; }
+.pricing-toggle { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 40px; }
+.toggle-label { font-size: 14px; font-weight: 500; color: var(--text2); }
+.toggle-label.active-label { color: var(--text); font-weight: 700; }
+.toggle-switch { width: 44px; height: 24px; background: var(--accent); border-radius: var(--r-pill); position: relative; cursor: pointer; transition: background var(--transition); }
+.toggle-switch::after { content: ""; position: absolute; width: 18px; height: 18px; background: #fff; border-radius: 50%; top: 3px; left: 3px; transition: left 0.2s; }
+.toggle-switch.annual::after { left: 23px; }
+.saving-badge { background: var(--accent-light); color: var(--accent); border-radius: var(--r-pill); padding: 2px 10px; font-size: 12px; font-weight: 700; }
+
+/* ==================== FAQ ==================== */
+.faq-list { max-width: 760px; margin: 0 auto; }
+.faq-item { border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 12px; overflow: hidden; }
+.faq-question { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; font-size: 15px; font-weight: 600; color: var(--text); cursor: pointer; background: var(--bg); text-align: left; transition: background var(--transition); gap: 16px; }
+.faq-question:hover { background: var(--bg2); }
+.faq-question.open { background: var(--bg2); color: var(--accent); }
+.faq-icon { font-size: 18px; flex-shrink: 0; transition: transform 0.3s; color: var(--text3); }
+.faq-question.open .faq-icon { transform: rotate(45deg); color: var(--accent); }
+.faq-answer { display: none; padding: 0 24px 20px; font-size: 14px; color: var(--text2); line-height: 1.8; }
+.faq-answer.open { display: block; }
+
+/* ==================== CTA BANNER ==================== */
+.cta-banner { background: linear-gradient(135deg, #111111, #2A2A2A); padding: 80px 0; text-align: center; }
+[data-theme="dark"] .cta-banner { background: linear-gradient(135deg, #0A0A0A, #1A1A1A); border-top: 1px solid var(--border); }
+.cta-title { font-size: 38px; font-weight: 800; color: #fff; margin-bottom: 16px; line-height: 1.2; }
+.cta-title span { color: var(--accent); }
+.cta-subtitle { font-size: 16px; color: rgba(255,255,255,0.7); max-width: 520px; margin: 0 auto 36px; line-height: 1.7; }
+.cta-buttons { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
+.cta-btn-main { background: var(--accent); color: #fff; padding: 14px 32px; border-radius: var(--r-sm); font-size: 16px; font-weight: 700; transition: all var(--transition); }
+.cta-btn-main:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(249,115,22,0.4); }
+.cta-btn-outline { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.3); padding: 14px 32px; border-radius: var(--r-sm); font-size: 16px; font-weight: 600; transition: all var(--transition); }
+.cta-btn-outline:hover { border-color: #fff; background: rgba(255,255,255,0.1); }
+
+/* ==================== FOOTER ==================== */
+footer { background: var(--bg2); border-top: 1px solid var(--border); padding: 60px 0 0; }
+.footer-grid { display: grid; grid-template-columns: 1.8fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 48px; }
+.footer-brand .nav-logo { font-size: 22px; margin-bottom: 14px; display: inline-flex; }
+.footer-desc { font-size: 14px; color: var(--text2); line-height: 1.7; margin-bottom: 20px; max-width: 260px; }
+.footer-social { display: flex; gap: 8px; }
+.social-btn { width: 36px; height: 36px; background: var(--bg3); border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; font-size: 16px; transition: all var(--transition); border: 1px solid var(--border); }
+.social-btn:hover { background: var(--accent-light); border-color: var(--accent); }
+.footer-col-title { font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 16px; }
+.footer-links { display: flex; flex-direction: column; gap: 10px; }
+.footer-links a { font-size: 14px; color: var(--text2); transition: color var(--transition); }
+.footer-links a:hover { color: var(--accent); }
+.footer-bottom { border-top: 1px solid var(--border); padding: 20px 0; display: flex; align-items: center; justify-content: space-between; }
+.footer-copy { font-size: 13px; color: var(--text3); }
+.footer-legal { display: flex; gap: 20px; }
+.footer-legal a { font-size: 13px; color: var(--text3); transition: color var(--transition); }
+.footer-legal a:hover { color: var(--accent); }
+
+/* ==================== SCROLL REVEAL ==================== */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1024px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-cta { display: none; }
+  .hamburger { display: flex; }
+  .section { padding: 60px 0; }
+  .grid-3, .pricing-grid { grid-template-columns: 1fr; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .steps-grid { grid-template-columns: 1fr; }
+  .steps-grid::before { display: none; }
+  .filter-showcase { grid-template-columns: 1fr; }
+  .filter-sidebar { display: none; }
+  .filter-results { padding: 16px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+  .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+  .cta-title { font-size: 28px; }
+  .search-select { display: none; }
+  .hero-title { font-size: clamp(30px, 7vw, 42px); }
+}
+@media (max-width: 640px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .search-bar { flex-direction: column; border-radius: var(--r); }
+  .search-select { border-right: none; border-bottom: 2px solid var(--border); min-width: auto; padding: 12px 16px; }
+  .search-btn { padding: 14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== NAVBAR ==================== -->
+<nav class="navbar">
+  <div class="container nav-inner">
+    <a href="#" class="nav-logo">ListingHub <span>🔍</span></a>
+    <div class="nav-links">
+      <a href="#kategori">Jelajah</a>
+      <a href="#kategori">Kategori</a>
+      <a href="#cara-daftar">Daftarkan Bisnis</a>
+      <a href="#faq">Blog</a>
+    </div>
+    <div class="nav-right">
+      <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">🌙</button>
+      <a href="#paket" class="nav-cta">Daftarkan Bisnis</a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#kategori">Jelajah</a>
+  <a href="#kategori">Kategori</a>
+  <a href="#cara-daftar">Daftarkan Bisnis</a>
+  <a href="#faq">Blog</a>
+  <a href="#paket" style="color:var(--accent); font-weight:700;">Daftarkan Bisnis — Gratis</a>
+</div>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <p class="hero-eyebrow">🇮🇩 Direktori Bisnis Indonesia #1</p>
+      <h1 class="hero-title">Temukan <strong style="color:var(--accent)">Bisnis Terbaik</strong> di Sekitar Anda</h1>
+      <p class="hero-subtitle">Ribuan bisnis lokal terverifikasi siap melayani Anda — dari kuliner, kesehatan, otomotif, hingga properti. Cari, bandingkan, dan hubungi langsung.</p>
+      <div class="search-bar" role="search">
+        <select class="search-select" aria-label="Pilih kategori">
+          <option value="">Semua Kategori</option>
+          <option value="kuliner">Kuliner</option>
+          <option value="kesehatan">Kesehatan</option>
+          <option value="otomotif">Otomotif</option>
+          <option value="kecantikan">Kecantikan</option>
+          <option value="pendidikan">Pendidikan</option>
+          <option value="properti">Properti</option>
+          <option value="fashion">Fashion</option>
+          <option value="hiburan">Hiburan</option>
+        </select>
+        <input type="text" class="search-input" placeholder="Cari nama bisnis, layanan, atau lokasi..." aria-label="Cari bisnis">
+        <button class="search-btn" type="button">🔍 Cari</button>
+      </div>
+      <div class="search-tags" role="group" aria-label="Kategori populer">
+        <button class="search-tag active">🍜 Restoran</button>
+        <button class="search-tag">✂️ Salon</button>
+        <button class="search-tag">🔧 Bengkel</button>
+        <button class="search-tag">💊 Apotek</button>
+        <button class="search-tag">🩺 Dokter</button>
+        <button class="search-tag">👕 Laundry</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== KATEGORI ==================== -->
+<section class="section" id="kategori">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 class="section-title">Telusuri <span class="accent">Kategori</span></h2>
+      <p class="section-subtitle">Temukan bisnis yang Anda butuhkan dari berbagai kategori yang tersedia di kota Anda.</p>
+    </div>
+    <div class="grid-4 reveal">
+      <div class="category-card">
+        <span class="category-icon">🍜</span>
+        <div class="category-name">Kuliner</div>
+        <div class="category-count">3.240 bisnis</div>
+      </div>
+      <div class="category-card">
+        <span class="category-icon">🏥</span>
+        <div class="category-name">Kesehatan</div>
+        <div class="category-count">1.870 bisnis</div>
+      </div>
+      <div class="category-card">
+        <span class="category-icon">🔧</span>
+        <div class="category-name">Otomotif</div>
+        <div class="category-count">2.140 bisnis</div>
+      </div>
+      <div class="category-card">
+        <span class="category-icon">💄</span>
+        <div class="category-name">Kecantikan</div>
+        <div class="category-count">1.560 bisnis</div>
+      </div>
+      <div class="category-card">
+        <span class="category-icon">📚</span>
+        <div class="category-name">Pendidikan</div>
+        <div class="category-count">980 bisnis</div>
+      </div>
+      <div class="category-card">
+        <span class="category-icon">🏠</span>
+        <div class="category-name">Properti</div>
+        <div class="category-count">740 bisnis</div>
+      </div>
+      <div class="category-card">
+        <span class="category-icon">👗</span>
+        <div class="category-name">Fashion</div>
+        <div class="category-count">1.320 bisnis</div>
+      </div>
+      <div class="category-card">
+        <span class="category-icon">🎭</span>
+        <div class="category-name">Hiburan</div>
+        <div class="category-count">620 bisnis</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BISNIS TERPOPULER ==================== -->
+<section class="section" style="background:var(--bg2); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 class="section-title">Bisnis <span class="accent">Terpopuler</span></h2>
+      <p class="section-subtitle">Dipilih berdasarkan rating tertinggi, jumlah ulasan, dan popularitas pencarian minggu ini.</p>
+    </div>
+    <div class="grid-3 reveal">
+
+      <!-- Card 1 -->
+      <div class="biz-card" style="--c1:#6366F1;--c2:#8B5CF6;">
+        <div class="biz-card-img">
+          <div class="biz-img-overlay">
+            <span class="biz-badge">✓ Terverifikasi</span>
+          </div>
+          <span class="biz-img-label">🍽️</span>
+        </div>
+        <div class="biz-card-body">
+          <span class="biz-cat">Kuliner · Restoran</span>
+          <div class="biz-name">Warung Nasi Pelangi Bu Sari</div>
+          <div class="biz-address">📍 Jl. Soekarno-Hatta No.45, Malang, Jawa Timur</div>
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+            <span class="biz-rating">⭐ 4.9</span>
+            <span style="font-size:12px; color:var(--text3);">· 328 ulasan</span>
+          </div>
+          <div class="biz-footer">
+            <span class="badge badge-green">● Buka Sekarang</span>
+            <a href="#" class="biz-link">Lihat Detail →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="biz-card" style="--c1:#059669;--c2:#10B981;">
+        <div class="biz-card-img">
+          <div class="biz-img-overlay">
+            <span class="biz-badge">✓ Terverifikasi</span>
+          </div>
+          <span class="biz-img-label">🏥</span>
+        </div>
+        <div class="biz-card-body">
+          <span class="biz-cat">Kesehatan · Klinik</span>
+          <div class="biz-name">Klinik Pratama Sehat Mandiri</div>
+          <div class="biz-address">📍 Jl. Veteran No.120, Surabaya, Jawa Timur</div>
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+            <span class="biz-rating">⭐ 4.8</span>
+            <span style="font-size:12px; color:var(--text3);">· 214 ulasan</span>
+          </div>
+          <div class="biz-footer">
+            <span class="badge badge-green">● Buka Sekarang</span>
+            <a href="#" class="biz-link">Lihat Detail →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="biz-card" style="--c1:#0EA5E9;--c2:#6366F1;">
+        <div class="biz-card-img">
+          <div class="biz-img-overlay">
+            <span class="biz-badge">✓ Terverifikasi</span>
+          </div>
+          <span class="biz-img-label">🔧</span>
+        </div>
+        <div class="biz-card-body">
+          <span class="biz-cat">Otomotif · Bengkel</span>
+          <div class="biz-name">Bengkel Jaya Motor & AC Mobil</div>
+          <div class="biz-address">📍 Jl. Raya Darmo No.88, Surabaya, Jawa Timur</div>
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+            <span class="biz-rating">⭐ 4.8</span>
+            <span style="font-size:12px; color:var(--text3);">· 187 ulasan</span>
+          </div>
+          <div class="biz-footer">
+            <span class="badge badge-green">● Buka Sekarang</span>
+            <a href="#" class="biz-link">Lihat Detail →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="biz-card" style="--c1:#F59E0B;--c2:#EF4444;">
+        <div class="biz-card-img">
+          <div class="biz-img-overlay">
+            <span class="biz-badge">✓ Terverifikasi</span>
+          </div>
+          <span class="biz-img-label">💄</span>
+        </div>
+        <div class="biz-card-body">
+          <span class="biz-cat">Kecantikan · Salon</span>
+          <div class="biz-name">Salon Cantika Premium & Spa</div>
+          <div class="biz-address">📍 Jl. Diponegoro No.34, Yogyakarta, DIY</div>
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+            <span class="biz-rating">⭐ 4.9</span>
+            <span style="font-size:12px; color:var(--text3);">· 412 ulasan</span>
+          </div>
+          <div class="biz-footer">
+            <span class="badge badge-red">● Tutup</span>
+            <a href="#" class="biz-link">Lihat Detail →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="biz-card" style="--c1:#EC4899;--c2:#8B5CF6;">
+        <div class="biz-card-img">
+          <div class="biz-img-overlay">
+            <span class="biz-badge">✓ Terverifikasi</span>
+          </div>
+          <span class="biz-img-label">👗</span>
+        </div>
+        <div class="biz-card-body">
+          <span class="biz-cat">Fashion · Butik</span>
+          <div class="biz-name">Butik Elegan Nusantara Mode</div>
+          <div class="biz-address">📍 Mal Citos Lt.2 No.21, Jakarta Selatan, DKI</div>
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+            <span class="biz-rating">⭐ 4.7</span>
+            <span style="font-size:12px; color:var(--text3);">· 156 ulasan</span>
+          </div>
+          <div class="biz-footer">
+            <span class="badge badge-green">● Buka Sekarang</span>
+            <a href="#" class="biz-link">Lihat Detail →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="biz-card" style="--c1:#14B8A6;--c2:#0EA5E9;">
+        <div class="biz-card-img">
+          <div class="biz-img-overlay">
+            <span class="biz-badge">✓ Terverifikasi</span>
+          </div>
+          <span class="biz-img-label">📚</span>
+        </div>
+        <div class="biz-card-body">
+          <span class="biz-cat">Pendidikan · Bimbel</span>
+          <div class="biz-name">Bimbingan Belajar Cerdas Prestasi</div>
+          <div class="biz-address">📍 Jl. Ahmad Yani No.67, Bandung, Jawa Barat</div>
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+            <span class="biz-rating">⭐ 4.8</span>
+            <span style="font-size:12px; color:var(--text3);">· 293 ulasan</span>
+          </div>
+          <div class="biz-footer">
+            <span class="badge badge-green">● Buka Sekarang</span>
+            <a href="#" class="biz-link">Lihat Detail →</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div style="text-align:center; margin-top:40px;">
+      <a href="#" class="btn btn-outline" style="font-size:15px; padding:12px 28px;">Lihat Semua Bisnis →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CARA MENDAFTAR ==================== -->
+<section class="section" id="cara-daftar">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 class="section-title">Cara <span class="accent">Mendaftarkan</span> Bisnis Anda</h2>
+      <p class="section-subtitle">Hanya 3 langkah mudah untuk bisnis Anda mulai ditemukan oleh ribuan pelanggan potensial setiap harinya.</p>
+    </div>
+    <div class="steps-grid reveal">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <span class="step-icon">👤</span>
+        <div class="step-title">Buat Akun Gratis</div>
+        <p class="step-desc">Daftarkan diri Anda dengan email bisnis atau nomor telepon. Proses registrasi hanya memakan waktu kurang dari 2 menit. Tidak ada kartu kredit yang dibutuhkan.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <span class="step-icon">📝</span>
+        <div class="step-title">Isi Profil Bisnis</div>
+        <p class="step-desc">Lengkapi informasi bisnis Anda: nama, alamat, jam operasional, kategori, foto, nomor telepon, dan media sosial. Semakin lengkap profil, semakin mudah ditemukan.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <span class="step-icon">🚀</span>
+        <div class="step-title">Mulai Ditemukan</div>
+        <p class="step-desc">Bisnis Anda langsung tampil di hasil pencarian dan bisa ditemukan oleh jutaan pengguna aktif ListingHub. Pantau statistik kunjungan dari dashboard Anda.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== STATISTIK ==================== -->
+<section class="stats-section">
+  <div class="container">
+    <div class="stats-grid reveal">
+      <div class="stat-item">
+        <span class="stat-number" data-target="10000" data-suffix="+">0</span>
+        <span class="stat-label">Bisnis Terdaftar</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" data-target="500000" data-suffix="+">0</span>
+        <span class="stat-label">Pencarian per Bulan</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" data-target="50" data-suffix="+">0</span>
+        <span class="stat-label">Kota Tercakup</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" data-target="47" data-prefix="4." data-suffix="★">0</span>
+        <span class="stat-label">Rating Rata-rata</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FILTER SHOWCASE ==================== -->
+<section class="section" style="background:var(--bg2); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 class="section-title">Cari dengan <span class="accent">Filter Canggih</span></h2>
+      <p class="section-subtitle">Saring hasil pencarian berdasarkan kategori, rating, jarak, dan banyak lagi untuk menemukan bisnis yang paling sesuai.</p>
+    </div>
+    <div class="filter-showcase reveal">
+      <div class="filter-sidebar">
+        <div class="filter-sidebar-title">🎯 Filter Pencarian</div>
+        <div class="filter-group">
+          <span class="filter-group-label">Kategori</span>
+          <label class="filter-check">
+            <input type="checkbox" checked>
+            <span>Kuliner</span><span class="count">3.240</span>
+          </label>
+          <label class="filter-check">
+            <input type="checkbox">
+            <span>Kesehatan</span><span class="count">1.870</span>
+          </label>
+          <label class="filter-check">
+            <input type="checkbox">
+            <span>Otomotif</span><span class="count">2.140</span>
+          </label>
+          <label class="filter-check">
+            <input type="checkbox">
+            <span>Kecantikan</span><span class="count">1.560</span>
+          </label>
+          <label class="filter-check">
+            <input type="checkbox">
+            <span>Pendidikan</span><span class="count">980</span>
+          </label>
+        </div>
+        <div class="filter-group">
+          <span class="filter-group-label">Rating Minimum</span>
+          <div class="rating-filter">
+            <button class="rating-star-btn">3★</button>
+            <button class="rating-star-btn active">4★</button>
+            <button class="rating-star-btn">5★</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-group-label">Jarak Maksimum</span>
+          <input type="range" class="distance-slider" min="1" max="20" value="10">
+          <div class="distance-label"><span>1 km</span><span>10 km</span><span>20 km</span></div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-group-label">Status Operasional</span>
+          <label class="filter-check">
+            <input type="checkbox" checked>
+            <span>Buka Sekarang</span>
+          </label>
+          <label class="filter-check">
+            <input type="checkbox">
+            <span>Semua Status</span>
+          </label>
+        </div>
+        <button class="btn btn-accent" style="width:100%; justify-content:center;">Terapkan Filter</button>
+      </div>
+      <div class="filter-results">
+        <div class="filter-results-header">
+          <span class="filter-results-count">Menampilkan <strong>3.240</strong> hasil untuk "Kuliner"</span>
+          <span class="filter-results-sort">Urutkan: Relevansi ▼</span>
+        </div>
+        <div class="result-item">
+          <div class="result-avatar" style="background:linear-gradient(135deg,#6366F1,#8B5CF6);">🍜</div>
+          <div class="result-info">
+            <div class="result-name">Warung Makan Sederhana Pak Budi</div>
+            <div class="result-tags">
+              <span class="result-tag">Nasi Padang</span>
+              <span class="result-tag">Lauk Pauk</span>
+              <span class="result-tag">Murah</span>
+            </div>
+            <div class="result-rating-row">
+              <span style="color:#F59E0B; font-weight:700; font-size:13px;">⭐ 4.8</span>
+              <span style="font-size:12px; color:var(--text3);">· 248 ulasan · Buka 07:00–21:00</span>
+            </div>
+          </div>
+          <div class="result-meta">
+            <div class="result-dist">📍 0.8 km</div>
+            <span class="badge badge-green">Buka</span>
+          </div>
+        </div>
+        <div class="result-item">
+          <div class="result-avatar" style="background:linear-gradient(135deg,#F59E0B,#EF4444);">🍱</div>
+          <div class="result-info">
+            <div class="result-name">Depot Bu Rini — Masakan Jawa Asli</div>
+            <div class="result-tags">
+              <span class="result-tag">Gudeg</span>
+              <span class="result-tag">Rawon</span>
+              <span class="result-tag">Tradisional</span>
+            </div>
+            <div class="result-rating-row">
+              <span style="color:#F59E0B; font-weight:700; font-size:13px;">⭐ 4.7</span>
+              <span style="font-size:12px; color:var(--text3);">· 183 ulasan · Buka 09:00–20:00</span>
+            </div>
+          </div>
+          <div class="result-meta">
+            <div class="result-dist">📍 1.4 km</div>
+            <span class="badge badge-green">Buka</span>
+          </div>
+        </div>
+        <div class="result-item">
+          <div class="result-avatar" style="background:linear-gradient(135deg,#14B8A6,#0EA5E9);">🍕</div>
+          <div class="result-info">
+            <div class="result-name">Pizzeria Italia — Malang Kota</div>
+            <div class="result-tags">
+              <span class="result-tag">Pizza</span>
+              <span class="result-tag">Pasta</span>
+              <span class="result-tag">Western Food</span>
+            </div>
+            <div class="result-rating-row">
+              <span style="color:#F59E0B; font-weight:700; font-size:13px;">⭐ 4.9</span>
+              <span style="font-size:12px; color:var(--text3);">· 397 ulasan · Buka 11:00–22:00</span>
+            </div>
+          </div>
+          <div class="result-meta">
+            <div class="result-dist">📍 2.1 km</div>
+            <span class="badge badge-green">Buka</span>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:8px;">
+          <a href="#" class="btn btn-outline" style="width:100%; justify-content:center;">Lihat 3.237 Hasil Lainnya →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BISNIS PREMIUM ==================== -->
+<section class="section">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 class="section-title">Bisnis <span class="accent">Premium</span> Pilihan</h2>
+      <p class="section-subtitle">Bisnis unggulan dengan listing premium — informasi lebih lengkap, foto lebih banyak, dan tampil di posisi teratas hasil pencarian.</p>
+    </div>
+    <div class="grid-3 reveal">
+
+      <div class="premium-card" style="--c1:#6366F1;--c2:#8B5CF6;">
+        <div class="premium-header">
+          <div>
+            <div class="premium-badge">⭐ Premium</div>
+          </div>
+          <span class="biz-badge">✓ Terverifikasi</span>
+        </div>
+        <div class="premium-img" style="background:linear-gradient(135deg,#6366F1,#8B5CF6); display:flex; align-items:center; justify-content:center; font-size:40px;">🍣</div>
+        <div class="premium-body">
+          <div style="font-size:11px; color:var(--text3); margin-bottom:4px; background:var(--bg2); display:inline-block; padding:2px 10px; border-radius:var(--r-pill);">Kuliner · Restoran Jepang</div>
+          <div class="biz-name" style="margin-top:8px;">Sakura Sushi & Japanese Kitchen</div>
+          <div class="biz-address">📍 Jl. Basuki Rahmat No.12, Surabaya, Jawa Timur</div>
+          <div style="display:flex; align-items:center; gap:8px; margin:8px 0 12px;">
+            <span class="biz-rating">⭐ 4.9</span>
+            <span style="font-size:12px; color:var(--text3);">· 527 ulasan</span>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+            <span style="font-size:11px; background:var(--bg2); color:var(--text2); padding:3px 9px; border-radius:var(--r-pill);">Sushi</span>
+            <span style="font-size:11px; background:var(--bg2); color:var(--text2); padding:3px 9px; border-radius:var(--r-pill);">Ramen</span>
+            <span style="font-size:11px; background:var(--bg2); color:var(--text2); padding:3px 9px; border-radius:var(--r-pill);">Halal</span>
+            <span style="font-size:11px; background:var(--bg2); color:var(--text2); padding:3px 9px; border-radius:var(--r-pill);">Reservasi</span>
+          </div>
+          <div class="biz-footer">
+            <span class="badge badge-green">● Buka 10:00–22:00</span>
+            <a href="#" class="biz-link">Lihat Detail →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="premium-card" style="--c1:#059669;--c2:#10B981;">
+        <div class="premium-header">
+          <div>
+            <div class="premium-badge">⭐ Premium</div>
+          </div>
+          <span class="biz-badge">✓ Terverifikasi</span>
+        </div>
+        <div class="premium-img" style="background:linear-gradient(135deg,#059669,#10B981); display:flex; align-items:center; justify-content:center; font-size:40px;">💆</div>
+        <div class="premium-body">
+          <div style="font-size:11px; color:var(--text3); margin-bottom:4px; background:var(--bg2); display:inline-block; padding:2px 10px; border-radius:var(--r-pill);">Kecantikan · Spa & Wellness</div>
+          <div class="biz-name" style="margin-top:8px;">Dewi Spa & Reflexology Center</div>
+          <div class="biz-address">📍 Jl. Gatot Subroto No.88B, Jakarta Selatan, DKI</div>
+          <div style="display:flex; align-items:center; gap:8px; margin:8px 0 12px;">
+            <span class="biz-rating">⭐ 4.8</span>
+            <span style="font-size:12px; color:var(--text3);">· 384 ulasan</span>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+            <span style="font-size:11px; background:var(--bg2); color:var(--text2); padding:3px 9px; border-radius:var(--r-pill);">Pijat</span>
+            <span style="font-size:11px; background:var(--bg2); color:var(--text2); padding:3px 9px; border-radius:var(--r-pill);">Refleksi</span>
+            <span style="font-size:11px; background:var(--bg2); color:var(--text2); padding:3px 9px; border-radius:var(--r-pill);">Facial</span>
+            <span style="font-size:11px; background:var(--bg2); color:var(--text2); padding:3px 9px; border-radius:var(--r-pill);">Booking Online</span>
+          </div>
+          <div class="biz-footer">
+            <span class="badge badge-green">● Buka 09:00–21:00</span>
+            <a href="#" class="biz-link">Lihat Detail →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="premium-card" style="--c1:#F59E0B;--c2:#EF4444;">
+        <div class="premium-header">
+          <div>
+            <div class="premium-badge">⭐ Premium</div>
+          </div>
+          <span class="biz-badge">✓ Terverifikasi</span>
+        </div>
+        <div class="premium-img" style="background:linear-gradient(135deg,#F59E0B,#EF4444); display:flex; align-items:center; justify-content:center; font-size:40px;">🏠</div>
+        <div class="premium-body">
+          <div style="font-size:11px; color:var(--text3); margin-bottom:4px; background:var(--bg2); display:inline-block; padding:2px 10px; border-radius:var(--r-pill);">Properti · Agen Real Estate</div>
+          <div class="biz-name" style="margin-top:8px;">Nusagana Properti & Investasi</div>
+          <div class="biz-address">📍 Jl. Pemuda No.55, Bandung, Jawa Barat</div>
+          <div style="display:flex; align-items:center; gap:8px; margin:8px 0 12px;">
+            <span class="biz-rating">⭐ 4.7</span>
+            <span style="font-size:12px; color:var(--text3);">· 192 ulasan</span>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+            <span style="font-size:11px; background:var(--bg2); color:var(--text2); padding:3px 9px; border-radius:var(--r-pill);">Jual Rumah</span>
+            <span style="font-size:11px; background:var(--bg2); color:var(--text2); padding:3px 9px; border-radius:var(--r-pill);">Sewa</span>
+            <span style="font-size:11px; background:var(--bg2); color:var(--text2); padding:3px 9px; border-radius:var(--r-pill);">Konsultasi</span>
+          </div>
+          <div class="biz-footer">
+            <span class="badge badge-green">● Buka 08:00–17:00</span>
+            <a href="#" class="biz-link">Lihat Detail →</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== TESTIMONI ==================== -->
+<section class="section" style="background:var(--bg2); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 class="section-title">Apa Kata <span class="accent">Mereka</span>?</h2>
+      <p class="section-subtitle">Ribuan pemilik bisnis dan pelanggan telah merasakan manfaat ListingHub. Ini cerita mereka.</p>
+    </div>
+    <div class="grid-3 reveal">
+      <div class="testimonial-card">
+        <div class="testimonial-quote">"</div>
+        <p class="testimonial-text">Sejak daftarkan bengkel saya di ListingHub, pelanggan baru meningkat hampir 40% dalam 2 bulan pertama. Banyak yang bilang nemuin kita dari sini. Paket Premium worth it banget!</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background:linear-gradient(135deg,#6366F1,#8B5CF6);">👨‍🔧</div>
+          <div>
+            <div class="star-row">⭐⭐⭐⭐⭐</div>
+            <div class="author-name">Budi Santoso</div>
+            <div class="author-role">Pemilik Bengkel Jaya Motor, Surabaya</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-quote">"</div>
+        <p class="testimonial-text">Cari dokter gigi dekat rumah jadi gampang banget. Filter berdasarkan jarak dan rating langsung ketemu Klinik Gigi Senyum Sehat yang reviewnya bagus-bagus. Highly recommended!</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background:linear-gradient(135deg,#14B8A6,#0EA5E9);">👩</div>
+          <div>
+            <div class="star-row">⭐⭐⭐⭐⭐</div>
+            <div class="author-name">Siti Rahayu</div>
+            <div class="author-role">Pengguna aktif ListingHub, Malang</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-quote">"</div>
+        <p class="testimonial-text">Restoran kami dari listing biasa naik ke Premium dan dalam 3 bulan sudah BEP investasinya. Dashboard analitik-nya keren — bisa lihat berapa kali profil kita dilihat setiap hari.</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background:linear-gradient(135deg,#F59E0B,#EF4444);">👩‍🍳</div>
+          <div>
+            <div class="star-row">⭐⭐⭐⭐⭐</div>
+            <div class="author-name">Dewi Kusumawati</div>
+            <div class="author-role">Owner Warung Nasi Pelangi, Malang</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PAKET LISTING ==================== -->
+<section class="section" id="paket">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 class="section-title">Pilih <span class="accent">Paket</span> yang Tepat</h2>
+      <p class="section-subtitle">Mulai gratis dan upgrade kapan saja. Semua paket sudah termasuk listing di mesin pencari kami.</p>
+    </div>
+    <div class="pricing-toggle reveal" id="pricingToggle">
+      <span class="toggle-label active-label">Bulanan</span>
+      <div class="toggle-switch" id="billingToggle"></div>
+      <span class="toggle-label">Tahunan</span>
+      <span class="saving-badge">Hemat 20%</span>
+    </div>
+    <div class="pricing-grid reveal">
+
+      <div class="pricing-card">
+        <div class="pricing-name">Gratis</div>
+        <div class="pricing-price">Rp 0</div>
+        <div class="pricing-period">Selamanya gratis</div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> 1 foto bisnis</li>
+          <li><span class="check">✓</span> Informasi dasar (nama, alamat, telepon)</li>
+          <li><span class="check">✓</span> Tampil di hasil pencarian</li>
+          <li><span class="check">✓</span> Terima ulasan dari pelanggan</li>
+          <li><span class="cross">✗</span> <span style="color:var(--text3)">Foto tambahan</span></li>
+          <li><span class="cross">✗</span> <span style="color:var(--text3)">Prioritas penampilan</span></li>
+          <li><span class="cross">✗</span> <span style="color:var(--text3)">Badge Terverifikasi</span></li>
+          <li><span class="cross">✗</span> <span style="color:var(--text3)">Analitik dashboard</span></li>
+        </ul>
+        <a href="#" class="btn btn-outline" style="width:100%; justify-content:center; padding:13px;">Mulai Gratis</a>
+      </div>
+
+      <div class="pricing-card featured">
+        <div class="pricing-featured-tag">🔥 PALING POPULER</div>
+        <div class="pricing-name">Standar</div>
+        <div class="pricing-price" id="stdPrice"><sup>Rp</sup>99k</div>
+        <div class="pricing-period" id="stdPeriod">per bulan · tagih bulanan</div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Hingga 10 foto bisnis</li>
+          <li><span class="check">✓</span> Informasi lengkap + jam operasional</li>
+          <li><span class="check">✓</span> Prioritas penampilan di pencarian</li>
+          <li><span class="check">✓</span> Badge Terverifikasi ✓</li>
+          <li><span class="check">✓</span> Analitik dasar (views, klik)</li>
+          <li><span class="check">✓</span> Menu / daftar layanan</li>
+          <li><span class="check">✓</span> Tombol WhatsApp & Peta</li>
+          <li><span class="cross">✗</span> <span style="color:var(--text3)">Posisi teratas (Top Placement)</span></li>
+        </ul>
+        <a href="#" class="btn btn-accent" style="width:100%; justify-content:center; padding:13px; font-size:15px;">Mulai Standar</a>
+      </div>
+
+      <div class="pricing-card">
+        <div class="pricing-name">Premium</div>
+        <div class="pricing-price" id="prePrice"><sup>Rp</sup>249k</div>
+        <div class="pricing-period" id="prePeriod">per bulan · tagih bulanan</div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Foto & video tidak terbatas</li>
+          <li><span class="check">✓</span> Informasi super lengkap</li>
+          <li><span class="check">✓</span> Posisi Teratas di pencarian</li>
+          <li><span class="check">✓</span> Badge Premium + Terverifikasi ✓</li>
+          <li><span class="check">✓</span> Analitik lengkap + export CSV</li>
+          <li><span class="check">✓</span> Profil mini website bisnis</li>
+          <li><span class="check">✓</span> Sistem booking / reservasi online</li>
+          <li><span class="check">✓</span> Support prioritas 24 jam</li>
+        </ul>
+        <a href="#" class="btn btn-primary" style="width:100%; justify-content:center; padding:13px; font-size:15px;">Mulai Premium</a>
+      </div>
+
+    </div>
+    <p style="text-align:center; margin-top:24px; font-size:13px; color:var(--text3);">Semua harga belum termasuk PPN 11%. Pembayaran aman via transfer bank, kartu kredit, atau dompet digital.</p>
+  </div>
+</section>
+
+<!-- ==================== FAQ ==================== -->
+<section class="section section-sm" id="faq" style="background:var(--bg2); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2 class="section-title">Pertanyaan yang Sering <span class="accent">Ditanya</span></h2>
+      <p class="section-subtitle">Masih ada pertanyaan? Hubungi tim support kami kapan saja.</p>
+    </div>
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          Apakah mendaftarkan bisnis di ListingHub benar-benar gratis?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          Ya, mendaftarkan bisnis di ListingHub 100% gratis. Paket Gratis kami mencakup 1 foto, informasi dasar bisnis (nama, alamat, nomor telepon), dan tampil di hasil pencarian. Tidak ada biaya tersembunyi dan tidak membutuhkan kartu kredit untuk mendaftar. Upgrade ke paket berbayar hanya jika Anda membutuhkan fitur lebih seperti foto tambahan, badge terverifikasi, atau posisi prioritas di pencarian.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          Bagaimana cara mendapatkan badge "Terverifikasi" untuk bisnis saya?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          Badge Terverifikasi ✓ tersedia mulai dari paket Standar ke atas. Proses verifikasi meliputi konfirmasi kepemilikan bisnis melalui dokumen legal (SIUP, NIB, atau akta pendirian), verifikasi nomor telepon dan alamat fisik bisnis. Tim kami akan memproses verifikasi dalam 2–5 hari kerja setelah semua dokumen diterima. Bisnis yang sudah terverifikasi mendapat kepercayaan lebih tinggi dari calon pelanggan.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          Bisakah saya mengubah informasi bisnis kapan saja?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          Tentu saja! Semua pengguna, termasuk paket Gratis, bisa mengubah informasi bisnis kapan saja melalui dashboard. Anda bisa memperbarui jam operasional, nomor telepon, deskripsi bisnis, kategori, foto, dan informasi lainnya. Perubahan akan langsung terlihat di profil publik bisnis Anda setelah disimpan — tidak perlu menunggu persetujuan.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          Di kota mana saja ListingHub tersedia saat ini?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          ListingHub saat ini sudah tersedia di 50+ kota di seluruh Indonesia, termasuk Jakarta, Surabaya, Bandung, Malang, Yogyakarta, Semarang, Medan, Makassar, Denpasar, Palembang, Pekanbaru, Balikpapan, dan masih banyak lagi. Kami terus memperluas jangkauan ke kota-kota baru setiap bulannya. Bisnis dari kota mana pun bisa mendaftar, bahkan jika kota Anda belum masuk daftar utama kami.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          Bagaimana cara pelanggan meninggalkan ulasan untuk bisnis saya?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          Pelanggan bisa meninggalkan ulasan langsung dari halaman profil bisnis Anda di ListingHub. Mereka hanya perlu membuat akun ListingHub (gratis) dan memberikan rating bintang beserta komentar. Anda akan mendapat notifikasi setiap ada ulasan baru. Sebagai pemilik bisnis, Anda juga bisa merespons ulasan pelanggan — baik ulasan positif maupun negatif — untuk menunjukkan profesionalisme bisnis Anda.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CTA BANNER ==================== -->
+<section class="cta-banner">
+  <div class="container">
+    <h2 class="cta-title">Daftarkan Bisnis Anda <span>Sekarang</span> — Gratis!</h2>
+    <p class="cta-subtitle">Bergabunglah dengan 10.000+ bisnis yang sudah terlistung di ListingHub dan mulai dijangkau oleh pelanggan baru hari ini. Tidak perlu kartu kredit.</p>
+    <div class="cta-buttons">
+      <a href="#" class="cta-btn-main">🚀 Daftarkan Bisnis Gratis</a>
+      <a href="#paket" class="cta-btn-outline">Lihat Paket Premium</a>
+    </div>
+    <p style="margin-top:20px; font-size:12px; color:rgba(255,255,255,0.5);">✓ Gratis selamanya &nbsp;·&nbsp; ✓ Tanpa kartu kredit &nbsp;·&nbsp; ✓ Setup dalam 2 menit</p>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo">ListingHub <span style="color:var(--accent)">🔍</span></a>
+        <p class="footer-desc">Portal direktori bisnis lokal Indonesia terlengkap. Menghubungkan jutaan pencari dengan bisnis terbaik di kota mereka sejak 2021.</p>
+        <div class="footer-social">
+          <a href="#" class="social-btn" aria-label="Instagram">📸</a>
+          <a href="#" class="social-btn" aria-label="Facebook">📘</a>
+          <a href="#" class="social-btn" aria-label="Twitter">🐦</a>
+          <a href="#" class="social-btn" aria-label="YouTube">▶️</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Kategori</div>
+        <div class="footer-links">
+          <a href="#">🍜 Kuliner & Restoran</a>
+          <a href="#">🏥 Kesehatan & Klinik</a>
+          <a href="#">🔧 Otomotif & Bengkel</a>
+          <a href="#">💄 Kecantikan & Salon</a>
+          <a href="#">📚 Pendidikan & Kursus</a>
+          <a href="#">🏠 Properti & Real Estate</a>
+          <a href="#">👗 Fashion & Butik</a>
+          <a href="#">🎭 Hiburan & Rekreasi</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Untuk Bisnis</div>
+        <div class="footer-links">
+          <a href="#">Daftarkan Bisnis Gratis</a>
+          <a href="#">Paket & Harga</a>
+          <a href="#">Panduan Pemilik Bisnis</a>
+          <a href="#">Cara Mendapatkan Ulasan</a>
+          <a href="#">Optimalkan Profil Bisnis</a>
+          <a href="#">Iklan di ListingHub</a>
+          <a href="#">Program Afiliasi</a>
+          <a href="#">API untuk Developer</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Support</div>
+        <div class="footer-links">
+          <a href="#">Pusat Bantuan</a>
+          <a href="#">Hubungi Kami</a>
+          <a href="#">Laporkan Kesalahan Data</a>
+          <a href="#">Kebijakan Privasi</a>
+          <a href="#">Syarat & Ketentuan</a>
+          <a href="#">Tentang ListingHub</a>
+          <a href="#">Blog & Tips Bisnis</a>
+        </div>
+        <div style="margin-top:24px; padding:16px; background:var(--bg3); border-radius:var(--r-sm); border:1px solid var(--border);">
+          <div style="font-size:12px; font-weight:700; color:var(--text); margin-bottom:4px;">📞 Bantuan Langsung</div>
+          <div style="font-size:13px; color:var(--text2);">0800-LISTING (bebas pulsa)</div>
+          <div style="font-size:12px; color:var(--text3); margin-top:2px;">Sen–Jum, 08:00–17:00 WIB</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© <span id="footerYear"></span> ListingHub. Hak cipta dilindungi undang-undang.</p>
+      <div class="footer-legal">
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat Layanan</a>
+        <a href="#">Cookie</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ==================== DARK MODE TOGGLE ====================
+const darkToggle = document.getElementById('darkToggle');
+const html = document.documentElement;
+const saved = localStorage.getItem('listinghub_theme') || 'light';
+html.setAttribute('data-theme', saved);
+darkToggle.textContent = saved === 'dark' ? '☀️' : '🌙';
+darkToggle.addEventListener('click', () => {
+  const curr = html.getAttribute('data-theme');
+  const next = curr === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  darkToggle.textContent = next === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('listinghub_theme', next);
+});
+
+// ==================== MOBILE NAV ====================
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburgerBtn.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+});
+document.addEventListener('click', (e) => {
+  if (!hamburgerBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+    mobileMenu.classList.remove('open');
+  }
+});
+
+// ==================== SEARCH TAG FILTER ====================
+document.querySelectorAll('.search-tag').forEach(tag => {
+  tag.addEventListener('click', () => {
+    document.querySelectorAll('.search-tag').forEach(t => t.classList.remove('active'));
+    tag.classList.add('active');
+    const searchInput = document.querySelector('.search-input');
+    const tagText = tag.textContent.replace(/[🍜✂️🔧💊🩺👕]/g, '').trim();
+    searchInput.value = tagText;
+    searchInput.focus();
+  });
+});
+
+// ==================== CATEGORY CARD CLICK ====================
+document.querySelectorAll('.category-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const name = card.querySelector('.category-name').textContent;
+    const searchInput = document.querySelector('.search-input');
+    const searchSelect = document.querySelector('.search-select');
+    searchInput.value = name;
+    searchInput.focus();
+    document.querySelector('.hero').scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+// ==================== FAQ ACCORDION ====================
+document.querySelectorAll('.faq-question').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const isOpen = btn.classList.contains('open');
+    document.querySelectorAll('.faq-question').forEach(b => {
+      b.classList.remove('open');
+      b.setAttribute('aria-expanded', 'false');
+      b.nextElementSibling.classList.remove('open');
+    });
+    if (!isOpen) {
+      btn.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+      btn.nextElementSibling.classList.add('open');
+    }
+  });
+});
+
+// ==================== COUNTER ANIMATION ====================
+function animateCounter(el) {
+  const target = parseInt(el.dataset.target);
+  const prefix = el.dataset.prefix || '';
+  const suffix = el.dataset.suffix || '';
+  const duration = 1800;
+  const step = target / (duration / 16);
+  let current = 0;
+  const timer = setInterval(() => {
+    current = Math.min(current + step, target);
+    let display;
+    if (target >= 1000) {
+      display = (current / 1000).toFixed(0) + 'k';
+      if (target === 500000) display = (current / 1000).toFixed(0) + 'k';
+    } else if (el.dataset.prefix === '4.') {
+      display = '4.' + Math.floor(current).toString().charAt(0);
+    } else {
+      display = Math.floor(current).toString();
+    }
+    el.textContent = prefix + display + suffix;
+    if (current >= target) {
+      clearInterval(timer);
+      if (target === 10000) el.textContent = '10.000+';
+      else if (target === 500000) el.textContent = '500.000+';
+      else if (target === 50) el.textContent = '50+';
+      else if (target === 47) el.textContent = '4.7★';
+    }
+  }, 16);
+}
+
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const counters = entry.target.querySelectorAll('[data-target]');
+      counters.forEach(animateCounter);
+      counterObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+const statsSection = document.querySelector('.stats-section');
+if (statsSection) counterObserver.observe(statsSection);
+
+// ==================== SCROLL REVEAL ====================
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ==================== RATING FILTER BUTTONS ====================
+document.querySelectorAll('.rating-star-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.rating-star-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+// ==================== PRICING TOGGLE ====================
+const billingToggle = document.getElementById('billingToggle');
+const stdPrice = document.getElementById('stdPrice');
+const stdPeriod = document.getElementById('stdPeriod');
+const prePrice = document.getElementById('prePrice');
+const prePeriod = document.getElementById('prePeriod');
+const toggleLabels = document.querySelectorAll('.toggle-label');
+let isAnnual = false;
+billingToggle.addEventListener('click', () => {
+  isAnnual = !isAnnual;
+  billingToggle.classList.toggle('annual', isAnnual);
+  toggleLabels[0].classList.toggle('active-label', !isAnnual);
+  toggleLabels[1].classList.toggle('active-label', isAnnual);
+  if (isAnnual) {
+    stdPrice.innerHTML = '<sup>Rp</sup>79k';
+    stdPeriod.textContent = 'per bulan · tagih tahunan (hemat 20%)';
+    prePrice.innerHTML = '<sup>Rp</sup>199k';
+    prePeriod.textContent = 'per bulan · tagih tahunan (hemat 20%)';
+  } else {
+    stdPrice.innerHTML = '<sup>Rp</sup>99k';
+    stdPeriod.textContent = 'per bulan · tagih bulanan';
+    prePrice.innerHTML = '<sup>Rp</sup>249k';
+    prePeriod.textContent = 'per bulan · tagih bulanan';
+  }
+});
+
+// ==================== FOOTER YEAR ====================
+document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+// ==================== SEARCH BTN ====================
+document.querySelector('.search-btn').addEventListener('click', () => {
+  const val = document.querySelector('.search-input').value.trim();
+  if (val) {
+    alert('Mencari: "' + val + '"\n\nFitur pencarian akan tersambung ke database bisnis.');
+  }
+});
+</script>
+</body>
+</html>
