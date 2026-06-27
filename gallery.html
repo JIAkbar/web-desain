@@ -297,6 +297,11 @@
       width: 200%; height: 200%;
       transform: scale(0.5); transform-origin: top left;
       border: none; pointer-events: none; display: block;
+      will-change: auto;
+    }
+    /* Freeze iframes during grid column switch to prevent reflow lag */
+    .grid.resizing .card-preview iframe {
+      visibility: hidden;
     }
     .card-shimmer {
       position: absolute; inset: 0; z-index: 2;
@@ -320,25 +325,23 @@
     .card-num { font-size: 11px; color: var(--accent); font-weight: 700; font-family: monospace; letter-spacing: 0.05em; }
     .card-title { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.4; }
     .card-tags { display: flex; flex-wrap: wrap; gap: 4px; flex: 1; }
-    .tag { font-size: 10px; padding: 2px 8px; border-radius: var(--rpill); background: var(--border2); color: var(--text3); font-weight: 500; }
+    .tag {
+      font-size: 11px; padding: 3px 9px; border-radius: var(--rpill);
+      background: var(--bg2); color: var(--text2);
+      font-weight: 600; border: 1px solid var(--border2);
+      letter-spacing: 0.01em;
+    }
+    [data-theme="light"] .tag { background: #F3F4F6; color: #374151; border-color: #D1D5DB; }
 
     .card-actions { display: flex; gap: 8px; margin-top: 4px; }
     .btn-open {
-      flex: 1; text-align: center; padding: 7px 12px;
+      flex: 1; text-align: center; padding: 8px 12px;
       background: var(--accent); color: #fff;
       border-radius: var(--r-sm); font-size: 12px; font-weight: 600;
       text-decoration: none; transition: opacity 0.2s;
       display: inline-flex; align-items: center; justify-content: center; gap: 4px;
     }
     .btn-open:hover { opacity: 0.85; text-decoration: none; }
-    .btn-dl {
-      padding: 7px 12px; border: 1px solid var(--border2);
-      background: transparent; color: var(--text2);
-      border-radius: var(--r-sm); font-size: 12px; font-weight: 500;
-      text-decoration: none; transition: border-color 0.2s, color 0.2s, background 0.2s;
-      display: inline-flex; align-items: center; gap: 4px;
-    }
-    .btn-dl:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; background: var(--accent-dim); }
 
     /* ===== EMPTY STATE ===== */
     .empty-state {
@@ -813,10 +816,6 @@ function createCard(t) {
           Buka
           <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         </a>
-        <a href="${t.path}" download class="btn-dl">
-          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Unduh
-        </a>
       </div>
     </div>`;
   return card;
@@ -872,10 +871,16 @@ document.querySelectorAll('.card-preview').forEach(p => iframeObs.observe(p));
 const gridEl    = document.getElementById('grid');
 const gridBtns  = document.querySelectorAll('.grid-btn');
 
+let gridResizeTimer = null;
 function setGrid(cols) {
+  // Hide all loaded iframes during reflow to prevent lag
+  gridEl.classList.add('resizing');
   gridEl.style.setProperty('--cols', cols);
   gridBtns.forEach(b => b.classList.toggle('active', +b.dataset.cols === cols));
   try { localStorage.setItem('jia-tpl-cols', cols); } catch(e) {}
+  // Restore after reflow settles
+  clearTimeout(gridResizeTimer);
+  gridResizeTimer = setTimeout(() => gridEl.classList.remove('resizing'), 150);
 }
 
 gridBtns.forEach(btn => {
