@@ -1,1877 +1,1348 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light" data-lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Template Library — Johan Iriawan Akbar</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #0E0E0E;
-      --bg2: #161616;
-      --bg3: #1F1F1F;
-      --border: rgba(255,255,255,0.08);
-      --text: #F0EDE8;
-      --text2: #A09890;
-      --text3: #6A6460;
-      --gold: #D4A920;
-      --gold2: #F0C840;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 16px; }
-    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-    a { text-decoration: none; color: inherit; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JIA · Web Developer</title>
+<meta name="description" content="Web Application Developer berbasis di Malang. Membangun aplikasi web modern yang fungsional dan estetis.">
 
-    header {
-      border-bottom: 1px solid var(--border);
-      padding: 2rem clamp(1.5rem, 6vw, 5rem);
-      display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap;
-    }
-    .logo {
-      font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700;
-      display: flex; align-items: center; gap: 0.75rem;
-    }
-    .logo-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
-    .logo-sub { font-family: 'DM Mono', monospace; font-size: 0.68rem; font-weight: 400; color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 0.15rem; }
-    .header-right { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--text3); }
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jiaweb-dw6.pages.dev/">
+<meta property="og:title" content="JIA · Web Developer">
+<meta property="og:description" content="Web Application Developer berbasis di Malang. Membangun aplikasi web modern, fungsional, dan estetis dengan HTML, CSS, JS, dan Supabase.">
+<meta property="og:image" content="https://jiaweb-dw6.pages.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="id_ID">
+<meta property="og:site_name" content="JIA · Web Developer">
 
-    .hero { padding: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 6vw, 5rem) 2rem; }
-    .hero-eyebrow {
-      font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--gold);
-      letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem;
-      display: flex; align-items: center; gap: 0.5rem;
-    }
-    .hero-eyebrow::before { content: ''; width: 24px; height: 1px; background: var(--gold); }
-    .hero h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2.5rem, 5vw, 4rem);
-      font-weight: 700; line-height: 1.1; letter-spacing: -0.02em;
-      max-width: 600px; margin-bottom: 1.25rem;
-    }
-    .hero h1 em { font-style: italic; color: var(--gold); }
-    .hero p { font-size: 0.95rem; color: var(--text2); max-width: 500px; line-height: 1.7; }
+<!-- Twitter / X Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://jiaweb-dw6.pages.dev/">
+<meta name="twitter:title" content="JIA · Web Developer">
+<meta name="twitter:description" content="Web Application Developer berbasis di Malang. Membangun aplikasi web modern, fungsional, dan estetis.">
+<meta name="twitter:image" content="https://jiaweb-dw6.pages.dev/og-image.png">
 
-    .filter-wrap { border-bottom: 1px solid var(--border); }
-    .filter-header {
-      padding: 0.85rem clamp(1.5rem, 6vw, 5rem);
-      display: flex; align-items: center; gap: 0.75rem; cursor: pointer; user-select: none;
-    }
-    .filter-label { font-size: 0.72rem; color: var(--text3); font-family: 'DM Mono', monospace; letter-spacing: 0.1em; }
-    .filter-active-tag { font-size: 0.72rem; color: var(--gold); font-family: 'DM Mono', monospace; }
-    .filter-toggle-btn {
-      margin-left: auto; font-size: 0.72rem; font-family: 'DM Mono', monospace;
-      color: var(--text3); background: none; border: 1px solid var(--border);
-      padding: 0.22rem 0.75rem; border-radius: 100px; cursor: pointer;
-      transition: all 0.2s; display: flex; align-items: center; gap: 0.35rem; line-height: 1.4;
-    }
-    .filter-header:hover .filter-toggle-btn { border-color: var(--text2); color: var(--text2); }
-    .filter-arrow { transition: transform 0.3s ease; display: inline-block; font-size: 0.9rem; }
-    .filter-wrap.open .filter-arrow { transform: rotate(180deg); }
-    .filter-tags {
-      padding: 0 clamp(1.5rem, 6vw, 5rem);
-      display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;
-      max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding-bottom 0.3s ease;
-      padding-bottom: 0;
-    }
-    .filter-wrap.open .filter-tags { max-height: 600px; padding-bottom: 1.25rem; }
-    .tag {
-      font-size: 0.75rem; font-weight: 500; padding: 0.35rem 0.85rem;
-      border-radius: 100px; border: 1px solid var(--border);
-      cursor: pointer; transition: all 0.2s; color: var(--text2); user-select: none;
-    }
-    .tag:hover, .tag.active { background: var(--gold); color: var(--bg); border-color: var(--gold); }
+<!-- Extra SEO -->
+<meta name="author" content="JIA">
+<meta name="keywords" content="web developer, web application, Malang, Supabase, JavaScript, freelance developer, pembuatan website">
+<link rel="canonical" href="https://jiaweb-dw6.pages.dev/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════ */
+:root {
+  --bg:          #FAFBFF;
+  --bg-2:        #F1F4FE;
+  --bg-3:        #E8EDFD;
+  --surface:     #FFFFFF;
+  --border:      #E2E8F0;
+  --border-2:    #C7D2FE;
+  --ink:         #0F172A;
+  --ink-2:       #334155;
+  --ink-3:       #64748B;
+  --ink-4:       #94A3B8;
+  --accent:      #4F46E5;
+  --accent-2:    #6366F1;
+  --accent-3:    #818CF8;
+  --accent-bg:   #EEF2FF;
+  --accent-dark: #3730A3;
+  --success:     #059669;
+  --font:        'Plus Jakarta Sans', system-ui, sans-serif;
+  --mono:        'JetBrains Mono', monospace;
+  --r-sm:        6px;
+  --r-md:        10px;
+  --r-lg:        16px;
+  --r-xl:        24px;
+  --shadow-sm:   0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:   0 4px 16px rgba(79,70,229,.08), 0 1px 4px rgba(0,0,0,.04);
+  --shadow-lg:   0 8px 32px rgba(79,70,229,.12), 0 2px 8px rgba(0,0,0,.06);
+  --nav-h:       64px;
+  --max:         1120px;
+  --ease:        cubic-bezier(.25,.46,.45,.94);
+}
+[data-theme="dark"] {
+  --bg:          #0D0F1A;
+  --bg-2:        #131520;
+  --bg-3:        #1A1D2E;
+  --surface:     #1A1D2E;
+  --border:      #252840;
+  --border-2:    #3730A3;
+  --ink:         #F1F5F9;
+  --ink-2:       #CBD5E1;
+  --ink-3:       #94A3B8;
+  --ink-4:       #64748B;
+  --accent:      #818CF8;
+  --accent-2:    #A5B4FC;
+  --accent-3:    #C7D2FE;
+  --accent-bg:   #1E1B4B;
+  --accent-dark: #C7D2FE;
+  --shadow-sm:   0 1px 3px rgba(0,0,0,.3);
+  --shadow-md:   0 4px 16px rgba(0,0,0,.3);
+  --shadow-lg:   0 8px 32px rgba(0,0,0,.4);
+}
 
-    .grid {
-      display: grid; grid-template-columns: repeat(6, 1fr);
-      gap: 1.5px; border-top: 1px solid var(--border);
-    }
-    .card {
-      background: var(--bg2); position: relative; overflow: hidden;
-      border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
-      transition: background 0.25s;
-    }
-    .card:hover { background: var(--bg3); }
-    .card-preview {
-      aspect-ratio: 16/10; background: var(--bg3);
-      display: flex; align-items: center; justify-content: center;
-      position: relative; overflow: hidden; border-bottom: 1px solid var(--border);
-    }
-    .card-preview iframe {
-      width: 200%; height: 200%;
-      transform: scale(0.5); transform-origin: top left;
-      border: none; pointer-events: none;
-    }
-    .card-preview-overlay {
-      position: absolute; inset: 0; background: rgba(0,0,0,0.35); z-index: 1;
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity 0.25s;
-    }
-    .card:hover .card-preview-overlay { opacity: 1; }
-    .preview-btn {
-      background: var(--gold); color: var(--bg);
-      font-weight: 700; font-size: 0.8rem; padding: 0.6rem 1.25rem;
-      border-radius: 8px; display: flex; align-items: center; gap: 0.4rem;
-    }
+/* ═══════════════════════════════
+   RESET & BASE
+═══════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--ink);
+  background: var(--bg);
+  transition: background .3s var(--ease), color .3s var(--ease);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+button { cursor: pointer; font-family: var(--font); }
 
-    .card-body { padding: 1.5rem; }
-    .card-num { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--text3); margin-bottom: 0.5rem; }
-    .card-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.4rem; }
-    .card-desc { font-size: 0.82rem; color: var(--text2); line-height: 1.6; margin-bottom: 1rem; }
-    .card-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
-    .card-tag {
-      font-size: 0.68rem; padding: 0.2rem 0.55rem; border-radius: 4px;
-      background: var(--bg3); color: var(--text3); border: 1px solid var(--border);
-    }
-    .card-actions { display: flex; gap: 0.5rem; }
-    .btn-use {
-      flex: 1; text-align: center; font-size: 0.82rem; font-weight: 600;
-      background: var(--gold); color: var(--bg); padding: 0.6rem 1rem; border-radius: 8px;
-      transition: background 0.2s, transform 0.15s;
-    }
-    .btn-use:hover { background: var(--gold2); transform: translateY(-1px); }
-    .btn-dl {
-      font-size: 0.82rem; font-weight: 500; color: var(--text2);
-      padding: 0.6rem 1rem; border-radius: 8px;
-      border: 1px solid var(--border); transition: all 0.2s;
-    }
-    .btn-dl:hover { border-color: var(--text2); color: var(--text); }
+/* ═══════════════════════════════
+   LAYOUT
+═══════════════════════════════ */
+.container { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+section { padding: 96px 0; }
 
-    /* Badge NEW */
-    .badge-new {
-      display: inline-flex; align-items: center;
-      font-family: 'DM Mono', monospace; font-size: 0.6rem; font-weight: 500;
-      background: #22C55E; color: #000; padding: 0.15rem 0.45rem;
-      border-radius: 4px; letter-spacing: 0.08em; margin-left: 0.4rem;
-      vertical-align: middle; animation: newPulse 2s ease-in-out infinite;
-    }
-    @keyframes newPulse {
-      0%, 100% { opacity: 1; } 50% { opacity: 0.7; }
-    }
-    .card[data-new="true"] .card-num::after {
-      content: 'NEW';
-      display: inline-flex; margin-left: 0.4rem;
-      font-size: 0.58rem; background: #22C55E; color: #000;
-      padding: 0.1rem 0.4rem; border-radius: 3px; letter-spacing: 0.06em;
-      animation: newPulse 2s ease-in-out infinite;
-    }
-    /* Banner notifikasi template baru */
-    .new-banner {
-      background: linear-gradient(90deg, #14532D, #166534);
-      border-bottom: 1px solid rgba(34,197,94,0.3);
-      padding: 0.65rem clamp(1.5rem, 6vw, 5rem);
-      display: flex; align-items: center; gap: 0.75rem;
-      font-size: 0.8rem; color: #BBF7D0;
-    }
-    .new-banner .new-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: #22C55E; flex-shrink: 0;
-      box-shadow: 0 0 8px #22C55E;
-      animation: newPulse 1.5s ease-in-out infinite;
-    }
-    .new-banner strong { color: #4ADE80; }
+/* ═══════════════════════════════
+   LANGUAGE — hide/show content
+═══════════════════════════════ */
+[data-lang="id"] .en { display: none !important; }
+[data-lang="en"] .id { display: none !important; }
 
-    footer {
-      padding: 2rem clamp(1.5rem, 6vw, 5rem);
-      border-top: 1px solid var(--border);
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
-      font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--text3);
-    }
+/* ═══════════════════════════════
+   NAVIGATION
+═══════════════════════════════ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  z-index: 999;
+  transition: background .3s, backdrop-filter .3s, border-color .3s;
+}
+.nav.scrolled {
+  background: rgba(250,251,255,.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+[data-theme="dark"] .nav.scrolled {
+  background: rgba(13,15,26,.88);
+}
+.nav-inner {
+  max-width: var(--max); margin: 0 auto; padding: 0 24px;
+  height: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  font-size: 18px; font-weight: 700; color: var(--ink);
+  display: flex; align-items: center; gap: 8px;
+}
+.nav-logo .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.nav-links { display: flex; align-items: center; gap: 4px; }
+.nav-links a {
+  font-size: 14px; font-weight: 500; color: var(--ink-3);
+  padding: 6px 12px; border-radius: var(--r-sm);
+  transition: color .2s, background .2s;
+}
+.nav-links a:hover { color: var(--ink); background: var(--bg-2); }
+.nav-actions { display: flex; align-items: center; gap: 8px; }
+.btn-lang, .btn-theme {
+  width: 36px; height: 36px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink-3);
+  font-size: 14px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.btn-lang:hover, .btn-theme:hover { color: var(--ink); border-color: var(--border-2); }
+.btn-cta-nav {
+  padding: 8px 16px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--r-sm);
+  font-size: 13px; font-weight: 600;
+  transition: opacity .2s, transform .2s;
+}
+.btn-cta-nav:hover { opacity: .9; transform: translateY(-1px); }
 
-    @media (max-width: 1400px) { .grid { grid-template-columns: repeat(5, 1fr); } }
-    @media (max-width: 1100px) { .grid { grid-template-columns: repeat(4, 1fr); } }
-    @media (max-width: 860px)  { .grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 600px)  { .grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 380px)  { .grid { grid-template-columns: 1fr; } }
-  </style>
+/* Mobile nav */
+.nav-hamburger {
+  display: none;
+  width: 36px; height: 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 18px;
+  align-items: center; justify-content: center;
+}
+.nav-mobile {
+  display: none;
+  position: fixed; top: var(--nav-h); left: 0; right: 0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 24px;
+  flex-direction: column; gap: 4px;
+  z-index: 998;
+}
+.nav-mobile.open { display: flex; }
+.nav-mobile a {
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+  font-size: 15px; font-weight: 500;
+  color: var(--ink-2);
+}
+.nav-mobile a:hover { background: var(--bg-2); }
+
+/* ═══════════════════════════════
+   HERO
+═══════════════════════════════ */
+.hero {
+  padding-top: calc(var(--nav-h) + 80px);
+  padding-bottom: 96px;
+  min-height: 100svh;
+  display: flex; align-items: center;
+}
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 48px; align-items: center;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--accent-bg);
+  border: 1px solid var(--border-2);
+  border-radius: 999px;
+  padding: 4px 14px 4px 6px;
+  font-size: 12px; font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 24px;
+}
+.hero-badge .dot-pulse {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--success);
+  position: relative;
+}
+.hero-badge .dot-pulse::after {
+  content: '';
+  position: absolute; inset: -3px;
+  border-radius: 50%;
+  border: 1.5px solid var(--success);
+  animation: pulse 1.8s ease-out infinite;
+}
+@keyframes pulse {
+  0% { transform: scale(1); opacity: .8; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+.hero-title {
+  font-size: clamp(40px, 5vw, 64px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  margin-bottom: 20px;
+}
+.hero-title .accent { color: var(--accent); }
+.hero-sub {
+  font-size: clamp(16px, 1.5vw, 19px);
+  color: var(--ink-3);
+  max-width: 480px;
+  line-height: 1.7;
+  margin-bottom: 36px;
+}
+.hero-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 48px; }
+.btn-primary {
+  padding: 13px 28px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--r-md);
+  font-size: 15px; font-weight: 600;
+  transition: all .2s;
+  display: inline-flex; align-items: center; gap: 8px;
+  box-shadow: 0 4px 14px rgba(79,70,229,.3);
+}
+.btn-primary:hover { background: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(79,70,229,.4); }
+.btn-secondary {
+  padding: 12px 24px;
+  background: transparent;
+  color: var(--ink-2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: 15px; font-weight: 600;
+  transition: all .2s;
+}
+.btn-secondary:hover { border-color: var(--accent-3); color: var(--accent); }
+.hero-stack { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.hero-stack span { font-size: 12px; color: var(--ink-4); }
+.stack-pill {
+  font-size: 11px; font-weight: 600;
+  font-family: var(--mono);
+  background: var(--bg-2);
+  color: var(--ink-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 9px;
+  letter-spacing: .03em;
+}
+
+/* Hero card / code mockup */
+.hero-visual {
+  position: relative;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 28px;
+  box-shadow: var(--shadow-lg);
+  position: relative; overflow: hidden;
+}
+.hero-card::before {
+  content: '';
+  position: absolute; top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(99,102,241,.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.code-bar {
+  display: flex; align-items: center; gap: 6px;
+  margin-bottom: 18px;
+}
+.code-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.code-dot:nth-child(1) { background: #FF5F57; }
+.code-dot:nth-child(2) { background: #FFBD2E; }
+.code-dot:nth-child(3) { background: #28C840; }
+.code-file {
+  margin-left: auto; font-size: 11px;
+  font-family: var(--mono);
+  color: var(--ink-4);
+}
+.code-block {
+  font-family: var(--mono);
+  font-size: 13px; line-height: 1.8;
+}
+.c-k { color: #818CF8; }
+.c-fn { color: #34D399; }
+.c-str { color: #FB923C; }
+.c-cm { color: var(--ink-4); font-style: italic; }
+.c-var { color: var(--ink-2); }
+.c-accent { color: #F472B6; }
+
+.metric-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-top: 18px;
+}
+.metric-card {
+  background: var(--bg-2);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+}
+.metric-num {
+  font-size: 22px; font-weight: 700;
+  color: var(--accent);
+  font-family: var(--mono);
+}
+.metric-label { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+
+/* ═══════════════════════════════
+   SECTION HEADERS
+═══════════════════════════════ */
+.section-eyebrow {
+  font-size: 12px; font-weight: 700;
+  color: var(--accent);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.section-title {
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+.section-desc {
+  font-size: 17px;
+  color: var(--ink-3);
+  max-width: 540px;
+  line-height: 1.7;
+}
+.section-header { margin-bottom: 56px; }
+
+/* ═══════════════════════════════
+   ABOUT
+═══════════════════════════════ */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 64px; align-items: center;
+}
+.about-photo {
+  position: relative;
+  width: 100%; max-width: 340px;
+}
+.photo-frame {
+  width: 300px; height: 360px;
+  background: var(--bg-3);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 64px;
+  position: relative; overflow: hidden;
+}
+.photo-badge {
+  position: absolute; bottom: -12px; right: -12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 10px 16px;
+  box-shadow: var(--shadow-md);
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600;
+}
+.skills-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; margin-top: 32px;
+}
+.skill-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: 13px; font-weight: 500;
+  transition: border-color .2s, box-shadow .2s;
+}
+.skill-item:hover { border-color: var(--border-2); box-shadow: var(--shadow-sm); }
+.skill-icon {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: var(--accent-bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+
+/* ═══════════════════════════════
+   SERVICES
+═══════════════════════════════ */
+.services-bg { background: var(--bg-2); }
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+.service-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 28px 24px;
+  transition: all .25s var(--ease);
+  position: relative; overflow: hidden;
+}
+.service-card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--accent);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .3s var(--ease);
+}
+.service-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--border-2); }
+.service-card:hover::after { transform: scaleX(1); }
+.service-icon {
+  width: 48px; height: 48px;
+  border-radius: var(--r-md);
+  background: var(--accent-bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; margin-bottom: 18px;
+}
+.service-title { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.service-desc { font-size: 14px; color: var(--ink-3); line-height: 1.6; margin-bottom: 16px; }
+.service-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag {
+  font-size: 10px; font-weight: 600;
+  background: var(--bg-2);
+  color: var(--ink-3);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-family: var(--mono);
+}
+
+/* ═══════════════════════════════
+   PROJECTS
+═══════════════════════════════ */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+.project-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  transition: all .25s var(--ease);
+}
+.project-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--border-2); }
+.project-thumb {
+  height: 200px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.project-thumb.jaranan {
+  background: linear-gradient(135deg, #1B5E20 0%, #2D6A2F 50%, #388E3C 100%);
+}
+.project-thumb.templates {
+  background: linear-gradient(135deg, #3730A3 0%, #4F46E5 50%, #6366F1 100%);
+}
+.project-thumb.placeholder {
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+}
+.project-thumb-label {
+  font-size: 48px;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.3));
+}
+.project-thumb .project-badge {
+  position: absolute; top: 16px; right: 16px;
+  font-size: 10px; font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: .05em;
+}
+.badge-live { background: rgba(5,150,105,.9); color: white; }
+.badge-dev  { background: rgba(234,179,8,.9); color: #1c1c00; }
+.badge-soon { background: rgba(100,116,139,.7); color: white; }
+.project-body { padding: 24px; }
+.project-title { font-size: 19px; font-weight: 700; margin-bottom: 8px; }
+.project-desc { font-size: 14px; color: var(--ink-3); line-height: 1.6; margin-bottom: 16px; }
+.project-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+.project-footer { display: flex; align-items: center; justify-content: space-between; }
+.project-link {
+  font-size: 13px; font-weight: 600; color: var(--accent);
+  display: flex; align-items: center; gap: 5px;
+  transition: gap .2s;
+}
+.project-link:hover { gap: 8px; }
+.project-stat {
+  font-size: 12px; color: var(--ink-4);
+  font-family: var(--mono);
+}
+
+/* ═══════════════════════════════
+   TECH STACK
+═══════════════════════════════ */
+.stack-bg { background: var(--bg-2); }
+.stack-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 14px;
+}
+.stack-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 18px 12px;
+  text-align: center;
+  transition: all .2s;
+}
+.stack-item:hover { border-color: var(--border-2); box-shadow: var(--shadow-sm); transform: translateY(-2px); }
+.stack-item-icon { font-size: 28px; margin-bottom: 8px; }
+.stack-item-name { font-size: 12px; font-weight: 600; color: var(--ink-2); }
+.stack-item-sub { font-size: 10px; color: var(--ink-4); margin-top: 2px; }
+
+/* ═══════════════════════════════
+   PROCESS
+═══════════════════════════════ */
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0;
+  position: relative;
+}
+.process-step {
+  padding: 32px 24px;
+  position: relative;
+}
+.step-num {
+  font-size: 48px; font-weight: 800;
+  font-family: var(--mono);
+  color: var(--accent-3);
+  opacity: .3; line-height: 1;
+  margin-bottom: 12px;
+}
+.step-title { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.step-desc { font-size: 13px; color: var(--ink-3); line-height: 1.6; }
+.process-step::after {
+  content: '';
+  position: absolute; top: 40px; right: 0;
+  width: 1px; height: 60px;
+  background: var(--border);
+}
+.process-step:last-child::after { display: none; }
+
+/* ═══════════════════════════════
+   CONTACT
+═══════════════════════════════ */
+.contact-wrap {
+  max-width: 680px; margin: 0 auto; text-align: center;
+}
+.contact-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 48px;
+  margin-top: 48px;
+  box-shadow: var(--shadow-md);
+}
+.contact-form { display: flex; flex-direction: column; gap: 16px; text-align: left; margin-top: 32px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.form-input, .form-textarea {
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 15px; font-family: var(--font);
+  transition: border-color .2s, box-shadow .2s;
+  outline: none;
+}
+.form-input:focus, .form-textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79,70,229,.1);
+}
+.form-textarea { min-height: 120px; resize: vertical; }
+.btn-submit {
+  padding: 14px 32px;
+  background: var(--accent);
+  color: white; border: none;
+  border-radius: var(--r-md);
+  font-size: 15px; font-weight: 600;
+  font-family: var(--font);
+  transition: all .2s;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(79,70,229,.25);
+}
+.btn-submit:hover { background: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(79,70,229,.35); }
+.contact-alt {
+  display: flex; align-items: center; justify-content: center;
+  gap: 20px; margin-top: 28px; flex-wrap: wrap;
+}
+.contact-link {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 14px; color: var(--ink-3);
+  transition: color .2s;
+}
+.contact-link:hover { color: var(--accent); }
+.contact-icon {
+  width: 32px; height: 32px;
+  border-radius: var(--r-sm);
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+}
+
+/* ═══════════════════════════════
+   FOOTER
+═══════════════════════════════ */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 0;
+  background: var(--surface);
+}
+.footer-inner {
+  max-width: var(--max); margin: 0 auto; padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+}
+.footer-copy { font-size: 13px; color: var(--ink-4); }
+.footer-copy strong { color: var(--ink-2); }
+.footer-links { display: flex; gap: 16px; }
+.footer-links a { font-size: 13px; color: var(--ink-4); transition: color .2s; }
+.footer-links a:hover { color: var(--accent); }
+
+/* ═══════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════ */
+.reveal { animation: fadeInUp .55s ease both; }
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+.reveal-delay-1 { transition-delay: .08s; }
+.reveal-delay-2 { transition-delay: .16s; }
+.reveal-delay-3 { transition-delay: .24s; }
+
+/* ═══════════════════════════════
+   RESPONSIVE
+═══════════════════════════════ */
+@media (max-width: 768px) {
+  section { padding: 64px 0; }
+  .hero { padding-top: calc(var(--nav-h) + 40px); padding-bottom: 64px; min-height: unset; }
+  .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+  .hero-visual { order: -1; }
+  .hero-card { padding: 20px; }
+  .hero-title { font-size: 36px; }
+  .about-grid { grid-template-columns: 1fr; }
+  .about-photo { margin: 0 auto; }
+  .photo-frame { width: 220px; height: 260px; }
+  .nav-links, .btn-cta-nav { display: none; }
+  .nav-hamburger { display: flex; }
+  .form-row { grid-template-columns: 1fr; }
+  .contact-card { padding: 28px 20px; }
+  .process-step::after { display: none; }
+  .code-block { font-size: 11px; }
+  .metric-row { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 480px) {
+  .skills-grid { grid-template-columns: 1fr; }
+  .hero-actions { flex-direction: column; align-items: flex-start; }
+}
+
+/* ═══════════════════════════════
+   MISC
+═══════════════════════════════ */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0;
+}
+::selection { background: rgba(99,102,241,.2); color: var(--ink); }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--accent-3); border-radius: 3px; }
+</style>
 </head>
 <body>
 
-<!-- Banner notifikasi template baru -->
-<div class="new-banner">
-  <span class="new-dot"></span>
-  <span><strong>✦ 31 Template Baru Ditambahkan</strong> — Instansi, Sekolah, Marketplace, RS, Kasir, Database, Perpustakaan, Koperasi, Apotek, Portal Desa, ERP, API Platform, No-Code DB, Trading/Saham, Screener, Wealth Mgmt, AI Writing, AI Image, AI Automation, Perpustakaan Akademik, E-Library, Repositori Institusi, Perpustakaan Umum Kota, Multimedia Library &amp; Warisan Budaya. Filter <strong>"Terbaru"</strong> untuk melihat semuanya.</span>
+<!-- ═══════════════════════════════
+     NAVIGATION
+═══════════════════════════════ -->
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="dot"></div>
+      <span>JIA</span>
+    </a>
+    <div class="nav-links">
+      <a href="#about" class="id">Tentang</a><a href="#about" class="en">About</a>
+      <a href="#services" class="id">Layanan</a><a href="#services" class="en">Services</a>
+      <a href="#projects" class="id">Proyek</a><a href="#projects" class="en">Projects</a>
+      <a href="#contact" class="id">Kontak</a><a href="#contact" class="en">Contact</a>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-lang" onclick="toggleLang()" id="langBtn" title="Ganti bahasa / Switch language">EN</button>
+      <button class="btn-theme" onclick="toggleTheme()" id="themeBtn" title="Ganti tema">🌙</button>
+      <a href="#contact" class="btn-cta-nav id">Hubungi Saya</a>
+      <a href="#contact" class="btn-cta-nav en">Hire Me</a>
+      <button class="nav-hamburger" id="hamburger" onclick="toggleMobile()" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Nav -->
+<div class="nav-mobile" id="mobileNav">
+  <a href="#about" class="id" onclick="closeMobile()">Tentang</a>
+  <a href="#about" class="en" onclick="closeMobile()">About</a>
+  <a href="#services" class="id" onclick="closeMobile()">Layanan</a>
+  <a href="#services" class="en" onclick="closeMobile()">Services</a>
+  <a href="#projects" class="id" onclick="closeMobile()">Proyek</a>
+  <a href="#projects" class="en" onclick="closeMobile()">Projects</a>
+  <a href="#contact" class="id" onclick="closeMobile()">Kontak</a>
+  <a href="#contact" class="en" onclick="closeMobile()">Contact</a>
 </div>
 
-<header>
-  <div>
-    <div class="logo"><span class="logo-dot"></span> Template Library</div>
-    <div class="logo-sub">Johan Iriawan Akbar</div>
-  </div>
-  <div class="header-right" id="count">62 templates</div>
-</header>
+<!-- ═══════════════════════════════
+     HERO
+═══════════════════════════════ -->
+<section class="hero" id="hero">
+  <div class="container">
+    <div class="hero-inner">
 
-<div class="hero">
-  <div class="hero-eyebrow">Personal Portfolio</div>
-  <h1>Koleksi <em>Template</em><br>Siap Pakai</h1>
-  <p>Kumpulan template website berbagai kategori. Setiap template adalah single-file HTML — tinggal salin, sesuaikan konten, dan deploy.</p>
-</div>
+      <div class="hero-content">
+        <div class="hero-badge">
+          <div class="dot-pulse"></div>
+          <span class="id">Tersedia untuk Proyek Baru</span>
+          <span class="en">Available for New Projects</span>
+        </div>
 
-<div class="filter-wrap" id="filterWrap">
-  <div class="filter-header" onclick="toggleFilter()">
-    <span class="filter-label">Filter:</span>
-    <span class="filter-active-tag" id="activeFilterLabel">Semua</span>
-    <button class="filter-toggle-btn"><span class="filter-arrow">▾</span> Tampilkan Filter</button>
-  </div>
-  <div class="filter-tags">
-    <span class="tag active" onclick="filter(this,'all')">Semua</span>
-    <span class="tag" onclick="filterNew(this)" style="border-color:#22C55E;color:#22C55E">✦ Terbaru</span>
-    <span class="tag" onclick="filter(this,'instansi')">Instansi</span>
-    <span class="tag" onclick="filter(this,'pendidikan')">Pendidikan</span>
-    <span class="tag" onclick="filter(this,'portofolio')">Portofolio</span>
-    <span class="tag" onclick="filter(this,'bisnis')">Bisnis</span>
-    <span class="tag" onclick="filter(this,'komunitas')">Komunitas</span>
-    <span class="tag" onclick="filter(this,'dokumen')">Sistem Arsip</span>
-    <span class="tag" onclick="filter(this,'perpustakaan')">Perpustakaan</span>
-    <span class="tag" onclick="filter(this,'perpusakademik')">Perpus Akademik</span>
-    <span class="tag" onclick="filter(this,'elibrary')">E-Library</span>
-    <span class="tag" onclick="filter(this,'repositori')">Repositori</span>
-    <span class="tag" onclick="filter(this,'studio')">Studio</span>
-    <span class="tag" onclick="filter(this,'event')">Event</span>
-    <span class="tag" onclick="filter(this,'kuliner')">Kuliner</span>
-    <span class="tag" onclick="filter(this,'blog')">Blog/Media</span>
-    <span class="tag" onclick="filter(this,'fitness')">Fitness</span>
-    <span class="tag" onclick="filter(this,'klinik')">Klinik</span>
-    <span class="tag" onclick="filter(this,'ecommerce')">E-Commerce</span>
-    <span class="tag" onclick="filter(this,'hotel')">Hotel</span>
-    <span class="tag" onclick="filter(this,'properti')">Properti</span>
-    <span class="tag" onclick="filter(this,'musik')">Musik</span>
-    <span class="tag" onclick="filter(this,'hukum')">Hukum</span>
-    <span class="tag" onclick="filter(this,'saas')">SaaS</span>
-    <span class="tag" onclick="filter(this,'neobrutalist')">Neo-Brutalist</span>
-    <span class="tag" onclick="filter(this,'wedding')">Wedding</span>
-    <span class="tag" onclick="filter(this,'fotografi')">Fotografi</span>
-    <span class="tag" onclick="filter(this,'aitech')">AI/Tech</span>
-    <span class="tag" onclick="filter(this,'travel')">Travel</span>
-    <span class="tag" onclick="filter(this,'analytics')">Analytics AI</span>
-    <span class="tag" onclick="filter(this,'security')">Cybersecurity</span>
-    <span class="tag" onclick="filter(this,'web3')">Web3 / Blockchain</span>
-    <span class="tag" onclick="filter(this,'projectmgmt')">Project Mgmt</span>
-    <span class="tag" onclick="filter(this,'bizanalytics')">Biz Analytics</span>
-    <span class="tag" onclick="filter(this,'hrtech')">HR / Talent</span>
-    <span class="tag" onclick="filter(this,'instansi2')">Instansi/BUMN</span>
-    <span class="tag" onclick="filter(this,'sekolah')">Sekolah</span>
-    <span class="tag" onclick="filter(this,'marketplace')">Marketplace</span>
-    <span class="tag" onclick="filter(this,'rumahsakit')">Rumah Sakit</span>
-    <span class="tag" onclick="filter(this,'kasir')">Kasir/POS</span>
-    <span class="tag" onclick="filter(this,'database')">Database</span>
-    <span class="tag" onclick="filter(this,'koperasi')">Koperasi</span>
-    <span class="tag" onclick="filter(this,'apotek')">Apotek</span>
-    <span class="tag" onclick="filter(this,'portaldesa')">Portal Desa</span>
-    <span class="tag" onclick="filter(this,'erp')">ERP System</span>
-    <span class="tag" onclick="filter(this,'apidev')">API Platform</span>
-    <span class="tag" onclick="filter(this,'nocode')">No-Code DB</span>
-    <span class="tag" onclick="filter(this,'trading')">Trading/Saham</span>
-    <span class="tag" onclick="filter(this,'screener')">Stock Screener</span>
-    <span class="tag" onclick="filter(this,'wealth')">Wealth Mgmt</span>
-    <span class="tag" onclick="filter(this,'ai')">AI (semua)</span>
-    <span class="tag" onclick="filter(this,'aiwriting')">AI Writing</span>
-    <span class="tag" onclick="filter(this,'aiimage')">AI Image</span>
-    <span class="tag" onclick="filter(this,'aiagent')">AI Automation</span>
-    <span class="tag" onclick="filter(this,'perpustakaankota')">Perpus Umum Kota</span>
-    <span class="tag" onclick="filter(this,'multimedia')">Multimedia Library</span>
-    <span class="tag" onclick="filter(this,'warisanbudaya')">Warisan Budaya</span>
-    <span class="tag" onclick="filter(this,'konsultan')">Konsultan / Agensi</span>
-    <span class="tag" onclick="filter(this,'saas')">SaaS Landing</span>
-    <span class="tag" onclick="filter(this,'dokumentasi')">Dokumentasi</span>
-    <span class="tag" onclick="filter(this,'booking')">Booking / Jadwal</span>
-    <span class="tag" onclick="filter(this,'invoice')">Invoice / Keuangan</span>
-    <span class="tag" onclick="filter(this,'direktori')">Direktori Bisnis</span>
-  </div>
-</div>
+        <h1 class="hero-title">
+          <span class="id">Membangun Aplikasi Web yang <span class="accent">Fungsional</span> &amp; Estetis</span>
+          <span class="en">Building Web Apps that are <span class="accent">Powerful</span> &amp; Beautiful</span>
+        </h1>
 
-<div class="grid" id="grid">
+        <p class="hero-sub id">
+          Halo, saya JIA — web developer berbasis di Malang. Saya membantu bisnis dan institusi mewujudkan ide menjadi aplikasi web yang nyata, modern, dan mudah digunakan.
+        </p>
+        <p class="hero-sub en">
+          Hi, I'm JIA — a web developer based in Malang, Indonesia. I help businesses and institutions turn ideas into real, modern, and intuitive web applications.
+        </p>
 
-  <!-- 01 Instansi -->
-  <div class="card" data-cat="instansi">
-    <div class="card-preview">
-      <iframe src="templates/01-instansi/template-instansi.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/01-instansi/template-instansi.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
+        <div class="hero-actions">
+          <a href="#contact" class="btn-primary id">
+            Diskusi Proyek →
+          </a>
+          <a href="#contact" class="btn-primary en">
+            Start a Project →
+          </a>
+          <a href="#projects" class="btn-secondary id">Lihat Karya</a>
+          <a href="#projects" class="btn-secondary en">View Work</a>
+        </div>
+
+        <div class="hero-stack">
+          <span class="id">Tech stack:</span>
+          <span class="en">Stack:</span>
+          <span class="stack-pill">HTML</span>
+          <span class="stack-pill">CSS</span>
+          <span class="stack-pill">JavaScript</span>
+          <span class="stack-pill">Supabase</span>
+          <span class="stack-pill">Vercel</span>
+        </div>
       </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 01</div>
-      <div class="card-title">Instansi Pemerintah</div>
-      <div class="card-desc">Template formal untuk lembaga/instansi pemerintah. Hero editorial 2-kolom, layanan, statistik, tentang, berita, kontak, footer 4-kolom.</div>
-      <div class="card-tags">
-        <span class="card-tag">pemerintah</span><span class="card-tag">formal</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">responsive</span>
+
+      <!-- Code mockup -->
+      <div class="hero-visual reveal">
+        <div class="hero-card">
+          <div class="code-bar">
+            <div class="code-dot"></div>
+            <div class="code-dot"></div>
+            <div class="code-dot"></div>
+            <span class="code-file">app.js</span>
+          </div>
+          <div class="code-block">
+            <div><span class="c-k">const</span> <span class="c-fn">buildApp</span> <span class="c-var">= async () => {</span></div>
+            <div>&nbsp;&nbsp;<span class="c-k">const</span> <span class="c-var">client =</span> <span class="c-fn">supabase</span><span class="c-var">.</span><span class="c-fn">create</span><span class="c-var">(</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-str">process.env.SUPABASE_URL</span></div>
+            <div>&nbsp;&nbsp;<span class="c-var">);</span></div>
+            <div>&nbsp;</div>
+            <div>&nbsp;&nbsp;<span class="c-k">const</span> <span class="c-var">{ data } =</span> <span class="c-k">await</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-var">client</span><span class="c-accent">.from</span><span class="c-var">(</span><span class="c-str">'projects'</span><span class="c-var">)</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-accent">.select</span><span class="c-var">(</span><span class="c-str">'*'</span><span class="c-var">)</span></div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-accent">.eq</span><span class="c-var">(</span><span class="c-str">'status'</span><span class="c-var">,</span> <span class="c-str">'live'</span><span class="c-var">);</span></div>
+            <div>&nbsp;</div>
+            <div>&nbsp;&nbsp;<span class="c-fn">renderProjects</span><span class="c-var">(data);</span></div>
+            <div><span class="c-var">};</span></div>
+            <div>&nbsp;</div>
+            <div><span class="c-cm">// Deploy to production ✓</span></div>
+          </div>
+          <div class="metric-row">
+            <div class="metric-card">
+              <div class="metric-num">56+</div>
+              <div class="metric-label id">Template dibuat</div>
+              <div class="metric-label en">Templates built</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-num">3+</div>
+              <div class="metric-label id">Proyek aktif</div>
+              <div class="metric-label en">Active projects</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="card-actions">
-        <a href="templates/01-instansi/template-instansi.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/01-instansi/template-instansi.html" download class="btn-dl">Download</a>
-      </div>
+
     </div>
   </div>
+</section>
 
-  <!-- 02 Pendidikan -->
-  <div class="card" data-cat="pendidikan">
-    <div class="card-preview">
-      <iframe src="templates/02-pendidikan/template-pendidikan.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/02-pendidikan/template-pendidikan.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
+<hr class="divider">
+
+<!-- ═══════════════════════════════
+     ABOUT
+═══════════════════════════════ -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+
+      <div>
+        <p class="section-eyebrow id reveal">Tentang Saya</p>
+        <p class="section-eyebrow en reveal">About Me</p>
+
+        <h2 class="section-title reveal">
+          <span class="id">Developer yang juga peduli <span style="color:var(--accent)">desain</span></span>
+          <span class="en">Developer who also cares about <span style="color:var(--accent)">design</span></span>
+        </h2>
+
+        <p class="id reveal" style="color:var(--ink-3);line-height:1.8;margin-bottom:16px">
+          Saya membangun aplikasi web dari awal hingga siap produksi — mulai dari arsitektur database, backend Supabase, hingga antarmuka yang responsif dan ramah pengguna.
+        </p>
+        <p class="en reveal" style="color:var(--ink-3);line-height:1.8;margin-bottom:16px">
+          I build web applications from scratch to production — from database architecture, Supabase backend, to responsive and user-friendly interfaces.
+        </p>
+
+        <p class="id reveal" style="color:var(--ink-3);line-height:1.8;margin-bottom:24px">
+          Saya percaya bahwa aplikasi yang baik bukan hanya yang berjalan dengan benar, tapi juga yang terasa menyenangkan digunakan. Itu sebabnya saya selalu memperhatikan detail desain sama cermatnya seperti detail teknis.
+        </p>
+        <p class="en reveal" style="color:var(--ink-3);line-height:1.8;margin-bottom:24px">
+          I believe a great application isn't just one that works correctly, but one that feels good to use. That's why I always pay as much attention to design detail as to technical detail.
+        </p>
+
+        <div class="skills-grid reveal">
+          <div class="skill-item"><div class="skill-icon">🌐</div> Frontend Dev</div>
+          <div class="skill-item"><div class="skill-icon">🗄️</div> Supabase / DB</div>
+          <div class="skill-item"><div class="skill-icon">🎨</div> UI/UX Design</div>
+          <div class="skill-item"><div class="skill-icon">🚀</div> Vercel Deploy</div>
+          <div class="skill-item"><div class="skill-icon">📱</div> Responsive Web</div>
+          <div class="skill-item"><div class="skill-icon">🔐</div> Auth & RLS</div>
+        </div>
       </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 02</div>
-      <div class="card-title">Pendidikan / Universitas</div>
-      <div class="card-desc">Template akademik otoritatif untuk universitas & institusi pendidikan. Hero indigo dengan search bar, tabs program studi, pendaftaran CTA.</div>
-      <div class="card-tags">
-        <span class="card-tag">universitas</span><span class="card-tag">akademik</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">responsive</span>
+
+      <div class="about-photo reveal reveal-delay-1">
+        <div class="photo-frame" style="margin:0 auto">
+          <span>👨‍💻</span>
+          <!-- Ganti dengan: <img src="foto.jpg" alt="JIA" style="width:100%;height:100%;object-fit:cover"> -->
+        </div>
+        <div class="photo-badge">
+          <span>📍</span>
+          <span>Malang, Indonesia</span>
+        </div>
       </div>
-      <div class="card-actions">
-        <a href="templates/02-pendidikan/template-pendidikan.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/02-pendidikan/template-pendidikan.html" download class="btn-dl">Download</a>
-      </div>
+
     </div>
   </div>
+</section>
 
-  <!-- 03 Portofolio -->
-  <div class="card" data-cat="portofolio">
-    <div class="card-preview">
-      <iframe src="templates/03-portofolio/template-portofolio.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/03-portofolio/template-portofolio.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 03</div>
-      <div class="card-title">Portofolio Personal</div>
-      <div class="card-desc">Dark hacker aesthetic — near-black dengan electric lime. Custom cursor, tipografi Syne oversized, works list interaktif, about, kontak.</div>
-      <div class="card-tags">
-        <span class="card-tag">portofolio</span><span class="card-tag">developer</span>
-        <span class="card-tag">dark only</span><span class="card-tag">custom cursor</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/03-portofolio/template-portofolio.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/03-portofolio/template-portofolio.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
+<hr class="divider">
 
-  <!-- 04 Bisnis -->
-  <div class="card" data-cat="bisnis">
-    <div class="card-preview">
-      <iframe src="templates/04-bisnis/template-bisnis.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/04-bisnis/template-bisnis.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 04</div>
-      <div class="card-title">Bisnis / Startup / UMKM</div>
-      <div class="card-desc">Product-led SaaS landing page. Orange-red + charcoal, Fraunces optical serif, fitur grid, pricing 3-tier, testimonial, CTA band.</div>
-      <div class="card-tags">
-        <span class="card-tag">startup</span><span class="card-tag">SaaS</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">pricing</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/04-bisnis/template-bisnis.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/04-bisnis/template-bisnis.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 05 Komunitas -->
-  <div class="card" data-cat="komunitas">
-    <div class="card-preview">
-      <iframe src="templates/05-komunitas/template-komunitas.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/05-komunitas/template-komunitas.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 05</div>
-      <div class="card-title">Komunitas / NGO / Organisasi</div>
-      <div class="card-desc">Energetik teal + deep purple. Hero gelap dengan live fundraising card, dampak stats, program grid, form pendaftaran anggota, jadwal acara.</div>
-      <div class="card-tags">
-        <span class="card-tag">komunitas</span><span class="card-tag">NGO</span>
-        <span class="card-tag">donasi</span><span class="card-tag">responsive</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/05-komunitas/template-komunitas.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/05-komunitas/template-komunitas.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 06 Dokumen / Arsip -->
-  <div class="card" data-cat="dokumen">
-    <div class="card-preview">
-      <iframe src="templates/06-dokumen/template-dokumen.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/06-dokumen/template-dokumen.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 06</div>
-      <div class="card-title">Sistem Arsip Dokumen</div>
-      <div class="card-desc">Dashboard SaaS berbasis Dairy Meruno — dark navy + cyan + amber, DM Serif Display, mockup interaktif, AI summary panel, search demo, upload zone.</div>
-      <div class="card-tags">
-        <span class="card-tag">dashboard</span><span class="card-tag">SaaS</span>
-        <span class="card-tag">dark only</span><span class="card-tag">AI-powered</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/06-dokumen/template-dokumen.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/06-dokumen/template-dokumen.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
+<!-- ═══════════════════════════════
+     SERVICES
+═══════════════════════════════ -->
+<section id="services" class="services-bg">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-eyebrow id reveal">Layanan</p>
+      <p class="section-eyebrow en reveal">Services</p>
+      <h2 class="section-title reveal">
+        <span class="id">Apa yang bisa saya bantu?</span>
+        <span class="en">How can I help you?</span>
+      </h2>
+      <p class="section-desc id reveal">Dari ide ke produksi — saya handle semua lapisan pembangunan aplikasi web.</p>
+      <p class="section-desc en reveal">From idea to production — I handle every layer of web application development.</p>
     </div>
 
-  <!-- 07 Perpustakaan / Naskah Kuno -->
-  <div class="card" data-cat="perpustakaan">
-    <div class="card-preview">
-      <iframe src="templates/07-perpustakaan/template-perpustakaan.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/07-perpustakaan/template-perpustakaan.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="service-icon">🖥️</div>
+        <div class="service-title id">Pengembangan Aplikasi Web</div>
+        <div class="service-title en">Web Application Development</div>
+        <p class="service-desc id">Membangun aplikasi web custom — dari sistem manajemen data, portal institusi, hingga dashboard admin yang lengkap dan fungsional.</p>
+        <p class="service-desc en">Building custom web applications — from data management systems, institutional portals, to full-featured admin dashboards.</p>
+        <div class="service-tags">
+          <span class="tag">HTML/CSS</span>
+          <span class="tag">JavaScript</span>
+          <span class="tag">Supabase</span>
+          <span class="tag">CRUD</span>
+        </div>
       </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 07</div>
-      <div class="card-title">Perpustakaan / Warisan Digital</div>
-      <div class="card-desc">Repositori naskah kuno berbasis JARANAN. Parchment + espresso + gold, Cormorant Garamond, katalog naskah, aksara chart, dua tema light/dark.</div>
-      <div class="card-tags">
-        <span class="card-tag">perpustakaan</span><span class="card-tag">budaya</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">scholarly</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/07-perpustakaan/template-perpustakaan.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/07-perpustakaan/template-perpustakaan.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
 
-  <!-- 08 Design Studio -->
-  <div class="card" data-cat="studio">
-    <div class="card-preview">
-      <iframe src="templates/08-studio/template-studio.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/08-studio/template-studio.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-icon">🎨</div>
+        <div class="service-title id">Desain UI/UX</div>
+        <div class="service-title en">UI/UX Design</div>
+        <p class="service-desc id">Mendesain antarmuka yang indah dan intuitif. Fokus pada pengalaman pengguna yang baik, responsif di semua perangkat, dan konsisten secara visual.</p>
+        <p class="service-desc en">Designing beautiful and intuitive interfaces. Focus on good user experience, responsive across all devices, and visually consistent.</p>
+        <div class="service-tags">
+          <span class="tag">Responsive</span>
+          <span class="tag">Dark Mode</span>
+          <span class="tag">Mobile-First</span>
+        </div>
       </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 08</div>
-      <div class="card-title">Design Studio / Agensi Kreatif</div>
-      <div class="card-desc">Strategy-led creative agency landing page berbasis Forma Studio. Near-black + gold amber + teal, Fraunces optical serif, marquee, work grid, services, process panel.</div>
-      <div class="card-tags">
-        <span class="card-tag">agensi</span><span class="card-tag">portfolio</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">marquee</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/08-studio/template-studio.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/08-studio/template-studio.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
 
-  <!-- 09 Forma Studio (original) -->
-  <div class="card" data-cat="studio">
-    <div class="card-preview">
-      <iframe src="templates/09-forma-studio/forma-studio.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/09-forma-studio/forma-studio.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-icon">🗄️</div>
+        <div class="service-title id">Backend & Database</div>
+        <div class="service-title en">Backend & Database</div>
+        <p class="service-desc id">Setup database Supabase, autentikasi pengguna, Row Level Security, dan REST API — semua yang dibutuhkan agar aplikasi berjalan aman dan skalabel.</p>
+        <p class="service-desc en">Supabase database setup, user authentication, Row Level Security, and REST API — everything needed for a secure and scalable application.</p>
+        <div class="service-tags">
+          <span class="tag">Supabase</span>
+          <span class="tag">PostgreSQL</span>
+          <span class="tag">Auth</span>
+          <span class="tag">RLS</span>
+        </div>
       </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 09</div>
-      <div class="card-title">Forma Studio (Original)</div>
-      <div class="card-desc">Landing page design studio asli — Fraunces + Plus Jakarta Sans + JetBrains Mono, gold amber + teal (dark) / burnt orange + blue (light), floating stat cards, services grid, work showcase, marquee, testimonial quote, CTA.</div>
-      <div class="card-tags">
-        <span class="card-tag">studio</span><span class="card-tag">agensi</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">original</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/09-forma-studio/forma-studio.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/09-forma-studio/forma-studio.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
 
-  <!-- 10 Event / Konferensi -->
-  <div class="card" data-cat="event">
-    <div class="card-preview">
-      <iframe src="templates/10-event/template-event.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/10-event/template-event.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 10</div>
-      <div class="card-title">Event & Konferensi</div>
-      <div class="card-desc">Template konferensi teknologi/startup — Space Grotesk + Inter, electric yellow accent. Countdown timer, speakers grid, agenda tab Day 1/Day 2, tiket 3 tier, accordion FAQ.</div>
-      <div class="card-tags">
-        <span class="card-tag">event</span><span class="card-tag">konferensi</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">countdown</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/10-event/template-event.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/10-event/template-event.html" download class="btn-dl">Download</a>
+      <div class="service-card reveal reveal-delay-3">
+        <div class="service-icon">🚀</div>
+        <div class="service-title id">Deployment & Hosting</div>
+        <div class="service-title en">Deployment & Hosting</div>
+        <p class="service-desc id">Deploy aplikasi ke Vercel dengan konfigurasi domain, HTTPS, dan CI/CD otomatis. Situs live dalam hitungan menit.</p>
+        <p class="service-desc en">Deploy applications to Vercel with domain configuration, HTTPS, and automatic CI/CD. Site goes live in minutes.</p>
+        <div class="service-tags">
+          <span class="tag">Vercel</span>
+          <span class="tag">CI/CD</span>
+          <span class="tag">Custom Domain</span>
+          <span class="tag">HTTPS</span>
+        </div>
       </div>
     </div>
   </div>
+</section>
 
-  <!-- 11 Kuliner / Restoran -->
-  <div class="card" data-cat="kuliner">
-    <div class="card-preview">
-      <iframe src="templates/11-kuliner/template-kuliner.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/11-kuliner/template-kuliner.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 11</div>
-      <div class="card-title">Kuliner / Restoran</div>
-      <div class="card-desc">Fine dining Indonesia elegan — Cormorant Garamond + DM Sans, warm gold accent. Menu tabs 4 kategori, form reservasi, signature dishes, chef profile, private dining.</div>
-      <div class="card-tags">
-        <span class="card-tag">restoran</span><span class="card-tag">kuliner</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">reservasi</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/11-kuliner/template-kuliner.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/11-kuliner/template-kuliner.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
+<hr class="divider">
 
-  <!-- 12 Blog / Editorial -->
-  <div class="card" data-cat="blog">
-    <div class="card-preview">
-      <iframe src="templates/12-blog/template-blog.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/12-blog/template-blog.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
+<!-- ═══════════════════════════════
+     PROJECTS
+═══════════════════════════════ -->
+<section id="projects">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-eyebrow id reveal">Proyek</p>
+      <p class="section-eyebrow en reveal">Projects</p>
+      <h2 class="section-title reveal">
+        <span class="id">Karya pilihan saya</span>
+        <span class="en">Selected work</span>
+      </h2>
+      <p class="section-desc id reveal">Proyek nyata yang sudah dibangun dan digunakan oleh pengguna sesungguhnya.</p>
+      <p class="section-desc en reveal">Real projects that have been built and used by actual users.</p>
     </div>
-    <div class="card-body">
-      <div class="card-num">// 12</div>
-      <div class="card-title">Blog / Media / Editorial</div>
-      <div class="card-desc">Majalah online serius — Merriweather + Libre Franklin, vermillion accent, light only. Featured article hero, kategori topbar, grid artikel, kolom opini, newsletter.</div>
-      <div class="card-tags">
-        <span class="card-tag">blog</span><span class="card-tag">editorial</span>
-        <span class="card-tag">light only</span><span class="card-tag">media</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/12-blog/template-blog.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/12-blog/template-blog.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
 
-  <!-- 13 Fitness / Gym -->
-  <div class="card" data-cat="fitness">
-    <div class="card-preview">
-      <iframe src="templates/13-fitness/template-fitness.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/13-fitness/template-fitness.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 13</div>
-      <div class="card-title">Fitness / Gym</div>
-      <div class="card-desc">Gym center agresif & motivasional — Bebas Neue + Barlow, neon orange-red. Pricing toggle bulanan/tahunan, 6 program, jadwal kelas, trainer grid, transformasi.</div>
-      <div class="card-tags">
-        <span class="card-tag">gym</span><span class="card-tag">fitness</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">pricing toggle</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/13-fitness/template-fitness.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/13-fitness/template-fitness.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
+    <div class="projects-grid">
 
-  <!-- 14 Klinik / Kesehatan -->
-  <div class="card" data-cat="klinik">
-    <div class="card-preview">
-      <iframe src="templates/14-klinik/template-klinik.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/14-klinik/template-klinik.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
+      <!-- JARANAN -->
+      <div class="project-card reveal">
+        <div class="project-thumb jaranan">
+          <div class="project-thumb-label">📜</div>
+          <span class="project-badge badge-dev">In Progress</span>
+        </div>
+        <div class="project-body">
+          <h3 class="project-title id">JARANAN — Repositori Naskah Kuno</h3>
+          <h3 class="project-title en">JARANAN — Ancient Manuscript Repository</h3>
+          <p class="project-desc id">Sistem digitalisasi dan repositori naskah kuno untuk Dispussipda Kota Malang. Memungkinkan pencarian, pengelolaan, dan preservasi koleksi naskah bersejarah secara digital.</p>
+          <p class="project-desc en">A digitization and repository system for ancient manuscripts at Dispussipda Malang. Enables search, management, and digital preservation of historical manuscript collections.</p>
+          <div class="project-tags">
+            <span class="tag">HTML/CSS/JS</span>
+            <span class="tag">Supabase</span>
+            <span class="tag">Vercel</span>
+            <span class="tag">Institusi</span>
+          </div>
+          <div class="project-footer">
+            <span class="project-link id">Lihat Detail →</span>
+            <span class="project-link en">View Detail →</span>
+            <span class="project-stat">Stage 2 / 7</span>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 14</div>
-      <div class="card-title">Klinik / Kesehatan</div>
-      <div class="card-desc">Klinik swasta profesional & trustworthy — Nunito + Source Sans 3, medical teal. 8 layanan, 4 dokter, form janji online, alur 4 langkah, mitra asuransi.</div>
-      <div class="card-tags">
-        <span class="card-tag">klinik</span><span class="card-tag">medis</span>
-        <span class="card-tag">light/soft dark</span><span class="card-tag">janji online</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/14-klinik/template-klinik.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/14-klinik/template-klinik.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
 
-  <!-- 15 E-Commerce -->
-  <div class="card" data-cat="ecommerce">
-    <div class="card-preview">
-      <iframe src="templates/15-ecommerce/template-ecommerce.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/15-ecommerce/template-ecommerce.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
+      <!-- Template Library -->
+      <div class="project-card reveal reveal-delay-1">
+        <div class="project-thumb templates">
+          <div class="project-thumb-label">🎨</div>
+          <span class="project-badge badge-live">Live</span>
+        </div>
+        <div class="project-body">
+          <h3 class="project-title id">Template Library — 62+ Template HTML</h3>
+          <h3 class="project-title en">Template Library — 62+ HTML Templates</h3>
+          <p class="project-desc id">Koleksi template HTML siap pakai yang terus berkembang — instansi, startup, e-commerce, perpustakaan, SaaS, fintech, dan banyak lagi. Dibangun dengan HTML/CSS murni.</p>
+          <p class="project-desc en">A growing collection of ready-to-use HTML templates — government, startups, e-commerce, libraries, SaaS, fintech, and more. Built with pure HTML/CSS.</p>
+          <div class="project-tags">
+            <span class="tag">HTML</span>
+            <span class="tag">CSS</span>
+            <span class="tag">Vanilla JS</span>
+            <span class="tag">62+ templates</span>
+          </div>
+          <div class="project-footer">
+            <a href="gallery" target="_blank" class="project-link id">Lihat Gallery →</a>
+            <a href="gallery" target="_blank" class="project-link en">View Gallery →</a>
+            <span class="project-stat">jiaweb-dw6.pages.dev</span>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 15</div>
-      <div class="card-title">E-Commerce / Toko Online</div>
-      <div class="card-desc">Toko fashion/lifestyle artisan — Urbanist + DM Sans, terracotta accent. Slider CSS-only, 8 produk, kategori cepat, cart badge, wishlist toggle, newsletter diskon.</div>
-      <div class="card-tags">
-        <span class="card-tag">toko online</span><span class="card-tag">fashion</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">cart</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/15-ecommerce/template-ecommerce.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/15-ecommerce/template-ecommerce.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
 
-  <!-- 16 Hotel / Resort -->
-  <div class="card" data-cat="hotel">
-    <div class="card-preview">
-      <iframe src="templates/16-hotel/template-hotel.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/16-hotel/template-hotel.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
+      <!-- Placeholder -->
+      <div class="project-card reveal reveal-delay-2">
+        <div class="project-thumb placeholder">
+          <div class="project-thumb-label">⚡</div>
+          <span class="project-badge badge-soon">Coming Soon</span>
+        </div>
+        <div class="project-body">
+          <h3 class="project-title id">Proyek Selanjutnya</h3>
+          <h3 class="project-title en">Next Project</h3>
+          <p class="project-desc id">Punya ide proyek yang ingin diwujudkan? Hubungi saya dan kita diskusikan bersama — mulai dari concept, wireframe, hingga launch.</p>
+          <p class="project-desc en">Have a project idea you want to bring to life? Contact me and let's discuss — from concept, wireframe, all the way to launch.</p>
+          <div class="project-tags">
+            <span class="tag">Your Project</span>
+            <span class="tag">Idea → Reality</span>
+          </div>
+          <div class="project-footer">
+            <a href="#contact" class="project-link id">Diskusikan →</a>
+            <a href="#contact" class="project-link en">Let's Talk →</a>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 16</div>
-      <div class="card-title">Hotel / Resort Mewah</div>
-      <div class="card-desc">Luxury boutique hotel tropis — Cormorant Garamond + Jost, champagne gold. Navbar transparan, hero booking form inline, 4 tipe kamar, galeri masonry, spa & dining.</div>
-      <div class="card-tags">
-        <span class="card-tag">hotel</span><span class="card-tag">luxury</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">booking</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/16-hotel/template-hotel.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/16-hotel/template-hotel.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
 
-  <!-- 17 Real Estate / Properti -->
-  <div class="card" data-cat="properti">
-    <div class="card-preview">
-      <iframe src="templates/17-properti/template-properti.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/17-properti/template-properti.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 17</div>
-      <div class="card-title">Real Estate / Properti</div>
-      <div class="card-desc">Agen properti premium — Bodoni Moda + Plus Jakarta Sans, bronze accent. 6 listing, kalkulator KPR JS fungsional, filter tabs Dijual/Sewa, 4 agen, proses pembelian.</div>
-      <div class="card-tags">
-        <span class="card-tag">properti</span><span class="card-tag">real estate</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">kalkulator KPR</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/17-properti/template-properti.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/17-properti/template-properti.html" download class="btn-dl">Download</a>
-      </div>
     </div>
   </div>
+</section>
 
-  <!-- 18 Musik / Band -->
-  <div class="card" data-cat="musik">
-    <div class="card-preview">
-      <iframe src="templates/18-musik/template-musik.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/18-musik/template-musik.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 18</div>
-      <div class="card-title">Musik / Band / Konser</div>
-      <div class="card-desc">Indie/rock band Indonesia raw & bold — Anton + Manrope, hot red, dark only. Tracklist interaktif, tour dates + badge status, discography, merchandise, gallery konser.</div>
-      <div class="card-tags">
-        <span class="card-tag">musik</span><span class="card-tag">band</span>
-        <span class="card-tag">dark only</span><span class="card-tag">konser</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/18-musik/template-musik.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/18-musik/template-musik.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
+<hr class="divider">
 
-  <!-- 19 Hukum / Firma -->
-  <div class="card" data-cat="hukum">
-    <div class="card-preview">
-      <iframe src="templates/19-hukum/template-hukum.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/19-hukum/template-hukum.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
+<!-- ═══════════════════════════════
+     TECH STACK
+═══════════════════════════════ -->
+<section class="stack-bg">
+  <div class="container">
+    <div class="section-header" style="text-align:center">
+      <p class="section-eyebrow id reveal" style="justify-content:center;display:block">Teknologi</p>
+      <p class="section-eyebrow en reveal" style="justify-content:center;display:block">Tech Stack</p>
+      <h2 class="section-title reveal">
+        <span class="id">Tools yang saya gunakan</span>
+        <span class="en">Tools I work with</span>
+      </h2>
     </div>
-    <div class="card-body">
-      <div class="card-num">// 19</div>
-      <div class="card-title">Hukum / Firma / Konsultan</div>
-      <div class="card-desc">Firma hukum otoritatif & trustworthy — Lora + Inter, gold on dark navy. 8 bidang hukum, 4 pengacara, track record stats, artikel hukum, form konsultasi gratis.</div>
-      <div class="card-tags">
-        <span class="card-tag">hukum</span><span class="card-tag">firma</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">konsultan</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/19-hukum/template-hukum.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/19-hukum/template-hukum.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
 
-  <!-- 20 SaaS / Bento -->
-  <div class="card" data-cat="saas">
-    <div class="card-preview">
-      <iframe src="templates/20-saas/template-saas.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/20-saas/template-saas.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 20</div>
-      <div class="card-title">SaaS / Bento Dashboard</div>
-      <div class="card-desc">Bento grid SaaS landing modern — Inter + JetBrains Mono, indigo+violet. Feature bento cards, animated counter stats, pricing toggle bulanan/tahunan, dark/light mode.</div>
-      <div class="card-tags">
-        <span class="card-tag">saas</span><span class="card-tag">bento</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">pricing toggle</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/20-saas/template-saas.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/20-saas/template-saas.html" download class="btn-dl">Download</a>
-      </div>
+    <div class="stack-grid">
+      <div class="stack-item reveal"><div class="stack-item-icon">🌐</div><div class="stack-item-name">HTML5</div><div class="stack-item-sub">Markup</div></div>
+      <div class="stack-item reveal"><div class="stack-item-icon">🎨</div><div class="stack-item-name">CSS3</div><div class="stack-item-sub">Styling</div></div>
+      <div class="stack-item reveal"><div class="stack-item-icon">⚡</div><div class="stack-item-name">JavaScript</div><div class="stack-item-sub">ES2024</div></div>
+      <div class="stack-item reveal"><div class="stack-item-icon">🗄️</div><div class="stack-item-name">Supabase</div><div class="stack-item-sub">Backend</div></div>
+      <div class="stack-item reveal"><div class="stack-item-icon">🐘</div><div class="stack-item-name">PostgreSQL</div><div class="stack-item-sub">Database</div></div>
+      <div class="stack-item reveal"><div class="stack-item-icon">🚀</div><div class="stack-item-name">Vercel</div><div class="stack-item-sub">Deploy</div></div>
+      <div class="stack-item reveal"><div class="stack-item-icon">🔐</div><div class="stack-item-name">Supabase Auth</div><div class="stack-item-sub">Authentication</div></div>
+      <div class="stack-item reveal"><div class="stack-item-icon">📦</div><div class="stack-item-name">Git</div><div class="stack-item-sub">Version Control</div></div>
+      <div class="stack-item reveal"><div class="stack-item-icon">🐙</div><div class="stack-item-name">GitHub</div><div class="stack-item-sub">Repository</div></div>
+      <div class="stack-item reveal"><div class="stack-item-icon">📐</div><div class="stack-item-name">Figma</div><div class="stack-item-sub">Design</div></div>
+      <div class="stack-item reveal"><div class="stack-item-icon">⚛️</div><div class="stack-item-name">React</div><div class="stack-item-sub">UI Framework</div></div>
+      <div class="stack-item reveal"><div class="stack-item-icon">🔷</div><div class="stack-item-name">TypeScript</div><div class="stack-item-sub">Type Safety</div></div>
+      <div class="stack-item reveal"><div class="stack-item-icon">💨</div><div class="stack-item-name">Tailwind CSS</div><div class="stack-item-sub">CSS Framework</div></div>
+      <div class="stack-item reveal"><div class="stack-item-icon">🟢</div><div class="stack-item-name">Node.js</div><div class="stack-item-sub">Runtime</div></div>
+      <div class="stack-item reveal"><div class="stack-item-icon">🐍</div><div class="stack-item-name">Python</div><div class="stack-item-sub">Scripting</div></div>
+      <div class="stack-item reveal"><div class="stack-item-icon">⚡</div><div class="stack-item-name">Vite</div><div class="stack-item-sub">Build Tool</div></div>
     </div>
   </div>
+</section>
 
-  <!-- 21 Neo-Brutalist -->
-  <div class="card" data-cat="neobrutalist">
-    <div class="card-preview">
-      <iframe src="templates/21-neobrutalist/template-neobrutalist.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/21-neobrutalist/template-neobrutalist.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 21</div>
-      <div class="card-title">Neo-Brutalist / Bold</div>
-      <div class="card-desc">Desain neo-brutalist mencolok — Space Grotesk + IBM Plex Mono, kuning neon + hitam, border tebal. Hard shadows, raw aesthetic, tab filter portofolio, marquee ticker.</div>
-      <div class="card-tags">
-        <span class="card-tag">neobrutalist</span><span class="card-tag">bold</span>
-        <span class="card-tag">light only</span><span class="card-tag">portofolio</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/21-neobrutalist/template-neobrutalist.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/21-neobrutalist/template-neobrutalist.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
+<hr class="divider">
 
-  <!-- 22 Wedding -->
-  <div class="card" data-cat="wedding">
-    <div class="card-preview">
-      <iframe src="templates/22-wedding/template-wedding.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/22-wedding/template-wedding.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
+<!-- ═══════════════════════════════
+     PROCESS
+═══════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-header" style="text-align:center">
+      <p class="section-eyebrow id reveal" style="display:block">Proses Kerja</p>
+      <p class="section-eyebrow en reveal" style="display:block">How I Work</p>
+      <h2 class="section-title reveal">
+        <span class="id">Dari konsep ke produksi</span>
+        <span class="en">From concept to production</span>
+      </h2>
     </div>
-    <div class="card-body">
-      <div class="card-num">// 22</div>
-      <div class="card-title">Wedding / Pernikahan</div>
-      <div class="card-desc">Undangan pernikahan digital elegan — Cormorant Garamond + Nunito, rose gold + ivory. Countdown timer, RSVP form, galeri foto, itinerary, peta lokasi, amplop digital.</div>
-      <div class="card-tags">
-        <span class="card-tag">wedding</span><span class="card-tag">undangan</span>
-        <span class="card-tag">countdown</span><span class="card-tag">RSVP</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/22-wedding/template-wedding.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/22-wedding/template-wedding.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
 
-  <!-- 23 Fotografi -->
-  <div class="card" data-cat="fotografi">
-    <div class="card-preview">
-      <iframe src="templates/23-fotografi/template-fotografi.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/23-fotografi/template-fotografi.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
+    <div class="process-grid">
+      <div class="process-step reveal">
+        <div class="step-num">01</div>
+        <div class="step-title id">Diskusi & Perencanaan</div>
+        <div class="step-title en">Discovery & Planning</div>
+        <p class="step-desc id">Memahami kebutuhan, tujuan, dan target pengguna proyek kamu secara mendalam.</p>
+        <p class="step-desc en">Understanding your project's needs, goals, and target users in depth.</p>
       </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 23</div>
-      <div class="card-title">Fotografi / Visual Portfolio</div>
-      <div class="card-desc">Dark gallery-first photography portfolio — Outfit + Space Mono, near-black minimal. Masonry CSS columns, custom cursor, filter JS (Wedding/Komersial/Street/Portrait), booking form.</div>
-      <div class="card-tags">
-        <span class="card-tag">fotografi</span><span class="card-tag">portofolio</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">masonry</span>
+      <div class="process-step reveal reveal-delay-1">
+        <div class="step-num">02</div>
+        <div class="step-title id">Desain & Prototipe</div>
+        <div class="step-title en">Design & Prototype</div>
+        <p class="step-desc id">Membuat wireframe dan desain visual sebelum mulai coding — agar tidak ada revisi besar di tengah jalan.</p>
+        <p class="step-desc en">Creating wireframes and visual design before coding — to avoid major revisions mid-way.</p>
       </div>
-      <div class="card-actions">
-        <a href="templates/23-fotografi/template-fotografi.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/23-fotografi/template-fotografi.html" download class="btn-dl">Download</a>
+      <div class="process-step reveal reveal-delay-2">
+        <div class="step-num">03</div>
+        <div class="step-title id">Development</div>
+        <div class="step-title en">Development</div>
+        <p class="step-desc id">Membangun frontend, backend, dan database. Update progress secara berkala agar kamu selalu tahu perkembangannya.</p>
+        <p class="step-desc en">Building frontend, backend, and database. Regular progress updates so you always know where things stand.</p>
+      </div>
+      <div class="process-step reveal reveal-delay-3">
+        <div class="step-num">04</div>
+        <div class="step-title id">Testing & Launch</div>
+        <div class="step-title en">Testing & Launch</div>
+        <p class="step-desc id">Testing menyeluruh, perbaikan bug, lalu deploy ke produksi. Aplikasi siap digunakan.</p>
+        <p class="step-desc en">Thorough testing, bug fixes, then deploy to production. Application ready to use.</p>
       </div>
     </div>
   </div>
+</section>
 
-  <!-- 24 AI/Tech Startup -->
-  <div class="card" data-cat="aitech">
-    <div class="card-preview">
-      <iframe src="templates/24-aitech/template-aitech.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/24-aitech/template-aitech.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 24</div>
-      <div class="card-title">AI / Tech Startup (Futuristic)</div>
-      <div class="card-desc">Landing page AI SaaS futuristik — Oxanium + DM Mono, deep space dark. Grid background, gradient orbs, glassmorphism cards, terminal typing animation, pricing toggle.</div>
-      <div class="card-tags">
-        <span class="card-tag">aitech</span><span class="card-tag">startup</span>
-        <span class="card-tag">dark only</span><span class="card-tag">glassmorphism</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/24-aitech/template-aitech.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/24-aitech/template-aitech.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
+<hr class="divider">
 
-  <!-- 25 Travel / Wisata -->
-  <div class="card" data-cat="travel">
-    <div class="card-preview">
-      <iframe src="templates/25-travel/template-travel.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/25-travel/template-travel.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 25</div>
-      <div class="card-title">Travel / Wisata / Adventure</div>
-      <div class="card-desc">Adventure travel agency Indonesia — Syne + Plus Jakarta Sans, sunset orange+amber. Hero search form, destination grid, paket tour, kategori scroll, floating WhatsApp, newsletter.</div>
-      <div class="card-tags">
-        <span class="card-tag">travel</span><span class="card-tag">wisata</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">adventure</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/25-travel/template-travel.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/25-travel/template-travel.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
+<!-- ═══════════════════════════════
+     CONTACT
+═══════════════════════════════ -->
+<section id="contact" class="services-bg">
+  <div class="container">
+    <div class="contact-wrap">
+      <p class="section-eyebrow id reveal" style="display:block;text-align:center">Kontak</p>
+      <p class="section-eyebrow en reveal" style="display:block;text-align:center">Contact</p>
+      <h2 class="section-title reveal" style="text-align:center">
+        <span class="id">Punya proyek? <span style="color:var(--accent)">Ayo bicara.</span></span>
+        <span class="en">Have a project? <span style="color:var(--accent)">Let's talk.</span></span>
+      </h2>
+      <p class="section-desc id reveal" style="text-align:center;margin:0 auto">
+        Saya terbuka untuk proyek freelance, kolaborasi, maupun diskusi tentang solusi digital untuk bisnis atau institusi Anda.
+      </p>
+      <p class="section-desc en reveal" style="text-align:center;margin:0 auto">
+        I'm open to freelance projects, collaborations, or discussions about digital solutions for your business or institution.
+      </p>
 
-  <!-- 26 Analytics AI -->
-  <div class="card" data-cat="analytics">
-    <div class="card-preview">
-      <iframe src="templates/26-analytics/template-analytics.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/26-analytics/template-analytics.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 26</div>
-      <div class="card-title">Analytics AI SaaS — QuantumGrid</div>
-      <div class="card-desc">Platform analitik data berbasis AI futuristik — bento hero, live metric counters, SVG chart, pricing toggle, dark/light mode. Gaya dark tech dengan aksen neon.</div>
-      <div class="card-tags">
-        <span class="card-tag">analytics</span><span class="card-tag">aitech</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">bento</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/26-analytics/template-analytics.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/26-analytics/template-analytics.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
+      <div class="contact-card reveal">
+        <form class="contact-form" onsubmit="handleSubmit(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label id" for="name">Nama</label>
+              <label class="form-label en" for="name">Name</label>
+              <input class="form-input" id="name" type="text" placeholder="Nama Anda" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label id" for="email">Email</label>
+              <label class="form-label en" for="email">Email</label>
+              <input class="form-input" id="email" type="email" placeholder="email@domain.com" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label id" for="project">Jenis Proyek</label>
+            <label class="form-label en" for="project">Project Type</label>
+            <input class="form-input" id="project" type="text" placeholder="ex: Sistem manajemen data / E-commerce / Portal institusi">
+          </div>
+          <div class="form-group">
+            <label class="form-label id" for="message">Pesan</label>
+            <label class="form-label en" for="message">Message</label>
+            <textarea class="form-textarea" id="message" placeholder="Ceritakan proyek Anda..." required></textarea>
+          </div>
+          <button type="submit" class="btn-submit id">Kirim Pesan →</button>
+          <button type="submit" class="btn-submit en">Send Message →</button>
+        </form>
 
-  <!-- 27 Cybersecurity -->
-  <div class="card" data-cat="security">
-    <div class="card-preview">
-      <iframe src="templates/27-security/template-security.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/27-security/template-security.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 27</div>
-      <div class="card-title">Cybersecurity SaaS — SentinelAI</div>
-      <div class="card-desc">Platform keamanan siber bertenaga AI — bento threat dashboard, live threat counter, terminal log feed, pricing toggle, dark/light mode. Estetika dark terminal dengan aksen merah.</div>
-      <div class="card-tags">
-        <span class="card-tag">security</span><span class="card-tag">aitech</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">bento</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/27-security/template-security.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/27-security/template-security.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
+        <div class="contact-alt">
+          <span style="font-size:13px;color:var(--ink-4)" class="id">atau langsung via</span>
+          <span style="font-size:13px;color:var(--ink-4)" class="en">or reach me via</span>
+          <a href="mailto:jiwa99@gmail.com" class="contact-link" title="jiwa99@gmail.com" aria-label="Email">
+            <div class="contact-icon">📧</div>
+          </a>
 
-  <!-- 28 Web3 / Blockchain -->
-  <div class="card" data-cat="web3">
-    <div class="card-preview">
-      <iframe src="templates/28-web3/template-web3.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/28-web3/template-web3.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 28</div>
-      <div class="card-title">Web3 / Blockchain — ChainVault</div>
-      <div class="card-desc">Infrastruktur blockchain enterprise — Orbitron + DM Mono, electric blue (#00D4FF) + crypto gold. Chain explorer mockup, hash randomizer JS, node pulse animation, tokenomics chart, roadmap timeline.</div>
-      <div class="card-tags">
-        <span class="card-tag">web3</span><span class="card-tag">aitech</span>
-        <span class="card-tag">dark only</span><span class="card-tag">blockchain</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/28-web3/template-web3.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/28-web3/template-web3.html" download class="btn-dl">Download</a>
+          <a href="https://wa.me/628990447098" target="_blank" class="contact-link">
+            <div class="contact-icon">💬</div>
+            <span>WhatsApp</span>
+          </a>
+        </div>
       </div>
     </div>
   </div>
+</section>
 
-  <!-- 29 Project Management SaaS -->
-  <div class="card" data-cat="projectmgmt">
-    <div class="card-preview">
-      <iframe src="templates/29-projectmgmt/template-projectmgmt.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/29-projectmgmt/template-projectmgmt.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 29</div>
-      <div class="card-title">Project Management SaaS — FlowTask</div>
-      <div class="card-desc">SaaS manajemen proyek tim — Plus Jakarta Sans + DM Mono, emerald green dark. Bento hero: kanban mini, sprint ring donut, velocity bar chart, team avatars, activity feed, pricing toggle.</div>
-      <div class="card-tags">
-        <span class="card-tag">projectmgmt</span><span class="card-tag">saas</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">bento</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/29-projectmgmt/template-projectmgmt.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/29-projectmgmt/template-projectmgmt.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 30 Business Analytics SaaS -->
-  <div class="card" data-cat="bizanalytics">
-    <div class="card-preview">
-      <iframe src="templates/30-bizanalytics/template-bizanalytics.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/30-bizanalytics/template-bizanalytics.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 30</div>
-      <div class="card-title">Business Analytics SaaS — PulsaMetric</div>
-      <div class="card-desc">Analitik bisnis real-time Indonesia — DM Sans + JetBrains Mono, warm orange-amber dark. Bento hero: SVG line chart, revenue counter animasi (Rp 847jt), funnel, realtime counter, alert feed.</div>
-      <div class="card-tags">
-        <span class="card-tag">bizanalytics</span><span class="card-tag">saas</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">bento</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/30-bizanalytics/template-bizanalytics.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/30-bizanalytics/template-bizanalytics.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 31 HR / Talent Management SaaS -->
-  <div class="card" data-cat="hrtech">
-    <div class="card-preview">
-      <iframe src="templates/31-hrtech/template-hrtech.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/31-hrtech/template-hrtech.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 31</div>
-      <div class="card-title">HR / Talent Management SaaS — TalentOS</div>
-      <div class="card-desc">Platform HR & talent all-in-one — Nunito + DM Mono, violet-pink dark. Bento hero: org chart CSS, hiring pipeline dots, employee NPS gauge, headcount bar chart, leave calendar, dept distribution.</div>
-      <div class="card-tags">
-        <span class="card-tag">hrtech</span><span class="card-tag">saas</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">bento</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/31-hrtech/template-hrtech.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/31-hrtech/template-hrtech.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 32 Portal Instansi / BUMN -->
-  <div class="card" data-cat="instansi2" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/32-instansi2/template-instansi2.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/32-instansi2/template-instansi2.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 32</div>
-      <div class="card-title">Portal Instansi / BUMN — BAPPEDA Madiun</div>
-      <div class="card-desc">Portal pemerintah daerah modern — Plus Jakarta Sans + Lora, biru korporat #1A3FA0. Ticker pengumuman, program prioritas, layanan online, tabel dokumen publik, kalender agenda, form pengaduan.</div>
-      <div class="card-tags">
-        <span class="card-tag">instansi2</span><span class="card-tag">pemerintah</span>
-        <span class="card-tag">dark/light mode</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/32-instansi2/template-instansi2.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/32-instansi2/template-instansi2.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 33 Sekolah / SMK -->
-  <div class="card" data-cat="sekolah" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/33-sekolah/template-sekolah.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/33-sekolah/template-sekolah.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 33</div>
-      <div class="card-title">Sekolah / SMK — SMK Negeri 2 Malang</div>
-      <div class="card-desc">Website sekolah K-12 energik — Nunito + Poppins, biru #1D4ED8 + oranye #F97316. 6 jurusan, ticker prestasi, countdown PPDB, galeri tab, countdown JS ke 1 Juli 2026, FAQ accordion.</div>
-      <div class="card-tags">
-        <span class="card-tag">sekolah</span><span class="card-tag">pendidikan</span>
-        <span class="card-tag">light only</span><span class="card-tag">PPDB</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/33-sekolah/template-sekolah.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/33-sekolah/template-sekolah.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 34 E-Commerce Marketplace -->
-  <div class="card" data-cat="marketplace" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/34-marketplace/template-marketplace.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/34-marketplace/template-marketplace.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 34</div>
-      <div class="card-title">E-Commerce Marketplace — NusaMart</div>
-      <div class="card-desc">Marketplace multi-vendor modern — Inter + Sora, ungu #7C3AED. Search bar besar, banner carousel auto-slide, flash sale countdown, cart badge counter, wishlist toggle, tab produk, 10 kategori.</div>
-      <div class="card-tags">
-        <span class="card-tag">marketplace</span><span class="card-tag">ecommerce</span>
-        <span class="card-tag">light only</span><span class="card-tag">countdown</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/34-marketplace/template-marketplace.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/34-marketplace/template-marketplace.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 35 Rumah Sakit -->
-  <div class="card" data-cat="rumahsakit" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/35-rumahsakit/template-rumahsakit.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/35-rumahsakit/template-rumahsakit.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 35</div>
-      <div class="card-title">Rumah Sakit — RS Harapan Bunda</div>
-      <div class="card-desc">Website RS Tipe B profesional — Source Sans 3 + Playfair, medical navy #005B9A. Emergency bar, cari dokter + JS filter, jadwal praktek tab, 3 paket MCU, form pendaftaran online, akreditasi KARS.</div>
-      <div class="card-tags">
-        <span class="card-tag">rumahsakit</span><span class="card-tag">medis</span>
-        <span class="card-tag">dark/light mode</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/35-rumahsakit/template-rumahsakit.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/35-rumahsakit/template-rumahsakit.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 36 Kasir / POS -->
-  <div class="card" data-cat="kasir" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/36-kasir/template-kasir.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/36-kasir/template-kasir.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 36</div>
-      <div class="card-title">Kasir / POS Software — KasirKu</div>
-      <div class="card-desc">Landing page SaaS kasir modern — Sora + JetBrains Mono, dark charcoal #0D1117 + hijau #3FB950. POS mockup CSS interaktif (jam real-time, klik produk ke cart), pricing toggle, 6 tipe bisnis.</div>
-      <div class="card-tags">
-        <span class="card-tag">kasir</span><span class="card-tag">pos</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">saas</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/36-kasir/template-kasir.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/36-kasir/template-kasir.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 37 Admin Database -->
-  <div class="card" data-cat="database" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/37-database/template-database.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/37-database/template-database.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 37</div>
-      <div class="card-title">Admin Database / CRUD — DataSphere</div>
-      <div class="card-desc">Platform database visual — IBM Plex Sans + IBM Plex Mono, dark slate #0F1117 + indigo #818CF8. Table mockup interaktif (tab ganti tabel, sort kolom), ERD diagram CSS, 6 integrasi DB.</div>
-      <div class="card-tags">
-        <span class="card-tag">database</span><span class="card-tag">admin</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">saas</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/37-database/template-database.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/37-database/template-database.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 38 Perpustakaan Digital -->
-  <div class="card" data-cat="perpustakaan" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/38-perpustakaan/template-perpustakaan.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/38-perpustakaan/template-perpustakaan.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 38</div>
-      <div class="card-title">Perpustakaan Digital — Perpusda Blitar</div>
-      <div class="card-desc">Katalog perpustakaan modern — Lora + Plus Jakarta Sans, forest green #2D6A2F + parchment warm. Search buku real-time JS, book-spine card effect CSS, jam buka, accordion syarat peminjaman.</div>
-      <div class="card-tags">
-        <span class="card-tag">perpustakaan</span><span class="card-tag">pendidikan</span>
-        <span class="card-tag">dark/light mode</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/38-perpustakaan/template-perpustakaan.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/38-perpustakaan/template-perpustakaan.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 39 Koperasi -->
-  <div class="card" data-cat="koperasi" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/39-koperasi/template-koperasi.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/39-koperasi/template-koperasi.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 39</div>
-      <div class="card-title">Koperasi Simpan Pinjam — KSM Kediri</div>
-      <div class="card-desc">Portal koperasi kepercayaan — Fraunces + DM Sans, trust green #1B6E2A + gold #C8961A. Kalkulator cicilan slider real-time (angsuran otomatis 1.5%/bln), 4 produk simpanan, laporan keuangan.</div>
-      <div class="card-tags">
-        <span class="card-tag">koperasi</span><span class="card-tag">finansial</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">kalkulator</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/39-koperasi/template-koperasi.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/39-koperasi/template-koperasi.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 40 Apotek -->
-  <div class="card" data-cat="apotek" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/40-apotek/template-apotek.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/40-apotek/template-apotek.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 40</div>
-      <div class="card-title">Apotek / Farmasi — Apotek Sehat Prima</div>
-      <div class="card-desc">Website apotek bersih profesional — Nunito + DM Sans, cyan medis #0891B2. Search obat + filter kategori JS, 8 kategori produk, tim apoteker, cara pesan (langsung/WA/antar), FAQ accordion.</div>
-      <div class="card-tags">
-        <span class="card-tag">apotek</span><span class="card-tag">medis</span>
-        <span class="card-tag">dark/light mode</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/40-apotek/template-apotek.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/40-apotek/template-apotek.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 41 Portal Desa -->
-  <div class="card" data-cat="portaldesa" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/41-portaldesa/template-portaldesa.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/41-portaldesa/template-portaldesa.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 41</div>
-      <div class="card-title">Portal Desa / Kelurahan — Desa Sumbersari</div>
-      <div class="card-desc">Portal desa modern ramah warga — Literata + Plus Jakarta Sans, earthy green #1B5E20 + ribbon merah-putih. 8 layanan surat, APBDES bar chart JS, form pengaduan, statistik desa, potensi UMKM.</div>
-      <div class="card-tags">
-        <span class="card-tag">portaldesa</span><span class="card-tag">pemerintah</span>
-        <span class="card-tag">dark/light mode</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/41-portaldesa/template-portaldesa.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/41-portaldesa/template-portaldesa.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 42 ERP System -->
-  <div class="card" data-cat="erp" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/42-erp/template-erp.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/42-erp/template-erp.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 42</div>
-      <div class="card-title">ERP System — NexaERP</div>
-      <div class="card-desc">Platform ERP modern untuk bisnis Indonesia — Inter + DM Mono, dark navy #0D1B2A + electric blue #1B6FEB. Dashboard mockup sidebar + KPI tiles + bar chart, 8 modul ERP berwarna, comparison table vs SAP/Oracle, timeline implementasi 4 minggu, pricing toggle.</div>
-      <div class="card-tags">
-        <span class="card-tag">erp</span><span class="card-tag">saas</span>
-        <span class="card-tag">dark/light mode</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/42-erp/template-erp.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/42-erp/template-erp.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 43 API Platform -->
-  <div class="card" data-cat="apidev" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/43-apidev/template-apidev.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/43-apidev/template-apidev.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 43</div>
-      <div class="card-title">API Platform — FluxAPI</div>
-      <div class="card-desc">Developer portal & API gateway — JetBrains Mono (display) + Inter, terminal dark #0A0F1E + cyan #00E5FF. API Explorer split-pane interaktif (GET/POST/PUT/DELETE endpoint switcher), code snippet 3 tab (cURL/Node/Python), status uptime bar, analytics dashboard, 12 integrasi.</div>
-      <div class="card-tags">
-        <span class="card-tag">apidev</span><span class="card-tag">developer</span>
-        <span class="card-tag">dark/light mode</span><span class="card-tag">saas</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/43-apidev/template-apidev.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/43-apidev/template-apidev.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 44 No-Code Database -->
-  <div class="card" data-cat="nocode" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/44-nocode/template-nocode.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/44-nocode/template-nocode.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 44</div>
-      <div class="card-title">No-Code Database — GridBase</div>
-      <div class="card-desc">Platform database visual Airtable-style — DM Sans, LIGHT default + 8 warna field type (Text blue, Number green, Select violet, Date amber, dsb). Spreadsheet mockup interaktif (klik row, tambah record, view switcher Grid/Kanban/Calendar/Gallery), comparison vs Excel vs Airtable.</div>
-      <div class="card-tags">
-        <span class="card-tag">nocode</span><span class="card-tag">database</span>
-        <span class="card-tag">light/dark mode</span><span class="card-tag">saas</span>
-      </div>
-      <div class="card-actions">
-        <a href="templates/44-nocode/template-nocode.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/44-nocode/template-nocode.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 45 Trading Platform Saham — TradeSafe -->
-  <div class="card" data-cat="trading" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/45-trading/template-trading.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/45-trading/template-trading.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 45</div>
-      <div class="card-title">Trading Platform Saham — TradeSafe</div>
-      <div class="card-desc">Platform trading saham IDX — Inter + JetBrains Mono, dark navy #0B0F19. Trading app mockup: candlestick chart CSS, order book, buy/sell form, watchlist ticker IDX. Fee comparison tabel, screener fundamental, regulasi OJK/KSEI, dark/light mode.</div>
-      <div class="card-tags"><span class="card-tag">trading</span><span class="card-tag">fintech</span><span class="card-tag">dark/light mode</span></div>
-      <div class="card-actions">
-        <a href="templates/45-trading/template-trading.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/45-trading/template-trading.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-  <!-- 46 Stock Screener & Riset Saham — AnalisaIDX -->
-  <div class="card" data-cat="screener" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/46-screener/template-screener.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/46-screener/template-screener.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 46</div>
-      <div class="card-title">Stock Screener & Riset Saham — AnalisaIDX</div>
-      <div class="card-desc">Platform riset saham Indonesia — DM Sans + JetBrains Mono, deep ink blue #0C1220 + indigo #6366F1. Screener mockup: filter panel (P/E, ROE, dividen) + tabel hasil saham IDX. Analisis fundamental, analisis teknikal (RSI/MACD), watchlist alert, dark/light mode.</div>
-      <div class="card-tags"><span class="card-tag">screener</span><span class="card-tag">trading</span><span class="card-tag">dark/light mode</span></div>
-      <div class="card-actions">
-        <a href="templates/46-screener/template-screener.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/46-screener/template-screener.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-  <!-- 47 Wealth Management — NesiWealth -->
-  <div class="card" data-cat="wealth" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/47-wealth/template-wealth.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/47-wealth/template-wealth.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 47</div>
-      <div class="card-title">Wealth Management — NesiWealth</div>
-      <div class="card-desc">Platform investasi all-in-one — Plus Jakarta Sans + DM Serif Display, warm gold #D4A017 + dark brown. Portfolio dashboard: pie chart CSS alokasi aset, holding rows, goal progress bar. Robo-advisor 3 profil risiko, kalkulator compound interest, RD tabel, dark/light mode.</div>
-      <div class="card-tags"><span class="card-tag">wealth</span><span class="card-tag">fintech</span><span class="card-tag">dark/light mode</span></div>
-      <div class="card-actions">
-        <a href="templates/47-wealth/template-wealth.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/47-wealth/template-wealth.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-  <!-- 48 AI Writing Platform — NusaWrite -->
-  <div class="card" data-cat="aiwriting" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/48-aiwriting/template-aiwriting.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/48-aiwriting/template-aiwriting.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 48</div>
-      <div class="card-title">AI Writing Platform — NusaWrite</div>
-      <div class="card-desc">Platform penulisan konten AI Bahasa Indonesia — Fraunces + Plus Jakarta Sans, LIGHT default, violet #7C3AED. Writing editor mockup: template sidebar, prompt bar, editor area, tone/style settings. 8 kategori template, integrasi WordPress/Shopee/TikTok, pricing toggle, dark mode tersedia.</div>
-      <div class="card-tags"><span class="card-tag">aiwriting</span><span class="card-tag">ai</span><span class="card-tag">light/dark mode</span></div>
-      <div class="card-actions">
-        <a href="templates/48-aiwriting/template-aiwriting.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/48-aiwriting/template-aiwriting.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-  <!-- 49 AI Image Generator — PixelMind -->
-  <div class="card" data-cat="aiimage" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/49-aiimage/template-aiimage.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/49-aiimage/template-aiimage.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 49</div>
-      <div class="card-title">AI Image Generator — PixelMind</div>
-      <div class="card-desc">Platform generasi gambar AI — Outfit + Space Grotesk, LIGHT default, purple→pink gradient. Image generator mockup: prompt area, style presets (8 gaya), rasio & jumlah, grid 6 hasil CSS gradient colorful. Gallery kartu, API snippet, dark mode tersedia.</div>
-      <div class="card-tags"><span class="card-tag">aiimage</span><span class="card-tag">ai</span><span class="card-tag">light/dark mode</span></div>
-      <div class="card-actions">
-        <a href="templates/49-aiimage/template-aiimage.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/49-aiimage/template-aiimage.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-  <!-- 50 AI Automation Agent — AutoFlux -->
-  <div class="card" data-cat="aiagent" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/50-aiagent/template-aiagent.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/50-aiagent/template-aiagent.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 50</div>
-      <div class="card-title">AI Automation Agent — AutoFlux</div>
-      <div class="card-desc">Platform workflow automation AI — Inter + DM Mono, LIGHT default, teal #0D9488. Flow builder mockup: node-graph CSS (5 node berbeda: Trigger/AI Agent/Hot Lead/Email/CRM), animated flow dots, log sidebar. 8 template workflow, 19+ integrasi, monitoring real-time, dark mode tersedia.</div>
-      <div class="card-tags"><span class="card-tag">aiagent</span><span class="card-tag">ai</span><span class="card-tag">light/dark mode</span></div>
-      <div class="card-actions">
-        <a href="templates/50-aiagent/template-aiagent.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/50-aiagent/template-aiagent.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- 51 Perpustakaan Akademik — LibraCademia -->
-  <div class="card" data-cat="perpusakademik" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/51-libracademia/template-libracademia.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/51-libracademia/template-libracademia.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 51</div>
-      <div class="card-title">Perpustakaan Akademik — LibraCademia</div>
-      <div class="card-desc">Sistem perpustakaan akademik — Libre Baskerville + Plus Jakarta Sans, navy #1E2A5E, LIGHT default. OPAC search 5 filter tipe koleksi. Bibliography Generator 6 format (APA 7th/MLA/Chicago/Vancouver/BibTeX/Harvard): form lengkap → output kutipan → daftar pustaka → export .txt. E-journal, statistik, dark mode.</div>
-      <div class="card-tags"><span class="card-tag">perpustakaan</span><span class="card-tag">perpusakademik</span><span class="card-tag">bibliografi</span><span class="card-tag">light/dark mode</span></div>
-      <div class="card-actions">
-        <a href="templates/51-libracademia/template-libracademia.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/51-libracademia/template-libracademia.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-  <!-- 52 E-Library Digital — PustakaMaya -->
-  <div class="card" data-cat="elibrary" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/52-pustakamaya/template-pustakamaya.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/52-pustakamaya/template-pustakamaya.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 52</div>
-      <div class="card-title">E-Library Digital — PustakaMaya</div>
-      <div class="card-desc">Platform perpustakaan digital — Crimson Text + DM Sans, burgundy #6B2D3E, LIGHT default. Katalog ebook 8 genre tab (Sastra/Sains/Sejarah/Hukum/dst). Digital reader mockup. Citation Tracker: generate + simpan kutipan APA/MLA/Chicago/Harvard/BibTeX, export .txt. Pricing toggle. Dark mode.</div>
-      <div class="card-tags"><span class="card-tag">perpustakaan</span><span class="card-tag">elibrary</span><span class="card-tag">bibliografi</span><span class="card-tag">light/dark mode</span></div>
-      <div class="card-actions">
-        <a href="templates/52-pustakamaya/template-pustakamaya.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/52-pustakamaya/template-pustakamaya.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-  <!-- 54 Perpustakaan Umum Kota — PustakaKota -->
-  <div class="card" data-cat="perpustakaankota" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/54-perpustakaankota/template-perpustakaankota.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/54-perpustakaankota/template-perpustakaankota.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 54</div>
-      <div class="card-title">Perpustakaan Umum Kota — PustakaKota</div>
-      <div class="card-desc">Website perpustakaan umum kota — Nunito + DM Sans, teal-green #0D9488, LIGHT default. Hero search besar, floating book animation, counter stats, koleksi populer 6 kartu, 8 kategori grid, 3 event cards, 4 layanan cards, keanggotaan CTA form. Dark mode toggle, scroll reveal, counter animasi.</div>
-      <div class="card-tags"><span class="card-tag">perpustakaan</span><span class="card-tag">instansi</span><span class="card-tag">perpustakaankota</span><span class="card-tag">light/dark mode</span></div>
-      <div class="card-actions">
-        <a href="templates/54-perpustakaankota/template-perpustakaankota.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/54-perpustakaankota/template-perpustakaankota.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 55 Multimedia Library — MediaNusa -->
-  <div class="card" data-cat="multimedia" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/55-multimedialibrary/template-multimedialibrary.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/55-multimedialibrary/template-multimedialibrary.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 55</div>
-      <div class="card-title">Multimedia Library — MediaNusa</div>
-      <div class="card-desc">Platform perpustakaan multimedia premium — Space Grotesk + DM Sans, DARK deep purple #0D0817 + electric purple #A855F7. Netflix-style hero, kategori media tabs (Ebook/Jurnal/Dokumenter/Podcast/Audiobook), horizontal scroll row, author spotlight, reading progress cards, genre tag cloud, pricing 3 tier dengan toggle bulanan/tahunan.</div>
-      <div class="card-tags"><span class="card-tag">perpustakaan</span><span class="card-tag">multimedia</span><span class="card-tag">dark mode</span><span class="card-tag">streaming</span></div>
-      <div class="card-actions">
-        <a href="templates/55-multimedialibrary/template-multimedialibrary.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/55-multimedialibrary/template-multimedialibrary.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 56 Warisan Budaya — ArsipNusa -->
-  <div class="card" data-cat="warisanbudaya" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/56-warisanbudaya/template-warisanbudaya.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/56-warisanbudaya/template-warisanbudaya.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 56</div>
-      <div class="card-title">Warisan Budaya — ArsipNusa</div>
-      <div class="card-desc">Perpustakaan arsip warisan budaya — Cormorant Garamond + Source Sans 3, cream #F7F4EE + terracotta #8B4513 + gold #C9963E, LIGHT default. Hero editorial 2-kolom dengan museum frame CSS. Koleksi berdasarkan era (Pra-Kolonial/Kolonial/Kemerdekaan/Modern). Penjelajah koleksi 7 filter. Pameran digital. Stats digitalisasi. Dark mode.</div>
-      <div class="card-tags"><span class="card-tag">perpustakaan</span><span class="card-tag">warisanbudaya</span><span class="card-tag">arsip</span><span class="card-tag">light/dark mode</span></div>
-      <div class="card-actions">
-        <a href="templates/56-warisanbudaya/template-warisanbudaya.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/56-warisanbudaya/template-warisanbudaya.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 53 Repositori Institusi — RepositoriNusa -->
-  <div class="card" data-cat="repositori" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/53-repositorinusa/template-repositorinusa.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/53-repositorinusa/template-repositorinusa.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 53</div>
-      <div class="card-title">Repositori Institusi — RepositoriNusa</div>
-      <div class="card-desc">Repositori karya ilmiah — Source Serif 4 + Plus Jakarta Sans, forest green #1B5E20, LIGHT default. Katalog Skripsi/Tesis/Disertasi/Jurnal + checkbox multi-select. Bibliography Export 7 format (APA/MLA/Chicago/Vancouver/BibTeX/RIS/Mendeley): download .txt &amp; .bib. Bar chart per tahun. Dark mode.</div>
-      <div class="card-tags"><span class="card-tag">perpustakaan</span><span class="card-tag">repositori</span><span class="card-tag">bibliografi</span><span class="card-tag">light/dark mode</span></div>
-      <div class="card-actions">
-        <a href="templates/53-repositorinusa/template-repositorinusa.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/53-repositorinusa/template-repositorinusa.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  
-  <!-- 57 Konsultan Jasa Digital — KonsulPro -->
-  <div class="card" data-cat="konsultan" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/57-konsultan/template-konsultan.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/57-konsultan/template-konsultan.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 57</div>
-      <div class="card-title">Konsultan Jasa Digital — KonsulPro</div>
-      <div class="card-desc">Landing page konsultan & agensi digital — DM Sans, natural #111+#0EA5E9 sky blue, LIGHT default. Hero badge + headline bold + 3 stats. 6 kartu layanan. Proses kerja 4 langkah horizontal. Testimoni 3 kartu. Pricing 3 tier. FAQ accordion. Counter animasi scroll.</div>
-      <div class="card-tags"><span class="card-tag">konsultan</span><span class="card-tag">agensi</span><span class="card-tag">layanan</span><span class="card-tag">light/dark mode</span></div>
-      <div class="card-actions">
-        <a href="templates/57-konsultan/template-konsultan.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/57-konsultan/template-konsultan.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-  <!-- 58 SaaS Product Landing — LaunchKit -->
-  <div class="card" data-cat="saas" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/58-saas-landing/template-saas-landing.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/58-saas-landing/template-saas-landing.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 58</div>
-      <div class="card-title">SaaS Product Landing — LaunchKit</div>
-      <div class="card-desc">Landing page produk SaaS minimal — DM Sans, natural #111+#6366F1 indigo, LIGHT default. App mockup CSS-only (browser frame + task rows). Feature blocks 3 alternating. Logo strip klien. Counter animasi. Pricing toggle bulanan/tahunan. Integrasi 12 badge. FAQ accordion.</div>
-      <div class="card-tags"><span class="card-tag">saas</span><span class="card-tag">startup</span><span class="card-tag">landing</span><span class="card-tag">light/dark mode</span></div>
-      <div class="card-actions">
-        <a href="templates/58-saas-landing/template-saas-landing.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/58-saas-landing/template-saas-landing.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-  <!-- 59 Dokumentasi & Wiki — DocsHub -->
-  <div class="card" data-cat="dokumentasi" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/59-dokumentasi/template-dokumentasi.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/59-dokumentasi/template-dokumentasi.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 59</div>
-      <div class="card-title">Dokumentasi & Wiki — DocsHub</div>
-      <div class="card-desc">Situs dokumentasi & wiki developer — DM Sans, natural #111+#059669 emerald, LIGHT default. Search bar ⌘K. Quick Start 4 kartu. Docs browser mockup 3-panel (nav tree/article/TOC). 6 kategori docs. Code snippet 3 tab (JS/Python/cURL) + copy button. Changelog versi. Dark mode.</div>
-      <div class="card-tags"><span class="card-tag">dokumentasi</span><span class="card-tag">developer</span><span class="card-tag">wiki</span><span class="card-tag">light/dark mode</span></div>
-      <div class="card-actions">
-        <a href="templates/59-dokumentasi/template-dokumentasi.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/59-dokumentasi/template-dokumentasi.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-  <!-- 60 Sistem Booking Online — BookEase -->
-  <div class="card" data-cat="booking" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/60-booking/template-booking.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/60-booking/template-booking.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 60</div>
-      <div class="card-title">Sistem Booking Online — BookEase</div>
-      <div class="card-desc">Platform booking & jadwal janji temu — DM Sans, natural #111+#F59E0B amber, LIGHT default. Kalender interaktif CSS + time slot selection. 6 tipe bisnis (klinik/salon/tutor/fitness). Cara kerja 3 langkah. Fitur 4 kartu. Counter animasi. Pricing 3 tier. Integrasi (Google Cal, WA, Midtrans).</div>
-      <div class="card-tags"><span class="card-tag">booking</span><span class="card-tag">jadwal</span><span class="card-tag">layanan</span><span class="card-tag">light/dark mode</span></div>
-      <div class="card-actions">
-        <a href="templates/60-booking/template-booking.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/60-booking/template-booking.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-  <!-- 61 Invoice & Keuangan Freelance — InvoiceKit -->
-  <div class="card" data-cat="invoice" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/61-invoice/template-invoice.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/61-invoice/template-invoice.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 61</div>
-      <div class="card-title">Invoice & Keuangan Freelance — InvoiceKit</div>
-      <div class="card-desc">Platform invoice & keuangan untuk freelancer — DM Sans, natural #111+#10B981 emerald, LIGHT default. Invoice mockup CSS (line items, PPN 11%, total). 4 style template preview. Cara kerja 3 langkah. 6 fitur cards. Counter animasi. Pricing toggle bulanan/tahunan. Integrasi payment gateway.</div>
-      <div class="card-tags"><span class="card-tag">invoice</span><span class="card-tag">keuangan</span><span class="card-tag">freelance</span><span class="card-tag">light/dark mode</span></div>
-      <div class="card-actions">
-        <a href="templates/61-invoice/template-invoice.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/61-invoice/template-invoice.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-  <!-- 62 Direktori & Listing Bisnis — ListingHub -->
-  <div class="card" data-cat="direktori" data-new="true">
-    <div class="card-preview">
-      <iframe src="templates/62-direktori/template-direktori.html" loading="lazy"></iframe>
-      <div class="card-preview-overlay">
-        <a href="templates/62-direktori/template-direktori.html" target="_blank" class="preview-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          Buka Preview
-        </a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="card-num">// 62</div>
-      <div class="card-title">Direktori & Listing Bisnis — ListingHub</div>
-      <div class="card-desc">Portal direktori & listing bisnis — DM Sans, natural #111+#F97316 orange, LIGHT default. Search bar besar dengan dropdown kategori + tag pills filter. Grid 8 kategori bisnis. 6 kartu bisnis dengan CSS gradient unik + badge Terverifikasi. Filter mockup sidebar. Pricing 3 tier. Counter animasi.</div>
-      <div class="card-tags"><span class="card-tag">direktori</span><span class="card-tag">listing</span><span class="card-tag">umkm</span><span class="card-tag">light/dark mode</span></div>
-      <div class="card-actions">
-        <a href="templates/62-direktori/template-direktori.html" class="btn-use" target="_blank">Buka →</a>
-        <a href="templates/62-direktori/template-direktori.html" download class="btn-dl">Download</a>
-      </div>
-    </div>
-  </div>
-
-</div>
-
+<!-- ═══════════════════════════════
+     FOOTER
+═══════════════════════════════ -->
 <footer>
-  <span>Template Library — <strong>Johan Iriawan Akbar</strong> &copy; 2025</span>
-  <span>56 template &bull; Single-file HTML &bull; Klik card untuk preview</span>
+  <div class="footer-inner">
+    <p class="footer-copy">
+      © <span id="yr"></span> <strong>JIA</strong> ·
+      <span class="id">Dibuat dengan ❤️ di Malang</span>
+      <span class="en">Built with ❤️ in Malang</span>
+    </p>
+    <div class="footer-links">
+      <a href="#hero">Top</a>
+      <a href="#projects" class="id">Proyek</a>
+      <a href="#projects" class="en">Projects</a>
+      <a href="mailto:jiwa99@gmail.com" title="jiwa99@gmail.com" aria-label="Email">📧</a>
+    </div>
+  </div>
 </footer>
 
+<!-- ═══════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════ -->
 <script>
-function filter(el, cat) {
-  document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  const lbl = document.getElementById('activeFilterLabel');
-  if (lbl) lbl.textContent = el.textContent.trim();
-  const cards = document.querySelectorAll('.card');
-  let visible = 0;
-  cards.forEach(c => {
-    const show = cat === 'all' || c.dataset.cat === cat;
-    c.style.display = show ? '' : 'none';
-    if (show) visible++;
-  });
-  document.getElementById('count').textContent = visible + ' templates';
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+// ── Theme ──
+const html = document.documentElement;
+const themeBtn = document.getElementById('themeBtn');
+const savedTheme = localStorage.getItem('pf_theme') || 'light';
+html.setAttribute('data-theme', savedTheme);
+themeBtn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+function toggleTheme() {
+  const cur = html.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  themeBtn.textContent = next === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('pf_theme', next);
 }
-function filterNew(el) {
-  document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  const lbl = document.getElementById('activeFilterLabel');
-  if (lbl) lbl.textContent = '✦ Terbaru';
-  const cards = document.querySelectorAll('.card');
-  let visible = 0;
-  cards.forEach(c => {
-    const show = c.dataset.new === 'true';
-    c.style.display = show ? '' : 'none';
-    if (show) visible++;
-  });
-  document.getElementById('count').textContent = visible + ' template baru';
+
+// ── Language ──
+const langBtn = document.getElementById('langBtn');
+const savedLang = localStorage.getItem('pf_lang') || 'id';
+html.setAttribute('data-lang', savedLang);
+langBtn.textContent = savedLang === 'id' ? 'EN' : 'ID';
+
+function toggleLang() {
+  const cur = html.getAttribute('data-lang');
+  const next = cur === 'id' ? 'en' : 'id';
+  html.setAttribute('data-lang', next);
+  langBtn.textContent = next === 'id' ? 'EN' : 'ID';
+  localStorage.setItem('pf_lang', next);
 }
-function toggleFilter() {
-  const wrap = document.getElementById('filterWrap');
-  wrap.classList.toggle('open');
-  const btn = wrap.querySelector('.filter-toggle-btn');
-  if (wrap.classList.contains('open')) {
-    btn.innerHTML = '<span class="filter-arrow" style="transform:rotate(180deg)">▾</span> Sembunyikan';
-  } else {
-    btn.innerHTML = '<span class="filter-arrow">▾</span> Tampilkan Filter';
-  }
+
+// ── Nav scroll ──
+const nav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+}, { passive: true });
+
+// ── Mobile nav ──
+const mobileNav = document.getElementById('mobileNav');
+const hamburger = document.getElementById('hamburger');
+function toggleMobile() {
+  mobileNav.classList.toggle('open');
+  hamburger.textContent = mobileNav.classList.contains('open') ? '\u2715' : '\u2630';
+}
+function closeMobile() {
+  mobileNav.classList.remove('open');
+  hamburger.textContent = '\u2630';
+}
+
+// Scroll reveal
+const revealEls = document.querySelectorAll('.reveal');
+function checkReveal() {
+  revealEls.forEach(el => {
+    if (el.classList.contains('visible')) return;
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight + 40 && rect.bottom > 0) {
+      el.classList.add('visible');
+    }
+  });
+}
+checkReveal();
+window.addEventListener('scroll', checkReveal, { passive: true });
+window.addEventListener('resize', checkReveal, { passive: true });
+setTimeout(() => { revealEls.forEach(el => el.classList.add('visible')); }, 800);
+
+// Contact form
+function handleSubmit(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('[type="submit"]:not([style*="none"])');
+  const orig = btn.textContent;
+  btn.textContent = 'Terkirim!';
+  btn.style.background = '#059669';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = orig;
+    btn.style.background = '';
+    btn.disabled = false;
+    e.target.reset();
+  }, 3000);
 }
 </script>
 </body>
