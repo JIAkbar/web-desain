@@ -1,0 +1,1934 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TrackBase — Project Tracker & Roadmap</title>
+  <meta name="description" content="TrackBase menggabungkan kanban, tabel, dan roadmap dalam satu platform. Tim Anda tetap sinkron, deadline terpenuhi." />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== CSS RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    /* ===== DESIGN TOKENS ===== */
+    :root {
+      --bg: #FFFFFF;
+      --bg2: #F5F3FF;
+      --bg3: #EDE9FE;
+      --text: #1E1B4B;
+      --text2: #4C4B6B;
+      --text3: #9CA3AF;
+      --accent: #7C3AED;
+      --accent-dim: #EDE9FE;
+      --accent-text: #4C1D95;
+      --border: #E5E7EB;
+      --border2: #D1D5DB;
+      --shadow: 0 1px 3px rgba(124,58,237,.08), 0 4px 12px rgba(124,58,237,.06);
+      --font: 'DM Sans', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-pill: 999px;
+      --transition: 0.2s ease;
+    }
+    [data-theme="dark"] {
+      --bg: #0F0E1A;
+      --bg2: #1A1730;
+      --bg3: #252040;
+      --text: #F5F3FF;
+      --text2: #A78BFA;
+      --text3: #6B7280;
+      --accent: #8B5CF6;
+      --accent-dim: #2D1B69;
+      --accent-text: #DDD6FE;
+      --border: #1E1B3A;
+      --border2: #2D2B50;
+      --shadow: 0 1px 3px rgba(0,0,0,.3), 0 4px 12px rgba(0,0,0,.2);
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    /* ===== UTILITY ===== */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 24px;
+      height: 64px;
+      display: flex; align-items: center;
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid transparent;
+      transition: background var(--transition), border-color var(--transition), box-shadow var(--transition);
+    }
+    [data-theme="dark"] .navbar {
+      background: rgba(15,14,26,0.78);
+    }
+    .navbar.scrolled {
+      border-bottom-color: var(--border);
+      box-shadow: 0 2px 20px rgba(124,58,237,0.08);
+    }
+    .nav-inner {
+      max-width: 1200px; width: 100%; margin: 0 auto;
+      display: flex; align-items: center; gap: 32px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text);
+      font-weight: 700; font-size: 18px; flex-shrink: 0;
+    }
+    .nav-logo-icon {
+      width: 32px; height: 32px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 15px; font-weight: 800;
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 4px;
+      list-style: none; margin-left: 8px;
+    }
+    .nav-links a {
+      display: block; padding: 6px 12px;
+      color: var(--text2); text-decoration: none;
+      font-size: 14px; font-weight: 500;
+      border-radius: var(--radius-sm);
+      transition: color var(--transition), background var(--transition);
+    }
+    .nav-links a:hover { color: var(--accent); background: var(--accent-dim); }
+    .nav-right {
+      margin-left: auto; display: flex; align-items: center; gap: 8px;
+    }
+    .btn-theme {
+      width: 36px; height: 36px; border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg2); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; transition: background var(--transition), border-color var(--transition);
+      color: var(--text);
+    }
+    .btn-theme:hover { border-color: var(--accent); background: var(--accent-dim); }
+    .btn-ghost {
+      padding: 7px 16px; border-radius: var(--radius-pill);
+      border: 1px solid var(--border); background: transparent;
+      color: var(--text2); font-size: 14px; font-weight: 500;
+      cursor: pointer; text-decoration: none;
+      transition: border-color var(--transition), color var(--transition), background var(--transition);
+      font-family: var(--font);
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-primary {
+      padding: 8px 18px; border-radius: var(--radius-pill);
+      border: none; background: var(--accent);
+      color: #fff; font-size: 14px; font-weight: 600;
+      cursor: pointer; text-decoration: none;
+      transition: opacity var(--transition), transform var(--transition);
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font);
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 100px 24px 72px;
+      background: var(--bg);
+    }
+    .hero-inner {
+      max-width: 1200px; margin: 0 auto; width: 100%;
+      display: grid; grid-template-columns: 1fr 1.05fr;
+      gap: 64px; align-items: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 14px; border-radius: var(--radius-pill);
+      background: var(--accent-dim); color: var(--accent-text);
+      font-size: 13px; font-weight: 600;
+      border: 1px solid rgba(124,58,237,0.2);
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(30px, 4vw, 52px);
+      font-weight: 800; line-height: 1.12;
+      letter-spacing: -0.025em; margin-bottom: 20px;
+      color: var(--text);
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero-sub {
+      font-size: 17px; color: var(--text2);
+      line-height: 1.72; margin-bottom: 32px;
+      max-width: 460px;
+    }
+    .hero-ctas {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      margin-bottom: 36px;
+    }
+    .btn-hero-primary {
+      padding: 14px 24px; border-radius: var(--radius-pill);
+      background: var(--accent); color: #fff;
+      font-size: 15px; font-weight: 700;
+      border: none; cursor: pointer; text-decoration: none;
+      transition: opacity var(--transition), transform var(--transition), box-shadow var(--transition);
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font);
+      box-shadow: 0 4px 20px rgba(124,58,237,0.35);
+    }
+    .btn-hero-primary:hover { opacity: 0.92; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(124,58,237,0.45); }
+    .btn-hero-outline {
+      padding: 13px 24px; border-radius: var(--radius-pill);
+      border: 1.5px solid var(--border2); background: transparent;
+      color: var(--text); font-size: 15px; font-weight: 600;
+      cursor: pointer; text-decoration: none;
+      transition: border-color var(--transition), color var(--transition), background var(--transition);
+      font-family: var(--font);
+    }
+    .btn-hero-outline:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+    .hero-social-proof {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .hero-social-proof > span { font-size: 13px; color: var(--text3); font-weight: 500; }
+    .trust-logos { display: flex; align-items: center; gap: 16px; }
+    .trust-logo {
+      font-size: 13px; font-weight: 800; color: var(--text3);
+      letter-spacing: 0.03em; text-transform: uppercase; opacity: 0.55;
+    }
+
+    /* ===== TRACKER MOCKUP ===== */
+    .tracker-mockup {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 48px rgba(124,58,237,0.13), 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .tracker-topbar {
+      padding: 12px 16px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .tracker-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .tracker-dot.red    { background: #FC6058; }
+    .tracker-dot.yellow { background: #FEC02F; }
+    .tracker-dot.green  { background: #2ACB42; }
+    .tracker-sprint-badge {
+      margin-left: auto;
+      font-size: 11px; font-weight: 600; font-family: var(--mono);
+      padding: 3px 10px; border-radius: var(--radius-pill);
+      background: var(--accent-dim); color: var(--accent-text);
+      border: 1px solid rgba(124,58,237,0.2);
+    }
+    .tracker-filter-icon {
+      width: 26px; height: 26px; border-radius: 6px;
+      border: 1px solid var(--border); background: var(--bg2);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text3); cursor: pointer;
+    }
+    .tracker-table { width: 100%; overflow-x: auto; }
+    table.task-table { width: 100%; border-collapse: collapse; min-width: 560px; }
+    .task-table thead tr {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+    .task-table th {
+      padding: 9px 10px;
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.07em; color: var(--text3);
+      text-align: left; white-space: nowrap;
+    }
+    .task-table th:first-child { padding-left: 14px; }
+    .task-table td {
+      padding: 9px 10px;
+      font-size: 12px; color: var(--text);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .task-table td:first-child { padding-left: 14px; }
+    .task-table tbody tr { cursor: pointer; transition: background var(--transition); }
+    .task-table tbody tr:hover { background: var(--bg3); }
+    .task-table tbody tr:last-child td { border-bottom: none; }
+    .task-table tbody tr.row-selected {
+      background: var(--accent-dim);
+      border-left: 3px solid var(--accent);
+    }
+    .task-table tbody tr.row-selected td:first-child { padding-left: 11px; }
+    .task-id {
+      font-family: var(--mono); font-size: 10px;
+      color: var(--text3); font-weight: 500;
+    }
+    .task-title {
+      font-weight: 500; color: var(--text);
+      font-size: 12px; max-width: 170px;
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    .avatar-circle {
+      width: 22px; height: 22px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 800; color: #fff;
+    }
+    .avatar-ar { background: #7C3AED; }
+    .avatar-bw { background: #2563EB; }
+    .avatar-dk { background: #059669; }
+    .avatar-sf { background: #D97706; }
+    .priority-badge {
+      display: inline-flex; align-items: center;
+      padding: 2px 7px; border-radius: var(--radius-pill);
+      font-size: 10px; font-weight: 700;
+    }
+    .priority-high { background: #FEE2E2; color: #DC2626; }
+    .priority-med  { background: #FEF3C7; color: #D97706; }
+    .priority-low  { background: #F3F4F6; color: #6B7280; }
+    [data-theme="dark"] .priority-high { background: #3B0A0A; color: #FCA5A5; }
+    [data-theme="dark"] .priority-med  { background: #3B2200; color: #FCD34D; }
+    [data-theme="dark"] .priority-low  { background: #1F2937; color: #9CA3AF; }
+    .status-badge {
+      display: inline-flex; align-items: center;
+      padding: 2px 7px; border-radius: var(--radius-pill);
+      font-size: 10px; font-weight: 700;
+    }
+    .status-inprogress { background: #DBEAFE; color: #1D4ED8; }
+    .status-blocked    { background: #FFEDD5; color: #C2410C; }
+    .status-done       { background: #D1FAE5; color: #065F46; }
+    .status-todo       { background: #F3F4F6; color: #6B7280; }
+    [data-theme="dark"] .status-inprogress { background: #1E3A5F; color: #93C5FD; }
+    [data-theme="dark"] .status-blocked    { background: #431407; color: #FDBA74; }
+    [data-theme="dark"] .status-done       { background: #064E3B; color: #6EE7B7; }
+    [data-theme="dark"] .status-todo       { background: #1F2937; color: #9CA3AF; }
+    .due-date { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+
+    /* ===== STATS BAR ===== */
+    .stats-bar {
+      padding: 52px 24px;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .stats-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+    }
+    .stat-item { text-align: center; }
+    .stat-number {
+      font-size: clamp(28px, 3.5vw, 44px);
+      font-weight: 800; color: var(--accent);
+      line-height: 1.1; font-family: var(--mono);
+      letter-spacing: -0.02em;
+    }
+    .stat-label {
+      font-size: 14px; color: var(--text2);
+      margin-top: 6px; font-weight: 500;
+    }
+
+    /* ===== SECTION COMMON ===== */
+    section { padding: 96px 24px; }
+    .section-header { text-align: center; margin-bottom: 56px; }
+    .section-tag {
+      display: inline-block;
+      font-size: 11px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--accent);
+      padding: 4px 12px; border-radius: var(--radius-pill);
+      background: var(--accent-dim); margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(24px, 3vw, 40px);
+      font-weight: 800; color: var(--text);
+      letter-spacing: -0.02em; line-height: 1.2;
+    }
+    .section-sub {
+      font-size: 16px; color: var(--text2);
+      margin-top: 12px; max-width: 540px;
+      margin-left: auto; margin-right: auto;
+      line-height: 1.7;
+    }
+
+    /* ===== FEATURES ===== */
+    .features { background: var(--bg); }
+    .features-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .feature-card {
+      padding: 28px 24px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+    }
+    .feature-card:hover {
+      border-color: var(--accent);
+      box-shadow: var(--shadow);
+      transform: translateY(-3px);
+    }
+    .feature-icon {
+      width: 44px; height: 44px;
+      background: var(--accent-dim);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px; color: var(--accent);
+    }
+    .feature-icon svg { width: 22px; height: 22px; }
+    .feature-title {
+      font-size: 16px; font-weight: 700;
+      color: var(--text); margin-bottom: 8px;
+    }
+    .feature-desc {
+      font-size: 14px; color: var(--text2);
+      line-height: 1.65;
+    }
+    .feature-link {
+      display: inline-block; margin-top: 14px;
+      font-size: 13px; font-weight: 600;
+      color: var(--accent); text-decoration: none;
+    }
+    .feature-link:hover { text-decoration: underline; }
+
+    /* ===== ROADMAP SHOWCASE ===== */
+    .roadmap-showcase { background: var(--bg2); }
+    .roadmap-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1.35fr;
+      gap: 64px; align-items: center;
+    }
+    .roadmap-text .section-tag { display: inline-block; }
+    .roadmap-text h2 {
+      font-size: clamp(22px, 2.8vw, 38px);
+      font-weight: 800; color: var(--text);
+      letter-spacing: -0.02em; line-height: 1.22;
+      margin: 12px 0 16px;
+    }
+    .roadmap-text p {
+      font-size: 15px; color: var(--text2); line-height: 1.72;
+      margin-bottom: 22px;
+    }
+    .roadmap-bullets { list-style: none; margin-bottom: 28px; }
+    .roadmap-bullets li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 14px; color: var(--text2); padding: 5px 0;
+      line-height: 1.5;
+    }
+    .bullet-check {
+      display: flex; align-items: center; justify-content: center;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0; margin-top: 1px;
+    }
+    .bullet-check svg { width: 10px; height: 10px; }
+
+    /* Gantt mockup */
+    .gantt-mockup {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .gantt-header {
+      display: grid;
+      grid-template-columns: 130px 1fr 1fr 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+    }
+    .gantt-header-cell {
+      padding: 9px 10px;
+      font-size: 10px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.07em; color: var(--text3);
+    }
+    .gantt-header-cell:first-child { border-right: 1px solid var(--border); }
+    .gantt-row {
+      display: grid;
+      grid-template-columns: 130px 1fr 1fr 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+      align-items: center; min-height: 52px;
+    }
+    .gantt-row:last-child { border-bottom: none; }
+    .gantt-label {
+      padding: 8px 10px;
+      border-right: 1px solid var(--border);
+    }
+    .gantt-team {
+      font-size: 10px; font-weight: 700;
+      color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .gantt-epic {
+      font-size: 11px; font-weight: 600; color: var(--text);
+      margin-top: 2px; line-height: 1.3;
+    }
+    .gantt-timeline {
+      grid-column: 2 / 6;
+      position: relative;
+      height: 52px;
+      display: flex; align-items: center;
+    }
+    .gantt-bar-track {
+      position: absolute; left: 0; right: 0;
+      display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
+      height: 100%;
+    }
+    .gantt-quarter-cell { border-right: 1px solid var(--border); }
+    .gantt-quarter-cell:last-child { border-right: none; }
+    .gantt-bar {
+      position: absolute;
+      height: 28px; border-radius: 6px;
+      display: flex; align-items: center; padding: 0 10px;
+      font-size: 10px; font-weight: 700; color: #fff;
+      white-space: nowrap; overflow: hidden; z-index: 1;
+    }
+    .gantt-bar-violet { background: linear-gradient(90deg, #7C3AED, #9D6FFF); }
+    .gantt-bar-blue   { background: linear-gradient(90deg, #2563EB, #60A5FA); }
+    .gantt-bar-pink   { background: linear-gradient(90deg, #DB2777, #F472B6); }
+    .gantt-bar-orange { background: linear-gradient(90deg, #EA580C, #FB923C); }
+    .gantt-bar-gray   { background: linear-gradient(90deg, #6B7280, #9CA3AF); }
+    .gantt-badge {
+      margin-left: auto; font-size: 9px; font-weight: 800;
+      padding: 1px 5px; border-radius: var(--radius-pill);
+      background: rgba(255,255,255,0.25); white-space: nowrap; flex-shrink: 0;
+    }
+
+    /* ===== CUSTOM FIELDS SHOWCASE ===== */
+    .custom-fields-showcase { background: var(--bg); }
+    .cf-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.15fr 1fr;
+      gap: 64px; align-items: center;
+    }
+    .cf-table-mockup {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .cf-table { width: 100%; border-collapse: collapse; }
+    .cf-table th {
+      padding: 10px 14px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      text-align: left; font-size: 12px;
+      font-weight: 600; color: var(--text2); white-space: nowrap;
+    }
+    .cf-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px; color: var(--text);
+    }
+    .cf-table tr:last-child td { border-bottom: none; }
+    .field-type-pill {
+      display: inline-flex; align-items: center;
+      padding: 1px 7px; border-radius: var(--radius-pill);
+      font-size: 9px; font-weight: 800; letter-spacing: 0.04em;
+      margin-left: 6px; vertical-align: middle;
+    }
+    .ftp-text   { background: #DBEAFE; color: #1D4ED8; }
+    .ftp-number { background: #FFEDD5; color: #C2410C; }
+    .ftp-date   { background: #DCFCE7; color: #15803D; }
+    .ftp-select { background: var(--accent-dim); color: var(--accent-text); }
+    [data-theme="dark"] .ftp-text   { background: #1E3A5F; color: #93C5FD; }
+    [data-theme="dark"] .ftp-number { background: #431407; color: #FDBA74; }
+    [data-theme="dark"] .ftp-date   { background: #14532D; color: #86EFAC; }
+    .select-val {
+      display: inline-block; padding: 2px 10px;
+      border-radius: var(--radius-pill); font-size: 12px; font-weight: 600;
+    }
+    .sv-done     { background: #D1FAE5; color: #065F46; }
+    .sv-progress { background: #DBEAFE; color: #1D4ED8; }
+    .sv-todo     { background: #F3F4F6; color: #6B7280; }
+    .sv-review   { background: #FEF3C7; color: #D97706; }
+    [data-theme="dark"] .sv-done     { background: #064E3B; color: #6EE7B7; }
+    [data-theme="dark"] .sv-progress { background: #1E3A5F; color: #93C5FD; }
+    [data-theme="dark"] .sv-todo     { background: #1F2937; color: #9CA3AF; }
+    [data-theme="dark"] .sv-review   { background: #3B2200; color: #FCD34D; }
+    .cf-text-side .section-tag { display: inline-block; }
+    .cf-text-side h2 {
+      font-size: clamp(22px, 2.6vw, 36px);
+      font-weight: 800; color: var(--text);
+      letter-spacing: -0.02em; line-height: 1.22;
+      margin: 12px 0 12px;
+    }
+    .cf-text-side p {
+      font-size: 15px; color: var(--text2); line-height: 1.72;
+      margin-bottom: 28px;
+    }
+    .field-types-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .field-type-card {
+      padding: 12px 14px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      transition: border-color var(--transition);
+    }
+    .field-type-card:hover { border-color: var(--accent); }
+    .ftc-header { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .ftc-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .ftc-name { font-size: 13px; font-weight: 700; color: var(--text); }
+    .ftc-desc  { font-size: 11px; color: var(--text3); line-height: 1.4; }
+
+    /* ===== PRICING ===== */
+    .pricing { background: var(--bg2); }
+    .pricing-toggle-wrap {
+      display: flex; align-items: center; justify-content: center;
+      gap: 12px; margin-bottom: 48px;
+    }
+    .toggle-label { font-size: 14px; font-weight: 600; color: var(--text2); }
+    .toggle-switch {
+      width: 48px; height: 26px;
+      background: var(--border2); border-radius: 13px;
+      position: relative; cursor: pointer;
+      transition: background var(--transition);
+      border: none;
+    }
+    .toggle-switch.active { background: var(--accent); }
+    .toggle-knob {
+      position: absolute; top: 3px; left: 3px;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: #fff; transition: transform var(--transition);
+      pointer-events: none;
+    }
+    .toggle-switch.active .toggle-knob { transform: translateX(22px); }
+    .badge-save {
+      font-size: 11px; font-weight: 700;
+      padding: 3px 8px; border-radius: var(--radius-pill);
+      background: #D1FAE5; color: #065F46;
+    }
+    [data-theme="dark"] .badge-save { background: #064E3B; color: #6EE7B7; }
+    .pricing-grid {
+      max-width: 1080px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 22px; align-items: start;
+    }
+    .pricing-card {
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px 26px;
+      position: relative;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .pricing-card.popular {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-dim), var(--shadow);
+    }
+    .popular-badge {
+      position: absolute; top: -13px; left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px; font-weight: 800;
+      padding: 4px 14px; border-radius: var(--radius-pill);
+      background: var(--accent); color: #fff;
+      white-space: nowrap; letter-spacing: 0.05em;
+    }
+    .pricing-tier {
+      font-size: 12px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text3); margin-bottom: 10px;
+    }
+    .pricing-price {
+      font-size: 38px; font-weight: 800;
+      color: var(--text); line-height: 1; margin-bottom: 6px;
+      letter-spacing: -0.025em;
+    }
+    .pricing-price .currency { font-size: 18px; vertical-align: super; font-weight: 700; }
+    .pricing-price .period { font-size: 13px; font-weight: 500; color: var(--text3); }
+    .pricing-price .strikethrough {
+      font-size: 18px; color: var(--text3);
+      text-decoration: line-through; margin-left: 6px;
+    }
+    .pricing-desc { font-size: 13px; color: var(--text3); margin-bottom: 18px; }
+    .pricing-divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+    .pricing-features { list-style: none; margin-bottom: 28px; }
+    .pricing-features li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 14px; color: var(--text2); padding: 5px 0;
+    }
+    .pricing-features li .check { color: #059669; flex-shrink: 0; margin-top: 1px; font-weight: 700; }
+    .btn-pricing {
+      width: 100%; padding: 13px; border-radius: var(--radius-pill);
+      font-size: 15px; font-weight: 700; cursor: pointer;
+      transition: all var(--transition); text-align: center;
+      border: none; font-family: var(--font);
+    }
+    .btn-pricing-outline {
+      background: transparent;
+      border: 1.5px solid var(--border2); color: var(--text);
+    }
+    .btn-pricing-outline:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-pricing-filled {
+      background: var(--accent); color: #fff;
+      box-shadow: 0 4px 14px rgba(124,58,237,0.3);
+    }
+    .btn-pricing-filled:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-pricing-ghost {
+      background: transparent;
+      border: 1.5px solid var(--border2); color: var(--text2);
+    }
+    .btn-pricing-ghost:hover { border-color: var(--border); color: var(--text); }
+
+    /* ===== CHANGELOG ===== */
+    .changelog { background: var(--bg); }
+    .changelog-inner { max-width: 800px; margin: 0 auto; }
+    .changelog-list { list-style: none; }
+    .changelog-entry {
+      display: grid; grid-template-columns: 180px 1fr;
+      gap: 24px; padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .changelog-entry:last-child { border-bottom: none; }
+    .changelog-meta { text-align: right; }
+    .changelog-version {
+      font-family: var(--mono); font-size: 14px;
+      font-weight: 700; color: var(--accent); display: block;
+    }
+    .changelog-date {
+      font-size: 12px; color: var(--text3); margin-top: 4px; display: block;
+    }
+    .changelog-desc {
+      font-size: 15px; color: var(--text2); line-height: 1.65;
+      margin-bottom: 10px;
+    }
+    .changelog-tag {
+      display: inline-flex; align-items: center;
+      padding: 3px 10px; border-radius: var(--radius-pill);
+      font-size: 11px; font-weight: 700;
+    }
+    .tag-new      { background: #D1FAE5; color: #065F46; }
+    .tag-improved { background: #DBEAFE; color: #1D4ED8; }
+    .tag-fixed    { background: #FEE2E2; color: #DC2626; }
+    [data-theme="dark"] .tag-new      { background: #064E3B; color: #6EE7B7; }
+    [data-theme="dark"] .tag-improved { background: #1E3A5F; color: #93C5FD; }
+    [data-theme="dark"] .tag-fixed    { background: #3B0A0A; color: #FCA5A5; }
+
+    /* ===== TESTIMONIALS ===== */
+    .testimonials { background: var(--bg2); }
+    .testimonials-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+    .testi-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .testi-card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+    .testi-stars { color: #F59E0B; font-size: 15px; margin-bottom: 14px; letter-spacing: 2px; }
+    .testi-text {
+      font-size: 15px; color: var(--text2);
+      line-height: 1.72; margin-bottom: 20px;
+      font-style: italic;
+    }
+    .testi-author { display: flex; align-items: center; gap: 12px; }
+    .testi-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 800; color: #fff; flex-shrink: 0;
+    }
+    .ta-violet { background: var(--accent); }
+    .ta-blue   { background: #2563EB; }
+    .ta-green  { background: #059669; }
+    .testi-name { font-size: 14px; font-weight: 700; color: var(--text); }
+    .testi-role { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+    /* ===== CTA ===== */
+    .cta-section {
+      padding: 104px 24px;
+      background: linear-gradient(135deg, #5B21B6 0%, #7C3AED 50%, #9D4EDD 100%);
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(255,255,255,0.09) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .cta-section::after {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 75% 20%, rgba(255,255,255,0.06) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .cta-content { position: relative; z-index: 1; }
+    .cta-section h2 {
+      font-size: clamp(24px, 3.5vw, 46px);
+      font-weight: 800; color: #fff;
+      letter-spacing: -0.025em; line-height: 1.18;
+      margin-bottom: 16px;
+    }
+    .cta-section p {
+      font-size: 16px; color: rgba(255,255,255,0.82);
+      max-width: 520px; margin: 0 auto 36px;
+      line-height: 1.68;
+    }
+    .cta-buttons {
+      display: flex; align-items: center; justify-content: center;
+      gap: 12px; flex-wrap: wrap; margin-bottom: 20px;
+    }
+    .btn-cta-white {
+      padding: 14px 28px; border-radius: var(--radius-pill);
+      background: #fff; color: #5B21B6;
+      font-size: 16px; font-weight: 700; border: none;
+      cursor: pointer; text-decoration: none;
+      transition: transform var(--transition), box-shadow var(--transition);
+      font-family: var(--font);
+    }
+    .btn-cta-white:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.22); }
+    .btn-cta-outline {
+      padding: 13px 28px; border-radius: var(--radius-pill);
+      background: transparent; color: #fff;
+      font-size: 16px; font-weight: 700;
+      border: 2px solid rgba(255,255,255,0.6);
+      cursor: pointer; text-decoration: none;
+      transition: border-color var(--transition), background var(--transition);
+      font-family: var(--font);
+    }
+    .btn-cta-outline:hover { border-color: #fff; background: rgba(255,255,255,0.1); }
+    .cta-fine { font-size: 13px; color: rgba(255,255,255,0.58); }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 64px 24px 32px;
+    }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 48px; margin-bottom: 48px;
+    }
+    .footer-logo {
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none; color: var(--text);
+      font-weight: 700; font-size: 16px; margin-bottom: 12px;
+    }
+    .footer-logo-icon {
+      width: 28px; height: 28px;
+      background: var(--accent); border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 13px; font-weight: 800;
+    }
+    .footer-tagline {
+      font-size: 14px; color: var(--text3); line-height: 1.6;
+      margin-bottom: 20px; max-width: 230px;
+    }
+    .footer-socials { display: flex; gap: 8px; }
+    .social-btn {
+      width: 32px; height: 32px; border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg); color: var(--text3);
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; transition: border-color var(--transition), color var(--transition);
+    }
+    .social-btn svg { width: 15px; height: 15px; }
+    .social-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .footer-col-title {
+      font-size: 12px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.07em; color: var(--text3); margin-bottom: 16px;
+    }
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 10px; }
+    .footer-links a {
+      font-size: 14px; color: var(--text2); text-decoration: none;
+      transition: color var(--transition);
+    }
+    .footer-links a:hover { color: var(--accent); }
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-copy { font-size: 13px; color: var(--text3); }
+    .footer-legal { display: flex; gap: 20px; }
+    .footer-legal a {
+      font-size: 13px; color: var(--text3); text-decoration: none;
+      transition: color var(--transition);
+    }
+    .footer-legal a:hover { color: var(--accent); }
+
+    /* ===== SCROLL REVEAL ===== */
+    .reveal {
+      opacity: 0; transform: translateY(22px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .hero-inner         { grid-template-columns: 1fr; gap: 48px; }
+      .roadmap-inner      { grid-template-columns: 1fr; gap: 40px; }
+      .cf-inner           { grid-template-columns: 1fr; gap: 40px; }
+      .features-grid      { grid-template-columns: repeat(2, 1fr); }
+      .pricing-grid       { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; }
+      .testimonials-grid  { grid-template-columns: 1fr; max-width: 560px; margin: 0 auto; }
+      .footer-grid        { grid-template-columns: 1fr 1fr; }
+      .stats-inner        { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      section { padding: 64px 24px; }
+      .hero { padding: 84px 24px 56px; }
+      .features-grid { grid-template-columns: 1fr; }
+      .changelog-entry { grid-template-columns: 1fr; gap: 6px; }
+      .changelog-meta { text-align: left; }
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; }
+      .field-types-grid { grid-template-columns: repeat(2, 1fr); }
+      .tracker-mockup { font-size: 11px; }
+      .gantt-mockup { overflow-x: auto; }
+    }
+    @media (max-width: 480px) {
+      .hero-ctas { flex-direction: column; align-items: stretch; }
+      .btn-hero-primary,
+      .btn-hero-outline { text-align: center; justify-content: center; }
+      .stats-inner { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+      .field-types-grid { grid-template-columns: 1fr; }
+      .cta-buttons { flex-direction: column; align-items: center; }
+      .btn-cta-white, .btn-cta-outline { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<header class="navbar" id="navbar" role="banner">
+  <nav class="nav-inner" aria-label="Navigasi utama">
+    <a href="#home" class="nav-logo" aria-label="TrackBase — Beranda">
+      <div class="nav-logo-icon" aria-hidden="true">T</div>
+      TrackBase
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="#fitur">Fitur</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+      <li><a href="#harga">Harga</a></li>
+      <li><a href="#changelog">Changelog</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="btn-theme" id="themeToggle" aria-label="Ganti ke mode gelap" title="Toggle dark mode">🌙</button>
+      <a href="#" class="btn-ghost">Masuk</a>
+      <a href="#harga" class="btn-primary">
+        Coba Gratis
+      </a>
+    </div>
+  </nav>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="home" aria-label="Hero — TrackBase">
+  <div class="hero-inner">
+    <!-- Left: copy -->
+    <div class="hero-left">
+      <div class="hero-badge reveal" aria-label="Pengumuman fitur baru">
+        <span aria-hidden="true">✦</span>
+        Baru — Roadmap AI tersedia sekarang
+      </div>
+      <h1 class="reveal reveal-delay-1">
+        Lacak Setiap Task,<br>
+        <span>Wujudkan Setiap</span> Roadmap
+      </h1>
+      <p class="hero-sub reveal reveal-delay-2">
+        TrackBase menggabungkan kanban, tabel, dan roadmap dalam satu platform.
+        Tim Anda tetap sinkron, deadline terpenuhi.
+      </p>
+      <div class="hero-ctas reveal reveal-delay-3">
+        <a href="#harga" class="btn-hero-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Mulai Gratis — tanpa kartu kredit
+        </a>
+        <a href="#roadmap" class="btn-hero-outline">Lihat Demo</a>
+      </div>
+      <div class="hero-social-proof reveal reveal-delay-4">
+        <span>Dipercaya tim di:</span>
+        <div class="trust-logos">
+          <span class="trust-logo">Gojek</span>
+          <span class="trust-logo">Tokopedia</span>
+          <span class="trust-logo">Bukalapak</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Tracker Mockup -->
+    <div class="hero-right reveal reveal-delay-2" role="img" aria-label="Tampilan task tracker TrackBase — Sprint 12, 7 task aktif">
+      <div class="tracker-mockup">
+        <!-- Window chrome -->
+        <div class="tracker-topbar">
+          <span class="tracker-dot red" aria-hidden="true"></span>
+          <span class="tracker-dot yellow" aria-hidden="true"></span>
+          <span class="tracker-dot green" aria-hidden="true"></span>
+          <span class="tracker-sprint-badge">Sprint 12 — Active</span>
+          <div class="tracker-filter-icon" aria-hidden="true">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+          </div>
+        </div>
+        <!-- Task table -->
+        <div class="tracker-table">
+          <table class="task-table" role="grid" aria-label="Daftar task Sprint 12">
+            <thead>
+              <tr>
+                <th scope="col">#ID</th>
+                <th scope="col">Judul Task</th>
+                <th scope="col">Assignee</th>
+                <th scope="col">Priority</th>
+                <th scope="col">Status</th>
+                <th scope="col">Due</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="tracker-row" role="row" tabindex="0" aria-label="TRK-001 Redesign halaman onboarding">
+                <td><span class="task-id">TRK-001</span></td>
+                <td><span class="task-title">Redesign halaman onboarding</span></td>
+                <td><span class="avatar-circle avatar-ar" title="AR — Ari Ramadhani">AR</span></td>
+                <td><span class="priority-badge priority-high">High</span></td>
+                <td><span class="status-badge status-inprogress">In Progress</span></td>
+                <td><span class="due-date">28 Jun</span></td>
+              </tr>
+              <tr class="tracker-row" role="row" tabindex="0" aria-label="TRK-002 Integrasi Midtrans payment">
+                <td><span class="task-id">TRK-002</span></td>
+                <td><span class="task-title">Integrasi Midtrans payment</span></td>
+                <td><span class="avatar-circle avatar-bw" title="BW — Bagas Wicaksono">BW</span></td>
+                <td><span class="priority-badge priority-high">High</span></td>
+                <td><span class="status-badge status-blocked">Blocked</span></td>
+                <td><span class="due-date">30 Jun</span></td>
+              </tr>
+              <tr class="tracker-row" role="row" tabindex="0" aria-label="TRK-003 Bug fix login SSO error">
+                <td><span class="task-id">TRK-003</span></td>
+                <td><span class="task-title">Bug fix: login SSO error</span></td>
+                <td><span class="avatar-circle avatar-dk" title="DK — Dian Kurniawan">DK</span></td>
+                <td><span class="priority-badge priority-med">Med</span></td>
+                <td><span class="status-badge status-done">Done</span></td>
+                <td><span class="due-date">25 Jun</span></td>
+              </tr>
+              <tr class="tracker-row" role="row" tabindex="0" aria-label="TRK-004 API endpoint dokumentasi">
+                <td><span class="task-id">TRK-004</span></td>
+                <td><span class="task-title">API endpoint dokumentasi</span></td>
+                <td><span class="avatar-circle avatar-ar" title="AR — Ari Ramadhani">AR</span></td>
+                <td><span class="priority-badge priority-med">Med</span></td>
+                <td><span class="status-badge status-inprogress">In Progress</span></td>
+                <td><span class="due-date">2 Jul</span></td>
+              </tr>
+              <tr class="tracker-row" role="row" tabindex="0" aria-label="TRK-005 Mobile push notification">
+                <td><span class="task-id">TRK-005</span></td>
+                <td><span class="task-title">Mobile push notification</span></td>
+                <td><span class="avatar-circle avatar-sf" title="SF — Sari Fitriani">SF</span></td>
+                <td><span class="priority-badge priority-low">Low</span></td>
+                <td><span class="status-badge status-todo">Todo</span></td>
+                <td><span class="due-date">5 Jul</span></td>
+              </tr>
+              <tr class="tracker-row" role="row" tabindex="0" aria-label="TRK-006 Performance audit Q2">
+                <td><span class="task-id">TRK-006</span></td>
+                <td><span class="task-title">Performance audit Q2</span></td>
+                <td><span class="avatar-circle avatar-bw" title="BW — Bagas Wicaksono">BW</span></td>
+                <td><span class="priority-badge priority-high">High</span></td>
+                <td><span class="status-badge status-todo">Todo</span></td>
+                <td><span class="due-date">7 Jul</span></td>
+              </tr>
+              <tr class="tracker-row" role="row" tabindex="0" aria-label="TRK-007 Setup CI/CD pipeline">
+                <td><span class="task-id">TRK-007</span></td>
+                <td><span class="task-title">Setup CI/CD pipeline</span></td>
+                <td><span class="avatar-circle avatar-dk" title="DK — Dian Kurniawan">DK</span></td>
+                <td><span class="priority-badge priority-med">Med</span></td>
+                <td><span class="status-badge status-inprogress">In Progress</span></td>
+                <td><span class="due-date">10 Jul</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS BAR ===== -->
+<div class="stats-bar" role="region" aria-label="Statistik TrackBase">
+  <div class="stats-inner">
+    <div class="stat-item reveal">
+      <div class="stat-number" data-target="12000" data-suffix="+" role="text">0</div>
+      <div class="stat-label">Tim Aktif</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-1">
+      <div class="stat-number" data-target="98" data-suffix="%" role="text">0</div>
+      <div class="stat-label">On-time Delivery</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-2">
+      <div class="stat-number" data-target="49" data-decimal="true" role="text">0</div>
+      <div class="stat-label">Rating Pengguna</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-3">
+      <div class="stat-number" data-target="300" data-suffix="+" role="text">0</div>
+      <div class="stat-label">Integrasi</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FEATURES ===== -->
+<section class="features" id="fitur" aria-labelledby="fitur-title">
+  <div class="section-header reveal">
+    <div class="section-tag">Fitur</div>
+    <h2 class="section-title" id="fitur-title">Semua yang Dibutuhkan Tim Anda</h2>
+    <p class="section-sub">Dari perencanaan sprint hingga roadmap kuartalan — semua tersedia di satu tempat yang bersih dan intuitif.</p>
+  </div>
+  <div class="features-grid container">
+
+    <!-- F1: Kanban & Table View -->
+    <div class="feature-card reveal">
+      <div class="feature-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+        </svg>
+      </div>
+      <h3 class="feature-title">Kanban & Table View</h3>
+      <p class="feature-desc">Beralih antara tampilan kanban, tabel, dan list dalam satu klik. Data tetap sama, perspektif berbeda. Pilih cara kerja paling nyaman untuk tim Anda.</p>
+      <a href="#harga" class="feature-link">Pelajari →</a>
+    </div>
+
+    <!-- F2: Smart Dependency -->
+    <div class="feature-card reveal reveal-delay-1">
+      <div class="feature-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/>
+          <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>
+        </svg>
+      </div>
+      <h3 class="feature-title">Smart Dependency</h3>
+      <p class="feature-desc">Tandai task yang blocking dan blocked-by. TrackBase otomatis memperingatkan saat ada bottleneck di timeline agar tim tidak terkejut di menit terakhir.</p>
+      <a href="#harga" class="feature-link">Pelajari →</a>
+    </div>
+
+    <!-- F3: Roadmap Timeline -->
+    <div class="feature-card reveal reveal-delay-2">
+      <div class="feature-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="5" width="18" height="3" rx="1.5"/><rect x="3" y="10.5" width="13" height="3" rx="1.5"/>
+          <rect x="3" y="16" width="16" height="3" rx="1.5"/>
+        </svg>
+      </div>
+      <h3 class="feature-title">Roadmap Timeline</h3>
+      <p class="feature-desc">Visualisasikan progress kuartalan dengan Gantt-style. Stakeholder paham prioritas tanpa perlu meeting. Bagikan link read-only tanpa perlu login.</p>
+      <a href="#harga" class="feature-link">Pelajari →</a>
+    </div>
+
+    <!-- F4: Custom Fields -->
+    <div class="feature-card reveal reveal-delay-1">
+      <div class="feature-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/>
+          <line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/>
+          <line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/>
+          <line x1="17" y1="16" x2="23" y2="16"/>
+        </svg>
+      </div>
+      <h3 class="feature-title">Custom Fields</h3>
+      <p class="feature-desc">Tambah field sesuai workflow tim: Number, Date, Select, Formula, Person, dan lebih banyak lagi. Tool menyesuaikan ke cara kerja Anda, bukan sebaliknya.</p>
+      <a href="#fields" class="feature-link">Pelajari →</a>
+    </div>
+
+    <!-- F5: Automated Workflow -->
+    <div class="feature-card reveal reveal-delay-2">
+      <div class="feature-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+      </div>
+      <h3 class="feature-title">Automated Workflow</h3>
+      <p class="feature-desc">Buat rule otomatis: "Jika status Done, kirim notifikasi ke Slack dan tutup ticket support." Hemat puluhan jam kerja manual setiap bulan tanpa coding.</p>
+      <a href="#harga" class="feature-link">Pelajari →</a>
+    </div>
+
+    <!-- F6: Real-time Collaboration -->
+    <div class="feature-card reveal reveal-delay-3">
+      <div class="feature-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+          <path d="M16 3.13a4 4 0 010 7.75"/>
+        </svg>
+      </div>
+      <h3 class="feature-title">Real-time Collaboration</h3>
+      <p class="feature-desc">Edit bersama secara real-time. Lihat kursor rekan tim, tinggalkan komentar, dan resolve langsung. Tidak ada lagi konflik atau update yang terlewat.</p>
+      <a href="#harga" class="feature-link">Pelajari →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== ROADMAP SHOWCASE ===== -->
+<section class="roadmap-showcase" id="roadmap" aria-labelledby="roadmap-title">
+  <div class="roadmap-inner container">
+
+    <!-- Left text -->
+    <div class="roadmap-text reveal">
+      <div class="section-tag">Roadmap View</div>
+      <h2 id="roadmap-title">Rencanakan Kuartal,<br>Capai Target</h2>
+      <p>Tampilan Gantt yang intuitif membuat perencanaan jangka panjang terasa mudah. Setiap epic, milestone, dan deadline terlihat jelas dalam satu layar — tanpa spreadsheet yang berantakan.</p>
+      <ul class="roadmap-bullets" role="list">
+        <li>
+          <span class="bullet-check" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>
+          </span>
+          Visualisasi linimasa kuartalan dengan drag-and-drop
+        </li>
+        <li>
+          <span class="bullet-check" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>
+          </span>
+          Warna tim untuk identifikasi cepat siapa mengerjakan apa
+        </li>
+        <li>
+          <span class="bullet-check" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>
+          </span>
+          Badge status otomatis update sesuai progress task
+        </li>
+        <li>
+          <span class="bullet-check" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>
+          </span>
+          Export ke PDF atau bagikan link read-only ke stakeholder
+        </li>
+        <li>
+          <span class="bullet-check" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>
+          </span>
+          Zoom dari tampilan mingguan hingga tahunan
+        </li>
+      </ul>
+      <a href="#harga" class="btn-hero-primary" style="text-decoration:none; display:inline-flex;">
+        Mulai Rencanakan Roadmap
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+
+    <!-- Right: Gantt Mockup -->
+    <div class="reveal reveal-delay-2">
+      <div class="gantt-mockup" role="img" aria-label="Gantt roadmap mockup — 5 epic sepanjang 4 kuartal">
+        <!-- Header row -->
+        <div class="gantt-header">
+          <div class="gantt-header-cell">Epic / Tim</div>
+          <div class="gantt-header-cell">Q1 2025</div>
+          <div class="gantt-header-cell">Q2 2025</div>
+          <div class="gantt-header-cell">Q3 2025</div>
+          <div class="gantt-header-cell">Q4 2025</div>
+        </div>
+
+        <!-- Row 1: Product — Q1–Q2 (0–50%) -->
+        <div class="gantt-row">
+          <div class="gantt-label">
+            <div class="gantt-team">Product</div>
+            <div class="gantt-epic">Revamp Onboarding Flow</div>
+          </div>
+          <div class="gantt-timeline">
+            <div class="gantt-bar-track">
+              <div class="gantt-quarter-cell"></div>
+              <div class="gantt-quarter-cell"></div>
+              <div class="gantt-quarter-cell"></div>
+              <div class="gantt-quarter-cell"></div>
+            </div>
+            <div class="gantt-bar gantt-bar-violet" style="left:2%;width:46%;">
+              Onboarding Flow &nbsp;<span class="gantt-badge">Shipped ✓</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: Engineering — Q2–Q3 (25–75%) -->
+        <div class="gantt-row">
+          <div class="gantt-label">
+            <div class="gantt-team">Engineering</div>
+            <div class="gantt-epic">Infrastruktur Microservices</div>
+          </div>
+          <div class="gantt-timeline">
+            <div class="gantt-bar-track">
+              <div class="gantt-quarter-cell"></div>
+              <div class="gantt-quarter-cell"></div>
+              <div class="gantt-quarter-cell"></div>
+              <div class="gantt-quarter-cell"></div>
+            </div>
+            <div class="gantt-bar gantt-bar-blue" style="left:27%;width:44%;">
+              Microservices &nbsp;<span class="gantt-badge">In Progress</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 3: Design — Q1 only (0–25%) -->
+        <div class="gantt-row">
+          <div class="gantt-label">
+            <div class="gantt-team">Design</div>
+            <div class="gantt-epic">Design System v2.0</div>
+          </div>
+          <div class="gantt-timeline">
+            <div class="gantt-bar-track">
+              <div class="gantt-quarter-cell"></div>
+              <div class="gantt-quarter-cell"></div>
+              <div class="gantt-quarter-cell"></div>
+              <div class="gantt-quarter-cell"></div>
+            </div>
+            <div class="gantt-bar gantt-bar-pink" style="left:2%;width:22%;">
+              DS v2.0 &nbsp;<span class="gantt-badge">Shipped ✓</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 4: Marketing — Q3 (50–75%) -->
+        <div class="gantt-row">
+          <div class="gantt-label">
+            <div class="gantt-team">Marketing</div>
+            <div class="gantt-epic">Kampanye Growth Q3</div>
+          </div>
+          <div class="gantt-timeline">
+            <div class="gantt-bar-track">
+              <div class="gantt-quarter-cell"></div>
+              <div class="gantt-quarter-cell"></div>
+              <div class="gantt-quarter-cell"></div>
+              <div class="gantt-quarter-cell"></div>
+            </div>
+            <div class="gantt-bar gantt-bar-orange" style="left:52%;width:22%;">
+              Growth Q3 &nbsp;<span class="gantt-badge">In Progress</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 5: Engineering — Q3–Q4 (50–100%) -->
+        <div class="gantt-row">
+          <div class="gantt-label">
+            <div class="gantt-team">Engineering</div>
+            <div class="gantt-epic">Mobile App Native</div>
+          </div>
+          <div class="gantt-timeline">
+            <div class="gantt-bar-track">
+              <div class="gantt-quarter-cell"></div>
+              <div class="gantt-quarter-cell"></div>
+              <div class="gantt-quarter-cell"></div>
+              <div class="gantt-quarter-cell"></div>
+            </div>
+            <div class="gantt-bar gantt-bar-gray" style="left:52%;width:44%;">
+              Mobile Native &nbsp;<span class="gantt-badge">Planned</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CUSTOM FIELDS SHOWCASE ===== -->
+<section class="custom-fields-showcase" id="fields" aria-labelledby="fields-title">
+  <div class="cf-inner container">
+
+    <!-- Left: Table Mockup -->
+    <div class="reveal">
+      <div class="cf-table-mockup" role="img" aria-label="Contoh tabel dengan custom fields: Text, Number, Date, Select">
+        <table class="cf-table">
+          <thead>
+            <tr>
+              <th>
+                Nama Task
+                <span class="field-type-pill ftp-text">Text</span>
+              </th>
+              <th>
+                Estimasi
+                <span class="field-type-pill ftp-number">Number</span>
+              </th>
+              <th>
+                Deadline
+                <span class="field-type-pill ftp-date">Date</span>
+              </th>
+              <th>
+                Status
+                <span class="field-type-pill ftp-select">Select</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Redesign halaman login</td>
+              <td>8 jam</td>
+              <td>28 Jun 2025</td>
+              <td><span class="select-val sv-progress">In Progress</span></td>
+            </tr>
+            <tr>
+              <td>Setup database staging</td>
+              <td>4 jam</td>
+              <td>25 Jun 2025</td>
+              <td><span class="select-val sv-done">Done</span></td>
+            </tr>
+            <tr>
+              <td>Audit performa Q2</td>
+              <td>12 jam</td>
+              <td>5 Jul 2025</td>
+              <td><span class="select-val sv-review">Review</span></td>
+            </tr>
+            <tr>
+              <td>Integrasi analytics SDK</td>
+              <td>6 jam</td>
+              <td>10 Jul 2025</td>
+              <td><span class="select-val sv-todo">Todo</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Right: Copy + Field Types -->
+    <div class="cf-text-side reveal reveal-delay-2">
+      <div class="section-tag">Custom Fields</div>
+      <h2 id="fields-title">Field Sesuai Workflow,<br>Bukan Sebaliknya</h2>
+      <p>Setiap tim punya cara kerja berbeda. Tambahkan field yang benar-benar Anda butuhkan — bukan yang dipaksakan tool lain. Dari formula otomatis hingga multi-select, semuanya tersedia.</p>
+      <div class="field-types-grid">
+        <div class="field-type-card">
+          <div class="ftc-header">
+            <span class="ftc-dot" style="background:#3B82F6;" aria-hidden="true"></span>
+            <span class="ftc-name">Text</span>
+          </div>
+          <div class="ftc-desc">Nama, deskripsi, catatan</div>
+        </div>
+        <div class="field-type-card">
+          <div class="ftc-header">
+            <span class="ftc-dot" style="background:#F97316;" aria-hidden="true"></span>
+            <span class="ftc-name">Number</span>
+          </div>
+          <div class="ftc-desc">Estimasi, poin, anggaran</div>
+        </div>
+        <div class="field-type-card">
+          <div class="ftc-header">
+            <span class="ftc-dot" style="background:#22C55E;" aria-hidden="true"></span>
+            <span class="ftc-name">Date</span>
+          </div>
+          <div class="ftc-desc">Deadline, tanggal rilis</div>
+        </div>
+        <div class="field-type-card">
+          <div class="ftc-header">
+            <span class="ftc-dot" style="background:#7C3AED;" aria-hidden="true"></span>
+            <span class="ftc-name">Select</span>
+          </div>
+          <div class="ftc-desc">Status, prioritas, kategori</div>
+        </div>
+        <div class="field-type-card">
+          <div class="ftc-header">
+            <span class="ftc-dot" style="background:#EC4899;" aria-hidden="true"></span>
+            <span class="ftc-name">Multi-select</span>
+          </div>
+          <div class="ftc-desc">Label, tag, department</div>
+        </div>
+        <div class="field-type-card">
+          <div class="ftc-header">
+            <span class="ftc-dot" style="background:#14B8A6;" aria-hidden="true"></span>
+            <span class="ftc-name">Checkbox</span>
+          </div>
+          <div class="ftc-desc">Ya/Tidak, approval, flag</div>
+        </div>
+        <div class="field-type-card">
+          <div class="ftc-header">
+            <span class="ftc-dot" style="background:#EAB308;" aria-hidden="true"></span>
+            <span class="ftc-name">URL</span>
+          </div>
+          <div class="ftc-desc">Link Figma, Notion, PR</div>
+        </div>
+        <div class="field-type-card">
+          <div class="ftc-header">
+            <span class="ftc-dot" style="background:#EF4444;" aria-hidden="true"></span>
+            <span class="ftc-name">Person</span>
+          </div>
+          <div class="ftc-desc">Assignee, reviewer, PIC</div>
+        </div>
+        <div class="field-type-card">
+          <div class="ftc-header">
+            <span class="ftc-dot" style="background:#6B7280;" aria-hidden="true"></span>
+            <span class="ftc-name">Formula</span>
+          </div>
+          <div class="ftc-desc">Hitung dari field lain</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRICING ===== -->
+<section class="pricing" id="harga" aria-labelledby="harga-title">
+  <div class="section-header reveal">
+    <div class="section-tag">Harga</div>
+    <h2 class="section-title" id="harga-title">Mulai Gratis, Scale Sesuai Tim</h2>
+    <p class="section-sub">Tidak ada biaya tersembunyi. Upgrade atau downgrade kapanpun tanpa syarat apapun.</p>
+  </div>
+
+  <div class="pricing-toggle-wrap reveal" role="group" aria-label="Pilihan periode tagihan">
+    <span class="toggle-label" id="label-monthly">Bulanan</span>
+    <button
+      class="toggle-switch"
+      id="pricingToggle"
+      role="switch"
+      aria-checked="false"
+      aria-labelledby="label-monthly label-yearly"
+    >
+      <span class="toggle-knob" aria-hidden="true"></span>
+    </button>
+    <span class="toggle-label" id="label-yearly">Tahunan <span class="badge-save">Hemat 25%</span></span>
+  </div>
+
+  <div class="pricing-grid">
+    <!-- FREE -->
+    <div class="pricing-card reveal">
+      <div class="pricing-tier">Free</div>
+      <div class="pricing-price">Gratis<span class="period"> selamanya</span></div>
+      <div class="pricing-desc">Cocok untuk tim kecil yang baru memulai.</div>
+      <hr class="pricing-divider">
+      <ul class="pricing-features">
+        <li><span class="check" aria-hidden="true">✓</span>5 anggota tim</li>
+        <li><span class="check" aria-hidden="true">✓</span>3 proyek aktif</li>
+        <li><span class="check" aria-hidden="true">✓</span>1 GB storage</li>
+        <li><span class="check" aria-hidden="true">✓</span>Kanban &amp; Table view</li>
+        <li><span class="check" aria-hidden="true">✓</span>Template dasar</li>
+      </ul>
+      <button class="btn-pricing btn-pricing-outline">Mulai Sekarang</button>
+    </div>
+
+    <!-- GROWTH (Popular) -->
+    <div class="pricing-card popular reveal reveal-delay-1" aria-label="Paket Growth — paling populer">
+      <div class="popular-badge" aria-label="Paling populer">⭐ PALING POPULER</div>
+      <div class="pricing-tier">Growth</div>
+      <div class="pricing-price" id="growthPrice">
+        <span class="currency">Rp</span>199.000<span class="period">/seat/bln</span>
+      </div>
+      <div class="pricing-desc">Untuk tim yang berkembang dengan workflow kompleks.</div>
+      <hr class="pricing-divider">
+      <ul class="pricing-features">
+        <li><span class="check" aria-hidden="true">✓</span>Anggota tim tak terbatas</li>
+        <li><span class="check" aria-hidden="true">✓</span>Proyek tak terbatas</li>
+        <li><span class="check" aria-hidden="true">✓</span>50 GB storage</li>
+        <li><span class="check" aria-hidden="true">✓</span>Semua view + Roadmap</li>
+        <li><span class="check" aria-hidden="true">✓</span>Custom Fields lengkap</li>
+        <li><span class="check" aria-hidden="true">✓</span>Automasi 50 rule/bulan</li>
+        <li><span class="check" aria-hidden="true">✓</span>Integrasi Slack, Jira, GitHub</li>
+        <li><span class="check" aria-hidden="true">✓</span>Priority support</li>
+      </ul>
+      <button class="btn-pricing btn-pricing-filled">Coba 14 Hari Gratis</button>
+    </div>
+
+    <!-- ENTERPRISE -->
+    <div class="pricing-card reveal reveal-delay-2">
+      <div class="pricing-tier">Enterprise</div>
+      <div class="pricing-price">Custom</div>
+      <div class="pricing-desc">Untuk organisasi besar dengan kebutuhan khusus.</div>
+      <hr class="pricing-divider">
+      <ul class="pricing-features">
+        <li><span class="check" aria-hidden="true">✓</span>Semua fitur Growth</li>
+        <li><span class="check" aria-hidden="true">✓</span>SSO / SAML</li>
+        <li><span class="check" aria-hidden="true">✓</span>Audit log lengkap</li>
+        <li><span class="check" aria-hidden="true">✓</span>Dedicated Customer Success Manager</li>
+        <li><span class="check" aria-hidden="true">✓</span>SLA uptime 99.9%</li>
+        <li><span class="check" aria-hidden="true">✓</span>Opsi on-premise</li>
+        <li><span class="check" aria-hidden="true">✓</span>Custom contract &amp; invoicing</li>
+      </ul>
+      <button class="btn-pricing btn-pricing-ghost">Hubungi Sales</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CHANGELOG ===== -->
+<section class="changelog" id="changelog" aria-labelledby="changelog-title">
+  <div class="section-header reveal">
+    <div class="section-tag">Changelog</div>
+    <h2 class="section-title" id="changelog-title">Apa yang Baru di TrackBase</h2>
+    <p class="section-sub">Kami terus memperbarui platform berdasarkan masukan pengguna nyata — setiap rilis membawa nilai nyata.</p>
+  </div>
+  <div class="changelog-inner">
+    <ul class="changelog-list" role="list">
+
+      <li class="changelog-entry reveal">
+        <div class="changelog-meta">
+          <span class="changelog-version">v2.4.0</span>
+          <span class="changelog-date">20 Juni 2025</span>
+        </div>
+        <div>
+          <p class="changelog-desc">
+            <strong>Roadmap AI:</strong> Saran prioritas otomatis berdasarkan deadline dan kapasitas tim. TrackBase kini menganalisis beban kerja dan merekomendasikan task mana yang harus didahulukan minggu ini — tanpa perlu rapat perencanaan yang panjang.
+          </p>
+          <span class="changelog-tag tag-new" aria-label="Fitur baru">✦ New</span>
+        </div>
+      </li>
+
+      <li class="changelog-entry reveal reveal-delay-1">
+        <div class="changelog-meta">
+          <span class="changelog-version">v2.3.5</span>
+          <span class="changelog-date">5 Juni 2025</span>
+        </div>
+        <div>
+          <p class="changelog-desc">
+            <strong>Peningkatan performa:</strong> Load tabel 10.000+ row kini 3× lebih cepat berkat virtual scrolling dan query optimization. Dashboard tidak lagi freeze saat data proyek besar di-scroll cepat.
+          </p>
+          <span class="changelog-tag tag-improved" aria-label="Peningkatan">↑ Improved</span>
+        </div>
+      </li>
+
+      <li class="changelog-entry reveal reveal-delay-2">
+        <div class="changelog-meta">
+          <span class="changelog-version">v2.3.0</span>
+          <span class="changelog-date">18 Mei 2025</span>
+        </div>
+        <div>
+          <p class="changelog-desc">
+            <strong>Custom Formula Field:</strong> Hitung nilai otomatis dari field lain menggunakan sintaks formula yang familiar. Contoh: <code style="font-family:var(--mono);font-size:12px;background:var(--bg2);padding:1px 7px;border-radius:4px;color:var(--accent);">= Estimasi * Jumlah_Anggota</code> untuk kalkulasi anggaran instan per task.
+          </p>
+          <span class="changelog-tag tag-new" aria-label="Fitur baru">✦ New</span>
+        </div>
+      </li>
+
+      <li class="changelog-entry reveal reveal-delay-3">
+        <div class="changelog-meta">
+          <span class="changelog-version">v2.2.8</span>
+          <span class="changelog-date">2 Mei 2025</span>
+        </div>
+        <div>
+          <p class="changelog-desc">
+            <strong>Fix:</strong> Notifikasi duplikat pada trigger workflow tertentu saat kondisi "status berubah" terpicu lebih dari sekali dalam satu transaksi. Pengguna tidak lagi menerima 2–3 notifikasi Slack untuk satu perubahan status yang sama.
+          </p>
+          <span class="changelog-tag tag-fixed" aria-label="Perbaikan bug">✕ Fixed</span>
+        </div>
+      </li>
+
+    </ul>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="testimonials" aria-labelledby="testi-title">
+  <div class="section-header reveal">
+    <div class="section-tag">Testimonial</div>
+    <h2 class="section-title" id="testi-title">Dipercaya Tim di Seluruh Indonesia</h2>
+    <p class="section-sub">Lebih dari 12.000 tim telah merasakan perbedaannya. Ini kata mereka.</p>
+  </div>
+  <div class="testimonials-grid container">
+
+    <div class="testi-card reveal">
+      <div class="testi-stars" aria-label="Rating 5 dari 5 bintang">★★★★★</div>
+      <p class="testi-text">"TrackBase mengubah cara tim kami bekerja. Roadmap yang dulu chaos sekarang bisa diikuti semua stakeholder tanpa perlu meeting mingguan yang panjang dan tidak produktif."</p>
+      <div class="testi-author">
+        <div class="testi-avatar ta-violet" aria-hidden="true">RF</div>
+        <div>
+          <div class="testi-name">Reza Firmansyah</div>
+          <div class="testi-role">Head of Product @ Kreditku</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card reveal reveal-delay-1">
+      <div class="testi-stars" aria-label="Rating 5 dari 5 bintang">★★★★★</div>
+      <p class="testi-text">"Custom Fields dan automasi adalah game changer. Kami hemat 5 jam rapat per minggu hanya karena status update berjalan otomatis — tim engineering bisa fokus ke koding."</p>
+      <div class="testi-author">
+        <div class="testi-avatar ta-blue" aria-hidden="true">DN</div>
+        <div>
+          <div class="testi-name">Dian Novitasari</div>
+          <div class="testi-role">Engineering Manager @ Logistikku</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card reveal reveal-delay-2">
+      <div class="testi-stars" aria-label="Rating 5 dari 5 bintang">★★★★★</div>
+      <p class="testi-text">"Sebagai startup, kami butuh tool yang fleksibel tapi tidak overwhelming. TrackBase tepat sekali — simple tapi powerful. Onboarding anggota tim baru cuma butuh sekitar satu jam."</p>
+      <div class="testi-author">
+        <div class="testi-avatar ta-green" aria-hidden="true">BW</div>
+        <div>
+          <div class="testi-name">Bagas Wicaksono</div>
+          <div class="testi-role">Founder @ Kreasi Digital</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="cta-section" aria-label="Call to action — bergabung ke TrackBase">
+  <div class="container cta-content">
+    <h2 class="reveal">Siap Wujudkan Roadmap Tim Anda?</h2>
+    <p class="reveal reveal-delay-1">Bergabung dengan 12.000+ tim yang sudah mengelola proyek lebih efisien dengan TrackBase. Setup dalam hitungan menit, tanpa perlu konfigurasi rumit.</p>
+    <div class="cta-buttons reveal reveal-delay-2">
+      <a href="#harga" class="btn-cta-white">Mulai Gratis Sekarang</a>
+      <a href="#" class="btn-cta-outline">Jadwalkan Demo</a>
+    </div>
+    <p class="cta-fine reveal reveal-delay-3">
+      Tidak perlu kartu kredit &nbsp;·&nbsp; Setup dalam 5 menit &nbsp;·&nbsp; Batalkan kapanpun
+    </p>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-grid">
+
+      <!-- Col 1: Brand -->
+      <div>
+        <a href="#home" class="footer-logo">
+          <div class="footer-logo-icon" aria-hidden="true">T</div>
+          TrackBase
+        </a>
+        <p class="footer-tagline">Platform manajemen proyek modern untuk tim yang serius soal deadline dan roadmap.</p>
+        <div class="footer-socials">
+          <a href="#" class="social-btn" aria-label="GitHub TrackBase">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+            </svg>
+          </a>
+          <a href="#" class="social-btn" aria-label="Twitter / X TrackBase">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+          </a>
+          <a href="#" class="social-btn" aria-label="LinkedIn TrackBase">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Col 2: Produk -->
+      <div>
+        <div class="footer-col-title">Produk</div>
+        <ul class="footer-links">
+          <li><a href="#fitur">Fitur</a></li>
+          <li><a href="#roadmap">Roadmap</a></li>
+          <li><a href="#harga">Harga</a></li>
+          <li><a href="#changelog">Changelog</a></li>
+          <li><a href="#">Status</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 3: Perusahaan -->
+      <div>
+        <div class="footer-col-title">Perusahaan</div>
+        <ul class="footer-links">
+          <li><a href="#">Tentang Kami</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Karir</a></li>
+          <li><a href="#">Press Kit</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 4: Dukungan -->
+      <div>
+        <div class="footer-col-title">Dukungan</div>
+        <ul class="footer-links">
+          <li><a href="#">Dokumentasi</a></li>
+          <li><a href="#">API Reference</a></li>
+          <li><a href="#">Community</a></li>
+          <li><a href="#">Hubungi Kami</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">© <span id="footerYear"></span> TrackBase. Semua hak dilindungi.</p>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ================================================
+   * 1. DARK MODE — init + toggle
+   * ================================================ */
+  (function initTheme() {
+    var saved = localStorage.getItem('trackbase_theme');
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var theme = saved ? saved : (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+
+  var themeToggle = document.getElementById('themeToggle');
+
+  function updateThemeIcon() {
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    themeToggle.textContent = isDark ? '☀️' : '🌙';
+    themeToggle.setAttribute('aria-label', isDark ? 'Ganti ke mode terang' : 'Ganti ke mode gelap');
+  }
+  updateThemeIcon();
+
+  themeToggle.addEventListener('click', function () {
+    var current = document.documentElement.getAttribute('data-theme');
+    var next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('trackbase_theme', next);
+    updateThemeIcon();
+  });
+
+  /* ================================================
+   * 2. NAVBAR — add .scrolled on scroll > 50px
+   * ================================================ */
+  var navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', function () {
+    if (window.scrollY > 50) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  }, { passive: true });
+
+  /* ================================================
+   * 3. SMOOTH SCROLL — anchor links
+   * ================================================ */
+  document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+    anchor.addEventListener('click', function (e) {
+      var href = this.getAttribute('href');
+      if (href === '#') return;
+      var target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        var navH = 64;
+        var top = target.getBoundingClientRect().top + window.scrollY - navH;
+        window.scrollTo({ top: top, behavior: 'smooth' });
+      }
+    });
+  });
+
+  /* ================================================
+   * 4. SCROLL REVEAL — IntersectionObserver
+   * ================================================ */
+  (function setupReveal() {
+    var els = document.querySelectorAll('.reveal');
+    if (!els.length) return;
+
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -32px 0px' });
+
+    els.forEach(function (el) { obs.observe(el); });
+  })();
+
+  /* ================================================
+   * 5. COUNTER ANIMATION — IntersectionObserver
+   * ================================================ */
+  (function setupCounters() {
+    var counters = document.querySelectorAll('.stat-number[data-target]');
+    if (!counters.length) return;
+
+    function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+    function runCounter(el) {
+      var rawTarget = parseInt(el.getAttribute('data-target'), 10);
+      var suffix    = el.getAttribute('data-suffix') || '';
+      var isDecimal = el.getAttribute('data-decimal') === 'true';
+      var duration  = 1500;
+      var start     = null;
+
+      function step(ts) {
+        if (!start) start = ts;
+        var elapsed  = ts - start;
+        var progress = Math.min(elapsed / duration, 1);
+        var eased    = easeOut(progress);
+
+        if (isDecimal) {
+          var val = (rawTarget / 10 * eased).toFixed(1);
+          el.textContent = val + '/5';
+        } else {
+          var cur = Math.round(rawTarget * eased);
+          el.textContent = cur.toLocaleString('id-ID') + suffix;
+        }
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          if (isDecimal) {
+            el.textContent = '4.9/5';
+          } else {
+            el.textContent = rawTarget.toLocaleString('id-ID') + suffix;
+          }
+        }
+      }
+      requestAnimationFrame(step);
+    }
+
+    var cObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          runCounter(entry.target);
+          cObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    counters.forEach(function (c) { cObs.observe(c); });
+  })();
+
+  /* ================================================
+   * 6. TRACKER ROW CLICK — single selection
+   * ================================================ */
+  (function setupRows() {
+    var rows = document.querySelectorAll('.tracker-row');
+    rows.forEach(function (row) {
+      row.addEventListener('click', function () {
+        var wasSelected = this.classList.contains('row-selected');
+        rows.forEach(function (r) { r.classList.remove('row-selected'); });
+        if (!wasSelected) {
+          this.classList.add('row-selected');
+        }
+      });
+      // Keyboard support
+      row.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          this.click();
+        }
+      });
+    });
+  })();
+
+  /* ================================================
+   * 7. PRICING TOGGLE — monthly / yearly
+   * ================================================ */
+  (function setupPricing() {
+    var toggleBtn  = document.getElementById('pricingToggle');
+    var growthEl   = document.getElementById('growthPrice');
+    var isYearly   = false;
+
+    var monthlyHTML = '<span class="currency">Rp</span>199.000<span class="period">/seat/bln</span>';
+    var yearlyHTML  = '<span class="currency">Rp</span>149.000<span class="period">/seat/bln</span>&nbsp;<span class="strikethrough">199rb</span>';
+
+    toggleBtn.addEventListener('click', function () {
+      isYearly = !isYearly;
+      this.classList.toggle('active', isYearly);
+      this.setAttribute('aria-checked', isYearly ? 'true' : 'false');
+      growthEl.innerHTML = isYearly ? yearlyHTML : monthlyHTML;
+    });
+  })();
+
+  /* ================================================
+   * 8. FOOTER YEAR — dynamic copyright year
+   * ================================================ */
+  document.getElementById('footerYear').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

@@ -1,0 +1,1771 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SchemaHub — Data Dictionary & Schema Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== CSS VARIABLES ===== */
+:root {
+  --bg: #FFFFFF;
+  --bg2: #FFF7ED;
+  --bg3: #FFEDD5;
+  --text: #1C0A00;
+  --text2: #57534E;
+  --text3: #A8A29E;
+  --accent: #EA580C;
+  --accent-dim: #FFEDD5;
+  --accent-text: #7C2D12;
+  --border: #E7E5E4;
+  --border2: #D6D3D1;
+  --font: 'DM Sans', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.05);
+  --radius: 8px;
+  --radius-sm: 5px;
+  --radius-lg: 12px;
+  --transition: 0.2s ease;
+}
+[data-theme="dark"] {
+  --bg: #1C1917;
+  --bg2: #292524;
+  --bg3: #3C3330;
+  --text: #FAFAF9;
+  --text2: #A8A29E;
+  --text3: #78716C;
+  --accent: #F97316;
+  --accent-dim: #431407;
+  --accent-text: #FDBA74;
+  --border: #292524;
+  --border2: #3C3330;
+  --shadow: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.25);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.35);
+}
+
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  transition: background var(--transition), color var(--transition);
+  overflow-x: hidden;
+}
+a { color: var(--accent); text-decoration: none; transition: opacity var(--transition); }
+a:hover { opacity: 0.8; }
+img { max-width: 100%; }
+button { cursor: pointer; font-family: var(--font); }
+ul { list-style: none; }
+
+/* ===== UTILITIES ===== */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.section { padding: 80px 0; }
+.section-sm { padding: 56px 0; }
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: 4px;
+  font-size: 11px; font-weight: 600; font-family: var(--mono);
+  letter-spacing: 0.03em; white-space: nowrap;
+}
+.badge-int    { background: #DBEAFE; color: #1D4ED8; }
+.badge-varchar{ background: #D1FAE5; color: #065F46; }
+.badge-bool   { background: #FEF3C7; color: #92400E; }
+.badge-ts     { background: #EDE9FE; color: #5B21B6; }
+.badge-json   { background: #FCE7F3; color: #9D174D; }
+.badge-uuid   { background: #FFEDD5; color: #9A3412; }
+.badge-float  { background: #E0F2FE; color: #075985; }
+.badge-enum   { background: #F0FDF4; color: #166534; }
+.badge-date   { background: #FDF4FF; color: #7E22CE; }
+.badge-text-light { background: #F3F4F6; color: #374151; }
+[data-theme="dark"] .badge-int    { background: #1E3A5F; color: #93C5FD; }
+[data-theme="dark"] .badge-varchar{ background: #064E3B; color: #6EE7B7; }
+[data-theme="dark"] .badge-bool   { background: #451A03; color: #FDE68A; }
+[data-theme="dark"] .badge-ts     { background: #2E1065; color: #C4B5FD; }
+[data-theme="dark"] .badge-json   { background: #500724; color: #FBCFE8; }
+[data-theme="dark"] .badge-uuid   { background: #431407; color: #FDBA74; }
+[data-theme="dark"] .badge-float  { background: #0C4A6E; color: #7DD3FC; }
+[data-theme="dark"] .badge-enum   { background: #052E16; color: #86EFAC; }
+[data-theme="dark"] .badge-date   { background: #3B0764; color: #E9D5FF; }
+[data-theme="dark"] .badge-text-light { background: #374151; color: #D1D5DB; }
+
+.mono { font-family: var(--mono); }
+.tag-null { padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; background: var(--bg3); color: var(--text3); }
+.tag-pk { padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 700; background: var(--accent-dim); color: var(--accent-text); }
+.tag-fk { padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; background: #EDE9FE; color: #5B21B6; }
+[data-theme="dark"] .tag-fk { background: #2E1065; color: #C4B5FD; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 20px; border-radius: var(--radius);
+  font-size: 14px; font-weight: 600; border: none;
+  transition: all var(--transition); white-space: nowrap;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #C2410C; opacity: 1; color: #fff; }
+.btn-outline {
+  background: transparent; color: var(--text);
+  border: 1.5px solid var(--border2);
+}
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
+.btn-sm { padding: 6px 14px; font-size: 13px; }
+.btn-ghost { background: transparent; color: var(--text2); border: none; padding: 6px 12px; font-size: 13px; }
+.btn-ghost:hover { color: var(--accent); background: var(--accent-dim); opacity: 1; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+/* ===== NAVBAR ===== */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: var(--bg); border-bottom: 1px solid var(--border);
+  transition: background var(--transition), border-color var(--transition);
+}
+.navbar.scrolled { box-shadow: var(--shadow-md); }
+.nav-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  height: 60px; display: flex; align-items: center; gap: 32px;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 17px; font-weight: 700; color: var(--text); text-decoration: none;
+}
+.nav-logo-icon {
+  width: 30px; height: 30px; background: var(--accent);
+  border-radius: 7px; display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 14px; font-family: var(--mono); font-weight: 700;
+}
+.nav-links { display: flex; align-items: center; gap: 4px; flex: 1; }
+.nav-links a {
+  padding: 6px 12px; border-radius: var(--radius-sm);
+  font-size: 14px; font-weight: 500; color: var(--text2); text-decoration: none;
+  transition: all var(--transition);
+}
+.nav-links a:hover { color: var(--accent); background: var(--accent-dim); }
+.nav-right { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.theme-toggle {
+  width: 36px; height: 36px; border-radius: var(--radius-sm);
+  background: var(--bg2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; cursor: pointer; transition: all var(--transition);
+  color: var(--text2);
+}
+.theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+.nav-mobile-btn {
+  display: none; flex-direction: column; gap: 4px;
+  width: 36px; height: 36px; align-items: center; justify-content: center;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); cursor: pointer;
+}
+.nav-mobile-btn span { width: 18px; height: 2px; background: var(--text2); border-radius: 2px; transition: all 0.3s; }
+.mobile-nav-menu {
+  display: none; position: absolute; top: 60px; left: 0; right: 0;
+  background: var(--bg); border-bottom: 1px solid var(--border);
+  padding: 16px 24px; flex-direction: column; gap: 4px; box-shadow: var(--shadow-md);
+}
+.mobile-nav-menu.open { display: flex; }
+.mobile-nav-menu a { padding: 10px 12px; color: var(--text); font-weight: 500; border-radius: var(--radius-sm); }
+.mobile-nav-menu a:hover { background: var(--bg2); color: var(--accent); }
+
+/* ===== HERO ===== */
+.hero {
+  padding: 120px 0 80px;
+  background: linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
+}
+.hero-inner { display: grid; grid-template-columns: 1fr 1.1fr; gap: 64px; align-items: center; }
+.hero-label {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-radius: 20px;
+  background: var(--accent-dim); color: var(--accent-text);
+  font-size: 12px; font-weight: 600; margin-bottom: 16px;
+  border: 1px solid var(--border2);
+}
+.hero h1 {
+  font-size: 42px; font-weight: 700; line-height: 1.2;
+  color: var(--text); margin-bottom: 18px;
+}
+.hero h1 span { color: var(--accent); }
+.hero p {
+  font-size: 16px; color: var(--text2); line-height: 1.7;
+  margin-bottom: 28px; max-width: 480px;
+}
+.hero-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.hero-note { font-size: 12px; color: var(--text3); margin-top: 12px; }
+
+/* ===== HERO MOCKUP ===== */
+.hero-mockup {
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.mockup-topbar {
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  padding: 10px 14px; display: flex; align-items: center; gap: 8px;
+}
+.mockup-dots { display: flex; gap: 5px; }
+.mockup-dots span { width: 10px; height: 10px; border-radius: 50%; }
+.mockup-dots span:nth-child(1) { background: #FF5F57; }
+.mockup-dots span:nth-child(2) { background: #FEBC2E; }
+.mockup-dots span:nth-child(3) { background: #28C840; }
+.mockup-title { font-size: 12px; color: var(--text3); margin-left: 8px; font-family: var(--mono); }
+
+.mockup-body { display: grid; grid-template-columns: 180px 1fr; min-height: 320px; }
+.mockup-sidebar {
+  border-right: 1px solid var(--border); background: var(--bg2);
+  padding: 10px 0;
+}
+.mockup-sidebar-header {
+  padding: 0 12px 8px; font-size: 10px; font-weight: 700;
+  color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em;
+  border-bottom: 1px solid var(--border); margin-bottom: 4px;
+}
+.mockup-table-row {
+  padding: 6px 12px; font-size: 12px; font-family: var(--mono);
+  color: var(--text2); cursor: pointer; display: flex; align-items: center; gap: 6px;
+  transition: all var(--transition);
+}
+.mockup-table-row:hover { background: var(--bg3); color: var(--text); }
+.mockup-table-row.active { background: var(--accent-dim); color: var(--accent-text); font-weight: 600; }
+.mockup-table-row::before { content: '⊞'; font-size: 10px; opacity: 0.6; }
+
+.mockup-main { padding: 12px; overflow: hidden; }
+.mockup-toolbar {
+  display: flex; align-items: center; gap: 6px; margin-bottom: 10px;
+}
+.mockup-search {
+  flex: 1; padding: 4px 8px; border-radius: 5px;
+  border: 1px solid var(--border2); background: var(--bg);
+  font-size: 11px; color: var(--text2); font-family: var(--font);
+}
+.mockup-filter {
+  padding: 4px 8px; border-radius: 5px; font-size: 11px;
+  border: 1px solid var(--border2); background: var(--bg);
+  color: var(--text2); font-family: var(--font); cursor: pointer;
+}
+.mockup-field-row {
+  display: grid; grid-template-columns: 140px 90px 50px 1fr;
+  gap: 6px; padding: 5px 4px; border-bottom: 1px solid var(--border);
+  align-items: center; font-size: 11px;
+}
+.mockup-field-row.header { color: var(--text3); font-weight: 600; font-size: 10px; text-transform: uppercase; }
+.mockup-field-name { font-family: var(--mono); color: var(--text); font-size: 11px; }
+.mockup-field-desc { color: var(--text3); font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ===== STATS BAR ===== */
+.stats-bar {
+  background: var(--accent);
+  padding: 28px 0;
+}
+.stats-inner { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+.stat-item {
+  text-align: center; color: #fff;
+  border-right: 1px solid rgba(255,255,255,0.2);
+  padding: 8px 16px;
+}
+.stat-item:last-child { border-right: none; }
+.stat-num { font-size: 30px; font-weight: 700; line-height: 1.1; }
+.stat-label { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+
+/* ===== SECTION HEADERS ===== */
+.section-header { text-align: center; margin-bottom: 48px; }
+.section-header .section-label {
+  display: inline-block; padding: 4px 12px; border-radius: 20px;
+  background: var(--accent-dim); color: var(--accent-text);
+  font-size: 12px; font-weight: 600; margin-bottom: 12px; border: 1px solid var(--border2);
+}
+.section-header h2 { font-size: 32px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+.section-header p { font-size: 16px; color: var(--text2); max-width: 560px; margin: 0 auto; }
+
+/* ===== FEATURES ===== */
+.features { background: var(--bg2); }
+.feature-card {
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); padding: 28px 24px;
+  transition: all var(--transition);
+}
+.feature-card:hover { border-color: var(--accent); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.feature-icon {
+  width: 44px; height: 44px; background: var(--accent-dim);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 16px;
+}
+.feature-card h3 { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.feature-card p { font-size: 14px; color: var(--text2); line-height: 1.6; }
+
+/* ===== FIELD TYPE EXPLORER ===== */
+.field-type-section { background: var(--bg); }
+.field-explorer-layout { display: grid; grid-template-columns: 1fr 380px; gap: 32px; align-items: start; }
+.field-type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.field-type-card {
+  background: var(--bg2); border: 1.5px solid var(--border);
+  border-radius: var(--radius); padding: 16px;
+  cursor: pointer; transition: all var(--transition); text-align: center;
+}
+.field-type-card:hover { border-color: var(--accent); }
+.field-type-card.active { border-color: var(--accent); background: var(--accent-dim); }
+.field-type-card .type-label {
+  font-family: var(--mono); font-size: 13px; font-weight: 600;
+  color: var(--text); margin-top: 8px; margin-bottom: 4px;
+}
+.field-type-card .type-sub { font-size: 11px; color: var(--text3); }
+.field-type-icon { font-size: 22px; line-height: 1; }
+
+.field-detail-panel {
+  background: var(--bg2); border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); padding: 24px; position: sticky; top: 80px;
+}
+.field-detail-panel h3 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 16px; }
+.detail-row { margin-bottom: 14px; }
+.detail-row label { font-size: 11px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 4px; }
+.detail-row .val { font-size: 13px; color: var(--text); }
+.detail-row .val.mono { font-family: var(--mono); font-size: 12px; background: var(--bg3); padding: 6px 10px; border-radius: 5px; display: block; }
+.detail-divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+.detail-example pre {
+  background: var(--bg3); border-radius: var(--radius-sm);
+  padding: 10px 12px; font-family: var(--mono); font-size: 11px;
+  color: var(--text2); overflow-x: auto; line-height: 1.7;
+}
+
+/* ===== SCHEMA EXPLORER BIG ===== */
+.schema-explorer-section { background: var(--bg2); }
+.explorer-wrap {
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.explorer-topbar {
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  padding: 12px 16px; display: flex; align-items: center; justify-content: space-between;
+}
+.explorer-title { font-size: 13px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.explorer-title .dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
+.explorer-actions { display: flex; gap: 6px; }
+.exp-btn {
+  padding: 4px 10px; border-radius: 5px; font-size: 12px; font-weight: 500;
+  border: 1px solid var(--border2); background: var(--bg); color: var(--text2);
+  cursor: pointer; font-family: var(--font); transition: all var(--transition);
+}
+.exp-btn:hover { border-color: var(--accent); color: var(--accent); }
+.exp-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.exp-btn.primary:hover { background: #C2410C; }
+
+.explorer-body { display: grid; grid-template-columns: 220px 1fr; min-height: 420px; }
+.explorer-sidebar {
+  border-right: 1px solid var(--border); background: var(--bg2); padding: 12px 0;
+}
+.exp-sidebar-search {
+  margin: 0 12px 10px; padding: 6px 10px; border-radius: 6px;
+  border: 1px solid var(--border2); background: var(--bg);
+  font-size: 12px; color: var(--text); font-family: var(--font); width: calc(100% - 24px);
+}
+.exp-sidebar-section-label {
+  padding: 0 12px 6px; font-size: 10px; font-weight: 700;
+  color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em;
+}
+.exp-table-item {
+  padding: 7px 12px; font-size: 12px; font-family: var(--mono);
+  color: var(--text2); cursor: pointer; display: flex; align-items: center;
+  justify-content: space-between; transition: all var(--transition);
+}
+.exp-table-item:hover { background: var(--bg3); color: var(--text); }
+.exp-table-item.active { background: var(--accent-dim); color: var(--accent-text); }
+.exp-table-item .count { font-size: 10px; background: var(--bg3); color: var(--text3); padding: 1px 5px; border-radius: 10px; }
+.exp-table-item.active .count { background: rgba(255,255,255,0.3); color: var(--accent-text); }
+
+.explorer-main { overflow: hidden; }
+.explorer-toolbar {
+  padding: 10px 16px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px; background: var(--bg);
+}
+.exp-search {
+  flex: 1; padding: 5px 10px; border-radius: 6px;
+  border: 1px solid var(--border2); background: var(--bg2);
+  font-size: 12px; color: var(--text); font-family: var(--font);
+}
+.exp-filter-select {
+  padding: 5px 10px; border-radius: 6px; font-size: 12px;
+  border: 1px solid var(--border2); background: var(--bg2);
+  color: var(--text2); font-family: var(--font); cursor: pointer;
+}
+
+.explorer-table { width: 100%; border-collapse: collapse; }
+.explorer-table th {
+  padding: 8px 14px; text-align: left;
+  font-size: 11px; font-weight: 600; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--border); background: var(--bg2);
+}
+.explorer-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
+.explorer-table tr.field-row { cursor: pointer; transition: background var(--transition); }
+.explorer-table tr.field-row:hover { background: var(--bg2); }
+.field-name-cell { display: flex; align-items: center; gap: 6px; }
+.field-icon { font-size: 12px; color: var(--text3); }
+
+.expand-row { display: none; }
+.expand-row.open { display: table-row; }
+.expand-row td { padding: 0; }
+.expand-content {
+  padding: 16px 24px; background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+}
+.expand-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.expand-code {
+  background: var(--bg3); border-radius: 6px;
+  padding: 12px 14px; font-family: var(--mono); font-size: 11px;
+  color: var(--text2); line-height: 1.7; overflow-x: auto;
+  border: 1px solid var(--border2);
+}
+.expand-meta label { font-size: 10px; font-weight: 700; color: var(--text3); text-transform: uppercase; display: block; margin-bottom: 4px; margin-top: 10px; }
+.expand-meta label:first-child { margin-top: 0; }
+.expand-meta span { font-size: 12px; color: var(--text2); }
+
+/* ===== CODE SNIPPET SECTION ===== */
+.code-section { background: var(--bg); }
+.code-wrap {
+  background: var(--bg2); border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+.code-tabs {
+  display: flex; align-items: center;
+  background: var(--bg3); border-bottom: 1px solid var(--border);
+  padding: 0 16px; gap: 0;
+}
+.code-tab {
+  padding: 10px 16px; font-size: 13px; font-weight: 500;
+  color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent;
+  transition: all var(--transition); border: none; background: none;
+  font-family: var(--font);
+}
+.code-tab:hover { color: var(--text); }
+.code-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.code-copy {
+  margin-left: auto; padding: 5px 12px; border-radius: 5px;
+  font-size: 12px; font-weight: 500; border: 1px solid var(--border2);
+  background: var(--bg); color: var(--text2); cursor: pointer;
+  font-family: var(--font); transition: all var(--transition);
+}
+.code-copy:hover { border-color: var(--accent); color: var(--accent); }
+.code-copy.copied { background: #D1FAE5; color: #065F46; border-color: #6EE7B7; }
+[data-theme="dark"] .code-copy.copied { background: #064E3B; color: #6EE7B7; border-color: #065F46; }
+.code-panel { display: none; }
+.code-panel.active { display: block; }
+.code-panel pre {
+  padding: 24px 28px; font-family: var(--mono); font-size: 13px;
+  line-height: 1.8; color: var(--text2); overflow-x: auto;
+  background: var(--bg2); margin: 0;
+}
+/* Syntax highlight colors */
+.kw { color: var(--accent); font-weight: 600; }
+.kw2 { color: #8B5CF6; font-weight: 600; }
+.str { color: #059669; }
+.cmt { color: var(--text3); font-style: italic; }
+.num { color: #0EA5E9; }
+.key { color: var(--accent); }
+.prop { color: #7C3AED; }
+[data-theme="dark"] .str { color: #6EE7B7; }
+[data-theme="dark"] .kw2 { color: #C4B5FD; }
+[data-theme="dark"] .prop { color: #A78BFA; }
+
+/* ===== PRICING ===== */
+.pricing-section { background: var(--bg2); }
+.pricing-toggle-wrap { display: flex; align-items: center; gap: 12px; justify-content: center; margin-bottom: 40px; }
+.pricing-toggle-label { font-size: 14px; color: var(--text2); font-weight: 500; }
+.pricing-toggle-label.active { color: var(--text); font-weight: 600; }
+.toggle-switch {
+  width: 44px; height: 24px; background: var(--border2); border-radius: 12px;
+  position: relative; cursor: pointer; transition: background var(--transition); border: none;
+}
+.toggle-switch.on { background: var(--accent); }
+.toggle-thumb {
+  width: 18px; height: 18px; background: #fff; border-radius: 50%;
+  position: absolute; top: 3px; left: 3px; transition: transform var(--transition);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.toggle-switch.on .toggle-thumb { transform: translateX(20px); }
+.pricing-badge { background: var(--accent); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.pricing-card {
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); padding: 28px 24px;
+  transition: all var(--transition); position: relative;
+}
+.pricing-card.featured { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-dim); }
+.pricing-featured-badge {
+  position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+  background: var(--accent); color: #fff; font-size: 11px; font-weight: 700;
+  padding: 3px 14px; border-radius: 20px;
+}
+.pricing-plan { font-size: 13px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+.pricing-price { display: flex; align-items: baseline; gap: 4px; margin-bottom: 6px; }
+.price-currency { font-size: 18px; font-weight: 600; color: var(--text); }
+.price-amount { font-size: 40px; font-weight: 700; color: var(--text); line-height: 1; }
+.price-period { font-size: 13px; color: var(--text3); }
+.pricing-desc { font-size: 13px; color: var(--text2); margin-bottom: 20px; line-height: 1.5; }
+.pricing-divider { border: none; border-top: 1px solid var(--border); margin-bottom: 20px; }
+.pricing-features { margin-bottom: 24px; }
+.pricing-features li { font-size: 13px; color: var(--text2); padding: 5px 0; display: flex; align-items: center; gap: 8px; }
+.pricing-features li::before { content: '✓'; color: var(--accent); font-weight: 700; font-size: 12px; flex-shrink: 0; }
+.pricing-features li.no::before { content: '×'; color: var(--text3); }
+.pricing-features li.no { color: var(--text3); }
+.pricing-cta { width: 100%; }
+
+/* ===== CHANGELOG ===== */
+.changelog-section { background: var(--bg); }
+.changelog-layout { display: grid; grid-template-columns: 280px 1fr; gap: 48px; }
+.changelog-sidebar { position: sticky; top: 80px; }
+.changelog-sidebar h3 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 16px; }
+.changelog-sidebar p { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 20px; }
+.changelog-feed-btn { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--accent); font-weight: 500; text-decoration: none; }
+.changelog-entries { display: flex; flex-direction: column; gap: 0; }
+.changelog-entry {
+  border-left: 2px solid var(--border);
+  padding: 0 0 32px 28px; position: relative;
+}
+.changelog-entry:last-child { padding-bottom: 0; border-color: transparent; }
+.changelog-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--accent); border: 2px solid var(--bg);
+  position: absolute; left: -6px; top: 5px;
+  box-shadow: 0 0 0 2px var(--accent-dim);
+}
+.changelog-date { font-size: 11px; color: var(--text3); font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
+.changelog-version {
+  display: inline-block; font-family: var(--mono); font-size: 11px;
+  font-weight: 700; background: var(--accent-dim); color: var(--accent-text);
+  padding: 2px 8px; border-radius: 4px; margin-bottom: 8px;
+}
+.changelog-entry h4 { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.changelog-entry p { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 10px; }
+.changelog-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.changelog-tag {
+  font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px;
+}
+.tag-new { background: #D1FAE5; color: #065F46; }
+.tag-improved { background: #DBEAFE; color: #1E40AF; }
+.tag-fix { background: #FEF3C7; color: #92400E; }
+.tag-breaking { background: #FEE2E2; color: #991B1B; }
+[data-theme="dark"] .tag-new { background: #064E3B; color: #6EE7B7; }
+[data-theme="dark"] .tag-improved { background: #1E3A5F; color: #93C5FD; }
+[data-theme="dark"] .tag-fix { background: #451A03; color: #FDE68A; }
+[data-theme="dark"] .tag-breaking { background: #450A0A; color: #FCA5A5; }
+
+/* ===== CTA ===== */
+.cta-section {
+  background: var(--accent);
+  padding: 80px 0; text-align: center;
+}
+.cta-section h2 { font-size: 34px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+.cta-section p { font-size: 16px; color: rgba(255,255,255,0.85); max-width: 520px; margin: 0 auto 28px; }
+.cta-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.btn-cta-white { background: #fff; color: var(--accent); border: none; }
+.btn-cta-white:hover { background: #FFF7ED; opacity: 1; color: var(--accent); }
+.btn-cta-outline { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.5); }
+.btn-cta-outline:hover { border-color: #fff; opacity: 1; color: #fff; }
+
+/* ===== FOOTER ===== */
+.footer { background: var(--bg2); border-top: 1px solid var(--border); padding: 56px 0 28px; }
+.footer-grid { display: grid; grid-template-columns: 280px repeat(3, 1fr); gap: 48px; margin-bottom: 40px; }
+.footer-brand p { font-size: 13px; color: var(--text3); line-height: 1.7; margin-top: 10px; max-width: 240px; }
+.footer-col h4 { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 14px; }
+.footer-col ul { display: flex; flex-direction: column; gap: 8px; }
+.footer-col ul a { font-size: 13px; color: var(--text3); text-decoration: none; transition: color var(--transition); }
+.footer-col ul a:hover { color: var(--accent); }
+.footer-bottom { border-top: 1px solid var(--border); padding-top: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.footer-bottom p { font-size: 12px; color: var(--text3); }
+.footer-bottom-links { display: flex; gap: 16px; }
+.footer-bottom-links a { font-size: 12px; color: var(--text3); text-decoration: none; }
+.footer-bottom-links a:hover { color: var(--accent); }
+.footer-social { display: flex; gap: 8px; margin-top: 16px; }
+.social-btn {
+  width: 32px; height: 32px; border-radius: 6px;
+  background: var(--bg3); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; text-decoration: none; transition: all var(--transition);
+}
+.social-btn:hover { border-color: var(--accent); background: var(--accent-dim); }
+
+/* ===== SCROLL REVEAL ===== */
+.reveal { animation: fadeInUp 0.5s ease both; }
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.reveal-d1 { animation-delay: 0.05s; }
+.reveal-d2 { animation-delay: 0.1s; }
+.reveal-d3 { animation-delay: 0.15s; }
+.reveal-d4 { animation-delay: 0.2s; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+  .explorer-layout, .field-explorer-layout { grid-template-columns: 1fr; }
+  .changelog-layout { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .hero h1 { font-size: 30px; }
+  .grid-3 { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .mockup-body { grid-template-columns: 1fr; }
+  .mockup-sidebar { display: none; }
+  .explorer-body { grid-template-columns: 1fr; }
+  .explorer-sidebar { display: none; }
+  .field-type-grid { grid-template-columns: repeat(3, 1fr); }
+  .stats-inner { grid-template-columns: 1fr 1fr; }
+  .nav-links, .nav-right .btn { display: none; }
+  .nav-mobile-btn { display: flex; }
+  .footer-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .container { padding: 0 16px; }
+  .section { padding: 56px 0; }
+  .hero { padding: 90px 0 56px; }
+  .field-type-grid { grid-template-columns: 1fr 1fr; }
+  .grid-4 { grid-template-columns: 1fr; }
+  .expand-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon">SH</div>
+      SchemaHub
+    </a>
+    <div class="nav-links">
+      <a href="#explorer">Explorer</a>
+      <a href="#code">API</a>
+      <a href="#features">Integrasi</a>
+      <a href="#pricing">Harga</a>
+    </div>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle tema">🌙</button>
+      <a href="#" class="btn btn-outline btn-sm" style="display:inline-flex;">Masuk</a>
+      <a href="#pricing" class="btn btn-primary btn-sm">Mulai Gratis</a>
+    </div>
+    <button class="nav-mobile-btn" id="mobileMenuBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-nav-menu" id="mobileNav">
+    <a href="#features">Fitur</a>
+    <a href="#explorer">Explorer</a>
+    <a href="#code">API</a>
+    <a href="#pricing">Harga</a>
+    <a href="#changelog">Changelog</a>
+    <a href="#pricing" class="btn btn-primary btn-sm" style="width:fit-content;margin-top:8px;">Mulai Gratis</a>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="home">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-content reveal">
+        <div class="hero-label">✦ Data Dictionary Platform</div>
+        <h1>Satu Tempat untuk Semua <span>Schema &amp; Data Dictionary</span> Tim Anda</h1>
+        <p>Dokumentasikan, eksplorasi, dan bagikan schema database dengan mudah. Auto-discovery dari PostgreSQL, MySQL, MongoDB — semua terpusat, selalu up-to-date.</p>
+        <div class="hero-actions">
+          <a href="#pricing" class="btn btn-primary">Mulai Gratis — Tanpa Kartu Kredit</a>
+          <a href="#explorer" class="btn btn-outline">Lihat Demo Live</a>
+        </div>
+        <p class="hero-note">✓ Setup 5 menit &nbsp;·&nbsp; ✓ Support PostgreSQL, MySQL, MongoDB &nbsp;·&nbsp; ✓ SOC 2 Type II</p>
+      </div>
+      <!-- Hero Mockup -->
+      <div class="hero-mockup reveal reveal-d2">
+        <div class="mockup-topbar">
+          <div class="mockup-dots"><span></span><span></span><span></span></div>
+          <span class="mockup-title">schemahub.app / explore / ecommerce-db</span>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-sidebar">
+            <div class="mockup-sidebar-header">Tables (4)</div>
+            <div class="mockup-table-row active">users</div>
+            <div class="mockup-table-row">orders</div>
+            <div class="mockup-table-row">products</div>
+            <div class="mockup-table-row">invoices</div>
+          </div>
+          <div class="mockup-main">
+            <div class="mockup-toolbar">
+              <input class="mockup-search" type="text" value="Search fields..." readonly>
+              <select class="mockup-filter"><option>All Types</option></select>
+            </div>
+            <div class="mockup-field-row header">
+              <span>Field Name</span><span>Type</span><span>Null</span><span>Description</span>
+            </div>
+            <div class="mockup-field-row">
+              <span class="mockup-field-name">id</span>
+              <span class="badge badge-uuid">UUID</span>
+              <span class="tag-null">NO</span>
+              <span class="mockup-field-desc">Primary key</span>
+            </div>
+            <div class="mockup-field-row">
+              <span class="mockup-field-name">email</span>
+              <span class="badge badge-varchar">VARCHAR</span>
+              <span class="tag-null">NO</span>
+              <span class="mockup-field-desc">Unique user email</span>
+            </div>
+            <div class="mockup-field-row">
+              <span class="mockup-field-name">is_active</span>
+              <span class="badge badge-bool">BOOLEAN</span>
+              <span class="tag-null">YES</span>
+              <span class="mockup-field-desc">Account status</span>
+            </div>
+            <div class="mockup-field-row">
+              <span class="mockup-field-name">metadata</span>
+              <span class="badge badge-json">JSON</span>
+              <span class="tag-null">YES</span>
+              <span class="mockup-field-desc">Extra user data</span>
+            </div>
+            <div class="mockup-field-row">
+              <span class="mockup-field-name">created_at</span>
+              <span class="badge badge-ts">TIMESTAMP</span>
+              <span class="tag-null">NO</span>
+              <span class="mockup-field-desc">Registration time</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS BAR ===== -->
+<section class="stats-bar">
+  <div class="container">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <div class="stat-num" data-target="8000" data-suffix="+">0</div>
+        <div class="stat-label">Schema Terdokumentasi</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" data-target="50" data-suffix="+">0</div>
+        <div class="stat-label">Database Type Didukung</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" data-target="99" data-suffix=".9%">0</div>
+        <div class="stat-label">Uptime SLA</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" data-target="200" data-suffix="+">0</div>
+        <div class="stat-label">Tim Aktif</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURES ===== -->
+<section class="features section" id="features">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">✦ Fitur Unggulan</span>
+      <h2>Semua yang Dibutuhkan Tim Data Anda</h2>
+      <p>Dari auto-discovery hingga version diff — SchemaHub adalah command center untuk semua aset data Anda.</p>
+    </div>
+    <div class="grid-3">
+      <div class="feature-card reveal reveal-d1">
+        <div class="feature-icon">🔍</div>
+        <h3>Auto-Discovery</h3>
+        <p>Hubungkan database sekali, SchemaHub otomatis memetakan semua tabel, relasi, dan tipe field. Tidak perlu input manual.</p>
+      </div>
+      <div class="feature-card reveal reveal-d2">
+        <div class="feature-icon">🏷️</div>
+        <h3>Field Type Explorer</h3>
+        <p>Visualisasikan semua tipe data — STRING, INTEGER, JSON, UUID, ENUM — dengan badge berwarna yang konsisten di seluruh tim.</p>
+      </div>
+      <div class="feature-card reveal reveal-d3">
+        <div class="feature-icon">🗺️</div>
+        <h3>Relationship Map (ERD)</h3>
+        <p>Lihat relasi antar tabel secara visual. Export sebagai PNG, SVG, atau embed langsung ke Notion &amp; Confluence.</p>
+      </div>
+      <div class="feature-card reveal reveal-d1">
+        <div class="feature-icon">🔀</div>
+        <h3>Version Diff</h3>
+        <p>Lacak setiap perubahan schema — kolom baru, renamed field, tipe berubah — dengan diff visual seperti GitHub.</p>
+      </div>
+      <div class="feature-card reveal reveal-d2">
+        <div class="feature-icon">📄</div>
+        <h3>API Docs Generator</h3>
+        <p>Generate OpenAPI / Swagger spec otomatis dari schema Anda. Deploy docs dengan satu klik ke endpoint publik.</p>
+      </div>
+      <div class="feature-card reveal reveal-d3">
+        <div class="feature-icon">💬</div>
+        <h3>Team Annotations</h3>
+        <p>Tambahkan komentar, contoh value, dan business rules langsung di field. Sync real-time ke seluruh anggota tim.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FIELD TYPE EXPLORER ===== -->
+<section class="field-type-section section" id="field-types">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">✦ Field Type Explorer</span>
+      <h2>Pahami Setiap Tipe Data dengan Detail</h2>
+      <p>Klik tipe field untuk melihat spesifikasi lengkap, contoh nilai, dan query SQL yang relevan.</p>
+    </div>
+    <div class="field-explorer-layout">
+      <div class="field-type-grid" id="fieldTypeGrid">
+        <div class="field-type-card" data-type="string" onclick="selectFieldType(this)">
+          <div class="field-type-icon">📝</div>
+          <div class="type-label">STRING</div>
+          <div class="type-sub">Text variable length</div>
+        </div>
+        <div class="field-type-card" data-type="integer" onclick="selectFieldType(this)">
+          <div class="field-type-icon">🔢</div>
+          <div class="type-label">INTEGER</div>
+          <div class="type-sub">Whole number</div>
+        </div>
+        <div class="field-type-card" data-type="float" onclick="selectFieldType(this)">
+          <div class="field-type-icon">🔣</div>
+          <div class="type-label">FLOAT</div>
+          <div class="type-sub">Decimal number</div>
+        </div>
+        <div class="field-type-card active" data-type="boolean" onclick="selectFieldType(this)">
+          <div class="field-type-icon">☑️</div>
+          <div class="type-label">BOOLEAN</div>
+          <div class="type-sub">True / False</div>
+        </div>
+        <div class="field-type-card" data-type="date" onclick="selectFieldType(this)">
+          <div class="field-type-icon">📅</div>
+          <div class="type-label">DATE</div>
+          <div class="type-sub">Calendar date</div>
+        </div>
+        <div class="field-type-card" data-type="timestamp" onclick="selectFieldType(this)">
+          <div class="field-type-icon">⏱️</div>
+          <div class="type-label">TIMESTAMP</div>
+          <div class="type-sub">Date + Time + TZ</div>
+        </div>
+        <div class="field-type-card" data-type="json" onclick="selectFieldType(this)">
+          <div class="field-type-icon">📦</div>
+          <div class="type-label">JSON</div>
+          <div class="type-sub">Nested object</div>
+        </div>
+        <div class="field-type-card" data-type="uuid" onclick="selectFieldType(this)">
+          <div class="field-type-icon">🔑</div>
+          <div class="type-label">UUID</div>
+          <div class="type-sub">Unique identifier</div>
+        </div>
+        <div class="field-type-card" data-type="enum" onclick="selectFieldType(this)">
+          <div class="field-type-icon">📋</div>
+          <div class="type-label">ENUM</div>
+          <div class="type-sub">Fixed value set</div>
+        </div>
+      </div>
+      <!-- Detail Panel -->
+      <div class="field-detail-panel" id="fieldDetailPanel">
+        <h3 id="detailTitle">BOOLEAN</h3>
+        <div class="detail-row">
+          <label>SQL Type</label>
+          <code class="val mono" id="detailSql">BOOLEAN / TINYINT(1)</code>
+        </div>
+        <div class="detail-row">
+          <label>Storage Size</label>
+          <span class="val" id="detailSize">1 byte</span>
+        </div>
+        <div class="detail-row">
+          <label>Valid Values</label>
+          <span class="val" id="detailValues">true, false, 1, 0, null</span>
+        </div>
+        <div class="detail-row">
+          <label>Default</label>
+          <span class="val" id="detailDefault">false</span>
+        </div>
+        <hr class="detail-divider">
+        <div class="detail-row">
+          <label>Contoh Nilai</label>
+          <code class="val mono" id="detailExample">true</code>
+        </div>
+        <div class="detail-row">
+          <label>Contoh Penggunaan</label>
+          <span class="val" id="detailUse">Status aktif/nonaktif, flag fitur, konfirmasi email</span>
+        </div>
+        <hr class="detail-divider">
+        <div class="detail-example">
+          <label style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;display:block;margin-bottom:6px;letter-spacing:0.06em;">Contoh Query</label>
+          <pre id="detailQuery">SELECT * FROM users
+WHERE is_active = true
+  AND email_verified = true;</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SCHEMA EXPLORER BIG ===== -->
+<section class="schema-explorer-section section" id="explorer">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">✦ Schema Explorer</span>
+      <h2>Eksplorasi Database Secara Interaktif</h2>
+      <p>Klik nama tabel di sidebar, klik baris field untuk melihat query SQL yang dihasilkan otomatis.</p>
+    </div>
+    <div class="explorer-wrap reveal">
+      <!-- Top Bar -->
+      <div class="explorer-topbar">
+        <div class="explorer-title">
+          <span class="dot"></span>
+          ecommerce-production · PostgreSQL 15.2
+        </div>
+        <div class="explorer-actions">
+          <button class="exp-btn">↓ Export DDL</button>
+          <button class="exp-btn">🔗 Bagikan</button>
+          <button class="exp-btn primary">+ Anotasi</button>
+        </div>
+      </div>
+      <!-- Body -->
+      <div class="explorer-body">
+        <!-- Sidebar -->
+        <div class="explorer-sidebar">
+          <input class="exp-sidebar-search" type="text" placeholder="Cari tabel...">
+          <div class="exp-sidebar-section-label">Public Schema</div>
+          <div class="exp-table-item active" onclick="selectExplorerTable(this, 'users')">
+            users <span class="count">9</span>
+          </div>
+          <div class="exp-table-item" onclick="selectExplorerTable(this, 'orders')">
+            orders <span class="count">11</span>
+          </div>
+          <div class="exp-table-item" onclick="selectExplorerTable(this, 'products')">
+            products <span class="count">10</span>
+          </div>
+          <div class="exp-table-item" onclick="selectExplorerTable(this, 'order_items')">
+            order_items <span class="count">7</span>
+          </div>
+          <div class="exp-table-item" onclick="selectExplorerTable(this, 'invoices')">
+            invoices <span class="count">8</span>
+          </div>
+          <div class="exp-table-item" onclick="selectExplorerTable(this, 'categories')">
+            categories <span class="count">5</span>
+          </div>
+          <div class="exp-table-item" onclick="selectExplorerTable(this, 'reviews')">
+            reviews <span class="count">7</span>
+          </div>
+          <div class="exp-table-item" onclick="selectExplorerTable(this, 'sessions')">
+            sessions <span class="count">6</span>
+          </div>
+        </div>
+        <!-- Main Panel -->
+        <div class="explorer-main">
+          <div class="explorer-toolbar">
+            <input class="exp-search" type="text" placeholder="🔍  Cari field..." oninput="filterExplorerFields(this.value)">
+            <select class="exp-filter-select" onchange="filterExplorerType(this.value)">
+              <option value="">Semua Tipe</option>
+              <option value="UUID">UUID</option>
+              <option value="VARCHAR">VARCHAR</option>
+              <option value="INTEGER">INTEGER</option>
+              <option value="BOOLEAN">BOOLEAN</option>
+              <option value="TIMESTAMP">TIMESTAMP</option>
+              <option value="JSON">JSON</option>
+            </select>
+            <button class="exp-btn">↓ CSV</button>
+          </div>
+          <div id="explorerTableWrap" style="overflow-x:auto;">
+            <table class="explorer-table" id="explorerTable">
+              <thead>
+                <tr>
+                  <th>Field Name</th>
+                  <th>Type</th>
+                  <th>Nullable</th>
+                  <th>Constraint</th>
+                  <th>Default</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody id="explorerTbody">
+                <!-- rows injected by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CODE SNIPPET ===== -->
+<section class="code-section section" id="code">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">✦ API &amp; Export</span>
+      <h2>Generate Kode dari Schema Anda</h2>
+      <p>Export schema sebagai SQL DDL, JSON Schema, atau OpenAPI YAML — siap pakai untuk validasi, dokumentasi, atau code generation.</p>
+    </div>
+    <div class="code-wrap reveal">
+      <div class="code-tabs">
+        <button class="code-tab active" onclick="switchCodeTab(this, 'sql')">SQL DDL</button>
+        <button class="code-tab" onclick="switchCodeTab(this, 'json')">JSON Schema</button>
+        <button class="code-tab" onclick="switchCodeTab(this, 'openapi')">OpenAPI YAML</button>
+        <button class="code-copy" id="codeCopyBtn" onclick="copyCode()">Copy</button>
+      </div>
+      <!-- SQL Tab -->
+      <div class="code-panel active" id="panel-sql">
+<pre><span class="cmt">-- SchemaHub Auto-Generated DDL</span>
+<span class="cmt">-- Table: users | Generated: 2026-06-27</span>
+
+<span class="kw">CREATE TABLE</span> <span class="str">users</span> (
+  <span class="prop">id</span>              <span class="kw2">UUID</span>          <span class="kw">DEFAULT</span> <span class="num">gen_random_uuid</span>() <span class="kw">NOT NULL</span>,
+  <span class="prop">email</span>           <span class="kw2">VARCHAR</span>(<span class="num">255</span>) <span class="kw">NOT NULL UNIQUE</span>,
+  <span class="prop">full_name</span>       <span class="kw2">VARCHAR</span>(<span class="num">200</span>) <span class="kw">NOT NULL</span>,
+  <span class="prop">role</span>            <span class="kw2">VARCHAR</span>(<span class="num">50</span>)  <span class="kw">DEFAULT</span> <span class="str">'member'</span>,
+  <span class="prop">is_active</span>       <span class="kw2">BOOLEAN</span>       <span class="kw">DEFAULT</span> <span class="num">true</span>,
+  <span class="prop">email_verified</span>  <span class="kw2">BOOLEAN</span>       <span class="kw">DEFAULT</span> <span class="num">false</span>,
+  <span class="prop">metadata</span>        <span class="kw2">JSONB</span>         <span class="kw">DEFAULT</span> <span class="str">'{}'</span>,
+  <span class="prop">created_at</span>      <span class="kw2">TIMESTAMP</span>     <span class="kw">DEFAULT</span> <span class="num">NOW</span>() <span class="kw">NOT NULL</span>,
+  <span class="prop">updated_at</span>      <span class="kw2">TIMESTAMP</span>     <span class="kw">DEFAULT</span> <span class="num">NOW</span>() <span class="kw">NOT NULL</span>,
+
+  <span class="kw">CONSTRAINT</span> <span class="str">users_pkey</span> <span class="kw">PRIMARY KEY</span> (id),
+  <span class="kw">CONSTRAINT</span> <span class="str">users_email_check</span> <span class="kw">CHECK</span> (email ~ <span class="str">'^[^@]+@[^@]+\.[^@]+$'</span>)
+);
+
+<span class="kw">CREATE INDEX</span> idx_users_email <span class="kw">ON</span> users (email);
+<span class="kw">CREATE INDEX</span> idx_users_created <span class="kw">ON</span> users (created_at <span class="kw">DESC</span>);</pre>
+      </div>
+      <!-- JSON Schema Tab -->
+      <div class="code-panel" id="panel-json">
+<pre>{
+  <span class="key">"$schema"</span>: <span class="str">"https://json-schema.org/draft/2020-12/schema"</span>,
+  <span class="key">"title"</span>: <span class="str">"users"</span>,
+  <span class="key">"description"</span>: <span class="str">"User accounts table"</span>,
+  <span class="key">"type"</span>: <span class="str">"object"</span>,
+  <span class="key">"required"</span>: [<span class="str">"id"</span>, <span class="str">"email"</span>, <span class="str">"full_name"</span>],
+  <span class="key">"properties"</span>: {
+    <span class="key">"id"</span>: {
+      <span class="key">"type"</span>: <span class="str">"string"</span>,
+      <span class="key">"format"</span>: <span class="str">"uuid"</span>,
+      <span class="key">"description"</span>: <span class="str">"Primary key — UUID v4"</span>
+    },
+    <span class="key">"email"</span>: {
+      <span class="key">"type"</span>: <span class="str">"string"</span>,
+      <span class="key">"format"</span>: <span class="str">"email"</span>,
+      <span class="key">"maxLength"</span>: <span class="num">255</span>,
+      <span class="key">"description"</span>: <span class="str">"Unique user email address"</span>
+    },
+    <span class="key">"is_active"</span>: {
+      <span class="key">"type"</span>: <span class="str">"boolean"</span>,
+      <span class="key">"default"</span>: <span class="num">true</span>,
+      <span class="key">"description"</span>: <span class="str">"Account activation status"</span>
+    },
+    <span class="key">"metadata"</span>: {
+      <span class="key">"type"</span>: <span class="str">"object"</span>,
+      <span class="key">"additionalProperties"</span>: <span class="num">true</span>,
+      <span class="key">"description"</span>: <span class="str">"Flexible key-value store"</span>
+    },
+    <span class="key">"created_at"</span>: {
+      <span class="key">"type"</span>: <span class="str">"string"</span>,
+      <span class="key">"format"</span>: <span class="str">"date-time"</span>
+    }
+  }
+}</pre>
+      </div>
+      <!-- OpenAPI Tab -->
+      <div class="code-panel" id="panel-openapi">
+<pre><span class="key">openapi</span>: <span class="str">"3.1.0"</span>
+<span class="key">info</span>:
+  <span class="key">title</span>: <span class="str">ecommerce-production API</span>
+  <span class="key">version</span>: <span class="str">"1.0.0"</span>
+  <span class="key">description</span>: <span class="str">Auto-generated by SchemaHub</span>
+<span class="key">paths</span>:
+  <span class="key">/users</span>:
+    <span class="key">get</span>:
+      <span class="key">summary</span>: <span class="str">List all users</span>
+      <span class="key">responses</span>:
+        <span class="str">"200"</span>:
+          <span class="key">description</span>: <span class="str">Success</span>
+          <span class="key">content</span>:
+            <span class="str">application/json</span>:
+              <span class="key">schema</span>:
+                <span class="key">type</span>: <span class="str">array</span>
+                <span class="key">items</span>:
+                  <span class="key">$ref</span>: <span class="str">"#/components/schemas/User"</span>
+<span class="key">components</span>:
+  <span class="key">schemas</span>:
+    <span class="key">User</span>:
+      <span class="key">type</span>: <span class="str">object</span>
+      <span class="key">properties</span>:
+        <span class="key">id</span>:
+          <span class="key">type</span>: <span class="str">string</span>
+          <span class="key">format</span>: <span class="str">uuid</span>
+        <span class="key">email</span>:
+          <span class="key">type</span>: <span class="str">string</span>
+          <span class="key">format</span>: <span class="str">email</span>
+        <span class="key">is_active</span>:
+          <span class="key">type</span>: <span class="str">boolean</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRICING ===== -->
+<section class="pricing-section section" id="pricing">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-label">✦ Harga Transparan</span>
+      <h2>Mulai Gratis, Bayar Saat Berkembang</h2>
+      <p>Tidak ada biaya tersembunyi. Upgrade atau downgrade kapan saja.</p>
+    </div>
+    <div class="pricing-toggle-wrap reveal">
+      <span class="pricing-toggle-label active" id="lblMonthly">Bulanan</span>
+      <button class="toggle-switch" id="pricingToggle" onclick="togglePricing()">
+        <span class="toggle-thumb"></span>
+      </button>
+      <span class="pricing-toggle-label" id="lblYearly">Tahunan</span>
+      <span class="pricing-badge">Hemat 20%</span>
+    </div>
+    <div class="pricing-grid reveal">
+      <!-- Free -->
+      <div class="pricing-card">
+        <div class="pricing-plan">Starter</div>
+        <div class="pricing-price">
+          <span class="price-currency">Rp</span>
+          <span class="price-amount" id="priceStarter">0</span>
+          <span class="price-period">/bulan</span>
+        </div>
+        <p class="pricing-desc">Untuk individu & tim kecil yang baru memulai dokumentasi schema.</p>
+        <hr class="pricing-divider">
+        <ul class="pricing-features">
+          <li>5 koneksi database</li>
+          <li>50 tabel per database</li>
+          <li>Field type explorer</li>
+          <li>JSON Schema export</li>
+          <li>1 anggota tim</li>
+          <li class="no">Version diff & history</li>
+          <li class="no">API Docs Generator</li>
+          <li class="no">SSO & audit log</li>
+        </ul>
+        <a href="#" class="btn btn-outline pricing-cta">Mulai Gratis</a>
+      </div>
+      <!-- Pro (Featured) -->
+      <div class="pricing-card featured">
+        <span class="pricing-featured-badge">Paling Populer</span>
+        <div class="pricing-plan">Pro</div>
+        <div class="pricing-price">
+          <span class="price-currency">Rp</span>
+          <span class="price-amount" id="pricePro">299.000</span>
+          <span class="price-period" id="periodPro">/bulan</span>
+        </div>
+        <p class="pricing-desc">Untuk tim engineering yang aktif dengan multiple database dan kolaborasi intensif.</p>
+        <hr class="pricing-divider">
+        <ul class="pricing-features">
+          <li>Unlimited koneksi database</li>
+          <li>Unlimited tabel</li>
+          <li>Field type explorer lengkap</li>
+          <li>SQL DDL + JSON + OpenAPI export</li>
+          <li>10 anggota tim</li>
+          <li>Version diff & 90 hari history</li>
+          <li>API Docs Generator</li>
+          <li class="no">SSO & audit log</li>
+        </ul>
+        <a href="#" class="btn btn-primary pricing-cta">Coba 14 Hari Gratis</a>
+      </div>
+      <!-- Enterprise -->
+      <div class="pricing-card">
+        <div class="pricing-plan">Enterprise</div>
+        <div class="pricing-price">
+          <span class="price-currency"></span>
+          <span class="price-amount" style="font-size:28px;" id="priceEnt">Custom</span>
+          <span class="price-period"></span>
+        </div>
+        <p class="pricing-desc">Untuk organisasi besar dengan kebutuhan keamanan, compliance, dan kontrol penuh.</p>
+        <hr class="pricing-divider">
+        <ul class="pricing-features">
+          <li>Semua fitur Pro</li>
+          <li>Unlimited anggota tim</li>
+          <li>SSO (SAML / OIDC)</li>
+          <li>Audit log lengkap</li>
+          <li>Dedicated support</li>
+          <li>On-premise deployment</li>
+          <li>Custom SLA & DPA</li>
+          <li>SOC 2 Type II report</li>
+        </ul>
+        <a href="#" class="btn btn-outline pricing-cta">Hubungi Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CHANGELOG ===== -->
+<section class="changelog-section section" id="changelog">
+  <div class="container">
+    <div class="changelog-layout">
+      <div class="changelog-sidebar reveal">
+        <h3>Changelog</h3>
+        <p>Kami selalu memperbarui SchemaHub dengan fitur baru, perbaikan, dan peningkatan performa berdasarkan masukan tim Anda.</p>
+        <a href="#" class="changelog-feed-btn">📡 Subscribe RSS Feed →</a>
+      </div>
+      <div class="changelog-entries reveal reveal-d1">
+        <!-- Entry 1 -->
+        <div class="changelog-entry">
+          <span class="changelog-dot"></span>
+          <div class="changelog-date">27 Juni 2026</div>
+          <div class="changelog-version">v2.4.0</div>
+          <h4>AI Schema Suggestions & Smart Annotations</h4>
+          <p>SchemaHub kini bisa menyarankan deskripsi field otomatis berbasis nama kolom dan pola data. Anotasi tim dibantu AI untuk konsistensi dokumentasi.</p>
+          <div class="changelog-tags">
+            <span class="changelog-tag tag-new">New Feature</span>
+            <span class="changelog-tag tag-improved">AI-Powered</span>
+          </div>
+        </div>
+        <!-- Entry 2 -->
+        <div class="changelog-entry">
+          <span class="changelog-dot"></span>
+          <div class="changelog-date">15 Juni 2026</div>
+          <div class="changelog-version">v2.3.5</div>
+          <h4>MongoDB & Cassandra Support + ERD Export SVG</h4>
+          <p>Dukungan penuh untuk MongoDB Atlas dan Apache Cassandra. ERD kini bisa diexport sebagai SVG vektor berkualitas tinggi untuk dokumentasi teknis.</p>
+          <div class="changelog-tags">
+            <span class="changelog-tag tag-new">New Database</span>
+            <span class="changelog-tag tag-improved">Improved</span>
+          </div>
+        </div>
+        <!-- Entry 3 -->
+        <div class="changelog-entry">
+          <span class="changelog-dot"></span>
+          <div class="changelog-date">2 Juni 2026</div>
+          <div class="changelog-version">v2.3.0</div>
+          <h4>Version Diff Visual — Schema History Lengkap</h4>
+          <p>Lihat perubahan schema dalam format diff visual: kolom baru ditandai hijau, yang dihapus merah, tipe berubah kuning. History tersimpan hingga 1 tahun untuk paket Pro.</p>
+          <div class="changelog-tags">
+            <span class="changelog-tag tag-new">New Feature</span>
+          </div>
+        </div>
+        <!-- Entry 4 -->
+        <div class="changelog-entry">
+          <span class="changelog-dot"></span>
+          <div class="changelog-date">18 Mei 2026</div>
+          <div class="changelog-version">v2.2.1</div>
+          <h4>Bug Fix: ENUM Type Parsing & OpenAPI 3.1 Compliance</h4>
+          <p>Perbaikan parsing ENUM dengan nilai yang mengandung spasi. OpenAPI export diperbarui ke spec 3.1.0 dengan dukungan penuh untuk JSON Schema 2020-12.</p>
+          <div class="changelog-tags">
+            <span class="changelog-tag tag-fix">Bug Fix</span>
+            <span class="changelog-tag tag-improved">Improved</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="cta-section">
+  <div class="container">
+    <h2>Schema Anda, Terdokumentasi Sempurna</h2>
+    <p>Mulai gratis hari ini. Hubungkan database pertama Anda dalam 5 menit — tidak perlu kartu kredit.</p>
+    <div class="cta-actions">
+      <a href="#" class="btn btn-lg btn-cta-white" style="padding:12px 28px;font-size:15px;">Mulai Gratis Sekarang</a>
+      <a href="#" class="btn btn-lg btn-cta-outline" style="padding:12px 28px;font-size:15px;">Jadwalkan Demo</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo" style="margin-bottom:2px;">
+          <div class="nav-logo-icon">SH</div>
+          SchemaHub
+        </a>
+        <p>Platform Data Dictionary &amp; Schema Explorer untuk tim engineering modern.</p>
+        <div class="footer-social">
+          <a href="#" class="social-btn" title="Twitter/X">𝕏</a>
+          <a href="#" class="social-btn" title="GitHub">⌥</a>
+          <a href="#" class="social-btn" title="LinkedIn">in</a>
+          <a href="#" class="social-btn" title="Discord">◈</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Produk</h4>
+        <ul>
+          <li><a href="#">Schema Explorer</a></li>
+          <li><a href="#">Field Type Explorer</a></li>
+          <li><a href="#">ERD &amp; Relationship Map</a></li>
+          <li><a href="#">Version Diff</a></li>
+          <li><a href="#">API Docs Generator</a></li>
+          <li><a href="#">Team Annotations</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Developer</h4>
+        <ul>
+          <li><a href="#">Dokumentasi API</a></li>
+          <li><a href="#">SDK Python</a></li>
+          <li><a href="#">SDK Node.js</a></li>
+          <li><a href="#">CLI Tool</a></li>
+          <li><a href="#">GitHub Actions</a></li>
+          <li><a href="#">Changelog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <ul>
+          <li><a href="#">Tentang Kami</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Karir</a></li>
+          <li><a href="#">Status Page</a></li>
+          <li><a href="#">Kontak</a></li>
+          <li><a href="#">Kebijakan Privasi</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© <span id="footerYear"></span> SchemaHub. Dibuat dengan ❤ untuk tim data Indonesia.</p>
+      <div class="footer-bottom-links">
+        <a href="#">Privasi</a>
+        <a href="#">Syarat Layanan</a>
+        <a href="#">Keamanan</a>
+        <a href="#">Cookie</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ===== THEME TOGGLE =====
+const themeToggle = document.getElementById('themeToggle');
+const html = document.documentElement;
+
+function applyTheme(theme) {
+  html.setAttribute('data-theme', theme);
+  themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('schemahub_theme', theme);
+}
+
+// Load saved theme
+(function() {
+  const saved = localStorage.getItem('schemahub_theme') || 'light';
+  applyTheme(saved);
+})();
+
+themeToggle.addEventListener('click', function() {
+  const current = html.getAttribute('data-theme');
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+});
+
+// ===== MOBILE NAV =====
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const mobileNav = document.getElementById('mobileNav');
+mobileMenuBtn.addEventListener('click', function() {
+  mobileNav.classList.toggle('open');
+});
+document.querySelectorAll('.mobile-nav-menu a').forEach(function(a) {
+  a.addEventListener('click', function() { mobileNav.classList.remove('open'); });
+});
+
+// ===== NAVBAR SCROLL =====
+window.addEventListener('scroll', function() {
+  const navbar = document.getElementById('navbar');
+  if (window.scrollY > 10) { navbar.classList.add('scrolled'); }
+  else { navbar.classList.remove('scrolled'); }
+});
+
+// ===== COUNTER ANIMATION =====
+function animateCounter(el) {
+  const target = parseInt(el.dataset.target);
+  const suffix = el.dataset.suffix || '';
+  const duration = 1600;
+  const step = target / (duration / 16);
+  let current = 0;
+  const timer = setInterval(function() {
+    current += step;
+    if (current >= target) {
+      current = target;
+      clearInterval(timer);
+    }
+    el.textContent = Math.floor(current).toLocaleString('id-ID') + suffix;
+  }, 16);
+}
+
+const counterObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      animateCounter(entry.target);
+      counterObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('[data-target]').forEach(function(el) {
+  counterObserver.observe(el);
+});
+
+// ===== FIELD TYPE DATA =====
+var fieldTypeData = {
+  string: {
+    title: 'STRING / VARCHAR',
+    sql: 'VARCHAR(n) / TEXT / CHAR(n)',
+    size: '1 byte + actual length',
+    values: 'Any UTF-8 character sequence',
+    def: 'NULL or empty string \'\'',
+    example: '"Budi Santoso"',
+    use: 'Nama, email, alamat, kode, deskripsi pendek',
+    query: 'SELECT * FROM users\nWHERE full_name ILIKE \'%budi%\'\nLIMIT 20;'
+  },
+  integer: {
+    title: 'INTEGER / BIGINT',
+    sql: 'INT / INTEGER / BIGINT / SMALLINT',
+    size: '2–8 bytes (tergantung varian)',
+    values: '-2,147,483,648 hingga 2,147,483,647',
+    def: 'NULL atau 0',
+    example: '42',
+    use: 'ID sekuensial, kuantitas, harga (dalam sen), umur',
+    query: 'SELECT id, quantity, price\nFROM order_items\nWHERE quantity > 10\nORDER BY price DESC;'
+  },
+  float: {
+    title: 'FLOAT / DECIMAL / NUMERIC',
+    sql: 'FLOAT / REAL / DECIMAL(p,s) / NUMERIC',
+    size: '4–8 bytes',
+    values: 'Angka desimal presisi tinggi',
+    def: 'NULL atau 0.0',
+    example: '99.99',
+    use: 'Harga, koordinat GPS, persentase, nilai kurs',
+    query: 'SELECT product_id,\n  ROUND(price * 1.11, 2) AS price_with_tax\nFROM products\nWHERE price BETWEEN 50.0 AND 500.0;'
+  },
+  boolean: {
+    title: 'BOOLEAN',
+    sql: 'BOOLEAN / TINYINT(1)',
+    size: '1 byte',
+    values: 'true, false, 1, 0, null',
+    def: 'false',
+    example: 'true',
+    use: 'Status aktif/nonaktif, flag fitur, konfirmasi email',
+    query: 'SELECT * FROM users\nWHERE is_active = true\n  AND email_verified = true;'
+  },
+  date: {
+    title: 'DATE',
+    sql: 'DATE',
+    size: '4 bytes',
+    values: '0001-01-01 hingga 9999-12-31',
+    def: 'NULL atau CURRENT_DATE',
+    example: '\'2026-06-27\'',
+    use: 'Tanggal lahir, deadline, tanggal acara, periode laporan',
+    query: 'SELECT * FROM events\nWHERE event_date >= CURRENT_DATE\n  AND event_date < CURRENT_DATE + 30\nORDER BY event_date;'
+  },
+  timestamp: {
+    title: 'TIMESTAMP / TIMESTAMPTZ',
+    sql: 'TIMESTAMP / TIMESTAMP WITH TIME ZONE',
+    size: '8 bytes',
+    values: 'Date + Time + optional timezone',
+    def: 'NULL atau NOW()',
+    example: '\'2026-06-27T10:30:00+07:00\'',
+    use: 'Waktu buat, waktu update, log event, audit trail',
+    query: 'SELECT id, email, created_at\nFROM users\nWHERE created_at >= NOW() - INTERVAL \'30 days\'\nORDER BY created_at DESC;'
+  },
+  json: {
+    title: 'JSON / JSONB',
+    sql: 'JSON / JSONB (binary JSON)',
+    size: 'Variable (JSONB lebih efisien)',
+    values: 'Nested object, array, primitives',
+    def: 'NULL atau \'{}\'',
+    example: '{"plan": "pro", "tags": ["api"]}',
+    use: 'Metadata fleksibel, konfigurasi, preferences, log event',
+    query: 'SELECT id, metadata->>\'plan\' AS plan\nFROM users\nWHERE metadata @> \'{"verified": true}\'::jsonb;'
+  },
+  uuid: {
+    title: 'UUID',
+    sql: 'UUID / CHAR(36)',
+    size: '16 bytes (UUID native) / 36 bytes (string)',
+    values: '8-4-4-4-12 hex format (v4)',
+    def: 'gen_random_uuid() / uuid_generate_v4()',
+    example: '\'a1b2c3d4-e5f6-7890-abcd-ef1234567890\'',
+    use: 'Primary key aman, ID yang tidak bisa ditebak, referensi cross-service',
+    query: 'SELECT u.id, u.email, o.total\nFROM users u\nJOIN orders o ON o.user_id = u.id\nWHERE u.id = \'a1b2c3d4-e5f6-...\';'
+  },
+  enum: {
+    title: 'ENUM',
+    sql: 'ENUM(\'val1\',\'val2\',...) / custom TYPE',
+    size: '1–2 bytes (index-based storage)',
+    values: 'Hanya nilai yang terdaftar saat CREATE',
+    def: 'NULL atau nilai default pertama',
+    example: '\'active\'',
+    use: 'Status order, role user, kategori tetap, state machine',
+    query: 'SELECT * FROM orders\nWHERE status IN (\'pending\', \'processing\')\nORDER BY created_at;'
+  }
+};
+
+function selectFieldType(card) {
+  document.querySelectorAll('.field-type-card').forEach(function(c) { c.classList.remove('active'); });
+  card.classList.add('active');
+  var type = card.getAttribute('data-type');
+  var data = fieldTypeData[type];
+  if (!data) return;
+  document.getElementById('detailTitle').textContent = data.title;
+  document.getElementById('detailSql').textContent = data.sql;
+  document.getElementById('detailSize').textContent = data.size;
+  document.getElementById('detailValues').textContent = data.values;
+  document.getElementById('detailDefault').textContent = data.def;
+  document.getElementById('detailExample').textContent = data.example;
+  document.getElementById('detailUse').textContent = data.use;
+  document.getElementById('detailQuery').textContent = data.query;
+}
+
+// ===== SCHEMA EXPLORER DATA =====
+var explorerData = {
+  users: [
+    { name: 'id', type: 'UUID', nullable: 'NO', constraint: 'PK', def: 'gen_random_uuid()', desc: 'Primary key unik pengguna', query: 'SELECT id FROM users WHERE id = \'uuid-here\';' },
+    { name: 'email', type: 'VARCHAR', nullable: 'NO', constraint: 'UNIQUE', def: '-', desc: 'Alamat email unik', query: 'SELECT * FROM users WHERE email = \'user@example.com\';' },
+    { name: 'full_name', type: 'VARCHAR', nullable: 'NO', constraint: '-', def: '-', desc: 'Nama lengkap pengguna', query: 'SELECT * FROM users WHERE full_name ILIKE \'%nama%\';' },
+    { name: 'role', type: 'VARCHAR', nullable: 'YES', constraint: '-', def: '\'member\'', desc: 'Role akses: admin / member / guest', query: 'SELECT * FROM users WHERE role = \'admin\';' },
+    { name: 'is_active', type: 'BOOLEAN', nullable: 'YES', constraint: '-', def: 'true', desc: 'Status aktif akun', query: 'SELECT COUNT(*) FROM users WHERE is_active = true;' },
+    { name: 'email_verified', type: 'BOOLEAN', nullable: 'YES', constraint: '-', def: 'false', desc: 'Konfirmasi verifikasi email', query: 'SELECT * FROM users WHERE email_verified = false;' },
+    { name: 'metadata', type: 'JSON', nullable: 'YES', constraint: '-', def: '\'{}\'', desc: 'Data tambahan fleksibel (JSONB)', query: 'SELECT metadata->>\'plan\' FROM users WHERE id = \'uuid\';' },
+    { name: 'created_at', type: 'TIMESTAMP', nullable: 'NO', constraint: '-', def: 'NOW()', desc: 'Waktu pendaftaran akun', query: 'SELECT * FROM users WHERE created_at > NOW() - INTERVAL \'7 days\';' },
+    { name: 'updated_at', type: 'TIMESTAMP', nullable: 'NO', constraint: '-', def: 'NOW()', desc: 'Waktu terakhir diupdate', query: 'SELECT * FROM users ORDER BY updated_at DESC LIMIT 10;' }
+  ],
+  orders: [
+    { name: 'id', type: 'UUID', nullable: 'NO', constraint: 'PK', def: 'gen_random_uuid()', desc: 'ID pesanan unik', query: 'SELECT * FROM orders WHERE id = \'uuid\';' },
+    { name: 'user_id', type: 'UUID', nullable: 'NO', constraint: 'FK→users', def: '-', desc: 'Referensi ke tabel users', query: 'SELECT o.* FROM orders o JOIN users u ON u.id = o.user_id;' },
+    { name: 'status', type: 'VARCHAR', nullable: 'NO', constraint: '-', def: '\'pending\'', desc: 'Status: pending/processing/shipped/done', query: 'SELECT * FROM orders WHERE status = \'processing\';' },
+    { name: 'total_amount', type: 'FLOAT', nullable: 'NO', constraint: '-', def: '0', desc: 'Total nilai pesanan (Rupiah)', query: 'SELECT SUM(total_amount) FROM orders WHERE status = \'done\';' },
+    { name: 'payment_method', type: 'VARCHAR', nullable: 'YES', constraint: '-', def: 'NULL', desc: 'Metode bayar: transfer/cod/ewallet', query: 'SELECT payment_method, COUNT(*) FROM orders GROUP BY 1;' },
+    { name: 'shipping_address', type: 'JSON', nullable: 'YES', constraint: '-', def: '\'{}\'', desc: 'Alamat pengiriman lengkap', query: 'SELECT shipping_address->>\'city\' FROM orders;' },
+    { name: 'notes', type: 'VARCHAR', nullable: 'YES', constraint: '-', def: 'NULL', desc: 'Catatan tambahan dari pembeli', query: 'SELECT * FROM orders WHERE notes IS NOT NULL;' },
+    { name: 'created_at', type: 'TIMESTAMP', nullable: 'NO', constraint: '-', def: 'NOW()', desc: 'Waktu order dibuat', query: 'SELECT DATE(created_at), COUNT(*) FROM orders GROUP BY 1;' },
+    { name: 'updated_at', type: 'TIMESTAMP', nullable: 'NO', constraint: '-', def: 'NOW()', desc: 'Waktu terakhir diupdate', query: 'SELECT * FROM orders ORDER BY updated_at DESC LIMIT 5;' },
+    { name: 'shipped_at', type: 'TIMESTAMP', nullable: 'YES', constraint: '-', def: 'NULL', desc: 'Waktu dikirim ke ekspedisi', query: 'SELECT * FROM orders WHERE shipped_at IS NOT NULL;' },
+    { name: 'is_paid', type: 'BOOLEAN', nullable: 'NO', constraint: '-', def: 'false', desc: 'Status pembayaran lunas', query: 'SELECT * FROM orders WHERE is_paid = false AND status != \'cancelled\';' }
+  ],
+  products: [
+    { name: 'id', type: 'UUID', nullable: 'NO', constraint: 'PK', def: 'gen_random_uuid()', desc: 'ID produk unik', query: 'SELECT * FROM products WHERE id = \'uuid\';' },
+    { name: 'name', type: 'VARCHAR', nullable: 'NO', constraint: '-', def: '-', desc: 'Nama produk', query: 'SELECT * FROM products WHERE name ILIKE \'%kaos%\';' },
+    { name: 'sku', type: 'VARCHAR', nullable: 'NO', constraint: 'UNIQUE', def: '-', desc: 'Kode SKU unik produk', query: 'SELECT * FROM products WHERE sku = \'SKU-001\';' },
+    { name: 'price', type: 'FLOAT', nullable: 'NO', constraint: '-', def: '0', desc: 'Harga jual dalam Rupiah', query: 'SELECT * FROM products WHERE price BETWEEN 50000 AND 200000;' },
+    { name: 'stock', type: 'INTEGER', nullable: 'NO', constraint: '-', def: '0', desc: 'Stok tersedia', query: 'SELECT * FROM products WHERE stock < 10;' },
+    { name: 'category_id', type: 'UUID', nullable: 'YES', constraint: 'FK→categories', def: 'NULL', desc: 'Kategori produk', query: 'SELECT p.*, c.name as cat FROM products p JOIN categories c ON c.id = p.category_id;' },
+    { name: 'images', type: 'JSON', nullable: 'YES', constraint: '-', def: '\'[]\'', desc: 'Array URL foto produk', query: 'SELECT images->0 as main_image FROM products;' },
+    { name: 'is_published', type: 'BOOLEAN', nullable: 'NO', constraint: '-', def: 'false', desc: 'Status tampil di storefront', query: 'SELECT * FROM products WHERE is_published = true ORDER BY created_at DESC;' },
+    { name: 'weight_gram', type: 'INTEGER', nullable: 'YES', constraint: '-', def: 'NULL', desc: 'Berat produk dalam gram', query: 'SELECT * FROM products WHERE weight_gram > 1000;' },
+    { name: 'created_at', type: 'TIMESTAMP', nullable: 'NO', constraint: '-', def: 'NOW()', desc: 'Waktu produk dibuat', query: 'SELECT * FROM products ORDER BY created_at DESC LIMIT 20;' }
+  ]
+};
+
+// Default to users for tables not in data
+var defaultData = [
+  { name: 'id', type: 'UUID', nullable: 'NO', constraint: 'PK', def: 'gen_random_uuid()', desc: 'Primary key', query: 'SELECT * FROM table WHERE id = \'uuid\';' },
+  { name: 'created_at', type: 'TIMESTAMP', nullable: 'NO', constraint: '-', def: 'NOW()', desc: 'Creation timestamp', query: 'SELECT * FROM table ORDER BY created_at DESC;' },
+  { name: 'updated_at', type: 'TIMESTAMP', nullable: 'NO', constraint: '-', def: 'NOW()', desc: 'Last update timestamp', query: 'SELECT * FROM table WHERE updated_at > NOW() - INTERVAL \'1 day\';' },
+  { name: 'is_active', type: 'BOOLEAN', nullable: 'YES', constraint: '-', def: 'true', desc: 'Active status flag', query: 'SELECT * FROM table WHERE is_active = true;' },
+  { name: 'metadata', type: 'JSON', nullable: 'YES', constraint: '-', def: '\'{}\'', desc: 'Flexible extra data', query: 'SELECT metadata FROM table WHERE id = \'uuid\';' }
+];
+
+var badgeMap = {
+  UUID: 'badge-uuid', VARCHAR: 'badge-varchar', BOOLEAN: 'badge-bool',
+  TIMESTAMP: 'badge-ts', JSON: 'badge-json', INTEGER: 'badge-int',
+  FLOAT: 'badge-float', ENUM: 'badge-enum', DATE: 'badge-date', TEXT: 'badge-varchar'
+};
+
+var currentTableFields = [];
+var openRowIndex = null;
+
+function renderExplorerTable(fields) {
+  currentTableFields = fields;
+  var tbody = document.getElementById('explorerTbody');
+  var html = '';
+  fields.forEach(function(f, i) {
+    var badge = badgeMap[f.type] || 'badge-text-light';
+    var constraintHtml = '';
+    if (f.constraint === 'PK') constraintHtml = '<span class="tag-pk">PK</span>';
+    else if (f.constraint && f.constraint.startsWith('FK')) constraintHtml = '<span class="tag-fk">' + f.constraint + '</span>';
+    else constraintHtml = f.constraint !== '-' ? '<span class="badge badge-text-light">' + f.constraint + '</span>' : '<span style="color:var(--text3)">—</span>';
+
+    html += '<tr class="field-row" onclick="toggleExpandRow(' + i + ')">';
+    html += '<td><div class="field-name-cell"><span class="field-icon">◈</span><span class="mono" style="font-size:13px;">' + f.name + '</span></div></td>';
+    html += '<td><span class="badge ' + badge + '">' + f.type + '</span></td>';
+    html += '<td><span style="font-size:12px;color:' + (f.nullable === 'NO' ? 'var(--accent)' : 'var(--text3)') + ';font-weight:600;">' + f.nullable + '</span></td>';
+    html += '<td>' + constraintHtml + '</td>';
+    html += '<td><span class="mono" style="font-size:11px;color:var(--text3);">' + f.def + '</span></td>';
+    html += '<td style="color:var(--text2);font-size:12px;">' + f.desc + '</td>';
+    html += '</tr>';
+
+    // Expand row
+    html += '<tr class="expand-row" id="expand-' + i + '">';
+    html += '<td colspan="6"><div class="expand-content">';
+    html += '<div class="expand-grid">';
+    html += '<div>';
+    html += '<div class="expand-meta">';
+    html += '<label>Field Name</label><span class="mono" style="font-size:13px;">' + f.name + '</span>';
+    html += '<label>Full Type</label><span class="mono" style="font-size:12px;">' + f.type + '</span>';
+    html += '<label>Nullable</label><span>' + f.nullable + '</span>';
+    html += '<label>Default Value</label><span class="mono" style="font-size:12px;">' + f.def + '</span>';
+    html += '<label>Description</label><span>' + f.desc + '</span>';
+    html += '</div></div>';
+    html += '<div>';
+    html += '<label style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;display:block;margin-bottom:8px;letter-spacing:0.06em;">Contoh Query SQL</label>';
+    html += '<div class="expand-code">' + escapeHtml(f.query) + '</div>';
+    html += '</div>';
+    html += '</div></div></td></tr>';
+  });
+  tbody.innerHTML = html;
+  openRowIndex = null;
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function toggleExpandRow(idx) {
+  if (openRowIndex !== null && openRowIndex !== idx) {
+    var prev = document.getElementById('expand-' + openRowIndex);
+    if (prev) prev.classList.remove('open');
+  }
+  var row = document.getElementById('expand-' + idx);
+  if (!row) return;
+  if (row.classList.contains('open')) {
+    row.classList.remove('open');
+    openRowIndex = null;
+  } else {
+    row.classList.add('open');
+    openRowIndex = idx;
+  }
+}
+
+function selectExplorerTable(el, tableName) {
+  document.querySelectorAll('.exp-table-item').forEach(function(i) { i.classList.remove('active'); });
+  el.classList.add('active');
+  var data = explorerData[tableName] || defaultData;
+  renderExplorerTable(data);
+  document.querySelector('.exp-search').value = '';
+}
+
+function filterExplorerFields(query) {
+  var q = query.toLowerCase();
+  var rows = document.querySelectorAll('#explorerTbody .field-row');
+  rows.forEach(function(row, i) {
+    var name = row.querySelector('.mono') ? row.querySelector('.mono').textContent.toLowerCase() : '';
+    var desc = currentTableFields[i] ? currentTableFields[i].desc.toLowerCase() : '';
+    var show = name.includes(q) || desc.includes(q);
+    row.style.display = show ? '' : 'none';
+    var expRow = document.getElementById('expand-' + i);
+    if (expRow) expRow.style.display = show ? '' : 'none';
+  });
+}
+
+function filterExplorerType(type) {
+  var rows = document.querySelectorAll('#explorerTbody .field-row');
+  rows.forEach(function(row, i) {
+    if (!type) { row.style.display = ''; var er = document.getElementById('expand-' + i); if (er) er.style.display = ''; return; }
+    var fieldType = currentTableFields[i] ? currentTableFields[i].type : '';
+    var show = fieldType === type;
+    row.style.display = show ? '' : 'none';
+    var expRow = document.getElementById('expand-' + i);
+    if (expRow) expRow.style.display = show ? '' : 'none';
+  });
+}
+
+// Init explorer with users data
+renderExplorerTable(explorerData.users);
+
+// ===== CODE SNIPPET TABS =====
+var activeTab = 'sql';
+function switchCodeTab(btn, tabId) {
+  document.querySelectorAll('.code-tab').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('.code-panel').forEach(function(p) { p.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById('panel-' + tabId).classList.add('active');
+  activeTab = tabId;
+  // Reset copy button
+  var copyBtn = document.getElementById('codeCopyBtn');
+  copyBtn.textContent = 'Copy';
+  copyBtn.classList.remove('copied');
+}
+
+function copyCode() {
+  var panel = document.getElementById('panel-' + activeTab);
+  var pre = panel ? panel.querySelector('pre') : null;
+  if (!pre) return;
+  var text = pre.textContent || pre.innerText;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('codeCopyBtn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(function() {
+    // Fallback
+    var ta = document.createElement('textarea');
+    ta.value = pre.textContent;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    var btn = document.getElementById('codeCopyBtn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// ===== PRICING TOGGLE =====
+var isYearly = false;
+var prices = { starter: 0, pro: 299000, proYearly: 239000 };
+function togglePricing() {
+  isYearly = !isYearly;
+  var toggle = document.getElementById('pricingToggle');
+  var lblM = document.getElementById('lblMonthly');
+  var lblY = document.getElementById('lblYearly');
+  toggle.classList.toggle('on', isYearly);
+  lblM.classList.toggle('active', !isYearly);
+  lblY.classList.toggle('active', isYearly);
+
+  var proEl = document.getElementById('pricePro');
+  var periodEl = document.getElementById('periodPro');
+  if (isYearly) {
+    proEl.textContent = (239000).toLocaleString('id-ID');
+    periodEl.textContent = '/bulan (ditagih tahunan)';
+  } else {
+    proEl.textContent = (299000).toLocaleString('id-ID');
+    periodEl.textContent = '/bulan';
+  }
+}
+
+// ===== FOOTER YEAR =====
+document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+// ===== SCROLL REVEAL =====
+var revealObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'none';
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.feature-card, .pricing-card, .field-type-card, .changelog-entry').forEach(function(el) {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(16px)';
+  el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+  revealObserver.observe(el);
+});
+
+// ===== MOCKUP SIDEBAR INTERACTION (HERO) =====
+document.querySelectorAll('.mockup-table-row').forEach(function(row) {
+  row.addEventListener('click', function() {
+    document.querySelectorAll('.mockup-table-row').forEach(function(r) { r.classList.remove('active'); });
+    row.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

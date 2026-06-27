@@ -1,0 +1,2082 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NexaDocs — Knowledge Base & Help Center</title>
+  <meta name="description" content="Platform dokumentasi tim yang cepat, terstruktur, dan mudah dikelola. Buat knowledge base yang dicintai tim dalam hitungan menit." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ==================== CSS VARIABLES ==================== */
+    :root {
+      --bg: #FFFFFF;
+      --bg2: #F8FAFC;
+      --bg3: #F1F5F9;
+      --text: #0F172A;
+      --text2: #475569;
+      --text3: #94A3B8;
+      --accent: #0D9488;
+      --accent-dim: #CCFBF1;
+      --accent-text: #134E4A;
+      --border: #E2E8F0;
+      --border2: #CBD5E1;
+      --sidebar-w: 260px;
+      --font: 'DM Sans', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+      --radius: 10px;
+      --radius-lg: 16px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+      --nav-h: 64px;
+      --transition: 0.2s ease;
+    }
+    [data-theme="dark"] {
+      --bg: #0F172A;
+      --bg2: #1E293B;
+      --bg3: #334155;
+      --text: #F8FAFC;
+      --text2: #94A3B8;
+      --text3: #64748B;
+      --accent: #14B8A6;
+      --accent-dim: #134E4A;
+      --accent-text: #CCFBF1;
+      --border: #1E293B;
+      --border2: #334155;
+      --shadow: 0 1px 3px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.3);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    /* ==================== RESET & BASE ==================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      transition: background var(--transition), color var(--transition);
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    ul { list-style: none; }
+    button { font-family: var(--font); cursor: pointer; border: none; outline: none; }
+    input, select { font-family: var(--font); }
+
+    /* ==================== UTILITIES ==================== */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .section { padding: 80px 0; }
+    .section-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-dim);
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+      margin-bottom: 12px;
+    }
+    .section-sub {
+      font-size: 1rem;
+      color: var(--text2);
+      max-width: 600px;
+      line-height: 1.7;
+    }
+    .text-center { text-align: center; }
+    .text-center .section-sub { margin: 0 auto; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 22px;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all var(--transition);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border: 2px solid transparent;
+    }
+    .btn-primary:hover {
+      background: var(--accent-text);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(13,148,136,0.35);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 2px solid var(--border2);
+    }
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .btn-outline-white {
+      background: transparent;
+      color: #fff;
+      border: 2px solid rgba(255,255,255,0.5);
+    }
+    .btn-outline-white:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: #fff;
+    }
+    .btn-white {
+      background: #fff;
+      color: var(--accent-text);
+      border: 2px solid transparent;
+      font-weight: 700;
+    }
+    .btn-white:hover {
+      background: var(--accent-dim);
+      transform: translateY(-1px);
+    }
+
+    /* ==================== NAVBAR ==================== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-h);
+      z-index: 1000;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      transition: background var(--transition), box-shadow var(--transition), border-color var(--transition);
+    }
+    [data-theme="dark"] .navbar {
+      background: rgba(15,23,42,0.85);
+    }
+    .navbar.scrolled {
+      box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+    }
+    .navbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--text);
+    }
+    .nav-logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .nav-links a {
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text2);
+      transition: all var(--transition);
+    }
+    .nav-links a:hover {
+      color: var(--text);
+      background: var(--bg3);
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .theme-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: var(--bg3);
+      color: var(--text2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: all var(--transition);
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .theme-btn:hover {
+      background: var(--accent-dim);
+      color: var(--accent);
+    }
+    .hamburger {
+      display: none;
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: var(--bg3);
+      color: var(--text);
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: var(--nav-h);
+      left: 0;
+      right: 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 999;
+      box-shadow: var(--shadow-md);
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-weight: 500;
+      color: var(--text2);
+      transition: all var(--transition);
+    }
+    .mobile-menu a:hover { background: var(--bg3); color: var(--text); }
+    .mobile-menu-cta { margin-top: 8px; }
+
+    /* ==================== HERO SECTION ==================== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: var(--nav-h);
+      background: linear-gradient(135deg, var(--bg) 0%, var(--bg2) 100%);
+      overflow: hidden;
+    }
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      padding: 60px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .hero-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 18px;
+    }
+    .hero-title span { color: var(--accent); }
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--text2);
+      line-height: 1.75;
+      margin-bottom: 32px;
+      max-width: 480px;
+    }
+    .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+    .hero-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      color: var(--text3);
+    }
+    .hero-meta-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* ==================== 3-PANEL MOCKUP ==================== */
+    .mockup-frame {
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      max-width: 560px;
+      width: 100%;
+    }
+    .mockup-titlebar {
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .traffic-light {
+      display: flex;
+      gap: 6px;
+    }
+    .traffic-light span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .tl-red { background: #FF5F57; }
+    .tl-yellow { background: #FEBC2E; }
+    .tl-green { background: #28C840; }
+    .mockup-url {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 0.7rem;
+      color: var(--text3);
+      font-family: var(--mono);
+    }
+    .mockup-body {
+      display: grid;
+      grid-template-columns: 140px 1fr 110px;
+      min-height: 340px;
+    }
+
+    /* Left sidebar panel */
+    .mkp-sidebar {
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      padding: 12px 8px;
+      overflow: hidden;
+    }
+    .mkp-logo-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 6px 10px;
+      font-weight: 700;
+      font-size: 0.75rem;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+    .mkp-logo-dot {
+      width: 14px;
+      height: 14px;
+      background: var(--accent);
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .mkp-tree-item {
+      padding: 5px 6px;
+      border-radius: 5px;
+      color: var(--text2);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: background var(--transition);
+      font-size: 0.68rem;
+      user-select: none;
+    }
+    .mkp-tree-item:hover { background: var(--bg3); }
+    .mkp-tree-item.active {
+      background: var(--accent-dim);
+      color: var(--accent-text);
+      font-weight: 600;
+    }
+    .mkp-tree-item .tri {
+      font-size: 0.5rem;
+      transition: transform var(--transition);
+      color: var(--text3);
+      flex-shrink: 0;
+    }
+    .mkp-tree-item.open .tri { transform: rotate(90deg); }
+    .mkp-sub {
+      padding-left: 16px;
+      display: none;
+    }
+    .mkp-sub.open { display: block; }
+    .mkp-sub .mkp-tree-item {
+      font-size: 0.64rem;
+      color: var(--text3);
+    }
+    .mkp-sub .mkp-tree-item.active {
+      color: var(--accent-text);
+    }
+
+    /* Center article panel */
+    .mkp-content {
+      padding: 12px 14px;
+      background: var(--bg);
+      overflow: hidden;
+    }
+    .mkp-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.62rem;
+      color: var(--text3);
+      margin-bottom: 8px;
+    }
+    .mkp-breadcrumb span { color: var(--accent); }
+    .mkp-article-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .mkp-article-p {
+      font-size: 0.65rem;
+      color: var(--text2);
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+    .mkp-code-block {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 10px;
+      position: relative;
+    }
+    .mkp-code-block pre {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      color: var(--text2);
+      line-height: 1.5;
+      white-space: pre;
+      overflow: hidden;
+    }
+    .mkp-code-block pre .kw { color: var(--accent); }
+    .mkp-code-block pre .str { color: #10B981; }
+    .mkp-copy-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-size: 0.55rem;
+      color: var(--text3);
+      cursor: pointer;
+      font-family: var(--font);
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      transition: color var(--transition);
+    }
+    .mkp-copy-btn:hover { color: var(--accent); }
+
+    /* Right TOC panel */
+    .mkp-toc {
+      border-left: 1px solid var(--border);
+      padding: 12px 10px;
+      background: var(--bg2);
+    }
+    .mkp-toc-title {
+      font-size: 0.62rem;
+      font-weight: 600;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+    .mkp-toc-link {
+      display: block;
+      font-size: 0.62rem;
+      color: var(--text3);
+      padding: 3px 0 3px 8px;
+      border-left: 2px solid transparent;
+      line-height: 1.4;
+      margin-bottom: 2px;
+      transition: all var(--transition);
+    }
+    .mkp-toc-link.active {
+      border-left-color: var(--accent);
+      color: var(--accent);
+    }
+    .mkp-toc-link:hover { color: var(--text); }
+
+    /* ==================== STATS BAR ==================== */
+    .stats-bar {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 40px 0;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+    .stat-item {
+      text-align: center;
+      padding: 20px;
+      border-right: 1px solid var(--border);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-number {
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 6px;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text2);
+      font-weight: 500;
+    }
+
+    /* ==================== FEATURES SECTION ==================== */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 50px;
+    }
+    .feature-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      transition: all var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+    .feature-card:hover {
+      border-color: var(--accent);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
+    }
+    .feature-card:hover::before { opacity: 1; }
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--accent-dim);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      font-size: 1.3rem;
+    }
+    .feature-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .feature-desc {
+      font-size: 0.87rem;
+      color: var(--text2);
+      line-height: 1.65;
+    }
+
+    /* ==================== DATABASE VIEW SHOWCASE ==================== */
+    .db-showcase { background: var(--bg2); }
+    .db-mockup {
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+    .db-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .db-search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 180px;
+    }
+    .db-search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text3);
+      font-size: 0.82rem;
+      pointer-events: none;
+    }
+    .db-search {
+      width: 100%;
+      padding: 8px 12px 8px 32px;
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.85rem;
+      transition: border-color var(--transition);
+    }
+    .db-search:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .db-filter-select {
+      padding: 8px 12px;
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text2);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: border-color var(--transition);
+    }
+    .db-filter-select:focus { outline: none; border-color: var(--accent); }
+    .db-add-btn {
+      background: var(--accent);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .db-add-btn:hover { background: var(--accent-text); }
+    .db-table-wrap { overflow-x: auto; }
+    .db-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .db-table th {
+      text-align: left;
+      padding: 11px 16px;
+      background: var(--bg2);
+      color: var(--text3);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border2);
+      white-space: nowrap;
+    }
+    .db-table td {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: middle;
+    }
+    .db-table tbody tr {
+      transition: background var(--transition);
+    }
+    .db-table tbody tr:hover {
+      background: var(--accent-dim);
+    }
+    .db-table tbody tr:last-child td { border-bottom: none; }
+    .db-check {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border2);
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-block;
+      transition: all var(--transition);
+      vertical-align: middle;
+    }
+    .db-check.checked {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 100px;
+      font-size: 0.73rem;
+      font-weight: 600;
+    }
+    .badge-blue { background: #DBEAFE; color: #1D4ED8; }
+    .badge-purple { background: #EDE9FE; color: #6D28D9; }
+    .badge-teal { background: var(--accent-dim); color: var(--accent-text); }
+    .badge-orange { background: #FEF3C7; color: #92400E; }
+    [data-theme="dark"] .badge-blue { background: #1E3A5F; color: #93C5FD; }
+    [data-theme="dark"] .badge-purple { background: #2D1F5E; color: #C4B5FD; }
+    [data-theme="dark"] .badge-orange { background: #3A2500; color: #FCD34D; }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 0.73rem;
+      font-weight: 600;
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .status-published { background: #DCFCE7; color: #166534; }
+    .status-published .status-dot { background: #16A34A; }
+    .status-draft { background: #FEF9C3; color: #854D0E; }
+    .status-draft .status-dot { background: #EAB308; }
+    .status-review { background: #DBEAFE; color: #1D4ED8; }
+    .status-review .status-dot { background: #3B82F6; }
+    [data-theme="dark"] .status-published { background: #14532D; color: #86EFAC; }
+    [data-theme="dark"] .status-draft { background: #422006; color: #FDE047; }
+    [data-theme="dark"] .status-review { background: #1E3A5F; color: #93C5FD; }
+    .article-title-cell {
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      transition: color var(--transition);
+    }
+    .article-title-cell:hover { color: var(--accent); }
+    .views-cell {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      color: var(--text2);
+    }
+    .date-cell {
+      font-size: 0.82rem;
+      color: var(--text2);
+      white-space: nowrap;
+    }
+    .rating-cell { white-space: nowrap; }
+
+    /* ==================== PRICING ==================== */
+    .pricing-toggle-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      margin: 24px 0 48px;
+      flex-wrap: wrap;
+    }
+    .pricing-toggle-label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text2);
+      transition: color var(--transition);
+    }
+    .pricing-toggle-label.active { color: var(--text); font-weight: 600; }
+    .toggle-switch {
+      width: 52px;
+      height: 28px;
+      background: var(--accent);
+      border-radius: 100px;
+      position: relative;
+      cursor: pointer;
+      transition: background var(--transition);
+      flex-shrink: 0;
+    }
+    .toggle-switch-dot {
+      width: 22px;
+      height: 22px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      transition: transform var(--transition);
+    }
+    .toggle-switch.yearly .toggle-switch-dot { transform: translateX(24px); }
+    .savings-badge {
+      background: var(--accent-dim);
+      color: var(--accent-text);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 100px;
+      display: none;
+    }
+    .savings-badge.visible { display: inline-block; }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .pricing-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      position: relative;
+      transition: all var(--transition);
+    }
+    .pricing-card.popular {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent), var(--shadow-md);
+    }
+    .pricing-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+    }
+    .popular-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 14px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+    .pricing-tier {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text3);
+      margin-bottom: 8px;
+    }
+    .pricing-amount {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .pricing-period {
+      font-size: 0.8rem;
+      color: var(--text3);
+    }
+    .pricing-sub {
+      font-size: 0.82rem;
+      color: var(--text2);
+      margin: 6px 0 24px;
+      min-height: 36px;
+      line-height: 1.5;
+    }
+    .pricing-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 20px 0;
+    }
+    .pricing-features { margin-bottom: 28px; }
+    .pricing-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+      color: var(--text2);
+    }
+    .pricing-check {
+      color: var(--accent);
+      font-size: 0.85rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .pricing-btn { width: 100%; justify-content: center; }
+
+    /* ==================== TESTIMONIALS ==================== */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 50px;
+    }
+    .testimonial-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      transition: all var(--transition);
+    }
+    .testimonial-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
+    }
+    .testimonial-stars {
+      color: #F59E0B;
+      font-size: 0.9rem;
+      margin-bottom: 14px;
+      letter-spacing: 2px;
+    }
+    .testimonial-quote {
+      font-size: 0.9rem;
+      color: var(--text2);
+      line-height: 1.75;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .av-teal { background: linear-gradient(135deg, #0D9488, #06B6D4); }
+    .av-indigo { background: linear-gradient(135deg, #6366F1, #8B5CF6); }
+    .av-orange { background: linear-gradient(135deg, #F97316, #EF4444); }
+    .author-name {
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+    .author-role {
+      font-size: 0.78rem;
+      color: var(--text3);
+    }
+
+    /* ==================== INTEGRATIONS ==================== */
+    .integration-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 10px 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text2);
+      transition: all var(--transition);
+    }
+    .integration-pill:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ==================== CTA SECTION ==================== */
+    .cta-section {
+      background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%);
+      padding: 80px 0;
+      text-align: center;
+    }
+    .cta-title {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 14px;
+      line-height: 1.3;
+    }
+    .cta-sub {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.82);
+      max-width: 480px;
+      margin: 0 auto 32px;
+      line-height: 1.7;
+    }
+    .cta-buttons {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ==================== FOOTER ==================== */
+    .footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 60px 0 32px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 48px;
+    }
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .footer-tagline {
+      font-size: 0.85rem;
+      color: var(--text2);
+      line-height: 1.65;
+      max-width: 240px;
+    }
+    .footer-col-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--text);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .footer-links a {
+      display: block;
+      font-size: 0.87rem;
+      color: var(--text2);
+      margin-bottom: 10px;
+      transition: color var(--transition);
+    }
+    .footer-links a:hover { color: var(--accent); }
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .footer-copy {
+      font-size: 0.82rem;
+      color: var(--text3);
+    }
+    .footer-bottom-links {
+      display: flex;
+      gap: 20px;
+    }
+    .footer-bottom-links a {
+      font-size: 0.82rem;
+      color: var(--text3);
+      transition: color var(--transition);
+    }
+    .footer-bottom-links a:hover { color: var(--accent); }
+
+    /* ==================== TOAST ==================== */
+    .toast {
+      display: none;
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: var(--accent);
+      color: #fff;
+      padding: 14px 22px;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 0.88rem;
+      box-shadow: var(--shadow-lg);
+      z-index: 9999;
+      transition: opacity 0.3s ease;
+    }
+    .toast.show { display: block; }
+
+    /* ==================== SCROLL REVEAL ==================== */
+    .reveal {
+      animation: fadeInUp 0.6s ease both;
+    }
+    .reveal-delay-1 { animation-delay: 0.1s; }
+    .reveal-delay-2 { animation-delay: 0.2s; }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 1024px) {
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+      .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 900px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .stat-item:nth-child(2) { border-right: none; }
+      .stat-item:nth-child(3) { border-right: 1px solid var(--border); border-top: 1px solid var(--border); }
+      .stat-item:nth-child(4) { border-top: 1px solid var(--border); }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .mockup-body { grid-template-columns: 120px 1fr; }
+      .mkp-toc { display: none; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-right .btn { display: none; }
+      .hamburger { display: flex; }
+      .hero-inner {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 40px 24px;
+      }
+      .mockup-frame { max-width: 100%; }
+      .features-grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .section { padding: 56px 0; }
+    }
+    @media (max-width: 480px) {
+      .hero-cta { flex-direction: column; }
+      .hero-cta .btn { width: 100%; justify-content: center; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* ==================== MISC ==================== */
+    ::selection { background: var(--accent-dim); color: var(--accent-text); }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg2); }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+  </style>
+</head>
+<body>
+
+<!-- ==================== NAVBAR ==================== -->
+<nav class="navbar" id="navbar">
+  <div class="navbar-inner">
+    <!-- Logo -->
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+      </div>
+      NexaDocs
+    </a>
+    <!-- Desktop Nav Links -->
+    <nav class="nav-links">
+      <a href="#fitur">Fitur</a>
+      <a href="#harga">Harga</a>
+      <a href="#docs">Dokumentasi</a>
+      <a href="#blog">Blog</a>
+    </nav>
+    <!-- Right side controls -->
+    <div class="nav-right">
+      <button class="theme-btn" id="themeBtn" aria-label="Ganti tema">
+        <span id="themeIcon">🌙</span>
+      </button>
+      <a href="#" class="btn btn-primary" style="padding:9px 18px;font-size:0.85rem;">Mulai Gratis</a>
+      <button class="hamburger" id="hamburger" aria-label="Buka menu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu" role="navigation">
+  <a href="#fitur">Fitur</a>
+  <a href="#harga">Harga</a>
+  <a href="#docs">Dokumentasi</a>
+  <a href="#blog">Blog</a>
+  <div class="mobile-menu-cta">
+    <a href="#" class="btn btn-primary" style="width:100%;justify-content:center;">Mulai Gratis</a>
+  </div>
+</div>
+
+<!-- ==================== HERO SECTION ==================== -->
+<section class="hero" id="home">
+  <div class="hero-inner">
+    <!-- Left: Copywriting -->
+    <div class="hero-copy">
+      <div style="margin-bottom:16px;">
+        <span class="section-label">Knowledge Base Modern</span>
+      </div>
+      <h1 class="hero-title">
+        Dokumentasi yang Membantu Tim <span>Bergerak Lebih Cepat</span>
+      </h1>
+      <p class="hero-sub">
+        Bangun knowledge base terpusat yang mudah dibuat, dicari, dan diperbarui.
+        Dari panduan onboarding hingga referensi API — semua tersusun rapi dan selalu aktual.
+      </p>
+      <div class="hero-cta">
+        <a href="#" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="13 17 18 12 13 7"/>
+            <polyline points="6 17 11 12 6 7"/>
+          </svg>
+          Coba Gratis Sekarang
+        </a>
+        <a href="#" class="btn btn-outline">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <polygon points="10 8 16 12 10 16 10 8"/>
+          </svg>
+          Lihat Demo
+        </a>
+      </div>
+      <div class="hero-meta">
+        <span class="hero-meta-item">
+          <span class="hero-meta-dot"></span>Gratis 14 hari
+        </span>
+        <span class="hero-meta-item">
+          <span class="hero-meta-dot"></span>Tanpa kartu kredit
+        </span>
+        <span class="hero-meta-item">
+          <span class="hero-meta-dot"></span>Setup &lt;5 menit
+        </span>
+      </div>
+    </div>
+
+    <!-- Right: 3-Panel CSS Mockup -->
+    <div class="hero-visual">
+      <div class="mockup-frame">
+        <!-- Titlebar -->
+        <div class="mockup-titlebar">
+          <div class="traffic-light">
+            <span class="tl-red"></span>
+            <span class="tl-yellow"></span>
+            <span class="tl-green"></span>
+          </div>
+          <div class="mockup-url">app.nexadocs.id/docs/getting-started/instalasi</div>
+        </div>
+        <!-- 3-panel body -->
+        <div class="mockup-body">
+          <!-- Panel Kiri: Sidebar Tree Nav -->
+          <div class="mkp-sidebar">
+            <div class="mkp-logo-row">
+              <div class="mkp-logo-dot"></div>
+              NexaDocs
+            </div>
+            <!-- Getting Started -->
+            <div class="mkp-tree-item open" id="treeGs" onclick="toggleTree('treeGs','subGs')">
+              <span class="tri">▶</span> Getting Started
+            </div>
+            <div class="mkp-sub open" id="subGs">
+              <div class="mkp-tree-item active">Instalasi</div>
+              <div class="mkp-tree-item">Konfigurasi Awal</div>
+              <div class="mkp-tree-item">Tim &amp; Akses</div>
+            </div>
+            <!-- API Reference -->
+            <div class="mkp-tree-item" id="treeApi" onclick="toggleTree('treeApi','subApi')">
+              <span class="tri">▶</span> API Reference
+            </div>
+            <div class="mkp-sub" id="subApi">
+              <div class="mkp-tree-item">Autentikasi</div>
+              <div class="mkp-tree-item">Endpoints</div>
+              <div class="mkp-tree-item">Webhook</div>
+            </div>
+            <!-- Integrations -->
+            <div class="mkp-tree-item" id="treeInt" onclick="toggleTree('treeInt','subInt')">
+              <span class="tri">▶</span> Integrasi
+            </div>
+            <div class="mkp-sub" id="subInt">
+              <div class="mkp-tree-item">Slack</div>
+              <div class="mkp-tree-item">Notion</div>
+              <div class="mkp-tree-item">GitHub</div>
+            </div>
+            <!-- Changelog -->
+            <div class="mkp-tree-item" id="treeCl" onclick="toggleTree('treeCl','subCl')">
+              <span class="tri">▶</span> Changelog
+            </div>
+            <div class="mkp-sub" id="subCl">
+              <div class="mkp-tree-item">v2.5.0</div>
+              <div class="mkp-tree-item">v2.4.1</div>
+            </div>
+          </div>
+
+          <!-- Panel Tengah: Artikel -->
+          <div class="mkp-content">
+            <div class="mkp-breadcrumb">
+              Docs <span>›</span> Getting Started <span>›</span> Instalasi
+            </div>
+            <div class="mkp-article-title">Instalasi NexaDocs</div>
+            <p class="mkp-article-p">
+              Pasang NexaDocs SDK ke proyek Anda dalam hitungan detik.
+              Tersedia untuk Node.js, Python, dan Go.
+            </p>
+            <div class="mkp-code-block">
+              <pre><span class="kw">npm</span> install nexadocs-sdk
+
+<span class="kw">import</span> { NexaDocs } from <span class="str">'nexadocs-sdk'</span>
+
+<span class="kw">const</span> docs = <span class="kw">new</span> NexaDocs({
+  apiKey: <span class="str">'nd_sk_xxxx'</span>
+})</pre>
+              <button class="mkp-copy-btn" id="mockupCopyBtn" onclick="copyMockupCode(this)">
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2"/>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+                Salin
+              </button>
+            </div>
+          </div>
+
+          <!-- Panel Kanan: Daftar Isi -->
+          <div class="mkp-toc">
+            <div class="mkp-toc-title">Pada halaman ini</div>
+            <a class="mkp-toc-link active" href="#">Prasyarat</a>
+            <a class="mkp-toc-link" href="#">Instalasi NPM</a>
+            <a class="mkp-toc-link" href="#">Konfigurasi API Key</a>
+            <a class="mkp-toc-link" href="#">Verifikasi</a>
+            <a class="mkp-toc-link" href="#">Langkah Selanjutnya</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== STATS BAR ==================== -->
+<section class="stats-bar" id="statsBar">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number" data-target="2400" data-suffix="+">0</div>
+        <div class="stat-label">Artikel Dibuat</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" data-target="98" data-suffix="%">0</div>
+        <div class="stat-label">Tingkat Kepuasan</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" data-prefix="&lt;" data-target="2" data-suffix=" dtk">0</div>
+        <div class="stat-label">Waktu Pencarian Rata-rata</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" data-target="50" data-suffix="+">0</div>
+        <div class="stat-label">Integrasi Tersedia</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FEATURES SECTION ==================== -->
+<section class="section" id="fitur">
+  <div class="container">
+    <div class="text-center">
+      <span class="section-label">Fitur Unggulan</span>
+      <h2 class="section-title">Semua yang Kamu Butuhkan untuk<br>Dokumentasi Kelas Dunia</h2>
+      <p class="section-sub">
+        Dari pencarian cerdas hingga manajemen versi otomatis — NexaDocs hadir
+        dengan semua alat yang dibutuhkan tim modern yang bergerak cepat.
+      </p>
+    </div>
+    <div class="features-grid">
+      <!-- Smart Search -->
+      <div class="feature-card reveal">
+        <div class="feature-icon">🔍</div>
+        <div class="feature-name">Smart Search</div>
+        <p class="feature-desc">
+          Pencarian instan yang menyoroti kata kunci relevan di seluruh konten.
+          Temukan artikel yang tepat dalam milidetik, bukan menit.
+        </p>
+      </div>
+      <!-- Database View -->
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon">📊</div>
+        <div class="feature-name">Database View</div>
+        <p class="feature-desc">
+          Kelola ratusan artikel seperti spreadsheet dengan kolom filter dan
+          sorting yang fleksibel. Produktivitas tim meningkat secara signifikan.
+        </p>
+      </div>
+      <!-- Version Control -->
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon">🔀</div>
+        <div class="feature-name">Version Control</div>
+        <p class="feature-desc">
+          Lacak setiap perubahan artikel secara otomatis. Bandingkan revisi,
+          kembalikan versi lama, dan pantau siapa mengubah apa kapan.
+        </p>
+      </div>
+      <!-- Multi-bahasa -->
+      <div class="feature-card reveal">
+        <div class="feature-icon">🌐</div>
+        <div class="feature-name">Multi-bahasa</div>
+        <p class="feature-desc">
+          Publikasikan dokumentasi dalam Bahasa Indonesia dan English secara
+          bersamaan. Cocok untuk tim dan pengguna lintas negara.
+        </p>
+      </div>
+      <!-- Analytics -->
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon">📈</div>
+        <div class="feature-name">Analytics Mendalam</div>
+        <p class="feature-desc">
+          Pantau jumlah views, rata-rata waktu baca, dan rating per artikel.
+          Ketahui konten mana yang benar-benar membantu pengguna Anda.
+        </p>
+      </div>
+      <!-- API Access -->
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-name">API Access</div>
+        <p class="feature-desc">
+          Embed dokumentasi langsung ke aplikasi via REST API. Dukung webhooks
+          dan headless CMS untuk integrasi yang fleksibel tanpa batas.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== DATABASE VIEW SHOWCASE ==================== -->
+<section class="section db-showcase" id="docs">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:40px;">
+      <span class="section-label">Database View</span>
+      <h2 class="section-title">Kelola Artikel Seperti Spreadsheet</h2>
+      <p class="section-sub">
+        Tampilan database interaktif memudahkan tim konten mengelola ratusan artikel,
+        melacak status, dan memantau performa — semua dalam satu layar terintegrasi.
+      </p>
+    </div>
+    <div class="db-mockup">
+      <!-- Toolbar -->
+      <div class="db-toolbar">
+        <div class="db-search-wrap">
+          <span class="db-search-icon">🔍</span>
+          <input
+            class="db-search"
+            type="text"
+            placeholder="Cari artikel..."
+            id="dbSearchInput"
+            oninput="filterDbTable()"
+          />
+        </div>
+        <select class="db-filter-select" id="dbStatusFilter" onchange="filterDbTable()">
+          <option value="">Semua Status</option>
+          <option value="Published">Published</option>
+          <option value="Draft">Draft</option>
+          <option value="Review">Review</option>
+        </select>
+        <button class="db-add-btn" onclick="showAddToast()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Tambah Artikel
+        </button>
+      </div>
+      <!-- Table -->
+      <div class="db-table-wrap">
+        <table class="db-table">
+          <thead>
+            <tr>
+              <th style="width:40px;"></th>
+              <th>Judul Artikel</th>
+              <th>Kategori</th>
+              <th>Status</th>
+              <th>Terakhir Diupdate</th>
+              <th>Views</th>
+              <th>Rating</th>
+            </tr>
+          </thead>
+          <tbody id="dbBody">
+            <tr data-title="panduan instalasi sdk" data-status="Published">
+              <td><span class="db-check" onclick="toggleCheck(this)"></span></td>
+              <td><span class="article-title-cell">Panduan Instalasi SDK</span></td>
+              <td><span class="badge badge-blue">API Reference</span></td>
+              <td><span class="status-badge status-published"><span class="status-dot"></span>Published</span></td>
+              <td class="date-cell">12 Jun 2026</td>
+              <td class="views-cell">4.521</td>
+              <td class="rating-cell">⭐ 4.9</td>
+            </tr>
+            <tr data-title="cara setup webhook" data-status="Published">
+              <td><span class="db-check" onclick="toggleCheck(this)"></span></td>
+              <td><span class="article-title-cell">Cara Setup Webhook</span></td>
+              <td><span class="badge badge-purple">Integrasi</span></td>
+              <td><span class="status-badge status-published"><span class="status-dot"></span>Published</span></td>
+              <td class="date-cell">10 Jun 2026</td>
+              <td class="views-cell">2.318</td>
+              <td class="rating-cell">⭐ 4.7</td>
+            </tr>
+            <tr data-title="autentikasi oauth 2.0" data-status="Review">
+              <td><span class="db-check" onclick="toggleCheck(this)"></span></td>
+              <td><span class="article-title-cell">Autentikasi OAuth 2.0</span></td>
+              <td><span class="badge badge-blue">API Reference</span></td>
+              <td><span class="status-badge status-review"><span class="status-dot"></span>Review</span></td>
+              <td class="date-cell">8 Jun 2026</td>
+              <td class="views-cell">1.205</td>
+              <td class="rating-cell">⭐ 4.5</td>
+            </tr>
+            <tr data-title="mengelola tim dan akses" data-status="Published">
+              <td><span class="db-check" onclick="toggleCheck(this)"></span></td>
+              <td><span class="article-title-cell">Mengelola Tim &amp; Akses</span></td>
+              <td><span class="badge badge-teal">Getting Started</span></td>
+              <td><span class="status-badge status-published"><span class="status-dot"></span>Published</span></td>
+              <td class="date-cell">5 Jun 2026</td>
+              <td class="views-cell">3.890</td>
+              <td class="rating-cell">⭐ 4.8</td>
+            </tr>
+            <tr data-title="ekspor data ke csv" data-status="Draft">
+              <td><span class="db-check" onclick="toggleCheck(this)"></span></td>
+              <td><span class="article-title-cell">Ekspor Data ke CSV</span></td>
+              <td><span class="badge badge-orange">Fitur Pro</span></td>
+              <td><span class="status-badge status-draft"><span class="status-dot"></span>Draft</span></td>
+              <td class="date-cell">3 Jun 2026</td>
+              <td class="views-cell">0</td>
+              <td class="rating-cell" style="color:var(--text3);">—</td>
+            </tr>
+            <tr data-title="troubleshooting umum" data-status="Published">
+              <td><span class="db-check" onclick="toggleCheck(this)"></span></td>
+              <td><span class="article-title-cell">Troubleshooting Umum</span></td>
+              <td><span class="badge badge-teal">Getting Started</span></td>
+              <td><span class="status-badge status-published"><span class="status-dot"></span>Published</span></td>
+              <td class="date-cell">1 Jun 2026</td>
+              <td class="views-cell">6.742</td>
+              <td class="rating-cell">⭐ 4.6</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Add Article Toast -->
+    <div class="toast" id="addToast">✓ Form tambah artikel berhasil dibuka</div>
+  </div>
+</section>
+
+<!-- ==================== PRICING ==================== -->
+<section class="section" id="harga">
+  <div class="container">
+    <div class="text-center">
+      <span class="section-label">Harga</span>
+      <h2 class="section-title">Pilih Plan yang Tepat untuk Timmu</h2>
+      <p class="section-sub">
+        Mulai gratis, upgrade kapan saja sesuai kebutuhan. Semua plan dilengkapi
+        dukungan onboarding dan dokumentasi lengkap tanpa biaya tambahan.
+      </p>
+    </div>
+
+    <!-- Toggle Bulanan / Tahunan -->
+    <div class="pricing-toggle-wrap">
+      <span class="pricing-toggle-label active" id="labelMonthly">Bulanan</span>
+      <div class="toggle-switch" id="pricingToggle" onclick="togglePricing()" role="switch" aria-checked="false" tabindex="0">
+        <div class="toggle-switch-dot"></div>
+      </div>
+      <span class="pricing-toggle-label" id="labelYearly">Tahunan</span>
+      <span class="savings-badge" id="savingsBadge">Hemat 20%</span>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- Starter -->
+      <div class="pricing-card">
+        <div class="pricing-tier">Starter</div>
+        <span class="pricing-amount">Gratis</span>
+        <p class="pricing-sub">Sempurna untuk individu dan tim kecil yang baru mulai membangun dokumentasi.</p>
+        <hr class="pricing-divider" />
+        <ul class="pricing-features">
+          <li class="pricing-feature"><span class="pricing-check">✓</span> Hingga 5 artikel aktif</li>
+          <li class="pricing-feature"><span class="pricing-check">✓</span> 1 workspace tim</li>
+          <li class="pricing-feature"><span class="pricing-check">✓</span> Pencarian dasar</li>
+          <li class="pricing-feature"><span class="pricing-check">✓</span> Editor teks kaya (rich text)</li>
+          <li class="pricing-feature"><span class="pricing-check">✓</span> SSL &amp; hosting gratis</li>
+        </ul>
+        <a href="#" class="btn btn-outline pricing-btn">Mulai Gratis</a>
+      </div>
+
+      <!-- Pro (Popular) -->
+      <div class="pricing-card popular">
+        <div class="popular-badge">⭐ Paling Populer</div>
+        <div class="pricing-tier">Pro</div>
+        <span class="pricing-amount" id="proPrice">Rp 299.000</span>
+        <p class="pricing-sub" id="proSub">/bulan, tagihan bulanan</p>
+        <hr class="pricing-divider" />
+        <ul class="pricing-features">
+          <li class="pricing-feature"><span class="pricing-check">✓</span> Artikel tidak terbatas</li>
+          <li class="pricing-feature"><span class="pricing-check">✓</span> Analytics per artikel</li>
+          <li class="pricing-feature"><span class="pricing-check">✓</span> API &amp; webhook access</li>
+          <li class="pricing-feature"><span class="pricing-check">✓</span> Custom domain sendiri</li>
+          <li class="pricing-feature"><span class="pricing-check">✓</span> Database View &amp; filter</li>
+          <li class="pricing-feature"><span class="pricing-check">✓</span> Version control artikel</li>
+        </ul>
+        <a href="#" class="btn btn-primary pricing-btn">Mulai Pro</a>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="pricing-card">
+        <div class="pricing-tier">Enterprise</div>
+        <span class="pricing-amount">Custom</span>
+        <p class="pricing-sub">Hubungi tim kami untuk kebutuhan skala besar, keamanan tinggi, dan compliance.</p>
+        <hr class="pricing-divider" />
+        <ul class="pricing-features">
+          <li class="pricing-feature"><span class="pricing-check">✓</span> Semua fitur Pro</li>
+          <li class="pricing-feature"><span class="pricing-check">✓</span> SSO &amp; SAML 2.0</li>
+          <li class="pricing-feature"><span class="pricing-check">✓</span> SLA 99.9% uptime</li>
+          <li class="pricing-feature"><span class="pricing-check">✓</span> Dedicated support manager</li>
+          <li class="pricing-feature"><span class="pricing-check">✓</span> Opsi on-premise</li>
+          <li class="pricing-feature"><span class="pricing-check">✓</span> Audit log lengkap</li>
+        </ul>
+        <a href="#" class="btn btn-outline pricing-btn">Hubungi Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== TESTIMONIALS ==================== -->
+<section class="section" style="background:var(--bg2);">
+  <div class="container">
+    <div class="text-center">
+      <span class="section-label">Testimoni</span>
+      <h2 class="section-title">Dipercaya Tim di Seluruh Indonesia</h2>
+      <p class="section-sub">
+        Dari startup teknologi hingga korporat besar — NexaDocs membantu ratusan
+        tim membangun dokumentasi yang benar-benar berguna dan dicintai.
+      </p>
+    </div>
+    <div class="testimonials-grid">
+      <!-- Testimoni 1 -->
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-quote">
+          "NexaDocs mengubah cara tim kami berbagi pengetahuan. Artikel mudah dibuat,
+          dicari, dan selalu up-to-date. Onboarding anggota baru kini hanya butuh
+          setengah waktu yang biasanya."
+        </p>
+        <div class="testimonial-author">
+          <div class="avatar av-teal">RS</div>
+          <div>
+            <div class="author-name">Rini Setiawati</div>
+            <div class="author-role">CTO, PT Mandiri Digital</div>
+          </div>
+        </div>
+      </div>
+      <!-- Testimoni 2 -->
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-quote">
+          "Database View adalah game-changer. Kami bisa kelola 500+ artikel seperti
+          spreadsheet tanpa kehilangan struktur. Tim konten kami 3x lebih produktif
+          sejak menggunakan NexaDocs."
+        </p>
+        <div class="testimonial-author">
+          <div class="avatar av-indigo">BA</div>
+          <div>
+            <div class="author-name">Budi Ariyanto</div>
+            <div class="author-role">Founder, Kreasi Studio</div>
+          </div>
+        </div>
+      </div>
+      <!-- Testimoni 3 -->
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-quote">
+          "Integrasi API-nya luar biasa. Dokumentasi kami kini embedded langsung
+          di dalam aplikasi tanpa effort tambahan. Developer tim sangat senang
+          dengan pengalaman developer-nya."
+        </p>
+        <div class="testimonial-author">
+          <div class="avatar av-orange">DH</div>
+          <div>
+            <div class="author-name">Dewi Hartono</div>
+            <div class="author-role">Head of Product, Nusatech</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== INTEGRATIONS ==================== -->
+<section class="section" id="blog">
+  <div class="container text-center">
+    <span class="section-label">Integrasi</span>
+    <h2 class="section-title">Terhubung dengan Alat yang Sudah Kamu Gunakan</h2>
+    <p class="section-sub" style="margin:0 auto 44px;">
+      NexaDocs terintegrasi mulus dengan 50+ platform populer yang digunakan
+      tim pengembangan dan produk modern di seluruh Indonesia.
+    </p>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;">
+      <div class="integration-pill"><span>💬</span> Slack</div>
+      <div class="integration-pill"><span>📋</span> Notion</div>
+      <div class="integration-pill"><span>🐙</span> GitHub</div>
+      <div class="integration-pill"><span>🔧</span> Jira</div>
+      <div class="integration-pill"><span>📨</span> Intercom</div>
+      <div class="integration-pill"><span>🔄</span> Zapier</div>
+      <div class="integration-pill"><span>☁️</span> Google Drive</div>
+      <div class="integration-pill"><span>📊</span> Confluence</div>
+      <div class="integration-pill"><span>🚀</span> Linear</div>
+      <div class="integration-pill"><span>🤖</span> Zendesk</div>
+      <div class="integration-pill"><span>🗺️</span> GitLab</div>
+      <div class="integration-pill"><span>📬</span> Hubspot</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CTA SECTION ==================== -->
+<section class="cta-section">
+  <div class="container">
+    <h2 class="cta-title">Siap Membuat Dokumentasi<br>yang Dicintai Tim?</h2>
+    <p class="cta-sub">
+      Bergabunglah dengan ribuan tim yang sudah menggunakan NexaDocs untuk
+      membangun knowledge base yang hidup, terstruktur, dan selalu relevan.
+    </p>
+    <div class="cta-buttons">
+      <a href="#" class="btn btn-white">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="13 17 18 12 13 7"/>
+          <polyline points="6 17 11 12 6 7"/>
+        </svg>
+        Mulai Gratis — Tanpa Kartu Kredit
+      </a>
+      <a href="#" class="btn btn-outline-white">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        Jadwalkan Demo
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <!-- Brand -->
+      <div>
+        <div class="footer-logo">
+          <div class="nav-logo-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+          </div>
+          NexaDocs
+        </div>
+        <p class="footer-tagline">
+          Platform knowledge base modern untuk tim yang bergerak cepat.
+          Dokumentasi yang hidup, terstruktur, dan selalu dapat ditemukan.
+        </p>
+      </div>
+      <!-- Produk -->
+      <div>
+        <div class="footer-col-title">Produk</div>
+        <div class="footer-links">
+          <a href="#">Fitur Unggulan</a>
+          <a href="#">Harga &amp; Plan</a>
+          <a href="#">Changelog</a>
+          <a href="#">Roadmap Produk</a>
+          <a href="#">Status Sistem</a>
+        </div>
+      </div>
+      <!-- Sumber -->
+      <div>
+        <div class="footer-col-title">Sumber</div>
+        <div class="footer-links">
+          <a href="#">Dokumentasi</a>
+          <a href="#">Blog &amp; Artikel</a>
+          <a href="#">API Docs</a>
+          <a href="#">Panduan Migrasi</a>
+          <a href="#">Komunitas</a>
+        </div>
+      </div>
+      <!-- Perusahaan -->
+      <div>
+        <div class="footer-col-title">Perusahaan</div>
+        <div class="footer-links">
+          <a href="#">Tentang Kami</a>
+          <a href="#">Karir</a>
+          <a href="#">Kebijakan Privasi</a>
+          <a href="#">Syarat Layanan</a>
+          <a href="#">Kontak</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">
+        &copy; <span id="footerYear"></span> NexaDocs. Seluruh hak cipta dilindungi undang-undang.
+      </span>
+      <div class="footer-bottom-links">
+        <a href="#">Privasi</a>
+        <a href="#">Ketentuan</a>
+        <a href="#">Cookie</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ==================== THEME TOGGLE ==================== */
+  (function () {
+    var THEME_KEY = 'nexadocs_theme';
+    var html = document.documentElement;
+    var btn = document.getElementById('themeBtn');
+    var icon = document.getElementById('themeIcon');
+
+    function applyTheme(theme) {
+      html.setAttribute('data-theme', theme);
+      icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+      localStorage.setItem(THEME_KEY, theme);
+    }
+
+    // Load saved theme on DOMContentLoaded
+    var saved = localStorage.getItem(THEME_KEY);
+    if (saved === 'dark') {
+      applyTheme('dark');
+    } else {
+      applyTheme('light');
+    }
+
+    btn.addEventListener('click', function () {
+      var current = html.getAttribute('data-theme');
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+  })();
+
+  /* ==================== NAVBAR SCROLL ==================== */
+  (function () {
+    var nav = document.getElementById('navbar');
+    window.addEventListener('scroll', function () {
+      nav.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+  })();
+
+  /* ==================== MOBILE NAV ==================== */
+  (function () {
+    var hamburger = document.getElementById('hamburger');
+    var mobileMenu = document.getElementById('mobileMenu');
+    var open = false;
+
+    hamburger.addEventListener('click', function () {
+      open = !open;
+      mobileMenu.classList.toggle('open', open);
+      hamburger.setAttribute('aria-expanded', String(open));
+    });
+
+    mobileMenu.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        open = false;
+        mobileMenu.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      });
+    });
+  })();
+
+  /* ==================== SIDEBAR TREE EXPAND/COLLAPSE ==================== */
+  function toggleTree(itemId, subId) {
+    var item = document.getElementById(itemId);
+    var sub = document.getElementById(subId);
+    if (!item || !sub) return;
+    var isOpen = item.classList.toggle('open');
+    sub.classList.toggle('open', isOpen);
+  }
+
+  /* ==================== COPY BUTTON (mockup code block) ==================== */
+  function copyMockupCode(btn) {
+    var pre = btn.parentElement.querySelector('pre');
+    var text = pre ? pre.textContent : '';
+
+    var originalHTML = btn.innerHTML;
+
+    function markCopied() {
+      btn.textContent = '✓ Disalin!';
+      btn.style.color = 'var(--accent)';
+      setTimeout(function () {
+        btn.innerHTML = originalHTML;
+        btn.style.color = '';
+      }, 2000);
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(markCopied).catch(markCopied);
+    } else {
+      // Fallback for browsers without Clipboard API
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      markCopied();
+    }
+  }
+
+  /* ==================== COUNTER ANIMATION (IntersectionObserver) ==================== */
+  (function () {
+    var counters = document.querySelectorAll('.stat-number[data-target]');
+    var triggered = false;
+
+    function easeOutQuart(t) {
+      return 1 - Math.pow(1 - t, 4);
+    }
+
+    function animateAll() {
+      counters.forEach(function (el) {
+        var target = parseInt(el.getAttribute('data-target'), 10);
+        var prefix = el.getAttribute('data-prefix') || '';
+        var suffix = el.getAttribute('data-suffix') || '';
+        var duration = 1500;
+        var startTime = null;
+
+        function step(ts) {
+          if (!startTime) startTime = ts;
+          var progress = Math.min((ts - startTime) / duration, 1);
+          var eased = easeOutQuart(progress);
+          var current = Math.round(eased * target);
+          el.textContent = prefix + current.toLocaleString('id-ID') + suffix;
+          if (progress < 1) {
+            requestAnimationFrame(step);
+          } else {
+            el.textContent = prefix + target.toLocaleString('id-ID') + suffix;
+          }
+        }
+        requestAnimationFrame(step);
+      });
+    }
+
+    if ('IntersectionObserver' in window) {
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting && !triggered) {
+            triggered = true;
+            animateAll();
+            obs.disconnect();
+          }
+        });
+      }, { threshold: 0.3 });
+
+      var bar = document.getElementById('statsBar');
+      if (bar) obs.observe(bar);
+    } else {
+      // Fallback: run immediately
+      animateAll();
+    }
+  })();
+
+  /* ==================== PRICING TOGGLE ==================== */
+  (function () {
+    var isYearly = false;
+
+    window.togglePricing = function () {
+      isYearly = !isYearly;
+
+      var toggle = document.getElementById('pricingToggle');
+      var proPrice = document.getElementById('proPrice');
+      var proSub = document.getElementById('proSub');
+      var labelMonthly = document.getElementById('labelMonthly');
+      var labelYearly = document.getElementById('labelYearly');
+      var savingsBadge = document.getElementById('savingsBadge');
+
+      toggle.classList.toggle('yearly', isYearly);
+      toggle.setAttribute('aria-checked', String(isYearly));
+
+      if (isYearly) {
+        proPrice.textContent = 'Rp 239.000';
+        proSub.textContent = '/bulan, tagihan tahunan (hemat 20%)';
+        labelMonthly.classList.remove('active');
+        labelYearly.classList.add('active');
+        savingsBadge.classList.add('visible');
+      } else {
+        proPrice.textContent = 'Rp 299.000';
+        proSub.textContent = '/bulan, tagihan bulanan';
+        labelMonthly.classList.add('active');
+        labelYearly.classList.remove('active');
+        savingsBadge.classList.remove('visible');
+      }
+    };
+
+    // Keyboard support for toggle switch
+    var pricingToggle = document.getElementById('pricingToggle');
+    if (pricingToggle) {
+      pricingToggle.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          window.togglePricing();
+        }
+      });
+    }
+  })();
+
+  /* ==================== DB TABLE: CHECKBOX ==================== */
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+  }
+
+  /* ==================== DB TABLE: SEARCH & FILTER ==================== */
+  function filterDbTable() {
+    var searchVal = (document.getElementById('dbSearchInput').value || '').toLowerCase().trim();
+    var statusVal = (document.getElementById('dbStatusFilter').value || '').toLowerCase();
+    var rows = document.querySelectorAll('#dbBody tr');
+
+    rows.forEach(function (row) {
+      var title = (row.getAttribute('data-title') || '').toLowerCase();
+      var status = (row.getAttribute('data-status') || '').toLowerCase();
+      var matchSearch = !searchVal || title.includes(searchVal);
+      var matchStatus = !statusVal || status === statusVal;
+      row.style.display = (matchSearch && matchStatus) ? '' : 'none';
+    });
+  }
+
+  /* ==================== DB TABLE: ADD TOAST ==================== */
+  function showAddToast() {
+    var toast = document.getElementById('addToast');
+    toast.classList.add('show');
+    toast.style.opacity = '1';
+    setTimeout(function () {
+      toast.style.opacity = '0';
+      toast.style.transition = 'opacity 0.4s ease';
+      setTimeout(function () {
+        toast.classList.remove('show');
+        toast.style.opacity = '';
+        toast.style.transition = '';
+      }, 400);
+    }, 2200);
+  }
+
+  /* ==================== FOOTER YEAR ==================== */
+  (function () {
+    var el = document.getElementById('footerYear');
+    if (el) el.textContent = new Date().getFullYear();
+  })();
+</script>
+</body>
+</html>
