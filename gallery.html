@@ -293,16 +293,13 @@
       height: 180px; overflow: hidden; position: relative;
       background: var(--border); flex-shrink: 0;
     }
-    .card-preview iframe {
-      width: 200%; height: 200%;
-      transform: scale(0.5); transform-origin: top left;
-      border: none; pointer-events: none; display: block;
-      will-change: auto;
+    .card-preview img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: top center;
+      display: block; border: none;
+      transition: transform 0.3s ease;
     }
-    /* Freeze iframes during grid column switch to prevent reflow lag */
-    .grid.resizing .card-preview iframe {
-      visibility: hidden;
-    }
+    .card:hover .card-preview img { transform: scale(1.03); }
     .card-shimmer {
       position: absolute; inset: 0; z-index: 2;
       background: linear-gradient(90deg, var(--border) 25%, var(--border2) 50%, var(--border) 75%);
@@ -801,11 +798,14 @@ function createCard(t) {
 
   const tagsHtml = t.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
 
+  const thumb = `thumbnails/${t.path.split('/').slice(0,2).join('/').replace('templates/','').split('/')[0]}.png`;
   card.innerHTML = `
     <div class="card-preview">
       <div class="card-shimmer"></div>
       <span class="card-num-badge">// ${pad(t.n)}</span>
-      <iframe data-src="${t.path}" title="${t.title}" sandbox="allow-scripts allow-same-origin"></iframe>
+      <img src="${thumb}" alt="${t.title}" loading="lazy" decoding="async"
+           onload="this.closest('.card-preview').classList.add('loaded')"
+           onerror="this.closest('.card-preview').classList.add('loaded');this.style.display='none'">
     </div>
     <div class="card-body">
       <div class="card-num">// ${pad(t.n)}</div>
@@ -824,46 +824,7 @@ function createCard(t) {
 // Inject all cards before empty state
 templates.forEach(t => grid.insertBefore(createCard(t), emptyState));
 
-/* ============================================================
-   LAZY LOAD IFRAMES — throttled IntersectionObserver
-   Only load MAX 3 iframes at once to prevent lag
-   ============================================================ */
-let loadingCount = 0;
-const MAX_CONCURRENT = 3;
-const pendingQueue = [];
-
-function loadNextPending() {
-  while (loadingCount < MAX_CONCURRENT && pendingQueue.length > 0) {
-    const preview = pendingQueue.shift();
-    const iframe  = preview.querySelector('iframe[data-src]');
-    if (!iframe) continue;
-    loadingCount++;
-    iframe.src = iframe.dataset.src;
-    delete iframe.dataset.src;
-    iframe.addEventListener('load', () => {
-      preview.classList.add('loaded');
-      loadingCount--;
-      loadNextPending();
-    }, { once: true });
-    iframe.addEventListener('error', () => {
-      loadingCount--;
-      loadNextPending();
-    }, { once: true });
-  }
-}
-
-const iframeObs = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (!entry.isIntersecting) return;
-    const preview = entry.target;
-    if (!preview.querySelector('iframe[data-src]')) return;
-    iframeObs.unobserve(preview);
-    pendingQueue.push(preview);
-    loadNextPending();
-  });
-}, { rootMargin: '300px' });
-
-document.querySelectorAll('.card-preview').forEach(p => iframeObs.observe(p));
+/* img lazy load ditangani browser native via loading="lazy" */
 
 /* ============================================================
    GRID SWITCHER
@@ -871,16 +832,10 @@ document.querySelectorAll('.card-preview').forEach(p => iframeObs.observe(p));
 const gridEl    = document.getElementById('grid');
 const gridBtns  = document.querySelectorAll('.grid-btn');
 
-let gridResizeTimer = null;
 function setGrid(cols) {
-  // Hide all loaded iframes during reflow to prevent lag
-  gridEl.classList.add('resizing');
   gridEl.style.setProperty('--cols', cols);
   gridBtns.forEach(b => b.classList.toggle('active', +b.dataset.cols === cols));
   try { localStorage.setItem('jia-tpl-cols', cols); } catch(e) {}
-  // Restore after reflow settles
-  clearTimeout(gridResizeTimer);
-  gridResizeTimer = setTimeout(() => gridEl.classList.remove('resizing'), 150);
 }
 
 gridBtns.forEach(btn => {
