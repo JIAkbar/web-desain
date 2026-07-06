@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="DefiHub — dashboard DeFi terpadu: kelola portofolio kripto, swap token, liquidity pool, staking, dan yield farming dalam satu aplikasi.">
+<meta name="theme-color" content="#EAB308">
+<title>DefiHub — Dashboard DeFi: Portfolio, Swap, Liquidity & Staking</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   DefiHub — Design Tokens
+   ========================================================= */
+:root {
+  --font-sans: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+
+  /* Light mode (default) */
+  --bg: #F7F8FB;
+  --bg-elevated: #FFFFFF;
+  --bg-sunken: #EEF1F6;
+  --surface: #FFFFFF;
+  --surface-2: #F4F6FA;
+  --border: #E2E6EE;
+  --border-strong: #CBD2DE;
+  --text: #0E1420;
+  --text-muted: #5A6474;
+  --text-faint: #8A93A3;
+
+  --accent: #B8860B;          /* gold — AA on white for text */
+  --accent-bright: #EAB308;   /* gold — decorative / large */
+  --accent-soft: #FDF6E0;
+  --accent-contrast: #1A1206;
+
+  --green: #0E9F6E;
+  --green-soft: #E3F6EE;
+  --red: #DC2626;
+  --red-soft: #FCE8E8;
+  --blue: #2563EB;
+  --purple: #7C3AED;
+
+  --pos: #0E9F6E;
+  --neg: #DC2626;
+
+  --shadow-sm: 0 1px 2px rgba(14,20,32,.06), 0 1px 3px rgba(14,20,32,.05);
+  --shadow-md: 0 4px 12px rgba(14,20,32,.08), 0 2px 4px rgba(14,20,32,.05);
+  --shadow-lg: 0 18px 44px rgba(14,20,32,.12), 0 6px 14px rgba(14,20,32,.07);
+  --glow: 0 0 0 1px rgba(234,179,8,.35), 0 8px 30px rgba(234,179,8,.18);
+
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 26px;
+
+  --nav-h: 66px;
+  --maxw: 1240px;
+}
+
+[data-theme="dark"] {
+  --bg: #0A0E17;
+  --bg-elevated: #111826;
+  --bg-sunken: #070A11;
+  --surface: #121A28;
+  --surface-2: #182234;
+  --border: #223048;
+  --border-strong: #2E3E5C;
+  --text: #EEF2F8;
+  --text-muted: #9AA7BC;
+  --text-faint: #6B778C;
+
+  --accent: #EAB308;
+  --accent-bright: #FACC15;
+  --accent-soft: #2A2410;
+  --accent-contrast: #0A0E17;
+
+  --green: #34D399;
+  --green-soft: #10261F;
+  --red: #F87171;
+  --red-soft: #2A1414;
+  --blue: #60A5FA;
+  --purple: #A78BFA;
+
+  --pos: #34D399;
+  --neg: #F87171;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+  --shadow-md: 0 6px 18px rgba(0,0,0,.45);
+  --shadow-lg: 0 22px 50px rgba(0,0,0,.55);
+  --glow: 0 0 0 1px rgba(234,179,8,.4), 0 8px 34px rgba(234,179,8,.22);
+}
+
+/* =========================================================
+   Base
+   ========================================================= */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  transition: background .3s ease, color .3s ease;
+}
+h1, h2, h3, h4 { line-height: 1.15; font-weight: 700; letter-spacing: -0.02em; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+img, svg { display: block; max-width: 100%; }
+ul { list-style: none; padding: 0; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.pos { color: var(--pos); }
+.neg { color: var(--neg); }
+
+:focus-visible {
+  outline: 3px solid var(--accent-bright);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 2.5rem);
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+.skip-link {
+  position: absolute; top: -60px; left: 12px; z-index: 200;
+  background: var(--accent-bright); color: var(--accent-contrast);
+  padding: .6rem 1rem; border-radius: 8px; font-weight: 600;
+  transition: top .2s ease;
+}
+.skip-link:focus { top: 12px; }
+
+/* =========================================================
+   Buttons & Badges
+   ========================================================= */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: .5rem; min-height: 44px; padding: .7rem 1.35rem;
+  border-radius: 999px; font-weight: 600; font-size: .95rem;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+  white-space: nowrap;
+}
+.btn:active { transform: translateY(1px) scale(.99); }
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent-bright), #D97706);
+  color: #1A1206; box-shadow: var(--glow);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(234,179,8,.5), 0 14px 36px rgba(234,179,8,.3); }
+.btn-ghost {
+  background: var(--surface); border: 1px solid var(--border-strong); color: var(--text);
+}
+.btn-ghost:hover { border-color: var(--accent); background: var(--accent-soft); }
+.btn-block { width: 100%; }
+.btn-sm { min-height: 38px; padding: .45rem 1rem; font-size: .85rem; }
+
+.badge {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-family: var(--font-mono); font-size: .72rem; font-weight: 600;
+  letter-spacing: .04em; text-transform: uppercase;
+  padding: .3rem .65rem; border-radius: 999px;
+  background: var(--accent-soft); color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.badge-live { background: var(--green-soft); color: var(--green); border-color: color-mix(in srgb, var(--green) 30%, transparent); }
+.badge-live .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 1.8s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity:1; transform: scale(1);} 50% { opacity:.4; transform: scale(.7);} }
+
+.eyebrow {
+  font-family: var(--font-mono); font-size: .78rem; font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--accent);
+}
+
+/* =========================================================
+   Navbar
+   ========================================================= */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  height: var(--nav-h);
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: saturate(180%) blur(16px);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  border-bottom: 1px solid transparent;
+  transition: border-color .3s ease, background .3s ease;
+}
+.nav.scrolled { border-bottom-color: var(--border); box-shadow: var(--shadow-sm); }
+.nav-inner {
+  height: 100%; display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem;
+}
+.brand { display: flex; align-items: center; gap: .6rem; font-weight: 700; font-size: 1.2rem; letter-spacing: -.03em; }
+.brand-logo {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent-bright), #B45309);
+  display: grid; place-items: center; color: #1A1206; font-weight: 700;
+  box-shadow: var(--glow); flex-shrink: 0;
+}
+.brand-logo svg { width: 20px; height: 20px; }
+
+.nav-links { display: flex; align-items: center; gap: .3rem; }
+.nav-links a {
+  padding: .5rem .85rem; border-radius: 999px; font-size: .92rem; font-weight: 500;
+  color: var(--text-muted); transition: color .18s ease, background .18s ease;
+}
+.nav-links a:hover { color: var(--text); background: var(--surface-2); }
+.nav-actions { display: flex; align-items: center; gap: .5rem; }
+
+.icon-btn {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: grid; place-items: center; color: var(--text-muted);
+  border: 1px solid var(--border); background: var(--surface);
+  transition: color .18s, border-color .18s, background .18s;
+}
+.icon-btn:hover { color: var(--accent); border-color: var(--accent); }
+.icon-btn svg { width: 20px; height: 20px; }
+.theme-toggle .sun { display: none; }
+[data-theme="dark"] .theme-toggle .sun { display: block; }
+[data-theme="dark"] .theme-toggle .moon { display: none; }
+
+.hamburger { display: none; }
+
+/* Mobile drawer */
+.drawer {
+  position: fixed; inset: 0; z-index: 150; visibility: hidden;
+}
+.drawer-overlay {
+  position: absolute; inset: 0; background: rgba(6,10,17,.55);
+  opacity: 0; transition: opacity .25s ease;
+}
+.drawer-panel {
+  position: absolute; top: 0; right: 0; height: 100%; width: min(84vw, 340px);
+  background: var(--bg-elevated); border-left: 1px solid var(--border);
+  padding: 1.4rem; transform: translateX(100%); transition: transform .3s cubic-bezier(.4,0,.2,1);
+  display: flex; flex-direction: column; gap: .4rem; overflow-y: auto;
+}
+.drawer.open { visibility: visible; }
+.drawer.open .drawer-overlay { opacity: 1; }
+.drawer.open .drawer-panel { transform: translateX(0); }
+.drawer-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.drawer-panel a {
+  padding: .85rem 1rem; border-radius: 12px; font-weight: 500; color: var(--text);
+  transition: background .18s;
+}
+.drawer-panel a:hover { background: var(--surface-2); }
+.drawer-panel .btn { margin-top: .8rem; }
+
+/* =========================================================
+   Layout helpers
+   ========================================================= */
+section { position: relative; }
+.section-pad { padding-block: clamp(3.5rem, 8vw, 6.5rem); }
+.section-head { max-width: 640px; margin-bottom: clamp(2rem, 4vw, 3rem); }
+.section-head.center { margin-inline: auto; text-align: center; }
+.section-head h2 { font-size: clamp(1.7rem, 4vw, 2.6rem); margin: .7rem 0 .8rem; }
+.section-head p { color: var(--text-muted); font-size: clamp(1rem, 2vw, 1.1rem); }
+
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+}
+
+/* =========================================================
+   Hero
+   ========================================================= */
+.hero {
+  position: relative; overflow: hidden;
+  padding-top: clamp(2.5rem, 5vw, 4rem);
+  padding-bottom: clamp(3rem, 6vw, 5rem);
+  min-height: min(88dvh, 900px);
+  display: flex; align-items: center;
+}
+.hero::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background:
+    radial-gradient(60% 55% at 12% 8%, color-mix(in srgb, var(--accent-bright) 20%, transparent), transparent 60%),
+    radial-gradient(50% 50% at 92% 22%, color-mix(in srgb, var(--green) 16%, transparent), transparent 60%);
+}
+.hero-grid {
+  display: grid; grid-template-columns: 1.05fr 1fr;
+  gap: clamp(2rem, 5vw, 4rem); align-items: center;
+}
+.hero-copy h1 {
+  font-size: clamp(2.2rem, 5.6vw, 4rem); line-height: 1.05; margin: 1rem 0 1.1rem;
+}
+.hero-copy h1 .grad {
+  background: linear-gradient(120deg, var(--accent-bright), #F59E0B 50%, var(--green));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero-copy p.lead { font-size: clamp(1.05rem, 2.4vw, 1.28rem); color: var(--text-muted); max-width: 34ch; margin-bottom: 1.8rem; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: .8rem; margin-bottom: 1.6rem; }
+.hero-trust { display: flex; flex-wrap: wrap; gap: 1.2rem 1.8rem; align-items: center; color: var(--text-muted); font-size: .88rem; }
+.hero-trust .t { display: flex; align-items: center; gap: .45rem; }
+.hero-trust svg { width: 18px; height: 18px; color: var(--green); }
+
+/* Hero mockup: portfolio + swap */
+.mockup {
+  position: relative;
+  display: grid; gap: 1rem;
+}
+.mock-card {
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+  padding: 1.25rem;
+}
+.mock-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.mock-head .lbl { font-size: .8rem; color: var(--text-muted); font-weight: 500; }
+.balance { font-family: var(--font-mono); font-size: clamp(1.9rem, 5vw, 2.6rem); font-weight: 700; letter-spacing: -.02em; }
+.balance-sub { display: flex; gap: 1rem; align-items: center; margin-top: .35rem; font-family: var(--font-mono); font-size: .85rem; color: var(--text-muted); }
+.pnl-chip { display: inline-flex; align-items: center; gap: .3rem; padding: .2rem .55rem; border-radius: 999px; font-weight: 600; font-size: .8rem; }
+.pnl-chip.up { background: var(--green-soft); color: var(--green); }
+.pnl-chip.down { background: var(--red-soft); color: var(--red); }
+
+/* Allocation donut + legend */
+.alloc { display: grid; grid-template-columns: auto 1fr; gap: 1.1rem; align-items: center; margin-top: 1.1rem; }
+.donut { width: 108px; height: 108px; position: relative; }
+.donut svg { transform: rotate(-90deg); }
+.donut .center { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
+.donut .center b { font-family: var(--font-mono); font-size: 1rem; }
+.donut .center span { font-size: .68rem; color: var(--text-muted); display: block; }
+.legend { display: grid; gap: .5rem; }
+.legend li { display: flex; align-items: center; gap: .55rem; font-size: .82rem; }
+.legend .sw { width: 11px; height: 11px; border-radius: 3px; flex-shrink: 0; }
+.legend .pct { margin-left: auto; font-family: var(--font-mono); color: var(--text-muted); }
+
+/* Mini swap in hero */
+.swap-mini .row {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: .7rem .85rem;
+}
+.swap-mini .row + .flip { margin: -.55rem auto; }
+.token-pill { display: inline-flex; align-items: center; gap: .5rem; font-weight: 600; font-size: .92rem; }
+.token-ic { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-size: .7rem; font-weight: 700; color: #fff; font-family: var(--font-mono); }
+.swap-mini .amt { font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; text-align: right; }
+.swap-mini .amt small { display: block; font-size: .68rem; color: var(--text-faint); font-weight: 400; }
+.flip-btn {
+  width: 38px; height: 38px; border-radius: 12px; z-index: 2;
+  background: var(--bg-elevated); border: 3px solid var(--bg-elevated);
+  box-shadow: var(--shadow-md); display: grid; place-items: center; color: var(--accent);
+  transition: transform .3s ease;
+}
+.flip-btn:hover { transform: rotate(180deg); background: var(--accent-soft); }
+.flip-btn svg { width: 18px; height: 18px; }
+
+/* Floating token chips (decor) */
+.float-chip {
+  position: absolute; z-index: 2; background: var(--bg-elevated);
+  border: 1px solid var(--border); box-shadow: var(--shadow-md);
+  border-radius: 999px; padding: .4rem .7rem; display: flex; align-items: center; gap: .45rem;
+  font-family: var(--font-mono); font-size: .78rem; font-weight: 600;
+  animation: bob 5s ease-in-out infinite;
+}
+.float-chip.a { top: -14px; left: -10px; }
+.float-chip.b { bottom: 12%; right: -18px; animation-delay: 1.5s; }
+@keyframes bob { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-9px);} }
+
+/* Token icon colors */
+.ic-btc { background: linear-gradient(135deg,#F7931A,#B45309); }
+.ic-eth { background: linear-gradient(135deg,#627EEA,#3C4F9E); }
+.ic-bnb { background: linear-gradient(135deg,#F0B90B,#B78700); color:#1A1206; }
+.ic-usdt { background: linear-gradient(135deg,#26A17B,#0E7A57); }
+.ic-sol { background: linear-gradient(135deg,#9945FF,#14F195); }
+.ic-usdc { background: linear-gradient(135deg,#2775CA,#1B5591); }
+
+/* =========================================================
+   Marquee ticker
+   ========================================================= */
+.ticker {
+  border-block: 1px solid var(--border); background: var(--bg-elevated);
+  overflow: hidden; padding-block: .75rem;
+}
+.ticker-track { display: flex; gap: 2.5rem; width: max-content; animation: scroll 34s linear infinite; }
+.ticker:hover .ticker-track { animation-play-state: paused; }
+@keyframes scroll { to { transform: translateX(-50%); } }
+.tick { display: inline-flex; align-items: center; gap: .55rem; font-family: var(--font-mono); font-size: .88rem; white-space: nowrap; }
+.tick b { font-weight: 600; }
+.tick .chg { font-size: .8rem; }
+
+/* =========================================================
+   Features grid
+   ========================================================= */
+.features-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.1rem;
+}
+.feature {
+  padding: 1.6rem; border-radius: var(--radius-lg);
+  background: var(--surface); border: 1px solid var(--border);
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+.feature:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--accent); }
+.feature .fic {
+  width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center;
+  background: var(--accent-soft); color: var(--accent); margin-bottom: 1rem;
+}
+.feature .fic svg { width: 24px; height: 24px; }
+.feature h3 { font-size: 1.15rem; margin-bottom: .5rem; }
+.feature p { color: var(--text-muted); font-size: .93rem; }
+
+/* =========================================================
+   Dashboard workspace (swap + holdings + chart)
+   ========================================================= */
+.workspace {
+  display: grid; grid-template-columns: 1.15fr 1.3fr; gap: 1.25rem; align-items: start;
+}
+.panel { padding: 1.3rem; }
+.panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: .5rem; }
+.panel-head h3 { font-size: 1.15rem; }
+.panel-head .sub { font-size: .82rem; color: var(--text-muted); }
+
+/* Swap widget (functional) */
+.swap-box { display: flex; flex-direction: column; gap: .35rem; }
+.swap-field {
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: .85rem .95rem;
+  transition: border-color .18s;
+}
+.swap-field:focus-within { border-color: var(--accent); }
+.swap-field .fhead { display: flex; justify-content: space-between; font-size: .78rem; color: var(--text-muted); margin-bottom: .5rem; }
+.swap-field .fbody { display: flex; align-items: center; gap: .6rem; }
+.swap-field input {
+  flex: 1; min-width: 0; border: none; background: none; color: var(--text);
+  font-family: var(--font-mono); font-size: clamp(1.2rem, 3vw, 1.6rem); font-weight: 600;
+  outline: none; width: 100%;
+}
+.swap-field input::placeholder { color: var(--text-faint); }
+.token-select {
+  display: inline-flex; align-items: center; gap: .5rem; flex-shrink: 0;
+  background: var(--bg-elevated); border: 1px solid var(--border-strong);
+  border-radius: 999px; padding: .35rem .7rem .35rem .4rem; font-weight: 600; font-size: .92rem;
+  cursor: pointer; transition: border-color .18s;
+}
+.token-select:hover { border-color: var(--accent); }
+.token-select select {
+  border: none; background: none; font-family: inherit; font-weight: 600; font-size: .92rem;
+  color: var(--text); cursor: pointer; outline: none; -webkit-appearance: none; appearance: none;
+  padding-right: .3rem;
+}
+.token-select .caret { color: var(--text-muted); }
+.field-usd { font-size: .78rem; color: var(--text-faint); font-family: var(--font-mono); margin-top: .35rem; }
+.swap-flip { align-self: center; margin: -.2rem 0; }
+.swap-info {
+  margin-top: .85rem; padding: .8rem .95rem; border-radius: var(--radius);
+  background: var(--surface-2); border: 1px solid var(--border);
+  font-size: .82rem; color: var(--text-muted); display: grid; gap: .4rem;
+}
+.swap-info .r { display: flex; justify-content: space-between; }
+.swap-info .r b { color: var(--text); font-family: var(--font-mono); font-weight: 600; }
+
+/* Holdings table */
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table.holdings { width: 100%; border-collapse: collapse; min-width: 460px; }
+table.holdings th, table.holdings td { padding: .7rem .6rem; text-align: right; }
+table.holdings th { font-size: .74rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-faint); font-weight: 600; border-bottom: 1px solid var(--border); }
+table.holdings th:first-child, table.holdings td:first-child { text-align: left; }
+table.holdings td { border-bottom: 1px solid var(--border); font-family: var(--font-mono); font-size: .88rem; }
+table.holdings tr:last-child td { border-bottom: none; }
+table.holdings tbody tr { transition: background .15s; }
+table.holdings tbody tr:hover { background: var(--surface-2); }
+.asset-cell { display: flex; align-items: center; gap: .6rem; }
+.asset-cell .nm { font-family: var(--font-sans); }
+.asset-cell .nm b { display: block; font-size: .9rem; }
+.asset-cell .nm span { font-size: .74rem; color: var(--text-muted); font-family: var(--font-mono); }
+
+/* Live chart */
+.chart-panel { grid-column: 1 / -1; padding: 1.3rem; }
+.chart-legend { display: flex; align-items: baseline; gap: .8rem; flex-wrap: wrap; }
+.chart-legend .price { font-family: var(--font-mono); font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 700; }
+.chart-frame { position: relative; margin-top: 1rem; }
+.chart-frame svg { width: 100%; height: auto; display: block; }
+.chart-range { display: flex; gap: .35rem; margin-top: .8rem; flex-wrap: wrap; }
+.chart-range button {
+  font-family: var(--font-mono); font-size: .78rem; padding: .35rem .8rem;
+  border-radius: 999px; border: 1px solid var(--border); color: var(--text-muted);
+  min-height: 34px; transition: all .15s;
+}
+.chart-range button.active, .chart-range button:hover { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+
+/* =========================================================
+   Liquidity / Staking cards
+   ========================================================= */
+.pool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.1rem; }
+.pool {
+  padding: 1.4rem; border-radius: var(--radius-lg);
+  background: var(--surface); border: 1px solid var(--border);
+  transition: transform .2s, box-shadow .2s, border-color .2s;
+  position: relative; overflow: hidden;
+}
+.pool:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--accent); }
+.pool-pair { display: flex; align-items: center; gap: .7rem; margin-bottom: 1rem; }
+.pair-ics { display: flex; }
+.pair-ics .token-ic:nth-child(2) { margin-left: -10px; border: 2px solid var(--surface); }
+.pool-pair .pn b { display: block; font-size: 1.05rem; }
+.pool-pair .pn span { font-size: .76rem; color: var(--text-muted); }
+.apy-badge { margin-left: auto; text-align: right; }
+.apy-badge b { display: block; font-family: var(--font-mono); font-size: 1.5rem; font-weight: 700; color: var(--green); }
+.apy-badge span { font-size: .7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; }
+.pool-stats { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin: 1rem 0; }
+.pool-stats .ps { background: var(--surface-2); border-radius: var(--radius-sm); padding: .6rem .7rem; }
+.pool-stats .ps span { font-size: .72rem; color: var(--text-muted); display: block; }
+.pool-stats .ps b { font-family: var(--font-mono); font-size: .95rem; }
+.pool-bar { height: 6px; border-radius: 4px; background: var(--surface-2); overflow: hidden; margin-bottom: 1rem; }
+.pool-bar i { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--accent-bright), var(--green)); }
+
+/* =========================================================
+   Chains row
+   ========================================================= */
+.chains { display: flex; flex-wrap: wrap; gap: .8rem; justify-content: center; }
+.chain-pill {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .7rem 1.15rem; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--border);
+  font-weight: 600; font-size: .95rem; transition: transform .18s, border-color .18s;
+}
+.chain-pill:hover { transform: translateY(-3px); border-color: var(--accent); }
+.chain-ic { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-family: var(--font-mono); font-size: .68rem; font-weight: 700; }
+
+/* =========================================================
+   Security / trust
+   ========================================================= */
+.security { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+.sec-list { display: grid; gap: 1rem; }
+.sec-item { display: flex; gap: 1rem; align-items: flex-start; }
+.sec-item .sic { width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0; display: grid; place-items: center; background: var(--green-soft); color: var(--green); }
+.sec-item .sic svg { width: 22px; height: 22px; }
+.sec-item h4 { font-size: 1.05rem; margin-bottom: .25rem; }
+.sec-item p { font-size: .9rem; color: var(--text-muted); }
+.audit-card {
+  padding: clamp(1.6rem, 4vw, 2.4rem); border-radius: var(--radius-xl);
+  background: linear-gradient(160deg, var(--surface), var(--surface-2));
+  border: 1px solid var(--border); box-shadow: var(--shadow-md);
+}
+.audit-badges { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.4rem; }
+.audit-badge { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; text-align: center; }
+.audit-badge .g { font-family: var(--font-mono); font-size: 1.6rem; font-weight: 700; color: var(--accent); }
+.audit-badge span { font-size: .78rem; color: var(--text-muted); }
+
+/* =========================================================
+   Stats band
+   ========================================================= */
+.stats-band {
+  background: var(--bg-elevated); border-block: 1px solid var(--border);
+}
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; text-align: center; }
+.stat .num { font-family: var(--font-mono); font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 700; letter-spacing: -.02em; }
+.stat .num .grad { background: linear-gradient(120deg, var(--accent-bright), var(--green)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.stat .lbl { color: var(--text-muted); font-size: .9rem; margin-top: .35rem; }
+
+/* =========================================================
+   CTA
+   ========================================================= */
+.cta-wrap {
+  position: relative; overflow: hidden;
+  border-radius: var(--radius-xl); padding: clamp(2.5rem, 6vw, 4.5rem);
+  text-align: center; color: #F8F5EC;
+  background: linear-gradient(150deg, #1A130A, #2B2010 55%, #0B1712);
+  box-shadow: var(--shadow-lg);
+}
+.cta-wrap::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; opacity: .5;
+  background:
+    radial-gradient(45% 60% at 15% 15%, rgba(234,179,8,.4), transparent 60%),
+    radial-gradient(45% 55% at 88% 80%, rgba(16,185,129,.35), transparent 60%);
+}
+.cta-wrap > * { position: relative; z-index: 1; }
+.cta-wrap h2 { font-size: clamp(1.8rem, 5vw, 3rem); margin-bottom: .9rem; }
+.cta-wrap h2 .grad { background: linear-gradient(120deg, var(--accent-bright), var(--green)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.cta-wrap p { color: #C9C2B2; max-width: 46ch; margin: 0 auto 1.8rem; font-size: 1.08rem; }
+.cta-wrap .btn-ghost { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.24); color: #F8F5EC; }
+.cta-wrap .btn-ghost:hover { background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.4); }
+
+/* =========================================================
+   Footer
+   ========================================================= */
+.footer { background: var(--bg-elevated); border-top: 1px solid var(--border); padding-block: clamp(2.5rem, 5vw, 3.5rem) 2rem; }
+.footer-grid { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 2rem; }
+.footer .brand { margin-bottom: .9rem; }
+.footer p.desc { color: var(--text-muted); font-size: .9rem; max-width: 32ch; }
+.footer h5 { font-size: .82rem; text-transform: uppercase; letter-spacing: .08em; color: var(--text-faint); margin-bottom: 1rem; }
+.footer ul li { margin-bottom: .55rem; }
+.footer ul a { color: var(--text-muted); font-size: .92rem; transition: color .15s; }
+.footer ul a:hover { color: var(--accent); }
+.socials { display: flex; gap: .6rem; margin-top: 1rem; }
+.socials a { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; border: 1px solid var(--border); color: var(--text-muted); transition: all .18s; }
+.socials a:hover { color: var(--accent); border-color: var(--accent); }
+.socials svg { width: 18px; height: 18px; }
+.footer-bottom {
+  margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+  display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center;
+  color: var(--text-faint); font-size: .85rem;
+}
+.footer-bottom .risk { max-width: 62ch; font-size: .78rem; }
+
+/* =========================================================
+   Reveal animation
+   ========================================================= */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; }
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+@media (max-width: 980px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-copy { text-align: center; }
+  .hero-copy p.lead { margin-inline: auto; }
+  .hero-cta, .hero-trust { justify-content: center; }
+  .mockup { max-width: 480px; margin-inline: auto; }
+  .workspace { grid-template-columns: 1fr; }
+  .security { grid-template-columns: 1fr; }
+  .float-chip.b { right: 4px; }
+}
+@media (max-width: 760px) {
+  .nav-links, .nav-actions .btn { display: none; }
+  .hamburger { display: grid; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .footer-grid > :first-child { grid-column: 1 / -1; }
+}
+@media (max-width: 480px) {
+  .footer-grid { grid-template-columns: 1fr; }
+  .audit-badges { grid-template-columns: 1fr; }
+  .pool-stats { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Lewati ke konten utama</a>
+
+<!-- ================= NAV ================= -->
+<header class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#" class="brand" aria-label="DefiHub beranda">
+      <span class="brand-logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7l9 5 9-5-9-5z" fill="currentColor"/><path d="M3 12l9 5 9-5M3 17l9 5 9-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      DefiHub
+    </a>
+
+    <nav class="nav-links" aria-label="Navigasi utama">
+      <a href="#features">Fitur</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#pools">Pool &amp; Staking</a>
+      <a href="#chains">Jaringan</a>
+      <a href="#security">Keamanan</a>
+    </nav>
+
+    <div class="nav-actions">
+      <button class="icon-btn theme-toggle" id="themeToggle" aria-label="Ganti mode terang/gelap" aria-pressed="false">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.7"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      </button>
+      <a href="#cta" class="btn btn-primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M16 12h2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M3 9h13" stroke="currentColor" stroke-width="1.7"/></svg>
+        Hubungkan Wallet
+      </a>
+      <button class="icon-btn hamburger" id="hamburger" aria-label="Buka menu" aria-expanded="false" aria-controls="drawer">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ================= DRAWER ================= -->
+<div class="drawer" id="drawer">
+  <div class="drawer-overlay" data-close></div>
+  <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="Menu navigasi">
+    <div class="drawer-head">
+      <span class="brand"><span class="brand-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7l9 5 9-5-9-5z" fill="currentColor"/></svg></span>DefiHub</span>
+      <button class="icon-btn" data-close aria-label="Tutup menu">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <a href="#features" data-close>Fitur</a>
+    <a href="#dashboard" data-close>Dashboard</a>
+    <a href="#pools" data-close>Pool &amp; Staking</a>
+    <a href="#chains" data-close>Jaringan</a>
+    <a href="#security" data-close>Keamanan</a>
+    <a href="#cta" class="btn btn-primary" data-close>Hubungkan Wallet</a>
+  </div>
+</div>
+
+<main id="main">
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <span class="badge badge-live"><span class="dot" aria-hidden="true"></span>Mainnet Live · v3.2</span>
+      <h1>Satu dashboard untuk <span class="grad">seluruh dunia DeFi</span> Anda</h1>
+      <p class="lead">Kelola portofolio, swap token lintas rantai, sediakan likuiditas, dan staking untuk yield — semua non-custodial dalam satu aplikasi.</p>
+      <div class="hero-cta">
+        <a href="#cta" class="btn btn-primary">Hubungkan Wallet</a>
+        <a href="#dashboard" class="btn btn-ghost">Jelajahi Dashboard</a>
+      </div>
+      <div class="hero-trust">
+        <span class="t"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Non-custodial</span>
+        <span class="t"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Audit CertiK</span>
+        <span class="t"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>9 jaringan</span>
+      </div>
+    </div>
+
+    <!-- Hero mockup -->
+    <div class="mockup">
+      <div class="float-chip a"><span class="token-ic ic-btc" aria-hidden="true">₿</span>BTC <span class="pos">+2.4%</span></div>
+      <div class="float-chip b"><span class="token-ic ic-sol" aria-hidden="true">◎</span>SOL <span class="pos">+5.1%</span></div>
+
+      <!-- Portfolio card -->
+      <div class="mock-card">
+        <div class="mock-head">
+          <span class="lbl">Total Saldo Portofolio</span>
+          <span class="badge badge-live"><span class="dot" aria-hidden="true"></span>Live</span>
+        </div>
+        <div class="balance" id="heroBalance">$128.740,58</div>
+        <div class="balance-sub">
+          <span class="pnl-chip up" aria-label="Untung 24 jam">▲ +$3.412,80 (2,72%)</span>
+          <span class="mono" id="heroBalanceIdr">≈ Rp 2,08 M</span>
+        </div>
+
+        <!-- Allocation donut -->
+        <div class="alloc">
+          <div class="donut" role="img" aria-label="Alokasi aset: ETH 38%, BTC 31%, SOL 16%, USDT 15%">
+            <svg viewBox="0 0 42 42" width="108" height="108">
+              <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--surface-2)" stroke-width="6"></circle>
+              <circle cx="21" cy="21" r="15.9" fill="none" stroke="#627EEA" stroke-width="6" stroke-dasharray="38 62" stroke-dashoffset="0"></circle>
+              <circle cx="21" cy="21" r="15.9" fill="none" stroke="#F7931A" stroke-width="6" stroke-dasharray="31 69" stroke-dashoffset="-38"></circle>
+              <circle cx="21" cy="21" r="15.9" fill="none" stroke="#9945FF" stroke-width="6" stroke-dasharray="16 84" stroke-dashoffset="-69"></circle>
+              <circle cx="21" cy="21" r="15.9" fill="none" stroke="#26A17B" stroke-width="6" stroke-dasharray="15 85" stroke-dashoffset="-85"></circle>
+            </svg>
+            <div class="center"><b>4</b><span>aset</span></div>
+          </div>
+          <ul class="legend">
+            <li><span class="sw" style="background:#627EEA"></span>Ethereum <span class="pct">38%</span></li>
+            <li><span class="sw" style="background:#F7931A"></span>Bitcoin <span class="pct">31%</span></li>
+            <li><span class="sw" style="background:#9945FF"></span>Solana <span class="pct">16%</span></li>
+            <li><span class="sw" style="background:#26A17B"></span>Tether <span class="pct">15%</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Mini swap card -->
+      <div class="mock-card swap-mini">
+        <div class="mock-head"><span class="lbl">Swap Cepat</span><span class="badge">0,3% biaya</span></div>
+        <div class="row">
+          <span class="token-pill"><span class="token-ic ic-eth" aria-hidden="true">Ξ</span>ETH</span>
+          <span class="amt">1,50<small>≈ $5.760</small></span>
+        </div>
+        <button class="flip-btn flip" aria-label="Tukar arah (demo)">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 4v12M7 16l-3-3M7 16l3-3M17 20V8M17 8l-3 3M17 8l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="row">
+          <span class="token-pill"><span class="token-ic ic-usdc" aria-hidden="true">$</span>USDC</span>
+          <span class="amt">5.742,60<small>≈ $5.742,60</small></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TICKER ================= -->
+<div class="ticker" aria-label="Harga pasar langsung">
+  <div class="ticker-track" id="tickerTrack"></div>
+</div>
+
+<!-- ================= FEATURES ================= -->
+<section class="section-pad" id="features">
+  <div class="container">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Semua yang Anda butuhkan</span>
+      <h2>Toolkit DeFi lengkap dalam satu antarmuka</h2>
+      <p>Dari swap sekali klik hingga strategi yield tingkat lanjut — DefiHub menyatukan seluruh alur kerja on-chain Anda.</p>
+    </div>
+    <div class="features-grid">
+      <article class="feature reveal">
+        <div class="fic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M7 4v12M7 16l-3-3M7 16l3-3M17 20V8M17 8l-3 3M17 8l3 3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Swap Cerdas</h3>
+        <p>Rute agregat lintas 40+ DEX untuk harga terbaik dan slippage minimum di setiap transaksi.</p>
+      </article>
+      <article class="feature reveal">
+        <div class="fic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3z" stroke="currentColor" stroke-width="1.7"/><path d="M4 7v10c0 1.7 3.6 3 8 3s8-1.3 8-3V7M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" stroke="currentColor" stroke-width="1.7"/></svg></div>
+        <h3>Liquidity Pool</h3>
+        <p>Sediakan likuiditas ke pasangan populer dan kumpulkan biaya perdagangan secara otomatis.</p>
+      </article>
+      <article class="feature reveal">
+        <div class="fic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l2.5 6.5L21 9l-5 4.5L17.5 21 12 17l-5.5 4L8 13.5 3 9l6.5-.5L12 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+        <h3>Staking &amp; Yield</h3>
+        <p>Staking token dengan APY hingga 24% dan auto-compound yield tanpa kehilangan kustodi.</p>
+      </article>
+      <article class="feature reveal">
+        <div class="fic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M7 14l4-5 3 3 5-7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Portofolio Real-time</h3>
+        <p>Lacak seluruh aset lintas rantai dengan PnL, alokasi, dan riwayat transaksi dalam satu tampilan.</p>
+      </article>
+      <article class="feature reveal">
+        <div class="fic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M7 15v-3M11 15V9M15 15v-5M19 15v-2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+        <h3>Analitik On-chain</h3>
+        <p>Grafik harga, kedalaman likuiditas, dan metrik protokol untuk keputusan berbasis data.</p>
+      </article>
+      <article class="feature reveal">
+        <div class="fic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Keamanan Berlapis</h3>
+        <p>Smart contract teraudit, simulasi transaksi, dan perlindungan MEV di setiap swap.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DASHBOARD WORKSPACE ================= -->
+<section class="section-pad" id="dashboard" style="background:var(--bg-sunken)">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Dashboard interaktif</span>
+      <h2>Swap, pantau holdings, dan baca pasar</h2>
+      <p>Coba widget swap langsung di bawah — pilih token, masukkan jumlah, dan lihat estimasi output diperbarui secara real-time.</p>
+    </div>
+
+    <div class="workspace">
+      <!-- SWAP WIDGET (functional) -->
+      <div class="card panel reveal">
+        <div class="panel-head">
+          <h3>Swap Token</h3>
+          <span class="badge badge-live"><span class="dot" aria-hidden="true"></span>Harga live</span>
+        </div>
+        <div class="swap-box">
+          <!-- FROM -->
+          <div class="swap-field">
+            <div class="fhead"><span>Anda bayar</span><span id="fromBal">Saldo: 4,20 ETH</span></div>
+            <div class="fbody">
+              <label class="sr-only" for="fromAmount">Jumlah yang dibayar</label>
+              <input id="fromAmount" type="text" inputmode="decimal" value="1.0" placeholder="0,0" aria-describedby="fromUsd">
+              <div class="token-select">
+                <span class="token-ic" id="fromIc" aria-hidden="true">Ξ</span>
+                <label class="sr-only" for="fromToken">Token asal</label>
+                <select id="fromToken" aria-label="Pilih token asal">
+                  <option value="ETH">ETH</option>
+                  <option value="BTC">BTC</option>
+                  <option value="BNB">BNB</option>
+                  <option value="SOL">SOL</option>
+                  <option value="USDT">USDT</option>
+                  <option value="USDC">USDC</option>
+                </select>
+                <span class="caret" aria-hidden="true">▾</span>
+              </div>
+            </div>
+            <div class="field-usd" id="fromUsd">≈ $3.840,00</div>
+          </div>
+
+          <!-- FLIP -->
+          <button class="flip-btn swap-flip" id="swapFlip" aria-label="Balik arah swap">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 4v12M7 16l-3-3M7 16l3-3M17 20V8M17 8l-3 3M17 8l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+
+          <!-- TO -->
+          <div class="swap-field">
+            <div class="fhead"><span>Anda terima (estimasi)</span><span id="toBal">Saldo: 12.480 USDC</span></div>
+            <div class="fbody">
+              <label class="sr-only" for="toAmount">Jumlah diterima</label>
+              <input id="toAmount" type="text" inputmode="decimal" value="" placeholder="0,0" readonly aria-describedby="toUsd">
+              <div class="token-select">
+                <span class="token-ic" id="toIc" aria-hidden="true">$</span>
+                <label class="sr-only" for="toToken">Token tujuan</label>
+                <select id="toToken" aria-label="Pilih token tujuan">
+                  <option value="USDC">USDC</option>
+                  <option value="ETH">ETH</option>
+                  <option value="BTC">BTC</option>
+                  <option value="BNB">BNB</option>
+                  <option value="SOL">SOL</option>
+                  <option value="USDT">USDT</option>
+                </select>
+                <span class="caret" aria-hidden="true">▾</span>
+              </div>
+            </div>
+            <div class="field-usd" id="toUsd">≈ $3.840,00</div>
+          </div>
+        </div>
+
+        <div class="swap-info" aria-live="polite">
+          <div class="r"><span>Rate</span><b id="swapRate">1 ETH = 3.840,00 USDC</b></div>
+          <div class="r"><span>Dampak harga</span><b class="pos" id="swapImpact">0,04%</b></div>
+          <div class="r"><span>Biaya jaringan</span><b id="swapFee">≈ $2,15</b></div>
+          <div class="r"><span>Minimum diterima</span><b id="swapMin">3.820,80 USDC</b></div>
+        </div>
+        <button class="btn btn-primary btn-block" style="margin-top:1rem" id="swapBtn">Tukar Sekarang</button>
+      </div>
+
+      <!-- HOLDINGS TABLE -->
+      <div class="card panel reveal">
+        <div class="panel-head">
+          <h3>Kepemilikan Aset</h3>
+          <span class="sub">Total 4 posisi</span>
+        </div>
+        <div class="table-wrap">
+          <table class="holdings">
+            <thead>
+              <tr>
+                <th scope="col">Aset</th>
+                <th scope="col">Harga</th>
+                <th scope="col">24 jam</th>
+                <th scope="col">Jumlah</th>
+                <th scope="col">Nilai</th>
+              </tr>
+            </thead>
+            <tbody id="holdingsBody"><!-- JS --></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- LIVE CHART -->
+      <div class="card chart-panel reveal">
+        <div class="panel-head">
+          <div>
+            <h3 style="margin-bottom:.3rem">ETH / USDT</h3>
+            <div class="chart-legend">
+              <span class="price" id="chartPrice">$3.840,00</span>
+              <span class="pnl-chip up mono" id="chartChg">▲ +1,84%</span>
+              <span class="mono" style="color:var(--text-muted);font-size:.85rem" id="chartIdr">Rp 62.208.000</span>
+            </div>
+          </div>
+          <span class="badge badge-live"><span class="dot" aria-hidden="true"></span>Streaming</span>
+        </div>
+        <div class="chart-frame">
+          <svg id="priceChart" viewBox="0 0 720 240" preserveAspectRatio="none" role="img" aria-label="Grafik harga ETH/USDT langsung">
+            <defs>
+              <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="var(--accent-bright)" stop-opacity="0.28"/>
+                <stop offset="100%" stop-color="var(--accent-bright)" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <g id="gridLines" stroke="var(--border)" stroke-width="1"></g>
+            <path id="chartArea" fill="url(#chartFill)" stroke="none"></path>
+            <path id="chartLine" fill="none" stroke="var(--accent-bright)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"></path>
+            <circle id="chartDot" r="4.5" fill="var(--accent-bright)" stroke="var(--bg-elevated)" stroke-width="2"></circle>
+          </svg>
+        </div>
+        <div class="chart-range" role="group" aria-label="Rentang waktu grafik">
+          <button type="button">1J</button>
+          <button type="button" class="active">1H</button>
+          <button type="button">1M</button>
+          <button type="button">1T</button>
+          <button type="button">1Th</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= POOLS / STAKING ================= -->
+<section class="section-pad" id="pools">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Yield &amp; Likuiditas</span>
+      <h2>Buat aset Anda bekerja 24/7</h2>
+      <p>Pilih dari pool likuiditas dan program staking teraudit dengan APY kompetitif dan transparansi penuh.</p>
+    </div>
+    <div class="pool-grid" id="poolGrid"><!-- JS --></div>
+  </div>
+</section>
+
+<!-- ================= CHAINS ================= -->
+<section class="section-pad" id="chains" style="background:var(--bg-sunken)">
+  <div class="container">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Multi-chain</span>
+      <h2>Terhubung ke jaringan terbaik</h2>
+      <p>Satu wallet, sembilan jaringan. Jembatani dan swap aset lintas rantai tanpa berpindah aplikasi.</p>
+    </div>
+    <div class="chains reveal">
+      <span class="chain-pill"><span class="chain-ic ic-eth" aria-hidden="true">Ξ</span>Ethereum</span>
+      <span class="chain-pill"><span class="chain-ic ic-bnb" aria-hidden="true">B</span>BNB Chain</span>
+      <span class="chain-pill"><span class="chain-ic ic-sol" aria-hidden="true">◎</span>Solana</span>
+      <span class="chain-pill"><span class="chain-ic" style="background:linear-gradient(135deg,#8247E5,#5B2BB0)" aria-hidden="true">P</span>Polygon</span>
+      <span class="chain-pill"><span class="chain-ic" style="background:linear-gradient(135deg,#28A0F0,#1B6FAB)" aria-hidden="true">A</span>Arbitrum</span>
+      <span class="chain-pill"><span class="chain-ic" style="background:linear-gradient(135deg,#FF0420,#B30017)" aria-hidden="true">O</span>Optimism</span>
+      <span class="chain-pill"><span class="chain-ic" style="background:linear-gradient(135deg,#0052FF,#0038AD)" aria-hidden="true">C</span>Base</span>
+      <span class="chain-pill"><span class="chain-ic" style="background:linear-gradient(135deg,#E84142,#A82A2B)" aria-hidden="true">A</span>Avalanche</span>
+      <span class="chain-pill"><span class="chain-ic" style="background:linear-gradient(135deg,#2D374B,#161C28)" aria-hidden="true">Z</span>zkSync</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SECURITY ================= -->
+<section class="section-pad" id="security">
+  <div class="container security">
+    <div class="reveal">
+      <span class="eyebrow">Keamanan &amp; kepercayaan</span>
+      <h2 style="font-size:clamp(1.7rem,4vw,2.6rem);margin:.7rem 0 1.4rem">Dibangun agar dana Anda selalu aman</h2>
+      <div class="sec-list">
+        <div class="sec-item">
+          <span class="sic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <div><h4>Non-custodial sepenuhnya</h4><p>Kunci privat tetap di wallet Anda. DefiHub tidak pernah menyentuh atau menyimpan dana pengguna.</p></div>
+        </div>
+        <div class="sec-item">
+          <span class="sic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/></svg></span>
+          <div><h4>Kontrak teraudit</h4><p>Diaudit oleh CertiK dan Trail of Bits dengan program bug bounty senilai $2 juta yang aktif.</p></div>
+        </div>
+        <div class="sec-item">
+          <span class="sic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l3 3-3 3-3-3 3-3zM4 10l2 2M20 10l-2 2M12 22V9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <div><h4>Perlindungan MEV</h4><p>Simulasi transaksi dan routing privat melindungi Anda dari front-running dan sandwich attack.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="audit-card reveal">
+      <span class="badge badge-live"><span class="dot" aria-hidden="true"></span>Skor keamanan A+</span>
+      <h3 style="font-size:1.4rem;margin:1rem 0 .5rem">Laporan audit publik</h3>
+      <p style="color:var(--text-muted);font-size:.92rem">Seluruh smart contract, hasil audit, dan verifikasi on-chain tersedia terbuka untuk komunitas.</p>
+      <div class="audit-badges">
+        <div class="audit-badge"><div class="g">96/100</div><span>Skor CertiK</span></div>
+        <div class="audit-badge"><div class="g">$2 Jt</div><span>Bug Bounty</span></div>
+        <div class="audit-badge"><div class="g">0</div><span>Insiden Kritis</span></div>
+        <div class="audit-badge"><div class="g">100%</div><span>Kontrak Terverifikasi</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STATS ================= -->
+<section class="stats-band section-pad">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat reveal"><div class="num"><span class="grad" data-count="8.4" data-suffix=" M">$0</span></div><div class="lbl">Total Value Locked</div></div>
+      <div class="stat reveal"><div class="num"><span class="grad" data-count="1.2" data-suffix=" Jt">0</span></div><div class="lbl">Wallet Terhubung</div></div>
+      <div class="stat reveal"><div class="num"><span class="grad" data-count="42" data-suffix="+">0</span></div><div class="lbl">Protokol Terintegrasi</div></div>
+      <div class="stat reveal"><div class="num"><span class="grad" data-count="9" data-suffix="">0</span></div><div class="lbl">Jaringan Didukung</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="section-pad" id="cta">
+  <div class="container">
+    <div class="cta-wrap reveal">
+      <span class="badge badge-live" style="background:rgba(52,211,153,.15);border-color:rgba(52,211,153,.4);color:#6EE7B7"><span class="dot" aria-hidden="true"></span>Gratis dimulai · Tanpa akun</span>
+      <h2>Hubungkan wallet Anda dan mulai <span class="grad">meraih yield</span></h2>
+      <p>Bergabung dengan 1,2 juta pengguna yang mengelola DeFi mereka dengan lebih cerdas. Non-custodial, teraudit, dan siap dalam hitungan detik.</p>
+      <div class="hero-cta" style="justify-content:center">
+        <a href="#" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M16 12h2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M3 9h13" stroke="currentColor" stroke-width="1.7"/></svg>
+          Hubungkan Wallet
+        </a>
+        <a href="#features" class="btn btn-ghost">Pelajari Fitur</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="#" class="brand"><span class="brand-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7l9 5 9-5-9-5z" fill="currentColor"/></svg></span>DefiHub</a>
+        <p class="desc">Dashboard DeFi non-custodial untuk swap, likuiditas, staking, dan manajemen portofolio lintas rantai.</p>
+        <div class="socials">
+          <a href="#" aria-label="X / Twitter"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.9 2H22l-7 8 8.2 12h-6.4l-5-6.6L6 22H2.9l7.5-8.6L2.5 2H9l4.5 6L18.9 2zM17.8 20h1.7L8.3 4H6.5l11.3 16z"/></svg></a>
+          <a href="#" aria-label="Discord"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.5 5.3A17 17 0 0015.3 4l-.2.4a12.6 12.6 0 013.7 1.9 15.7 15.7 0 00-13.6 0A12.6 12.6 0 018.9 4.4L8.7 4a17 17 0 00-4.2 1.3C2 9 1.4 12.6 1.7 16.2a17 17 0 005.2 2.6l.6-1a11 11 0 01-1.7-.8l.4-.3a12 12 0 0010.6 0l.4.3-1.7.8.6 1a17 17 0 005.2-2.6c.4-4.2-.6-7.8-2.8-10.9zM8.9 14.3c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2zm6.2 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2z"/></svg></a>
+          <a href="#" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 00-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.3-1.1.6-1.3-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1a9.4 9.4 0 015 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.7-4.6 5 .3.3.6.9.6 1.8v2.7c0 .3.2.6.7.5A10 10 0 0012 2z"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <h5>Produk</h5>
+        <ul>
+          <li><a href="#dashboard">Swap</a></li>
+          <li><a href="#pools">Liquidity Pool</a></li>
+          <li><a href="#pools">Staking</a></li>
+          <li><a href="#dashboard">Portofolio</a></li>
+          <li><a href="#features">Analitik</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Sumber Daya</h5>
+        <ul>
+          <li><a href="#">Dokumentasi</a></li>
+          <li><a href="#security">Laporan Audit</a></li>
+          <li><a href="#">API Developer</a></li>
+          <li><a href="#">Status Jaringan</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Perusahaan</h5>
+        <ul>
+          <li><a href="#">Tentang</a></li>
+          <li><a href="#">Karier</a></li>
+          <li><a href="#">Tata Kelola</a></li>
+          <li><a href="#">Kontak</a></li>
+          <li><a href="#">Kebijakan Privasi</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> DefiHub Labs. Antarmuka non-custodial.</span>
+      <span class="risk">Peringatan risiko: aset kripto sangat fluktuatif. Nilai investasi dapat naik dan turun. Ini adalah template demonstrasi — bukan nasihat keuangan.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* =========================================================
+   DefiHub — App JS
+   ========================================================= */
+(function () {
+  'use strict';
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Theme ---------- */
+  var root = document.documentElement;
+  var themeToggle = document.getElementById('themeToggle');
+  function applyTheme(t) {
+    root.setAttribute('data-theme', t);
+    themeToggle.setAttribute('aria-pressed', t === 'dark' ? 'true' : 'false');
+  }
+  try {
+    var saved = localStorage.getItem('defihub_theme');
+    if (saved) applyTheme(saved);
+  } catch (e) {}
+  themeToggle.addEventListener('click', function () {
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try { localStorage.setItem('defihub_theme', next); } catch (e) {}
+  });
+
+  /* ---------- Nav scroll shadow ---------- */
+  var nav = document.getElementById('nav');
+  var onScroll = function () { nav.classList.toggle('scrolled', window.scrollY > 8); };
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  /* ---------- Mobile drawer ---------- */
+  var drawer = document.getElementById('drawer');
+  var hamburger = document.getElementById('hamburger');
+  function openDrawer() { drawer.classList.add('open'); hamburger.setAttribute('aria-expanded', 'true'); document.body.style.overflow = 'hidden'; }
+  function closeDrawer() { drawer.classList.remove('open'); hamburger.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; }
+  hamburger.addEventListener('click', openDrawer);
+  drawer.querySelectorAll('[data-close]').forEach(function (el) { el.addEventListener('click', closeDrawer); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && drawer.classList.contains('open')) closeDrawer(); });
+
+  /* ---------- Year ---------- */
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* ---------- Number formatting ---------- */
+  var fmtUsd = function (n, dp) {
+    return '$' + n.toLocaleString('id-ID', { minimumFractionDigits: dp === undefined ? 2 : dp, maximumFractionDigits: dp === undefined ? 2 : dp });
+  };
+  var IDR = 16200; // demo USD->IDR rate
+  var fmtIdrShort = function (usd) {
+    var v = usd * IDR;
+    if (v >= 1e9) return 'Rp ' + (v / 1e9).toFixed(2).replace('.', ',') + ' M';
+    if (v >= 1e6) return 'Rp ' + (v / 1e6).toFixed(1).replace('.', ',') + ' Jt';
+    return 'Rp ' + Math.round(v).toLocaleString('id-ID');
+  };
+
+  /* ---------- Token universe ---------- */
+  var TOKENS = {
+    BTC:  { name: 'Bitcoin',  price: 96400,  glyph: '₿', cls: 'ic-btc',  chg: 2.41 },
+    ETH:  { name: 'Ethereum', price: 3840,   glyph: 'Ξ', cls: 'ic-eth',  chg: 1.84 },
+    BNB:  { name: 'BNB',      price: 612,    glyph: 'B', cls: 'ic-bnb',  chg: -0.72 },
+    SOL:  { name: 'Solana',   price: 214.6,  glyph: '◎', cls: 'ic-sol',  chg: 5.12 },
+    USDT: { name: 'Tether',   price: 1.0,    glyph: 'T', cls: 'ic-usdt', chg: 0.01 },
+    USDC: { name: 'USD Coin', price: 1.0,    glyph: '$', cls: 'ic-usdc', chg: -0.02 }
+  };
+
+  /* ---------- Ticker ---------- */
+  (function buildTicker() {
+    var track = document.getElementById('tickerTrack');
+    var order = ['BTC', 'ETH', 'BNB', 'SOL', 'USDT', 'USDC'];
+    var html = '';
+    order.forEach(function (sym) {
+      var t = TOKENS[sym];
+      var cls = t.chg >= 0 ? 'pos' : 'neg';
+      var arrow = t.chg >= 0 ? '▲ +' : '▼ ';
+      html += '<span class="tick"><span class="token-ic ' + t.cls + '" style="width:20px;height:20px;font-size:.6rem" aria-hidden="true">' + t.glyph + '</span><b>' + sym + '</b> ' + fmtUsd(t.price) + ' <span class="chg ' + cls + '">' + arrow + Math.abs(t.chg).toFixed(2) + '%</span></span>';
+    });
+    track.innerHTML = html + html; // duplicate for seamless loop
+  })();
+
+  /* ---------- Holdings table ---------- */
+  (function buildHoldings() {
+    var body = document.getElementById('holdingsBody');
+    var rows = [
+      { sym: 'ETH', qty: 12.74 },
+      { sym: 'BTC', qty: 0.412 },
+      { sym: 'SOL', qty: 96.2 },
+      { sym: 'USDT', qty: 19320 }
+    ];
+    var html = '';
+    rows.forEach(function (r) {
+      var t = TOKENS[r.sym];
+      var value = t.price * r.qty;
+      var cls = t.chg >= 0 ? 'pos' : 'neg';
+      var arrow = t.chg >= 0 ? '+' : '';
+      html += '<tr>' +
+        '<td><div class="asset-cell"><span class="token-ic ' + t.cls + '" aria-hidden="true">' + t.glyph + '</span><span class="nm"><b>' + r.sym + '</b><span>' + t.name + '</span></span></div></td>' +
+        '<td>' + fmtUsd(t.price, t.price < 10 ? 3 : 2) + '</td>' +
+        '<td class="' + cls + '">' + arrow + t.chg.toFixed(2) + '%</td>' +
+        '<td>' + r.qty.toLocaleString('id-ID') + '</td>' +
+        '<td>' + fmtUsd(value) + '</td>' +
+        '</tr>';
+    });
+    body.innerHTML = html;
+  })();
+
+  /* ---------- SWAP WIDGET (functional) ---------- */
+  var fromToken = document.getElementById('fromToken');
+  var toToken = document.getElementById('toToken');
+  var fromAmount = document.getElementById('fromAmount');
+  var toAmount = document.getElementById('toAmount');
+  var fromUsd = document.getElementById('fromUsd');
+  var toUsd = document.getElementById('toUsd');
+  var fromIc = document.getElementById('fromIc');
+  var toIc = document.getElementById('toIc');
+  var swapRate = document.getElementById('swapRate');
+  var swapImpact = document.getElementById('swapImpact');
+  var swapFee = document.getElementById('swapFee');
+  var swapMin = document.getElementById('swapMin');
+  var swapBtn = document.getElementById('swapBtn');
+
+  function setIcon(el, sym) {
+    var t = TOKENS[sym];
+    el.textContent = t.glyph;
+    el.className = 'token-ic ' + t.cls;
+  }
+  function parseNum(str) {
+    if (!str) return 0;
+    var n = parseFloat(String(str).replace(/\s/g, '').replace(',', '.'));
+    return isNaN(n) ? 0 : n;
+  }
+  function fmtOut(n) {
+    if (n === 0) return '';
+    var dp = n >= 1000 ? 2 : (n >= 1 ? 4 : 6);
+    return n.toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: dp });
+  }
+
+  function recalcSwap() {
+    var fSym = fromToken.value, tSym = toToken.value;
+    var fT = TOKENS[fSym], tT = TOKENS[tSym];
+    var amt = parseNum(fromAmount.value);
+    var rate = fT.price / tT.price;                 // toToken per 1 fromToken
+    var out = amt * rate;
+    var feePct = 0.003;                             // 0.3% protocol fee
+    var outAfterFee = out * (1 - feePct);
+    var slippage = 0.005;                           // 0.5% tolerance
+
+    toAmount.value = fmtOut(outAfterFee);
+    fromUsd.textContent = '≈ ' + fmtUsd(amt * fT.price);
+    toUsd.textContent = '≈ ' + fmtUsd(outAfterFee * tT.price);
+
+    swapRate.textContent = '1 ' + fSym + ' = ' + rate.toLocaleString('id-ID', { maximumFractionDigits: rate >= 1 ? 2 : 6 }) + ' ' + tSym;
+    var impactVal = Math.min(4.8, 0.02 + amt * 0.0009 * (fT.price / 1000));
+    swapImpact.textContent = impactVal.toFixed(2) + '%';
+    swapImpact.className = impactVal < 1 ? 'pos' : (impactVal < 3 ? '' : 'neg');
+    swapFee.textContent = '≈ ' + fmtUsd(1.2 + amt * fT.price * 0.00005);
+    var minOut = outAfterFee * (1 - slippage);
+    swapMin.textContent = fmtOut(minOut) + ' ' + tSym;
+  }
+
+  function syncSelectsExclusive(changed) {
+    if (fromToken.value === toToken.value) {
+      var alt = Object.keys(TOKENS).filter(function (s) { return s !== fromToken.value; });
+      if (changed === 'from') toToken.value = alt[0];
+      else fromToken.value = alt[0];
+    }
+    setIcon(fromIc, fromToken.value);
+    setIcon(toIc, toToken.value);
+  }
+
+  fromToken.addEventListener('change', function () { syncSelectsExclusive('from'); recalcSwap(); });
+  toToken.addEventListener('change', function () { syncSelectsExclusive('to'); recalcSwap(); });
+  fromAmount.addEventListener('input', function () {
+    this.value = this.value.replace(/[^0-9.,]/g, '');
+    recalcSwap();
+  });
+
+  document.getElementById('swapFlip').addEventListener('click', function () {
+    var fv = fromToken.value, tv = toToken.value;
+    fromToken.value = tv;
+    toToken.value = fv;
+    var out = parseNum(toAmount.value.replace(/\./g, '').replace(',', '.'));
+    if (out > 0) fromAmount.value = out.toLocaleString('id-ID', { maximumFractionDigits: 6 });
+    setIcon(fromIc, fromToken.value);
+    setIcon(toIc, toToken.value);
+    recalcSwap();
+  });
+
+  swapBtn.addEventListener('click', function () {
+    var original = swapBtn.textContent;
+    swapBtn.disabled = true;
+    swapBtn.textContent = 'Menyiapkan transaksi...';
+    setTimeout(function () {
+      swapBtn.textContent = '✓ Swap dikonfirmasi (demo)';
+      setTimeout(function () { swapBtn.textContent = original; swapBtn.disabled = false; }, 1800);
+    }, 900);
+  });
+
+  setIcon(fromIc, fromToken.value);
+  setIcon(toIc, toToken.value);
+  recalcSwap();
+
+  /* ---------- Pools / Staking ---------- */
+  (function buildPools() {
+    var grid = document.getElementById('poolGrid');
+    var pools = [
+      { a: 'ETH', b: 'USDC', type: 'Liquidity Pool', apy: 18.4, tvl: '4,2 Jt', vol: '860 Rb', fill: 72 },
+      { a: 'BTC', b: 'USDT', type: 'Liquidity Pool', apy: 12.1, tvl: '6,8 Jt', vol: '1,2 Jt', fill: 88 },
+      { a: 'SOL', b: 'USDC', type: 'Liquidity Pool', apy: 24.6, tvl: '2,1 Jt', vol: '540 Rb', fill: 61 },
+      { a: 'ETH', b: 'ETH',  type: 'Staking Tunggal', apy: 5.8,  tvl: '9,4 Jt', vol: '—',      fill: 94, single: true, single_sym: 'ETH' },
+      { a: 'BNB', b: 'BNB',  type: 'Staking Tunggal', apy: 9.2,  tvl: '3,3 Jt', vol: '—',      fill: 77, single: true, single_sym: 'BNB' },
+      { a: 'USDT', b: 'USDC', type: 'Stable Pool',    apy: 7.4,  tvl: '11,7 Jt', vol: '2,9 Jt', fill: 83 }
+    ];
+    var html = '';
+    pools.forEach(function (p) {
+      var tA = TOKENS[p.a], tB = TOKENS[p.b];
+      var ics = p.single
+        ? '<span class="token-ic ' + tA.cls + '" aria-hidden="true">' + tA.glyph + '</span>'
+        : '<span class="token-ic ' + tA.cls + '" aria-hidden="true">' + tA.glyph + '</span><span class="token-ic ' + tB.cls + '" aria-hidden="true">' + tB.glyph + '</span>';
+      var pairName = p.single ? p.single_sym : (p.a + ' / ' + p.b);
+      html += '<article class="pool">' +
+        '<div class="pool-pair">' +
+          '<div class="pair-ics">' + ics + '</div>' +
+          '<div class="pn"><b>' + pairName + '</b><span>' + p.type + '</span></div>' +
+          '<div class="apy-badge"><b>' + p.apy.toFixed(1) + '%</b><span>APY</span></div>' +
+        '</div>' +
+        '<div class="pool-stats">' +
+          '<div class="ps"><span>TVL</span><b>$' + p.tvl + '</b></div>' +
+          '<div class="ps"><span>Volume 24j</span><b>' + (p.vol === '—' ? '—' : '$' + p.vol) + '</b></div>' +
+        '</div>' +
+        '<div class="pool-bar" role="img" aria-label="Kapasitas pool ' + p.fill + ' persen"><i style="width:' + p.fill + '%"></i></div>' +
+        '<button class="btn btn-ghost btn-sm btn-block">' + (p.single ? 'Staking Sekarang' : 'Sediakan Likuiditas') + '</button>' +
+        '</article>';
+    });
+    grid.innerHTML = html;
+  })();
+
+  /* ---------- Live price chart (SVG) ---------- */
+  (function liveChart() {
+    var W = 720, H = 240, PAD = 8;
+    var line = document.getElementById('chartLine');
+    var area = document.getElementById('chartArea');
+    var dot = document.getElementById('chartDot');
+    var grid = document.getElementById('gridLines');
+    var priceEl = document.getElementById('chartPrice');
+    var chgEl = document.getElementById('chartChg');
+    var idrEl = document.getElementById('chartIdr');
+
+    var gl = '';
+    for (var i = 1; i < 4; i++) { var y = (H / 4) * i; gl += '<line x1="0" y1="' + y + '" x2="' + W + '" y2="' + y + '"/>'; }
+    grid.innerHTML = gl;
+
+    var N = 60;
+    var base = 3840;
+    var data = [];
+    var seed = base;
+    for (var k = 0; k < N; k++) {
+      seed += (Math.sin(k * 0.4) * 6) + (Math.random() - 0.5) * 14;
+      data.push(seed);
+    }
+    var first = data[0];
+
+    function render() {
+      var min = Math.min.apply(null, data), max = Math.max.apply(null, data);
+      var range = (max - min) || 1;
+      var stepX = (W - PAD * 2) / (N - 1);
+      var pts = data.map(function (v, idx) {
+        var x = PAD + idx * stepX;
+        var y = PAD + (1 - (v - min) / range) * (H - PAD * 2);
+        return [x, y];
+      });
+      var d = pts.map(function (p, idx) { return (idx === 0 ? 'M' : 'L') + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' ');
+      line.setAttribute('d', d);
+      area.setAttribute('d', d + ' L' + pts[N - 1][0].toFixed(1) + ' ' + H + ' L' + pts[0][0].toFixed(1) + ' ' + H + ' Z');
+      var last = pts[N - 1];
+      dot.setAttribute('cx', last[0]);
+      dot.setAttribute('cy', last[1]);
+
+      var cur = data[N - 1];
+      var chg = ((cur - first) / first) * 100;
+      priceEl.textContent = fmtUsd(cur);
+      var up = chg >= 0;
+      chgEl.textContent = (up ? '▲ +' : '▼ ') + Math.abs(chg).toFixed(2) + '%';
+      chgEl.className = 'pnl-chip ' + (up ? 'up' : 'down') + ' mono';
+      idrEl.textContent = 'Rp ' + Math.round(cur * IDR).toLocaleString('id-ID');
+      line.setAttribute('stroke', up ? 'var(--accent-bright)' : 'var(--red)');
+    }
+    render();
+
+    if (!reduceMotion) {
+      setInterval(function () {
+        var last = data[N - 1];
+        var next = last + (Math.random() - 0.48) * 16;
+        data.push(next);
+        data.shift();
+        render();
+      }, 1600);
+    }
+  })();
+
+  /* ---------- Stat counters ---------- */
+  var counters = document.querySelectorAll('[data-count]');
+  function animateCount(el) {
+    var target = parseFloat(el.getAttribute('data-count'));
+    var suffix = el.getAttribute('data-suffix') || '';
+    var prefix = el.textContent.trim().charAt(0) === '$' ? '$' : '';
+    var decimals = String(target).indexOf('.') > -1 ? 1 : 0;
+    if (reduceMotion) { el.textContent = prefix + target.toFixed(decimals) + suffix; return; }
+    var start = null, dur = 1400;
+    function step(ts) {
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = prefix + (target * eased).toFixed(decimals) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ---------- Reveal + counter observers ---------- */
+  if ('IntersectionObserver' in window) {
+    var revObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('in'); revObs.unobserve(en.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(function (el) { revObs.observe(el); });
+
+    var cntObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { animateCount(en.target); cntObs.unobserve(en.target); }
+      });
+    }, { threshold: 0.5 });
+    counters.forEach(function (el) { cntObs.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
+    counters.forEach(animateCount);
+  }
+
+  /* ---------- Animated hero balance (subtle) ---------- */
+  (function heroBalanceTick() {
+    if (reduceMotion) return;
+    var el = document.getElementById('heroBalance');
+    var idrEl = document.getElementById('heroBalanceIdr');
+    var val = 128740.58;
+    setInterval(function () {
+      val += (Math.random() - 0.42) * 120;
+      el.textContent = '$' + val.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      idrEl.textContent = '≈ ' + fmtIdrShort(val);
+    }, 2400);
+  })();
+
+  /* ---------- Chart range buttons (visual toggle) ---------- */
+  document.querySelectorAll('.chart-range button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('.chart-range button').forEach(function (x) { x.classList.remove('active'); });
+      b.classList.add('active');
+    });
+  });
+})();
+</script>
+</body>
+</html>

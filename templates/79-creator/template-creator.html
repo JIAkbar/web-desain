@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinkNusa — Link-in-Bio & Monetisasi untuk Kreator Indonesia</title>
+<meta name="description" content="LinkNusa: satu halaman untuk semua link, jual produk digital, dan terima dukungan dari penggemar. Dibuat untuk kreator Indonesia.">
+<meta name="theme-color" content="#EC4899">
+<meta property="og:title" content="LinkNusa — Link-in-Bio & Monetisasi Kreator">
+<meta property="og:description" content="Kumpulkan semua link, jual produk digital, terima membership. Untuk kreator Indonesia.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===================== TOKENS ===================== */
+:root {
+  --font-display: 'Outfit', system-ui, sans-serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+
+  --pink: #EC4899;
+  --purple: #8B5CF6;
+  --violet: #7C3AED;
+  --grad: linear-gradient(135deg, #EC4899 0%, #8B5CF6 100%);
+  --grad-soft: linear-gradient(135deg, #FBCFE8 0%, #DDD6FE 100%);
+
+  --bg: #FDFBFF;
+  --bg-alt: #F7F3FC;
+  --surface: #FFFFFF;
+  --surface-2: #F4EEFB;
+  --border: #EAE2F4;
+  --text: #1A1525;
+  --text-soft: #5A5269;
+  --text-mute: #8B8398;
+  --shadow-sm: 0 1px 3px rgba(124, 58, 237, 0.06), 0 1px 2px rgba(124, 58, 237, 0.04);
+  --shadow-md: 0 8px 30px rgba(124, 58, 237, 0.08);
+  --shadow-lg: 0 24px 60px rgba(124, 58, 237, 0.14);
+  --shadow-glow: 0 12px 40px rgba(236, 72, 153, 0.28);
+
+  --radius: 16px;
+  --radius-sm: 12px;
+  --radius-lg: 28px;
+  --maxw: 1200px;
+  --nav-h: 68px;
+}
+[data-theme="dark"] {
+  --bg: #0E0A1A;
+  --bg-alt: #14101F;
+  --surface: #1A1428;
+  --surface-2: #221A33;
+  --border: #2E2542;
+  --text: #F4EFFA;
+  --text-soft: #C3B9D6;
+  --text-mute: #897FA0;
+  --grad-soft: linear-gradient(135deg, #3B1D4D 0%, #2A1B5C 100%);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 8px 30px rgba(0,0,0,0.4);
+  --shadow-lg: 0 24px 60px rgba(0,0,0,0.55);
+  --shadow-glow: 0 12px 40px rgba(236, 72, 153, 0.35);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
+}
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  transition: background .35s ease, color .35s ease;
+}
+h1,h2,h3,h4 { font-family: var(--font-display); line-height: 1.12; letter-spacing: -0.02em; font-weight: 800; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+ul { list-style: none; }
+:focus-visible { outline: 3px solid var(--pink); outline-offset: 3px; border-radius: 6px; }
+
+.container { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 clamp(18px, 4vw, 40px); }
+.section { padding: clamp(64px, 9vw, 120px) 0; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-display); font-weight: 700; font-size: .78rem;
+  text-transform: uppercase; letter-spacing: .14em;
+  color: var(--pink);
+  background: linear-gradient(135deg, rgba(236,72,153,.12), rgba(139,92,246,.12));
+  padding: 7px 16px; border-radius: 100px;
+}
+.gradient-text {
+  background: var(--grad);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+}
+.section-head { max-width: 680px; margin: 0 auto clamp(40px, 6vw, 64px); text-align: center; }
+.section-head h2 { font-size: clamp(1.9rem, 4.5vw, 3rem); margin: 18px 0 14px; }
+.section-head p { color: var(--text-soft); font-size: clamp(1rem, 2vw, 1.12rem); }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  font-family: var(--font-display); font-weight: 700; font-size: .96rem;
+  padding: 14px 26px; border-radius: 100px; border: none; cursor: pointer;
+  min-height: 48px; transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+  text-align: center; white-space: nowrap;
+}
+.btn-primary { background: var(--grad); color: #fff; box-shadow: var(--shadow-glow); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 48px rgba(236,72,153,.42); }
+.btn-ghost { background: var(--surface); color: var(--text); border: 1.5px solid var(--border); }
+.btn-ghost:hover { transform: translateY(-2px); border-color: var(--pink); color: var(--pink); }
+.btn-lg { padding: 17px 34px; font-size: 1.05rem; min-height: 56px; }
+
+/* ===================== NAV ===================== */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  height: var(--nav-h);
+  display: flex; align-items: center;
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: saturate(180%) blur(18px);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  border-bottom: 1px solid transparent;
+  transition: border-color .3s ease, background .3s ease;
+}
+.nav.scrolled { border-bottom-color: var(--border); box-shadow: var(--shadow-sm); }
+.nav .container { display: flex; align-items: center; justify-content: space-between; }
+.brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 900; font-size: 1.3rem; letter-spacing: -.02em; }
+.brand-mark {
+  width: 34px; height: 34px; border-radius: 10px; background: var(--grad);
+  display: grid; place-items: center; color: #fff; font-weight: 900; font-size: 1.05rem;
+  box-shadow: var(--shadow-glow); flex: none;
+}
+.nav-links { display: flex; align-items: center; gap: clamp(14px, 2vw, 30px); }
+.nav-links a.navlink { font-weight: 600; font-size: .95rem; color: var(--text-soft); transition: color .2s; }
+.nav-links a.navlink:hover { color: var(--pink); }
+.nav-actions { display: flex; align-items: center; gap: 12px; }
+.theme-toggle {
+  width: 46px; height: 46px; border-radius: 12px; border: 1.5px solid var(--border);
+  background: var(--surface); color: var(--text); cursor: pointer; display: grid; place-items: center;
+  transition: transform .2s, border-color .2s, background .2s;
+}
+.theme-toggle:hover { transform: rotate(15deg) scale(1.05); border-color: var(--pink); }
+.theme-toggle svg { width: 20px; height: 20px; }
+.theme-toggle .sun { display: none; }
+[data-theme="dark"] .theme-toggle .sun { display: block; }
+[data-theme="dark"] .theme-toggle .moon { display: none; }
+.hamburger { display: none; width: 46px; height: 46px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface); cursor: pointer; flex-direction: column; gap: 5px; align-items: center; justify-content: center; }
+.hamburger span { width: 20px; height: 2px; background: var(--text); border-radius: 2px; transition: .3s; }
+.hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+@media (max-width: 900px) {
+  .nav-links {
+    position: fixed; inset: var(--nav-h) 0 auto 0;
+    flex-direction: column; align-items: stretch; gap: 4px;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 18px clamp(18px,4vw,40px) 26px; box-shadow: var(--shadow-md);
+    transform: translateY(-130%); transition: transform .35s cubic-bezier(.4,0,.2,1);
+  }
+  .nav-links.open { transform: translateY(0); }
+  .nav-links a.navlink { padding: 13px 8px; font-size: 1.05rem; border-radius: 10px; }
+  .nav-links a.navlink:hover { background: var(--surface-2); }
+  .nav-links .btn { margin-top: 10px; }
+  .hide-mobile { display: none !important; }
+  .hamburger { display: flex; }
+}
+
+/* ===================== HERO ===================== */
+.hero { position: relative; padding-top: clamp(40px, 6vw, 70px); padding-bottom: clamp(60px, 8vw, 100px); overflow: hidden; }
+.hero::before {
+  content: ''; position: absolute; top: -20%; right: -10%; width: 55vw; height: 55vw; max-width: 700px; max-height: 700px;
+  background: radial-gradient(circle, rgba(236,72,153,.20), transparent 65%); filter: blur(20px); z-index: 0;
+}
+.hero::after {
+  content: ''; position: absolute; bottom: -25%; left: -12%; width: 50vw; height: 50vw; max-width: 650px; max-height: 650px;
+  background: radial-gradient(circle, rgba(139,92,246,.18), transparent 65%); filter: blur(20px); z-index: 0;
+}
+.hero-grid {
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(36px, 5vw, 70px); align-items: center;
+  min-height: calc(100dvh - var(--nav-h) - 60px);
+}
+.hero-copy h1 { font-size: clamp(2.3rem, 6vw, 4rem); font-weight: 900; }
+.hero-copy h1 .gradient-text { display: inline; }
+.hero-copy p.lead { font-size: clamp(1.05rem, 2.2vw, 1.3rem); color: var(--text-soft); margin: 22px 0 30px; max-width: 540px; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 30px; }
+.hero-stats { display: flex; gap: clamp(20px, 4vw, 42px); flex-wrap: wrap; }
+.hero-stat .num { font-family: var(--font-display); font-weight: 900; font-size: clamp(1.5rem, 3vw, 2rem); }
+.hero-stat .lbl { font-size: .85rem; color: var(--text-mute); font-weight: 600; }
+
+.url-pill {
+  display: inline-flex; align-items: center; gap: 6px; background: var(--surface-2);
+  border: 1.5px solid var(--border); border-radius: 100px; padding: 7px 8px 7px 16px;
+  font-weight: 600; font-size: .9rem; margin-bottom: 26px; box-shadow: var(--shadow-sm);
+}
+.url-pill .domain { color: var(--text-mute); }
+.url-pill .handle { color: var(--pink); }
+.url-pill .badge { background: var(--grad); color:#fff; font-size: .72rem; font-weight: 700; padding: 4px 11px; border-radius: 100px; font-family: var(--font-display); }
+
+/* ===================== PHONE MOCKUP ===================== */
+.hero-stage { display: flex; flex-direction: column; align-items: center; gap: 22px; }
+.phone {
+  width: clamp(260px, 30vw, 320px); aspect-ratio: 9/19; flex: none;
+  background: var(--surface); border-radius: 44px; padding: 12px;
+  box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+  position: relative; transition: background .35s;
+}
+.phone::before { content: ''; position: absolute; top: 18px; left: 50%; transform: translateX(-50%); width: 90px; height: 6px; background: var(--border); border-radius: 100px; z-index: 3; }
+.phone-screen {
+  width: 100%; height: 100%; border-radius: 34px; overflow: hidden; position: relative;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 38px 18px 22px; text-align: center;
+  background: var(--bio-bg, var(--grad-soft));
+  transition: background .4s ease;
+}
+.phone-screen.scrollable { overflow-y: auto; }
+.bio-avatar {
+  width: 76px; height: 76px; border-radius: 50%; flex: none;
+  background: var(--bio-accent, var(--grad)); display: grid; place-items: center;
+  color: #fff; font-family: var(--font-display); font-weight: 900; font-size: 1.8rem;
+  border: 3px solid rgba(255,255,255,.85); box-shadow: 0 6px 20px rgba(0,0,0,.15);
+  margin-bottom: 12px;
+}
+.bio-name { font-family: var(--font-display); font-weight: 800; font-size: 1.08rem; color: var(--bio-text, #1A1525); }
+.bio-handle { font-size: .82rem; color: var(--bio-text, #1A1525); opacity: .68; margin-bottom: 4px; }
+.bio-desc { font-size: .78rem; color: var(--bio-text, #1A1525); opacity: .82; margin-bottom: 14px; line-height: 1.45; }
+.bio-socials { display: flex; gap: 12px; justify-content: center; margin-bottom: 18px; }
+.bio-social {
+  width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,.55);
+  display: grid; place-items: center; color: var(--bio-text, #1A1525);
+}
+.bio-social svg { width: 16px; height: 16px; }
+.bio-links { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+.bio-link {
+  width: 100%; padding: 13px 16px; border-radius: var(--bio-radius, 14px);
+  background: var(--bio-btn, rgba(255,255,255,.9)); color: var(--bio-btntext, #1A1525);
+  font-family: var(--font-display); font-weight: 700; font-size: .85rem;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08); transition: transform .2s, background .3s;
+  border: var(--bio-btnborder, none);
+  animation: linkPop .4s cubic-bezier(.34,1.56,.64,1);
+}
+.bio-link:hover { transform: scale(1.03); }
+@keyframes linkPop { from { opacity: 0; transform: translateY(8px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.bio-footer { margin-top: auto; padding-top: 16px; font-size: .68rem; color: var(--bio-text, #1A1525); opacity: .5; font-weight: 600; }
+
+/* ===================== BUILDER ===================== */
+.builder {
+  width: clamp(280px, 88vw, 360px); background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow-md);
+}
+.builder h4 { font-size: .95rem; margin-bottom: 4px; display: flex; align-items: center; gap: 7px; }
+.builder .sub { font-size: .78rem; color: var(--text-mute); margin-bottom: 14px; }
+.builder-row { margin-bottom: 16px; }
+.builder-row > label { font-size: .76rem; font-weight: 700; color: var(--text-soft); text-transform: uppercase; letter-spacing: .06em; display: block; margin-bottom: 9px; }
+.theme-swatches, .color-swatches { display: flex; gap: 9px; flex-wrap: wrap; }
+.swatch {
+  height: 38px; border-radius: 10px; cursor: pointer; border: 2.5px solid transparent;
+  position: relative; transition: transform .15s, border-color .2s; flex: 1 1 0; min-width: 44px; min-height: 44px;
+}
+.swatch:hover { transform: translateY(-2px); }
+.swatch.active { border-color: var(--text); box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--pink); }
+.color-dot { width: 44px; height: 44px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: transform .15s, border-color .2s; flex: none; }
+.color-dot:hover { transform: scale(1.1); }
+.color-dot.active { border-color: var(--text); box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--pink); }
+.add-link-form { display: flex; gap: 8px; }
+.add-link-form input {
+  flex: 1; min-width: 0; padding: 11px 13px; border-radius: 10px; border: 1.5px solid var(--border);
+  background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: .85rem; min-height: 44px;
+}
+.add-link-form input:focus-visible { border-color: var(--pink); outline-offset: 0; }
+.add-link-form button { padding: 0 16px; min-height: 44px; flex: none; }
+
+/* ===================== FEATURES ===================== */
+.features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+.feature-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 28px; transition: transform .25s, box-shadow .25s, border-color .25s;
+}
+.feature-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); border-color: color-mix(in srgb, var(--pink) 40%, var(--border)); }
+.feature-ico {
+  width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; margin-bottom: 18px;
+  background: linear-gradient(135deg, rgba(236,72,153,.14), rgba(139,92,246,.14)); color: var(--pink);
+}
+.feature-ico svg { width: 26px; height: 26px; }
+.feature-card h3 { font-size: 1.15rem; margin-bottom: 9px; }
+.feature-card p { color: var(--text-soft); font-size: .94rem; }
+
+/* ===================== MONETIZATION ===================== */
+.monetize { background: var(--bg-alt); }
+.monetize-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 22px; }
+.mon-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 30px; box-shadow: var(--shadow-sm); transition: transform .25s, box-shadow .25s; position: relative; overflow: hidden;
+}
+.mon-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); }
+.mon-card .tag { display: inline-block; font-size: .72rem; font-weight: 700; font-family: var(--font-display); letter-spacing: .08em; text-transform: uppercase; color: var(--pink); margin-bottom: 12px; }
+.mon-card h3 { font-size: 1.3rem; margin-bottom: 8px; }
+.mon-card > p { color: var(--text-soft); font-size: .92rem; margin-bottom: 20px; }
+
+/* tip jar */
+.tip-amounts { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.tip-amt {
+  flex: 1 1 0; min-width: 64px; min-height: 48px; padding: 11px 6px; border-radius: 12px; border: 1.5px solid var(--border);
+  background: var(--bg); color: var(--text); font-family: var(--font-display); font-weight: 700; font-size: .9rem;
+  cursor: pointer; transition: .2s;
+}
+.tip-amt:hover { border-color: var(--pink); }
+.tip-amt.active { background: var(--grad); color: #fff; border-color: transparent; box-shadow: var(--shadow-glow); }
+.tip-total { text-align: center; font-size: .9rem; color: var(--text-soft); margin-bottom: 14px; }
+.tip-total strong { font-family: var(--font-display); font-size: 1.25rem; color: var(--text); }
+
+/* membership tiers */
+.tier-list { display: flex; flex-direction: column; gap: 11px; }
+.tier-item { display: flex; align-items: center; gap: 12px; padding: 13px 15px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--border); }
+.tier-emoji { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; font-size: 1.3rem; background: var(--bg); flex: none; }
+.tier-item .info { flex: 1; min-width: 0; }
+.tier-item .info .name { font-family: var(--font-display); font-weight: 700; font-size: .95rem; }
+.tier-item .info .perk { font-size: .78rem; color: var(--text-mute); }
+.tier-item .price { font-family: var(--font-display); font-weight: 800; color: var(--pink); font-size: .95rem; white-space: nowrap; }
+
+/* digital product */
+.prod-preview { border-radius: 14px; overflow: hidden; margin-bottom: 16px; border: 1px solid var(--border); }
+.prod-thumb { height: 130px; background: var(--grad); display: grid; place-items: center; color: #fff; }
+.prod-thumb svg { width: 48px; height: 48px; opacity: .9; }
+.prod-meta { padding: 14px; background: var(--surface-2); }
+.prod-meta .pname { font-family: var(--font-display); font-weight: 700; font-size: .98rem; }
+.prod-meta .pdesc { font-size: .78rem; color: var(--text-mute); margin-bottom: 8px; }
+.prod-meta .prow { display: flex; align-items: center; justify-content: space-between; }
+.prod-meta .pprice { font-family: var(--font-display); font-weight: 800; font-size: 1.2rem; }
+.prod-meta .psold { font-size: .74rem; color: var(--text-mute); font-weight: 600; }
+
+/* ===================== ANALYTICS ===================== */
+.analytics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 26px; }
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px;
+  box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+}
+.stat-card .ico { width: 42px; height: 42px; border-radius: 11px; display: grid; place-items: center; margin-bottom: 14px; }
+.stat-card .ico svg { width: 22px; height: 22px; }
+.stat-card .val { font-family: var(--font-display); font-weight: 900; font-size: clamp(1.8rem, 4vw, 2.4rem); line-height: 1; }
+.stat-card .lbl { color: var(--text-soft); font-size: .88rem; font-weight: 600; margin-top: 6px; }
+.stat-card .delta { font-size: .78rem; font-weight: 700; color: #16A34A; margin-top: 8px; }
+[data-theme="dark"] .stat-card .delta { color: #4ADE80; }
+
+.chart-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: clamp(22px, 4vw, 34px); box-shadow: var(--shadow-md);
+}
+.chart-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
+.chart-head h3 { font-size: 1.2rem; }
+.chart-head .legend { display: flex; gap: 16px; font-size: .82rem; color: var(--text-soft); font-weight: 600; }
+.chart-head .legend span { display: inline-flex; align-items: center; gap: 6px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.bars { display: flex; align-items: flex-end; gap: clamp(8px, 2vw, 20px); height: 220px; padding-top: 10px; }
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; height: 100%; justify-content: flex-end; }
+.bar-stack { width: 100%; max-width: 46px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; gap: 3px; }
+.bar {
+  width: 100%; border-radius: 7px 7px 4px 4px; height: 0; transition: height 1.1s cubic-bezier(.22,1,.36,1);
+  position: relative;
+}
+.bar.visit { background: var(--grad); }
+.bar.click { background: linear-gradient(135deg, #C4B5FD, #A78BFA); border-radius: 4px; }
+.bar-col .day { font-size: .76rem; color: var(--text-mute); font-weight: 600; }
+
+/* ===================== TEMPLATES SHOWCASE ===================== */
+.tmpl-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 18px; }
+.tmpl-card {
+  border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border);
+  background: var(--surface); transition: transform .25s, box-shadow .25s; cursor: pointer;
+}
+.tmpl-card:hover { transform: translateY(-6px) rotate(-1deg); box-shadow: var(--shadow-lg); }
+.tmpl-preview { aspect-ratio: 3/4; padding: 22px 16px; display: flex; flex-direction: column; align-items: center; gap: 9px; }
+.tmpl-preview .av { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,.85); border: 2px solid rgba(255,255,255,.6); }
+.tmpl-preview .ln { width: 100%; height: 26px; border-radius: 9px; background: rgba(255,255,255,.78); box-shadow: 0 2px 6px rgba(0,0,0,.08); }
+.tmpl-meta { padding: 13px 16px; display: flex; align-items: center; justify-content: space-between; }
+.tmpl-meta .tn { font-family: var(--font-display); font-weight: 700; font-size: .92rem; }
+.tmpl-meta .heart { color: var(--text-mute); font-size: .8rem; font-weight: 600; }
+
+/* ===================== TESTIMONIALS ===================== */
+.testimonials { background: var(--bg-alt); }
+.testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 22px; }
+.testi-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; }
+.testi-stars { color: #F59E0B; margin-bottom: 14px; font-size: 1rem; letter-spacing: 2px; }
+.testi-card p { color: var(--text); font-size: 1rem; line-height: 1.6; margin-bottom: 20px; flex: 1; }
+.testi-who { display: flex; align-items: center; gap: 12px; }
+.testi-av { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-family: var(--font-display); font-weight: 800; flex: none; }
+.testi-who .nm { font-family: var(--font-display); font-weight: 700; font-size: .95rem; }
+.testi-who .role { font-size: .8rem; color: var(--text-mute); }
+
+/* ===================== PRICING ===================== */
+.price-toggle { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 44px; }
+.price-toggle .lbl { font-weight: 700; font-family: var(--font-display); color: var(--text-soft); transition: color .2s; }
+.price-toggle .lbl.active { color: var(--text); }
+.switch { width: 58px; height: 32px; border-radius: 100px; background: var(--surface-2); border: 1.5px solid var(--border); cursor: pointer; position: relative; padding: 0; flex: none; }
+.switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: var(--grad); transition: transform .3s cubic-bezier(.34,1.56,.64,1); box-shadow: 0 2px 6px rgba(0,0,0,.2); }
+.switch.year::after { transform: translateX(26px); }
+.save-pill { background: linear-gradient(135deg, rgba(34,197,94,.15), rgba(16,185,129,.15)); color: #16A34A; font-size: .74rem; font-weight: 800; font-family: var(--font-display); padding: 4px 11px; border-radius: 100px; }
+[data-theme="dark"] .save-pill { color: #4ADE80; }
+.pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px; align-items: stretch; }
+.price-card {
+  background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius-lg);
+  padding: 32px 28px; display: flex; flex-direction: column; position: relative; transition: transform .25s, box-shadow .25s;
+}
+.price-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); }
+.price-card.featured { border-color: var(--pink); box-shadow: var(--shadow-glow); }
+.price-card.featured::before {
+  content: 'PALING POPULER'; position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+  background: var(--grad); color: #fff; font-size: .68rem; font-weight: 800; font-family: var(--font-display);
+  letter-spacing: .1em; padding: 6px 16px; border-radius: 100px; white-space: nowrap;
+}
+.price-card .pname { font-family: var(--font-display); font-weight: 800; font-size: 1.3rem; margin-bottom: 6px; }
+.price-card .pdesc { font-size: .86rem; color: var(--text-mute); margin-bottom: 22px; min-height: 38px; }
+.price-amt { display: flex; align-items: baseline; gap: 4px; margin-bottom: 4px; }
+.price-amt .cur { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; color: var(--text-soft); }
+.price-amt .num { font-family: var(--font-display); font-weight: 900; font-size: clamp(2.2rem, 5vw, 2.8rem); line-height: 1; }
+.price-amt .per { font-size: .9rem; color: var(--text-mute); font-weight: 600; }
+.price-card .pnote { font-size: .78rem; color: var(--text-mute); margin-bottom: 24px; min-height: 18px; }
+.price-card ul { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; flex: 1; }
+.price-card li { display: flex; align-items: flex-start; gap: 10px; font-size: .92rem; color: var(--text-soft); }
+.price-card li svg { width: 18px; height: 18px; color: var(--pink); flex: none; margin-top: 2px; }
+.price-card .btn { width: 100%; }
+
+/* ===================== CTA ===================== */
+.cta-wrap { position: relative; overflow: hidden; }
+.cta-box {
+  background: var(--grad); border-radius: var(--radius-lg); padding: clamp(40px, 7vw, 80px) clamp(24px, 5vw, 60px);
+  text-align: center; color: #fff; position: relative; overflow: hidden; box-shadow: var(--shadow-lg);
+}
+.cta-box::before, .cta-box::after { content: ''; position: absolute; border-radius: 50%; background: rgba(255,255,255,.12); }
+.cta-box::before { width: 280px; height: 280px; top: -120px; right: -80px; }
+.cta-box::after { width: 220px; height: 220px; bottom: -110px; left: -60px; }
+.cta-box > * { position: relative; z-index: 1; }
+.cta-box h2 { font-size: clamp(2rem, 5vw, 3.2rem); margin-bottom: 16px; color: #fff; }
+.cta-box p { font-size: clamp(1.05rem, 2.2vw, 1.25rem); opacity: .94; max-width: 560px; margin: 0 auto 30px; }
+.cta-form { display: flex; gap: 10px; max-width: 460px; margin: 0 auto; flex-wrap: wrap; }
+.cta-form .prefix { display: flex; align-items: center; flex: 1; min-width: 240px; background: rgba(255,255,255,.95); border-radius: 100px; padding: 0 6px 0 18px; min-height: 56px; }
+.cta-form .prefix span { color: #6B7280; font-weight: 600; font-size: .95rem; white-space: nowrap; }
+.cta-form .prefix input { flex: 1; min-width: 0; border: none; background: transparent; padding: 14px 6px; font-family: var(--font-body); font-weight: 600; font-size: 1rem; color: #1A1525; outline: none; }
+.cta-form .btn { background: #1A1525; color: #fff; box-shadow: none; }
+.cta-form .btn:hover { background: #000; }
+[data-theme="dark"] .cta-form .btn { background: #fff; color: #1A1525; }
+
+/* ===================== FOOTER ===================== */
+.footer { background: var(--bg-alt); border-top: 1px solid var(--border); padding-top: clamp(50px, 7vw, 80px); }
+.footer-grid { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: clamp(28px, 4vw, 50px); margin-bottom: 50px; }
+.footer-brand p { color: var(--text-soft); font-size: .92rem; margin: 16px 0 20px; max-width: 280px; }
+.footer-social { display: flex; gap: 10px; }
+.footer-social a { width: 40px; height: 40px; border-radius: 11px; border: 1.5px solid var(--border); background: var(--surface); display: grid; place-items: center; color: var(--text-soft); transition: .2s; }
+.footer-social a:hover { color: var(--pink); border-color: var(--pink); transform: translateY(-2px); }
+.footer-social svg { width: 18px; height: 18px; }
+.footer-col h4 { font-size: .82rem; text-transform: uppercase; letter-spacing: .1em; color: var(--text-mute); margin-bottom: 16px; font-weight: 800; }
+.footer-col a { display: block; color: var(--text-soft); font-size: .92rem; padding: 6px 0; transition: color .2s; }
+.footer-col a:hover { color: var(--pink); }
+.footer-bottom { border-top: 1px solid var(--border); padding: 24px 0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.footer-bottom p { color: var(--text-mute); font-size: .86rem; }
+.footer-bottom .made { display: flex; align-items: center; gap: 6px; }
+
+/* reveal */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
+
+/* responsive */
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; text-align: center; min-height: auto; }
+  .hero-copy p.lead { margin-left: auto; margin-right: auto; }
+  .hero-cta, .hero-stats { justify-content: center; }
+  .url-pill { margin-left: auto; margin-right: auto; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .footer-brand { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+  .footer-grid { grid-template-columns: 1fr; }
+  .hero-stat .num { font-size: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== NAV ===================== -->
+<nav class="nav" id="nav">
+  <div class="container">
+    <a href="#" class="brand" aria-label="LinkNusa beranda">
+      <span class="brand-mark" aria-hidden="true">L</span>
+      <span>Link<span class="gradient-text">Nusa</span></span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#fitur" class="navlink">Fitur</a></li>
+      <li><a href="#monetisasi" class="navlink">Monetisasi</a></li>
+      <li><a href="#analitik" class="navlink">Analitik</a></li>
+      <li><a href="#template" class="navlink">Template</a></li>
+      <li><a href="#harga" class="navlink">Harga</a></li>
+      <li class="hide-mobile" style="width:1px;height:24px;background:var(--border)"></li>
+      <li><a href="#cta" class="btn btn-primary" style="padding:11px 22px;min-height:44px">Mulai Gratis</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Ganti mode terang/gelap">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="Buka menu" aria-expanded="false" aria-controls="navLinks">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<header class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <div class="url-pill" aria-hidden="true">
+          <span class="domain">linknusa.id/</span><span class="handle">namamu</span>
+          <span class="badge">tersedia</span>
+        </div>
+        <h1>Satu link untuk <span class="gradient-text">semua karyamu</span> — dan untuk dibayar.</h1>
+        <p class="lead">Kumpulkan semua tautan, jual produk digital, terima tip &amp; membership. LinkNusa adalah bio link sekaligus mesin penghasilan untuk kreator Indonesia.</p>
+        <div class="hero-cta">
+          <a href="#cta" class="btn btn-primary btn-lg">Klaim halamanmu — gratis</a>
+          <a href="#template" class="btn btn-ghost btn-lg">Lihat template</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><div class="num gradient-text" data-count="48200" data-suffix="+">0</div><div class="lbl">kreator aktif</div></div>
+          <div class="hero-stat"><div class="num gradient-text" data-count="12" data-prefix="Rp" data-suffix=" M+">0</div><div class="lbl">cair ke kreator</div></div>
+          <div class="hero-stat"><div class="num gradient-text" data-count="99" data-suffix="%">0</div><div class="lbl">uptime halaman</div></div>
+        </div>
+      </div>
+
+      <div class="hero-stage">
+        <!-- PHONE MOCKUP -->
+        <div class="phone" aria-label="Pratinjau halaman bio">
+          <div class="phone-screen" id="phoneScreen">
+            <div class="bio-avatar" id="bioAvatar">D</div>
+            <div class="bio-name">Dewi Anjani</div>
+            <div class="bio-handle">@dewicreates</div>
+            <div class="bio-desc">Ilustrator digital &amp; content creator ✨<br>Buka komisi · Kelas online</div>
+            <div class="bio-socials" aria-label="Media sosial">
+              <span class="bio-social" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85C2.38 3.92 3.9 2.38 7.15 2.23 8.42 2.17 8.8 2.16 12 2.16zm0 3.68a6.16 6.16 0 100 12.32 6.16 6.16 0 000-12.32zm0 10.16a4 4 0 110-8 4 4 0 010 8zm6.4-10.4a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z"/></svg></span>
+              <span class="bio-social" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.6 7.2a4.8 4.8 0 01-2.2-2.7v-.5h-3.3v13.2a2.4 2.4 0 11-2.4-2.4c.25 0 .5.04.73.1v-3.4a5.8 5.8 0 00-.73-.05 5.8 5.8 0 105.8 5.8V9.7a8 8 0 004.7 1.5V7.9a4.7 4.7 0 01-2.6-.7z"/></svg></span>
+              <span class="bio-social" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 00.5 6.2 31 31 0 000 12a31 31 0 00.5 5.8 3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1A31 31 0 0024 12a31 31 0 00-.5-5.8zM9.6 15.6V8.4l6.2 3.6z"/></svg></span>
+            </div>
+            <div class="bio-links" id="bioLinks">
+              <a class="bio-link" href="#cta">🎨 Buka Komisi Ilustrasi</a>
+              <a class="bio-link" href="#cta">📚 Kelas: Digital Painting</a>
+              <a class="bio-link" href="#cta">🛍️ Toko Brush &amp; Preset</a>
+            </div>
+            <div class="bio-footer">⚡ Dibuat dengan LinkNusa</div>
+          </div>
+        </div>
+
+        <!-- BUILDER -->
+        <div class="builder" aria-label="Pembuat halaman bio langsung">
+          <h4>🎛️ Live Builder <span class="eyebrow" style="font-size:.6rem;padding:3px 9px">coba!</span></h4>
+          <p class="sub">Ubah tema &amp; warna — pratinjau di atas berubah instan.</p>
+
+          <div class="builder-row">
+            <label>Tema halaman</label>
+            <div class="theme-swatches" id="themeSwatches" role="group" aria-label="Pilih tema">
+              <button class="swatch active" data-theme-preset="bubblegum" style="background:linear-gradient(135deg,#FBCFE8,#DDD6FE)" aria-label="Tema Bubblegum" title="Bubblegum"></button>
+              <button class="swatch" data-theme-preset="midnight" style="background:linear-gradient(135deg,#1E1B3A,#3B2A6B)" aria-label="Tema Midnight" title="Midnight"></button>
+              <button class="swatch" data-theme-preset="sunset" style="background:linear-gradient(135deg,#FED7AA,#FBA5A5)" aria-label="Tema Sunset" title="Sunset"></button>
+              <button class="swatch" data-theme-preset="mint" style="background:linear-gradient(135deg,#A7F3D0,#99F6E4)" aria-label="Tema Mint" title="Mint"></button>
+              <button class="swatch" data-theme-preset="mono" style="background:linear-gradient(135deg,#E5E7EB,#F3F4F6)" aria-label="Tema Mono" title="Mono"></button>
+            </div>
+          </div>
+
+          <div class="builder-row">
+            <label>Warna aksen tombol</label>
+            <div class="color-swatches" id="colorSwatches" role="group" aria-label="Pilih warna aksen">
+              <button class="color-dot active" data-accent="#EC4899" style="background:#EC4899" aria-label="Pink"></button>
+              <button class="color-dot" data-accent="#8B5CF6" style="background:#8B5CF6" aria-label="Ungu"></button>
+              <button class="color-dot" data-accent="#0EA5E9" style="background:#0EA5E9" aria-label="Biru"></button>
+              <button class="color-dot" data-accent="#10B981" style="background:#10B981" aria-label="Hijau"></button>
+              <button class="color-dot" data-accent="#F59E0B" style="background:#F59E0B" aria-label="Amber"></button>
+              <button class="color-dot" data-accent="#1A1525" style="background:#1A1525" aria-label="Hitam"></button>
+            </div>
+          </div>
+
+          <div class="builder-row" style="margin-bottom:0">
+            <label for="newLink">Tambah link baru</label>
+            <form class="add-link-form" id="addLinkForm">
+              <input type="text" id="newLink" placeholder="cth: Podcast Episode Baru" aria-label="Judul link baru" maxlength="40">
+              <button type="submit" class="btn btn-primary" aria-label="Tambah link">+ Tambah</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== FEATURES ===================== -->
+<section class="section" id="fitur">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Fitur unggulan</span>
+      <h2>Semua yang kreator butuhkan dalam <span class="gradient-text">satu link</span></h2>
+      <p>Bukan sekadar daftar tautan. LinkNusa membantumu tumbuh, terhubung, dan menghasilkan.</p>
+    </div>
+    <div class="features-grid">
+      <article class="feature-card reveal">
+        <div class="feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <h3>Link tanpa batas</h3>
+        <p>Tambah, urutkan, dan kelompokkan tautan sebanyak yang kamu mau. Drag-and-drop, atur jadwal tayang, sembunyikan kapan saja.</p>
+      </article>
+      <article class="feature-card reveal">
+        <div class="feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg></div>
+        <h3>Tema &amp; brand bebas</h3>
+        <p>40+ tema siap pakai, font kustom, warna brand-mu sendiri, dan video latar. Halaman bio yang benar-benar terasa milikmu.</p>
+      </article>
+      <article class="feature-card reveal">
+        <div class="feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <h3>Monetisasi terintegrasi</h3>
+        <p>Tip jar, membership, dan jual produk digital langsung di halaman. Pencairan ke rekening &amp; e-wallet lokal Indonesia.</p>
+      </article>
+      <article class="feature-card reveal">
+        <div class="feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg></div>
+        <h3>Analitik real-time</h3>
+        <p>Lacak klik, pengunjung, sumber traffic, dan link terlaris. Ketahui konten apa yang paling laku tiap hari.</p>
+      </article>
+      <article class="feature-card reveal">
+        <div class="feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+        <h3>Cepat di mobile</h3>
+        <p>Halaman ringan, lolos Core Web Vitals, tayang &lt;1 detik. Pengunjung dari Instagram &amp; TikTok langsung nyaman.</p>
+      </article>
+      <article class="feature-card reveal">
+        <div class="feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H5.17L4 17.17V4z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="12" x2="13" y2="12"/></svg></div>
+        <h3>Kumpulkan kontak</h3>
+        <p>Form email &amp; WhatsApp built-in untuk membangun mailing list. Ekspor audiens-mu kapan saja, datanya milikmu.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== MONETIZATION ===================== -->
+<section class="section monetize" id="monetisasi">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Cara menghasilkan</span>
+      <h2>Tiga cara dibayar dari <span class="gradient-text">satu halaman</span></h2>
+      <p>Aktifkan satu, dua, atau ketiganya. Atur sendiri, langsung cair ke dompetmu.</p>
+    </div>
+    <div class="monetize-grid">
+      <!-- TIP JAR -->
+      <article class="mon-card reveal">
+        <span class="tag">☕ Tip Jar</span>
+        <h3>Terima dukungan</h3>
+        <p>Penggemar bisa traktir kopi atau kasih dukungan sekali jalan. Tanpa biaya berlangganan untuk mereka.</p>
+        <div class="tip-amounts" id="tipAmounts" role="group" aria-label="Pilih nominal tip">
+          <button class="tip-amt" data-amt="15000">Rp 15rb</button>
+          <button class="tip-amt active" data-amt="25000">Rp 25rb</button>
+          <button class="tip-amt" data-amt="50000">Rp 50rb</button>
+          <button class="tip-amt" data-amt="100000">Rp 100rb</button>
+        </div>
+        <div class="tip-total">Kreator menerima <strong id="tipNet">Rp 23.750</strong></div>
+        <button class="btn btn-primary" style="width:100%">Kirim dukungan 💜</button>
+      </article>
+
+      <!-- MEMBERSHIP -->
+      <article class="mon-card reveal">
+        <span class="tag">⭐ Membership</span>
+        <h3>Pendapatan bulanan</h3>
+        <p>Bangun komunitas berbayar dengan konten eksklusif tiap tier. Penghasilan rutin yang bisa diprediksi.</p>
+        <div class="tier-list">
+          <div class="tier-item">
+            <span class="tier-emoji" aria-hidden="true">🌱</span>
+            <div class="info"><div class="name">Pendukung</div><div class="perk">Akses postingan eksklusif</div></div>
+            <div class="price">Rp 25rb<span style="font-weight:500;color:var(--text-mute)">/bln</span></div>
+          </div>
+          <div class="tier-item">
+            <span class="tier-emoji" aria-hidden="true">🔥</span>
+            <div class="info"><div class="name">Penggemar Setia</div><div class="perk">+ Live Q&amp;A bulanan</div></div>
+            <div class="price">Rp 50rb<span style="font-weight:500;color:var(--text-mute)">/bln</span></div>
+          </div>
+          <div class="tier-item">
+            <span class="tier-emoji" aria-hidden="true">👑</span>
+            <div class="info"><div class="name">Inner Circle</div><div class="perk">+ File sumber &amp; mentoring</div></div>
+            <div class="price">Rp 150rb<span style="font-weight:500;color:var(--text-mute)">/bln</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- DIGITAL PRODUCT -->
+      <article class="mon-card reveal">
+        <span class="tag">🛍️ Produk Digital</span>
+        <h3>Jual karyamu</h3>
+        <p>E-book, preset, template, kelas video — unggah sekali, jual selamanya. File terkirim otomatis ke pembeli.</p>
+        <div class="prod-preview">
+          <div class="prod-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+          <div class="prod-meta">
+            <div class="pname">Panduan Lengkap Digital Painting</div>
+            <div class="pdesc">E-book 84 halaman + 20 brush gratis</div>
+            <div class="prow">
+              <div class="pprice gradient-text">Rp 89.000</div>
+              <div class="psold">🔥 312 terjual</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%">Beli sekarang</button>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ANALYTICS ===================== -->
+<section class="section" id="analitik">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Dashboard analitik</span>
+      <h2>Tahu persis apa yang <span class="gradient-text">menghasilkan</span></h2>
+      <p>Data real-time tentang pengunjung, klik, dan pendapatan — supaya kamu fokus ke konten yang laku.</p>
+    </div>
+
+    <div class="analytics-grid reveal">
+      <div class="stat-card">
+        <div class="ico" style="background:linear-gradient(135deg,rgba(236,72,153,.15),rgba(236,72,153,.05));color:#EC4899"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+        <div class="val" data-count="38492">0</div>
+        <div class="lbl">Pengunjung bulan ini</div>
+        <div class="delta">▲ 18% vs bulan lalu</div>
+      </div>
+      <div class="stat-card">
+        <div class="ico" style="background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(139,92,246,.05));color:#8B5CF6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div class="val" data-count="14207">0</div>
+        <div class="lbl">Total klik tautan</div>
+        <div class="delta">▲ 24% vs bulan lalu</div>
+      </div>
+      <div class="stat-card">
+        <div class="ico" style="background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(16,185,129,.05));color:#10B981"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <div class="val" data-count="8745" data-prefix="Rp " data-suffix="rb">0</div>
+        <div class="lbl">Pendapatan bulan ini</div>
+        <div class="delta">▲ 31% vs bulan lalu</div>
+      </div>
+      <div class="stat-card">
+        <div class="ico" style="background:linear-gradient(135deg,rgba(245,158,11,.15),rgba(245,158,11,.05));color:#F59E0B"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="val" data-count="1284">0</div>
+        <div class="lbl">Member berbayar</div>
+        <div class="delta">▲ 12% vs bulan lalu</div>
+      </div>
+    </div>
+
+    <div class="chart-card reveal" id="chartCard">
+      <div class="chart-head">
+        <h3>📊 Pengunjung &amp; klik — 7 hari terakhir</h3>
+        <div class="legend">
+          <span><span class="dot" style="background:linear-gradient(135deg,#EC4899,#8B5CF6)"></span> Pengunjung</span>
+          <span><span class="dot" style="background:#A78BFA"></span> Klik</span>
+        </div>
+      </div>
+      <div class="bars" id="bars">
+        <!-- bars injected by JS -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TEMPLATES SHOWCASE ===================== -->
+<section class="section monetize" id="template">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Showcase template</span>
+      <h2>Mulai dari template, <span class="gradient-text">jadikan milikmu</span></h2>
+      <p>Pilih gaya yang cocok dengan brand-mu, lalu ubah sesuka hati. Semuanya mobile-ready.</p>
+    </div>
+    <div class="tmpl-grid">
+      <div class="tmpl-card reveal">
+        <div class="tmpl-preview" style="background:linear-gradient(135deg,#FBCFE8,#DDD6FE)"><div class="av"></div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+        <div class="tmpl-meta"><span class="tn">Bubblegum</span><span class="heart">♥ 4.2k</span></div>
+      </div>
+      <div class="tmpl-card reveal">
+        <div class="tmpl-preview" style="background:linear-gradient(135deg,#1E1B3A,#3B2A6B)"><div class="av"></div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+        <div class="tmpl-meta"><span class="tn">Midnight</span><span class="heart">♥ 6.8k</span></div>
+      </div>
+      <div class="tmpl-card reveal">
+        <div class="tmpl-preview" style="background:linear-gradient(135deg,#FED7AA,#FBA5A5)"><div class="av"></div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+        <div class="tmpl-meta"><span class="tn">Sunset</span><span class="heart">♥ 3.1k</span></div>
+      </div>
+      <div class="tmpl-card reveal">
+        <div class="tmpl-preview" style="background:linear-gradient(135deg,#A7F3D0,#99F6E4)"><div class="av"></div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+        <div class="tmpl-meta"><span class="tn">Mint</span><span class="heart">♥ 2.7k</span></div>
+      </div>
+      <div class="tmpl-card reveal">
+        <div class="tmpl-preview" style="background:linear-gradient(135deg,#E5E7EB,#F9FAFB)"><div class="av"></div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+        <div class="tmpl-meta"><span class="tn">Mono</span><span class="heart">♥ 5.4k</span></div>
+      </div>
+      <div class="tmpl-card reveal">
+        <div class="tmpl-preview" style="background:linear-gradient(135deg,#FDE68A,#FCA5A5)"><div class="av"></div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+        <div class="tmpl-meta"><span class="tn">Mentari</span><span class="heart">♥ 3.9k</span></div>
+      </div>
+      <div class="tmpl-card reveal">
+        <div class="tmpl-preview" style="background:linear-gradient(135deg,#C7D2FE,#A5B4FC)"><div class="av"></div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+        <div class="tmpl-meta"><span class="tn">Indigo</span><span class="heart">♥ 4.6k</span></div>
+      </div>
+      <div class="tmpl-card reveal">
+        <div class="tmpl-preview" style="background:linear-gradient(135deg,#0F172A,#1E293B)"><div class="av"></div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+        <div class="tmpl-meta"><span class="tn">Noir</span><span class="heart">♥ 7.2k</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TESTIMONIALS ===================== -->
+<section class="section testimonials">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Cerita kreator</span>
+      <h2>Dipakai ribuan kreator <span class="gradient-text">Indonesia</span></h2>
+      <p>Dari ilustrator sampai musisi, podcaster sampai UMKM — semua punya satu link.</p>
+    </div>
+    <div class="testi-grid">
+      <article class="testi-card reveal">
+        <div class="testi-stars" aria-label="5 dari 5 bintang">★★★★★</div>
+        <p>"Sejak pakai tip jar LinkNusa, pendapatan dari ilustrasi naik 3x. Pencairan ke GoPay langsung cair, nggak ribet."</p>
+        <div class="testi-who">
+          <span class="testi-av" style="background:linear-gradient(135deg,#EC4899,#8B5CF6)">DA</span>
+          <div><div class="nm">Dewi Anjani</div><div class="role">Ilustrator · 89rb followers</div></div>
+        </div>
+      </article>
+      <article class="testi-card reveal">
+        <div class="testi-stars" aria-label="5 dari 5 bintang">★★★★★</div>
+        <p>"Membership-nya game changer. Sekarang 400+ orang langganan tier bulanan untuk dengar demo lagu duluan. Penghasilan stabil tiap bulan."</p>
+        <div class="testi-who">
+          <span class="testi-av" style="background:linear-gradient(135deg,#0EA5E9,#8B5CF6)">RP</span>
+          <div><div class="nm">Rangga Pratama</div><div class="role">Musisi indie · Bandung</div></div>
+        </div>
+      </article>
+      <article class="testi-card reveal">
+        <div class="testi-stars" aria-label="5 dari 5 bintang">★★★★★</div>
+        <p>"Jualan e-book resep lewat LinkNusa lebih gampang dari marketplace. Analitiknya bikin aku tahu konten mana yang harus digenjot."</p>
+        <div class="testi-who">
+          <span class="testi-av" style="background:linear-gradient(135deg,#F59E0B,#EC4899)">SK</span>
+          <div><div class="nm">Sari Kusuma</div><div class="role">Food creator · 210rb followers</div></div>
+        </div>
+      </article>
+      <article class="testi-card reveal">
+        <div class="testi-stars" aria-label="5 dari 5 bintang">★★★★★</div>
+        <p>"Satu link untuk semua: podcast, merch, kelas, dan donasi. Bio Instagram-ku akhirnya rapi. Setup-nya cuma 10 menit."</p>
+        <div class="testi-who">
+          <span class="testi-av" style="background:linear-gradient(135deg,#10B981,#0EA5E9)">BW</span>
+          <div><div class="nm">Bayu Wirawan</div><div class="role">Podcaster · "Ngobrol Santai"</div></div>
+        </div>
+      </article>
+      <article class="testi-card reveal">
+        <div class="testi-stars" aria-label="5 dari 5 bintang">★★★★★</div>
+        <p>"Sebagai UMKM kecil, ini ngebantu banget. Katalog produk, WA order, dan promo semua jadi satu halaman cantik."</p>
+        <div class="testi-who">
+          <span class="testi-av" style="background:linear-gradient(135deg,#8B5CF6,#EC4899)">NF</span>
+          <div><div class="nm">Nadia Fitri</div><div class="role">Owner · Batik Lokal</div></div>
+        </div>
+      </article>
+      <article class="testi-card reveal">
+        <div class="testi-stars" aria-label="5 dari 5 bintang">★★★★★</div>
+        <p>"Yang paling kusuka: halaman load-nya kilat di HP. Audiens TikTok-ku langsung klik tanpa nunggu. Konversinya kerasa banget."</p>
+        <div class="testi-who">
+          <span class="testi-av" style="background:linear-gradient(135deg,#EC4899,#F59E0B)">AP</span>
+          <div><div class="nm">Aditya Pranata</div><div class="role">Content creator · 1.2jt followers</div></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PRICING ===================== -->
+<section class="section" id="harga">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Harga sederhana</span>
+      <h2>Mulai gratis, <span class="gradient-text">naik kelas kapan saja</span></h2>
+      <p>Tanpa kartu kredit untuk mulai. Batalkan kapan pun. Komisi transaksi paling rendah.</p>
+    </div>
+
+    <div class="price-toggle reveal">
+      <span class="lbl active" id="lblMonthly">Bulanan</span>
+      <button class="switch" id="priceSwitch" role="switch" aria-checked="false" aria-label="Beralih ke tagihan tahunan"></button>
+      <span class="lbl" id="lblYearly">Tahunan</span>
+      <span class="save-pill">Hemat 30%</span>
+    </div>
+
+    <div class="pricing-grid">
+      <article class="price-card reveal">
+        <div class="pname">Free</div>
+        <div class="pdesc">Untuk yang baru mulai membangun kehadiran.</div>
+        <div class="price-amt"><span class="cur">Rp</span><span class="num">0</span><span class="per">/selamanya</span></div>
+        <div class="pnote">Tanpa biaya, tanpa kartu</div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Link tak terbatas</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 5 tema dasar</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Analitik 7 hari</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Tip jar (komisi 8%)</li>
+        </ul>
+        <a href="#cta" class="btn btn-ghost">Mulai gratis</a>
+      </article>
+
+      <article class="price-card featured reveal">
+        <div class="pname">Pro</div>
+        <div class="pdesc">Untuk kreator yang serius bertumbuh.</div>
+        <div class="price-amt"><span class="cur">Rp</span><span class="num" data-monthly="49" data-yearly="34">49</span><span class="per">rb/bln</span></div>
+        <div class="pnote" id="proNote">Ditagih bulanan</div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Semua di Free</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 40+ tema &amp; font kustom</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Analitik penuh + ekspor</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Tip jar (komisi 4%)</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Tanpa watermark LinkNusa</li>
+        </ul>
+        <a href="#cta" class="btn btn-primary">Pilih Pro</a>
+      </article>
+
+      <article class="price-card reveal">
+        <div class="pname">Creator</div>
+        <div class="pdesc">Untuk profesional &amp; bisnis kreator.</div>
+        <div class="price-amt"><span class="cur">Rp</span><span class="num" data-monthly="129" data-yearly="90">129</span><span class="per">rb/bln</span></div>
+        <div class="pnote" id="creatorNote">Ditagih bulanan</div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Semua di Pro</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Membership &amp; produk digital</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Komisi transaksi 0%</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Domain kustom sendiri</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Dukungan prioritas</li>
+        </ul>
+        <a href="#cta" class="btn btn-ghost">Pilih Creator</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section class="section cta-wrap" id="cta">
+  <div class="container">
+    <div class="cta-box reveal">
+      <h2>Halamanmu menunggu.</h2>
+      <p>Klaim username gratis hari ini. Setup di bawah 5 menit, langsung bisa kamu bagikan.</p>
+      <form class="cta-form" id="ctaForm">
+        <label class="prefix">
+          <span>linknusa.id/</span>
+          <input type="text" id="ctaUser" placeholder="namamu" aria-label="Username yang diinginkan" autocomplete="off">
+        </label>
+        <button type="submit" class="btn btn-lg">Klaim sekarang</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="brand" aria-label="LinkNusa beranda">
+          <span class="brand-mark" aria-hidden="true">L</span>
+          <span>Link<span class="gradient-text">Nusa</span></span>
+        </a>
+        <p>Satu link untuk semua karyamu — dan untuk dibayar. Dibuat dengan cinta untuk kreator Indonesia.</p>
+        <div class="footer-social">
+          <a href="#cta" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85C2.38 3.92 3.9 2.38 7.15 2.23 8.42 2.17 8.8 2.16 12 2.16zm0 3.68a6.16 6.16 0 100 12.32 6.16 6.16 0 000-12.32zm0 10.16a4 4 0 110-8 4 4 0 010 8zm6.4-10.4a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z"/></svg></a>
+          <a href="#cta" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.6 7.2a4.8 4.8 0 01-2.2-2.7v-.5h-3.3v13.2a2.4 2.4 0 11-2.4-2.4c.25 0 .5.04.73.1v-3.4a5.8 5.8 0 00-.73-.05 5.8 5.8 0 105.8 5.8V9.7a8 8 0 004.7 1.5V7.9a4.7 4.7 0 01-2.6-.7z"/></svg></a>
+          <a href="#cta" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 00.5 6.2 31 31 0 000 12a31 31 0 00.5 5.8 3 3 0 002.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 002.1-2.1A31 31 0 0024 12a31 31 0 00-.5-5.8zM9.6 15.6V8.4l6.2 3.6z"/></svg></a>
+          <a href="#cta" aria-label="X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.2 2h3.3l-7.2 8.2L22.8 22h-6.6l-5.2-6.8L4.9 22H1.6l7.7-8.8L1.2 2h6.8l4.7 6.2zm-1.2 18h1.8L7.1 3.9H5.2z"/></svg></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Produk</h4>
+        <a href="#fitur">Fitur</a>
+        <a href="#monetisasi">Monetisasi</a>
+        <a href="#analitik">Analitik</a>
+        <a href="#template">Template</a>
+        <a href="#harga">Harga</a>
+      </div>
+      <div class="footer-col">
+        <h4>Sumber</h4>
+        <a href="#cta">Pusat bantuan</a>
+        <a href="#cta">Panduan kreator</a>
+        <a href="#cta">Blog</a>
+        <a href="#cta">Komunitas</a>
+        <a href="#cta">API &amp; Integrasi</a>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <a href="#cta">Tentang kami</a>
+        <a href="#cta">Karier</a>
+        <a href="#cta">Kontak</a>
+        <a href="#cta">Privasi</a>
+        <a href="#cta">Ketentuan</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; <span id="year">2026</span> LinkNusa. Semua hak dilindungi.</p>
+      <p class="made">Dibuat untuk kreator Indonesia <span aria-hidden="true">🇮🇩</span></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- THEME (light default + persisted dark) ---------- */
+  var root = document.documentElement;
+  var THEME_KEY = 'linknusa_theme';
+  try {
+    var saved = localStorage.getItem(THEME_KEY);
+    if (saved === 'dark' || saved === 'light') root.setAttribute('data-theme', saved);
+  } catch (e) {}
+  var themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', function () {
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+  });
+
+  /* ---------- NAV: scroll state + hamburger ---------- */
+  var nav = document.getElementById('nav');
+  window.addEventListener('scroll', function () {
+    nav.classList.toggle('scrolled', window.scrollY > 8);
+  }, { passive: true });
+
+  var hamburger = document.getElementById('hamburger');
+  var navLinks = document.getElementById('navLinks');
+  function closeMenu() {
+    hamburger.classList.remove('active');
+    navLinks.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    hamburger.setAttribute('aria-label', 'Buka menu');
+  }
+  hamburger.addEventListener('click', function () {
+    var open = navLinks.classList.toggle('open');
+    hamburger.classList.toggle('active', open);
+    hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    hamburger.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
+  });
+  navLinks.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', closeMenu);
+  });
+
+  /* ---------- YEAR ---------- */
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* ---------- LIVE BUILDER: themes ---------- */
+  var phoneScreen = document.getElementById('phoneScreen');
+  var bioAvatar = document.getElementById('bioAvatar');
+  var THEMES = {
+    bubblegum: { bg: 'linear-gradient(135deg,#FBCFE8,#DDD6FE)', text: '#3B2A57', btn: 'rgba(255,255,255,.92)', btntext: '#3B2A57', radius: '16px' },
+    midnight:  { bg: 'linear-gradient(160deg,#1E1B3A,#3B2A6B)', text: '#F1ECFF', btn: 'rgba(255,255,255,.12)', btntext: '#F1ECFF', radius: '12px' },
+    sunset:    { bg: 'linear-gradient(135deg,#FED7AA,#FBA5A5)', text: '#5C2A1E', btn: 'rgba(255,255,255,.9)', btntext: '#5C2A1E', radius: '22px' },
+    mint:      { bg: 'linear-gradient(135deg,#A7F3D0,#99F6E4)', text: '#0F3D33', btn: 'rgba(255,255,255,.92)', btntext: '#0F3D33', radius: '14px' },
+    mono:      { bg: 'linear-gradient(135deg,#F3F4F6,#E5E7EB)', text: '#1A1525', btn: '#1A1525', btntext: '#fff', radius: '8px' }
+  };
+  var currentAccent = '#EC4899';
+
+  function applyTheme(name) {
+    var t = THEMES[name];
+    if (!t) return;
+    phoneScreen.style.setProperty('--bio-bg', t.bg);
+    phoneScreen.style.setProperty('--bio-text', t.text);
+    phoneScreen.style.setProperty('--bio-btn', t.btn);
+    phoneScreen.style.setProperty('--bio-btntext', t.btntext);
+    phoneScreen.style.setProperty('--bio-radius', t.radius);
+    phoneScreen.style.setProperty('--bio-btnborder', name === 'midnight' ? '1px solid rgba(255,255,255,.18)' : 'none');
+  }
+  document.getElementById('themeSwatches').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-theme-preset]');
+    if (!btn) return;
+    this.querySelectorAll('.swatch').forEach(function (s) { s.classList.remove('active'); });
+    btn.classList.add('active');
+    applyTheme(btn.getAttribute('data-theme-preset'));
+  });
+
+  /* ---------- LIVE BUILDER: accent color ---------- */
+  function applyAccent(color) {
+    currentAccent = color;
+    bioAvatar.style.background = color;
+    phoneScreen.style.setProperty('--bio-accent', color);
+  }
+  document.getElementById('colorSwatches').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-accent]');
+    if (!btn) return;
+    this.querySelectorAll('.color-dot').forEach(function (s) { s.classList.remove('active'); });
+    btn.classList.add('active');
+    applyAccent(btn.getAttribute('data-accent'));
+  });
+
+  /* ---------- LIVE BUILDER: add link ---------- */
+  var bioLinks = document.getElementById('bioLinks');
+  var addLinkForm = document.getElementById('addLinkForm');
+  var newLinkInput = document.getElementById('newLink');
+  var emojis = ['🔗', '🎬', '🎧', '📷', '✨', '🛒', '📝', '💬', '🎟️', '⭐'];
+  addLinkForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var val = newLinkInput.value.trim();
+    if (!val) { newLinkInput.focus(); return; }
+    var a = document.createElement('a');
+    a.className = 'bio-link';
+    a.href = '#cta';
+    a.textContent = emojis[Math.floor(Math.random() * emojis.length)] + ' ' + val;
+    bioLinks.appendChild(a);
+    newLinkInput.value = '';
+    if (!reduceMotion) {
+      a.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    newLinkInput.focus();
+  });
+
+  /* ---------- TIP JAR ---------- */
+  var tipNet = document.getElementById('tipNet');
+  function fmtRp(n) { return 'Rp ' + n.toLocaleString('id-ID'); }
+  document.getElementById('tipAmounts').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-amt]');
+    if (!btn) return;
+    this.querySelectorAll('.tip-amt').forEach(function (b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    var amt = parseInt(btn.getAttribute('data-amt'), 10);
+    var net = Math.round(amt * 0.95); // 5% platform fee illustration
+    tipNet.textContent = fmtRp(net);
+  });
+
+  /* ---------- PRICING TOGGLE ---------- */
+  var priceSwitch = document.getElementById('priceSwitch');
+  var lblMonthly = document.getElementById('lblMonthly');
+  var lblYearly = document.getElementById('lblYearly');
+  var proNote = document.getElementById('proNote');
+  var creatorNote = document.getElementById('creatorNote');
+  var isYearly = false;
+  priceSwitch.addEventListener('click', function () {
+    isYearly = !isYearly;
+    priceSwitch.classList.toggle('year', isYearly);
+    priceSwitch.setAttribute('aria-checked', isYearly ? 'true' : 'false');
+    lblMonthly.classList.toggle('active', !isYearly);
+    lblYearly.classList.toggle('active', isYearly);
+    document.querySelectorAll('.price-amt .num[data-monthly]').forEach(function (el) {
+      el.textContent = isYearly ? el.getAttribute('data-yearly') : el.getAttribute('data-monthly');
+    });
+    var noteText = isYearly ? 'Ditagih tahunan, hemat 30%' : 'Ditagih bulanan';
+    proNote.textContent = noteText;
+    creatorNote.textContent = noteText;
+  });
+
+  /* ---------- CTA forms (demo) ---------- */
+  document.getElementById('ctaForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var u = document.getElementById('ctaUser');
+    var name = u.value.trim() || 'namamu';
+    var btn = this.querySelector('button');
+    btn.textContent = '✓ linknusa.id/' + name + ' siap!';
+    btn.disabled = true;
+    setTimeout(function () { btn.textContent = 'Klaim sekarang'; btn.disabled = false; }, 2600);
+  });
+
+  /* ---------- ANIMATED COUNTERS ---------- */
+  function animateCount(el) {
+    var target = parseFloat(el.getAttribute('data-count'));
+    var prefix = el.getAttribute('data-prefix') || '';
+    var suffix = el.getAttribute('data-suffix') || '';
+    var dur = reduceMotion ? 0 : 1400;
+    var start = null;
+    function step(ts) {
+      if (start === null) start = ts;
+      var p = dur === 0 ? 1 : Math.min((ts - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      var val = Math.round(target * eased);
+      el.textContent = prefix + val.toLocaleString('id-ID') + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ---------- BAR CHART ---------- */
+  var chartData = [
+    { day: 'Sen', visit: 62, click: 38 },
+    { day: 'Sel', visit: 78, click: 45 },
+    { day: 'Rab', visit: 55, click: 30 },
+    { day: 'Kam', visit: 92, click: 61 },
+    { day: 'Jum', visit: 100, click: 72 },
+    { day: 'Sab', visit: 84, click: 58 },
+    { day: 'Min', visit: 70, click: 49 }
+  ];
+  var barsEl = document.getElementById('bars');
+  chartData.forEach(function (d) {
+    var col = document.createElement('div');
+    col.className = 'bar-col';
+    var stack = document.createElement('div');
+    stack.className = 'bar-stack';
+    var v = document.createElement('div');
+    v.className = 'bar visit';
+    v.setAttribute('data-h', d.visit);
+    v.setAttribute('role', 'img');
+    v.setAttribute('aria-label', d.day + ': ' + d.visit + '% pengunjung');
+    var c = document.createElement('div');
+    c.className = 'bar click';
+    c.setAttribute('data-h', d.click);
+    c.setAttribute('aria-hidden', 'true');
+    stack.appendChild(v);
+    stack.appendChild(c);
+    var lbl = document.createElement('div');
+    lbl.className = 'day';
+    lbl.textContent = d.day;
+    col.appendChild(stack);
+    col.appendChild(lbl);
+    barsEl.appendChild(col);
+  });
+  function growBars() {
+    barsEl.querySelectorAll('.bar').forEach(function (b) {
+      b.style.height = b.getAttribute('data-h') + '%';
+    });
+  }
+
+  /* ---------- INTERSECTION OBSERVER: reveal + counters + chart ---------- */
+  var counted = false, charted = false;
+  if ('IntersectionObserver' in window) {
+    var revealObs = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('in'); obs.unobserve(en.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(function (el) { revealObs.observe(el); });
+
+    var countObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting && !counted) {
+          counted = true;
+          document.querySelectorAll('[data-count]').forEach(animateCount);
+        }
+      });
+    }, { threshold: 0.3 });
+    var heroStat = document.querySelector('.hero-stats');
+    if (heroStat) countObs.observe(heroStat);
+    var statGrid = document.querySelector('.analytics-grid');
+    if (statGrid) countObs.observe(statGrid);
+
+    var chartObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting && !charted) { charted = true; growBars(); }
+      });
+    }, { threshold: 0.25 });
+    var chartCard = document.getElementById('chartCard');
+    if (chartCard) chartObs.observe(chartCard);
+  } else {
+    document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
+    document.querySelectorAll('[data-count]').forEach(animateCount);
+    growBars();
+  }
+})();
+</script>
+</body>
+</html>

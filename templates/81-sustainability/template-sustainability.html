@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoNusa — Platform Keberlanjutan & Jejak Karbon Indonesia</title>
+<meta name="description" content="EcoNusa membantu bisnis Indonesia menghitung jejak karbon, melaporkan ESG, dan mendanai proyek hijau. Capai net-zero dengan data yang transparan.">
+<meta name="theme-color" content="#10B981">
+<meta property="og:title" content="EcoNusa — Platform Keberlanjutan Indonesia">
+<meta property="og:description" content="Hitung & kurangi jejak karbon, lapor ESG, danai proyek hijau Indonesia.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ===================== TOKENS ===================== */
+:root {
+  --font-display: 'Outfit', system-ui, sans-serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+
+  /* Brand */
+  --emerald: #10B981;
+  --emerald-600: #059669;
+  --emerald-700: #047857;
+  --earth: #B7791F;       /* earthy gold/clay secondary */
+  --earth-soft: #D4A24E;
+  --sky: #0EA5A4;
+
+  /* Light surfaces */
+  --bg: #F7FAF8;
+  --bg-soft: #FFFFFF;
+  --bg-sunken: #EEF4F0;
+  --surface: #FFFFFF;
+  --surface-2: #F2F7F4;
+  --ink: #0C1F18;
+  --ink-2: #324A40;
+  --muted: #5C7468;
+  --border: #DCE7E0;
+  --border-strong: #C4D6CB;
+  --ring: rgba(16,185,129,.45);
+
+  --shadow-sm: 0 1px 2px rgba(12,31,24,.06), 0 1px 3px rgba(12,31,24,.05);
+  --shadow-md: 0 8px 24px rgba(12,31,24,.08);
+  --shadow-lg: 0 24px 60px rgba(12,31,24,.12);
+  --glow: 0 0 0 1px rgba(16,185,129,.18), 0 18px 50px rgba(16,185,129,.18);
+
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-xl: 32px;
+  --r-pill: 999px;
+
+  --grad-hero: radial-gradient(120% 90% at 80% -10%, rgba(16,185,129,.16), transparent 60%),
+               radial-gradient(90% 80% at 0% 0%, rgba(14,165,164,.12), transparent 55%);
+  --grad-accent: linear-gradient(135deg, var(--emerald), var(--sky));
+  --grad-earth: linear-gradient(135deg, var(--earth-soft), var(--earth));
+
+  --maxw: 1200px;
+  --nav-h: 70px;
+}
+
+[data-theme="dark"] {
+  --bg: #07120D;
+  --bg-soft: #0B1A13;
+  --bg-sunken: #0A1611;
+  --surface: #0E2018;
+  --surface-2: #102A1F;
+  --ink: #EAF6EF;
+  --ink-2: #BFD8CC;
+  --muted: #8AA89A;
+  --border: #1C3A2C;
+  --border-strong: #27503C;
+  --ring: rgba(52,211,153,.5);
+
+  --emerald: #34D399;
+  --emerald-600: #10B981;
+  --emerald-700: #059669;
+  --earth-soft: #E0B25C;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+  --shadow-md: 0 10px 30px rgba(0,0,0,.45);
+  --shadow-lg: 0 30px 70px rgba(0,0,0,.55);
+  --glow: 0 0 0 1px rgba(52,211,153,.22), 0 18px 50px rgba(16,185,129,.22);
+
+  --grad-hero: radial-gradient(120% 90% at 80% -10%, rgba(16,185,129,.22), transparent 60%),
+               radial-gradient(90% 80% at 0% 0%, rgba(14,165,164,.16), transparent 55%);
+}
+
+/* ===================== BASE ===================== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  transition: background .4s ease, color .4s ease;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+:focus-visible { outline: 3px solid var(--emerald); outline-offset: 2px; border-radius: 6px; }
+
+h1,h2,h3,h4 { font-family: var(--font-display); line-height: 1.08; letter-spacing: -.02em; color: var(--ink); font-weight: 800; }
+
+.wrap { width: min(100% - 2.5rem, var(--maxw)); margin-inline: auto; }
+.section { padding: clamp(3.5rem, 8vw, 7rem) 0; position: relative; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-family: var(--font-display); font-weight: 700; font-size: .8rem;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--emerald-600);
+  background: color-mix(in srgb, var(--emerald) 12%, transparent);
+  padding: .4rem .85rem; border-radius: var(--r-pill);
+  border: 1px solid color-mix(in srgb, var(--emerald) 25%, transparent);
+}
+.eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--emerald); box-shadow: 0 0 0 4px color-mix(in srgb, var(--emerald) 25%, transparent); }
+.section-head { max-width: 640px; margin-bottom: clamp(2rem, 4vw, 3.25rem); }
+.section-head.center { margin-inline: auto; text-align: center; }
+.section-head h2 { font-size: clamp(1.9rem, 4.2vw, 3rem); margin: 1rem 0 .9rem; }
+.section-head p { color: var(--muted); font-size: clamp(1rem, 1.6vw, 1.12rem); }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .55rem;
+  font-family: var(--font-display); font-weight: 700; font-size: .98rem;
+  padding: .85rem 1.5rem; border-radius: var(--r-pill); min-height: 48px;
+  transition: transform .25s cubic-bezier(.3,1.2,.5,1), box-shadow .25s, background .25s, color .25s, border-color .25s;
+  white-space: nowrap;
+}
+.btn-primary { background: var(--grad-accent); color: #042418; box-shadow: var(--glow); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(16,185,129,.3), 0 22px 50px rgba(16,185,129,.3); }
+.btn-ghost { background: var(--surface); color: var(--ink); border: 1.5px solid var(--border-strong); box-shadow: var(--shadow-sm); }
+.btn-ghost:hover { transform: translateY(-2px); border-color: var(--emerald); color: var(--emerald-700); }
+.btn-light { background: rgba(255,255,255,.16); color: #fff; border: 1.5px solid rgba(255,255,255,.3); backdrop-filter: blur(6px); }
+.btn-light:hover { background: rgba(255,255,255,.26); transform: translateY(-2px); }
+
+/* ===================== NAV ===================== */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  height: var(--nav-h);
+  display: flex; align-items: center;
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border-bottom: 1px solid transparent;
+  transition: border-color .3s, background .3s, box-shadow .3s;
+}
+.nav.scrolled { border-bottom-color: var(--border); box-shadow: var(--shadow-sm); }
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.brand { display: inline-flex; align-items: center; gap: .6rem; font-family: var(--font-display); font-weight: 800; font-size: 1.22rem; letter-spacing: -.03em; }
+.brand .logo {
+  width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center;
+  background: var(--grad-accent); box-shadow: var(--glow); flex-shrink: 0;
+}
+.brand .logo svg { width: 19px; height: 19px; }
+.brand b { color: var(--emerald-700); }
+[data-theme="dark"] .brand b { color: var(--emerald); }
+
+.nav-links { display: flex; align-items: center; gap: .35rem; }
+.nav-links a {
+  font-weight: 600; font-size: .95rem; color: var(--ink-2);
+  padding: .55rem .8rem; border-radius: var(--r-pill); transition: color .2s, background .2s;
+}
+.nav-links a:hover { color: var(--emerald-700); background: var(--surface-2); }
+[data-theme="dark"] .nav-links a:hover { color: var(--emerald); }
+
+.nav-actions { display: flex; align-items: center; gap: .6rem; }
+.theme-toggle {
+  width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--surface); border: 1.5px solid var(--border); color: var(--ink);
+  transition: transform .3s, border-color .3s, background .3s;
+}
+.theme-toggle:hover { border-color: var(--emerald); transform: rotate(20deg); }
+.theme-toggle svg { width: 20px; height: 20px; }
+.theme-toggle .sun { display: none; }
+[data-theme="dark"] .theme-toggle .moon { display: none; }
+[data-theme="dark"] .theme-toggle .sun { display: block; }
+
+.hamburger { display: none; width: 46px; height: 46px; border-radius: 12px; place-items: center; background: var(--surface); border: 1.5px solid var(--border); }
+.hamburger span { display: block; width: 20px; height: 2px; background: var(--ink); border-radius: 2px; transition: transform .3s, opacity .3s; }
+.hamburger span + span { margin-top: 5px; }
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* mobile menu */
+.mobile-menu {
+  position: fixed; inset: var(--nav-h) 0 auto 0; z-index: 99;
+  background: var(--bg-soft); border-bottom: 1px solid var(--border);
+  padding: 1rem 1.25rem 1.5rem; box-shadow: var(--shadow-lg);
+  transform: translateY(-130%); transition: transform .35s cubic-bezier(.4,0,.2,1);
+}
+.mobile-menu.open { transform: translateY(0); }
+.mobile-menu a { display: block; padding: .9rem .6rem; font-weight: 600; font-size: 1.05rem; border-radius: 12px; color: var(--ink-2); }
+.mobile-menu a:hover { background: var(--surface-2); color: var(--emerald-700); }
+.mobile-menu .btn { width: 100%; margin-top: .75rem; }
+
+/* ===================== HERO ===================== */
+.hero { position: relative; padding-top: clamp(2.5rem, 5vw, 4rem); background: var(--grad-hero); overflow: hidden; }
+.hero::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(80% 70% at 70% 10%, #000, transparent 75%);
+  opacity: .5;
+}
+.hero .wrap { position: relative; z-index: 1; display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; min-height: calc(86dvh - var(--nav-h)); padding-bottom: clamp(3rem, 6vw, 5rem); }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: .55rem; margin-bottom: 1.4rem;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-pill);
+  padding: .4rem .85rem .4rem .45rem; font-size: .82rem; font-weight: 600; color: var(--ink-2); box-shadow: var(--shadow-sm);
+}
+.hero-badge .pill { background: var(--grad-accent); color: #042418; font-weight: 700; padding: .25rem .6rem; border-radius: var(--r-pill); font-size: .72rem; letter-spacing: .03em; }
+.hero h1 { font-size: clamp(2.4rem, 6vw, 4.1rem); font-weight: 900; margin-bottom: 1.2rem; }
+.hero h1 .grad { background: var(--grad-accent); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero p.lead { font-size: clamp(1.05rem, 2vw, 1.28rem); color: var(--muted); max-width: 540px; margin-bottom: 2rem; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: .85rem; margin-bottom: 2.2rem; }
+.hero-trust { display: flex; flex-wrap: wrap; align-items: center; gap: 1.4rem 2rem; }
+.hero-trust .t-item { display: flex; flex-direction: column; }
+.hero-trust .t-num { font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; color: var(--ink); }
+.hero-trust .t-num span { color: var(--emerald); }
+.hero-trust .t-lab { font-size: .82rem; color: var(--muted); }
+.hero-trust .divider { width: 1px; height: 36px; background: var(--border-strong); }
+
+/* hero visual — live carbon panel */
+.hero-visual { position: relative; }
+.eco-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-xl);
+  box-shadow: var(--shadow-lg); padding: 1.5rem; position: relative; overflow: hidden;
+}
+.eco-card::after { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--grad-accent); }
+.eco-card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+.eco-card-head .ttl { font-family: var(--font-display); font-weight: 700; font-size: 1.02rem; }
+.live-tag { display: inline-flex; align-items: center; gap: .4rem; font-size: .72rem; font-weight: 700; color: var(--emerald-700); background: color-mix(in srgb, var(--emerald) 14%, transparent); padding: .25rem .6rem; border-radius: var(--r-pill); }
+[data-theme="dark"] .live-tag { color: var(--emerald); }
+.live-tag .blip { width: 7px; height: 7px; border-radius: 50%; background: var(--emerald); animation: blip 1.6s ease-in-out infinite; }
+@keyframes blip { 0%,100%{ box-shadow: 0 0 0 0 var(--ring); } 50%{ box-shadow: 0 0 0 6px transparent; } }
+
+.eco-ring-wrap { display: flex; align-items: center; gap: 1.25rem; padding: 1rem 0 1.25rem; }
+.eco-ring { --val: 68; width: 132px; height: 132px; flex-shrink: 0; border-radius: 50%; display: grid; place-items: center; position: relative;
+  background: conic-gradient(var(--emerald) calc(var(--val)*1%), var(--bg-sunken) 0); transition: background 1s ease; }
+.eco-ring::before { content: ""; position: absolute; inset: 12px; border-radius: 50%; background: var(--surface); }
+.eco-ring .inner { position: relative; text-align: center; }
+.eco-ring .inner b { font-family: var(--font-display); font-weight: 800; font-size: 1.7rem; color: var(--ink); }
+.eco-ring .inner small { display: block; font-size: .7rem; color: var(--muted); margin-top: 2px; }
+.eco-ring-meta { display: flex; flex-direction: column; gap: .85rem; flex: 1; }
+.eco-stat { display: flex; align-items: center; gap: .7rem; }
+.eco-stat .ic { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; flex-shrink: 0; color: #042418; }
+.eco-stat .ic svg { width: 18px; height: 18px; }
+.eco-stat b { font-family: var(--font-display); font-weight: 800; display: block; font-size: 1.05rem; }
+.eco-stat span { font-size: .78rem; color: var(--muted); }
+
+.eco-bars { display: flex; align-items: flex-end; gap: .5rem; height: 64px; padding: 1rem .25rem .25rem; border-top: 1px solid var(--border); }
+.eco-bars .bar { flex: 1; border-radius: 6px 6px 0 0; background: var(--grad-accent); opacity: .85; transform-origin: bottom; animation: grow 1s cubic-bezier(.3,1,.4,1) both; }
+@keyframes grow { from { transform: scaleY(.05); } to { transform: scaleY(1); } }
+.float-chip {
+  position: absolute; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md);
+  box-shadow: var(--shadow-md); padding: .7rem .9rem; display: flex; align-items: center; gap: .6rem; font-size: .82rem; font-weight: 600;
+}
+.float-chip .ic { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: var(--grad-earth); color: #2a1c00; }
+.float-chip .ic svg { width: 16px; height: 16px; }
+.float-chip.c1 { top: -22px; right: 18px; animation: floaty 5s ease-in-out infinite; }
+.float-chip.c2 { bottom: -24px; left: -16px; animation: floaty 6s ease-in-out infinite .6s; }
+@keyframes floaty { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-9px); } }
+
+/* ===================== LOGOS / PARTNERS STRIP ===================== */
+.logos { padding: 2.5rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg-soft); }
+.logos p { text-align: center; font-size: .82rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 1.4rem; }
+.logos-row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: clamp(1.5rem, 5vw, 3.5rem); }
+.logos-row .lg { font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; color: var(--muted); opacity: .8; display: flex; align-items: center; gap: .5rem; transition: color .25s, opacity .25s; }
+.logos-row .lg:hover { color: var(--emerald-700); opacity: 1; }
+.logos-row .lg svg { width: 22px; height: 22px; }
+[data-theme="dark"] .logos-row .lg:hover { color: var(--emerald); }
+
+/* ===================== SOLUTIONS GRID ===================== */
+.sol-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(265px, 1fr)); gap: 1.25rem; }
+.sol-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: 1.6rem; position: relative; overflow: hidden; transition: transform .3s, box-shadow .3s, border-color .3s;
+}
+.sol-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: var(--border-strong); }
+.sol-card .ic { width: 52px; height: 52px; border-radius: 15px; display: grid; place-items: center; margin-bottom: 1.1rem; color: #042418; box-shadow: var(--shadow-sm); }
+.sol-card .ic svg { width: 26px; height: 26px; }
+.sol-card.tone-emerald .ic { background: var(--grad-accent); }
+.sol-card.tone-earth .ic { background: var(--grad-earth); color: #2a1c00; }
+.sol-card.tone-sky .ic { background: linear-gradient(135deg, #0EA5A4, #38BDF8); }
+.sol-card.tone-leaf .ic { background: linear-gradient(135deg, #65A30D, #16A34A); }
+.sol-card h3 { font-size: 1.18rem; margin-bottom: .55rem; }
+.sol-card p { color: var(--muted); font-size: .95rem; margin-bottom: 1rem; }
+.sol-card .feat { display: flex; flex-direction: column; gap: .45rem; }
+.sol-card .feat li { display: flex; align-items: center; gap: .5rem; font-size: .88rem; color: var(--ink-2); font-weight: 500; }
+.sol-card .feat li svg { width: 16px; height: 16px; color: var(--emerald-600); flex-shrink: 0; }
+[data-theme="dark"] .sol-card .feat li svg { color: var(--emerald); }
+
+/* ===================== CALCULATOR ===================== */
+.calc-section { background: var(--bg-soft); }
+.calc-wrap { display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(1.5rem, 4vw, 2.75rem); align-items: stretch; }
+.calc-panel, .calc-result {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-xl); padding: clamp(1.5rem, 3vw, 2.25rem); box-shadow: var(--shadow-md);
+}
+.calc-panel h3, .calc-result h3 { font-size: 1.3rem; margin-bottom: .35rem; }
+.calc-panel .sub { color: var(--muted); font-size: .92rem; margin-bottom: 1.75rem; }
+.field { margin-bottom: 1.5rem; }
+.field .lbl { display: flex; align-items: center; justify-content: space-between; margin-bottom: .6rem; }
+.field .lbl label { font-family: var(--font-display); font-weight: 700; font-size: .95rem; display: flex; align-items: center; gap: .5rem; }
+.field .lbl label svg { width: 17px; height: 17px; color: var(--emerald-600); }
+[data-theme="dark"] .field .lbl label svg { color: var(--emerald); }
+.field .val { font-family: var(--font-display); font-weight: 800; font-size: .98rem; color: var(--emerald-700); background: color-mix(in srgb, var(--emerald) 12%, transparent); padding: .2rem .6rem; border-radius: var(--r-pill); }
+[data-theme="dark"] .field .val { color: var(--emerald); }
+
+input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 8px; border-radius: var(--r-pill); background: var(--bg-sunken); outline: none; cursor: pointer; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; border-radius: 50%; background: var(--grad-accent); border: 3px solid var(--surface); box-shadow: 0 2px 8px rgba(16,185,129,.4); cursor: pointer; transition: transform .15s; }
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.12); }
+input[type="range"]::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: var(--emerald); border: 3px solid var(--surface); cursor: pointer; box-shadow: 0 2px 8px rgba(16,185,129,.4); }
+input[type="range"]:focus-visible { box-shadow: 0 0 0 3px var(--ring); }
+
+.seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: .4rem; background: var(--bg-sunken); padding: .35rem; border-radius: var(--r-pill); }
+.seg button { padding: .6rem .5rem; border-radius: var(--r-pill); font-weight: 700; font-size: .85rem; color: var(--muted); min-height: 44px; transition: background .25s, color .25s; }
+.seg button.active { background: var(--surface); color: var(--emerald-700); box-shadow: var(--shadow-sm); }
+[data-theme="dark"] .seg button.active { color: var(--emerald); }
+
+select.eco-select {
+  width: 100%; padding: .8rem 1rem; border-radius: var(--r-md); border: 1.5px solid var(--border-strong);
+  background: var(--surface); color: var(--ink); font-family: var(--font-body); font-weight: 600; font-size: .95rem; min-height: 48px;
+  appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%235C7468' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center;
+}
+select.eco-select:focus-visible { border-color: var(--emerald); }
+
+/* result */
+.calc-result { display: flex; flex-direction: column; background: linear-gradient(160deg, var(--surface), var(--surface-2)); }
+.result-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.4rem; }
+.result-big { text-align: center; padding: 1.5rem 0; }
+.result-big .num { font-family: var(--font-display); font-weight: 900; font-size: clamp(2.8rem, 9vw, 3.8rem); line-height: 1; background: var(--grad-accent); -webkit-background-clip: text; background-clip: text; color: transparent; transition: opacity .3s; }
+.result-big .unit { font-size: 1rem; color: var(--muted); font-weight: 600; margin-top: .5rem; }
+.result-gauge { height: 12px; border-radius: var(--r-pill); background: linear-gradient(90deg, #16A34A, #FACC15 50%, #EF4444); position: relative; margin: 1.25rem 0 .5rem; overflow: visible; }
+.result-gauge .pin { position: absolute; top: 50%; width: 20px; height: 20px; border-radius: 50%; background: var(--surface); border: 3px solid var(--ink); transform: translate(-50%, -50%); transition: left .5s cubic-bezier(.3,1,.4,1); box-shadow: var(--shadow-sm); }
+.gauge-labels { display: flex; justify-content: space-between; font-size: .72rem; color: var(--muted); font-weight: 600; margin-bottom: 1.5rem; }
+.result-verdict { display: flex; align-items: flex-start; gap: .75rem; padding: 1rem 1.1rem; border-radius: var(--r-md); background: var(--surface); border: 1px solid var(--border); margin-bottom: 1.25rem; }
+.result-verdict .vic { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; flex-shrink: 0; background: var(--grad-accent); color: #042418; }
+.result-verdict .vic svg { width: 19px; height: 19px; }
+.result-verdict b { font-family: var(--font-display); display: block; font-size: 1rem; margin-bottom: .15rem; }
+.result-verdict span { font-size: .86rem; color: var(--muted); }
+.rec-list { display: flex; flex-direction: column; gap: .6rem; margin-bottom: 1.5rem; }
+.rec-list .rec { display: flex; align-items: center; gap: .65rem; font-size: .9rem; color: var(--ink-2); }
+.rec-list .rec svg { width: 18px; height: 18px; color: var(--emerald-600); flex-shrink: 0; }
+[data-theme="dark"] .rec-list .rec svg { color: var(--emerald); }
+.calc-result .btn { margin-top: auto; }
+
+/* ===================== DASHBOARD MOCKUP ===================== */
+.dash-section { position: relative; }
+.dash-wrap { display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(1.5rem, 4vw, 2.5rem); align-items: center; }
+.dash-mock { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-xl); box-shadow: var(--shadow-lg); overflow: hidden; }
+.dash-top { display: flex; align-items: center; gap: .5rem; padding: .9rem 1.1rem; border-bottom: 1px solid var(--border); background: var(--surface-2); }
+.dash-top .dots { display: flex; gap: .35rem; }
+.dash-top .dots i { width: 11px; height: 11px; border-radius: 50%; background: var(--border-strong); }
+.dash-top .dots i:nth-child(1){ background:#F87171; } .dash-top .dots i:nth-child(2){ background:#FBBF24; } .dash-top .dots i:nth-child(3){ background:var(--emerald); }
+.dash-top .url { margin-left: .5rem; font-size: .78rem; color: var(--muted); font-weight: 600; }
+.dash-body { padding: 1.25rem; }
+.dash-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; margin-bottom: 1.1rem; }
+.kpi { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r-md); padding: .9rem; }
+.kpi .k-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: .5rem; }
+.kpi .k-ic { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; color: #042418; }
+.kpi .k-ic svg { width: 15px; height: 15px; }
+.kpi.e1 .k-ic { background: var(--grad-accent); } .kpi.e2 .k-ic { background: var(--grad-earth); color: #2a1c00; } .kpi.e3 .k-ic { background: linear-gradient(135deg,#0EA5A4,#38BDF8); }
+.kpi .k-trend { font-size: .7rem; font-weight: 700; padding: .15rem .45rem; border-radius: var(--r-pill); }
+.kpi .k-trend.down { color: var(--emerald-700); background: color-mix(in srgb, var(--emerald) 14%, transparent); }
+[data-theme="dark"] .kpi .k-trend.down { color: var(--emerald); }
+.kpi .k-trend.up { color: var(--earth); background: color-mix(in srgb, var(--earth) 16%, transparent); }
+.kpi .k-num { font-family: var(--font-display); font-weight: 800; font-size: 1.45rem; }
+.kpi .k-lab { font-size: .74rem; color: var(--muted); }
+
+.dash-charts { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+.dash-chart-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r-md); padding: .9rem 1rem; }
+.dash-chart-card .cc-ttl { font-size: .8rem; font-weight: 700; color: var(--ink-2); margin-bottom: .85rem; display: flex; align-items: center; justify-content: space-between; }
+.dash-chart-card .cc-ttl span { font-size: .7rem; color: var(--muted); font-weight: 600; }
+.donut-wrap { display: flex; align-items: center; gap: .9rem; }
+.donut { --p: 72; width: 84px; height: 84px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; position: relative;
+  background: conic-gradient(var(--emerald) calc(var(--p)*1%), var(--earth-soft) calc(var(--p)*1%) 86%, var(--border-strong) 0); transition: background 1.2s ease; }
+.donut::before { content: ""; position: absolute; inset: 11px; border-radius: 50%; background: var(--surface-2); }
+.donut b { position: relative; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; }
+.donut-legend { display: flex; flex-direction: column; gap: .4rem; font-size: .74rem; }
+.donut-legend .ll { display: flex; align-items: center; gap: .45rem; color: var(--ink-2); font-weight: 600; }
+.donut-legend .ll i { width: 9px; height: 9px; border-radius: 3px; }
+.donut-legend .ll i.a { background: var(--emerald); } .donut-legend .ll i.b { background: var(--earth-soft); } .donut-legend .ll i.c { background: var(--border-strong); }
+
+.mini-bars { display: flex; align-items: flex-end; gap: .4rem; height: 84px; }
+.mini-bars .mb { flex: 1; background: var(--grad-accent); border-radius: 5px 5px 0 0; transform-origin: bottom; opacity: .9; }
+.mini-bars .mb:last-child { background: var(--grad-earth); }
+
+.dash-feat { display: flex; flex-direction: column; gap: 1.1rem; }
+.dash-feat .df { display: flex; gap: .9rem; }
+.dash-feat .df .ic { width: 46px; height: 46px; border-radius: 13px; display: grid; place-items: center; flex-shrink: 0; background: var(--surface-2); border: 1px solid var(--border); color: var(--emerald-600); }
+[data-theme="dark"] .dash-feat .df .ic { color: var(--emerald); }
+.dash-feat .df .ic svg { width: 22px; height: 22px; }
+.dash-feat .df h4 { font-size: 1.08rem; margin-bottom: .25rem; }
+.dash-feat .df p { color: var(--muted); font-size: .92rem; }
+
+/* ===================== GREEN PROJECTS ===================== */
+.proj-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1.5rem; }
+.proj-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-sm); transition: transform .3s, box-shadow .3s; display: flex; flex-direction: column; }
+.proj-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.proj-media { height: 158px; position: relative; overflow: hidden; }
+.proj-media .bg { position: absolute; inset: 0; }
+.proj-media .bg.p1 { background: linear-gradient(135deg, #047857, #34D399); }
+.proj-media .bg.p2 { background: linear-gradient(135deg, #0E7490, #38BDF8); }
+.proj-media .bg.p3 { background: linear-gradient(135deg, #B45309, #FBBF24); }
+.proj-media::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.18) 1px, transparent 1px); background-size: 18px 18px; mix-blend-mode: overlay; }
+.proj-media .tag { position: absolute; top: .85rem; left: .85rem; z-index: 2; background: rgba(0,0,0,.32); color: #fff; backdrop-filter: blur(4px); font-size: .72rem; font-weight: 700; padding: .3rem .7rem; border-radius: var(--r-pill); }
+.proj-media .loc { position: absolute; bottom: .85rem; left: .85rem; z-index: 2; color: #fff; font-weight: 700; font-family: var(--font-display); display: flex; align-items: center; gap: .35rem; font-size: .92rem; text-shadow: 0 1px 4px rgba(0,0,0,.3); }
+.proj-media .loc svg { width: 15px; height: 15px; }
+.proj-body { padding: 1.25rem; display: flex; flex-direction: column; flex: 1; }
+.proj-body h3 { font-size: 1.12rem; margin-bottom: .45rem; }
+.proj-body p { color: var(--muted); font-size: .9rem; margin-bottom: 1.1rem; }
+.proj-prog { margin-top: auto; }
+.proj-prog .row { display: flex; justify-content: space-between; font-size: .8rem; font-weight: 700; margin-bottom: .45rem; }
+.proj-prog .row .raised { color: var(--emerald-700); } [data-theme="dark"] .proj-prog .row .raised { color: var(--emerald); }
+.proj-prog .row .goal { color: var(--muted); }
+.proj-prog .track { height: 8px; border-radius: var(--r-pill); background: var(--bg-sunken); overflow: hidden; }
+.proj-prog .track .fill { height: 100%; border-radius: var(--r-pill); background: var(--grad-accent); }
+.proj-meta { display: flex; gap: 1.25rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.proj-meta .pm b { font-family: var(--font-display); font-weight: 800; display: block; font-size: 1.05rem; }
+.proj-meta .pm span { font-size: .74rem; color: var(--muted); }
+
+/* ===================== IMPACT STATS ===================== */
+.impact { background: linear-gradient(160deg, var(--emerald-700), var(--emerald-600) 55%, var(--sky)); color: #fff; border-radius: clamp(var(--r-lg), 4vw, var(--r-xl)); position: relative; overflow: hidden; }
+.impact::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.1) 1px, transparent 1px); background-size: 26px 26px; opacity: .6; }
+.impact .inner { position: relative; z-index: 1; padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 5vw, 4rem); }
+.impact .ih { text-align: center; max-width: 620px; margin: 0 auto clamp(2rem, 4vw, 3rem); }
+.impact .ih .eyebrow { background: rgba(255,255,255,.16); color: #fff; border-color: rgba(255,255,255,.3); }
+.impact .ih .eyebrow .dot { background: #fff; box-shadow: 0 0 0 4px rgba(255,255,255,.25); }
+.impact .ih h2 { color: #fff; font-size: clamp(1.8rem, 4.5vw, 2.8rem); margin: 1rem 0 .75rem; }
+.impact .ih p { color: rgba(255,255,255,.85); }
+.impact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.25rem; }
+.impact-stat { text-align: center; padding: 1.5rem 1rem; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); border-radius: var(--r-lg); backdrop-filter: blur(6px); }
+.impact-stat .ic { width: 48px; height: 48px; margin: 0 auto .9rem; border-radius: 14px; display: grid; place-items: center; background: rgba(255,255,255,.18); }
+.impact-stat .ic svg { width: 24px; height: 24px; color: #fff; }
+.impact-stat .num { font-family: var(--font-display); font-weight: 900; font-size: clamp(2rem, 5vw, 2.8rem); line-height: 1; }
+.impact-stat .lab { color: rgba(255,255,255,.85); font-size: .9rem; margin-top: .5rem; font-weight: 500; }
+
+/* ===================== HOW IT WORKS ===================== */
+.how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; position: relative; }
+.how-step { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 1.75rem 1.5rem; position: relative; transition: transform .3s, box-shadow .3s; }
+.how-step:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+.how-step .n { font-family: var(--font-display); font-weight: 900; font-size: 2.6rem; line-height: 1; background: var(--grad-accent); -webkit-background-clip: text; background-clip: text; color: transparent; opacity: .85; }
+.how-step .ic { width: 50px; height: 50px; border-radius: 15px; display: grid; place-items: center; margin: .9rem 0 1rem; background: var(--surface-2); border: 1px solid var(--border); color: var(--emerald-600); }
+[data-theme="dark"] .how-step .ic { color: var(--emerald); }
+.how-step .ic svg { width: 24px; height: 24px; }
+.how-step h3 { font-size: 1.15rem; margin-bottom: .5rem; }
+.how-step p { color: var(--muted); font-size: .92rem; }
+
+/* ===================== CTA ===================== */
+.cta-band { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-xl); box-shadow: var(--shadow-lg); padding: clamp(2.25rem, 5vw, 3.75rem); text-align: center; position: relative; overflow: hidden; }
+.cta-band::before { content: ""; position: absolute; inset: 0; background: var(--grad-hero); opacity: .9; }
+.cta-band > * { position: relative; z-index: 1; }
+.cta-band h2 { font-size: clamp(1.9rem, 4.5vw, 3rem); margin-bottom: 1rem; }
+.cta-band p { color: var(--muted); max-width: 540px; margin: 0 auto 2rem; font-size: 1.08rem; }
+.cta-actions { display: flex; flex-wrap: wrap; gap: .85rem; justify-content: center; }
+.cta-note { margin-top: 1.5rem; font-size: .85rem; color: var(--muted); display: inline-flex; align-items: center; gap: .5rem; }
+.cta-note svg { width: 16px; height: 16px; color: var(--emerald-600); }
+[data-theme="dark"] .cta-note svg { color: var(--emerald); }
+
+/* ===================== FOOTER ===================== */
+.footer { background: var(--bg-soft); border-top: 1px solid var(--border); padding: clamp(3rem, 6vw, 4.5rem) 0 2rem; }
+.footer-grid { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: 2.5rem; margin-bottom: 3rem; }
+.footer .brand { margin-bottom: 1rem; }
+.footer-about p { color: var(--muted); font-size: .92rem; max-width: 320px; margin-bottom: 1.25rem; }
+.footer-social { display: flex; gap: .6rem; }
+.footer-social a { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; background: var(--surface); border: 1px solid var(--border); color: var(--ink-2); transition: color .2s, border-color .2s, transform .2s; }
+.footer-social a:hover { color: var(--emerald-700); border-color: var(--emerald); transform: translateY(-2px); }
+[data-theme="dark"] .footer-social a:hover { color: var(--emerald); }
+.footer-social a svg { width: 18px; height: 18px; }
+.footer-col h4 { font-size: .85rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; font-weight: 700; }
+.footer-col a { display: block; padding: .35rem 0; color: var(--ink-2); font-size: .93rem; font-weight: 500; transition: color .2s; }
+.footer-col a:hover { color: var(--emerald-700); } [data-theme="dark"] .footer-col a:hover { color: var(--emerald); }
+.footer-bottom { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding-top: 1.75rem; border-top: 1px solid var(--border); }
+.footer-bottom p { font-size: .86rem; color: var(--muted); }
+.footer-badges { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+.footer-badges span { font-size: .8rem; color: var(--muted); display: inline-flex; align-items: center; gap: .4rem; font-weight: 600; }
+.footer-badges svg { width: 15px; height: 15px; color: var(--emerald-600); }
+[data-theme="dark"] .footer-badges svg { color: var(--emerald); }
+
+/* ===================== REVEAL ===================== */
+.reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.3,1); }
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 980px) {
+  .hero .wrap { grid-template-columns: 1fr; min-height: auto; padding-top: 1rem; }
+  .hero-visual { order: -1; max-width: 460px; }
+  .calc-wrap, .dash-wrap { grid-template-columns: 1fr; }
+  .dash-feat { flex-direction: row; flex-wrap: wrap; }
+  .dash-feat .df { flex: 1 1 220px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .footer-about { grid-column: 1 / -1; }
+}
+@media (max-width: 760px) {
+  .nav-links, .nav-actions .btn { display: none; }
+  .hamburger { display: grid; }
+  .hero-trust .divider { display: none; }
+  .dash-kpis { grid-template-columns: 1fr; }
+  .dash-charts { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+  .footer-grid { grid-template-columns: 1fr; }
+  .hero-cta .btn { flex: 1; }
+  .float-chip { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== NAV ===================== -->
+<nav class="nav" id="nav">
+  <div class="wrap">
+    <a href="#home" class="brand" aria-label="EcoNusa beranda">
+      <span class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#042418" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>
+      </span>
+      Eco<b>Nusa</b>
+    </a>
+    <div class="nav-links">
+      <a href="#solusi">Solusi</a>
+      <a href="#kalkulator">Kalkulator</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#proyek">Proyek Hijau</a>
+      <a href="#cara">Cara Kerja</a>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Ganti mode terang/gelap">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a href="#cta" class="btn btn-primary">Mulai Gratis</a>
+      <button class="hamburger" id="hamburger" aria-label="Buka menu" aria-expanded="false" aria-controls="mobileMenu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#solusi">Solusi</a>
+  <a href="#kalkulator">Kalkulator</a>
+  <a href="#dashboard">Dashboard</a>
+  <a href="#proyek">Proyek Hijau</a>
+  <a href="#cara">Cara Kerja</a>
+  <a href="#cta" class="btn btn-primary">Mulai Gratis</a>
+</div>
+
+<!-- ===================== HERO ===================== -->
+<header class="hero" id="home">
+  <div class="wrap">
+    <div class="hero-copy">
+      <span class="hero-badge"><span class="pill">2026</span> Sertifikasi karbon terverifikasi SNI &amp; ISO 14064</span>
+      <h1>Capai <span class="grad">net-zero</span> dengan data karbon yang transparan.</h1>
+      <p class="lead">EcoNusa membantu bisnis Indonesia menghitung jejak karbon, melaporkan ESG sesuai standar OJK, dan mendanai proyek hijau nyata di Nusantara — semua dalam satu platform.</p>
+      <div class="hero-cta">
+        <a href="#kalkulator" class="btn btn-primary">Hitung Jejak Karbon
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a href="#dashboard" class="btn btn-ghost">Lihat Dashboard</a>
+      </div>
+      <div class="hero-trust">
+        <div class="t-item"><span class="t-num" data-count="1200" data-suffix="+">0</span><span class="t-lab">Bisnis terdaftar</span></div>
+        <div class="divider" aria-hidden="true"></div>
+        <div class="t-item"><span class="t-num"><span>2,4</span>jt ton</span><span class="t-lab">CO₂ terkompensasi</span></div>
+        <div class="divider" aria-hidden="true"></div>
+        <div class="t-item"><span class="t-num" data-count="38" data-suffix=" prov">0</span><span class="t-lab">Provinsi terjangkau</span></div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="eco-card">
+        <div class="eco-card-head">
+          <span class="ttl">Jejak Karbon — PT Lestari</span>
+          <span class="live-tag"><span class="blip"></span> Realtime</span>
+        </div>
+        <div class="eco-ring-wrap">
+          <div class="eco-ring" id="heroRing">
+            <div class="inner"><b id="heroRingVal">68%</b><small>menuju target</small></div>
+          </div>
+          <div class="eco-ring-meta">
+            <div class="eco-stat">
+              <span class="ic" style="background:var(--grad-accent)"><svg viewBox="0 0 24 24" fill="none" stroke="#042418" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></span>
+              <div><b>−31%</b><span>Emisi vs 2024</span></div>
+            </div>
+            <div class="eco-stat">
+              <span class="ic" style="background:var(--grad-earth);color:#2a1c00"><svg viewBox="0 0 24 24" fill="none" stroke="#2a1c00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg></span>
+              <div><b>14.500</b><span>Pohon ditanam</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="eco-bars" aria-hidden="true">
+          <span class="bar" style="height:40%"></span><span class="bar" style="height:62%"></span><span class="bar" style="height:48%"></span><span class="bar" style="height:78%"></span><span class="bar" style="height:55%"></span><span class="bar" style="height:90%"></span><span class="bar" style="height:70%"></span>
+        </div>
+      </div>
+      <div class="float-chip c1"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#2a1c00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg></span> 100% Energi Surya</div>
+      <div class="float-chip c2"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#2a1c00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span> Laporan ESG Lulus Audit</div>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== PARTNERS STRIP ===================== -->
+<section class="logos" aria-label="Mitra dan klien">
+  <div class="wrap">
+    <p>Dipercaya oleh perusahaan &amp; institusi terkemuka Indonesia</p>
+    <div class="logos-row">
+      <span class="lg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21h18M5 21V7l8-4 8 4v14M9 9v.01M9 13v.01M9 17v.01"/></svg> NusantaraBank</span>
+      <span class="lg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18M3 12h18"/></svg> GarudaEnergi</span>
+      <span class="lg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5v8l-9 5-9-5V8z"/></svg> SawitMakmur</span>
+      <span class="lg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18M9 21V9"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg> JayaManufaktur</span>
+      <span class="lg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 19-9-9 19-2-8z"/></svg> KirimCepat</span>
+      <span class="lg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 7l10-5 10 5M2 17l10 5 10-5"/></svg> SegarRetail</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SOLUTIONS ===================== -->
+<section class="section" id="solusi">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow"><span class="dot"></span> Solusi Lengkap</span>
+      <h2>Satu platform untuk seluruh perjalanan keberlanjutan</h2>
+      <p>Dari pengukuran emisi hingga kompensasi karbon dan pelaporan resmi — semua terintegrasi dan siap audit.</p>
+    </div>
+    <div class="sol-grid">
+      <article class="sol-card tone-emerald reveal">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#042418" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></span>
+        <h3>Carbon Tracking</h3>
+        <p>Lacak emisi Scope 1, 2, dan 3 secara otomatis dari data operasional Anda dengan faktor emisi lokal Indonesia.</p>
+        <ul class="feat">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Faktor emisi SNI &amp; IPCC</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Integrasi data utilitas otomatis</li>
+        </ul>
+      </article>
+      <article class="sol-card tone-sky reveal">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#042418" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg></span>
+        <h3>ESG Reporting</h3>
+        <p>Hasilkan laporan keberlanjutan sesuai standar GRI, OJK, dan TCFD secara otomatis dalam hitungan menit.</p>
+        <ul class="feat">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Template GRI &amp; OJK siap pakai</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Ekspor PDF lulus audit</li>
+        </ul>
+      </article>
+      <article class="sol-card tone-earth reveal">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#2a1c00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg></span>
+        <h3>Offset Projects</h3>
+        <p>Kompensasi emisi melalui proyek reforestasi mangrove, energi surya, dan biogas yang terverifikasi independen.</p>
+        <ul class="feat">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Proyek lokal Nusantara</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Verifikasi pihak ketiga</li>
+        </ul>
+      </article>
+      <article class="sol-card tone-leaf reveal">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#042418" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5 17 22l-5-3-5 3 1.5-8.5"/></svg></span>
+        <h3>Green Certification</h3>
+        <p>Raih sertifikat keberlanjutan terverifikasi yang meningkatkan reputasi dan akses ke pendanaan hijau.</p>
+        <ul class="feat">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Badge digital &amp; QR publik</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Akses green financing</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CALCULATOR ===================== -->
+<section class="section calc-section" id="kalkulator">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow"><span class="dot"></span> Kalkulator Karbon</span>
+      <h2>Hitung jejak karbon Anda dalam 30 detik</h2>
+      <p>Geser parameter di bawah untuk memperkirakan emisi tahunan dan dapatkan rekomendasi langkah pengurangan.</p>
+    </div>
+    <div class="calc-wrap">
+      <!-- INPUT PANEL -->
+      <div class="calc-panel reveal">
+        <h3>Parameter Aktivitas</h3>
+        <p class="sub">Sesuaikan dengan profil operasional bisnis Anda.</p>
+
+        <div class="field">
+          <div class="lbl">
+            <label for="rTransport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3v-6l2-5h11l2 5h2v6h-2"/><circle cx="7.5" cy="17.5" r="2"/><circle cx="17.5" cy="17.5" r="2"/></svg> Transportasi &amp; logistik</label>
+            <span class="val" id="vTransport">15.000 km/bln</span>
+          </div>
+          <input type="range" id="rTransport" min="0" max="60000" step="1000" value="15000" aria-describedby="vTransport">
+        </div>
+
+        <div class="field">
+          <div class="lbl">
+            <label for="rListrik"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg> Konsumsi listrik</label>
+            <span class="val" id="vListrik">8.000 kWh/bln</span>
+          </div>
+          <input type="range" id="rListrik" min="0" max="40000" step="500" value="8000" aria-describedby="vListrik">
+        </div>
+
+        <div class="field">
+          <div class="lbl">
+            <label for="rPegawai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13A4 4 0 0 1 16 11"/></svg> Jumlah karyawan</label>
+            <span class="val" id="vPegawai">50 orang</span>
+          </div>
+          <input type="range" id="rPegawai" min="1" max="500" step="1" value="50" aria-describedby="vPegawai">
+        </div>
+
+        <div class="field">
+          <div class="lbl">
+            <label><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg> Sumber energi listrik</label>
+          </div>
+          <div class="seg" role="group" aria-label="Sumber energi">
+            <button type="button" data-energy="1.2" class="active">PLN Grid</button>
+            <button type="button" data-energy="0.6">Campuran</button>
+            <button type="button" data-energy="0.1">Terbarukan</button>
+          </div>
+        </div>
+
+        <div class="field" style="margin-bottom:0">
+          <div class="lbl">
+            <label for="sIndustri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20M4 20V8l5 3V8l5 3V8l5 3v9"/></svg> Sektor industri</label>
+          </div>
+          <select class="eco-select" id="sIndustri" aria-label="Sektor industri">
+            <option value="1.0">Jasa &amp; perkantoran</option>
+            <option value="1.6">Ritel &amp; perdagangan</option>
+            <option value="2.4">Manufaktur</option>
+            <option value="3.1">Logistik &amp; transportasi</option>
+            <option value="3.8">Pertambangan &amp; energi</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- RESULT PANEL -->
+      <div class="calc-result reveal">
+        <div class="result-head">
+          <h3>Estimasi Emisi Tahunan</h3>
+          <span class="live-tag"><span class="blip"></span> Live</span>
+        </div>
+        <div class="result-big">
+          <div class="num" id="co2Num">0</div>
+          <div class="unit">ton CO₂e per tahun</div>
+        </div>
+        <div class="result-gauge" aria-hidden="true"><span class="pin" id="gaugePin" style="left:50%"></span></div>
+        <div class="gauge-labels"><span>Rendah</span><span>Sedang</span><span>Tinggi</span></div>
+
+        <div class="result-verdict">
+          <span class="vic" id="verdictIc"><svg viewBox="0 0 24 24" fill="none" stroke="#042418" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/></svg></span>
+          <div><b id="verdictTitle">Jejak karbon sedang</b><span id="verdictDesc">Masih ada ruang besar untuk efisiensi energi.</span></div>
+        </div>
+
+        <div class="rec-list" id="recList"><!-- diisi JS --></div>
+
+        <a href="#cta" class="btn btn-primary" style="width:100%">Kompensasi <span id="treeNeed">320</span> pohon
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== DASHBOARD MOCKUP ===================== -->
+<section class="section dash-section" id="dashboard">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow"><span class="dot"></span> Dashboard ESG</span>
+      <h2>Pantau dampak Anda dalam satu layar</h2>
+      <p>Visualisasi real-time emisi, energi terbarukan, dan progres reforestasi — siap dibagikan ke pemangku kepentingan.</p>
+    </div>
+    <div class="dash-wrap">
+      <div class="dash-mock reveal" id="dashMock">
+        <div class="dash-top">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="url">app.econusa.id/dashboard</span>
+        </div>
+        <div class="dash-body">
+          <div class="dash-kpis">
+            <div class="kpi e1">
+              <div class="k-top"><span class="k-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#042418" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M21 7v6h-6"/></svg></span><span class="k-trend down">−31%</span></div>
+              <div class="k-num" data-count="1840" data-suffix="">0</div>
+              <div class="k-lab">ton CO₂e emisi</div>
+            </div>
+            <div class="kpi e2">
+              <div class="k-top"><span class="k-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#2a1c00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/></svg></span><span class="k-trend up">+18%</span></div>
+              <div class="k-num" data-count="14500" data-suffix="">0</div>
+              <div class="k-lab">pohon ditanam</div>
+            </div>
+            <div class="kpi e3">
+              <div class="k-top"><span class="k-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#042418" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg></span><span class="k-trend down">target</span></div>
+              <div class="k-num" data-count="72" data-suffix="%">0</div>
+              <div class="k-lab">energi terbarukan</div>
+            </div>
+          </div>
+          <div class="dash-charts">
+            <div class="dash-chart-card">
+              <div class="cc-ttl">Sumber Energi <span>Q2 2026</span></div>
+              <div class="donut-wrap">
+                <div class="donut" id="dashDonut"><b>72%</b></div>
+                <div class="donut-legend">
+                  <span class="ll"><i class="a"></i> Terbarukan 72%</span>
+                  <span class="ll"><i class="b"></i> Gas alam 14%</span>
+                  <span class="ll"><i class="c"></i> Grid PLN 14%</span>
+                </div>
+              </div>
+            </div>
+            <div class="dash-chart-card">
+              <div class="cc-ttl">Tren Emisi <span>6 bulan</span></div>
+              <div class="mini-bars" id="miniBars" aria-hidden="true">
+                <span class="mb" style="height:88%"></span><span class="mb" style="height:74%"></span><span class="mb" style="height:80%"></span><span class="mb" style="height:58%"></span><span class="mb" style="height:46%"></span><span class="mb" style="height:34%"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-feat reveal">
+        <div class="df">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/><circle cx="12" cy="12" r="3"/></svg></span>
+          <div><h4>Data real-time</h4><p>Sinkronisasi otomatis dari meteran listrik, armada, dan ERP Anda setiap jam.</p></div>
+        </div>
+        <div class="df">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></span>
+          <div><h4>Laporan otomatis</h4><p>Hasilkan laporan ESG bulanan yang siap presentasi ke direksi dan investor.</p></div>
+        </div>
+        <div class="df">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+          <div><h4>Peringatan cerdas</h4><p>Dapatkan notifikasi saat emisi melampaui ambang batas yang Anda tetapkan.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== GREEN PROJECTS ===================== -->
+<section class="section" id="proyek">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow"><span class="dot"></span> Proyek Hijau</span>
+      <h2>Danai proyek nyata di seluruh Nusantara</h2>
+      <p>Setiap rupiah kompensasi tersalur langsung ke proyek terverifikasi dengan dampak yang dapat dilacak.</p>
+    </div>
+    <div class="proj-grid">
+      <article class="proj-card reveal">
+        <div class="proj-media">
+          <div class="bg p1"></div>
+          <span class="tag">Reforestasi</span>
+          <span class="loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Riau, Sumatra</span>
+        </div>
+        <div class="proj-body">
+          <h3>Restorasi Mangrove Pesisir</h3>
+          <p>Penanaman 50.000 bibit mangrove untuk melindungi pesisir dan menyerap karbon biru.</p>
+          <div class="proj-prog">
+            <div class="row"><span class="raised">Rp 1,8 M terkumpul</span><span class="goal">dari Rp 2,5 M</span></div>
+            <div class="track"><span class="fill" style="width:72%"></span></div>
+          </div>
+          <div class="proj-meta">
+            <div class="pm"><b>3.200</b><span>ton CO₂/thn</span></div>
+            <div class="pm"><b>180 ha</b><span>area pulih</span></div>
+            <div class="pm"><b>240</b><span>donatur</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="proj-card reveal">
+        <div class="proj-media">
+          <div class="bg p2"></div>
+          <span class="tag">Energi Surya</span>
+          <span class="loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Sumba, NTT</span>
+        </div>
+        <div class="proj-body">
+          <h3>Mikrogrid Surya Desa</h3>
+          <p>Menerangi 12 desa terpencil dengan panel surya komunitas, menggantikan generator diesel.</p>
+          <div class="proj-prog">
+            <div class="row"><span class="raised">Rp 3,1 M terkumpul</span><span class="goal">dari Rp 4,0 M</span></div>
+            <div class="track"><span class="fill" style="width:78%"></span></div>
+          </div>
+          <div class="proj-meta">
+            <div class="pm"><b>1.900</b><span>ton CO₂/thn</span></div>
+            <div class="pm"><b>2.400</b><span>warga</span></div>
+            <div class="pm"><b>410</b><span>donatur</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="proj-card reveal">
+        <div class="proj-media">
+          <div class="bg p3"></div>
+          <span class="tag">Biogas</span>
+          <span class="loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Boyolali, Jateng</span>
+        </div>
+        <div class="proj-body">
+          <h3>Biogas Peternakan Rakyat</h3>
+          <p>Mengubah limbah ternak menjadi energi bersih untuk 300 keluarga peternak sapi perah.</p>
+          <div class="proj-prog">
+            <div class="row"><span class="raised">Rp 920 jt terkumpul</span><span class="goal">dari Rp 1,5 M</span></div>
+            <div class="track"><span class="fill" style="width:61%"></span></div>
+          </div>
+          <div class="proj-meta">
+            <div class="pm"><b>1.100</b><span>ton CO₂/thn</span></div>
+            <div class="pm"><b>300</b><span>keluarga</span></div>
+            <div class="pm"><b>156</b><span>donatur</span></div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== IMPACT STATS ===================== -->
+<section class="section">
+  <div class="wrap">
+    <div class="impact reveal">
+      <div class="inner">
+        <div class="ih">
+          <span class="eyebrow"><span class="dot"></span> Dampak Kolektif</span>
+          <h2>Bersama, kita sudah mengubah angka</h2>
+          <p>Hasil nyata dari ribuan bisnis yang berkomitmen pada keberlanjutan melalui EcoNusa.</p>
+        </div>
+        <div class="impact-grid">
+          <div class="impact-stat">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8M21 7v6h-6"/></svg></span>
+            <div class="num" data-count="2.4" data-decimals="1" data-suffix="jt">0</div>
+            <div class="lab">ton CO₂ terkompensasi</div>
+          </div>
+          <div class="impact-stat">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg></span>
+            <div class="num" data-count="1.8" data-decimals="1" data-suffix="jt">0</div>
+            <div class="lab">pohon ditanam</div>
+          </div>
+          <div class="impact-stat">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg></span>
+            <div class="num" data-count="340" data-suffix=" GWh">0</div>
+            <div class="lab">energi terbarukan dihasilkan</div>
+          </div>
+          <div class="impact-stat">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg></span>
+            <div class="num" data-count="1200" data-suffix="+">0</div>
+            <div class="lab">bisnis bertransformasi</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== HOW IT WORKS ===================== -->
+<section class="section" id="cara" style="background:var(--bg-soft)">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow"><span class="dot"></span> Cara Kerja</span>
+      <h2>Mulai perjalanan net-zero dalam 4 langkah</h2>
+      <p>Proses yang dirancang sederhana — tanpa konsultan mahal, tanpa spreadsheet rumit.</p>
+    </div>
+    <div class="how-grid">
+      <article class="how-step reveal">
+        <div class="n">01</div>
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+        <h3>Hubungkan data</h3>
+        <p>Sambungkan meteran listrik, armada, dan sistem operasional. Atau unggah data manual.</p>
+      </article>
+      <article class="how-step reveal">
+        <div class="n">02</div>
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></span>
+        <h3>Ukur jejak karbon</h3>
+        <p>EcoNusa menghitung emisi Scope 1–3 otomatis dengan faktor emisi terstandar.</p>
+      </article>
+      <article class="how-step reveal">
+        <div class="n">03</div>
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+        <h3>Kurangi &amp; kompensasi</h3>
+        <p>Terapkan rekomendasi efisiensi dan danai proyek hijau untuk menetralkan sisa emisi.</p>
+      </article>
+      <article class="how-step reveal">
+        <div class="n">04</div>
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5 17 22l-5-3-5 3 1.5-8.5"/></svg></span>
+        <h3>Laporkan &amp; sertifikasi</h3>
+        <p>Hasilkan laporan ESG resmi dan raih sertifikat keberlanjutan terverifikasi.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section class="section" id="cta">
+  <div class="wrap">
+    <div class="cta-band reveal">
+      <span class="eyebrow"><span class="dot"></span> Mulai Hari Ini</span>
+      <h2>Bisnis hijau bukan biaya — itu investasi masa depan</h2>
+      <p>Bergabunglah dengan 1.200+ bisnis Indonesia yang sudah memulai perjalanan net-zero bersama EcoNusa. Gratis selama 30 hari, tanpa kartu kredit.</p>
+      <div class="cta-actions">
+        <a href="#kalkulator" class="btn btn-primary">Mulai Gratis 30 Hari
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a href="#dashboard" class="btn btn-ghost">Jadwalkan Demo</a>
+      </div>
+      <span class="cta-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Tanpa kartu kredit · Setup 10 menit · Dukungan lokal</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <a href="#home" class="brand">
+          <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#042418" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg></span>
+          Eco<b>Nusa</b>
+        </a>
+        <p>Platform keberlanjutan untuk bisnis Indonesia. Hitung, kurangi, dan kompensasi jejak karbon Anda — menuju masa depan net-zero bersama.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77Z"/></svg></a>
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" aria-label="X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.3 8.3L23 22h-6.6l-5.2-6.7L5.3 22H2l7.8-8.9L1.5 2h6.8l4.7 6.2L18.9 2Zm-1.2 18h1.7L7.2 3.7H5.4L17.7 20Z"/></svg></a>
+          <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3.3-.4-4.9a2.5 2.5 0 0 0-1.8-1.8C19.2 5 12 5 12 5s-7.2 0-8.8.3A2.5 2.5 0 0 0 1.4 7.1C1 8.7 1 12 1 12s0 3.3.4 4.9a2.5 2.5 0 0 0 1.8 1.8C4.8 19 12 19 12 19s7.2 0 8.8-.3a2.5 2.5 0 0 0 1.8-1.8C23 15.3 23 12 23 12ZM9.8 15.3V8.7l6.2 3.3-6.2 3.3Z"/></svg></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Produk</h4>
+        <a href="#solusi">Carbon Tracking</a>
+        <a href="#solusi">ESG Reporting</a>
+        <a href="#proyek">Offset Projects</a>
+        <a href="#solusi">Sertifikasi Hijau</a>
+        <a href="#kalkulator">Kalkulator Karbon</a>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <a href="#">Tentang Kami</a>
+        <a href="#">Karier</a>
+        <a href="#proyek">Proyek Hijau</a>
+        <a href="#">Blog &amp; Riset</a>
+        <a href="#">Hubungi Kami</a>
+      </div>
+      <div class="footer-col">
+        <h4>Sumber Daya</h4>
+        <a href="#">Pusat Bantuan</a>
+        <a href="#">Standar GRI &amp; OJK</a>
+        <a href="#">Metodologi</a>
+        <a href="#">Dokumentasi API</a>
+        <a href="#">Status Layanan</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 EcoNusa Indonesia. Seluruh hak cipta dilindungi.</p>
+      <div class="footer-badges">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> ISO 14064 Certified</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg> Data Aman SNI</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- THEME ---------- */
+  var root = document.documentElement;
+  var toggle = document.getElementById('themeToggle');
+  var stored = null;
+  try { stored = localStorage.getItem('econusa-theme'); } catch (e) {}
+  if (stored) {
+    root.setAttribute('data-theme', stored);
+  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    root.setAttribute('data-theme', 'dark');
+  }
+  toggle.addEventListener('click', function () {
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('econusa-theme', next); } catch (e) {}
+  });
+
+  /* ---------- NAV SCROLL ---------- */
+  var nav = document.getElementById('nav');
+  var onScroll = function () { nav.classList.toggle('scrolled', window.scrollY > 8); };
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  /* ---------- MOBILE MENU ---------- */
+  var ham = document.getElementById('hamburger');
+  var menu = document.getElementById('mobileMenu');
+  var closeMenu = function () { ham.classList.remove('open'); menu.classList.remove('open'); ham.setAttribute('aria-expanded', 'false'); ham.setAttribute('aria-label', 'Buka menu'); };
+  ham.addEventListener('click', function () {
+    var open = menu.classList.toggle('open');
+    ham.classList.toggle('open', open);
+    ham.setAttribute('aria-expanded', open ? 'true' : 'false');
+    ham.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
+  });
+  menu.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', closeMenu); });
+
+  /* ---------- REVEAL ---------- */
+  var reveals = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(function (el) { io.observe(el); });
+  } else {
+    reveals.forEach(function (el) { el.classList.add('in'); });
+  }
+
+  /* ---------- COUNTERS ---------- */
+  function formatNum(n, decimals) {
+    if (decimals > 0) return n.toFixed(decimals).replace('.', ',');
+    return Math.round(n).toLocaleString('id-ID');
+  }
+  function animateCount(el) {
+    var target = parseFloat(el.getAttribute('data-count'));
+    var decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
+    var suffix = el.getAttribute('data-suffix') || '';
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      el.textContent = formatNum(target, decimals) + suffix; return;
+    }
+    var dur = 1500, start = null;
+    function step(ts) {
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = formatNum(target * eased, decimals) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+      else el.textContent = formatNum(target, decimals) + suffix;
+    }
+    requestAnimationFrame(step);
+  }
+  var counters = document.querySelectorAll('[data-count]');
+  if ('IntersectionObserver' in window) {
+    var cio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { animateCount(en.target); cio.unobserve(en.target); }
+      });
+    }, { threshold: 0.5 });
+    counters.forEach(function (el) { cio.observe(el); });
+  } else {
+    counters.forEach(animateCount);
+  }
+
+  /* ---------- DASH DONUT ANIMATE ---------- */
+  var donut = document.getElementById('dashDonut');
+  if (donut && 'IntersectionObserver' in window) {
+    var dio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { donut.style.setProperty('--p', '72'); dio.unobserve(en.target); }
+      });
+    }, { threshold: 0.4 });
+    donut.style.setProperty('--p', '0');
+    dio.observe(donut);
+  }
+
+  /* ---------- CARBON CALCULATOR ---------- */
+  var rTransport = document.getElementById('rTransport');
+  var rListrik = document.getElementById('rListrik');
+  var rPegawai = document.getElementById('rPegawai');
+  var sIndustri = document.getElementById('sIndustri');
+  var energyBtns = document.querySelectorAll('.seg button[data-energy]');
+
+  var vTransport = document.getElementById('vTransport');
+  var vListrik = document.getElementById('vListrik');
+  var vPegawai = document.getElementById('vPegawai');
+
+  var co2Num = document.getElementById('co2Num');
+  var gaugePin = document.getElementById('gaugePin');
+  var verdictTitle = document.getElementById('verdictTitle');
+  var verdictDesc = document.getElementById('verdictDesc');
+  var recList = document.getElementById('recList');
+  var treeNeed = document.getElementById('treeNeed');
+
+  var energyFactor = 1.2; // default PLN grid
+
+  function recIcon() {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>';
+  }
+
+  function compute() {
+    var km = +rTransport.value;          // per month
+    var kwh = +rListrik.value;           // per month
+    var peg = +rPegawai.value;
+    var sektor = parseFloat(sIndustri.value);
+
+    var transportTon = (km * 12 * 0.21) / 1000;
+    var listrikTon = (kwh * 12 * energyFactor) / 1000;
+    var pegawaiTon = peg * 0.45;
+    var total = (transportTon + listrikTon + pegawaiTon) * sektor;
+
+    vTransport.textContent = km.toLocaleString('id-ID') + ' km/bln';
+    vListrik.textContent = kwh.toLocaleString('id-ID') + ' kWh/bln';
+    vPegawai.textContent = peg.toLocaleString('id-ID') + ' orang';
+
+    co2Num.textContent = total.toLocaleString('id-ID', { maximumFractionDigits: 0 });
+
+    var pct = Math.max(4, Math.min(96, (total / 1500) * 100));
+    gaugePin.style.left = pct + '%';
+
+    var trees = Math.max(1, Math.round(total / 0.022));
+    treeNeed.textContent = trees.toLocaleString('id-ID');
+
+    var recs = [];
+    if (total < 300) {
+      verdictTitle.textContent = 'Jejak karbon rendah';
+      verdictDesc.textContent = 'Kerja bagus! Pertahankan dengan optimasi berkelanjutan.';
+    } else if (total < 800) {
+      verdictTitle.textContent = 'Jejak karbon sedang';
+      verdictDesc.textContent = 'Masih ada ruang besar untuk efisiensi energi.';
+    } else {
+      verdictTitle.textContent = 'Jejak karbon tinggi';
+      verdictDesc.textContent = 'Prioritaskan transisi energi & kompensasi segera.';
+    }
+
+    if (energyFactor > 0.5) recs.push('Beralih ke energi terbarukan dapat memangkas hingga 90% emisi listrik.');
+    if (km > 20000) recs.push('Optimalkan rute logistik & elektrifikasi armada untuk hemat emisi transportasi.');
+    if (kwh > 12000) recs.push('Audit efisiensi energi gedung & pasang panel surya atap.');
+    if (peg > 100) recs.push('Terapkan kebijakan kerja hybrid untuk kurangi emisi komuter.');
+    recs.push('Kompensasi sisa emisi melalui proyek hijau terverifikasi EcoNusa.');
+    recs = recs.slice(0, 3);
+
+    recList.innerHTML = recs.map(function (r) {
+      return '<div class="rec">' + recIcon() + '<span>' + r + '</span></div>';
+    }).join('');
+  }
+
+  [rTransport, rListrik, rPegawai].forEach(function (el) {
+    el.addEventListener('input', compute);
+  });
+  sIndustri.addEventListener('change', compute);
+  energyBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      energyBtns.forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      energyFactor = parseFloat(btn.getAttribute('data-energy'));
+      compute();
+    });
+  });
+
+  compute();
+
+})();
+</script>
+</body>
+</html>

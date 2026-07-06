@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SehatOnline — Konsultasi Dokter Online, Tebus Obat & Buat Janji</title>
+<meta name="description" content="SehatOnline: konsultasi dokter online via chat & video call, tebus obat diantar, buat janji rumah sakit, dan cek lab. Sehat lebih mudah dari rumah.">
+<meta name="theme-color" content="#0D9488">
+<meta property="og:title" content="SehatOnline — Telemedicine Tepercaya">
+<meta property="og:description" content="Konsultasi dokter online 24 jam via chat & video. Tebus obat diantar, buat janji RS, cek lab.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal-50:#F0FDFA; --teal-100:#CCFBF1; --teal-200:#99F6E4; --teal-300:#5EEAD4;
+  --teal-400:#2DD4BF; --teal-500:#14B8A6; --teal-600:#0D9488; --teal-700:#0F766E;
+  --teal-800:#115E59; --teal-900:#134E4A;
+  --blue-50:#EFF6FF; --blue-100:#DBEAFE; --blue-400:#60A5FA; --blue-500:#3B82F6; --blue-600:#2563EB;
+  --accent:#0D9488; --accent-soft:#5EEAD4; --accent-blue:#3B82F6;
+
+  --bg:#FBFDFC; --bg-alt:#F2FAF8; --surface:#FFFFFF; --surface-2:#F6FBFA;
+  --text:#0F2A28; --text-soft:#3F5C59; --text-mute:#6B807D;
+  --border:#E3EFEC; --border-strong:#CFE3DF;
+  --shadow-sm:0 1px 2px rgba(13,148,136,.06), 0 1px 3px rgba(15,42,40,.05);
+  --shadow:0 6px 20px rgba(15,42,40,.07), 0 2px 6px rgba(13,148,136,.05);
+  --shadow-lg:0 24px 60px rgba(15,42,40,.12), 0 8px 24px rgba(13,148,136,.08);
+  --shadow-teal:0 18px 44px rgba(13,148,136,.28);
+  --ring:rgba(13,148,136,.42);
+  --online:#22C55E; --gold:#F59E0B;
+
+  --font-head:'Plus Jakarta Sans',system-ui,sans-serif;
+  --font-body:'Nunito',system-ui,sans-serif;
+  --radius:14px; --radius-lg:22px; --radius-xl:30px; --radius-pill:999px;
+  --maxw:1200px;
+  --nav-h:68px;
+  --t:.28s cubic-bezier(.22,.61,.36,1);
+}
+[data-theme="dark"]{
+  --bg:#08110F; --bg-alt:#0C1916; --surface:#0F211E; --surface-2:#122723;
+  --text:#E9F6F3; --text-soft:#AECFC9; --text-mute:#7FA39D;
+  --border:#1C342F; --border-strong:#284B45;
+  --accent:#2DD4BF; --accent-soft:#0F766E; --accent-blue:#60A5FA;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.4);
+  --shadow:0 8px 24px rgba(0,0,0,.5);
+  --shadow-lg:0 26px 64px rgba(0,0,0,.62);
+  --shadow-teal:0 18px 44px rgba(13,148,136,.4);
+  --ring:rgba(45,212,191,.5);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--font-body); background:var(--bg); color:var(--text);
+  line-height:1.65; font-size:clamp(15px,1.5vw,16.5px);
+  overflow-x:hidden; transition:background var(--t),color var(--t);
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--font-head);line-height:1.15;font-weight:800;color:var(--text);letter-spacing:-.02em}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+ul{list-style:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+section{padding:clamp(56px,8vw,108px) 0}
+.container{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 clamp(18px,4vw,40px)}
+
+:focus-visible{outline:3px solid var(--ring);outline-offset:3px;border-radius:8px}
+
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;font-family:var(--font-head);
+  font-weight:700;font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);background:var(--teal-50);border:1px solid var(--border-strong);
+  padding:7px 15px;border-radius:var(--radius-pill);
+}
+[data-theme="dark"] .eyebrow{background:rgba(45,212,191,.1)}
+.sec-head{max-width:640px;margin:0 auto clamp(34px,5vw,56px);text-align:center}
+.sec-head.left{margin-left:0;text-align:left}
+.sec-head h2{font-size:clamp(1.7rem,4vw,2.7rem);margin:16px 0 14px}
+.sec-head p{color:var(--text-soft);font-size:clamp(1rem,1.6vw,1.12rem)}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  font-family:var(--font-head);font-weight:700;font-size:.95rem;
+  padding:13px 24px;border-radius:var(--radius-pill);min-height:48px;
+  transition:transform var(--t),box-shadow var(--t),background var(--t),color var(--t);
+  white-space:nowrap;cursor:pointer;
+}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:var(--shadow-teal)}
+[data-theme="dark"] .btn-primary{color:#04201C}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 22px 50px rgba(13,148,136,.36)}
+.btn-ghost{background:var(--surface);color:var(--text);border:1.5px solid var(--border-strong);box-shadow:var(--shadow-sm)}
+.btn-ghost:hover{transform:translateY(-2px);border-color:var(--accent);color:var(--accent)}
+.btn-white{background:#fff;color:var(--teal-700)}
+.btn-white:hover{transform:translateY(-2px);box-shadow:0 20px 40px rgba(0,0,0,.2)}
+.btn-block{width:100%}
+
+/* ============ NAV ============ */
+header.nav{
+  position:sticky;top:0;z-index:100;
+  backdrop-filter:saturate(180%) blur(16px);-webkit-backdrop-filter:saturate(180%) blur(16px);
+  background:color-mix(in srgb,var(--surface) 82%,transparent);
+  border-bottom:1px solid var(--border);transition:box-shadow var(--t),background var(--t);
+}
+header.nav.scrolled{box-shadow:var(--shadow)}
+.nav-inner{height:var(--nav-h);display:flex;align-items:center;gap:18px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-head);font-weight:800;font-size:1.22rem;letter-spacing:-.03em}
+.brand .logo{
+  width:38px;height:38px;border-radius:11px;display:grid;place-items:center;color:#fff;
+  background:linear-gradient(135deg,var(--teal-500),var(--teal-700));box-shadow:var(--shadow-teal);flex:none;
+}
+[data-theme="dark"] .brand .logo{color:#04201C}
+.brand .logo svg{width:22px;height:22px}
+.brand b{color:var(--accent)}
+.nav-links{display:flex;align-items:center;gap:4px;margin-left:auto}
+.nav-links a{
+  font-family:var(--font-head);font-weight:600;font-size:.92rem;color:var(--text-soft);
+  padding:9px 14px;border-radius:var(--radius-pill);transition:color var(--t),background var(--t);
+}
+.nav-links a:hover{color:var(--accent);background:var(--teal-50)}
+[data-theme="dark"] .nav-links a:hover{background:rgba(45,212,191,.1)}
+.nav-actions{display:flex;align-items:center;gap:10px;margin-left:14px}
+.theme-toggle{
+  width:46px;height:46px;border-radius:50%;display:grid;place-items:center;
+  background:var(--surface-2);border:1.5px solid var(--border);color:var(--text);
+  transition:transform var(--t),border-color var(--t),color var(--t);
+}
+.theme-toggle:hover{transform:rotate(18deg);border-color:var(--accent);color:var(--accent)}
+.theme-toggle svg{width:20px;height:20px}
+.theme-toggle .sun{display:none}
+[data-theme="dark"] .theme-toggle .sun{display:block}
+[data-theme="dark"] .theme-toggle .moon{display:none}
+.hamburger{display:none;width:46px;height:46px;border-radius:12px;background:var(--surface-2);border:1.5px solid var(--border);place-items:center}
+.hamburger svg{width:24px;height:24px;color:var(--text)}
+
+@media(max-width:940px){
+  .nav-links{
+    position:fixed;inset:var(--nav-h) 0 auto 0;flex-direction:column;align-items:stretch;gap:2px;
+    background:var(--surface);padding:16px clamp(18px,4vw,40px) 26px;border-bottom:1px solid var(--border);
+    box-shadow:var(--shadow-lg);transform:translateY(-130%);transition:transform var(--t);
+    margin-left:0;max-height:calc(100dvh - var(--nav-h));overflow-y:auto;
+  }
+  .nav-links.open{transform:translateY(0)}
+  .nav-links a{padding:14px 16px;font-size:1.02rem;border-radius:12px}
+  .nav-links .btn{margin-top:10px}
+  .hamburger{display:grid}
+  .nav-cta-desktop{display:none}
+}
+
+/* ============ HERO ============ */
+.hero{
+  position:relative;padding-top:clamp(36px,6vw,68px);padding-bottom:clamp(46px,7vw,92px);
+  background:
+    radial-gradient(900px 500px at 88% -8%,rgba(94,234,212,.34),transparent 60%),
+    radial-gradient(700px 460px at 6% 12%,rgba(59,130,246,.16),transparent 58%),
+    var(--bg);
+  overflow:hidden;
+}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(32px,5vw,60px);align-items:center}
+.hero-copy h1{font-size:clamp(2.1rem,5.4vw,3.7rem);line-height:1.05;margin:18px 0 18px}
+.hero-copy h1 .hl{color:var(--accent);position:relative}
+.hero-copy h1 .hl::after{content:"";position:absolute;left:0;right:0;bottom:.04em;height:.18em;background:var(--accent-soft);opacity:.5;border-radius:4px;z-index:-1}
+.hero-copy p.lead{font-size:clamp(1.04rem,1.9vw,1.24rem);color:var(--text-soft);max-width:540px;margin-bottom:28px}
+.hero-cta{display:flex;flex-wrap:wrap;gap:13px;margin-bottom:30px}
+.hero-trust{display:flex;flex-wrap:wrap;gap:22px}
+.hero-trust .ht{display:flex;flex-direction:column}
+.hero-trust .ht b{font-family:var(--font-head);font-size:clamp(1.3rem,2.4vw,1.7rem);color:var(--text);line-height:1}
+.hero-trust .ht span{font-size:.82rem;color:var(--text-mute);margin-top:3px}
+.hero-badges{display:flex;align-items:center;gap:14px;margin-top:26px;flex-wrap:wrap}
+.hero-badges .star{color:var(--gold)}
+.hero-badges small{color:var(--text-mute);font-size:.84rem}
+.avatars{display:flex}
+.avatars span{
+  width:34px;height:34px;border-radius:50%;border:2.5px solid var(--surface);margin-left:-10px;
+  display:grid;place-items:center;font-family:var(--font-head);font-weight:700;font-size:.74rem;color:#fff;
+}
+.avatars span:first-child{margin-left:0}
+
+/* Phone mockup */
+.hero-visual{position:relative;display:flex;justify-content:center}
+.phone{
+  position:relative;width:min(330px,82vw);background:#0B1F1C;border-radius:42px;padding:13px;
+  box-shadow:var(--shadow-lg),0 0 0 2px rgba(255,255,255,.04) inset;z-index:2;
+}
+[data-theme="light"] .phone{box-shadow:0 40px 90px rgba(15,42,40,.28),0 0 0 8px #122B27}
+.phone-notch{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:120px;height:24px;background:#0B1F1C;border-radius:0 0 16px 16px;z-index:5}
+.phone-screen{background:var(--bg-alt);border-radius:32px;overflow:hidden;height:600px;display:flex;flex-direction:column}
+[data-theme="light"] .phone-screen{background:#EAF6F3}
+.app-top{
+  background:linear-gradient(135deg,var(--teal-600),var(--teal-700));color:#fff;padding:30px 18px 16px;
+  display:flex;align-items:center;gap:11px;
+}
+.app-top .docimg{width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,.5);background:#fff;display:grid;place-items:center;flex:none;overflow:hidden}
+.app-top .docinfo b{display:block;font-family:var(--font-head);font-weight:700;font-size:.96rem}
+.app-top .docinfo .stat{display:flex;align-items:center;gap:6px;font-size:.74rem;opacity:.92;margin-top:2px}
+.app-top .docinfo .stat .dot{width:7px;height:7px;border-radius:50%;background:#4ADE80;box-shadow:0 0 0 3px rgba(74,222,128,.3)}
+.app-top .vc{margin-left:auto;display:flex;gap:8px}
+.app-top .vc button{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.18);display:grid;place-items:center;color:#fff}
+.app-top .vc svg{width:17px;height:17px}
+.chat-area{flex:1;padding:16px 14px;display:flex;flex-direction:column;gap:11px;overflow:hidden}
+.daydiv{align-self:center;font-size:.66rem;color:var(--text-mute);background:var(--surface);padding:4px 11px;border-radius:var(--radius-pill);box-shadow:var(--shadow-sm)}
+.bubble{max-width:80%;padding:10px 13px;border-radius:16px;font-size:.82rem;line-height:1.45;box-shadow:var(--shadow-sm);opacity:0;transform:translateY(8px);animation:bubbleIn .5s forwards}
+.bubble .time{display:block;font-size:.62rem;opacity:.6;margin-top:4px}
+.bubble.doc{align-self:flex-start;background:var(--surface);color:var(--text);border-bottom-left-radius:5px}
+.bubble.me{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:5px}
+[data-theme="dark"] .bubble.me{color:#04201C}
+.bubble.typing{display:flex;gap:4px;align-items:center;padding:13px}
+.bubble.typing i{width:7px;height:7px;border-radius:50%;background:var(--text-mute);animation:typing 1.1s infinite}
+.bubble.typing i:nth-child(2){animation-delay:.18s}
+.bubble.typing i:nth-child(3){animation-delay:.36s}
+@keyframes typing{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+@keyframes bubbleIn{to{opacity:1;transform:translateY(0)}}
+.chat-input{display:flex;align-items:center;gap:9px;padding:11px 13px;background:var(--surface);border-top:1px solid var(--border)}
+.chat-input .field{flex:1;background:var(--bg-alt);border-radius:var(--radius-pill);padding:9px 14px;font-size:.78rem;color:var(--text-mute)}
+.chat-input .send{width:36px;height:36px;border-radius:50%;background:var(--accent);display:grid;place-items:center;color:#fff;flex:none}
+[data-theme="dark"] .chat-input .send{color:#04201C}
+.chat-input .send svg{width:17px;height:17px}
+
+.float-card{
+  position:absolute;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  box-shadow:var(--shadow-lg);padding:12px 15px;display:flex;align-items:center;gap:11px;z-index:3;
+  animation:floaty 5s ease-in-out infinite;
+}
+.float-card .ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;flex:none}
+.float-card b{display:block;font-family:var(--font-head);font-size:.9rem}
+.float-card small{font-size:.72rem;color:var(--text-mute)}
+.fc-1{top:8%;left:-6%;animation-delay:0s}
+.fc-2{bottom:14%;right:-9%;animation-delay:1.4s}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@media(max-width:560px){.fc-1{left:-2%}.fc-2{right:-2%}}
+
+@media(max-width:880px){
+  .hero-grid{grid-template-columns:1fr;text-align:center}
+  .hero-copy p.lead{margin-left:auto;margin-right:auto}
+  .hero-cta,.hero-trust,.hero-badges{justify-content:center}
+  .hero-visual{margin-top:24px}
+}
+
+/* trust strip */
+.trust-strip{background:var(--bg-alt);padding:24px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.trust-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:clamp(20px,5vw,56px)}
+.trust-row .ti{display:flex;align-items:center;gap:9px;color:var(--text-soft);font-weight:600;font-size:.92rem}
+.trust-row .ti svg{width:22px;height:22px;color:var(--accent);flex:none}
+
+/* ============ SERVICES ============ */
+.svc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:clamp(16px,2.4vw,22px)}
+.svc-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:26px 22px;
+  transition:transform var(--t),box-shadow var(--t),border-color var(--t);position:relative;overflow:hidden;
+}
+.svc-card::before{content:"";position:absolute;inset:0 auto auto 0;width:100%;height:4px;background:var(--bar,var(--accent));transform:scaleX(0);transform-origin:left;transition:transform var(--t)}
+.svc-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--border-strong)}
+.svc-card:hover::before{transform:scaleX(1)}
+.svc-card .ic{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;margin-bottom:16px;color:#fff}
+.svc-card .ic svg{width:27px;height:27px}
+.svc-card h3{font-size:1.12rem;margin-bottom:7px}
+.svc-card p{color:var(--text-soft);font-size:.92rem;margin-bottom:14px}
+.svc-card .more{font-family:var(--font-head);font-weight:700;font-size:.86rem;color:var(--accent);display:inline-flex;align-items:center;gap:6px}
+.svc-card .more svg{width:15px;height:15px;transition:transform var(--t)}
+.svc-card:hover .more svg{transform:translateX(4px)}
+
+/* ============ CARI DOKTER ============ */
+.doctors{background:var(--bg-alt)}
+.filter-bar{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:36px}
+.filter-bar button{
+  font-family:var(--font-head);font-weight:700;font-size:.88rem;padding:11px 20px;border-radius:var(--radius-pill);
+  background:var(--surface);border:1.5px solid var(--border-strong);color:var(--text-soft);min-height:44px;
+  transition:all var(--t);display:inline-flex;align-items:center;gap:8px;
+}
+.filter-bar button:hover{border-color:var(--accent);color:var(--accent)}
+.filter-bar button.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:var(--shadow-teal)}
+[data-theme="dark"] .filter-bar button.active{color:#04201C}
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:clamp(16px,2.2vw,22px)}
+.doc-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;
+  text-align:center;transition:transform var(--t),box-shadow var(--t),opacity .4s,border-color var(--t);
+  display:flex;flex-direction:column;
+}
+.doc-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);border-color:var(--border-strong)}
+.doc-card.hide{display:none}
+.doc-avatar{
+  width:80px;height:80px;border-radius:50%;margin:0 auto 14px;position:relative;display:grid;place-items:center;
+  font-family:var(--font-head);font-weight:800;font-size:1.5rem;color:#fff;
+}
+.doc-avatar .status{position:absolute;bottom:3px;right:3px;width:18px;height:18px;border-radius:50%;border:3px solid var(--surface)}
+.doc-avatar .status.on{background:var(--online)}
+.doc-avatar .status.off{background:var(--text-mute)}
+.doc-card h3{font-size:1.06rem;margin-bottom:3px}
+.doc-spec{color:var(--accent);font-weight:700;font-size:.85rem;font-family:var(--font-head);margin-bottom:8px}
+.doc-meta{display:flex;justify-content:center;gap:14px;font-size:.8rem;color:var(--text-soft);margin-bottom:12px;flex-wrap:wrap}
+.doc-meta .m{display:flex;align-items:center;gap:4px}
+.doc-meta svg{width:14px;height:14px}
+.doc-meta .star{color:var(--gold)}
+.doc-tag{display:inline-flex;align-self:center;align-items:center;gap:6px;font-size:.72rem;font-weight:700;font-family:var(--font-head);padding:4px 11px;border-radius:var(--radius-pill);margin-bottom:14px}
+.doc-tag.on{background:rgba(34,197,94,.13);color:#16A34A}
+.doc-tag.off{background:var(--surface-2);color:var(--text-mute)}
+.doc-tag .dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.doc-price{font-family:var(--font-head);margin-bottom:14px;margin-top:auto}
+.doc-price b{font-size:1.18rem;color:var(--text)}
+.doc-price small{display:block;font-size:.74rem;color:var(--text-mute);font-weight:600}
+.doc-card .btn{width:100%}
+.no-result{grid-column:1/-1;text-align:center;padding:40px;color:var(--text-mute);font-weight:600}
+
+/* ============ CONSULT MOCKUP (video + booking) ============ */
+.consult-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,4vw,52px);align-items:center}
+.video-mock{
+  background:linear-gradient(160deg,#0E1E1B,#11302B);border-radius:var(--radius-xl);padding:18px;
+  box-shadow:var(--shadow-lg);position:relative;aspect-ratio:4/5;max-width:420px;margin:0 auto;width:100%;
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.video-mock::after{content:"";position:absolute;inset:0;background:radial-gradient(400px 300px at 70% 20%,rgba(45,212,191,.2),transparent 60%);pointer-events:none}
+.vm-doc{
+  flex:1;border-radius:18px;background:linear-gradient(160deg,#1A4540,#0F2E29);position:relative;
+  display:grid;place-items:center;overflow:hidden;
+}
+.vm-doc .face{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;font-family:var(--font-head);font-weight:800;font-size:2rem;color:#fff;background:linear-gradient(135deg,#2DD4BF,#0F766E);box-shadow:0 0 0 6px rgba(255,255,255,.08)}
+.vm-doc .live{position:absolute;top:13px;left:13px;display:flex;align-items:center;gap:6px;background:rgba(239,68,68,.92);color:#fff;font-size:.68rem;font-weight:700;padding:5px 11px;border-radius:var(--radius-pill);font-family:var(--font-head)}
+.vm-doc .live .dot{width:7px;height:7px;border-radius:50%;background:#fff;animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.3}}
+.vm-doc .timer{position:absolute;top:13px;right:13px;background:rgba(0,0,0,.4);color:#fff;font-size:.7rem;font-weight:700;padding:5px 11px;border-radius:var(--radius-pill);font-family:var(--font-head)}
+.vm-self{position:absolute;bottom:78px;right:26px;width:88px;height:110px;border-radius:14px;background:linear-gradient(160deg,#0F766E,#115E59);border:2px solid rgba(255,255,255,.18);display:grid;place-items:center;z-index:3}
+.vm-self .face2{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#60A5FA,#2563EB);display:grid;place-items:center;color:#fff;font-weight:800;font-family:var(--font-head)}
+.vm-controls{display:flex;justify-content:center;gap:14px;padding:18px 0 6px;position:relative;z-index:3}
+.vm-controls button{width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.14);display:grid;place-items:center;color:#fff;transition:transform var(--t)}
+.vm-controls button:hover{transform:scale(1.08)}
+.vm-controls button svg{width:22px;height:22px}
+.vm-controls .end{background:#EF4444;width:62px}
+
+.consult-copy h2{font-size:clamp(1.6rem,3.6vw,2.4rem);margin:14px 0 16px}
+.consult-copy p{color:var(--text-soft);margin-bottom:24px}
+.consult-feats{display:flex;flex-direction:column;gap:16px;margin-bottom:28px}
+.consult-feats .cf{display:flex;gap:13px;align-items:flex-start}
+.consult-feats .cf .cic{width:42px;height:42px;border-radius:12px;background:var(--teal-50);color:var(--accent);display:grid;place-items:center;flex:none}
+[data-theme="dark"] .consult-feats .cf .cic{background:rgba(45,212,191,.12)}
+.consult-feats .cf svg{width:21px;height:21px}
+.consult-feats .cf b{display:block;font-family:var(--font-head);font-size:1rem;margin-bottom:2px}
+.consult-feats .cf span{font-size:.9rem;color:var(--text-soft)}
+
+/* booking slot */
+.booking-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;box-shadow:var(--shadow);max-width:430px}
+.booking-card h4{font-size:1.05rem;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.booking-card h4 svg{width:19px;height:19px;color:var(--accent)}
+.booking-card .sub{font-size:.84rem;color:var(--text-mute);margin-bottom:16px}
+.day-row{display:flex;gap:8px;margin-bottom:18px;overflow-x:auto;padding-bottom:4px}
+.day-row button{flex:none;min-width:58px;padding:10px 6px;border-radius:13px;background:var(--surface-2);border:1.5px solid var(--border);text-align:center;transition:all var(--t)}
+.day-row button small{display:block;font-size:.68rem;color:var(--text-mute);font-weight:600}
+.day-row button b{display:block;font-family:var(--font-head);font-size:1.06rem;margin-top:2px}
+.day-row button.active{background:var(--accent);border-color:var(--accent);color:#fff}
+[data-theme="dark"] .day-row button.active{color:#04201C}
+.day-row button.active small{color:rgba(255,255,255,.85)}
+[data-theme="dark"] .day-row button.active small{color:rgba(4,32,28,.7)}
+.slot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:18px}
+.slot-grid button{padding:11px 6px;border-radius:11px;background:var(--surface-2);border:1.5px solid var(--border);font-family:var(--font-head);font-weight:700;font-size:.86rem;transition:all var(--t)}
+.slot-grid button:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.slot-grid button.active{background:var(--accent);border-color:var(--accent);color:#fff}
+[data-theme="dark"] .slot-grid button.active{color:#04201C}
+.slot-grid button:disabled{opacity:.4;cursor:not-allowed;text-decoration:line-through}
+.booking-foot{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px dashed var(--border-strong);gap:12px}
+.booking-foot .sel{font-size:.84rem;color:var(--text-soft)}
+.booking-foot .sel b{display:block;font-family:var(--font-head);color:var(--text);font-size:.96rem}
+
+@media(max-width:840px){.consult-grid{grid-template-columns:1fr}.video-mock{margin-bottom:8px}}
+
+/* ============ HOW IT WORKS ============ */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:clamp(18px,3vw,30px);position:relative}
+.step{text-align:center;position:relative}
+.step .num{
+  width:64px;height:64px;border-radius:20px;margin:0 auto 16px;display:grid;place-items:center;
+  font-family:var(--font-head);font-weight:800;font-size:1.5rem;color:#fff;
+  background:linear-gradient(135deg,var(--teal-500),var(--teal-700));box-shadow:var(--shadow-teal);position:relative;z-index:2;
+}
+[data-theme="dark"] .step .num{color:#04201C}
+.step h3{font-size:1.1rem;margin-bottom:8px}
+.step p{color:var(--text-soft);font-size:.92rem;max-width:260px;margin:0 auto}
+.step:not(:last-child)::after{
+  content:"";position:absolute;top:32px;left:60%;width:80%;height:2px;
+  background:repeating-linear-gradient(90deg,var(--border-strong) 0 7px,transparent 7px 14px);z-index:1;
+}
+@media(max-width:760px){.step:not(:last-child)::after{display:none}}
+
+/* ============ ARTICLES ============ */
+.articles{background:var(--bg-alt)}
+.art-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(18px,2.6vw,26px)}
+.art-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;
+  transition:transform var(--t),box-shadow var(--t);display:flex;flex-direction:column;
+}
+.art-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+.art-thumb{height:160px;position:relative;display:grid;place-items:center;overflow:hidden}
+.art-thumb .cat{position:absolute;top:13px;left:13px;background:var(--surface);color:var(--accent);font-family:var(--font-head);font-weight:700;font-size:.72rem;padding:5px 12px;border-radius:var(--radius-pill);box-shadow:var(--shadow-sm)}
+.art-thumb svg{width:64px;height:64px;color:rgba(255,255,255,.85)}
+.art-body{padding:20px;display:flex;flex-direction:column;flex:1}
+.art-body .meta{font-size:.76rem;color:var(--text-mute);margin-bottom:9px;font-weight:600}
+.art-body h3{font-size:1.08rem;line-height:1.3;margin-bottom:9px}
+.art-body p{color:var(--text-soft);font-size:.9rem;flex:1;margin-bottom:14px}
+.art-body .read{font-family:var(--font-head);font-weight:700;font-size:.85rem;color:var(--accent);display:inline-flex;align-items:center;gap:6px}
+.art-body .read svg{width:15px;height:15px}
+
+/* ============ PARTNERS ============ */
+.partners-row{display:flex;flex-wrap:wrap;gap:14px;justify-content:center}
+.partner{
+  display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:14px 22px;font-family:var(--font-head);font-weight:700;color:var(--text-soft);
+  transition:all var(--t);box-shadow:var(--shadow-sm);
+}
+.partner:hover{color:var(--accent);border-color:var(--border-strong);transform:translateY(-3px)}
+.partner .pi{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:#fff;flex:none}
+.partner .pi svg{width:18px;height:18px}
+
+/* ============ DOWNLOAD CTA ============ */
+.dl{position:relative;overflow:hidden}
+.dl-inner{
+  background:linear-gradient(135deg,var(--teal-600),var(--teal-800));border-radius:var(--radius-xl);
+  padding:clamp(34px,5vw,60px);color:#fff;display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center;
+  position:relative;overflow:hidden;box-shadow:var(--shadow-lg);
+}
+.dl-inner::before{content:"";position:absolute;top:-30%;right:-10%;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(94,234,212,.4),transparent 70%)}
+.dl-copy{position:relative;z-index:2}
+.dl-copy h2{color:#fff;font-size:clamp(1.6rem,3.6vw,2.5rem);margin-bottom:14px}
+.dl-copy p{color:rgba(255,255,255,.9);font-size:1.06rem;margin-bottom:26px;max-width:420px}
+.dl-buttons{display:flex;flex-wrap:wrap;gap:13px}
+.store-btn{display:flex;align-items:center;gap:11px;background:#fff;color:var(--teal-800);padding:11px 20px;border-radius:14px;transition:transform var(--t),box-shadow var(--t)}
+.store-btn:hover{transform:translateY(-3px);box-shadow:0 18px 36px rgba(0,0,0,.25)}
+.store-btn svg{width:26px;height:26px;flex:none}
+.store-btn small{display:block;font-size:.66rem;opacity:.7;font-weight:600}
+.store-btn b{font-family:var(--font-head);font-size:1.02rem}
+.dl-visual{position:relative;z-index:2;display:flex;justify-content:center}
+.qr-card{background:#fff;border-radius:var(--radius-lg);padding:20px;text-align:center;color:var(--teal-800);box-shadow:var(--shadow-lg);max-width:230px}
+.qr-card .qr{width:150px;height:150px;margin:0 auto 12px;border-radius:14px;background:
+  repeating-conic-gradient(var(--teal-800) 0 25%,#fff 0 50%) 0 0/22px 22px;
+  border:6px solid var(--teal-800);position:relative}
+.qr-card .qr::after{content:"";position:absolute;inset:38%;background:#fff;border-radius:4px}
+.qr-card b{font-family:var(--font-head);font-size:.96rem}
+.qr-card small{display:block;font-size:.78rem;color:var(--text-mute);margin-top:3px}
+@media(max-width:820px){.dl-inner{grid-template-columns:1fr;text-align:center}.dl-buttons,.dl-copy p{margin-left:auto;margin-right:auto}.dl-buttons{justify-content:center}}
+
+/* ============ TESTIMONIALS ============ */
+.test-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:clamp(18px,2.6vw,26px)}
+.test-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:26px;box-shadow:var(--shadow-sm);transition:transform var(--t),box-shadow var(--t)}
+.test-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
+.test-stars{color:var(--gold);margin-bottom:13px;letter-spacing:2px}
+.test-card p{color:var(--text-soft);font-size:.96rem;margin-bottom:18px;line-height:1.6}
+.test-author{display:flex;align-items:center;gap:12px}
+.test-author .av{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-family:var(--font-head);font-weight:800;color:#fff;flex:none}
+.test-author b{display:block;font-family:var(--font-head);font-size:.96rem}
+.test-author small{color:var(--text-mute);font-size:.82rem}
+
+/* ============ FOOTER ============ */
+footer{background:var(--surface);border-top:1px solid var(--border);padding:clamp(46px,6vw,72px) 0 28px}
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:clamp(24px,3vw,44px);margin-bottom:42px}
+.foot-brand .brand{margin-bottom:15px}
+.foot-brand p{color:var(--text-soft);font-size:.92rem;max-width:300px;margin-bottom:18px}
+.foot-social{display:flex;gap:10px}
+.foot-social a{width:40px;height:40px;border-radius:11px;background:var(--surface-2);border:1px solid var(--border);display:grid;place-items:center;color:var(--text-soft);transition:all var(--t)}
+.foot-social a:hover{background:var(--accent);color:#fff;border-color:var(--accent);transform:translateY(-3px)}
+[data-theme="dark"] .foot-social a:hover{color:#04201C}
+.foot-social svg{width:19px;height:19px}
+.foot-col h4{font-family:var(--font-head);font-size:.95rem;margin-bottom:16px}
+.foot-col a{display:block;color:var(--text-soft);font-size:.9rem;padding:5px 0;transition:color var(--t)}
+.foot-col a:hover{color:var(--accent);padding-left:4px}
+.foot-bottom{border-top:1px solid var(--border);padding-top:24px;display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+.foot-bottom p{color:var(--text-mute);font-size:.84rem}
+.foot-bottom .badges{display:flex;gap:14px;flex-wrap:wrap}
+.foot-bottom .badges span{display:flex;align-items:center;gap:6px;color:var(--text-mute);font-size:.8rem;font-weight:600}
+.foot-bottom .badges svg{width:16px;height:16px;color:var(--accent)}
+@media(max-width:760px){.foot-grid{grid-template-columns:1fr 1fr}.foot-brand{grid-column:1/-1}}
+@media(max-width:460px){.foot-grid{grid-template-columns:1fr}}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.22,.61,.36,1),transform .7s cubic-bezier(.22,.61,.36,1)}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}.reveal.d4{transition-delay:.32s}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+  .reveal{opacity:1;transform:none}
+}
+
+/* skip link */
+.skip{position:absolute;left:-999px;top:8px;z-index:200;background:var(--accent);color:#fff;padding:10px 18px;border-radius:10px;font-weight:700}
+.skip:focus{left:12px}
+</style>
+</head>
+<body>
+<a href="#main" class="skip">Lewati ke konten utama</a>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#" class="brand" aria-label="SehatOnline beranda">
+      <span class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/><path d="m3.5 12 4 0 1.5-3 2 6 1.5-3 4 0" stroke="#fff" stroke-width="1.6"/></svg>
+      </span>
+      Sehat<b>Online</b>
+    </a>
+    <nav class="nav-links" id="navLinks" aria-label="Navigasi utama">
+      <a href="#layanan">Layanan</a>
+      <a href="#dokter">Cari Dokter</a>
+      <a href="#cara">Cara Kerja</a>
+      <a href="#artikel">Artikel</a>
+      <a href="#unduh">Unduh App</a>
+      <a href="#dokter" class="btn btn-primary" style="display:none" data-mobonly>Konsultasi Sekarang</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Ganti mode terang/gelap">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <a href="#dokter" class="btn btn-primary nav-cta-desktop">Konsultasi Sekarang</a>
+      <button class="hamburger" id="hamburger" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="navLinks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow reveal">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+        Telemedicine #1 di Indonesia
+      </span>
+      <h1 class="reveal d1">Konsultasi Dokter <span class="hl">Online</span>, Kapan Saja dari Rumah</h1>
+      <p class="lead reveal d2">Chat atau video call dengan dokter berlisensi 24 jam. Tebus obat diantar ke rumah, buat janji rumah sakit, dan cek hasil lab — semua dalam satu aplikasi.</p>
+      <div class="hero-cta reveal d3">
+        <a href="#dokter" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/></svg>
+          Mulai Konsultasi
+        </a>
+        <a href="#cara" class="btn btn-ghost">Cara Kerjanya</a>
+      </div>
+      <div class="hero-trust reveal d4">
+        <div class="ht"><b>2.400+</b><span>Dokter berlisensi</span></div>
+        <div class="ht"><b>5 Jt+</b><span>Pasien terlayani</span></div>
+        <div class="ht"><b>4.9★</b><span>Rating aplikasi</span></div>
+      </div>
+      <div class="hero-badges reveal d4">
+        <div class="avatars" aria-hidden="true">
+          <span style="background:linear-gradient(135deg,#2DD4BF,#0F766E)">RA</span>
+          <span style="background:linear-gradient(135deg,#60A5FA,#2563EB)">SD</span>
+          <span style="background:linear-gradient(135deg,#F59E0B,#D97706)">PW</span>
+          <span style="background:linear-gradient(135deg,#A78BFA,#7C3AED)">+</span>
+        </div>
+        <small><span class="star">★★★★★</span><br>Dipercaya 5 juta keluarga Indonesia</small>
+      </div>
+    </div>
+
+    <div class="hero-visual reveal d2">
+      <div class="float-card fc-1">
+        <span class="ic" style="background:rgba(34,197,94,.14);color:#16A34A">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </span>
+        <div><b>Resep dikirim</b><small>Obat diantar 2 jam</small></div>
+      </div>
+      <div class="float-card fc-2">
+        <span class="ic" style="background:rgba(59,130,246,.14);color:#2563EB">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </span>
+        <div><b>dr. Anita online</b><small>Membalas dalam 1 menit</small></div>
+      </div>
+
+      <div class="phone" role="img" aria-label="Tampilan aplikasi SehatOnline saat chat dengan dokter">
+        <span class="phone-notch" aria-hidden="true"></span>
+        <div class="phone-screen">
+          <div class="app-top">
+            <span class="docimg"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a7 7 0 0 1 14 0v1"/></svg></span>
+            <div class="docinfo">
+              <b>dr. Anita Wijaya, Sp.PD</b>
+              <span class="stat"><span class="dot"></span> Online · Dokter Penyakit Dalam</span>
+            </div>
+            <div class="vc">
+              <button aria-label="Panggilan suara"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></svg></button>
+              <button aria-label="Panggilan video"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m23 7-7 5 7 5V7Z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
+            </div>
+          </div>
+          <div class="chat-area" id="chatArea">
+            <span class="daydiv">Hari ini, 09:14</span>
+          </div>
+          <div class="chat-input">
+            <div class="field">Ketik keluhan Anda…</div>
+            <span class="send" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- trust strip -->
+<div class="trust-strip">
+  <div class="container trust-row reveal">
+    <div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg> Dokter berlisensi & terverifikasi</div>
+    <div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Data terenkripsi & rahasia</div>
+    <div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Layanan 24 jam non-stop</div>
+    <div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 13.42 20.6a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82Z"/><path d="M7 7h.01"/></svg> Terdaftar Kemenkes RI</div>
+  </div>
+</div>
+
+<!-- ============ SERVICES ============ -->
+<section id="layanan">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Layanan Kami</span>
+      <h2>Satu Aplikasi untuk Semua Kebutuhan Kesehatan</h2>
+      <p>Dari konsultasi ringan sampai janji rumah sakit — semuanya bisa kamu urus tanpa keluar rumah.</p>
+    </div>
+    <div class="svc-grid">
+      <article class="svc-card reveal" style="--bar:#0D9488">
+        <span class="ic" style="background:linear-gradient(135deg,#2DD4BF,#0F766E)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg></span>
+        <h3>Chat Dokter</h3>
+        <p>Tanya keluhan lewat chat dan dapat resep digital. Cepat, privat, tanpa antre.</p>
+        <span class="more">Mulai chat <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </article>
+      <article class="svc-card reveal d1" style="--bar:#3B82F6">
+        <span class="ic" style="background:linear-gradient(135deg,#60A5FA,#2563EB)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m23 7-7 5 7 5V7Z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></span>
+        <h3>Video Call</h3>
+        <p>Tatap muka langsung dengan dokter spesialis untuk diagnosis yang lebih akurat.</p>
+        <span class="more">Buat sesi <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </article>
+      <article class="svc-card reveal d2" style="--bar:#F59E0B">
+        <span class="ic" style="background:linear-gradient(135deg,#FBBF24,#D97706)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg></span>
+        <h3>Tebus Obat</h3>
+        <p>Pesan obat resep & non-resep, diantar sampai depan rumah dalam hitungan jam.</p>
+        <span class="more">Cari obat <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </article>
+      <article class="svc-card reveal d3" style="--bar:#7C3AED">
+        <span class="ic" style="background:linear-gradient(135deg,#A78BFA,#7C3AED)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+        <h3>Buat Janji RS</h3>
+        <p>Pesan jadwal di rumah sakit & klinik rekanan tanpa perlu telepon atau datang langsung.</p>
+        <span class="more">Pilih jadwal <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </article>
+      <article class="svc-card reveal d4" style="--bar:#EF4444">
+        <span class="ic" style="background:linear-gradient(135deg,#F87171,#DC2626)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v8.5a2.5 2.5 0 0 1-5 0V2M14 2v8.5a2.5 2.5 0 0 0 5 0V2M5 2h5M14 2h5M5 21h14"/></svg></span>
+        <h3>Cek Lab</h3>
+        <p>Booking tes lab dengan petugas datang ke rumah & lihat hasil langsung di aplikasi.</p>
+        <span class="more">Booking lab <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </article>
+      <article class="svc-card reveal d4" style="--bar:#0891B2">
+        <span class="ic" style="background:linear-gradient(135deg,#22D3EE,#0891B2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg></span>
+        <h3>Cek Kesehatan</h3>
+        <p>Skrining gejala dengan asisten kesehatan & rekomendasi dokter spesialis yang tepat.</p>
+        <span class="more">Mulai skrining <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CARI DOKTER ============ -->
+<section class="doctors" id="dokter">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Cari Dokter</span>
+      <h2>Pilih Dokter Spesialis Sesuai Kebutuhanmu</h2>
+      <p>Filter berdasarkan spesialisasi, lihat rating & biaya konsultasi, lalu langsung mulai sesi.</p>
+    </div>
+
+    <div class="filter-bar reveal" id="filterBar" role="group" aria-label="Filter spesialisasi dokter">
+      <button class="active" data-filter="all">Semua</button>
+      <button data-filter="umum">Dokter Umum</button>
+      <button data-filter="anak">Anak</button>
+      <button data-filter="kulit">Kulit & Kelamin</button>
+      <button data-filter="gigi">Gigi</button>
+      <button data-filter="psikolog">Psikolog</button>
+    </div>
+
+    <div class="doc-grid" id="docGrid">
+      <p class="no-result" id="noResult" hidden>Tidak ada dokter pada kategori ini.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONSULT MOCKUP (video + booking) ============ -->
+<section id="konsultasi">
+  <div class="container consult-grid">
+    <div class="consult-visual reveal">
+      <div class="video-mock" role="img" aria-label="Tampilan panggilan video dengan dokter">
+        <div class="vm-doc">
+          <span class="live"><span class="dot"></span> LIVE</span>
+          <span class="timer">08:32</span>
+          <div class="face">A</div>
+          <div class="vm-self"><div class="face2">S</div></div>
+        </div>
+        <div class="vm-controls">
+          <button aria-label="Matikan mikrofon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/></svg></button>
+          <button aria-label="Matikan kamera"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m23 7-7 5 7 5V7Z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
+          <button class="end" aria-label="Akhiri panggilan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 8.63 19M2 2l20 20"/></svg></button>
+        </div>
+      </div>
+    </div>
+    <div class="consult-copy reveal d1">
+      <span class="eyebrow">Konsultasi & Booking</span>
+      <h2>Chat, Video Call, atau Pesan Jadwal — Sesuai Kenyamananmu</h2>
+      <p>Mulai dari chat singkat hingga video call mendalam dengan spesialis. Butuh tatap muka? Pesan slot konsultasi langsung dari aplikasi.</p>
+      <div class="consult-feats">
+        <div class="cf"><span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg></span><div><b>Riwayat tersimpan rapi</b><span>Semua percakapan, resep, & hasil tes ada dalam satu rekam medis digital.</span></div></div>
+        <div class="cf"><span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></span><div><b>Resep e-prescription</b><span>Resep digital langsung terhubung ke apotek untuk diantar ke rumah.</span></div></div>
+        <div class="cf"><span class="cic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><div><b>Jadwal fleksibel</b><span>Pilih hari & jam yang pas, dapat pengingat otomatis sebelum sesi.</span></div></div>
+      </div>
+
+      <div class="booking-card" aria-label="Pesan slot konsultasi">
+        <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Pesan Slot Konsultasi</h4>
+        <p class="sub">dr. Bayu Pratama, Sp.A — Dokter Anak</p>
+        <div class="day-row" id="dayRow" role="group" aria-label="Pilih tanggal"></div>
+        <div class="slot-grid" id="slotGrid" role="group" aria-label="Pilih jam"></div>
+        <div class="booking-foot">
+          <div class="sel"><span>Terpilih</span><b id="bookSel">Sen, 30 Jun · 10:00</b></div>
+          <button class="btn btn-primary" id="bookBtn">Pesan Sekarang</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section id="cara" style="background:var(--bg-alt)">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Cara Kerja</span>
+      <h2>Konsultasi dalam 4 Langkah Mudah</h2>
+      <p>Dari unduh sampai dapat resep, semua selesai dalam hitungan menit.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><div class="num">1</div><h3>Pilih Layanan</h3><p>Pilih chat, video call, tebus obat, atau buat janji sesuai kebutuhanmu.</p></div>
+      <div class="step reveal d1"><div class="num">2</div><h3>Pilih Dokter</h3><p>Cari spesialis dengan filter, lihat rating, lalu pilih yang paling pas.</p></div>
+      <div class="step reveal d2"><div class="num">3</div><h3>Konsultasi</h3><p>Ceritakan keluhanmu lewat chat atau video. Dokter memberi diagnosis & saran.</p></div>
+      <div class="step reveal d3"><div class="num">4</div><h3>Terima Resep</h3><p>Dapat resep digital, obat diantar ke rumah, riwayat tersimpan otomatis.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ARTICLES ============ -->
+<section class="articles" id="artikel">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Artikel Kesehatan</span>
+      <h2>Edukasi Kesehatan dari Para Ahli</h2>
+      <p>Tips, panduan, dan informasi terpercaya yang ditulis & ditinjau oleh dokter.</p>
+    </div>
+    <div class="art-grid">
+      <article class="art-card reveal">
+        <div class="art-thumb" style="background:linear-gradient(135deg,#2DD4BF,#0F766E)">
+          <span class="cat">Imunitas</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+        </div>
+        <div class="art-body">
+          <div class="meta">dr. Anita Wijaya · 5 menit baca</div>
+          <h3>7 Cara Meningkatkan Imun Tubuh di Musim Pancaroba</h3>
+          <p>Cuaca tak menentu bikin tubuh rentan sakit. Simak langkah sederhana menjaga daya tahan tubuh.</p>
+          <span class="read">Baca selengkapnya <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </div>
+      </article>
+      <article class="art-card reveal d1">
+        <div class="art-thumb" style="background:linear-gradient(135deg,#60A5FA,#2563EB)">
+          <span class="cat">Anak</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/></svg>
+        </div>
+        <div class="art-body">
+          <div class="meta">dr. Bayu Pratama · 4 menit baca</div>
+          <h3>Panduan Demam pada Anak: Kapan Harus ke Dokter?</h3>
+          <p>Tidak semua demam berbahaya. Kenali tanda-tanda yang perlu penanganan medis segera.</p>
+          <span class="read">Baca selengkapnya <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </div>
+      </article>
+      <article class="art-card reveal d2">
+        <div class="art-thumb" style="background:linear-gradient(135deg,#A78BFA,#7C3AED)">
+          <span class="cat">Mental</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.94-2.04Z"/></svg>
+        </div>
+        <div class="art-body">
+          <div class="meta">Sarah Dewanti, M.Psi · 6 menit baca</div>
+          <h3>Mengelola Stres & Burnout Akibat Beban Kerja</h3>
+          <p>Burnout bukan sekadar lelah biasa. Pelajari cara mengenali dan menanganinya dengan tepat.</p>
+          <span class="read">Baca selengkapnya <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PARTNERS ============ -->
+<section id="partner">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Mitra & Asuransi</span>
+      <h2>Bekerja Sama dengan Mitra Tepercaya</h2>
+      <p>Konsultasi & klaim lebih mudah dengan dukungan rumah sakit, apotek, dan asuransi rekanan.</p>
+    </div>
+    <div class="partners-row reveal">
+      <div class="partner"><span class="pi" style="background:linear-gradient(135deg,#2DD4BF,#0F766E)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg></span> RS Medika Nusantara</div>
+      <div class="partner"><span class="pi" style="background:linear-gradient(135deg,#60A5FA,#2563EB)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9 12 3l9 6v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/></svg></span> Apotek SehatGuna</div>
+      <div class="partner"><span class="pi" style="background:linear-gradient(135deg,#F59E0B,#D97706)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg></span> BPJS Kesehatan</div>
+      <div class="partner"><span class="pi" style="background:linear-gradient(135deg,#A78BFA,#7C3AED)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg></span> Garda Sehat Insurance</div>
+      <div class="partner"><span class="pi" style="background:linear-gradient(135deg,#22D3EE,#0891B2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v8.5a2.5 2.5 0 0 1-5 0V2M14 2v8.5a2.5 2.5 0 0 0 5 0V2"/></svg></span> Lab Prima Diagnostik</div>
+      <div class="partner"><span class="pi" style="background:linear-gradient(135deg,#F87171,#DC2626)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></span> Klinik Sehat Sentosa</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DOWNLOAD CTA ============ -->
+<section class="dl" id="unduh">
+  <div class="container">
+    <div class="dl-inner reveal">
+      <div class="dl-copy">
+        <h2>Bawa Dokter di Saku Anda</h2>
+        <p>Unduh aplikasi SehatOnline dan nikmati konsultasi dokter, tebus obat, hingga cek lab — kapan saja, di mana saja.</p>
+        <div class="dl-buttons">
+          <a href="#" class="store-btn" aria-label="Unduh di App Store">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 12.04c-.03-3.1 2.53-4.59 2.64-4.66-1.44-2.11-3.68-2.4-4.48-2.43-1.9-.19-3.71 1.12-4.68 1.12-.96 0-2.45-1.1-4.03-1.07-2.07.03-3.98 1.2-5.05 3.06-2.15 3.73-.55 9.25 1.54 12.28 1.02 1.48 2.24 3.15 3.83 3.09 1.54-.06 2.12-.99 3.98-.99 1.85 0 2.38.99 4 .96 1.65-.03 2.7-1.51 3.71-3 1.17-1.72 1.65-3.39 1.67-3.47-.04-.02-3.2-1.23-3.23-4.88M14.39 3.6c.84-1.03 1.41-2.45 1.25-3.87-1.21.05-2.69.81-3.56 1.83-.78.9-1.46 2.35-1.28 3.73 1.36.11 2.74-.69 3.59-1.69"/></svg>
+            <span><small>Unduh di</small><b>App Store</b></span>
+          </a>
+          <a href="#" class="store-btn" aria-label="Dapatkan di Google Play">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.6 1.81C3.3 2.13 3.13 2.62 3.13 3.25v17.5c0 .63.17 1.12.47 1.44l.06.06L13.4 12.5v-.1L3.66 1.75l-.06.06M16.81 15.91 13.4 12.5v-.1l3.41-3.41.08.05 4.04 2.3c1.15.65 1.15 1.72 0 2.38l-4.04 2.3-.08.04M13.4 12.45l-9.8 9.79c.38.4 1 .45 1.71.05l11.5-6.53-3.41-3.31M5.31 2.21c-.71-.4-1.33-.35-1.71.05l9.8 9.79 3.41-3.41L5.31 2.21Z"/></svg>
+            <span><small>Dapatkan di</small><b>Google Play</b></span>
+          </a>
+        </div>
+      </div>
+      <div class="dl-visual">
+        <div class="qr-card">
+          <div class="qr" aria-hidden="true"></div>
+          <b>Scan untuk Unduh</b>
+          <small>Arahkan kamera ponselmu</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIALS ============ -->
+<section id="testimoni">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Kata Mereka</span>
+      <h2>Dipercaya Jutaan Keluarga Indonesia</h2>
+      <p>Cerita nyata dari pengguna yang merasakan mudahnya layanan kesehatan digital.</p>
+    </div>
+    <div class="test-grid">
+      <article class="test-card reveal">
+        <div class="test-stars" aria-label="5 dari 5 bintang">★★★★★</div>
+        <p>"Anak saya demam tengah malam, langsung chat dokter anak dan dapat saran cepat. Obatnya diantar pagi harinya. Benar-benar penyelamat untuk orang tua."</p>
+        <div class="test-author">
+          <span class="av" style="background:linear-gradient(135deg,#2DD4BF,#0F766E)">RP</span>
+          <div><b>Ratna Pertiwi</b><small>Ibu rumah tangga · Surabaya</small></div>
+        </div>
+      </article>
+      <article class="test-card reveal d1">
+        <div class="test-stars" aria-label="5 dari 5 bintang">★★★★★</div>
+        <p>"Sebagai pekerja kantoran yang sibuk, video call dengan dokter kulit jadi solusi. Tidak perlu izin kerja untuk antre di klinik. Praktis sekali."</p>
+        <div class="test-author">
+          <span class="av" style="background:linear-gradient(135deg,#60A5FA,#2563EB)">DH</span>
+          <div><b>Dimas Hartono</b><small>Karyawan swasta · Jakarta</small></div>
+        </div>
+      </article>
+      <article class="test-card reveal d2">
+        <div class="test-stars" aria-label="5 dari 5 bintang">★★★★★</div>
+        <p>"Konsultasi psikolog dari rumah membuat saya lebih nyaman bercerita. Jadwalnya fleksibel dan biayanya terjangkau. Sangat membantu kesehatan mental saya."</p>
+        <div class="test-author">
+          <span class="av" style="background:linear-gradient(135deg,#A78BFA,#7C3AED)">MA</span>
+          <div><b>Maya Anggraini</b><small>Mahasiswi · Bandung</small></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a href="#" class="brand">
+          <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></span>
+          Sehat<b>Online</b>
+        </a>
+        <p>Platform telemedicine yang menghubungkanmu dengan dokter berlisensi kapan saja. Sehat lebih mudah, dari rumah.</p>
+        <div class="foot-social">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg></a>
+          <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3Z"/></svg></a>
+          <a href="#" aria-label="Twitter X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.64 7.58H.46l8.6-9.83L0 1.15h7.59l5.24 6.93 6.07-6.93Zm-1.29 19.5h2.04L6.49 3.24H4.3L17.61 20.65Z"/></svg></a>
+          <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-2C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.41 19c1.71.46 8.59.46 8.59.46s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33Z"/><path d="m9.75 15.02 5.75-3.27-5.75-3.27Z"/></svg></a>
+        </div>
+      </div>
+      <div class="foot-col">
+        <h4>Layanan</h4>
+        <a href="#layanan">Chat Dokter</a>
+        <a href="#layanan">Video Call</a>
+        <a href="#layanan">Tebus Obat</a>
+        <a href="#layanan">Buat Janji RS</a>
+        <a href="#layanan">Cek Lab</a>
+      </div>
+      <div class="foot-col">
+        <h4>Perusahaan</h4>
+        <a href="#">Tentang Kami</a>
+        <a href="#">Karir</a>
+        <a href="#artikel">Artikel</a>
+        <a href="#partner">Mitra</a>
+        <a href="#">Hubungi Kami</a>
+      </div>
+      <div class="foot-col">
+        <h4>Bantuan</h4>
+        <a href="#">Pusat Bantuan</a>
+        <a href="#">Syarat & Ketentuan</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Daftar Dokter</a>
+        <a href="#">FAQ</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <p>© 2026 SehatOnline. Seluruh hak cipta dilindungi.</p>
+      <div class="badges">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg> Terdaftar Kemenkes RI</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Data Terenkripsi ISO 27001</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- THEME ---------- */
+  var root=document.documentElement;
+  var stored=null;
+  try{stored=localStorage.getItem('sehatonline-theme');}catch(e){}
+  if(stored){root.setAttribute('data-theme',stored);}
+  else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches){root.setAttribute('data-theme','dark');}
+  var tBtn=document.getElementById('themeToggle');
+  tBtn.addEventListener('click',function(){
+    var next=root.getAttribute('data-theme')==='dark'?'light':'dark';
+    root.setAttribute('data-theme',next);
+    try{localStorage.setItem('sehatonline-theme',next);}catch(e){}
+  });
+
+  /* ---------- NAV ---------- */
+  var nav=document.getElementById('nav');
+  var ham=document.getElementById('hamburger');
+  var links=document.getElementById('navLinks');
+  ham.addEventListener('click',function(){
+    var open=links.classList.toggle('open');
+    ham.setAttribute('aria-expanded',open?'true':'false');
+  });
+  links.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click',function(){
+      links.classList.remove('open');
+      ham.setAttribute('aria-expanded','false');
+    });
+  });
+  window.addEventListener('scroll',function(){
+    nav.classList.toggle('scrolled',window.scrollY>8);
+  },{passive:true});
+  var mobCta=links.querySelector('[data-mobonly]');
+  function syncMob(){ if(window.innerWidth<=940){mobCta.style.display='inline-flex';}else{mobCta.style.display='none';} }
+  syncMob(); window.addEventListener('resize',syncMob);
+
+  /* ---------- HERO CHAT ANIMATION ---------- */
+  var chatArea=document.getElementById('chatArea');
+  var script=[
+    {who:'me',text:'Dok, sudah 2 hari saya batuk kering & tenggorokan gatal 😷',time:'09:14'},
+    {who:'typing'},
+    {who:'doc',text:'Halo, terima kasih sudah konsultasi. Apakah disertai demam atau sesak napas?',time:'09:15'},
+    {who:'me',text:'Demam ringan saja dok, tidak sesak.',time:'09:15'},
+    {who:'typing'},
+    {who:'doc',text:'Baik. Perbanyak air hangat & istirahat. Saya resepkan obat pereda batuk, ya. Resep saya kirim sekarang 💊',time:'09:16'}
+  ];
+  function addBubble(item){
+    if(item.who==='typing'){
+      var t=document.createElement('div');
+      t.className='bubble doc typing';
+      t.innerHTML='<i></i><i></i><i></i>';
+      chatArea.appendChild(t);
+      return t;
+    }
+    var b=document.createElement('div');
+    b.className='bubble '+item.who;
+    b.innerHTML=item.text+'<span class="time">'+item.time+'</span>';
+    chatArea.appendChild(b);
+    return b;
+  }
+  var prefersReduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  function runChat(){
+    var i=0, lastTyping=null;
+    function step(){
+      if(i>=script.length){
+        setTimeout(function(){
+          chatArea.querySelectorAll('.bubble').forEach(function(n){n.remove();});
+          i=0; step();
+        },5200);
+        return;
+      }
+      var item=script[i];
+      if(lastTyping){lastTyping.remove();lastTyping=null;}
+      var node=addBubble(item);
+      if(item.who==='typing'){lastTyping=node;}
+      i++;
+      setTimeout(step,item.who==='typing'?1100:1500);
+    }
+    step();
+  }
+  if(prefersReduced){
+    script.filter(function(s){return s.who!=='typing';}).forEach(addBubble);
+  }else{
+    runChat();
+  }
+
+  /* ---------- DOCTORS DATA + FILTER ---------- */
+  var doctors=[
+    {n:'dr. Anita Wijaya, Sp.PD',s:'Penyakit Dalam',cat:'umum',rate:4.9,rev:1280,exp:12,city:'Jakarta',price:45000,on:true,init:'AW',c:'linear-gradient(135deg,#2DD4BF,#0F766E)'},
+    {n:'dr. Bayu Pratama, Sp.A',s:'Dokter Anak',cat:'anak',rate:4.8,rev:980,exp:9,city:'Surabaya',price:55000,on:true,init:'BP',c:'linear-gradient(135deg,#60A5FA,#2563EB)'},
+    {n:'dr. Citra Lestari, Sp.KK',s:'Kulit & Kelamin',cat:'kulit',rate:5.0,rev:1520,exp:11,city:'Bandung',price:75000,on:true,init:'CL',c:'linear-gradient(135deg,#F59E0B,#D97706)'},
+    {n:'drg. Dani Saputra',s:'Dokter Gigi',cat:'gigi',rate:4.7,rev:640,exp:8,city:'Yogyakarta',price:50000,on:false,init:'DS',c:'linear-gradient(135deg,#22D3EE,#0891B2)'},
+    {n:'Sarah Dewanti, M.Psi',s:'Psikolog Klinis',cat:'psikolog',rate:4.9,rev:870,exp:7,city:'Jakarta',price:90000,on:true,init:'SD',c:'linear-gradient(135deg,#A78BFA,#7C3AED)'},
+    {n:'dr. Eka Nugroho',s:'Dokter Umum',cat:'umum',rate:4.8,rev:1120,exp:6,city:'Semarang',price:35000,on:true,init:'EN',c:'linear-gradient(135deg,#34D399,#059669)'},
+    {n:'dr. Farah Maharani, Sp.A',s:'Dokter Anak',cat:'anak',rate:4.9,rev:760,exp:10,city:'Medan',price:60000,on:false,init:'FM',c:'linear-gradient(135deg,#FB7185,#E11D48)'},
+    {n:'drg. Gita Permata',s:'Dokter Gigi Estetik',cat:'gigi',rate:4.9,rev:540,exp:9,city:'Bali',price:65000,on:true,init:'GP',c:'linear-gradient(135deg,#818CF8,#4F46E5)'},
+    {n:'dr. Hadi Santoso, Sp.KK',s:'Kulit & Kelamin',cat:'kulit',rate:4.7,rev:430,exp:13,city:'Malang',price:70000,on:true,init:'HS',c:'linear-gradient(135deg,#2DD4BF,#0D9488)'},
+    {n:'Indra Bayu, M.Psi',s:'Psikolog Klinis',cat:'psikolog',rate:4.8,rev:610,exp:8,city:'Surabaya',price:85000,on:false,init:'IB',c:'linear-gradient(135deg,#FBBF24,#F59E0B)'}
+  ];
+  var rp=function(n){return 'Rp '+n.toLocaleString('id-ID');};
+  var grid=document.getElementById('docGrid');
+  var noRes=document.getElementById('noResult');
+  function starSvg(){return '<svg viewBox="0 0 24 24" fill="currentColor" class="star"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01Z"/></svg>';}
+  function pinSvg(){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>';}
+  function render(list){
+    grid.querySelectorAll('.doc-card').forEach(function(n){n.remove();});
+    if(!list.length){noRes.hidden=false;return;}
+    noRes.hidden=true;
+    var frag=document.createDocumentFragment();
+    list.forEach(function(d){
+      var el=document.createElement('article');
+      el.className='doc-card';
+      el.innerHTML=''+
+        '<div class="doc-avatar" style="background:'+d.c+'">'+d.init+
+          '<span class="status '+(d.on?'on':'off')+'" aria-hidden="true"></span></div>'+
+        '<h3>'+d.n+'</h3>'+
+        '<div class="doc-spec">'+d.s+'</div>'+
+        '<div class="doc-meta">'+
+          '<span class="m">'+starSvg()+' '+d.rate.toFixed(1)+' ('+d.rev+')</span>'+
+          '<span class="m">'+pinSvg()+' '+d.city+'</span>'+
+        '</div>'+
+        '<span class="doc-tag '+(d.on?'on':'off')+'"><span class="dot"></span>'+(d.on?'Online sekarang':'Tidak tersedia')+'</span>'+
+        '<div class="doc-price"><b>'+rp(d.price)+'</b><small>per sesi · '+d.exp+' th pengalaman</small></div>'+
+        '<a href="#konsultasi" class="btn '+(d.on?'btn-primary':'btn-ghost')+'">'+(d.on?'Konsultasi':'Jadwalkan')+'</a>';
+      frag.appendChild(el);
+    });
+    grid.insertBefore(frag,noRes);
+  }
+  render(doctors);
+
+  var filterBar=document.getElementById('filterBar');
+  filterBar.addEventListener('click',function(e){
+    var btn=e.target.closest('button'); if(!btn)return;
+    filterBar.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+    var f=btn.getAttribute('data-filter');
+    render(f==='all'?doctors:doctors.filter(function(d){return d.cat===f;}));
+  });
+
+  /* ---------- BOOKING SLOT ---------- */
+  var dayRow=document.getElementById('dayRow');
+  var slotGrid=document.getElementById('slotGrid');
+  var bookSel=document.getElementById('bookSel');
+  var bookBtn=document.getElementById('bookBtn');
+  var dayNames=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+  var monNames=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  var days=[];
+  var base=new Date(2026,5,30);
+  for(var i=0;i<6;i++){var dt=new Date(base);dt.setDate(base.getDate()+i);days.push(dt);}
+  var slots=['08:00','09:00','10:00','11:00','13:00','14:00','15:00','16:00','19:00'];
+  var bookedMap={0:['09:00','13:00'],1:['10:00'],2:['08:00','14:00','15:00'],3:['16:00'],4:['08:00','09:00'],5:['11:00']};
+  var selDay=0, selSlot='10:00';
+
+  function fmtSel(){
+    var d=days[selDay];
+    bookSel.textContent=dayNames[d.getDay()]+', '+d.getDate()+' '+monNames[d.getMonth()]+' · '+selSlot;
+  }
+  function buildDays(){
+    dayRow.innerHTML='';
+    days.forEach(function(d,idx){
+      var b=document.createElement('button');
+      b.type='button';
+      b.className=idx===selDay?'active':'';
+      b.setAttribute('aria-pressed',idx===selDay?'true':'false');
+      b.innerHTML='<small>'+dayNames[d.getDay()]+'</small><b>'+d.getDate()+'</b>';
+      b.addEventListener('click',function(){selDay=idx;buildDays();buildSlots();});
+      dayRow.appendChild(b);
+    });
+  }
+  function buildSlots(){
+    slotGrid.innerHTML='';
+    var booked=bookedMap[selDay]||[];
+    if(booked.indexOf(selSlot)>-1){
+      var avail=slots.filter(function(s){return booked.indexOf(s)<0;});
+      if(avail.length){selSlot=avail[0];}
+    }
+    slots.forEach(function(s){
+      var b=document.createElement('button');
+      b.type='button';
+      var isBooked=booked.indexOf(s)>-1;
+      b.disabled=isBooked;
+      b.textContent=s;
+      if(isBooked){b.setAttribute('aria-label',s+' sudah terisi');}
+      if(s===selSlot&&!isBooked){b.classList.add('active');b.setAttribute('aria-pressed','true');}
+      b.addEventListener('click',function(){
+        if(isBooked)return;
+        selSlot=s;buildSlots();fmtSel();
+      });
+      slotGrid.appendChild(b);
+    });
+    fmtSel();
+  }
+  buildDays();buildSlots();
+  bookBtn.addEventListener('click',function(){
+    var orig=bookBtn.textContent;
+    bookBtn.textContent='✓ Tersimpan!';
+    bookBtn.disabled=true;
+    setTimeout(function(){bookBtn.textContent=orig;bookBtn.disabled=false;},1800);
+  });
+
+  /* ---------- REVEAL ON SCROLL ---------- */
+  if('IntersectionObserver' in window && !prefersReduced){
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}
+      });
+    },{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+  }else{
+    document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in');});
+  }
+})();
+</script>
+</body>
+</html>

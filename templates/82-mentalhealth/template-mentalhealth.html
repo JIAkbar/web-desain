@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TenangApp — Aplikasi Kesehatan Mental & Meditasi Indonesia</title>
+<meta name="description" content="TenangApp membantu kamu lebih tenang: meditasi terpandu, mood tracker, journaling, dan konseling psikolog online bersertifikat. Mulai gratis hari ini.">
+<meta name="theme-color" content="#8B7FD9">
+<meta property="og:title" content="TenangApp — Tenang Dimulai Dari Sini">
+<meta property="og:description" content="Meditasi, mood tracker, journaling, dan konseling psikolog online. Ruang aman untuk kesehatan mentalmu.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TenangApp — Mental Health & Wellness Template
+   LIGHT default + DARK mode. CSS variables. Mobile-first.
+   ============================================================ */
+
+:root {
+  /* Brand */
+  --accent: #8B7FD9;          /* calming lavender */
+  --accent-strong: #6F62C4;
+  --accent-soft: #EFEBFB;
+  --green: #6BC6A8;           /* soft green */
+  --green-soft: #E4F5EE;
+  --blue: #7FB4E8;            /* soft blue */
+  --blue-soft: #E6F1FB;
+  --peach: #F2B8A2;
+  --gold: #F2C879;
+
+  /* Mood palette */
+  --mood-senang: #F2C879;     /* warm gold */
+  --mood-tenang: #6BC6A8;     /* green */
+  --mood-biasa: #7FB4E8;      /* blue */
+  --mood-cemas: #C7A0E0;      /* soft purple */
+  --mood-sedih: #A8B4D6;      /* muted indigo */
+
+  /* Surfaces (light) */
+  --bg: #FBFAFF;
+  --bg-alt: #F4F1FB;
+  --surface: #FFFFFF;
+  --surface-2: #F7F5FD;
+  --border: #E9E4F5;
+  --shadow: 0 10px 30px -12px rgba(83,70,140,0.18);
+  --shadow-sm: 0 4px 14px -6px rgba(83,70,140,0.16);
+  --shadow-lg: 0 24px 60px -20px rgba(83,70,140,0.28);
+
+  /* Text */
+  --text: #2C2740;
+  --text-2: #5C566E;
+  --text-3: #8B849C;
+  --on-accent: #FFFFFF;
+
+  /* Gradients */
+  --grad-hero: linear-gradient(160deg, #EFEBFB 0%, #E6F1FB 45%, #E4F5EE 100%);
+  --grad-accent: linear-gradient(135deg, #8B7FD9 0%, #7FB4E8 100%);
+  --grad-calm: linear-gradient(135deg, #A99DE8 0%, #6BC6A8 100%);
+  --grad-cta: linear-gradient(150deg, #8B7FD9 0%, #6F62C4 60%, #7FB4E8 100%);
+
+  /* Layout */
+  --radius: 18px;
+  --radius-sm: 12px;
+  --radius-lg: 28px;
+  --maxw: 1180px;
+  --nav-h: 68px;
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+[data-theme="dark"] {
+  --accent: #A99DEB;
+  --accent-strong: #C0B6F5;
+  --accent-soft: #2A2544;
+  --green: #79D3B5;
+  --green-soft: #1E3A33;
+  --blue: #8FC0EE;
+  --blue-soft: #1D2E42;
+  --peach: #F2B8A2;
+  --gold: #F2CE86;
+
+  --mood-senang: #F2CE86;
+  --mood-tenang: #79D3B5;
+  --mood-biasa: #8FC0EE;
+  --mood-cemas: #C9A9E6;
+  --mood-sedih: #9EAAD0;
+
+  --bg: #14121F;
+  --bg-alt: #1B1830;
+  --surface: #1E1B30;
+  --surface-2: #26223B;
+  --border: #322C4C;
+  --shadow: 0 12px 34px -14px rgba(0,0,0,0.55);
+  --shadow-sm: 0 4px 16px -8px rgba(0,0,0,0.5);
+  --shadow-lg: 0 28px 64px -22px rgba(0,0,0,0.7);
+
+  --text: #EDEAF7;
+  --text-2: #B9B3CE;
+  --text-3: #8B849C;
+  --on-accent: #191430;
+
+  --grad-hero: linear-gradient(160deg, #211C3A 0%, #1A1B33 50%, #172A2A 100%);
+  --grad-accent: linear-gradient(135deg, #A99DEB 0%, #8FC0EE 100%);
+  --grad-calm: linear-gradient(135deg, #A99DEB 0%, #79D3B5 100%);
+  --grad-cta: linear-gradient(150deg, #6F62C4 0%, #4E4498 60%, #3A5878 100%);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  font-size: 16px;
+  overflow-x: hidden;
+  transition: background .4s var(--ease), color .4s var(--ease);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, .brand-name {
+  font-family: 'Quicksand', 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+ul { list-style: none; }
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+section[id], header[id] { scroll-margin-top: calc(var(--nav-h) + 12px); }
+
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: clamp(1.1rem, 4vw, 2.4rem);
+}
+
+.section { padding-block: clamp(3.6rem, 9vw, 6.5rem); }
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  font-size: .8rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+  padding: .42rem 1rem;
+  border-radius: 999px;
+}
+
+.section-head { max-width: 640px; margin-bottom: clamp(2rem, 5vw, 3rem); }
+.section-head.center { margin-inline: auto; text-align: center; }
+.section-head h2 { font-size: clamp(1.75rem, 4.2vw, 2.7rem); margin: 1rem 0 .8rem; }
+.section-head p { color: var(--text-2); font-size: clamp(1rem, 2vw, 1.12rem); }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .55rem;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: .82rem 1.5rem;
+  min-height: 48px;
+  border-radius: 999px;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: transform .25s var(--ease), box-shadow .25s var(--ease), background .25s, color .25s, border-color .25s;
+  white-space: nowrap;
+}
+.btn-primary { background: var(--grad-accent); color: #fff; box-shadow: var(--shadow-sm); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.btn-ghost { background: var(--surface); color: var(--text); border-color: var(--border); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent-strong); transform: translateY(-2px); }
+.btn-soft { background: var(--accent-soft); color: var(--accent-strong); }
+.btn-soft:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.btn-block { width: 100%; }
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: saturate(1.6) blur(16px);
+  -webkit-backdrop-filter: saturate(1.6) blur(16px);
+  border-bottom: 1px solid transparent;
+  transition: border-color .3s, background .3s;
+}
+.nav.scrolled { border-bottom-color: var(--border); box-shadow: var(--shadow-sm); }
+.nav-inner {
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.brand { display: inline-flex; align-items: center; gap: .6rem; }
+.brand-mark {
+  width: 38px; height: 38px;
+  border-radius: 12px;
+  background: var(--grad-calm);
+  display: grid; place-items: center;
+  box-shadow: var(--shadow-sm);
+  flex: none;
+}
+.brand-mark svg { width: 21px; height: 21px; }
+.brand-name { font-size: 1.28rem; color: var(--text); }
+.brand-name span { color: var(--accent-strong); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+}
+.nav-links a {
+  font-weight: 500;
+  font-size: .96rem;
+  color: var(--text-2);
+  padding: .5rem .85rem;
+  border-radius: 10px;
+  transition: color .2s, background .2s;
+}
+.nav-links a:hover { color: var(--text); background: var(--surface-2); }
+
+.nav-actions { display: flex; align-items: center; gap: .55rem; }
+
+.theme-toggle {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  display: grid; place-items: center;
+  transition: transform .3s var(--ease), border-color .2s, background .2s;
+}
+.theme-toggle:hover { transform: rotate(-15deg); border-color: var(--accent); }
+.theme-toggle svg { width: 20px; height: 20px; }
+.theme-toggle .sun { display: none; }
+[data-theme="dark"] .theme-toggle .sun { display: block; }
+[data-theme="dark"] .theme-toggle .moon { display: none; }
+
+.hamburger {
+  display: none;
+  width: 46px; height: 46px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.hamburger span {
+  width: 21px; height: 2.4px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: transform .3s var(--ease), opacity .2s;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7.4px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7.4px) rotate(-45deg); }
+
+/* Mobile menu */
+.mobile-menu {
+  position: fixed;
+  inset: var(--nav-h) 0 auto 0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem clamp(1.1rem, 4vw, 2.4rem) 1.6rem;
+  transform: translateY(-120%);
+  transition: transform .4s var(--ease);
+  z-index: 99;
+  box-shadow: var(--shadow);
+}
+.mobile-menu.open { transform: translateY(0); }
+.mobile-menu a {
+  display: block;
+  padding: .95rem .4rem;
+  font-weight: 600;
+  font-family: 'Quicksand', sans-serif;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+.mobile-menu a:last-of-type { border-bottom: none; }
+.mobile-menu .btn { margin-top: 1rem; }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  position: relative;
+  min-height: calc(100dvh - var(--nav-h));
+  display: flex;
+  align-items: center;
+  background: var(--grad-hero);
+  overflow: hidden;
+  padding-block: clamp(2.5rem, 6vw, 4rem);
+}
+.hero-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: .5;
+  pointer-events: none;
+}
+.hero-blob.b1 { width: 380px; height: 380px; background: var(--accent); top: -80px; right: -60px; opacity: .28; }
+.hero-blob.b2 { width: 320px; height: 320px; background: var(--green); bottom: -100px; left: -70px; opacity: .3; }
+.hero-blob.b3 { width: 260px; height: 260px; background: var(--blue); top: 40%; left: 45%; opacity: .22; }
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+.hero-copy h1 {
+  font-size: clamp(2.1rem, 6vw, 3.7rem);
+  margin: 1.1rem 0 1rem;
+}
+.hero-copy h1 .hl { color: var(--accent-strong); }
+.hero-copy p.lead {
+  font-size: clamp(1.05rem, 2.3vw, 1.25rem);
+  color: var(--text-2);
+  max-width: 30ch;
+  margin-bottom: 1.8rem;
+}
+.hero-cta { display: flex; flex-wrap: wrap; gap: .8rem; margin-bottom: 1.8rem; }
+.hero-trust { display: flex; align-items: center; gap: 1.4rem; flex-wrap: wrap; color: var(--text-3); font-size: .9rem; }
+.hero-trust .stars { color: var(--gold); letter-spacing: .1em; font-size: 1rem; }
+.hero-trust strong { color: var(--text); }
+
+/* App mockup (phone) */
+.phone {
+  position: relative;
+  width: min(300px, 78vw);
+  margin-inline: auto;
+  aspect-ratio: 300 / 610;
+  background: var(--surface);
+  border-radius: 40px;
+  border: 10px solid #22203a;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+[data-theme="dark"] .phone { border-color: #0c0b18; }
+.phone::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 120px; height: 22px;
+  background: #22203a;
+  border-radius: 0 0 14px 14px;
+  z-index: 3;
+}
+[data-theme="dark"] .phone::before { background: #0c0b18; }
+.phone-screen {
+  height: 100%;
+  background: var(--grad-hero);
+  padding: 2.4rem 1.1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  overflow: hidden;
+}
+.ps-greeting { font-family: 'Quicksand', sans-serif; }
+.ps-greeting small { color: var(--text-3); font-size: .72rem; }
+.ps-greeting h4 { font-size: 1.02rem; margin-top: .1rem; }
+.ps-card {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: .85rem;
+  box-shadow: var(--shadow-sm);
+}
+.ps-hero-card {
+  background: var(--grad-calm);
+  color: #fff;
+  padding: 1rem;
+}
+.ps-hero-card small { opacity: .85; font-size: .68rem; }
+.ps-hero-card b { font-family: 'Quicksand', sans-serif; font-size: .98rem; display: block; margin: .2rem 0 .5rem; }
+.ps-play {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(255,255,255,.25);
+  display: grid; place-items: center;
+}
+.ps-moods { display: flex; justify-content: space-between; }
+.ps-mood-dot {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 1.05rem;
+}
+.ps-row { display: flex; align-items: center; gap: .6rem; }
+.ps-thumb { width: 40px; height: 40px; border-radius: 11px; flex: none; }
+.ps-row .txt small { color: var(--text-3); font-size: .68rem; display: block; }
+.ps-row .txt b { font-size: .82rem; font-family: 'Quicksand', sans-serif; }
+.ps-label { font-size: .74rem; font-weight: 700; color: var(--text-2); font-family: 'Quicksand', sans-serif; }
+
+.float-badge {
+  position: absolute;
+  background: var(--surface);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: .6rem .8rem;
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  font-size: .78rem;
+  font-weight: 600;
+  z-index: 4;
+  animation: floaty 5s ease-in-out infinite;
+}
+.float-badge .fb-ic { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; flex: none; }
+.float-badge.fb-1 { top: 14%; left: -14%; }
+.float-badge.fb-2 { bottom: 16%; right: -14%; animation-delay: -2.5s; }
+.phone-wrap { position: relative; }
+
+@keyframes floaty { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-12px);} }
+
+/* ============================================================
+   Marquee / partner strip
+   ============================================================ */
+.strip {
+  border-block: 1px solid var(--border);
+  background: var(--surface);
+  padding-block: 1.4rem;
+}
+.strip-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.5rem, 5vw, 3.5rem);
+  flex-wrap: wrap;
+  color: var(--text-3);
+  font-weight: 600;
+  font-family: 'Quicksand', sans-serif;
+}
+.strip-inner span { display: inline-flex; align-items: center; gap: .5rem; font-size: .95rem; }
+
+/* ============================================================
+   FEATURES
+   ============================================================ */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.2rem;
+}
+.feature-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.8rem 1.6rem;
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease), border-color .3s;
+}
+.feature-card:hover { transform: translateY(-6px); box-shadow: var(--shadow); border-color: transparent; }
+.feature-ic {
+  width: 54px; height: 54px;
+  border-radius: 16px;
+  display: grid; place-items: center;
+  margin-bottom: 1.1rem;
+}
+.feature-ic svg { width: 26px; height: 26px; }
+.feature-card h3 { font-size: 1.25rem; margin-bottom: .5rem; }
+.feature-card p { color: var(--text-2); font-size: .98rem; }
+
+/* ============================================================
+   MOOD TRACKER MOCKUP
+   ============================================================ */
+.mood-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1.4rem, 4vw, 2.4rem);
+  align-items: stretch;
+}
+.mood-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: clamp(1.6rem, 4vw, 2.4rem);
+  box-shadow: var(--shadow-sm);
+}
+.mood-panel h3 { font-size: 1.35rem; margin-bottom: .3rem; }
+.mood-panel .sub { color: var(--text-2); font-size: .96rem; margin-bottom: 1.4rem; }
+
+.mood-picker {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: .55rem;
+  margin-bottom: 1.3rem;
+}
+.mood-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .35rem;
+  padding: .85rem .3rem;
+  min-height: 82px;
+  border-radius: 16px;
+  border: 2px solid var(--border);
+  background: var(--surface-2);
+  cursor: pointer;
+  transition: transform .2s var(--ease), border-color .2s, background .2s;
+  font-family: 'Quicksand', sans-serif;
+  color: var(--text-2);
+}
+.mood-btn .emoji { font-size: 1.7rem; line-height: 1; }
+.mood-btn .lbl { font-size: .72rem; font-weight: 600; }
+.mood-btn:hover { transform: translateY(-3px); }
+.mood-btn.active { background: var(--surface); box-shadow: var(--shadow-sm); color: var(--text); transform: translateY(-3px); }
+.mood-btn[data-mood="senang"].active { border-color: var(--mood-senang); }
+.mood-btn[data-mood="tenang"].active { border-color: var(--mood-tenang); }
+.mood-btn[data-mood="biasa"].active  { border-color: var(--mood-biasa); }
+.mood-btn[data-mood="cemas"].active  { border-color: var(--mood-cemas); }
+.mood-btn[data-mood="sedih"].active   { border-color: var(--mood-sedih); }
+
+.mood-message {
+  background: var(--accent-soft);
+  border-radius: 14px;
+  padding: .95rem 1.1rem;
+  font-size: .94rem;
+  color: var(--text);
+  display: flex;
+  gap: .7rem;
+  align-items: flex-start;
+  min-height: 62px;
+  transition: background .3s;
+}
+.mood-message .mm-ic { font-size: 1.2rem; flex: none; }
+
+/* Chart */
+.chart-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.1rem; }
+.chart-head h3 { font-size: 1.35rem; }
+.chart-head .streak {
+  font-size: .8rem; font-weight: 600; color: var(--green);
+  background: var(--green-soft); padding: .3rem .7rem; border-radius: 999px;
+  font-family: 'Quicksand', sans-serif;
+}
+.mood-chart {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: .5rem;
+  align-items: end;
+  height: 200px;
+  margin-bottom: 1rem;
+}
+.chart-col { display: flex; flex-direction: column; align-items: center; gap: .5rem; height: 100%; justify-content: flex-end; }
+.chart-bar {
+  width: 100%;
+  max-width: 34px;
+  border-radius: 10px 10px 6px 6px;
+  min-height: 8px;
+  transition: height .6s var(--ease), background .3s;
+  position: relative;
+}
+.chart-bar .peak-emoji {
+  position: absolute; top: -22px; left: 50%; transform: translateX(-50%);
+  font-size: .95rem;
+}
+.chart-day { font-size: .74rem; color: var(--text-3); font-weight: 600; font-family: 'Quicksand', sans-serif; }
+.chart-col.today .chart-day { color: var(--accent-strong); }
+.mood-legend { display: flex; flex-wrap: wrap; gap: .5rem 1rem; font-size: .78rem; color: var(--text-2); }
+.mood-legend span { display: inline-flex; align-items: center; gap: .4rem; }
+.mood-legend i { width: 11px; height: 11px; border-radius: 4px; display: inline-block; }
+
+/* ============================================================
+   BREATHING EXERCISE
+   ============================================================ */
+.breathe {
+  background: var(--grad-hero);
+  border-radius: var(--radius-lg);
+  padding: clamp(2.4rem, 6vw, 4rem) clamp(1.4rem, 5vw, 3rem);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.breathe h2 { font-size: clamp(1.6rem, 4vw, 2.3rem); margin-bottom: .5rem; }
+.breathe > p { color: var(--text-2); max-width: 46ch; margin: 0 auto 2.4rem; }
+.breathe-stage {
+  display: grid;
+  place-items: center;
+  height: 300px;
+  position: relative;
+  margin-bottom: 1.6rem;
+}
+.breathe-circle {
+  width: 130px; height: 130px;
+  border-radius: 50%;
+  background: var(--grad-calm);
+  display: grid; place-items: center;
+  box-shadow: 0 0 0 0 rgba(139,127,217,.35);
+  position: relative;
+  z-index: 2;
+  transition: transform .3s ease;
+}
+.breathe-circle::after {
+  content: '';
+  position: absolute;
+  inset: -18px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  opacity: .3;
+}
+.breathe-circle.run { animation: breatheAnim 14s ease-in-out infinite; }
+.breathe-text {
+  color: #fff;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  font-size: 1.02rem;
+  text-shadow: 0 1px 6px rgba(0,0,0,.15);
+}
+@keyframes breatheAnim {
+  0%   { transform: scale(1); }
+  28%  { transform: scale(1.75); }   /* inhale 4s */
+  50%  { transform: scale(1.75); }   /* hold 3s */
+  85%  { transform: scale(1); }      /* exhale 5s */
+  100% { transform: scale(1); }
+}
+.breathe-controls { display: flex; gap: .8rem; justify-content: center; flex-wrap: wrap; }
+.breathe-count { margin-top: 1.2rem; font-size: .88rem; color: var(--text-3); font-family: 'Quicksand', sans-serif; }
+.breathe-count b { color: var(--accent-strong); }
+
+@media (prefers-reduced-motion: reduce) {
+  .breathe-circle.run { animation: none; }
+  .float-badge { animation: none; }
+}
+
+/* ============================================================
+   MEDITATION LIBRARY
+   ============================================================ */
+.med-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.2rem;
+}
+.med-card {
+  border-radius: var(--radius);
+  overflow: hidden;
+  position: relative;
+  color: #fff;
+  min-height: 200px;
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  cursor: pointer;
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+  isolation: isolate;
+}
+.med-card::before {
+  content: '';
+  position: absolute; inset: 0; z-index: -1;
+  transition: transform .5s var(--ease);
+}
+.med-card:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
+.med-card:hover::before { transform: scale(1.06); }
+.med-card.m1::before { background: linear-gradient(150deg, #8B7FD9, #6F62C4); }
+.med-card.m2::before { background: linear-gradient(150deg, #6BC6A8, #4FA98C); }
+.med-card.m3::before { background: linear-gradient(150deg, #7FB4E8, #5B8FCB); }
+.med-card.m4::before { background: linear-gradient(150deg, #F2B8A2, #E0937B); }
+.med-card.m5::before { background: linear-gradient(150deg, #C7A0E0, #A67CC9); }
+.med-card.m6::before { background: linear-gradient(150deg, #F2C879, #DDA847); }
+.med-card::after {
+  content: '';
+  position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(180deg, transparent 30%, rgba(20,15,40,.42));
+}
+.med-tag {
+  align-self: flex-start;
+  background: rgba(255,255,255,.22);
+  backdrop-filter: blur(4px);
+  border-radius: 999px;
+  padding: .28rem .75rem;
+  font-size: .72rem;
+  font-weight: 600;
+  font-family: 'Quicksand', sans-serif;
+  margin-bottom: auto;
+}
+.med-play {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: rgba(255,255,255,.9);
+  color: #333;
+  display: grid; place-items: center;
+  position: absolute; top: 1.3rem; right: 1.3rem;
+  transition: transform .3s var(--ease);
+}
+.med-card:hover .med-play { transform: scale(1.12); }
+.med-card h3 { color: #fff; font-size: 1.2rem; margin-bottom: .25rem; }
+.med-meta { font-size: .82rem; opacity: .92; display: flex; gap: .8rem; align-items: center; }
+
+/* Programs */
+.prog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.2rem;
+  margin-top: 2rem;
+}
+.prog-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+}
+.prog-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+.prog-top { display: flex; align-items: center; gap: .8rem; margin-bottom: 1rem; }
+.prog-num {
+  width: 44px; height: 44px; border-radius: 13px;
+  display: grid; place-items: center;
+  font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 1.1rem;
+  flex: none;
+}
+.prog-card h4 { font-size: 1.08rem; }
+.prog-card p { color: var(--text-2); font-size: .92rem; margin-bottom: 1rem; }
+.prog-bar { height: 7px; border-radius: 999px; background: var(--surface-2); overflow: hidden; margin-bottom: .5rem; }
+.prog-bar i { display: block; height: 100%; border-radius: 999px; background: var(--grad-accent); }
+.prog-card .prog-meta { font-size: .8rem; color: var(--text-3); font-family: 'Quicksand', sans-serif; }
+
+/* ============================================================
+   KONSELING PSIKOLOG
+   ============================================================ */
+.psi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 1.3rem;
+}
+.psi-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.6rem;
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+}
+.psi-card:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
+.psi-top { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; }
+.psi-avatar {
+  width: 66px; height: 66px; border-radius: 20px;
+  display: grid; place-items: center;
+  font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 1.5rem;
+  color: #fff; flex: none;
+}
+.psi-name { font-size: 1.1rem; margin-bottom: .1rem; }
+.psi-role { color: var(--text-2); font-size: .86rem; }
+.psi-status {
+  display: inline-flex; align-items: center; gap: .35rem;
+  font-size: .74rem; font-weight: 600; color: var(--green);
+  margin-top: .3rem; font-family: 'Quicksand', sans-serif;
+}
+.psi-status i { width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block; }
+.psi-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1.1rem; }
+.psi-tags span {
+  font-size: .74rem; font-weight: 600;
+  background: var(--surface-2); color: var(--text-2);
+  padding: .28rem .65rem; border-radius: 999px;
+}
+.psi-foot { display: flex; align-items: center; justify-content: space-between; padding-top: 1rem; border-top: 1px solid var(--border); }
+.psi-price { font-family: 'Quicksand', sans-serif; }
+.psi-price b { font-size: 1.05rem; color: var(--text); }
+.psi-price small { color: var(--text-3); font-size: .76rem; display: block; }
+.psi-rate { font-size: .82rem; color: var(--text-2); }
+.psi-rate .star { color: var(--gold); }
+
+/* ============================================================
+   ARTICLES
+   ============================================================ */
+.art-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.3rem;
+}
+.art-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+}
+.art-card:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
+.art-thumb { height: 150px; position: relative; }
+.art-thumb.a1 { background: linear-gradient(135deg, #EFEBFB, #C7A0E0); }
+.art-thumb.a2 { background: linear-gradient(135deg, #E4F5EE, #6BC6A8); }
+.art-thumb.a3 { background: linear-gradient(135deg, #E6F1FB, #7FB4E8); }
+.art-cat {
+  position: absolute; top: 1rem; left: 1rem;
+  background: var(--surface); color: var(--accent-strong);
+  font-size: .72rem; font-weight: 700; font-family: 'Quicksand', sans-serif;
+  padding: .28rem .7rem; border-radius: 999px;
+}
+.art-body { padding: 1.3rem; }
+.art-body h3 { font-size: 1.12rem; margin-bottom: .5rem; }
+.art-body p { color: var(--text-2); font-size: .9rem; margin-bottom: 1rem; }
+.art-meta { display: flex; align-items: center; gap: .8rem; font-size: .8rem; color: var(--text-3); font-family: 'Quicksand', sans-serif; }
+
+/* ============================================================
+   TESTIMONIALS
+   ============================================================ */
+.testi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.3rem;
+}
+.testi-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.8rem;
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+}
+.testi-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+.testi-stars { color: var(--gold); letter-spacing: .12em; margin-bottom: 1rem; }
+.testi-card blockquote { font-size: 1.02rem; color: var(--text); margin-bottom: 1.4rem; line-height: 1.6; }
+.testi-who { display: flex; align-items: center; gap: .8rem; }
+.testi-ava {
+  width: 46px; height: 46px; border-radius: 50%;
+  display: grid; place-items: center; color: #fff;
+  font-family: 'Quicksand', sans-serif; font-weight: 700; flex: none;
+}
+.testi-who b { font-family: 'Quicksand', sans-serif; font-size: .95rem; }
+.testi-who small { color: var(--text-3); font-size: .82rem; display: block; }
+
+/* ============================================================
+   PRICING
+   ============================================================ */
+.price-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: .9rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: .35rem;
+  margin: 1.4rem auto 0;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+}
+.price-toggle button {
+  border: none;
+  background: transparent;
+  color: var(--text-2);
+  padding: .55rem 1.15rem;
+  min-height: 40px;
+  border-radius: 999px;
+  cursor: pointer;
+  font: inherit;
+  transition: background .25s, color .25s;
+}
+.price-toggle button.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }
+.price-toggle .save { color: var(--green); font-size: .72rem; }
+
+.price-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.4rem;
+  max-width: 780px;
+  margin: 2.6rem auto 0;
+}
+.price-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2rem 1.8rem;
+  position: relative;
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+}
+.price-card.featured {
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+}
+.price-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+.price-badge {
+  position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+  background: var(--grad-accent); color: #fff;
+  font-size: .72rem; font-weight: 700; font-family: 'Quicksand', sans-serif;
+  padding: .35rem .95rem; border-radius: 999px; white-space: nowrap;
+}
+.price-card h3 { font-size: 1.3rem; margin-bottom: .3rem; }
+.price-card .p-desc { color: var(--text-2); font-size: .9rem; margin-bottom: 1.3rem; }
+.price-amount { display: flex; align-items: baseline; gap: .3rem; margin-bottom: .3rem; }
+.price-amount .amt { font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 2.3rem; color: var(--text); }
+.price-amount .per { color: var(--text-3); font-size: .9rem; }
+.price-note { font-size: .8rem; color: var(--text-3); margin-bottom: 1.5rem; min-height: 1.2em; }
+.price-feats { margin-bottom: 1.6rem; }
+.price-feats li {
+  display: flex; align-items: flex-start; gap: .6rem;
+  padding: .5rem 0; font-size: .92rem; color: var(--text-2);
+}
+.price-feats li svg { width: 18px; height: 18px; color: var(--green); flex: none; margin-top: 3px; }
+.price-feats li.off { opacity: .45; }
+.price-feats li.off svg { color: var(--text-3); }
+
+/* ============================================================
+   CTA
+   ============================================================ */
+.cta {
+  background: var(--grad-cta);
+  border-radius: var(--radius-lg);
+  padding: clamp(2.6rem, 7vw, 4.5rem) clamp(1.4rem, 5vw, 3.5rem);
+  text-align: center;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.cta::before, .cta::after {
+  content: ''; position: absolute; border-radius: 50%;
+  background: rgba(255,255,255,.12); filter: blur(2px);
+}
+.cta::before { width: 240px; height: 240px; top: -80px; right: -50px; }
+.cta::after { width: 180px; height: 180px; bottom: -70px; left: -40px; }
+.cta-inner { position: relative; z-index: 1; max-width: 620px; margin-inline: auto; }
+.cta h2 { color: #fff; font-size: clamp(1.7rem, 4.5vw, 2.7rem); margin-bottom: .8rem; }
+.cta p { color: rgba(255,255,255,.9); font-size: 1.08rem; margin-bottom: 2rem; }
+.cta .btn-primary { background: #fff; color: var(--accent-strong); }
+.cta .btn-primary:hover { box-shadow: 0 14px 34px -12px rgba(0,0,0,.35); }
+.cta .btn-ghost { background: transparent; border-color: rgba(255,255,255,.6); color: #fff; }
+.cta .btn-ghost:hover { border-color: #fff; background: rgba(255,255,255,.12); color: #fff; }
+.cta-actions { display: flex; gap: .8rem; justify-content: center; flex-wrap: wrap; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding-block: clamp(3rem, 6vw, 4rem) 2rem;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.6fr repeat(3, 1fr);
+  gap: 2.5rem 1.5rem;
+  margin-bottom: 2.5rem;
+}
+.footer-brand p { color: var(--text-2); font-size: .94rem; margin: 1rem 0 1.2rem; max-width: 34ch; }
+.footer-social { display: flex; gap: .6rem; }
+.footer-social a {
+  width: 40px; height: 40px; border-radius: 12px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  display: grid; place-items: center; color: var(--text-2);
+  transition: color .2s, border-color .2s, transform .2s;
+}
+.footer-social a:hover { color: var(--accent-strong); border-color: var(--accent); transform: translateY(-2px); }
+.footer-col h4 { font-size: .82rem; text-transform: uppercase; letter-spacing: .1em; color: var(--text-3); margin-bottom: 1rem; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; }
+.footer-col a { display: block; color: var(--text-2); font-size: .94rem; padding: .35rem 0; transition: color .2s; }
+.footer-col a:hover { color: var(--accent-strong); }
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 1.6rem;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 1rem;
+  color: var(--text-3); font-size: .86rem;
+}
+.footer-crisis {
+  background: var(--accent-soft);
+  border-radius: 14px;
+  padding: 1rem 1.3rem;
+  margin-bottom: 2.2rem;
+  font-size: .9rem;
+  color: var(--text);
+  display: flex; gap: .7rem; align-items: center;
+}
+.footer-crisis strong { color: var(--accent-strong); }
+
+/* Reveal */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  html { scroll-behavior: auto; }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 940px) {
+  .hero-grid { grid-template-columns: 1fr; text-align: center; }
+  .hero-copy p.lead { margin-inline: auto; max-width: 42ch; }
+  .hero-cta, .hero-trust { justify-content: center; }
+  .phone-wrap { margin-top: 1rem; }
+  .mood-wrap { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .footer-brand { grid-column: 1 / -1; }
+}
+@media (max-width: 720px) {
+  .nav-links { display: none; }
+  .nav-actions .btn-soft { display: none; }
+  .hamburger { display: flex; }
+}
+@media (max-width: 520px) {
+  .mood-picker { gap: .4rem; }
+  .mood-btn { min-height: 74px; padding: .7rem .2rem; }
+  .mood-btn .emoji { font-size: 1.45rem; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .float-badge.fb-1 { left: -6%; }
+  .float-badge.fb-2 { right: -6%; }
+  .hero-trust { gap: .8rem; flex-direction: column; align-items: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ================= NAV ================= -->
+<nav class="nav" id="nav" aria-label="Navigasi utama">
+  <div class="container nav-inner">
+    <a href="#hero" class="brand" aria-label="TenangApp beranda">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 21C12 21 4 15 4 9a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 6-8 12-8 12z"/>
+        </svg>
+      </span>
+      <span class="brand-name">Tenang<span>App</span></span>
+    </a>
+
+    <div class="nav-links">
+      <a href="#fitur">Fitur</a>
+      <a href="#mood">Mood Tracker</a>
+      <a href="#meditasi">Meditasi</a>
+      <a href="#konseling">Psikolog</a>
+      <a href="#harga">Harga</a>
+    </div>
+
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Ganti mode terang atau gelap" aria-pressed="false">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M4.2 4.2l1.5 1.5M18.3 18.3l1.5 1.5M2 12h2M20 12h2M4.2 19.8l1.5-1.5M18.3 5.7l1.5-1.5"/></svg>
+      </button>
+      <a href="#cta" class="btn btn-soft">Masuk</a>
+      <a href="#harga" class="btn btn-primary">Coba Gratis</a>
+      <button class="hamburger" id="hamburger" aria-label="Buka menu" aria-expanded="false" aria-controls="mobileMenu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu" aria-label="Menu mobile">
+  <a href="#fitur">Fitur</a>
+  <a href="#mood">Mood Tracker</a>
+  <a href="#meditasi">Meditasi</a>
+  <a href="#konseling">Psikolog</a>
+  <a href="#artikel">Artikel</a>
+  <a href="#harga">Harga</a>
+  <a href="#harga" class="btn btn-primary btn-block">Coba Gratis 7 Hari</a>
+</div>
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="hero">
+  <span class="hero-blob b1" aria-hidden="true"></span>
+  <span class="hero-blob b2" aria-hidden="true"></span>
+  <span class="hero-blob b3" aria-hidden="true"></span>
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">🌿 Kesehatan mental untuk semua</span>
+      <h1>Tenang dimulai <span class="hl">dari sini.</span></h1>
+      <p class="lead">Meditasi terpandu, mood tracker, journaling, dan konseling psikolog online — semua dalam satu ruang yang aman dan hangat.</p>
+      <div class="hero-cta">
+        <a href="#harga" class="btn btn-primary">Mulai Perjalananmu</a>
+        <a href="#meditasi" class="btn btn-ghost">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          Coba Meditasi
+        </a>
+      </div>
+      <div class="hero-trust">
+        <span><span class="stars" aria-hidden="true">★★★★★</span> <strong>4,9</strong> di App Store</span>
+        <span><strong>+320.000</strong> teman perjalanan</span>
+      </div>
+    </div>
+
+    <div class="phone-wrap">
+      <div class="float-badge fb-1">
+        <span class="fb-ic" style="background:var(--green-soft)" aria-hidden="true">🧘</span>
+        <span>7 hari<br>meditasi beruntun</span>
+      </div>
+      <div class="float-badge fb-2">
+        <span class="fb-ic" style="background:var(--blue-soft)" aria-hidden="true">😌</span>
+        <span>Mood hari ini:<br>Tenang</span>
+      </div>
+      <div class="phone" role="img" aria-label="Tampilan aplikasi TenangApp menampilkan sapaan, sesi meditasi, dan pilihan mood harian">
+        <div class="phone-screen">
+          <div class="ps-greeting">
+            <small>Selamat pagi 🌤️</small>
+            <h4>Halo, Sinta</h4>
+          </div>
+          <div class="ps-card ps-hero-card">
+            <small>Rekomendasi hari ini</small>
+            <b>Pagi yang Tenang</b>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:.72rem;opacity:.85">10 menit • Napas</span>
+              <span class="ps-play" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
+              </span>
+            </div>
+          </div>
+          <div class="ps-card">
+            <div class="ps-label">Bagaimana perasaanmu?</div>
+            <div class="ps-moods" style="margin-top:.6rem">
+              <span class="ps-mood-dot" style="background:var(--green-soft)">😊</span>
+              <span class="ps-mood-dot" style="background:var(--blue-soft)">😌</span>
+              <span class="ps-mood-dot" style="background:var(--surface-2)">😐</span>
+              <span class="ps-mood-dot" style="background:var(--accent-soft)">😰</span>
+              <span class="ps-mood-dot" style="background:var(--surface-2)">😢</span>
+            </div>
+          </div>
+          <div class="ps-card ps-row">
+            <span class="ps-thumb" style="background:linear-gradient(135deg,#7FB4E8,#5B8FCB)" aria-hidden="true"></span>
+            <span class="txt">
+              <small>Tidur Nyenyak</small>
+              <b>Suara Hujan Malam</b>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= STRIP ================= -->
+<div class="strip">
+  <div class="container strip-inner">
+    <span>🔒 Data terenkripsi & privat</span>
+    <span>👩‍⚕️ Psikolog bersertifikat HIMPSI</span>
+    <span>🏆 Rekomendasi #1 wellness 2026</span>
+    <span>💜 Diliput Kompas &amp; Tempo</span>
+  </div>
+</div>
+
+<!-- ================= FEATURES ================= -->
+<section class="section" id="fitur">
+  <div class="container">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Fitur Utama</span>
+      <h2>Semua yang kamu butuh untuk merawat diri</h2>
+      <p>Empat pilar TenangApp bekerja bersama membentuk kebiasaan sehat mental yang lembut dan berkelanjutan.</p>
+    </div>
+    <div class="features-grid">
+      <article class="feature-card reveal">
+        <div class="feature-ic" style="background:var(--accent-soft);color:var(--accent-strong)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        </div>
+        <h3>Meditasi Terpandu</h3>
+        <p>Ratusan sesi dari 3 hingga 45 menit — napas, tidur, fokus, dan pelepasan cemas dengan suara narator yang menenangkan.</p>
+      </article>
+      <article class="feature-card reveal">
+        <div class="feature-ic" style="background:var(--green-soft);color:var(--green)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l5-5 4 4 8-8"/><path d="M21 8V3h-5" /></svg>
+        </div>
+        <h3>Mood Tracker</h3>
+        <p>Catat perasaanmu tiap hari dan lihat polanya dari waktu ke waktu. Mengenali diri adalah langkah pertama merawatnya.</p>
+      </article>
+      <article class="feature-card reveal">
+        <div class="feature-ic" style="background:var(--blue-soft);color:var(--blue)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h11l5 5v11H4z"/><path d="M8 9h6M8 13h8M8 17h5"/></svg>
+        </div>
+        <h3>Journaling</h3>
+        <p>Ruang menulis privat dengan pemantik reflektif harian. Tuangkan pikiran, lepaskan beban, temukan kejernihan.</p>
+      </article>
+      <article class="feature-card reveal">
+        <div class="feature-ic" style="background:var(--accent-soft);color:var(--accent-strong)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-12.2 7.6L3 21l1.9-5.8A8.5 8.5 0 1 1 21 11.5z"/></svg>
+        </div>
+        <h3>Konseling Psikolog</h3>
+        <p>Terhubung dengan psikolog bersertifikat via chat atau video call. Ruang aman untuk bercerita, tanpa dihakimi.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MOOD TRACKER MOCKUP ================= -->
+<section class="section" id="mood" style="background:var(--bg-alt)">
+  <div class="container">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Coba Langsung</span>
+      <h2>Bagaimana perasaanmu hari ini?</h2>
+      <p>Pilih mood-mu, dan lihat bagaimana pola perasaanmu terbentuk sepanjang minggu. Tidak ada perasaan yang salah.</p>
+    </div>
+
+    <div class="mood-wrap">
+      <!-- Picker -->
+      <div class="mood-panel reveal">
+        <h3>Catat mood hari ini</h3>
+        <p class="sub">Ketuk salah satu yang paling mewakili perasaanmu.</p>
+
+        <div class="mood-picker" role="group" aria-label="Pilih mood hari ini">
+          <button class="mood-btn" data-mood="senang" data-emoji="😊" aria-pressed="false">
+            <span class="emoji" aria-hidden="true">😊</span><span class="lbl">Senang</span>
+          </button>
+          <button class="mood-btn" data-mood="tenang" data-emoji="😌" aria-pressed="false">
+            <span class="emoji" aria-hidden="true">😌</span><span class="lbl">Tenang</span>
+          </button>
+          <button class="mood-btn" data-mood="biasa" data-emoji="😐" aria-pressed="false">
+            <span class="emoji" aria-hidden="true">😐</span><span class="lbl">Biasa</span>
+          </button>
+          <button class="mood-btn" data-mood="cemas" data-emoji="😰" aria-pressed="false">
+            <span class="emoji" aria-hidden="true">😰</span><span class="lbl">Cemas</span>
+          </button>
+          <button class="mood-btn" data-mood="sedih" data-emoji="😢" aria-pressed="false">
+            <span class="emoji" aria-hidden="true">😢</span><span class="lbl">Sedih</span>
+          </button>
+        </div>
+
+        <div class="mood-message" id="moodMessage" role="status" aria-live="polite">
+          <span class="mm-ic" aria-hidden="true">💜</span>
+          <span id="moodMessageText">Belum ada catatan hari ini. Ambil waktu sejenak untuk mengecek dirimu.</span>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="mood-panel reveal">
+        <div class="chart-head">
+          <h3>Mood minggu ini</h3>
+          <span class="streak" id="moodStreak">🔥 5 hari beruntun</span>
+        </div>
+        <div class="mood-chart" id="moodChart" aria-hidden="true"></div>
+        <div class="mood-legend">
+          <span><i style="background:var(--mood-senang)"></i>Senang</span>
+          <span><i style="background:var(--mood-tenang)"></i>Tenang</span>
+          <span><i style="background:var(--mood-biasa)"></i>Biasa</span>
+          <span><i style="background:var(--mood-cemas)"></i>Cemas</span>
+          <span><i style="background:var(--mood-sedih)"></i>Sedih</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BREATHING ================= -->
+<section class="section" id="breathe">
+  <div class="container">
+    <div class="breathe reveal">
+      <span class="eyebrow" style="margin-bottom:1rem">🫁 Latihan Napas 4-7-8</span>
+      <h2>Ambil satu napas dalam bersama kami</h2>
+      <p>Ikuti lingkaran: tarik napas saat ia mengembang, tahan, lalu hembuskan perlahan saat ia mengecil. Satu menit saja bisa menenangkan sistem sarafmu.</p>
+
+      <div class="breathe-stage">
+        <div class="breathe-circle" id="breatheCircle">
+          <span class="breathe-text" id="breatheText">Siap?</span>
+        </div>
+      </div>
+
+      <div class="breathe-controls">
+        <button class="btn btn-primary" id="breatheBtn" aria-live="polite">Mulai Bernapas</button>
+        <button class="btn btn-ghost" id="breatheReset" hidden>Selesai</button>
+      </div>
+      <p class="breathe-count" id="breatheCount" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MEDITATION LIBRARY ================= -->
+<section class="section" id="meditasi" style="background:var(--bg-alt)">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Perpustakaan Meditasi</span>
+      <h2>Temukan ketenangan untuk setiap momen</h2>
+      <p>Dari bangun tidur sampai menjelang malam — ada sesi untuk setiap suasana hatimu.</p>
+    </div>
+
+    <div class="med-grid">
+      <article class="med-card m1" tabindex="0" aria-label="Sesi meditasi Pagi yang Tenang, 10 menit">
+        <span class="med-play" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+        <span class="med-tag">Pagi</span>
+        <h3>Pagi yang Tenang</h3>
+        <div class="med-meta"><span>⏱️ 10 menit</span><span>🎧 Napas</span></div>
+      </article>
+      <article class="med-card m2" tabindex="0" aria-label="Sesi meditasi Lepas Cemas, 12 menit">
+        <span class="med-play" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+        <span class="med-tag">Cemas</span>
+        <h3>Lepas Cemas</h3>
+        <div class="med-meta"><span>⏱️ 12 menit</span><span>🌿 Grounding</span></div>
+      </article>
+      <article class="med-card m3" tabindex="0" aria-label="Sesi meditasi Tidur Nyenyak, 25 menit">
+        <span class="med-play" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+        <span class="med-tag">Malam</span>
+        <h3>Tidur Nyenyak</h3>
+        <div class="med-meta"><span>⏱️ 25 menit</span><span>🌙 Sleep story</span></div>
+      </article>
+      <article class="med-card m4" tabindex="0" aria-label="Sesi meditasi Fokus Kerja, 8 menit">
+        <span class="med-play" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+        <span class="med-tag">Fokus</span>
+        <h3>Fokus Kerja</h3>
+        <div class="med-meta"><span>⏱️ 8 menit</span><span>🎯 Konsentrasi</span></div>
+      </article>
+      <article class="med-card m5" tabindex="0" aria-label="Sesi meditasi Cinta untuk Diri, 15 menit">
+        <span class="med-play" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+        <span class="med-tag">Self-love</span>
+        <h3>Cinta untuk Diri</h3>
+        <div class="med-meta"><span>⏱️ 15 menit</span><span>💗 Afirmasi</span></div>
+      </article>
+      <article class="med-card m6" tabindex="0" aria-label="Sesi meditasi Syukur Sore, 7 menit">
+        <span class="med-play" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+        <span class="med-tag">Sore</span>
+        <h3>Syukur Sore</h3>
+        <div class="med-meta"><span>⏱️ 7 menit</span><span>🙏 Gratitude</span></div>
+      </article>
+    </div>
+
+    <!-- Programs -->
+    <div class="section-head reveal" style="margin-top:3.5rem">
+      <span class="eyebrow">Program Terpandu</span>
+      <h2 style="font-size:clamp(1.5rem,3.5vw,2rem)">Perjalanan berhari-hari</h2>
+    </div>
+    <div class="prog-grid">
+      <article class="prog-card reveal">
+        <div class="prog-top">
+          <span class="prog-num" style="background:var(--accent-soft);color:var(--accent-strong)">7</span>
+          <h4>Dasar Ketenangan</h4>
+        </div>
+        <p>7 hari mengenal napas dan hadir di saat ini. Pas untuk pemula.</p>
+        <div class="prog-bar"><i style="width:42%"></i></div>
+        <span class="prog-meta">3 dari 7 hari selesai</span>
+      </article>
+      <article class="prog-card reveal">
+        <div class="prog-top">
+          <span class="prog-num" style="background:var(--green-soft);color:var(--green)">14</span>
+          <h4>Kelola Kecemasan</h4>
+        </div>
+        <p>14 hari teknik grounding & CBT ringan untuk meredakan cemas.</p>
+        <div class="prog-bar"><i style="width:0%"></i></div>
+        <span class="prog-meta">Belum dimulai</span>
+      </article>
+      <article class="prog-card reveal">
+        <div class="prog-top">
+          <span class="prog-num" style="background:var(--blue-soft);color:var(--blue)">21</span>
+          <h4>Tidur Lebih Baik</h4>
+        </div>
+        <p>21 hari membangun rutinitas malam yang menenangkan pikiran.</p>
+        <div class="prog-bar"><i style="width:19%"></i></div>
+        <span class="prog-meta">4 dari 21 hari selesai</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= KONSELING ================= -->
+<section class="section" id="konseling">
+  <div class="container">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Konseling Online</span>
+      <h2>Ngobrol dengan psikolog yang tepat</h2>
+      <p>Semua psikolog kami bersertifikat dan berpengalaman. Bercerita di ruang yang aman, rahasia, dan penuh empati.</p>
+    </div>
+
+    <div class="psi-grid">
+      <article class="psi-card reveal">
+        <div class="psi-top">
+          <span class="psi-avatar" style="background:linear-gradient(135deg,#8B7FD9,#6F62C4)">AP</span>
+          <div>
+            <h3 class="psi-name">Anindya Putri, M.Psi</h3>
+            <p class="psi-role">Psikolog Klinis Dewasa</p>
+            <span class="psi-status"><i></i>Tersedia hari ini</span>
+          </div>
+        </div>
+        <div class="psi-tags"><span>Kecemasan</span><span>Burnout</span><span>Relasi</span></div>
+        <div class="psi-foot">
+          <div class="psi-price"><small>Mulai dari</small><b>Rp 95.000</b><small>/ sesi 60 menit</small></div>
+          <div class="psi-rate"><span class="star">★</span> 4,9 · 320 sesi</div>
+        </div>
+      </article>
+
+      <article class="psi-card reveal">
+        <div class="psi-top">
+          <span class="psi-avatar" style="background:linear-gradient(135deg,#6BC6A8,#4FA98C)">RH</span>
+          <div>
+            <h3 class="psi-name">Raka Hidayat, M.Psi</h3>
+            <p class="psi-role">Psikolog Keluarga &amp; Remaja</p>
+            <span class="psi-status"><i></i>Tersedia hari ini</span>
+          </div>
+        </div>
+        <div class="psi-tags"><span>Remaja</span><span>Keluarga</span><span>Motivasi</span></div>
+        <div class="psi-foot">
+          <div class="psi-price"><small>Mulai dari</small><b>Rp 110.000</b><small>/ sesi 60 menit</small></div>
+          <div class="psi-rate"><span class="star">★</span> 4,8 · 210 sesi</div>
+        </div>
+      </article>
+
+      <article class="psi-card reveal">
+        <div class="psi-top">
+          <span class="psi-avatar" style="background:linear-gradient(135deg,#7FB4E8,#5B8FCB)">SL</span>
+          <div>
+            <h3 class="psi-name">Salsabila Larasati, M.Psi</h3>
+            <p class="psi-role">Psikolog Klinis &amp; Trauma</p>
+            <span class="psi-status" style="color:var(--text-3)"><i style="background:var(--text-3)"></i>Slot besok pagi</span>
+          </div>
+        </div>
+        <div class="psi-tags"><span>Trauma</span><span>Grief</span><span>Self-esteem</span></div>
+        <div class="psi-foot">
+          <div class="psi-price"><small>Mulai dari</small><b>Rp 130.000</b><small>/ sesi 60 menit</small></div>
+          <div class="psi-rate"><span class="star">★</span> 5,0 · 415 sesi</div>
+        </div>
+      </article>
+    </div>
+    <div style="text-align:center;margin-top:2.2rem" class="reveal">
+      <a href="#cta" class="btn btn-soft">Lihat 80+ psikolog lainnya</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ARTICLES ================= -->
+<section class="section" id="artikel" style="background:var(--bg-alt)">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Ruang Baca</span>
+      <h2>Bacaan lembut untuk hari-harimu</h2>
+      <p>Artikel yang ditinjau psikolog — dibuat untuk menemani, bukan menggurui.</p>
+    </div>
+
+    <div class="art-grid">
+      <article class="art-card reveal">
+        <div class="art-thumb a1"><span class="art-cat">Kecemasan</span></div>
+        <div class="art-body">
+          <h3>5 Cara Lembut Meredakan Cemas Saat Deadline</h3>
+          <p>Teknik sederhana yang bisa kamu lakukan di meja kerja dalam 2 menit.</p>
+          <div class="art-meta"><span>📖 4 menit baca</span><span>·</span><span>Tim Psikolog</span></div>
+        </div>
+      </article>
+      <article class="art-card reveal">
+        <div class="art-thumb a2"><span class="art-cat">Self-care</span></div>
+        <div class="art-body">
+          <h3>Membangun Rutinitas Pagi yang Menenangkan</h3>
+          <p>15 menit pertama harimu bisa mengubah suasana hati sepanjang hari.</p>
+          <div class="art-meta"><span>📖 6 menit baca</span><span>·</span><span>Anindya Putri</span></div>
+        </div>
+      </article>
+      <article class="art-card reveal">
+        <div class="art-thumb a3"><span class="art-cat">Tidur</span></div>
+        <div class="art-body">
+          <h3>Kenapa Pikiran Sibuk Saat Mau Tidur?</h3>
+          <p>Memahami "racing thoughts" dan cara menenangkannya secara bertahap.</p>
+          <div class="art-meta"><span>📖 5 menit baca</span><span>·</span><span>Raka Hidayat</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TESTIMONIALS ================= -->
+<section class="section" id="testi">
+  <div class="container">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Cerita Mereka</span>
+      <h2>Ditemani ratusan ribu langkah kecil</h2>
+      <p>Perubahan besar dimulai dari kebiasaan kecil yang konsisten. Ini cerita mereka.</p>
+    </div>
+
+    <div class="testi-grid">
+      <article class="testi-card reveal">
+        <div class="testi-stars" aria-label="5 dari 5 bintang">★★★★★</div>
+        <blockquote>"Mood tracker-nya bikin aku sadar aku selalu cemas tiap Senin. Sekarang aku sisipkan meditasi 10 menit sebelum kerja, dan bedanya kerasa banget."</blockquote>
+        <div class="testi-who">
+          <span class="testi-ava" style="background:linear-gradient(135deg,#8B7FD9,#6F62C4)">DA</span>
+          <div><b>Dinda A.</b><small>Karyawan, Jakarta</small></div>
+        </div>
+      </article>
+      <article class="testi-card reveal">
+        <div class="testi-stars" aria-label="5 dari 5 bintang">★★★★★</div>
+        <blockquote>"Konseling online-nya nolong banget waktu aku nggak berani cerita ke siapa-siapa. Psikolognya sabar dan nggak menghakimi. Terima kasih, TenangApp."</blockquote>
+        <div class="testi-who">
+          <span class="testi-ava" style="background:linear-gradient(135deg,#6BC6A8,#4FA98C)">BW</span>
+          <div><b>Bagus W.</b><small>Mahasiswa, Bandung</small></div>
+        </div>
+      </article>
+      <article class="testi-card reveal">
+        <div class="testi-stars" aria-label="5 dari 5 bintang">★★★★★</div>
+        <blockquote>"Sleep story-nya juara. Biasanya aku susah tidur karena overthinking, sekarang seringnya ketiduran di tengah cerita. Journaling-nya juga bikin lega."</blockquote>
+        <div class="testi-who">
+          <span class="testi-ava" style="background:linear-gradient(135deg,#7FB4E8,#5B8FCB)">MR</span>
+          <div><b>Maya R.</b><small>Ibu rumah tangga, Surabaya</small></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRICING ================= -->
+<section class="section" id="harga" style="background:var(--bg-alt)">
+  <div class="container">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Harga</span>
+      <h2>Mulai gratis, tingkatkan saat kamu siap</h2>
+      <p>Tanpa iklan. Batalkan kapan saja. Kesehatan mentalmu tidak seharusnya mahal.</p>
+      <div class="price-toggle" role="group" aria-label="Pilih siklus penagihan">
+        <button id="billMonthly" class="active" aria-pressed="true">Bulanan</button>
+        <button id="billYearly" aria-pressed="false">Tahunan <span class="save">−40%</span></button>
+      </div>
+    </div>
+
+    <div class="price-grid">
+      <article class="price-card reveal">
+        <h3>Gratis</h3>
+        <p class="p-desc">Langkah pertama untuk semua orang.</p>
+        <div class="price-amount"><span class="amt">Rp 0</span><span class="per">/ selamanya</span></div>
+        <p class="price-note">Tanpa kartu kredit.</p>
+        <ul class="price-feats">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>Mood tracker harian</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>10 sesi meditasi dasar</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>Latihan napas terpandu</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>Journaling dengan pemantik</li>
+          <li class="off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Konseling psikolog</li>
+        </ul>
+        <a href="#cta" class="btn btn-ghost btn-block">Mulai Gratis</a>
+      </article>
+
+      <article class="price-card featured reveal">
+        <span class="price-badge">Paling Populer 💜</span>
+        <h3>Premium</h3>
+        <p class="p-desc">Akses penuh untuk perjalanan yang serius.</p>
+        <div class="price-amount"><span class="amt" id="priceAmt">Rp 49rb</span><span class="per" id="pricePer">/ bulan</span></div>
+        <p class="price-note" id="priceNote">Ditagih bulanan.</p>
+        <ul class="price-feats">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>Semua fitur Gratis</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>500+ meditasi &amp; sleep story</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>Semua program terpandu</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>Statistik mood mendalam</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>Diskon 20% konseling psikolog</li>
+        </ul>
+        <a href="#cta" class="btn btn-primary btn-block">Coba Gratis 7 Hari</a>
+      </article>
+    </div>
+    <p style="text-align:center;color:var(--text-3);font-size:.86rem;margin-top:1.6rem" class="reveal">Butuh untuk tim atau kampus? <a href="#cta" style="color:var(--accent-strong);font-weight:600">Hubungi kami →</a></p>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="section" id="cta">
+  <div class="container">
+    <div class="cta reveal">
+      <div class="cta-inner">
+        <h2>Hari yang lebih tenang menantimu</h2>
+        <p>Bergabung dengan 320.000+ orang yang memilih merawat diri, satu napas dalam satu waktu.</p>
+        <div class="cta-actions">
+          <a href="#harga" class="btn btn-primary">Coba Gratis 7 Hari</a>
+          <a href="#meditasi" class="btn btn-ghost">Jelajahi Meditasi</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-crisis">
+      <span aria-hidden="true">🤝</span>
+      <span>Sedang mengalami masa sulit? Kamu tidak sendiri. Hubungi <strong>Halo Kemenkes 1500-567</strong> atau layanan darurat terdekat. Bercerita adalah tanda keberanian.</span>
+    </div>
+
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#hero" class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21C12 21 4 15 4 9a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 6-8 12-8 12z"/></svg>
+          </span>
+          <span class="brand-name">Tenang<span>App</span></span>
+        </a>
+        <p>Ruang aman untuk kesehatan mentalmu. Meditasi, mood tracker, journaling, dan konseling — semua dalam genggaman.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Instagram TenangApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" aria-label="TikTok TenangApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 3v3.2a5 5 0 0 0 4 4V13a8 8 0 0 1-4-1.2V16a6 6 0 1 1-6-6v3a3 3 0 1 0 3 3V3z"/></svg></a>
+          <a href="#" aria-label="Spotify TenangApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M7.5 10c3-1 6.5-.7 9 1M8 13.5c2.5-.8 5-.5 7 .8M8.5 16.5c2-.6 4-.4 5.5.5"/></svg></a>
+          <a href="#" aria-label="YouTube TenangApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9.5l5 2.5-5 2.5z" fill="currentColor"/></svg></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Produk</h4>
+        <a href="#meditasi">Meditasi</a>
+        <a href="#mood">Mood Tracker</a>
+        <a href="#breathe">Latihan Napas</a>
+        <a href="#konseling">Konseling</a>
+        <a href="#harga">Harga</a>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <a href="#">Tentang Kami</a>
+        <a href="#">Tim Psikolog</a>
+        <a href="#artikel">Blog</a>
+        <a href="#">Karier</a>
+        <a href="#">Untuk Perusahaan</a>
+      </div>
+      <div class="footer-col">
+        <h4>Bantuan</h4>
+        <a href="#">Pusat Bantuan</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat &amp; Ketentuan</a>
+        <a href="#">Keamanan Data</a>
+        <a href="#">Kontak</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 TenangApp. Dibuat dengan 💜 di Indonesia.</span>
+      <span>Bukan pengganti layanan medis darurat.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- THEME ---------- */
+  var root = document.documentElement;
+  var themeToggle = document.getElementById('themeToggle');
+  var stored = null;
+  try { stored = localStorage.getItem('tenangapp_theme'); } catch (e) {}
+  if (stored === 'dark' || stored === 'light') {
+    root.setAttribute('data-theme', stored);
+  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    root.setAttribute('data-theme', 'dark');
+  }
+  function syncToggle() {
+    var isDark = root.getAttribute('data-theme') === 'dark';
+    themeToggle.setAttribute('aria-pressed', String(isDark));
+    themeToggle.setAttribute('aria-label', isDark ? 'Ganti ke mode terang' : 'Ganti ke mode gelap');
+  }
+  syncToggle();
+  themeToggle.addEventListener('click', function () {
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('tenangapp_theme', next); } catch (e) {}
+    syncToggle();
+  });
+
+  /* ---------- NAV SCROLL + MOBILE MENU ---------- */
+  var nav = document.getElementById('nav');
+  window.addEventListener('scroll', function () {
+    nav.classList.toggle('scrolled', window.scrollY > 12);
+  }, { passive: true });
+
+  var hamburger = document.getElementById('hamburger');
+  var mobileMenu = document.getElementById('mobileMenu');
+  function closeMenu() {
+    hamburger.classList.remove('open');
+    mobileMenu.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    hamburger.setAttribute('aria-label', 'Buka menu');
+  }
+  hamburger.addEventListener('click', function () {
+    var open = hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open', open);
+    hamburger.setAttribute('aria-expanded', String(open));
+    hamburger.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
+  });
+  mobileMenu.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', closeMenu);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeMenu();
+  });
+
+  /* ---------- REVEAL ON SCROLL ---------- */
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var reveals = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !reduceMotion) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(function (el) { io.observe(el); });
+  } else {
+    reveals.forEach(function (el) { el.classList.add('in'); });
+  }
+
+  /* ---------- MOOD TRACKER ---------- */
+  var moodColors = {
+    senang: 'var(--mood-senang)',
+    tenang: 'var(--mood-tenang)',
+    biasa:  'var(--mood-biasa)',
+    cemas:  'var(--mood-cemas)',
+    sedih:   'var(--mood-sedih)'
+  };
+  var moodHeights = { senang: 100, tenang: 88, biasa: 62, cemas: 44, sedih: 34 };
+  var moodEmoji = { senang: '😊', tenang: '😌', biasa: '😐', cemas: '😰', sedih: '😢' };
+  var moodMessages = {
+    senang: 'Senang mendengarnya! Simpan energi baik ini. Mungkin bagikan senyummu ke seseorang hari ini. 🌞',
+    tenang: 'Ketenangan itu berharga. Nikmati momen damai ini — kamu sudah melakukannya dengan baik. 🌿',
+    biasa:  'Hari biasa juga tidak apa-apa. Tidak semua hari harus istimewa. Kamu tetap hadir, dan itu cukup. 💙',
+    cemas:  'Cemas itu wajar dan akan berlalu. Coba latihan napas 4-7-8 di bawah, satu menit saja. Kamu aman. 🫂',
+    sedih:   'Terima kasih sudah jujur pada dirimu. Perasaan ini valid. Lembutlah pada dirimu hari ini. 💜'
+  };
+  var dayLabels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+  // Seed data for the week; last item = today (updated by picker)
+  var weekData = ['tenang', 'biasa', 'senang', 'cemas', 'tenang', 'senang', 'biasa'];
+  var todayIndex = 6;
+
+  var chart = document.getElementById('moodChart');
+  function renderChart() {
+    chart.innerHTML = '';
+    weekData.forEach(function (mood, i) {
+      var col = document.createElement('div');
+      col.className = 'chart-col' + (i === todayIndex ? ' today' : '');
+      var bar = document.createElement('div');
+      bar.className = 'chart-bar';
+      if (mood) {
+        bar.style.background = moodColors[mood];
+        var peak = document.createElement('span');
+        peak.className = 'peak-emoji';
+        peak.textContent = moodEmoji[mood];
+        peak.setAttribute('aria-hidden', 'true');
+        if (i === todayIndex) bar.appendChild(peak);
+      } else {
+        bar.style.background = 'var(--surface-2)';
+      }
+      var day = document.createElement('span');
+      day.className = 'chart-day';
+      day.textContent = dayLabels[i];
+      col.appendChild(bar);
+      col.appendChild(day);
+      chart.appendChild(col);
+      // animate height after insert
+      requestAnimationFrame(function () {
+        bar.style.height = (mood ? moodHeights[mood] : 8) + '%';
+      });
+    });
+  }
+  renderChart();
+
+  var moodBtns = document.querySelectorAll('.mood-btn');
+  var moodMsgText = document.getElementById('moodMessageText');
+  var moodMsgWrap = document.getElementById('moodMessage');
+  var moodMsgIc = moodMsgWrap.querySelector('.mm-ic');
+
+  function applyMood(mood, persist) {
+    weekData[todayIndex] = mood;
+    moodBtns.forEach(function (b) {
+      var on = b.getAttribute('data-mood') === mood;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-pressed', String(on));
+    });
+    moodMsgText.textContent = moodMessages[mood];
+    moodMsgIc.textContent = moodEmoji[mood];
+    moodMsgWrap.style.background = 'color-mix(in srgb, ' + moodColors[mood] + ' 18%, var(--surface))';
+    renderChart();
+    if (persist) {
+      try { localStorage.setItem('tenangapp_today_mood', mood); } catch (e) {}
+    }
+  }
+
+  // Restore today's saved mood
+  try {
+    var savedMood = localStorage.getItem('tenangapp_today_mood');
+    if (savedMood && moodColors[savedMood]) {
+      applyMood(savedMood, false);
+    }
+  } catch (e) {}
+
+  moodBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      applyMood(btn.getAttribute('data-mood'), true);
+    });
+  });
+
+  /* ---------- BREATHING EXERCISE ---------- */
+  var circle = document.getElementById('breatheCircle');
+  var bText = document.getElementById('breatheText');
+  var bBtn = document.getElementById('breatheBtn');
+  var bReset = document.getElementById('breatheReset');
+  var bCount = document.getElementById('breatheCount');
+  var breathing = false;
+  var cycle = 0;
+  var phaseTimers = [];
+
+  function clearTimers() { phaseTimers.forEach(clearTimeout); phaseTimers = []; }
+  function setPhase(txt) { bText.textContent = txt; }
+
+  function runPhases() {
+    // 4s inhale, 3s hold, 5s exhale, 2s rest = 14s aligned with CSS keyframes
+    setPhase('Tarik napas…');
+    phaseTimers.push(setTimeout(function () { setPhase('Tahan…'); }, 4000));
+    phaseTimers.push(setTimeout(function () { setPhase('Hembuskan…'); }, 7000));
+    phaseTimers.push(setTimeout(function () { setPhase('Istirahat'); }, 12000));
+    phaseTimers.push(setTimeout(function () {
+      cycle++;
+      bCount.innerHTML = 'Siklus selesai: <b>' + cycle + '</b> · lanjutkan sesukamu';
+      if (breathing) runPhases();
+    }, 14000));
+  }
+  function runPhasesReduced() {
+    setPhase('Tarik napas…');
+    phaseTimers.push(setTimeout(function () { setPhase('Tahan…'); }, 4000));
+    phaseTimers.push(setTimeout(function () { setPhase('Hembuskan…'); }, 7000));
+    phaseTimers.push(setTimeout(function () {
+      cycle++;
+      bCount.innerHTML = 'Siklus selesai: <b>' + cycle + '</b> · lanjutkan sesukamu';
+      if (breathing) runPhasesReduced();
+    }, 12000));
+  }
+  function startBreathing() {
+    breathing = true;
+    cycle = 0;
+    bBtn.textContent = 'Jeda';
+    bReset.hidden = false;
+    bCount.innerHTML = 'Ikuti iramanya… lepaskan yang tidak perlu.';
+    if (reduceMotion) {
+      circle.classList.remove('run');
+      runPhasesReduced();
+    } else {
+      circle.classList.add('run');
+      runPhases();
+    }
+  }
+  function stopBreathing() {
+    breathing = false;
+    clearTimers();
+    circle.classList.remove('run');
+    bBtn.textContent = 'Lanjutkan';
+    setPhase('Jeda 🌙');
+  }
+  function resetBreathing() {
+    breathing = false;
+    clearTimers();
+    cycle = 0;
+    circle.classList.remove('run');
+    bBtn.textContent = 'Mulai Bernapas';
+    bReset.hidden = true;
+    setPhase('Siap?');
+    bCount.textContent = '';
+  }
+
+  bBtn.addEventListener('click', function () {
+    if (breathing) { stopBreathing(); }
+    else { startBreathing(); }
+  });
+  bReset.addEventListener('click', resetBreathing);
+
+  /* ---------- PRICING TOGGLE ---------- */
+  var billMonthly = document.getElementById('billMonthly');
+  var billYearly = document.getElementById('billYearly');
+  var priceAmt = document.getElementById('priceAmt');
+  var pricePer = document.getElementById('pricePer');
+  var priceNote = document.getElementById('priceNote');
+
+  function setBilling(yearly) {
+    billMonthly.classList.toggle('active', !yearly);
+    billYearly.classList.toggle('active', yearly);
+    billMonthly.setAttribute('aria-pressed', String(!yearly));
+    billYearly.setAttribute('aria-pressed', String(yearly));
+    if (yearly) {
+      priceAmt.textContent = 'Rp 29rb';
+      pricePer.textContent = '/ bulan';
+      priceNote.textContent = 'Ditagih Rp 349rb per tahun — hemat 40%.';
+    } else {
+      priceAmt.textContent = 'Rp 49rb';
+      pricePer.textContent = '/ bulan';
+      priceNote.textContent = 'Ditagih bulanan.';
+    }
+  }
+  billMonthly.addEventListener('click', function () { setBilling(false); });
+  billYearly.addEventListener('click', function () { setBilling(true); });
+
+  /* ---------- MEDITATION CARDS (keyboard feedback) ---------- */
+  document.querySelectorAll('.med-card').forEach(function (card) {
+    card.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        card.style.transform = 'scale(0.98)';
+        setTimeout(function () { card.style.transform = ''; }, 160);
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

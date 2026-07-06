@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MailNusa — Platform Email Marketing Indonesia</title>
+<meta name="description" content="MailNusa adalah platform email marketing Indonesia dengan drag-drop builder, automation, segmentasi, A/B testing, dan analytics open-rate real-time.">
+<meta name="theme-color" content="#F59E0B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============ DESIGN TOKENS ============ */
+:root {
+  --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Sora', system-ui, sans-serif;
+
+  --accent: #F59E0B;
+  --accent-600: #D97706;
+  --accent-700: #B45309;
+  --accent-soft: #FEF3C7;
+  --teal: #0D9488;
+  --teal-600: #0F766E;
+  --teal-soft: #CCFBF1;
+
+  --bg: #FFFFFF;
+  --bg-soft: #FBFAF7;
+  --bg-elev: #FFFFFF;
+  --bg-muted: #F4F2ED;
+  --surface: #FFFFFF;
+  --canvas: #F6F5F1;
+
+  --text: #1A1614;
+  --text-soft: #4B4640;
+  --text-mute: #756E66;
+  --border: #E9E5DD;
+  --border-strong: #D8D2C7;
+  --shadow-sm: 0 1px 2px rgba(26,22,20,.06);
+  --shadow-md: 0 8px 24px -8px rgba(26,22,20,.14);
+  --shadow-lg: 0 24px 60px -18px rgba(26,22,20,.22);
+  --ring: 0 0 0 3px rgba(245,158,11,.35);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-lg: 26px;
+  --maxw: 1180px;
+}
+
+[data-theme="dark"] {
+  --accent: #FBBF24;
+  --accent-600: #F59E0B;
+  --accent-700: #D97706;
+  --accent-soft: #3A2E12;
+  --teal: #2DD4BF;
+  --teal-600: #14B8A6;
+  --teal-soft: #0F2E2A;
+
+  --bg: #100D0B;
+  --bg-soft: #14110E;
+  --bg-elev: #1B1714;
+  --bg-muted: #221D18;
+  --surface: #1B1714;
+  --canvas: #1F1A15;
+
+  --text: #F6F1EA;
+  --text-soft: #CDC5BA;
+  --text-mute: #968C7E;
+  --border: #2E2823;
+  --border-strong: #3C342C;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.5);
+  --shadow-md: 0 10px 30px -10px rgba(0,0,0,.6);
+  --shadow-lg: 0 30px 70px -20px rgba(0,0,0,.75);
+  --ring: 0 0 0 3px rgba(251,191,36,.4);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  transition: background .3s ease, color .3s ease;
+}
+
+h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.12; letter-spacing: -.02em; font-weight: 700; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+ul { list-style: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+:focus-visible { outline: none; box-shadow: var(--ring); border-radius: 8px; }
+
+.wrap { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 clamp(1.1rem, 4vw, 2rem); }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-size: .76rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--accent-700); background: var(--accent-soft);
+  padding: .42rem .85rem; border-radius: 999px;
+}
+[data-theme="dark"] .eyebrow { color: var(--accent); }
+.section { padding: clamp(3.6rem, 8vw, 6.4rem) 0; }
+.sec-head { max-width: 640px; margin: 0 auto clamp(2.2rem, 5vw, 3.4rem); text-align: center; }
+.sec-head h2 { font-size: clamp(1.85rem, 4.6vw, 2.85rem); margin: 1rem 0 .85rem; }
+.sec-head p { color: var(--text-mute); font-size: clamp(1rem, 2.2vw, 1.12rem); }
+
+/* ============ BUTTONS ============ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .55rem;
+  font-weight: 700; font-size: .98rem; padding: .85rem 1.5rem; border-radius: 999px;
+  min-height: 48px; transition: transform .18s ease, box-shadow .25s ease, background .2s ease;
+  white-space: nowrap;
+}
+.btn-primary { background: var(--accent); color: #2A1B05; box-shadow: 0 10px 26px -10px rgba(245,158,11,.7); }
+.btn-primary:hover { transform: translateY(-2px); background: var(--accent-600); }
+.btn-ghost { background: var(--bg-muted); color: var(--text); border: 1px solid var(--border); }
+.btn-ghost:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+.btn-teal { background: var(--teal); color: #042220; box-shadow: 0 10px 26px -10px rgba(13,148,136,.6); }
+[data-theme="dark"] .btn-teal { color: #03201d; }
+.btn-teal:hover { transform: translateY(-2px); background: var(--teal-600); }
+
+/* ============ NAV ============ */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: saturate(180%) blur(16px);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  border-bottom: 1px solid transparent; transition: border-color .3s, background .3s;
+}
+.nav.scrolled { border-bottom-color: var(--border); box-shadow: var(--shadow-sm); }
+.nav-inner { display: flex; align-items: center; justify-content: space-between; height: 70px; gap: 1rem; }
+.brand { display: flex; align-items: center; gap: .6rem; font-family: var(--font-display); font-weight: 800; font-size: 1.22rem; letter-spacing: -.02em; }
+.brand-mark {
+  width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center;
+  background: linear-gradient(135deg, var(--accent), var(--accent-700));
+  color: #2A1B05; box-shadow: 0 6px 16px -6px rgba(245,158,11,.6);
+}
+.brand-mark svg { width: 20px; height: 20px; }
+.brand span b { color: var(--accent-700); }
+[data-theme="dark"] .brand span b { color: var(--accent); }
+
+.nav-links { display: flex; align-items: center; gap: .35rem; }
+.nav-links a {
+  font-size: .94rem; font-weight: 600; color: var(--text-soft);
+  padding: .55rem .8rem; border-radius: 9px; transition: color .2s, background .2s;
+}
+.nav-links a:hover { color: var(--text); background: var(--bg-muted); }
+.nav-actions { display: flex; align-items: center; gap: .6rem; }
+
+.theme-toggle {
+  width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center;
+  background: var(--bg-muted); border: 1px solid var(--border); color: var(--text);
+  transition: background .2s, transform .2s;
+}
+.theme-toggle:hover { transform: translateY(-2px); }
+.theme-toggle svg { width: 20px; height: 20px; }
+.theme-toggle .sun { display: none; }
+[data-theme="dark"] .theme-toggle .sun { display: block; }
+[data-theme="dark"] .theme-toggle .moon { display: none; }
+
+.hamburger {
+  display: none; width: 44px; height: 44px; border-radius: 12px; place-items: center;
+  background: var(--bg-muted); border: 1px solid var(--border); color: var(--text);
+}
+.hamburger svg { width: 22px; height: 22px; }
+
+.mobile-menu {
+  position: fixed; inset: 70px 0 auto 0; z-index: 99;
+  background: var(--bg); border-bottom: 1px solid var(--border);
+  padding: 1rem clamp(1.1rem, 4vw, 2rem) 1.5rem;
+  transform: translateY(-120%); transition: transform .35s cubic-bezier(.16,1,.3,1);
+  box-shadow: var(--shadow-md);
+}
+.mobile-menu.open { transform: translateY(0); }
+.mobile-menu a { display: block; padding: .9rem .4rem; font-weight: 600; font-size: 1.05rem; border-bottom: 1px solid var(--border); }
+.mobile-menu .btn { width: 100%; margin-top: 1rem; }
+
+/* ============ HERO ============ */
+.hero { position: relative; padding: clamp(2.5rem, 7vw, 5rem) 0 clamp(3rem, 7vw, 5rem); overflow: hidden; }
+.hero::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background:
+    radial-gradient(60% 50% at 12% 0%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%),
+    radial-gradient(50% 45% at 95% 20%, color-mix(in srgb, var(--teal) 16%, transparent), transparent 70%);
+}
+.hero-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(2rem, 5vw, 3.4rem); align-items: center; }
+.hero-copy h1 { font-size: clamp(2.3rem, 6.2vw, 4rem); margin: 1.2rem 0; }
+.hero-copy h1 .hl { color: var(--accent-700); position: relative; }
+[data-theme="dark"] .hero-copy h1 .hl { color: var(--accent); }
+.hero-copy p.lead { font-size: clamp(1.05rem, 2.4vw, 1.22rem); color: var(--text-soft); max-width: 30rem; margin-bottom: 1.8rem; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: .8rem; margin-bottom: 1.6rem; }
+.hero-trust { display: flex; flex-wrap: wrap; align-items: center; gap: 1.2rem 1.6rem; color: var(--text-mute); font-size: .9rem; }
+.hero-trust .stat b { font-family: var(--font-display); font-size: 1.35rem; color: var(--text); display: block; }
+.avatars { display: flex; }
+.avatars span { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--bg); margin-left: -10px; display: grid; place-items: center; font-size: .72rem; font-weight: 700; color: #2A1B05; }
+.avatars span:first-child { margin-left: 0; }
+
+/* hero builder mockup */
+.hero-mock {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg); overflow: hidden; position: relative;
+}
+.mock-bar { display: flex; align-items: center; gap: .5rem; padding: .8rem 1rem; border-bottom: 1px solid var(--border); background: var(--bg-soft); }
+.mock-dots { display: flex; gap: .4rem; }
+.mock-dots i { width: 11px; height: 11px; border-radius: 50%; }
+.mock-dots i:nth-child(1) { background: #FF5F57; }
+.mock-dots i:nth-child(2) { background: #FEBC2E; }
+.mock-dots i:nth-child(3) { background: #28C840; }
+.mock-url { flex: 1; font-size: .76rem; color: var(--text-mute); background: var(--bg-muted); padding: .3rem .7rem; border-radius: 7px; text-align: center; }
+.mock-body { display: grid; grid-template-columns: 78px 1fr; min-height: 340px; }
+.mock-palette { border-right: 1px solid var(--border); padding: .7rem .45rem; background: var(--bg-soft); display: flex; flex-direction: column; gap: .5rem; }
+.palette-title { font-size: .58rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--text-mute); text-align: center; margin-bottom: .15rem; }
+.p-block {
+  border: 1px dashed var(--border-strong); border-radius: 9px; padding: .5rem .3rem;
+  text-align: center; font-size: .6rem; font-weight: 700; color: var(--text-soft);
+  background: var(--surface); display: flex; flex-direction: column; align-items: center; gap: .2rem;
+  cursor: grab; transition: border-color .2s, transform .15s, color .2s;
+}
+.p-block svg { width: 16px; height: 16px; color: var(--accent-700); }
+[data-theme="dark"] .p-block svg { color: var(--accent); }
+.p-block:hover { border-color: var(--accent); color: var(--text); transform: translateY(-1px); }
+.mock-canvas { padding: 1rem; background: var(--canvas); }
+.email-doc { background: #fff; border-radius: 10px; box-shadow: var(--shadow-sm); overflow: hidden; max-width: 320px; margin: 0 auto; }
+.eb { padding: .85rem 1rem; border: 2px solid transparent; transition: border-color .2s; position: relative; }
+.eb.active { border-color: var(--accent); }
+.eb.active::after { content: "Terpilih"; position: absolute; top: -9px; left: 10px; font-size: .55rem; font-weight: 800; background: var(--accent); color: #2A1B05; padding: 1px 6px; border-radius: 5px; }
+.eb-header { background: linear-gradient(135deg, var(--accent), var(--accent-700)); color: #2A1B05; text-align: center; padding: 1.1rem 1rem; }
+.eb-header strong { font-family: var(--font-display); font-size: 1.05rem; display: block; }
+.eb-header small { font-size: .62rem; opacity: .85; }
+.eb-text { color: #2A2520; font-size: .68rem; line-height: 1.55; }
+.eb-text b { font-size: .78rem; display: block; margin-bottom: .25rem; color: #1A1614; font-family: var(--font-display); }
+.eb-img { background: linear-gradient(135deg, #FEF3C7, #FDE68A); height: 78px; border-radius: 8px; display: grid; place-items: center; color: #92400E; font-size: .65rem; font-weight: 700; }
+.eb-btn-row { text-align: center; }
+.eb-cta { display: inline-block; background: var(--teal); color: #042220; font-weight: 800; font-size: .68rem; padding: .55rem 1.3rem; border-radius: 999px; }
+.mock-float {
+  position: absolute; right: -10px; top: 40px; background: var(--surface); border: 1px solid var(--border);
+  box-shadow: var(--shadow-md); border-radius: 12px; padding: .7rem .85rem; font-size: .7rem; font-weight: 700;
+  display: flex; align-items: center; gap: .5rem; animation: floaty 4s ease-in-out infinite;
+}
+.mock-float .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 0 4px var(--teal-soft); }
+.mock-float small { display: block; font-weight: 600; color: var(--text-mute); font-size: .62rem; }
+@keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+/* ============ LOGOS ============ */
+.logos { padding: 2.4rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg-soft); }
+.logos p { text-align: center; font-size: .8rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-mute); margin-bottom: 1.4rem; }
+.logo-row { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(1.4rem, 5vw, 3.2rem); align-items: center; }
+.logo-row span { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: var(--text-mute); opacity: .8; }
+
+/* ============ FEATURES ============ */
+.feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.1rem; }
+.feat-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.7rem 1.5rem; box-shadow: var(--shadow-sm); transition: transform .25s, box-shadow .25s, border-color .25s;
+}
+.feat-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: var(--border-strong); }
+.feat-ico { width: 48px; height: 48px; border-radius: 13px; display: grid; place-items: center; margin-bottom: 1.1rem; }
+.feat-ico svg { width: 24px; height: 24px; }
+.fi-amber { background: var(--accent-soft); color: var(--accent-700); }
+[data-theme="dark"] .fi-amber { color: var(--accent); }
+.fi-teal { background: var(--teal-soft); color: var(--teal-600); }
+[data-theme="dark"] .fi-teal { color: var(--teal); }
+.feat-card h3 { font-size: 1.18rem; margin-bottom: .5rem; }
+.feat-card p { color: var(--text-mute); font-size: .95rem; }
+
+/* ============ BUILDER SECTION ============ */
+.builder-shell {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg); overflow: hidden; max-width: 980px; margin: 0 auto;
+}
+.builder-top { display: flex; align-items: center; justify-content: space-between; padding: .9rem 1.2rem; border-bottom: 1px solid var(--border); background: var(--bg-soft); flex-wrap: wrap; gap: .6rem; }
+.builder-top .title { font-family: var(--font-display); font-weight: 700; display: flex; align-items: center; gap: .5rem; }
+.builder-top .actions { display: flex; gap: .5rem; }
+.builder-top .actions button { font-size: .8rem; font-weight: 700; padding: .5rem .9rem; border-radius: 8px; }
+.bt-save { background: var(--bg-muted); color: var(--text); border: 1px solid var(--border); }
+.bt-send { background: var(--accent); color: #2A1B05; }
+.builder-main { display: grid; grid-template-columns: 200px 1fr; min-height: 420px; }
+.builder-side { border-right: 1px solid var(--border); background: var(--bg-soft); padding: 1.1rem .9rem; }
+.builder-side h4 { font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-mute); margin-bottom: .8rem; }
+.block-list { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; }
+.block-chip {
+  border: 1px dashed var(--border-strong); border-radius: 11px; padding: .8rem .4rem; text-align: center;
+  font-size: .72rem; font-weight: 700; color: var(--text-soft); background: var(--surface);
+  display: flex; flex-direction: column; align-items: center; gap: .35rem; cursor: grab;
+  transition: border-color .2s, transform .15s, background .2s; user-select: none;
+}
+.block-chip svg { width: 20px; height: 20px; color: var(--accent-700); }
+[data-theme="dark"] .block-chip svg { color: var(--accent); }
+.block-chip:hover, .block-chip:focus-visible { border-color: var(--accent); transform: translateY(-2px); }
+.block-chip.dragging { opacity: .5; }
+.builder-canvas { padding: 1.5rem; background: var(--canvas); display: flex; flex-direction: column; }
+.drop-zone {
+  flex: 1; background: #fff; border-radius: 12px; box-shadow: var(--shadow-sm); padding: 1rem;
+  max-width: 440px; margin: 0 auto; width: 100%; min-height: 360px; display: flex; flex-direction: column; gap: .65rem;
+  transition: outline .2s;
+}
+.drop-zone.over { outline: 2px dashed var(--accent); outline-offset: 4px; }
+.dz-block {
+  border: 1.5px solid transparent; border-radius: 9px; padding: .2rem; position: relative;
+  transition: border-color .2s; animation: pop .3s ease;
+}
+.dz-block:hover { border-color: var(--accent); }
+.dz-block .remove {
+  position: absolute; top: -8px; right: -8px; width: 22px; height: 22px; border-radius: 50%;
+  background: #EF4444; color: #fff; font-size: .85rem; line-height: 1; display: none; place-items: center; z-index: 2;
+}
+.dz-block:hover .remove { display: grid; }
+@keyframes pop { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: scale(1); } }
+.dz-hint { color: var(--text-mute); font-size: .82rem; text-align: center; margin: auto 0; padding: 2rem 1rem; border: 2px dashed var(--border-strong); border-radius: 10px; }
+.dzc-header { background: linear-gradient(135deg, var(--accent), var(--accent-700)); color: #2A1B05; text-align: center; padding: 1.2rem; border-radius: 8px; }
+.dzc-header strong { font-family: var(--font-display); font-size: 1.15rem; display: block; }
+.dzc-header small { font-size: .7rem; opacity: .85; }
+.dzc-text { color: #2A2520; font-size: .8rem; padding: .4rem .6rem; }
+.dzc-text b { display: block; font-family: var(--font-display); font-size: .95rem; color: #1A1614; margin-bottom: .3rem; }
+.dzc-img { background: linear-gradient(135deg, #FEF3C7, #FDE68A); height: 96px; border-radius: 8px; display: grid; place-items: center; color: #92400E; font-weight: 700; font-size: .78rem; }
+.dzc-btn { text-align: center; padding: .4rem; }
+.dzc-btn span { display: inline-block; background: var(--teal); color: #042220; font-weight: 800; font-size: .82rem; padding: .65rem 1.6rem; border-radius: 999px; }
+.dzc-divider { height: 1px; background: #E5E1DA; margin: .4rem .6rem; }
+
+/* ============ AUTOMATION FLOW ============ */
+.flow-wrap { max-width: 980px; margin: 0 auto; }
+.flow { display: flex; align-items: stretch; gap: 0; overflow-x: auto; padding: 1rem .2rem 1.5rem; scroll-snap-type: x mandatory; }
+.flow-node {
+  flex: 0 0 auto; min-width: 190px; scroll-snap-align: center;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.2rem 1.1rem; box-shadow: var(--shadow-sm); position: relative; text-align: left;
+}
+.flow-node .node-ico { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; margin-bottom: .85rem; }
+.flow-node .node-ico svg { width: 22px; height: 22px; }
+.flow-node .tag { font-size: .66rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--text-mute); }
+.flow-node h4 { font-size: 1.02rem; margin: .25rem 0 .35rem; }
+.flow-node p { font-size: .82rem; color: var(--text-mute); }
+.node-trigger .node-ico { background: var(--accent-soft); color: var(--accent-700); }
+.node-action .node-ico { background: var(--teal-soft); color: var(--teal-600); }
+.node-wait .node-ico { background: var(--bg-muted); color: var(--text-soft); }
+[data-theme="dark"] .node-trigger .node-ico { color: var(--accent); }
+[data-theme="dark"] .node-action .node-ico { color: var(--teal); }
+.flow-connect {
+  flex: 0 0 auto; align-self: center; width: 46px; display: grid; place-items: center; color: var(--accent);
+  position: relative;
+}
+.flow-connect svg { width: 26px; height: 26px; }
+.flow-connect::before { content: ""; position: absolute; height: 2px; width: 100%; background: repeating-linear-gradient(90deg, var(--accent) 0 6px, transparent 6px 12px); top: 50%; z-index: 0; opacity: .5; }
+.flow-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.2rem; margin-top: 1rem; font-size: .82rem; color: var(--text-mute); }
+.flow-legend span { display: inline-flex; align-items: center; gap: .4rem; }
+.flow-legend i { width: 10px; height: 10px; border-radius: 3px; }
+
+/* ============ ANALYTICS DASHBOARD ============ */
+.dash {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg); overflow: hidden; max-width: 1000px; margin: 0 auto;
+}
+.dash-top { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.4rem; border-bottom: 1px solid var(--border); background: var(--bg-soft); flex-wrap: wrap; gap: .6rem; }
+.dash-top .title { font-family: var(--font-display); font-weight: 700; display: flex; align-items: center; gap: .55rem; }
+.dash-top .pill { font-size: .75rem; font-weight: 700; padding: .35rem .8rem; border-radius: 999px; background: var(--teal-soft); color: var(--teal-600); }
+[data-theme="dark"] .dash-top .pill { color: var(--teal); }
+.dash-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+.kpi { background: var(--surface); padding: 1.3rem 1.4rem; }
+.kpi .label { font-size: .8rem; color: var(--text-mute); font-weight: 600; margin-bottom: .3rem; }
+.kpi .val { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.1rem); font-weight: 800; line-height: 1; }
+.kpi .delta { font-size: .76rem; font-weight: 700; margin-top: .45rem; display: inline-flex; align-items: center; gap: .25rem; }
+.delta.up { color: var(--teal-600); } [data-theme="dark"] .delta.up { color: var(--teal); }
+.delta.down { color: #DC2626; }
+.dash-charts { display: grid; grid-template-columns: 1.3fr 1fr; gap: 1px; background: var(--border); border-top: 1px solid var(--border); }
+.chart-box { background: var(--surface); padding: 1.3rem 1.4rem; }
+.chart-box h4 { font-size: .95rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; }
+.chart-box h4 small { font-weight: 600; color: var(--text-mute); font-size: .76rem; }
+/* line/area chart */
+.linechart { width: 100%; height: 160px; }
+.linechart .area { fill: url(#growGrad); opacity: .9; }
+.linechart .line { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; }
+.linechart .pt { fill: var(--accent); }
+.linechart .grid { stroke: var(--border); stroke-width: 1; }
+.linechart text { fill: var(--text-mute); font-size: 9px; font-family: var(--font-body); }
+/* bar chart */
+.bars { display: flex; align-items: flex-end; gap: .5rem; height: 160px; padding-top: .5rem; }
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: .4rem; height: 100%; justify-content: flex-end; }
+.bar { width: 100%; max-width: 30px; border-radius: 7px 7px 4px 4px; background: linear-gradient(180deg, var(--accent), var(--accent-700)); transition: height 1.1s cubic-bezier(.16,1,.3,1); position: relative; }
+.bar.teal { background: linear-gradient(180deg, var(--teal), var(--teal-600)); }
+.bar-col small { font-size: .68rem; color: var(--text-mute); font-weight: 600; }
+
+/* ============ TEMPLATES GALLERY ============ */
+.tpl-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.1rem; }
+.tpl-card {
+  border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+  background: var(--surface); box-shadow: var(--shadow-sm); transition: transform .25s, box-shadow .25s;
+}
+.tpl-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+.tpl-thumb { height: 150px; position: relative; display: grid; place-items: center; padding: 1rem; }
+.tpl-thumb .mini { background: #fff; border-radius: 8px; width: 80%; box-shadow: 0 8px 20px -8px rgba(0,0,0,.25); overflow: hidden; }
+.tpl-thumb .mini .mh { height: 26px; }
+.tpl-thumb .mini .mb { padding: .5rem; }
+.tpl-thumb .mini .ml { height: 6px; border-radius: 3px; background: #E5E1DA; margin-bottom: .35rem; }
+.tpl-thumb .mini .ml.s { width: 60%; }
+.tpl-thumb .mini .mbtn { height: 13px; width: 45%; border-radius: 999px; margin: .4rem auto 0; }
+.t1 { background: linear-gradient(135deg, #FEF3C7, #FDE68A); } .t1 .mh { background: #F59E0B; } .t1 .mbtn { background: #0D9488; }
+.t2 { background: linear-gradient(135deg, #CCFBF1, #99F6E4); } .t2 .mh { background: #0D9488; } .t2 .mbtn { background: #F59E0B; }
+.t3 { background: linear-gradient(135deg, #FCE7F3, #FBCFE8); } .t3 .mh { background: #DB2777; } .t3 .mbtn { background: #1A1614; }
+.t4 { background: linear-gradient(135deg, #DBEAFE, #BFDBFE); } .t4 .mh { background: #2563EB; } .t4 .mbtn { background: #F59E0B; }
+.t5 { background: linear-gradient(135deg, #EDE9FE, #DDD6FE); } .t5 .mh { background: #7C3AED; } .t5 .mbtn { background: #10B981; }
+.t6 { background: linear-gradient(135deg, #FEE2E2, #FECACA); } .t6 .mh { background: #DC2626; } .t6 .mbtn { background: #1A1614; }
+.tpl-meta { padding: 1rem 1.1rem; display: flex; align-items: center; justify-content: space-between; }
+.tpl-meta strong { font-size: .98rem; font-family: var(--font-display); }
+.tpl-meta small { font-size: .76rem; color: var(--text-mute); }
+.tpl-tag { font-size: .68rem; font-weight: 800; padding: .25rem .6rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent-700); }
+[data-theme="dark"] .tpl-tag { color: var(--accent); }
+
+/* ============ INTEGRATIONS ============ */
+.intg-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: .9rem; }
+.intg {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 1.1rem .9rem; display: flex; align-items: center; gap: .7rem; font-weight: 700; font-size: .9rem;
+  box-shadow: var(--shadow-sm); transition: transform .2s, border-color .2s;
+}
+.intg:hover { transform: translateY(-3px); border-color: var(--border-strong); }
+.intg .ig-ico { width: 36px; height: 36px; border-radius: 9px; display: grid; place-items: center; font-family: var(--font-display); font-weight: 800; font-size: .9rem; flex-shrink: 0; }
+
+/* ============ PRICING ============ */
+.price-toggle { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 2.4rem; flex-wrap: wrap; }
+.price-toggle .seg {
+  display: inline-flex; background: var(--bg-muted); border: 1px solid var(--border); border-radius: 999px; padding: .3rem;
+}
+.price-toggle .seg button {
+  padding: .55rem 1.2rem; border-radius: 999px; font-weight: 700; font-size: .9rem; color: var(--text-mute);
+  transition: background .25s, color .25s; min-height: 40px;
+}
+.price-toggle .seg button.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }
+.price-note { font-size: .82rem; color: var(--teal-600); font-weight: 700; }
+[data-theme="dark"] .price-note { color: var(--teal); }
+.price-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.2rem; align-items: stretch; }
+.price-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 1.9rem 1.6rem; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; position: relative;
+  transition: transform .25s, box-shadow .25s;
+}
+.price-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+.price-card.featured { border: 2px solid var(--accent); box-shadow: var(--shadow-md); }
+.price-card.featured::before {
+  content: "Paling Populer"; position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+  background: var(--accent); color: #2A1B05; font-size: .72rem; font-weight: 800; padding: .35rem 1rem; border-radius: 999px;
+}
+.price-card h3 { font-size: 1.25rem; }
+.price-card .subs { font-size: .82rem; color: var(--text-mute); margin-top: .25rem; }
+.price-amt { font-family: var(--font-display); margin: 1.1rem 0 .3rem; display: flex; align-items: baseline; gap: .3rem; }
+.price-amt .num { font-size: 2.3rem; font-weight: 800; }
+.price-amt .per { font-size: .9rem; color: var(--text-mute); font-weight: 600; }
+.price-card ul { margin: 1.3rem 0; display: flex; flex-direction: column; gap: .65rem; }
+.price-card li { display: flex; align-items: flex-start; gap: .55rem; font-size: .9rem; color: var(--text-soft); }
+.price-card li svg { width: 17px; height: 17px; color: var(--teal-600); flex-shrink: 0; margin-top: 2px; }
+[data-theme="dark"] .price-card li svg { color: var(--teal); }
+.price-card .btn { width: 100%; margin-top: auto; }
+
+/* ============ TESTIMONIALS ============ */
+.test-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.1rem; }
+.test-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.7rem 1.5rem; box-shadow: var(--shadow-sm); display: flex; flex-direction: column;
+}
+.test-stars { color: var(--accent); margin-bottom: .9rem; letter-spacing: 2px; }
+.test-card p { font-size: .98rem; color: var(--text-soft); line-height: 1.65; flex: 1; }
+.test-foot { display: flex; align-items: center; gap: .75rem; margin-top: 1.3rem; }
+.test-foot .av { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: #2A1B05; font-family: var(--font-display); }
+.test-foot strong { display: block; font-size: .92rem; font-family: var(--font-display); }
+.test-foot small { font-size: .8rem; color: var(--text-mute); }
+
+/* ============ CTA ============ */
+.cta-band { padding: clamp(3rem, 7vw, 5rem) 0; }
+.cta-box {
+  background: linear-gradient(135deg, var(--accent-700), var(--accent) 60%, var(--teal));
+  border-radius: var(--radius-lg); padding: clamp(2.4rem, 6vw, 4rem); text-align: center; color: #2A1B05;
+  position: relative; overflow: hidden; box-shadow: var(--shadow-lg);
+}
+.cta-box::before { content: ""; position: absolute; inset: 0; background: radial-gradient(40% 60% at 80% 10%, rgba(255,255,255,.3), transparent 60%); }
+.cta-box h2 { font-size: clamp(1.8rem, 5vw, 2.8rem); color: #2A1B05; position: relative; }
+.cta-box p { font-size: clamp(1rem, 2.4vw, 1.18rem); margin: 1rem auto 1.8rem; max-width: 32rem; color: #3A2A0A; position: relative; font-weight: 500; }
+.cta-actions { display: flex; flex-wrap: wrap; gap: .8rem; justify-content: center; position: relative; }
+.cta-box .btn-dark { background: #1A1614; color: #FBFAF7; }
+.cta-box .btn-dark:hover { background: #000; }
+.cta-box .btn-light { background: #fff; color: #1A1614; }
+.cta-fine { margin-top: 1.4rem; font-size: .82rem; color: #4A3812; position: relative; font-weight: 600; }
+
+/* ============ FOOTER ============ */
+.footer { background: var(--bg-soft); border-top: 1px solid var(--border); padding: clamp(3rem, 6vw, 4.4rem) 0 2rem; }
+.foot-grid { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: 2rem; margin-bottom: 2.6rem; }
+.foot-brand .brand { margin-bottom: 1rem; }
+.foot-brand p { color: var(--text-mute); font-size: .92rem; max-width: 22rem; }
+.foot-soc { display: flex; gap: .6rem; margin-top: 1.2rem; }
+.foot-soc a { width: 40px; height: 40px; border-radius: 11px; background: var(--bg-muted); border: 1px solid var(--border); display: grid; place-items: center; color: var(--text-soft); transition: transform .2s, color .2s; }
+.foot-soc a:hover { transform: translateY(-3px); color: var(--accent-700); }
+.foot-col h5 { font-family: var(--font-display); font-size: .95rem; margin-bottom: 1rem; }
+.foot-col a { display: block; color: var(--text-mute); font-size: .9rem; padding: .35rem 0; transition: color .2s; }
+.foot-col a:hover { color: var(--text); }
+.foot-bottom { border-top: 1px solid var(--border); padding-top: 1.6rem; display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center; color: var(--text-mute); font-size: .85rem; }
+.foot-bottom .made { display: inline-flex; align-items: center; gap: .4rem; }
+
+/* ============ REVEAL ============ */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s cubic-bezier(.16,1,.3,1); }
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 960px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-mock { max-width: 460px; margin: 0 auto; }
+  .dash-charts { grid-template-columns: 1fr; }
+  .foot-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 820px) {
+  .nav-links { display: none; }
+  .nav-actions .btn-primary { display: none; }
+  .hamburger { display: grid; }
+  .builder-main { grid-template-columns: 1fr; }
+  .builder-side { border-right: none; border-bottom: 1px solid var(--border); }
+  .block-list { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 620px) {
+  .dash-grid { grid-template-columns: 1fr; }
+  .foot-grid { grid-template-columns: 1fr; }
+  .block-list { grid-template-columns: repeat(2, 1fr); }
+  .hero-cta { flex-direction: column; }
+  .hero-cta .btn { width: 100%; }
+  .mock-body { grid-template-columns: 64px 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a href="#" class="brand" aria-label="MailNusa beranda">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="2"/></svg>
+      </span>
+      <span>Mail<b>Nusa</b></span>
+    </a>
+    <div class="nav-links">
+      <a href="#fitur">Fitur</a>
+      <a href="#builder">Builder</a>
+      <a href="#automation">Automation</a>
+      <a href="#analitik">Analitik</a>
+      <a href="#harga">Harga</a>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Ganti mode terang/gelap">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <a href="#harga" class="btn btn-primary">Coba Gratis</a>
+      <button class="hamburger" id="hamburger" aria-label="Buka menu" aria-expanded="false" aria-controls="mobileMenu">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#fitur">Fitur</a>
+  <a href="#builder">Builder</a>
+  <a href="#automation">Automation</a>
+  <a href="#analitik">Analitik</a>
+  <a href="#templat">Templat</a>
+  <a href="#harga">Harga</a>
+  <a href="#harga" class="btn btn-primary">Coba Gratis 14 Hari</a>
+</div>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy reveal">
+      <span class="eyebrow">✦ Platform Email Marketing Lokal</span>
+      <h1>Kirim email yang <span class="hl">dibuka & diklik</span> pelanggan Anda</h1>
+      <p class="lead">MailNusa menyatukan drag-drop builder, automation, dan analytics open-rate dalam satu dashboard. Buat kampanye profesional tanpa coding, langsung dari Indonesia.</p>
+      <div class="hero-cta">
+        <a href="#harga" class="btn btn-primary">Mulai Gratis 14 Hari</a>
+        <a href="#builder" class="btn btn-ghost">Lihat Builder ▸</a>
+      </div>
+      <div class="hero-trust">
+        <div class="stat"><b>12.400+</b> bisnis pakai MailNusa</div>
+        <div style="display:flex;align-items:center;gap:.7rem">
+          <div class="avatars" aria-hidden="true">
+            <span style="background:#FDE68A">RA</span>
+            <span style="background:#99F6E4">SW</span>
+            <span style="background:#FBCFE8">DP</span>
+            <span style="background:#BFDBFE">MY</span>
+          </div>
+          <div class="stat"><b>4,9/5</b> rating pengguna</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero builder mockup -->
+    <div class="hero-mock reveal" aria-hidden="true">
+      <div class="mock-bar">
+        <div class="mock-dots"><i></i><i></i><i></i></div>
+        <div class="mock-url">app.mailnusa.id/builder</div>
+      </div>
+      <div class="mock-body">
+        <div class="mock-palette">
+          <div class="palette-title">Blok</div>
+          <div class="p-block"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="6" rx="1.5" stroke="currentColor" stroke-width="2"/></svg>Header</div>
+          <div class="p-block"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Teks</div>
+          <div class="p-block"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="10" r="1.5" fill="currentColor"/><path d="M21 16l-5-4-7 5" stroke="currentColor" stroke-width="2"/></svg>Gambar</div>
+          <div class="p-block"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="9" width="16" height="6" rx="3" stroke="currentColor" stroke-width="2"/></svg>Tombol</div>
+        </div>
+        <div class="mock-canvas">
+          <div class="email-doc">
+            <div class="eb eb-h"><div class="eb-header"><strong>Diskon Lebaran 50%</strong><small>Toko Rasa Nusantara</small></div></div>
+            <div class="eb active eb-t"><div class="eb-text"><b>Halo, Sari!</b>Nikmati promo spesial menyambut Idul Fitri. Belanja sekarang sebelum kehabisan.</div></div>
+            <div class="eb"><div class="eb-img">🖼 Banner Produk</div></div>
+            <div class="eb eb-btn-row"><span class="eb-cta">Belanja Sekarang</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="mock-float"><span class="dot"></span><div>Open rate 42,8%<small>Kampanye terkirim ✓</small></div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ LOGOS ============ -->
+<section class="logos">
+  <div class="wrap">
+    <p>Dipercaya tim marketing di seluruh Indonesia</p>
+    <div class="logo-row reveal">
+      <span>KopiNusantara</span>
+      <span>BatikLokal</span>
+      <span>SehatMart</span>
+      <span>EduPintar</span>
+      <span>TaniMaju</span>
+      <span>RasaKita</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section class="section" id="fitur">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Semua dalam satu</span>
+      <h2>Fitur lengkap untuk kampanye yang menang</h2>
+      <p>Dari menyusun email pertama hingga otomatisasi funnel — semua tools yang Anda butuhkan ada di sini.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card reveal">
+        <div class="feat-ico fi-amber"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="2"/></svg></div>
+        <h3>Drag-Drop Builder</h3>
+        <p>Susun email cantik tanpa kode. Tarik blok header, teks, gambar, dan tombol langsung ke kanvas.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-ico fi-teal"><svg viewBox="0 0 24 24" fill="none"><circle cx="6" cy="6" r="2.5" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="18" r="2.5" stroke="currentColor" stroke-width="2"/><path d="M6 8.5v4a3 3 0 003 3h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <h3>Automation Flow</h3>
+        <p>Bangun alur otomatis: welcome series, follow-up, dan re-engagement berbasis perilaku pelanggan.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-ico fi-amber"><svg viewBox="0 0 24 24" fill="none"><path d="M3 12h6l2-6 2 12 2-6h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Segmentasi Cerdas</h3>
+        <p>Kelompokkan audiens berdasarkan minat, lokasi, dan aktivitas untuk pesan yang lebih relevan.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-ico fi-teal"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="7" height="16" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="4" width="7" height="16" rx="1.5" stroke="currentColor" stroke-width="2"/></svg></div>
+        <h3>A/B Testing</h3>
+        <p>Uji subjek, isi, dan waktu kirim. MailNusa otomatis menang-kan versi dengan open rate tertinggi.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-ico fi-amber"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5M4 19h16M8 15l3-4 3 3 4-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Analytics Real-time</h3>
+        <p>Pantau open rate, click rate, dan pertumbuhan audiens secara langsung dengan grafik interaktif.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-ico fi-teal"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="10" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V8a5 5 0 0110 0v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <h3>Deliverability Tinggi</h3>
+        <p>Server lokal & reputasi domain terjaga. Email Anda masuk inbox, bukan folder spam.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EMAIL BUILDER MOCKUP ============ -->
+<section class="section" id="builder" style="background:var(--bg-soft);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Coba Sendiri</span>
+      <h2>Bangun email dengan drag-and-drop</h2>
+      <p>Klik atau seret blok dari panel kiri ke kanvas. Susun email Anda dalam hitungan menit.</p>
+    </div>
+    <div class="builder-shell reveal">
+      <div class="builder-top">
+        <div class="title"><span class="brand-mark" style="width:26px;height:26px;border-radius:8px" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="2.5"/></svg></span> Editor Kampanye — Promo Akhir Tahun</div>
+        <div class="actions">
+          <button class="bt-save" id="btnSaveDraft">Simpan Draf</button>
+          <button class="bt-send" id="btnSendTest">Kirim Tes</button>
+        </div>
+      </div>
+      <div class="builder-main">
+        <div class="builder-side">
+          <h4>Tarik blok ke kanvas</h4>
+          <div class="block-list" id="blockList">
+            <div class="block-chip" draggable="true" data-block="header" tabindex="0" role="button" aria-label="Tambah blok Header">
+              <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="6" rx="1.5" stroke="currentColor" stroke-width="2"/></svg>Header</div>
+            <div class="block-chip" draggable="true" data-block="text" tabindex="0" role="button" aria-label="Tambah blok Teks">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Teks</div>
+            <div class="block-chip" draggable="true" data-block="image" tabindex="0" role="button" aria-label="Tambah blok Gambar">
+              <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="10" r="1.5" fill="currentColor"/><path d="M21 16l-5-4-7 5" stroke="currentColor" stroke-width="2"/></svg>Gambar</div>
+            <div class="block-chip" draggable="true" data-block="button" tabindex="0" role="button" aria-label="Tambah blok Tombol">
+              <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="9" width="16" height="6" rx="3" stroke="currentColor" stroke-width="2"/></svg>Tombol</div>
+            <div class="block-chip" draggable="true" data-block="divider" tabindex="0" role="button" aria-label="Tambah blok Pembatas">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M4 12h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Pembatas</div>
+            <div class="block-chip" id="btnReset" tabindex="0" role="button" aria-label="Reset kanvas" style="border-style:solid;color:#DC2626;border-color:#FCA5A5">
+              <svg viewBox="0 0 24 24" fill="none" style="color:#DC2626"><path d="M3 12a9 9 0 109-9M3 4v5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Reset</div>
+          </div>
+        </div>
+        <div class="builder-canvas">
+          <div class="drop-zone" id="dropZone" aria-label="Kanvas email, jatuhkan blok di sini">
+            <div class="dz-hint" id="dzHint">Seret blok ke sini, atau klik blok di kiri untuk menambah</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AUTOMATION FLOW ============ -->
+<section class="section" id="automation">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Automation</span>
+      <h2>Atur sekali, jalan otomatis selamanya</h2>
+      <p>Sambungkan trigger dan aksi menjadi alur kerja. Pelanggan baru langsung disambut tanpa Anda angkat tangan.</p>
+    </div>
+    <div class="flow-wrap reveal">
+      <div class="flow" role="list" aria-label="Alur otomatisasi welcome series">
+        <div class="flow-node node-trigger" role="listitem">
+          <div class="node-ico"><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+          <span class="tag">Trigger</span>
+          <h4>Subscribe</h4>
+          <p>Pengunjung mendaftar lewat form di website Anda.</p>
+        </div>
+        <div class="flow-connect" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-6l6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="flow-node node-action" role="listitem">
+          <div class="node-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="2"/></svg></div>
+          <span class="tag">Email</span>
+          <h4>Welcome Email</h4>
+          <p>Kirim sambutan hangat + kode diskon perdana 10%.</p>
+        </div>
+        <div class="flow-connect" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-6l6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="flow-node node-wait" role="listitem">
+          <div class="node-ico"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="2"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <span class="tag">Jeda</span>
+          <h4>Tunggu 3 Hari</h4>
+          <p>Beri waktu pelanggan mengenal brand Anda.</p>
+        </div>
+        <div class="flow-connect" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-6l6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="flow-node node-action" role="listitem">
+          <div class="node-ico"><svg viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+          <span class="tag">Email</span>
+          <h4>Follow-up</h4>
+          <p>Rekomendasi produk terlaris + ajakan pembelian.</p>
+        </div>
+      </div>
+      <div class="flow-legend" aria-hidden="true">
+        <span><i style="background:var(--accent)"></i> Trigger</span>
+        <span><i style="background:var(--teal)"></i> Aksi Email</span>
+        <span><i style="background:var(--text-mute)"></i> Jeda Waktu</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ANALYTICS DASHBOARD ============ -->
+<section class="section" id="analitik" style="background:var(--bg-soft);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Analytics</span>
+      <h2>Lihat performa kampanye secara langsung</h2>
+      <p>Setiap kiriman terukur. Pantau open rate, click rate, dan pertumbuhan audiens dalam satu layar.</p>
+    </div>
+    <div class="dash reveal" id="dash">
+      <div class="dash-top">
+        <div class="title"><svg viewBox="0 0 24 24" fill="none" width="22" height="22" style="color:var(--accent-700)"><path d="M4 19V5M4 19h16M8 15l3-4 3 3 4-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Kampanye: Promo Akhir Tahun</div>
+        <div class="pill">● Live · 30 hari terakhir</div>
+      </div>
+      <div class="dash-grid">
+        <div class="kpi">
+          <div class="label">Email Terkirim</div>
+          <div class="val" data-count="48250" data-suffix="">0</div>
+          <div class="delta up">▲ 18,2% vs bulan lalu</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Open Rate</div>
+          <div class="val" data-count="42.8" data-suffix="%" data-decimal="1">0</div>
+          <div class="delta up">▲ 6,4% di atas rata-rata</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Click Rate</div>
+          <div class="val" data-count="11.6" data-suffix="%" data-decimal="1">0</div>
+          <div class="delta up">▲ 2,1% vs kampanye lalu</div>
+        </div>
+      </div>
+      <div class="dash-charts">
+        <div class="chart-box">
+          <h4>Pertumbuhan Audiens <small>6 bulan</small></h4>
+          <svg class="linechart" id="lineChart" viewBox="0 0 320 160" preserveAspectRatio="none" role="img" aria-label="Grafik pertumbuhan audiens naik dari Januari ke Juni">
+            <defs>
+              <linearGradient id="growGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.32"/>
+                <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <line class="grid" x1="0" y1="40" x2="320" y2="40"/>
+            <line class="grid" x1="0" y1="80" x2="320" y2="80"/>
+            <line class="grid" x1="0" y1="120" x2="320" y2="120"/>
+            <path class="area" id="lineArea" d=""/>
+            <path class="line" id="linePath" d=""/>
+            <g id="linePts"></g>
+          </svg>
+          <div style="display:flex;justify-content:space-between;font-size:.68rem;color:var(--text-mute);margin-top:.4rem;font-weight:600">
+            <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>Mei</span><span>Jun</span>
+          </div>
+        </div>
+        <div class="chart-box">
+          <h4>Open vs Click per Kampanye <small>%</small></h4>
+          <div class="bars" id="barChart" aria-hidden="true">
+            <div class="bar-col"><div class="bar" data-h="68"></div><small>K1</small></div>
+            <div class="bar-col"><div class="bar teal" data-h="22"></div><small>K1</small></div>
+            <div class="bar-col"><div class="bar" data-h="82"></div><small>K2</small></div>
+            <div class="bar-col"><div class="bar teal" data-h="34"></div><small>K2</small></div>
+            <div class="bar-col"><div class="bar" data-h="92"></div><small>K3</small></div>
+            <div class="bar-col"><div class="bar teal" data-h="46"></div><small>K3</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TEMPLATES GALLERY ============ -->
+<section class="section" id="templat">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Template Gallery</span>
+      <h2>Mulai dari template, bukan dari nol</h2>
+      <p>Puluhan template responsif siap pakai untuk newsletter, promo, undangan, dan transaksional.</p>
+    </div>
+    <div class="tpl-grid">
+      <div class="tpl-card reveal">
+        <div class="tpl-thumb t1"><div class="mini"><div class="mh"></div><div class="mb"><div class="ml"></div><div class="ml s"></div><div class="mbtn"></div></div></div></div>
+        <div class="tpl-meta"><div><strong>Promo Diskon</strong><br><small>E-commerce</small></div><span class="tpl-tag">Populer</span></div>
+      </div>
+      <div class="tpl-card reveal">
+        <div class="tpl-thumb t2"><div class="mini"><div class="mh"></div><div class="mb"><div class="ml"></div><div class="ml s"></div><div class="mbtn"></div></div></div></div>
+        <div class="tpl-meta"><div><strong>Newsletter</strong><br><small>Konten Mingguan</small></div><span class="tpl-tag">Gratis</span></div>
+      </div>
+      <div class="tpl-card reveal">
+        <div class="tpl-thumb t3"><div class="mini"><div class="mh"></div><div class="mb"><div class="ml"></div><div class="ml s"></div><div class="mbtn"></div></div></div></div>
+        <div class="tpl-meta"><div><strong>Undangan Event</strong><br><small>Webinar</small></div><span class="tpl-tag">Baru</span></div>
+      </div>
+      <div class="tpl-card reveal">
+        <div class="tpl-thumb t4"><div class="mini"><div class="mh"></div><div class="mb"><div class="ml"></div><div class="ml s"></div><div class="mbtn"></div></div></div></div>
+        <div class="tpl-meta"><div><strong>Welcome Series</strong><br><small>Onboarding</small></div><span class="tpl-tag">Populer</span></div>
+      </div>
+      <div class="tpl-card reveal">
+        <div class="tpl-thumb t5"><div class="mini"><div class="mh"></div><div class="mb"><div class="ml"></div><div class="ml s"></div><div class="mbtn"></div></div></div></div>
+        <div class="tpl-meta"><div><strong>Konfirmasi Order</strong><br><small>Transaksional</small></div><span class="tpl-tag">Gratis</span></div>
+      </div>
+      <div class="tpl-card reveal">
+        <div class="tpl-thumb t6"><div class="mini"><div class="mh"></div><div class="mb"><div class="ml"></div><div class="ml s"></div><div class="mbtn"></div></div></div></div>
+        <div class="tpl-meta"><div><strong>Flash Sale</strong><br><small>Promo Kilat</small></div><span class="tpl-tag">Baru</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INTEGRATIONS ============ -->
+<section class="section" style="background:var(--bg-soft);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Integrasi</span>
+      <h2>Terhubung dengan tools favorit Anda</h2>
+      <p>Sinkronkan kontak dan data dari platform yang sudah Anda pakai sehari-hari.</p>
+    </div>
+    <div class="intg-row reveal">
+      <div class="intg"><span class="ig-ico" style="background:#FEF3C7;color:#B45309">Sh</span> Shopify</div>
+      <div class="intg"><span class="ig-ico" style="background:#CCFBF1;color:#0F766E">Wo</span> WooCommerce</div>
+      <div class="intg"><span class="ig-ico" style="background:#DBEAFE;color:#2563EB">Wa</span> WhatsApp</div>
+      <div class="intg"><span class="ig-ico" style="background:#EDE9FE;color:#7C3AED">Zp</span> Zapier</div>
+      <div class="intg"><span class="ig-ico" style="background:#FCE7F3;color:#DB2777">Gs</span> Google Sheet</div>
+      <div class="intg"><span class="ig-ico" style="background:#FEE2E2;color:#DC2626">Tk</span> Tokopedia</div>
+      <div class="intg"><span class="ig-ico" style="background:#D1FAE5;color:#059669">Wp</span> WordPress</div>
+      <div class="intg"><span class="ig-ico" style="background:#FEF9C3;color:#A16207">Mt</span> Meta Ads</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="section" id="harga">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Harga Transparan</span>
+      <h2>Bayar sesuai jumlah subscriber</h2>
+      <p>Semua paket termasuk builder, automation, dan analytics. Naik kelas kapan saja, tanpa kontrak.</p>
+    </div>
+    <div class="price-toggle reveal">
+      <div class="seg" role="tablist" aria-label="Pilih jumlah subscriber">
+        <button class="active" data-tier="0" role="tab" aria-selected="true">2.500 subs</button>
+        <button data-tier="1" role="tab" aria-selected="false">10.000 subs</button>
+        <button data-tier="2" role="tab" aria-selected="false">25.000 subs</button>
+      </div>
+      <span class="price-note" id="priceNote">Hemat 2 bulan dengan tagihan tahunan</span>
+    </div>
+    <div class="price-grid">
+      <div class="price-card reveal">
+        <h3>Starter</h3>
+        <div class="subs">Untuk bisnis yang baru mulai</div>
+        <div class="price-amt"><span class="num">Rp<span data-price="starter">0</span></span><span class="per">/bln</span></div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Drag-drop builder penuh</li>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> 1 alur automation</li>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Analytics dasar</li>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Dukungan email</li>
+        </ul>
+        <a href="#" class="btn btn-ghost">Mulai Gratis</a>
+      </div>
+      <div class="price-card featured reveal">
+        <h3>Growth</h3>
+        <div class="subs">Pilihan tim marketing yang serius</div>
+        <div class="price-amt"><span class="num">Rp<span data-price="growth">0</span></span><span class="per">/bln</span></div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Semua di Starter</li>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Automation tanpa batas</li>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> A/B testing & segmentasi</li>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Analytics lanjutan + heatmap</li>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Dukungan prioritas</li>
+        </ul>
+        <a href="#" class="btn btn-primary">Coba 14 Hari Gratis</a>
+      </div>
+      <div class="price-card reveal">
+        <h3>Scale</h3>
+        <div class="subs">Untuk volume kiriman besar</div>
+        <div class="price-amt"><span class="num">Rp<span data-price="scale">0</span></span><span class="per">/bln</span></div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Semua di Growth</li>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> IP pengirim khusus</li>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Multi-user & peran tim</li>
+          <li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Account manager khusus</li>
+        </ul>
+        <a href="#" class="btn btn-ghost">Hubungi Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIALS ============ -->
+<section class="section" style="background:var(--bg-soft);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Cerita Pelanggan</span>
+      <h2>Dipakai brand yang tumbuh cepat</h2>
+      <p>Lebih dari 12.000 bisnis mempercayakan kampanye email mereka pada MailNusa.</p>
+    </div>
+    <div class="test-grid">
+      <div class="test-card reveal">
+        <div class="test-stars" aria-label="5 dari 5 bintang">★★★★★</div>
+        <p>"Open rate kami naik dari 19% ke 41% dalam dua bulan. Automation welcome series-nya benar-benar mengubah cara kami menyambut pelanggan baru."</p>
+        <div class="test-foot">
+          <div class="av" style="background:#FDE68A">RA</div>
+          <div><strong>Rina Anggraini</strong><small>Marketing Lead, BatikLokal</small></div>
+        </div>
+      </div>
+      <div class="test-card reveal">
+        <div class="test-stars" aria-label="5 dari 5 bintang">★★★★★</div>
+        <p>"Builder-nya intuitif banget, tim non-teknis pun bisa bikin email cantik sendiri. Hemat waktu produksi konten hampir setengahnya."</p>
+        <div class="test-foot">
+          <div class="av" style="background:#99F6E4">SW</div>
+          <div><strong>Surya Wijaya</strong><small>Founder, KopiNusantara</small></div>
+        </div>
+      </div>
+      <div class="test-card reveal">
+        <div class="test-stars" aria-label="5 dari 5 bintang">★★★★★</div>
+        <p>"Dashboard analytics-nya jelas dan real-time. Kami akhirnya bisa ambil keputusan berbasis data, bukan tebak-tebakan. Worth setiap rupiah."</p>
+        <div class="test-foot">
+          <div class="av" style="background:#FBCFE8">DP</div>
+          <div><strong>Dewi Pratiwi</strong><small>CRM Manager, SehatMart</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta-band">
+  <div class="wrap">
+    <div class="cta-box reveal">
+      <h2>Siap kirim kampanye pertama Anda?</h2>
+      <p>Coba semua fitur MailNusa gratis selama 14 hari. Tanpa kartu kredit, tanpa ribet — langsung kirim email yang dibuka pelanggan.</p>
+      <div class="cta-actions">
+        <a href="#" class="btn btn-dark">Mulai Gratis Sekarang</a>
+        <a href="#builder" class="btn btn-light">Coba Builder Dulu</a>
+      </div>
+      <p class="cta-fine">✓ Setup 5 menit · ✓ Tanpa kartu kredit · ✓ Batalkan kapan saja</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a href="#" class="brand" aria-label="MailNusa">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="2"/></svg></span>
+          <span>Mail<b>Nusa</b></span>
+        </a>
+        <p>Platform email marketing buatan Indonesia. Bangun, otomatisasi, dan ukur kampanye email Anda dalam satu tempat.</p>
+        <div class="foot-soc">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" width="20" height="20"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none" width="20" height="20"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="2"/><path d="M7 10v7M7 7v.01M11 17v-4a2 2 0 014 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+          <a href="#" aria-label="X"><svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M4 4l16 16M20 4L4 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+          <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" width="20" height="20"><rect x="3" y="6" width="18" height="12" rx="3" stroke="currentColor" stroke-width="2"/><path d="M10 9.5l5 2.5-5 2.5z" fill="currentColor"/></svg></a>
+        </div>
+      </div>
+      <div class="foot-col">
+        <h5>Produk</h5>
+        <a href="#builder">Email Builder</a>
+        <a href="#automation">Automation</a>
+        <a href="#analitik">Analytics</a>
+        <a href="#templat">Template</a>
+        <a href="#harga">Harga</a>
+      </div>
+      <div class="foot-col">
+        <h5>Perusahaan</h5>
+        <a href="#">Tentang Kami</a>
+        <a href="#">Blog</a>
+        <a href="#">Karier</a>
+        <a href="#">Mitra</a>
+        <a href="#">Kontak</a>
+      </div>
+      <div class="foot-col">
+        <h5>Sumber Daya</h5>
+        <a href="#">Pusat Bantuan</a>
+        <a href="#">Dokumentasi API</a>
+        <a href="#">Panduan Email</a>
+        <a href="#">Status Layanan</a>
+        <a href="#">Kebijakan Privasi</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 MailNusa. Seluruh hak cipta dilindungi.</span>
+      <span class="made">Dibuat dengan ♥ di Indonesia</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ===== THEME TOGGLE + PERSIST ===== */
+  var root = document.documentElement;
+  var THEME_KEY = "mailnusa_theme";
+  try {
+    var saved = localStorage.getItem(THEME_KEY);
+    if (saved) root.setAttribute("data-theme", saved);
+  } catch (e) {}
+  var themeBtn = document.getElementById("themeToggle");
+  themeBtn.addEventListener("click", function () {
+    var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+  });
+
+  /* ===== NAV SCROLL + MOBILE MENU ===== */
+  var nav = document.getElementById("nav");
+  window.addEventListener("scroll", function () {
+    nav.classList.toggle("scrolled", window.scrollY > 8);
+  }, { passive: true });
+
+  var hamburger = document.getElementById("hamburger");
+  var mobileMenu = document.getElementById("mobileMenu");
+  function closeMenu() {
+    mobileMenu.classList.remove("open");
+    hamburger.setAttribute("aria-expanded", "false");
+  }
+  hamburger.addEventListener("click", function () {
+    var open = mobileMenu.classList.toggle("open");
+    hamburger.setAttribute("aria-expanded", String(open));
+  });
+  mobileMenu.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", closeMenu);
+  });
+
+  /* ===== REVEAL ON SCROLL ===== */
+  var reveals = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+    reveals.forEach(function (el) { io.observe(el); });
+  } else {
+    reveals.forEach(function (el) { el.classList.add("in"); });
+  }
+
+  /* ===== EMAIL BUILDER DRAG-DROP ===== */
+  var dropZone = document.getElementById("dropZone");
+  var dzHint = document.getElementById("dzHint");
+
+  var BLOCKS = {
+    header: '<div class="dzc-header"><strong>Promo Akhir Tahun</strong><small>Toko Rasa Nusantara</small></div>',
+    text: '<div class="dzc-text"><b>Halo, Sahabat MailNusa!</b>Terima kasih sudah bergabung. Nikmati penawaran terbaik kami sepanjang akhir tahun ini.</div>',
+    image: '<div class="dzc-img">🖼 Banner Gambar Produk</div>',
+    button: '<div class="dzc-btn"><span>Belanja Sekarang</span></div>',
+    divider: '<div class="dzc-divider"></div>'
+  };
+
+  function refreshHint() {
+    var hasBlocks = dropZone.querySelectorAll(".dz-block").length > 0;
+    dzHint.style.display = hasBlocks ? "none" : "";
+  }
+
+  function addBlock(type) {
+    if (!BLOCKS[type]) return;
+    var el = document.createElement("div");
+    el.className = "dz-block";
+    el.innerHTML = '<button class="remove" aria-label="Hapus blok">×</button>' + BLOCKS[type];
+    el.querySelector(".remove").addEventListener("click", function () {
+      el.remove();
+      refreshHint();
+    });
+    dropZone.appendChild(el);
+    refreshHint();
+  }
+
+  // seed canvas with a starter layout
+  addBlock("header");
+  addBlock("text");
+  addBlock("button");
+
+  var dragType = null;
+  document.querySelectorAll(".block-chip[data-block]").forEach(function (chip) {
+    chip.addEventListener("dragstart", function (e) {
+      dragType = chip.getAttribute("data-block");
+      chip.classList.add("dragging");
+      if (e.dataTransfer) {
+        e.dataTransfer.effectAllowed = "copy";
+        e.dataTransfer.setData("text/plain", dragType);
+      }
+    });
+    chip.addEventListener("dragend", function () {
+      chip.classList.remove("dragging");
+    });
+    // click / keyboard to add (mobile + a11y friendly)
+    chip.addEventListener("click", function () { addBlock(chip.getAttribute("data-block")); });
+    chip.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); addBlock(chip.getAttribute("data-block")); }
+    });
+  });
+
+  dropZone.addEventListener("dragover", function (e) {
+    e.preventDefault();
+    if (e.dataTransfer) e.dataTransfer.dropEffect = "copy";
+    dropZone.classList.add("over");
+  });
+  dropZone.addEventListener("dragleave", function () { dropZone.classList.remove("over"); });
+  dropZone.addEventListener("drop", function (e) {
+    e.preventDefault();
+    dropZone.classList.remove("over");
+    var type = dragType || (e.dataTransfer && e.dataTransfer.getData("text/plain"));
+    if (type) addBlock(type);
+    dragType = null;
+  });
+
+  // reset
+  var resetBtn = document.getElementById("btnReset");
+  function resetCanvas() {
+    dropZone.querySelectorAll(".dz-block").forEach(function (b) { b.remove(); });
+    refreshHint();
+  }
+  resetBtn.addEventListener("click", resetCanvas);
+  resetBtn.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); resetCanvas(); }
+  });
+
+  // toolbar buttons feedback
+  function flash(btn, txt) {
+    var old = btn.textContent;
+    btn.textContent = txt;
+    btn.disabled = true;
+    setTimeout(function () { btn.textContent = old; btn.disabled = false; }, 1400);
+  }
+  document.getElementById("btnSaveDraft").addEventListener("click", function () { flash(this, "✓ Tersimpan"); });
+  document.getElementById("btnSendTest").addEventListener("click", function () { flash(this, "✓ Terkirim"); });
+
+  /* ===== PRICING TOGGLE ===== */
+  // prices per subscriber tier (monthly, in Rupiah)
+  var TIERS = [
+    { starter: 0,      growth: 149000, scale: 449000 },
+    { starter: 199000, growth: 399000, scale: 799000 },
+    { starter: 449000, growth: 799000, scale: 1490000 }
+  ];
+  function fmt(n) {
+    return n === 0 ? " 0" : " " + n.toLocaleString("id-ID");
+  }
+  function applyTier(i) {
+    var t = TIERS[i];
+    document.querySelector('[data-price="starter"]').textContent = fmt(t.starter);
+    document.querySelector('[data-price="growth"]').textContent = fmt(t.growth);
+    document.querySelector('[data-price="scale"]').textContent = fmt(t.scale);
+  }
+  applyTier(0);
+  document.querySelectorAll(".price-toggle .seg button").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".price-toggle .seg button").forEach(function (b) {
+        b.classList.remove("active");
+        b.setAttribute("aria-selected", "false");
+      });
+      btn.classList.add("active");
+      btn.setAttribute("aria-selected", "true");
+      applyTier(parseInt(btn.getAttribute("data-tier"), 10));
+    });
+  });
+
+  /* ===== ANIMATED COUNTERS ===== */
+  function animateCount(el) {
+    var target = parseFloat(el.getAttribute("data-count"));
+    var suffix = el.getAttribute("data-suffix") || "";
+    var dec = parseInt(el.getAttribute("data-decimal") || "0", 10);
+    var dur = 1500, start = null;
+    function step(ts) {
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      var val = target * eased;
+      var out = dec > 0 ? val.toFixed(dec) : Math.round(val).toLocaleString("id-ID");
+      if (dec > 0) out = out.replace(".", ",");
+      el.textContent = out + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ===== LINE / AREA CHART ===== */
+  function buildLineChart() {
+    var data = [22, 34, 30, 52, 68, 92]; // audience growth index
+    var W = 320, H = 160, pad = 8;
+    var max = 100;
+    var pts = data.map(function (d, i) {
+      var x = pad + (i * (W - pad * 2)) / (data.length - 1);
+      var y = H - pad - (d / max) * (H - pad * 2);
+      return [x, y];
+    });
+    var line = pts.map(function (p, i) { return (i === 0 ? "M" : "L") + p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" ");
+    var area = line + " L" + pts[pts.length - 1][0].toFixed(1) + " " + (H - pad) + " L" + pts[0][0].toFixed(1) + " " + (H - pad) + " Z";
+    document.getElementById("linePath").setAttribute("d", line);
+    document.getElementById("lineArea").setAttribute("d", area);
+    var g = document.getElementById("linePts");
+    g.innerHTML = "";
+    pts.forEach(function (p) {
+      var c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      c.setAttribute("cx", p[0].toFixed(1));
+      c.setAttribute("cy", p[1].toFixed(1));
+      c.setAttribute("r", "3.2");
+      c.setAttribute("class", "pt");
+      g.appendChild(c);
+    });
+  }
+
+  /* ===== BAR CHART ANIMATE ===== */
+  function animateBars() {
+    document.querySelectorAll("#barChart .bar").forEach(function (bar) {
+      var h = bar.getAttribute("data-h");
+      requestAnimationFrame(function () { bar.style.height = h + "%"; });
+    });
+  }
+
+  // trigger dashboard animations when visible
+  var dash = document.getElementById("dash");
+  var dashDone = false;
+  function runDash() {
+    if (dashDone) return;
+    dashDone = true;
+    document.querySelectorAll("#dash .val[data-count]").forEach(animateCount);
+    buildLineChart();
+    animateBars();
+  }
+  if ("IntersectionObserver" in window) {
+    var dio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { runDash(); dio.disconnect(); } });
+    }, { threshold: 0.25 });
+    dio.observe(dash);
+  } else {
+    runDash();
+  }
+
+  // close mobile menu on resize to desktop
+  window.addEventListener("resize", function () {
+    if (window.innerWidth > 820) closeMenu();
+  });
+})();
+</script>
+</body>
+</html>

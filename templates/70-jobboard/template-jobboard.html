@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="KarirNusa — portal lowongan kerja Indonesia. Temukan pekerjaan impianmu dari ribuan perusahaan terpercaya.">
+<title>KarirNusa — Portal Lowongan Kerja Indonesia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#2563EB;
+  --blue-dark:#1D4ED8;
+  --blue-soft:#EFF4FF;
+  --mint:#10B981;
+  --mint-soft:#ECFDF5;
+  --bg:#FFFFFF;
+  --bg-alt:#F6F8FC;
+  --card:#FFFFFF;
+  --border:#E4E9F2;
+  --text:#0F172A;
+  --text-mut:#5A6678;
+  --text-soft:#8A94A6;
+  --shadow:0 1px 2px rgba(16,24,40,.05);
+  --shadow-md:0 6px 24px rgba(16,24,40,.08);
+  --shadow-lg:0 18px 50px rgba(16,24,40,.14);
+  --radius:16px;
+  --radius-sm:11px;
+  --nav-h:68px;
+}
+[data-theme="dark"]{
+  --blue:#5B8DFF;
+  --blue-dark:#3B6FE0;
+  --blue-soft:#16223D;
+  --mint:#34D399;
+  --mint-soft:#10261E;
+  --bg:#0B1120;
+  --bg-alt:#0F1729;
+  --card:#141E33;
+  --border:#243149;
+  --text:#EAF0FB;
+  --text-mut:#A3AEC2;
+  --text-soft:#74809A;
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+  --shadow-md:0 8px 28px rgba(0,0,0,.45);
+  --shadow-lg:0 22px 60px rgba(0,0,0,.6);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  overflow-x:hidden;
+  transition:background .35s ease,color .35s ease;
+}
+h1,h2,h3,h4,.brand{font-family:'Plus Jakarta Sans',sans-serif;line-height:1.15;letter-spacing:-.02em}
+a{color:inherit;text-decoration:none}
+img,svg{display:block;max-width:100%}
+ul{list-style:none}
+section{padding:clamp(3.4rem,7vw,6rem) 0}
+.wrap{width:min(1180px,92%);margin-inline:auto}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-weight:700;font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--blue);background:var(--blue-soft);
+  padding:.4rem .85rem;border-radius:99px;margin-bottom:1rem;
+}
+.sec-head{max-width:640px;margin-bottom:2.6rem}
+.sec-head.center{margin-inline:auto;text-align:center}
+.sec-head h2{font-size:clamp(1.7rem,3.6vw,2.5rem);font-weight:800}
+.sec-head p{color:var(--text-mut);margin-top:.7rem;font-size:1.04rem}
+
+/* buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:.95rem;
+  padding:.8rem 1.5rem;border-radius:12px;border:1.5px solid transparent;
+  cursor:pointer;min-height:46px;transition:transform .18s ease,background .2s,box-shadow .2s,border-color .2s;
+  white-space:nowrap;
+}
+.btn:active{transform:translateY(1px) scale(.99)}
+.btn-primary{background:var(--blue);color:#fff;box-shadow:0 8px 20px -8px var(--blue)}
+.btn-primary:hover{background:var(--blue-dark);box-shadow:0 12px 26px -8px var(--blue)}
+.btn-ghost{background:transparent;color:var(--text);border-color:var(--border)}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
+.btn-light{background:#fff;color:var(--blue)}
+.btn-light:hover{background:#eef3ff}
+.btn-sm{padding:.55rem 1.05rem;min-height:40px;font-size:.86rem;border-radius:10px}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:6px}
+
+/* NAV */
+header.nav{
+  position:sticky;top:0;z-index:100;height:var(--nav-h);
+  background:color-mix(in srgb,var(--bg) 80%,transparent);
+  backdrop-filter:saturate(180%) blur(14px);
+  -webkit-backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid var(--border);
+}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:100%}
+.brand{display:flex;align-items:center;gap:.6rem;font-weight:800;font-size:1.22rem}
+.brand .logo{
+  width:38px;height:38px;border-radius:11px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--blue),var(--mint));color:#fff;
+  font-weight:800;font-size:1.05rem;box-shadow:0 6px 16px -6px var(--blue);
+}
+.brand b{color:var(--blue)}
+.nav-links{display:flex;align-items:center;gap:.35rem}
+.nav-links a.lnk{
+  padding:.55rem .85rem;border-radius:9px;font-weight:600;font-size:.92rem;color:var(--text-mut);
+  transition:color .2s,background .2s;
+}
+.nav-links a.lnk:hover{color:var(--text);background:var(--bg-alt)}
+.nav-actions{display:flex;align-items:center;gap:.6rem}
+.icon-btn{
+  width:42px;height:42px;border-radius:11px;border:1.5px solid var(--border);
+  background:var(--card);color:var(--text);display:grid;place-items:center;cursor:pointer;
+  transition:border-color .2s,transform .18s,color .2s;
+}
+.icon-btn:hover{border-color:var(--blue);color:var(--blue)}
+.icon-btn:active{transform:scale(.94)}
+.sun{display:none}
+[data-theme="dark"] .sun{display:block}
+[data-theme="dark"] .moon{display:none}
+.hamb{display:none}
+
+/* HERO */
+.hero{
+  position:relative;
+  min-height:min(86dvh,720px);
+  display:flex;align-items:center;
+  padding-top:clamp(2.5rem,6vw,4.5rem);
+  background:
+    radial-gradient(1100px 520px at 78% -8%,var(--blue-soft),transparent 60%),
+    radial-gradient(800px 460px at 6% 108%,var(--mint-soft),transparent 55%);
+  overflow:hidden;
+}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:3rem;align-items:center;width:100%}
+.hero h1{font-size:clamp(2.1rem,5.4vw,3.7rem);font-weight:800}
+.hero h1 .hl{color:var(--blue);position:relative}
+.hero h1 .hl::after{content:"";position:absolute;left:0;right:0;bottom:.06em;height:.22em;background:var(--mint);opacity:.35;border-radius:4px;z-index:-1}
+.hero p.lead{color:var(--text-mut);font-size:clamp(1rem,1.6vw,1.18rem);margin-top:1.1rem;max-width:34ch}
+/* search box */
+.search-card{
+  margin-top:1.9rem;background:var(--card);border:1px solid var(--border);
+  border-radius:18px;padding:.65rem;box-shadow:var(--shadow-lg);
+  display:flex;gap:.5rem;flex-wrap:wrap;
+}
+.search-field{flex:1 1 180px;display:flex;align-items:center;gap:.6rem;padding:.55rem .85rem;border-radius:12px;background:var(--bg-alt)}
+.search-field svg{flex:none;color:var(--text-soft)}
+.search-field input{
+  border:0;background:transparent;font:inherit;color:var(--text);width:100%;outline:none;font-size:.96rem;
+}
+.search-field input::placeholder{color:var(--text-soft)}
+.search-card .btn{flex:1 1 auto;min-width:120px}
+.pop-row{margin-top:1.2rem;display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.pop-row span{font-size:.85rem;color:var(--text-soft);font-weight:600}
+.pop-tag{
+  font-size:.84rem;font-weight:600;color:var(--text-mut);padding:.35rem .8rem;border-radius:99px;
+  background:var(--card);border:1px solid var(--border);cursor:pointer;transition:.2s;
+}
+.pop-tag:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-soft)}
+
+/* hero visual */
+.hero-visual{position:relative}
+.float-card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  box-shadow:var(--shadow-md);padding:1.05rem 1.15rem;
+}
+.fc-main{padding:1.4rem}
+.fc-row{display:flex;align-items:center;gap:.85rem}
+.fc-logo{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;font-weight:800;color:#fff;font-family:'Plus Jakarta Sans';flex:none}
+.fc-title{font-family:'Plus Jakarta Sans';font-weight:700;font-size:1rem}
+.fc-sub{font-size:.84rem;color:var(--text-mut)}
+.fc-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.95rem}
+.fc-tag{font-size:.72rem;font-weight:600;padding:.28rem .6rem;border-radius:7px;background:var(--bg-alt);color:var(--text-mut)}
+.fc-salary{margin-top:.95rem;font-weight:700;color:var(--mint);font-size:.98rem;font-family:'Plus Jakarta Sans'}
+.float-mini{
+  position:absolute;display:flex;align-items:center;gap:.6rem;
+  background:var(--card);border:1px solid var(--border);border-radius:13px;
+  padding:.65rem .9rem;box-shadow:var(--shadow-md);font-size:.84rem;font-weight:600;
+  animation:bob 5s ease-in-out infinite;
+}
+.float-mini .dot{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#fff;flex:none}
+.fm-1{top:-22px;right:-10px;animation-delay:.3s}
+.fm-2{bottom:-22px;left:-18px;animation-delay:1.2s}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
+
+/* trust bar */
+.trust{border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg-alt);padding:1.5rem 0}
+.trust-in{display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap}
+.trust-lbl{font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-soft)}
+.trust-logos{display:flex;flex-wrap:wrap;gap:1.6rem 2.4rem;align-items:center}
+.trust-logos .tl{font-family:'Plus Jakarta Sans';font-weight:800;font-size:1.05rem;color:var(--text-mut);opacity:.85;display:flex;align-items:center;gap:.45rem}
+.tl .tldot{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;color:#fff;font-size:.7rem}
+
+/* categories */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+.cat{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.4rem;cursor:pointer;transition:transform .22s,box-shadow .22s,border-color .22s;
+  display:flex;flex-direction:column;gap:.7rem;text-align:left;
+}
+.cat:hover{transform:translateY(-5px);box-shadow:var(--shadow-md);border-color:var(--blue)}
+.cat-ic{width:50px;height:50px;border-radius:13px;display:grid;place-items:center;color:#fff}
+.cat h3{font-size:1.06rem;font-weight:700}
+.cat .cnt{font-size:.86rem;color:var(--text-mut);font-weight:600}
+.cat .arr{margin-top:auto;font-size:.84rem;font-weight:700;color:var(--blue);display:flex;align-items:center;gap:.3rem;transition:gap .2s}
+.cat:hover .arr{gap:.55rem}
+
+/* JOB SEARCH MOCKUP */
+.jobs{background:var(--bg-alt)}
+.jobs-layout{display:grid;grid-template-columns:268px 1fr;gap:1.6rem;align-items:start}
+.filters{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.3rem;position:sticky;top:calc(var(--nav-h) + 16px);
+}
+.filters h4{font-size:1rem;font-weight:800;display:flex;align-items:center;justify-content:space-between}
+.filters h4 button{background:none;border:0;color:var(--blue);font:inherit;font-size:.8rem;font-weight:700;cursor:pointer}
+.fgroup{margin-top:1.3rem}
+.fgroup .flbl{font-size:.78rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--text-soft);margin-bottom:.7rem}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{
+  font-size:.82rem;font-weight:600;padding:.42rem .82rem;border-radius:99px;cursor:pointer;
+  background:var(--bg-alt);border:1.5px solid var(--border);color:var(--text-mut);transition:.18s;
+  min-height:34px;display:inline-flex;align-items:center;
+}
+.chip:hover{border-color:var(--blue);color:var(--blue)}
+.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+/* results */
+.results-top{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.1rem;flex-wrap:wrap}
+.results-top .cnt{font-weight:700;font-family:'Plus Jakarta Sans'}
+.results-top .cnt b{color:var(--blue)}
+.mobile-filter-btn{display:none}
+.job-list{display:flex;flex-direction:column;gap:1rem}
+.job{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.25rem;display:grid;grid-template-columns:auto 1fr auto;gap:1rem;
+  transition:transform .2s,box-shadow .2s,border-color .2s;
+}
+.job:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--blue)}
+.job-logo{width:54px;height:54px;border-radius:13px;display:grid;place-items:center;color:#fff;font-weight:800;font-family:'Plus Jakarta Sans';font-size:1.15rem;flex:none}
+.job-body{min-width:0}
+.job-pos{font-family:'Plus Jakarta Sans';font-weight:700;font-size:1.1rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.badge-new{font-size:.66rem;font-weight:800;color:var(--mint);background:var(--mint-soft);padding:.12rem .42rem;border-radius:6px;letter-spacing:.04em}
+.job-co{color:var(--text-mut);font-weight:600;font-size:.92rem;margin-top:.15rem}
+.job-meta{display:flex;flex-wrap:wrap;gap:.4rem .95rem;margin-top:.65rem;font-size:.84rem;color:var(--text-mut)}
+.job-meta span{display:inline-flex;align-items:center;gap:.32rem}
+.job-meta svg{color:var(--text-soft)}
+.job-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.7rem}
+.jt{font-size:.74rem;font-weight:600;padding:.26rem .6rem;border-radius:7px;background:var(--bg-alt);color:var(--text-mut)}
+.jt.sal{color:var(--mint);background:var(--mint-soft);font-weight:700}
+.job-right{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:.7rem}
+.heart{
+  width:40px;height:40px;border-radius:11px;border:1.5px solid var(--border);background:var(--card);
+  display:grid;place-items:center;cursor:pointer;color:var(--text-soft);transition:.18s;flex:none;
+}
+.heart:hover{border-color:#EF4444;color:#EF4444}
+.heart.saved{color:#EF4444;border-color:#EF4444;background:#FEF2F2}
+[data-theme="dark"] .heart.saved{background:#2a1416}
+.heart.saved svg{fill:currentColor}
+.no-results{text-align:center;padding:3rem 1rem;color:var(--text-mut)}
+.no-results svg{margin:0 auto 1rem;color:var(--text-soft)}
+
+/* featured companies */
+.co-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.co{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.5rem;text-align:center;transition:transform .22s,box-shadow .22s,border-color .22s;
+}
+.co:hover{transform:translateY(-5px);box-shadow:var(--shadow-md);border-color:var(--blue)}
+.co-logo{width:60px;height:60px;border-radius:15px;display:grid;place-items:center;color:#fff;font-weight:800;font-family:'Plus Jakarta Sans';font-size:1.3rem;margin:0 auto 1rem}
+.co h3{font-size:1.08rem;font-weight:700}
+.co .ind{font-size:.84rem;color:var(--text-mut);margin-top:.2rem}
+.co .open{margin-top:.85rem;font-size:.84rem;font-weight:700;color:var(--blue);background:var(--blue-soft);display:inline-block;padding:.3rem .8rem;border-radius:99px}
+
+/* why us */
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.3rem}
+.feat{display:flex;gap:1.05rem;padding:1.4rem;border-radius:var(--radius);border:1px solid var(--border);background:var(--card);transition:transform .2s,box-shadow .2s}
+.feat:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+.feat-ic{width:50px;height:50px;border-radius:13px;display:grid;place-items:center;flex:none;background:var(--blue-soft);color:var(--blue)}
+.feat h3{font-size:1.08rem;font-weight:700}
+.feat p{color:var(--text-mut);font-size:.92rem;margin-top:.35rem}
+
+/* how it works */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.3rem;counter-reset:s}
+.step{position:relative;padding:1.6rem 1.4rem;border-radius:var(--radius);background:var(--card);border:1px solid var(--border)}
+.step::before{
+  counter-increment:s;content:counter(s,decimal-leading-zero);
+  font-family:'Plus Jakarta Sans';font-weight:800;font-size:1.7rem;
+  color:var(--blue);opacity:.32;display:block;margin-bottom:.6rem;
+}
+.step h3{font-size:1.1rem;font-weight:700}
+.step p{color:var(--text-mut);font-size:.92rem;margin-top:.4rem}
+
+/* employer CTA */
+.emp{
+  border-radius:24px;padding:clamp(2.2rem,5vw,3.6rem);color:#fff;position:relative;overflow:hidden;
+  background:linear-gradient(125deg,var(--blue-dark),var(--blue) 55%,#3aa0ff);
+}
+.emp::before{content:"";position:absolute;inset:0;background:radial-gradient(500px 300px at 88% 12%,rgba(255,255,255,.18),transparent 60%)}
+.emp-in{position:relative;display:grid;grid-template-columns:1.3fr 1fr;gap:2.2rem;align-items:center}
+.emp h2{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:800;color:#fff}
+.emp p{margin-top:.8rem;color:rgba(255,255,255,.9);font-size:1.04rem;max-width:46ch}
+.emp-actions{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.6rem}
+.emp-stats{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.emp-stat{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:1.1rem;backdrop-filter:blur(4px)}
+.emp-stat b{font-family:'Plus Jakarta Sans';font-size:1.7rem;font-weight:800;display:block}
+.emp-stat span{font-size:.82rem;color:rgba(255,255,255,.85)}
+
+/* stats */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1.2rem}
+.stat{text-align:center;padding:1.6rem 1rem;border-radius:var(--radius);background:var(--card);border:1px solid var(--border)}
+.stat b{font-family:'Plus Jakarta Sans';font-size:clamp(2rem,4.5vw,2.9rem);font-weight:800;color:var(--blue);display:block;line-height:1}
+.stat span{color:var(--text-mut);font-weight:600;font-size:.92rem;margin-top:.5rem;display:block}
+
+/* footer */
+footer{background:var(--bg-alt);border-top:1px solid var(--border);padding-top:clamp(3rem,6vw,4.5rem)}
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:2rem;padding-bottom:2.6rem}
+.foot-brand p{color:var(--text-mut);font-size:.92rem;margin-top:.9rem;max-width:32ch}
+.foot-col h4{font-family:'Plus Jakarta Sans';font-size:.82rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-soft);margin-bottom:1rem}
+.foot-col a{display:block;color:var(--text-mut);font-size:.92rem;padding:.3rem 0;transition:color .2s}
+.foot-col a:hover{color:var(--blue)}
+.foot-soc{display:flex;gap:.6rem;margin-top:1.1rem}
+.foot-soc a{width:40px;height:40px;border-radius:11px;border:1px solid var(--border);background:var(--card);display:grid;place-items:center;color:var(--text-mut);transition:.2s}
+.foot-soc a:hover{color:#fff;background:var(--blue);border-color:var(--blue)}
+.foot-bottom{border-top:1px solid var(--border);padding:1.5rem 0;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.8rem;color:var(--text-mut);font-size:.86rem}
+
+/* mobile nav drawer */
+.drawer{
+  position:fixed;inset:0;z-index:200;background:var(--bg);
+  transform:translateX(100%);transition:transform .3s ease;display:flex;flex-direction:column;padding:1.5rem;
+}
+.drawer.open{transform:translateX(0)}
+.drawer-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem}
+.drawer a.lnk{padding:1rem 0;font-size:1.15rem;font-weight:700;font-family:'Plus Jakarta Sans';border-bottom:1px solid var(--border);color:var(--text)}
+.drawer .btn{margin-top:1.5rem;width:100%}
+
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.reveal.show{opacity:1;transform:none}
+
+@media(max-width:920px){
+  .hero-grid{grid-template-columns:1fr;gap:2.5rem}
+  .hero-visual{max-width:440px;margin-inline:auto;width:100%}
+  .emp-in{grid-template-columns:1fr;gap:1.6rem}
+  .foot-grid{grid-template-columns:1fr 1fr}
+  .jobs-layout{grid-template-columns:1fr}
+  .filters{position:static;display:none}
+  .filters.open{display:block}
+  .mobile-filter-btn{display:inline-flex}
+}
+@media(max-width:760px){
+  .nav-links{display:none}
+  .hamb{display:grid}
+  .job{grid-template-columns:auto 1fr;gap:.9rem}
+  .job-right{flex-direction:row;align-items:center;grid-column:1/-1;justify-content:space-between;border-top:1px solid var(--border);padding-top:.85rem}
+  .trust-in{justify-content:center;text-align:center}
+}
+@media(max-width:480px){
+  .foot-grid{grid-template-columns:1fr 1fr}
+  .foot-brand{grid-column:1/-1}
+  .emp-stats{grid-template-columns:1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav">
+  <div class="wrap nav-in">
+    <a href="#" class="brand" aria-label="KarirNusa beranda">
+      <span class="logo">KN</span>Karir<b>Nusa</b>
+    </a>
+    <nav class="nav-links" aria-label="Navigasi utama">
+      <a href="#lowongan" class="lnk">Lowongan</a>
+      <a href="#kategori" class="lnk">Kategori</a>
+      <a href="#perusahaan" class="lnk">Perusahaan</a>
+      <a href="#cara" class="lnk">Cara Kerja</a>
+      <a href="#employer" class="lnk">Untuk Perusahaan</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeBtn" aria-label="Ganti mode terang/gelap">
+        <svg class="moon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
+        <svg class="sun" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <a href="#" class="btn btn-ghost btn-sm" id="loginBtn">Masuk</a>
+      <a href="#lowongan" class="btn btn-primary btn-sm">Cari Kerja</a>
+      <button class="icon-btn hamb" id="hambBtn" aria-label="Buka menu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- DRAWER -->
+<div class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-top">
+    <a href="#" class="brand"><span class="logo">KN</span>Karir<b>Nusa</b></a>
+    <button class="icon-btn" id="closeDrawer" aria-label="Tutup menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <a href="#lowongan" class="lnk dlink">Lowongan</a>
+  <a href="#kategori" class="lnk dlink">Kategori</a>
+  <a href="#perusahaan" class="lnk dlink">Perusahaan</a>
+  <a href="#cara" class="lnk dlink">Cara Kerja</a>
+  <a href="#employer" class="lnk dlink">Untuk Perusahaan</a>
+  <a href="#lowongan" class="btn btn-primary dlink">Cari Kerja Sekarang</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">★ 12.400+ lowongan aktif hari ini</span>
+      <h1>Temukan <span class="hl">karier impian</span> di perusahaan terbaik Indonesia</h1>
+      <p class="lead">Lebih dari ribuan lowongan kerja dari startup hingga BUMN. Lamar dalam hitungan menit, gratis selamanya untuk pencari kerja.</p>
+      <form class="search-card" id="heroSearch" role="search" aria-label="Cari lowongan">
+        <label class="search-field" aria-label="Kata kunci">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+          <input type="text" id="heroKeyword" placeholder="Posisi, perusahaan, atau skill">
+        </label>
+        <label class="search-field" aria-label="Lokasi">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-5.6 7-11a7 7 0 10-14 0c0 5.4 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+          <input type="text" id="heroLoc" placeholder="Kota atau remote">
+        </label>
+        <button type="submit" class="btn btn-primary">Cari Lowongan</button>
+      </form>
+      <div class="pop-row">
+        <span>Populer:</span>
+        <button class="pop-tag" data-q="Frontend">Frontend Developer</button>
+        <button class="pop-tag" data-q="Marketing">Digital Marketing</button>
+        <button class="pop-tag" data-q="Akuntan">Akuntan</button>
+        <button class="pop-tag" data-q="Designer">UI/UX Designer</button>
+        <button class="pop-tag" data-q="Remote">Remote</button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="float-card fc-main">
+        <div class="fc-row">
+          <span class="fc-logo" style="background:linear-gradient(135deg,#2563EB,#3aa0ff)">NT</span>
+          <div>
+            <div class="fc-title">Senior Product Designer</div>
+            <div class="fc-sub">Nusatech Digital · Jakarta Selatan</div>
+          </div>
+        </div>
+        <div class="fc-tags">
+          <span class="fc-tag">Full-time</span>
+          <span class="fc-tag">Hybrid</span>
+          <span class="fc-tag">3-5 tahun</span>
+        </div>
+        <div class="fc-salary">Rp 15.000.000 – 22.000.000 /bln</div>
+      </div>
+      <div class="float-mini fm-1">
+        <span class="dot" style="background:var(--mint)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </span>Lamaran terkirim ✓
+      </div>
+      <div class="float-mini fm-2">
+        <span class="dot" style="background:var(--blue)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </span>847 lamaran minggu ini
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<div class="trust">
+  <div class="wrap trust-in">
+    <span class="trust-lbl">Dipercaya oleh perusahaan ternama</span>
+    <div class="trust-logos">
+      <span class="tl"><span class="tldot" style="background:#2563EB">B</span>BumiPay</span>
+      <span class="tl"><span class="tldot" style="background:#10B981">G</span>GarudaMart</span>
+      <span class="tl"><span class="tldot" style="background:#F59E0B">S</span>SinarGroup</span>
+      <span class="tl"><span class="tldot" style="background:#8B5CF6">M</span>MajuLogistik</span>
+      <span class="tl"><span class="tldot" style="background:#EF4444">A</span>AntaraBank</span>
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<section id="kategori">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">Kategori populer</span>
+      <h2>Jelajahi lowongan per bidang</h2>
+      <p>Temukan ribuan posisi yang sesuai dengan keahlian dan minat kariermu.</p>
+    </div>
+    <div class="cat-grid">
+      <button class="cat reveal" data-cat="Teknologi">
+        <span class="cat-ic" style="background:linear-gradient(135deg,#2563EB,#3aa0ff)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l-3 3 3 3M16 9l3 3-3 3M14 5l-4 14"/></svg></span>
+        <h3>Teknologi & IT</h3>
+        <span class="cnt">3.240 lowongan</span>
+        <span class="arr">Lihat semua →</span>
+      </button>
+      <button class="cat reveal" data-cat="Marketing">
+        <span class="cat-ic" style="background:linear-gradient(135deg,#F59E0B,#fbbf24)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 11-5.8-1.6"/></svg></span>
+        <h3>Marketing</h3>
+        <span class="cnt">1.870 lowongan</span>
+        <span class="arr">Lihat semua →</span>
+      </button>
+      <button class="cat reveal" data-cat="Keuangan">
+        <span class="cat-ic" style="background:linear-gradient(135deg,#10B981,#34d399)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></span>
+        <h3>Keuangan & Akuntansi</h3>
+        <span class="cnt">1.420 lowongan</span>
+        <span class="arr">Lihat semua →</span>
+      </button>
+      <button class="cat reveal" data-cat="Desain">
+        <span class="cat-ic" style="background:linear-gradient(135deg,#8B5CF6,#a78bfa)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg></span>
+        <h3>Desain & Kreatif</h3>
+        <span class="cnt">980 lowongan</span>
+        <span class="arr">Lihat semua →</span>
+      </button>
+      <button class="cat reveal" data-cat="Penjualan">
+        <span class="cat-ic" style="background:linear-gradient(135deg,#EF4444,#f87171)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M19 9l-5 5-4-4-3 3"/></svg></span>
+        <h3>Sales & Bisnis</h3>
+        <span class="cnt">2.110 lowongan</span>
+        <span class="arr">Lihat semua →</span>
+      </button>
+      <button class="cat reveal" data-cat="Operasional">
+        <span class="cat-ic" style="background:linear-gradient(135deg,#0891B2,#22d3ee)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
+        <h3>Operasional & Logistik</h3>
+        <span class="cnt">1.560 lowongan</span>
+        <span class="arr">Lihat semua →</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- JOB LISTINGS + FILTERS -->
+<section class="jobs" id="lowongan">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Lowongan terbaru</span>
+      <h2>Cari & saring lowongan</h2>
+      <p>Gunakan filter untuk menemukan pekerjaan yang paling cocok untukmu.</p>
+    </div>
+
+    <!-- live search bar -->
+    <form class="search-card" id="listSearch" role="search" aria-label="Saring lowongan" style="margin-bottom:1.6rem;box-shadow:var(--shadow-md)">
+      <label class="search-field" aria-label="Kata kunci">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+        <input type="text" id="kwInput" placeholder="Cari posisi atau perusahaan...">
+      </label>
+      <label class="search-field" aria-label="Lokasi">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-5.6 7-11a7 7 0 10-14 0c0 5.4 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+        <input type="text" id="locInput" placeholder="Semua lokasi">
+      </label>
+      <button type="button" class="btn btn-ghost mobile-filter-btn" id="toggleFilters">Filter</button>
+    </form>
+
+    <div class="jobs-layout">
+      <aside class="filters" id="filterPanel" aria-label="Filter lowongan">
+        <h4>Filter <button type="button" id="resetFilters">Reset</button></h4>
+        <div class="fgroup">
+          <div class="flbl">Kategori</div>
+          <div class="chips" data-group="kategori">
+            <button class="chip on" data-val="all">Semua</button>
+            <button class="chip" data-val="Teknologi">Teknologi</button>
+            <button class="chip" data-val="Marketing">Marketing</button>
+            <button class="chip" data-val="Keuangan">Keuangan</button>
+            <button class="chip" data-val="Desain">Desain</button>
+            <button class="chip" data-val="Penjualan">Sales</button>
+          </div>
+        </div>
+        <div class="fgroup">
+          <div class="flbl">Tipe Kerja</div>
+          <div class="chips" data-group="tipe">
+            <button class="chip on" data-val="all">Semua</button>
+            <button class="chip" data-val="Full-time">Full-time</button>
+            <button class="chip" data-val="Remote">Remote</button>
+            <button class="chip" data-val="Kontrak">Kontrak</button>
+            <button class="chip" data-val="Magang">Magang</button>
+          </div>
+        </div>
+        <div class="fgroup">
+          <div class="flbl">Level</div>
+          <div class="chips" data-group="level">
+            <button class="chip on" data-val="all">Semua</button>
+            <button class="chip" data-val="Entry">Entry</button>
+            <button class="chip" data-val="Mid">Mid</button>
+            <button class="chip" data-val="Senior">Senior</button>
+          </div>
+        </div>
+        <div class="fgroup">
+          <div class="flbl">Gaji Minimum</div>
+          <div class="chips" data-group="gaji">
+            <button class="chip on" data-val="0">Semua</button>
+            <button class="chip" data-val="5">5jt+</button>
+            <button class="chip" data-val="10">10jt+</button>
+            <button class="chip" data-val="15">15jt+</button>
+          </div>
+        </div>
+      </aside>
+
+      <div class="results">
+        <div class="results-top">
+          <div class="cnt"><b id="resCount">0</b> lowongan ditemukan</div>
+          <div style="font-size:.86rem;color:var(--text-mut);font-weight:600">Urutkan: Terbaru</div>
+        </div>
+        <div class="job-list" id="jobList"></div>
+        <div class="no-results" id="noResults" style="display:none">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+          <h3 style="font-family:'Plus Jakarta Sans';font-weight:700">Tidak ada lowongan cocok</h3>
+          <p>Coba ubah kata kunci atau reset filter.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED COMPANIES -->
+<section id="perusahaan">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">Perusahaan unggulan</span>
+      <h2>Perusahaan yang sedang aktif merekrut</h2>
+      <p>Bergabung dengan tim terbaik dari perusahaan yang berkembang pesat.</p>
+    </div>
+    <div class="co-grid">
+      <div class="co reveal"><div class="co-logo" style="background:linear-gradient(135deg,#2563EB,#3aa0ff)">BP</div><h3>BumiPay</h3><div class="ind">Fintech · Jakarta</div><span class="open">42 lowongan</span></div>
+      <div class="co reveal"><div class="co-logo" style="background:linear-gradient(135deg,#10B981,#34d399)">GM</div><h3>GarudaMart</h3><div class="ind">E-Commerce · Bandung</div><span class="open">31 lowongan</span></div>
+      <div class="co reveal"><div class="co-logo" style="background:linear-gradient(135deg,#8B5CF6,#a78bfa)">SG</div><h3>SinarGroup</h3><div class="ind">Media · Surabaya</div><span class="open">18 lowongan</span></div>
+      <div class="co reveal"><div class="co-logo" style="background:linear-gradient(135deg,#F59E0B,#fbbf24)">ML</div><h3>MajuLogistik</h3><div class="ind">Logistik · Tangerang</div><span class="open">27 lowongan</span></div>
+      <div class="co reveal"><div class="co-logo" style="background:linear-gradient(135deg,#EF4444,#f87171)">AB</div><h3>AntaraBank</h3><div class="ind">Perbankan · Jakarta</div><span class="open">36 lowongan</span></div>
+      <div class="co reveal"><div class="co-logo" style="background:linear-gradient(135deg,#0891B2,#22d3ee)">NK</div><h3>NusaKreasi</h3><div class="ind">Agensi · Yogyakarta</div><span class="open">14 lowongan</span></div>
+      <div class="co reveal"><div class="co-logo" style="background:linear-gradient(135deg,#DB2777,#f472b6)">SH</div><h3>SehatPlus</h3><div class="ind">HealthTech · Jakarta</div><span class="open">22 lowongan</span></div>
+      <div class="co reveal"><div class="co-logo" style="background:linear-gradient(135deg,#16A34A,#4ade80)">TA</div><h3>TaniAman</h3><div class="ind">AgriTech · Malang</div><span class="open">11 lowongan</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section style="background:var(--bg-alt)">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">Kenapa KarirNusa</span>
+      <h2>Cara tercepat menemukan kerja</h2>
+      <p>Kami bantu pencari kerja Indonesia terhubung dengan peluang terbaik.</p>
+    </div>
+    <div class="why-grid">
+      <div class="feat reveal"><span class="feat-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></span><div><h3>Lamar 1 Klik</h3><p>Profil sekali isi, lamar ke ratusan lowongan tanpa upload ulang CV.</p></div></div>
+      <div class="feat reveal"><span class="feat-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span><div><h3>Perusahaan Terverifikasi</h3><p>Setiap lowongan dicek tim kami agar bebas dari penipuan rekrutmen.</p></div></div>
+      <div class="feat reveal"><span class="feat-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><h3>Notifikasi Real-Time</h3><p>Dapat info lowongan baru sesuai minatmu langsung ke email & ponsel.</p></div></div>
+      <div class="feat reveal"><span class="feat-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg></span><div><h3>CV Builder Gratis</h3><p>Buat CV profesional ATS-friendly dalam menit, gratis tanpa batas.</p></div></div>
+      <div class="feat reveal"><span class="feat-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></span><div><h3>Panduan Gaji</h3><p>Lihat estimasi gaji per posisi & kota agar kamu negosiasi lebih percaya diri.</p></div></div>
+      <div class="feat reveal"><span class="feat-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.9"/></svg></span><div><h3>Komunitas Karier</h3><p>Akses webinar, tips interview, dan mentoring dari profesional berpengalaman.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="cara">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">Cara kerja</span>
+      <h2>Dapat kerja dalam 4 langkah</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><h3>Buat Profil</h3><p>Daftar gratis dan lengkapi profil serta CV-mu dalam hitungan menit.</p></div>
+      <div class="step reveal"><h3>Cari & Saring</h3><p>Gunakan filter pintar untuk menemukan lowongan yang paling cocok.</p></div>
+      <div class="step reveal"><h3>Lamar Cepat</h3><p>Kirim lamaran satu klik dan pantau statusnya langsung dari dashboard.</p></div>
+      <div class="step reveal"><h3>Interview & Diterima</h3><p>Atur jadwal wawancara dan mulai karier impianmu. Selamat!</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- EMPLOYER CTA -->
+<section id="employer">
+  <div class="wrap">
+    <div class="emp reveal">
+      <div class="emp-in">
+        <div>
+          <span class="eyebrow" style="background:rgba(255,255,255,.18);color:#fff">Untuk Perusahaan</span>
+          <h2>Rekrut talenta terbaik lebih cepat</h2>
+          <p>Pasang lowongan, kelola pelamar, dan temukan kandidat ideal dengan akses ke jutaan profil pencari kerja Indonesia.</p>
+          <div class="emp-actions">
+            <a href="#" class="btn btn-light">Pasang Lowongan Gratis</a>
+            <a href="#" class="btn btn-ghost" style="color:#fff;border-color:rgba(255,255,255,.4)">Lihat Paket</a>
+          </div>
+        </div>
+        <div class="emp-stats">
+          <div class="emp-stat"><b>5jt+</b><span>Profil kandidat aktif</span></div>
+          <div class="emp-stat"><b>72%</b><span>Posisi terisi &lt; 2 minggu</span></div>
+          <div class="emp-stat"><b>18.000</b><span>Perusahaan partner</span></div>
+          <div class="emp-stat"><b>4,8★</b><span>Rating dari HRD</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section>
+  <div class="wrap">
+    <div class="stats-grid">
+      <div class="stat reveal"><b data-count="12400" data-suffix="+">0</b><span>Lowongan aktif</span></div>
+      <div class="stat reveal"><b data-count="18000" data-suffix="+">0</b><span>Perusahaan partner</span></div>
+      <div class="stat reveal"><b data-count="5" data-suffix="jt+">0</b><span>Pencari kerja</span></div>
+      <div class="stat reveal"><b data-count="340" data-suffix="rb">0</b><span>Lamaran/bulan</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a href="#" class="brand"><span class="logo">KN</span>Karir<b>Nusa</b></a>
+        <p>Portal lowongan kerja Indonesia yang menghubungkan talenta dengan perusahaan terbaik. Gratis untuk pencari kerja.</p>
+        <div class="foot-soc">
+          <a href="#" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="3.5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9v11M4 4.5v.1M9 9v11M9 14a5 5 0 0110 0v6"/></svg></a>
+          <a href="#" aria-label="Twitter"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 4c-1 .7-2 1.2-3 1.4A4 4 0 0012 9v1C8 10 5 8 3 5c-1 3 0 6 2 7-1 0-2-.3-2-.3 0 2 1.5 4 4 4-1 .3-2 .3-3 .1.6 2 2.4 3 4.4 3A9 9 0 013 20c2 1.3 4.4 2 7 2 8 0 12-7 12-13v-.6C21.7 6 22 5 22 4z"/></svg></a>
+        </div>
+      </div>
+      <div class="foot-col">
+        <h4>Pencari Kerja</h4>
+        <a href="#lowongan">Cari Lowongan</a>
+        <a href="#kategori">Kategori</a>
+        <a href="#">Buat CV</a>
+        <a href="#">Panduan Gaji</a>
+        <a href="#">Tips Karier</a>
+      </div>
+      <div class="foot-col">
+        <h4>Perusahaan</h4>
+        <a href="#employer">Pasang Lowongan</a>
+        <a href="#">Cari Kandidat</a>
+        <a href="#">Harga & Paket</a>
+        <a href="#">Studi Kasus</a>
+      </div>
+      <div class="foot-col">
+        <h4>KarirNusa</h4>
+        <a href="#">Tentang Kami</a>
+        <a href="#">Karier</a>
+        <a href="#">Blog</a>
+        <a href="#">Bantuan</a>
+        <a href="#">Kontak</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 KarirNusa. Seluruh hak cipta dilindungi.</span>
+      <span style="display:flex;gap:1.2rem"><a href="#">Privasi</a><a href="#">Syarat</a><a href="#">Cookie</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ---------- THEME ---------- */
+(function(){
+  var saved = localStorage.getItem('kn_theme');
+  if(saved) document.documentElement.setAttribute('data-theme', saved);
+})();
+document.getElementById('themeBtn').addEventListener('click', function(){
+  var cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', cur);
+  localStorage.setItem('kn_theme', cur);
+});
+
+/* ---------- DRAWER ---------- */
+var drawer = document.getElementById('drawer');
+function openD(){drawer.classList.add('open');drawer.setAttribute('aria-hidden','false');document.getElementById('hambBtn').setAttribute('aria-expanded','true')}
+function closeD(){drawer.classList.remove('open');drawer.setAttribute('aria-hidden','true');document.getElementById('hambBtn').setAttribute('aria-expanded','false')}
+document.getElementById('hambBtn').addEventListener('click', openD);
+document.getElementById('closeDrawer').addEventListener('click', closeD);
+document.querySelectorAll('.dlink').forEach(function(a){a.addEventListener('click', closeD)});
+
+/* ---------- JOB DATA ---------- */
+var JOBS = [
+  {pos:"Frontend Developer (React)", co:"Nusatech Digital", loc:"Jakarta Selatan", abbr:"NT", c:"#2563EB", kat:"Teknologi", tipe:"Full-time", level:"Mid", min:12, max:18, tags:["React","TypeScript","Hybrid"], baru:true},
+  {pos:"UI/UX Designer", co:"GarudaMart", loc:"Bandung", abbr:"GM", c:"#10B981", kat:"Desain", tipe:"Full-time", level:"Mid", min:9, max:14, tags:["Figma","Design System","On-site"], baru:true},
+  {pos:"Digital Marketing Specialist", co:"SinarGroup", loc:"Remote", abbr:"SG", c:"#8B5CF6", kat:"Marketing", tipe:"Remote", level:"Entry", min:6, max:9, tags:["SEO","Ads","WFH"], baru:false},
+  {pos:"Backend Engineer (Golang)", co:"BumiPay", loc:"Jakarta Pusat", abbr:"BP", c:"#2563EB", kat:"Teknologi", tipe:"Full-time", level:"Senior", min:20, max:30, tags:["Go","Microservices","Fintech"], baru:true},
+  {pos:"Akuntan Senior", co:"AntaraBank", loc:"Jakarta Selatan", abbr:"AB", c:"#EF4444", kat:"Keuangan", tipe:"Full-time", level:"Senior", min:14, max:20, tags:["Pajak","Audit","SAK"], baru:false},
+  {pos:"Sales Executive B2B", co:"MajuLogistik", loc:"Tangerang", abbr:"ML", c:"#F59E0B", kat:"Penjualan", tipe:"Full-time", level:"Mid", min:7, max:13, tags:["Field Sales","Komisi","Logistik"], baru:false},
+  {pos:"Product Manager", co:"SehatPlus", loc:"Jakarta Selatan", abbr:"SH", c:"#DB2777", kat:"Teknologi", tipe:"Full-time", level:"Senior", min:25, max:38, tags:["Agile","Roadmap","HealthTech"], baru:true},
+  {pos:"Magang Content Creator", co:"NusaKreasi", loc:"Yogyakarta", abbr:"NK", c:"#0891B2", kat:"Marketing", tipe:"Magang", level:"Entry", min:2, max:4, tags:["Video","Sosmed","Intern"], baru:false},
+  {pos:"Data Analyst", co:"TaniAman", loc:"Remote", abbr:"TA", c:"#16A34A", kat:"Teknologi", tipe:"Remote", level:"Mid", min:10, max:16, tags:["SQL","Python","Dashboard"], baru:true},
+  {pos:"Graphic Designer Kontrak", co:"SinarGroup", loc:"Surabaya", abbr:"SG", c:"#8B5CF6", kat:"Desain", tipe:"Kontrak", level:"Entry", min:5, max:8, tags:["Adobe","Branding","6 bulan"], baru:false},
+  {pos:"Finance Manager", co:"GarudaMart", loc:"Bandung", abbr:"GM", c:"#10B981", kat:"Keuangan", tipe:"Full-time", level:"Senior", min:22, max:32, tags:["Budgeting","Leadership","E-Commerce"], baru:false},
+  {pos:"Customer Success", co:"BumiPay", loc:"Remote", abbr:"BP", c:"#2563EB", kat:"Penjualan", tipe:"Remote", level:"Entry", min:5, max:8, tags:["CRM","Komunikasi","WFH"], baru:true},
+  {pos:"Social Media Manager", co:"NusaKreasi", loc:"Jakarta Pusat", abbr:"NK", c:"#0891B2", kat:"Marketing", tipe:"Full-time", level:"Mid", min:8, max:13, tags:["Strategi","Konten","Analytics"], baru:false},
+  {pos:"Mobile Developer (Flutter)", co:"SehatPlus", loc:"Jakarta Selatan", abbr:"SH", c:"#DB2777", kat:"Teknologi", tipe:"Full-time", level:"Mid", min:13, max:19, tags:["Flutter","Dart","Mobile"], baru:true}
+];
+
+var state = { kw:"", loc:"", kategori:"all", tipe:"all", level:"all", gaji:0 };
+var savedJobs = JSON.parse(localStorage.getItem('kn_saved') || '[]');
+
+function rupiah(n){ return "Rp " + (n*1000000).toLocaleString('id-ID'); }
+
+function matches(j){
+  if(state.kategori!=='all' && j.kat!==state.kategori) return false;
+  if(state.tipe!=='all' && j.tipe!==state.tipe) return false;
+  if(state.level!=='all' && j.level!==state.level) return false;
+  if(state.gaji>0 && j.max < state.gaji) return false;
+  if(state.kw){
+    var hay = (j.pos+" "+j.co+" "+j.tags.join(" ")+" "+j.tipe).toLowerCase();
+    if(hay.indexOf(state.kw.toLowerCase())===-1) return false;
+  }
+  if(state.loc){
+    if(j.loc.toLowerCase().indexOf(state.loc.toLowerCase())===-1) return false;
+  }
+  return true;
+}
+
+function esc(s){ return String(s).replace(/[&<>"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];}); }
+
+function render(){
+  var list = document.getElementById('jobList');
+  var filtered = JOBS.filter(matches);
+  document.getElementById('resCount').textContent = filtered.length;
+  document.getElementById('noResults').style.display = filtered.length ? 'none' : 'block';
+  list.innerHTML = filtered.map(function(j){
+    var id = j.pos + "|" + j.co;
+    var isSaved = savedJobs.indexOf(id) !== -1;
+    return '<article class="job">'
+      + '<div class="job-logo" style="background:linear-gradient(135deg,'+j.c+',#3aa0ff)">'+esc(j.abbr)+'</div>'
+      + '<div class="job-body">'
+      +   '<div class="job-pos">'+esc(j.pos)+(j.baru?' <span class="badge-new">BARU</span>':'')+'</div>'
+      +   '<div class="job-co">'+esc(j.co)+'</div>'
+      +   '<div class="job-meta">'
+      +     '<span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-5.6 7-11a7 7 0 10-14 0c0 5.4 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>'+esc(j.loc)+'</span>'
+      +     '<span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>'+esc(j.tipe)+'</span>'
+      +     '<span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>'+esc(j.level)+'</span>'
+      +   '</div>'
+      +   '<div class="job-tags"><span class="jt sal">'+rupiah(j.min)+' – '+rupiah(j.max)+'</span>'
+      +     j.tags.map(function(t){return '<span class="jt">'+esc(t)+'</span>'}).join('')+'</div>'
+      + '</div>'
+      + '<div class="job-right">'
+      +   '<button class="heart'+(isSaved?' saved':'')+'" data-id="'+esc(id)+'" aria-label="Simpan lowongan" aria-pressed="'+isSaved+'">'
+      +     '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg>'
+      +   '</button>'
+      +   '<button class="btn btn-primary btn-sm apply-btn">Lamar</button>'
+      + '</div>'
+      + '</article>';
+  }).join('');
+
+  list.querySelectorAll('.heart').forEach(function(h){
+    h.addEventListener('click', function(){
+      var id = this.getAttribute('data-id');
+      var idx = savedJobs.indexOf(id);
+      if(idx===-1){ savedJobs.push(id); this.classList.add('saved'); this.setAttribute('aria-pressed','true'); }
+      else { savedJobs.splice(idx,1); this.classList.remove('saved'); this.setAttribute('aria-pressed','false'); }
+      localStorage.setItem('kn_saved', JSON.stringify(savedJobs));
+    });
+  });
+  list.querySelectorAll('.apply-btn').forEach(function(b){
+    b.addEventListener('click', function(){
+      var old = this.textContent;
+      this.textContent = 'Terkirim ✓';
+      this.style.background = 'var(--mint)';
+      var self = this;
+      setTimeout(function(){ self.textContent = old; self.style.background=''; }, 1600);
+    });
+  });
+}
+
+/* chip filters */
+document.querySelectorAll('.chips').forEach(function(group){
+  var g = group.getAttribute('data-group');
+  group.querySelectorAll('.chip').forEach(function(chip){
+    chip.addEventListener('click', function(){
+      group.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on')});
+      chip.classList.add('on');
+      var val = chip.getAttribute('data-val');
+      state[g] = (g==='gaji') ? parseInt(val,10) : val;
+      render();
+    });
+  });
+});
+
+/* live search inputs */
+document.getElementById('kwInput').addEventListener('input', function(){ state.kw = this.value.trim(); render(); });
+document.getElementById('locInput').addEventListener('input', function(){ state.loc = this.value.trim(); render(); });
+document.getElementById('listSearch').addEventListener('submit', function(e){ e.preventDefault(); });
+
+/* reset */
+document.getElementById('resetFilters').addEventListener('click', function(){
+  state = { kw:"", loc:"", kategori:"all", tipe:"all", level:"all", gaji:0 };
+  document.getElementById('kwInput').value = '';
+  document.getElementById('locInput').value = '';
+  document.querySelectorAll('.chips').forEach(function(group){
+    group.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on')});
+    group.querySelector('.chip').classList.add('on');
+  });
+  render();
+});
+
+/* mobile filter toggle */
+document.getElementById('toggleFilters').addEventListener('click', function(){
+  document.getElementById('filterPanel').classList.toggle('open');
+});
+
+/* hero search -> scroll to list + apply */
+document.getElementById('heroSearch').addEventListener('submit', function(e){
+  e.preventDefault();
+  state.kw = document.getElementById('heroKeyword').value.trim();
+  state.loc = document.getElementById('heroLoc').value.trim();
+  document.getElementById('kwInput').value = state.kw;
+  document.getElementById('locInput').value = state.loc;
+  render();
+  document.getElementById('lowongan').scrollIntoView({behavior:'smooth'});
+});
+
+/* popular tags */
+document.querySelectorAll('.pop-tag').forEach(function(t){
+  t.addEventListener('click', function(){
+    var q = this.getAttribute('data-q');
+    state.kw = q; state.loc = '';
+    document.getElementById('kwInput').value = q;
+    document.getElementById('locInput').value = '';
+    render();
+    document.getElementById('lowongan').scrollIntoView({behavior:'smooth'});
+  });
+});
+
+/* category cards -> filter */
+document.querySelectorAll('.cat').forEach(function(c){
+  c.addEventListener('click', function(){
+    var k = this.getAttribute('data-cat');
+    var group = document.querySelector('.chips[data-group="kategori"]');
+    var found = false;
+    group.querySelectorAll('.chip').forEach(function(ch){
+      var on = ch.getAttribute('data-val')===k;
+      ch.classList.toggle('on', on);
+      if(on) found = true;
+    });
+    if(!found) group.querySelector('.chip').classList.add('on');
+    state.kategori = found ? k : 'all';
+    render();
+    document.getElementById('lowongan').scrollIntoView({behavior:'smooth'});
+  });
+});
+
+render();
+
+/* ---------- COUNTERS ---------- */
+function animCount(el){
+  var target = parseInt(el.getAttribute('data-count'),10);
+  var suffix = el.getAttribute('data-suffix') || '';
+  var dur = 1400, start = performance.now();
+  function tick(now){
+    var p = Math.min((now-start)/dur, 1);
+    var e = 1 - Math.pow(1-p,3);
+    el.textContent = Math.round(target*e).toLocaleString('id-ID') + suffix;
+    if(p<1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+/* ---------- REVEAL + COUNTER OBSERVER ---------- */
+if('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){
+        en.target.classList.add('show');
+        if(en.target.hasAttribute('data-count')) animCount(en.target);
+        io.unobserve(en.target);
+      }
+    });
+  }, {threshold:.14});
+  document.querySelectorAll('.reveal').forEach(function(el){io.observe(el)});
+  document.querySelectorAll('[data-count]').forEach(function(el){io.observe(el)});
+} else {
+  document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('show')});
+  document.querySelectorAll('[data-count]').forEach(function(el){
+    el.textContent = parseInt(el.getAttribute('data-count'),10).toLocaleString('id-ID') + (el.getAttribute('data-suffix')||'');
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="NusArt — Marketplace NFT & karya digital Indonesia. Jelajah, lelang, koleksi, dan mint karya seni digital dari kreator terbaik.">
+<meta name="theme-color" content="#7C3AED">
+<meta property="og:title" content="NusArt — Marketplace NFT & Karya Digital">
+<meta property="og:description" content="Jelajah, lelang, koleksi, dan mint NFT dari kreator digital Indonesia terbaik.">
+<meta property="og:type" content="website">
+<title>NusArt — Marketplace NFT & Karya Digital Indonesia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   NusArt — NFT Marketplace Template
+   Light default + Dark toggle | Web3 premium
+   ============================================================ */
+
+:root {
+  /* Brand */
+  --violet: #7C3AED;
+  --violet-600: #6D28D9;
+  --blue: #2563EB;
+  --cyan: #06B6D4;
+  --pink: #EC4899;
+  --grad: linear-gradient(120deg, #7C3AED 0%, #2563EB 100%);
+  --grad-neon: linear-gradient(120deg, #7C3AED, #EC4899, #06B6D4);
+
+  /* Light theme */
+  --bg: #F7F7FB;
+  --bg-alt: #FFFFFF;
+  --surface: #FFFFFF;
+  --surface-2: #F1F1F8;
+  --border: #E5E3F0;
+  --border-strong: #D6D2E8;
+  --text: #14121F;
+  --text-2: #57536B;
+  --text-3: #8B879C;
+  --nav-bg: rgba(247,247,251,0.72);
+  --shadow: 0 6px 24px rgba(29,20,63,0.08);
+  --shadow-lg: 0 18px 50px rgba(29,20,63,0.14);
+  --glow: 0 0 0 rgba(124,58,237,0);
+  --heart: #E11D48;
+
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-xl: 32px;
+  --maxw: 1240px;
+}
+
+[data-theme="dark"] {
+  --bg: #0A0812;
+  --bg-alt: #100C1C;
+  --surface: #16111F;
+  --surface-2: #1E1830;
+  --border: #2A2340;
+  --border-strong: #372E52;
+  --text: #F4F2FB;
+  --text-2: #B7B1D0;
+  --text-3: #7E7898;
+  --nav-bg: rgba(10,8,18,0.72);
+  --shadow: 0 8px 30px rgba(0,0,0,0.5);
+  --shadow-lg: 0 24px 60px rgba(0,0,0,0.6);
+  --glow: 0 0 40px rgba(124,58,237,0.35);
+  --heart: #FB7185;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  transition: background .35s ease, color .35s ease;
+}
+
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+ul { list-style: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+::selection { background: rgba(124,58,237,0.28); color: var(--text); }
+
+:focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px); }
+
+.section { padding: clamp(56px, 8vw, 104px) 0; }
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .74rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--violet);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.eyebrow::before {
+  content: "";
+  width: 22px; height: 1px;
+  background: var(--violet);
+  display: inline-block;
+}
+
+h1, h2, h3 { line-height: 1.12; letter-spacing: -0.02em; font-weight: 700; }
+
+.h-sec {
+  font-size: clamp(1.7rem, 4vw, 2.7rem);
+  margin: 14px 0 12px;
+}
+.sub-sec {
+  color: var(--text-2);
+  font-size: clamp(.98rem, 1.6vw, 1.08rem);
+  max-width: 56ch;
+}
+
+.grad-text {
+  background: var(--grad-neon);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.sec-head { margin-bottom: clamp(28px, 4vw, 48px); }
+.sec-head.between {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 24px; flex-wrap: wrap;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 9px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: .95rem;
+  transition: transform .2s, box-shadow .25s, background .25s, border-color .25s, color .25s;
+  white-space: nowrap;
+  min-height: 44px;
+}
+.btn-primary {
+  background: var(--grad);
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(124,58,237,0.34);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(124,58,237,0.45); }
+.btn-ghost {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+}
+.btn-ghost:hover { border-color: var(--violet); color: var(--violet); transform: translateY(-2px); }
+.btn-sm { padding: 9px 16px; font-size: .85rem; min-height: 40px; }
+.btn-block { width: 100%; }
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--nav-bg);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border-bottom: 1px solid var(--border);
+  transition: background .35s, border-color .35s;
+}
+.nav-inner {
+  display: flex; align-items: center; gap: 20px;
+  height: 68px;
+}
+.brand {
+  display: flex; align-items: center; gap: 11px;
+  font-weight: 700; font-size: 1.22rem;
+  letter-spacing: -0.02em;
+  margin-right: auto;
+}
+.brand-mark {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: var(--grad-neon);
+  display: grid; place-items: center;
+  color: #fff; font-weight: 700;
+  box-shadow: 0 6px 18px rgba(124,58,237,0.4);
+  position: relative;
+  overflow: hidden;
+}
+.brand-mark::after {
+  content: ""; position: absolute; inset: 0;
+  background: conic-gradient(from 0deg, transparent, rgba(255,255,255,.4), transparent);
+  animation: spin 5s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.brand b { position: relative; z-index: 1; }
+
+.nav-links { display: flex; gap: 6px; align-items: center; }
+.nav-links a {
+  padding: 8px 14px; border-radius: 999px;
+  color: var(--text-2); font-weight: 500; font-size: .93rem;
+  transition: color .2s, background .2s;
+}
+.nav-links a:hover { color: var(--text); background: var(--surface-2); }
+
+.nav-actions { display: flex; align-items: center; gap: 10px; }
+
+.theme-toggle {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  display: grid; place-items: center;
+  color: var(--text);
+  transition: background .25s, border-color .25s, transform .2s;
+}
+.theme-toggle:hover { transform: translateY(-2px); border-color: var(--violet); }
+.theme-toggle svg { width: 20px; height: 20px; }
+.theme-toggle .sun { display: none; }
+[data-theme="dark"] .theme-toggle .sun { display: block; }
+[data-theme="dark"] .theme-toggle .moon { display: none; }
+
+.wallet-badge {
+  display: none; align-items: center; gap: 8px;
+  padding: 8px 14px; border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-size: .85rem; font-weight: 500;
+}
+.wallet-badge.on { display: inline-flex; }
+.wallet-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #22C55E; box-shadow: 0 0 8px #22C55E; }
+
+.hamburger {
+  display: none;
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  place-items: center;
+}
+.hamburger svg { width: 22px; height: 22px; }
+
+/* Mobile menu */
+.mobile-menu {
+  position: fixed; inset: 68px 0 auto 0;
+  background: var(--bg-alt);
+  border-bottom: 1px solid var(--border);
+  padding: 16px clamp(16px,4vw,40px) 28px;
+  transform: translateY(-120%);
+  transition: transform .35s cubic-bezier(.16,1,.3,1);
+  z-index: 99;
+  box-shadow: var(--shadow-lg);
+}
+.mobile-menu.open { transform: translateY(0); }
+.mobile-menu a {
+  display: block; padding: 13px 8px; font-weight: 500; font-size: 1.05rem;
+  color: var(--text-2); border-bottom: 1px solid var(--border);
+}
+.mobile-menu a:hover { color: var(--violet); }
+.mobile-menu .btn { margin-top: 18px; width: 100%; }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  position: relative;
+  min-height: 88dvh;
+  display: flex; align-items: center;
+  padding: clamp(48px,7vw,80px) 0;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+}
+.hero-bg .orb {
+  position: absolute; border-radius: 50%; filter: blur(70px);
+  opacity: .5;
+}
+.orb-1 { width: 420px; height: 420px; background: #7C3AED; top: -80px; left: -60px; }
+.orb-2 { width: 380px; height: 380px; background: #2563EB; bottom: -100px; right: 8%; opacity:.42; }
+.orb-3 { width: 300px; height: 300px; background: #EC4899; top: 30%; right: 34%; opacity:.32; }
+.hero-grid-bg {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 46px 46px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 75%);
+  opacity: .5;
+}
+
+.hero-inner {
+  position: relative; z-index: 2;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: clamp(32px, 5vw, 64px);
+  align-items: center;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 7px 14px 7px 8px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  font-size: .82rem; font-weight: 500;
+  box-shadow: var(--shadow);
+}
+.hero-badge .pill {
+  font-family: 'JetBrains Mono', monospace; font-size: .72rem;
+  background: var(--grad); color:#fff; padding: 3px 9px; border-radius: 999px; font-weight:600;
+}
+.hero h1 {
+  font-size: clamp(2.3rem, 5.6vw, 4rem);
+  margin: 22px 0 20px;
+  letter-spacing: -0.035em;
+}
+.hero p.lede {
+  font-size: clamp(1rem, 1.9vw, 1.18rem);
+  color: var(--text-2);
+  max-width: 48ch;
+  margin-bottom: 30px;
+}
+.hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+
+.hero-stats {
+  display: flex; gap: clamp(20px, 4vw, 44px);
+  margin-top: 40px; flex-wrap: wrap;
+}
+.hero-stats .hs b {
+  display: block; font-size: clamp(1.3rem,3vw,1.8rem); font-weight:700;
+  font-family: 'JetBrains Mono', monospace;
+}
+.hero-stats .hs span { font-size: .82rem; color: var(--text-3); }
+
+/* Hero featured NFT auction card */
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 16px;
+  box-shadow: var(--shadow-lg), var(--glow);
+  position: relative;
+}
+.hero-art {
+  aspect-ratio: 1/1;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+.hero-art .live-tag {
+  position: absolute; top: 14px; left: 14px; z-index: 3;
+  display: inline-flex; align-items:center; gap: 7px;
+  background: rgba(10,8,18,.66); color:#fff; backdrop-filter: blur(8px);
+  padding: 6px 12px; border-radius: 999px; font-size: .74rem; font-weight:600;
+  font-family:'JetBrains Mono',monospace;
+}
+.hero-art .live-dot { width:8px;height:8px;border-radius:50%;background:#EF4444;box-shadow:0 0 8px #EF4444;animation:pulse 1.4s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+
+.hero-art .fav {
+  position:absolute; top:14px; right:14px; z-index:3;
+  width:38px;height:38px;border-radius:50%;
+  background:rgba(10,8,18,.6); backdrop-filter:blur(8px);
+  display:grid;place-items:center; color:#fff;
+  transition: transform .2s;
+}
+.hero-art .fav:hover{ transform:scale(1.12); }
+.hero-art .fav.on svg{ fill:var(--heart); stroke:var(--heart); }
+.hero-art .fav svg{ width:19px;height:19px; fill:none; stroke:#fff; stroke-width:2; }
+
+.hero-card-body { padding: 16px 8px 6px; }
+.hero-card-body h3 { font-size: 1.22rem; margin-bottom: 2px; }
+.hero-card-body .creator {
+  display:flex; align-items:center; gap:8px; color: var(--text-2); font-size:.85rem; margin-bottom: 16px;
+}
+.creator-av { width:22px;height:22px;border-radius:50%; }
+.verified { color: var(--blue); display:inline-flex; }
+.verified svg{ width:14px;height:14px; }
+
+.auction-row {
+  display:flex; justify-content:space-between; align-items:center;
+  background: var(--surface-2);
+  border:1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 12px 16px; margin-bottom: 12px;
+}
+.auction-row .lbl { font-size:.72rem; color:var(--text-3); font-family:'JetBrains Mono',monospace; letter-spacing:.05em; text-transform:uppercase; }
+.auction-row .bid { font-size:1.15rem; font-weight:700; font-family:'JetBrains Mono',monospace; }
+.auction-row .idr { font-size:.74rem; color:var(--text-3); }
+.timer { display:flex; gap:6px; }
+.timer .seg { background: var(--surface); border:1px solid var(--border); border-radius:9px; padding:5px 9px; text-align:center; min-width:42px; }
+.timer .seg b { font-family:'JetBrains Mono',monospace; font-size:1.05rem; font-weight:700; display:block; line-height:1.1; }
+.timer .seg span { font-size:.58rem; color:var(--text-3); text-transform:uppercase; letter-spacing:.05em; }
+
+/* ============================================================
+   CSS ARTWORK GENERATORS
+   ============================================================ */
+.art { width:100%; height:100%; position:relative; }
+.art-1 { background: conic-gradient(from 45deg at 50% 50%, #7C3AED, #EC4899, #06B6D4, #7C3AED); }
+.art-1::after { content:""; position:absolute; inset:0; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), transparent 45%); mix-blend-mode:overlay; }
+.art-2 { background: linear-gradient(135deg, #0EA5E9, #2563EB 45%, #7C3AED); }
+.art-2::before { content:""; position:absolute; inset:14%; border-radius:50%; border:14px solid rgba(255,255,255,.28); }
+.art-2::after { content:""; position:absolute; left:50%; top:50%; width:40%; height:40%; transform:translate(-50%,-50%) rotate(45deg); background:rgba(255,255,255,.4); }
+.art-3 { background: radial-gradient(circle at 25% 25%, #F59E0B, transparent 40%), radial-gradient(circle at 75% 60%, #EC4899, transparent 42%), #14121F; }
+.art-4 { background: repeating-linear-gradient(45deg, #7C3AED 0 22px, #2563EB 22px 44px); }
+.art-4::after { content:""; position:absolute; inset:22%; background:#0A0812; border-radius:20px; box-shadow: inset 0 0 40px rgba(124,58,237,.9); }
+.art-5 { background: linear-gradient(160deg,#06B6D4,#14B8A6 50%,#22C55E); }
+.art-5::before { content:""; position:absolute; inset:0; background: repeating-radial-gradient(circle at 50% 120%, transparent 0 20px, rgba(255,255,255,.12) 20px 40px); }
+.art-6 { background:#100C1C; }
+.art-6::before,.art-6::after { content:""; position:absolute; border-radius:50%; filter:blur(2px); }
+.art-6::before { width:55%;height:55%; top:8%; left:10%; background:radial-gradient(circle,#EC4899,#7C3AED); }
+.art-6::after { width:42%;height:42%; bottom:10%; right:12%; background:radial-gradient(circle,#06B6D4,#2563EB); mix-blend-mode:screen; }
+.art-7 { background: linear-gradient(45deg,#F43F5E,#F59E0B); }
+.art-7::after { content:""; position:absolute; inset:0; background: repeating-linear-gradient(90deg, transparent 0 18px, rgba(0,0,0,.16) 18px 20px); }
+.art-8 { background: conic-gradient(#22C55E, #06B6D4, #7C3AED, #EC4899, #22C55E); }
+.art-8::after { content:""; position:absolute; inset:20%; background:var(--surface); border-radius:50%; box-shadow: inset 0 0 0 8px rgba(124,58,237,.5); }
+.art-9 { background: linear-gradient(135deg,#1E1830,#372E52); }
+.art-9::before { content:""; position:absolute; inset:0; background-image: linear-gradient(rgba(124,58,237,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.5) 1px,transparent 1px); background-size:26px 26px; }
+.art-9::after { content:""; position:absolute; left:50%;top:50%; width:44%;height:44%; transform:translate(-50%,-50%); background:conic-gradient(from 0deg,#EC4899,#06B6D4,#EC4899); border-radius:14px; box-shadow:0 0 40px #EC4899; }
+.art-10 { background: linear-gradient(200deg,#7C3AED,#DB2777); }
+.art-10::after { content:""; position:absolute; inset:0; background: repeating-conic-gradient(from 0deg at 50% 50%, transparent 0 12deg, rgba(255,255,255,.14) 12deg 24deg); }
+.art-11 { background:#0A0812; }
+.art-11::before { content:""; position:absolute; inset:0; background: radial-gradient(circle at 20% 80%, #F59E0B, transparent 35%), radial-gradient(circle at 80% 20%, #06B6D4, transparent 35%), radial-gradient(circle at 50% 50%, #7C3AED, transparent 45%); }
+.art-12 { background: linear-gradient(135deg,#14B8A6,#0EA5E9,#6366F1); }
+.art-12::after { content:""; position:absolute; left:20%;top:20%;width:60%;height:60%; border-radius:50% 50% 50% 8px; background:rgba(255,255,255,.24); backdrop-filter:blur(2px); }
+
+/* ============================================================
+   CATEGORY FILTER + NFT GRID
+   ============================================================ */
+.filter-bar {
+  display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 30px;
+}
+.chip {
+  padding: 9px 18px; border-radius:999px;
+  background: var(--surface); border:1px solid var(--border);
+  color: var(--text-2); font-weight:500; font-size:.9rem;
+  transition: all .2s; min-height:42px;
+  display:inline-flex; align-items:center; gap:7px;
+}
+.chip:hover { border-color: var(--violet); color: var(--text); }
+.chip.active { background: var(--grad); color:#fff; border-color:transparent; box-shadow:0 6px 18px rgba(124,58,237,.32); }
+.chip .cnt { font-size:.72rem; opacity:.72; font-family:'JetBrains Mono',monospace; }
+
+.nft-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: clamp(16px, 2vw, 24px);
+}
+.nft {
+  background: var(--surface);
+  border:1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow:hidden;
+  transition: transform .28s cubic-bezier(.16,1,.3,1), box-shadow .28s, border-color .28s;
+}
+.nft:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: var(--border-strong); }
+.nft-media { aspect-ratio: 1/1; position:relative; overflow:hidden; }
+.nft-media .art { transition: transform .5s; }
+.nft:hover .nft-media .art { transform: scale(1.06); }
+.nft-chain {
+  position:absolute; top:12px; left:12px; z-index:2;
+  padding:4px 9px; border-radius:999px; font-size:.66rem; font-weight:600;
+  font-family:'JetBrains Mono',monospace;
+  background: rgba(10,8,18,.6); color:#fff; backdrop-filter:blur(6px);
+  display:inline-flex; align-items:center; gap:5px;
+}
+.nft-chain .cdot { width:6px;height:6px;border-radius:50%; }
+.nft-fav {
+  position:absolute; top:12px; right:12px; z-index:2;
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(10,8,18,.55); backdrop-filter:blur(6px);
+  display:grid;place-items:center;
+  transition: transform .2s;
+}
+.nft-fav:hover { transform: scale(1.15); }
+.nft-fav svg { width:17px;height:17px; fill:none; stroke:#fff; stroke-width:2; transition:.2s; }
+.nft-fav.on svg { fill: var(--heart); stroke: var(--heart); }
+.nft-body { padding: 14px 15px 16px; }
+.nft-body .top { display:flex; justify-content:space-between; align-items:start; gap:8px; }
+.nft-body h4 { font-size:1.02rem; font-weight:600; }
+.nft-body .maker { font-size:.78rem; color:var(--text-3); display:flex; align-items:center; gap:5px; margin-top:2px; }
+.nft-body .rank { font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--text-3); }
+.nft-meta {
+  display:flex; justify-content:space-between; align-items:center;
+  margin-top:14px; padding-top:14px; border-top:1px solid var(--border);
+}
+.nft-price .lbl { font-size:.66rem; color:var(--text-3); text-transform:uppercase; letter-spacing:.06em; font-family:'JetBrains Mono',monospace; }
+.nft-price .eth { font-weight:700; font-size:1.02rem; font-family:'JetBrains Mono',monospace; display:flex;align-items:center;gap:5px; }
+.nft-price .eth svg{ width:11px;height:16px; }
+.nft-price .idr { font-size:.7rem; color:var(--text-3); }
+.nft-buy {
+  padding: 9px 16px; border-radius:999px; font-weight:600; font-size:.82rem;
+  background: var(--surface-2); border:1px solid var(--border); color:var(--text);
+  transition:.2s; min-height:40px;
+}
+.nft-buy:hover { background: var(--grad); color:#fff; border-color:transparent; }
+.nft.hidden { display:none; }
+.empty-state { grid-column:1/-1; text-align:center; padding:60px 20px; color:var(--text-3); }
+
+/* ============================================================
+   LIVE AUCTION
+   ============================================================ */
+.auction-sec { background: var(--bg-alt); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+.auction-wrap {
+  display:grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(28px,4vw,52px); align-items:center;
+}
+.auction-big {
+  aspect-ratio: 1/1;
+  border-radius: var(--r-xl);
+  overflow:hidden; position:relative;
+  box-shadow: var(--shadow-lg), var(--glow);
+  border:1px solid var(--border);
+}
+.auction-big .live-tag {
+  position:absolute; top:16px; left:16px; z-index:3;
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(10,8,18,.66);color:#fff;backdrop-filter:blur(8px);
+  padding:7px 14px;border-radius:999px;font-size:.78rem;font-weight:600;font-family:'JetBrains Mono',monospace;
+}
+.auction-detail h3 { font-size: clamp(1.5rem,3vw,2.1rem); margin: 12px 0 6px; }
+.auction-detail .creator { display:flex;align-items:center;gap:8px;color:var(--text-2);margin-bottom:22px; }
+.bid-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:24px; }
+.bid-box { background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:16px 18px; }
+.bid-box .lbl { font-size:.72rem; color:var(--text-3); font-family:'JetBrains Mono',monospace; text-transform:uppercase; letter-spacing:.06em; }
+.bid-box .val { font-size:1.5rem; font-weight:700; font-family:'JetBrains Mono',monospace; margin-top:4px; }
+.bid-box .val.grad-text { line-height:1.2; }
+.bid-box .idr { font-size:.76rem; color:var(--text-3); }
+
+.count-grid { display:flex; gap:12px; margin-bottom:26px; }
+.count-seg {
+  flex:1; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md);
+  padding:16px 8px; text-align:center;
+}
+.count-seg b { font-family:'JetBrains Mono',monospace; font-size:clamp(1.5rem,4vw,2.2rem); font-weight:700; display:block; line-height:1; }
+.count-seg span { font-size:.68rem; color:var(--text-3); text-transform:uppercase; letter-spacing:.08em; margin-top:6px; display:block; }
+
+.bidders { display:flex; align-items:center; gap:10px; margin-bottom:24px; font-size:.85rem; color:var(--text-2); }
+.bidder-avs { display:flex; }
+.bidder-avs span { width:30px;height:30px;border-radius:50%; border:2px solid var(--bg-alt); margin-left:-8px; }
+.bidder-avs span:first-child{ margin-left:0; }
+
+/* ============================================================
+   COLLECTIONS TABLE
+   ============================================================ */
+.tabs { display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; }
+.tab {
+  padding:8px 16px; border-radius:999px; font-weight:500; font-size:.86rem;
+  background:var(--surface); border:1px solid var(--border); color:var(--text-2); transition:.2s; min-height:40px;
+}
+.tab.active { background:var(--surface-2); color:var(--text); border-color:var(--border-strong); }
+.tab:hover { color:var(--text); }
+
+.coll-table {
+  background: var(--surface); border:1px solid var(--border); border-radius: var(--r-lg); overflow:hidden;
+}
+.coll-head, .coll-row {
+  display:grid;
+  grid-template-columns: 44px 2.2fr 1fr 1fr 1fr 1.2fr;
+  gap:12px; align-items:center;
+  padding: 14px 20px;
+}
+.coll-head {
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; text-transform:uppercase; letter-spacing:.06em;
+  color: var(--text-3); border-bottom:1px solid var(--border);
+}
+.coll-row { border-bottom:1px solid var(--border); transition: background .2s; }
+.coll-row:last-child { border-bottom:none; }
+.coll-row:hover { background: var(--surface-2); }
+.coll-rank { font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--text-3); text-align:center; }
+.coll-name { display:flex; align-items:center; gap:12px; min-width:0; }
+.coll-thumb { width:44px;height:44px;border-radius:12px; overflow:hidden; flex-shrink:0; }
+.coll-name .nm { font-weight:600; display:flex; align-items:center; gap:6px; }
+.coll-name .items { font-size:.74rem; color:var(--text-3); }
+.coll-cell { font-family:'JetBrains Mono',monospace; font-weight:500; font-size:.92rem; }
+.coll-cell .idr { font-size:.7rem; color:var(--text-3); font-family:'Space Grotesk',sans-serif; }
+.chg { font-family:'JetBrains Mono',monospace; font-weight:600; font-size:.88rem; }
+.chg.up { color:#16A34A; }
+.chg.down { color:#DC2626; }
+[data-theme="dark"] .chg.up { color:#4ADE80; }
+[data-theme="dark"] .chg.down { color:#F87171; }
+.spark { display:flex; align-items:flex-end; gap:2px; height:26px; }
+.spark span { width:4px; border-radius:2px; background: var(--violet); opacity:.75; }
+
+/* ============================================================
+   TOP CREATORS
+   ============================================================ */
+.creators-grid {
+  display:grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap:18px;
+}
+.creator-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg);
+  overflow:hidden; text-align:center; transition: transform .25s, box-shadow .25s;
+}
+.creator-card:hover { transform:translateY(-5px); box-shadow:var(--shadow-lg); }
+.creator-cover { height:70px; }
+.creator-card .av-wrap { margin-top:-34px; position:relative; }
+.creator-card .av { width:68px;height:68px;border-radius:50%; margin:0 auto; border:4px solid var(--surface); position:relative; }
+.creator-card .rank-badge {
+  position:absolute; top:-6px; right: calc(50% - 44px);
+  width:26px;height:26px;border-radius:50%; background:var(--grad); color:#fff;
+  display:grid;place-items:center; font-size:.72rem;font-weight:700; font-family:'JetBrains Mono',monospace;
+  border:3px solid var(--surface);
+}
+.creator-card .info { padding: 12px 16px 20px; }
+.creator-card .info h4 { font-size:1rem; display:inline-flex; align-items:center; gap:5px; }
+.creator-card .info .h { font-size:.76rem; color:var(--text-3); font-family:'JetBrains Mono',monospace; }
+.creator-card .vol { margin-top:10px; font-family:'JetBrains Mono',monospace; font-weight:700; }
+.creator-card .vol span { font-size:.68rem; color:var(--text-3); font-weight:400; display:block; }
+
+/* ============================================================
+   HOW IT WORKS
+   ============================================================ */
+.how-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap:20px; }
+.how-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg);
+  padding: 28px 24px; position:relative; overflow:hidden;
+  transition: border-color .25s, transform .25s;
+}
+.how-card:hover { border-color:var(--violet); transform:translateY(-4px); }
+.how-num {
+  font-family:'JetBrains Mono',monospace; font-size:2.6rem; font-weight:700;
+  -webkit-text-stroke: 1.5px var(--border-strong); -webkit-text-fill-color: transparent;
+  position:absolute; top:12px; right:18px; line-height:1;
+}
+.how-ico {
+  width:52px;height:52px;border-radius:14px; background:var(--surface-2);
+  border:1px solid var(--border); display:grid;place-items:center; color:var(--violet); margin-bottom:16px;
+}
+.how-ico svg { width:26px;height:26px; }
+.how-card h4 { font-size:1.12rem; margin-bottom:8px; }
+.how-card p { color:var(--text-2); font-size:.92rem; }
+
+/* ============================================================
+   CREATE / MINT CTA
+   ============================================================ */
+.mint-cta { padding: clamp(56px,8vw,90px) 0; }
+.mint-box {
+  background: var(--grad);
+  border-radius: var(--r-xl);
+  padding: clamp(36px,6vw,68px);
+  position:relative; overflow:hidden; text-align:center;
+  box-shadow: 0 30px 80px rgba(124,58,237,.4);
+}
+.mint-box::before {
+  content:""; position:absolute; inset:0;
+  background-image: linear-gradient(rgba(255,255,255,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.09) 1px,transparent 1px);
+  background-size: 40px 40px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 80% at 50% 50%, #000, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 80% at 50% 50%, #000, transparent 75%);
+}
+.mint-box .glow-orb { position:absolute; width:300px;height:300px;border-radius:50%; filter:blur(60px); }
+.mint-box .go1 { background:#EC4899; opacity:.4; top:-100px; left:-40px; }
+.mint-box .go2 { background:#06B6D4; opacity:.4; bottom:-100px; right:-40px; }
+.mint-box .inner { position:relative; z-index:2; color:#fff; }
+.mint-box h2 { font-size: clamp(1.8rem,4.5vw,3rem); margin-bottom:16px; letter-spacing:-0.03em; }
+.mint-box p { font-size: clamp(1rem,2vw,1.15rem); opacity:.92; max-width:52ch; margin:0 auto 30px; }
+.mint-box .cta-row { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+.mint-box .btn-white { background:#fff; color:var(--violet-600); box-shadow:0 8px 24px rgba(0,0,0,.2); }
+.mint-box .btn-white:hover { transform:translateY(-2px); }
+.mint-box .btn-outline { background:transparent; color:#fff; border:1.5px solid rgba(255,255,255,.55); }
+.mint-box .btn-outline:hover { background:rgba(255,255,255,.14); transform:translateY(-2px); }
+
+/* ============================================================
+   STATS
+   ============================================================ */
+.stats-grid {
+  display:grid; grid-template-columns: repeat(auto-fit, minmax(190px,1fr)); gap: clamp(16px,2vw,24px);
+}
+.stat-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg);
+  padding: 30px 26px; text-align:center; position:relative; overflow:hidden;
+}
+.stat-card::before {
+  content:""; position:absolute; top:0; left:0; right:0; height:3px; background:var(--grad-neon);
+}
+.stat-card .num {
+  font-family:'JetBrains Mono',monospace; font-size: clamp(2rem,5vw,2.8rem); font-weight:700;
+  letter-spacing:-0.02em;
+}
+.stat-card .lbl { color:var(--text-2); font-size:.9rem; margin-top:6px; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  background: var(--bg-alt); border-top:1px solid var(--border);
+  padding: clamp(48px,7vw,72px) 0 32px;
+}
+.foot-grid {
+  display:grid; grid-template-columns: 1.6fr repeat(3,1fr); gap: clamp(28px,4vw,48px);
+  margin-bottom: 44px;
+}
+.foot-brand .brand { margin-bottom:16px; }
+.foot-brand p { color:var(--text-2); font-size:.92rem; max-width:34ch; margin-bottom:20px; }
+.socials { display:flex; gap:10px; }
+.socials a {
+  width:40px;height:40px;border-radius:11px; background:var(--surface-2); border:1px solid var(--border);
+  display:grid;place-items:center; color:var(--text-2); transition:.2s;
+}
+.socials a:hover { color:var(--violet); border-color:var(--violet); transform:translateY(-3px); }
+.socials svg { width:19px;height:19px; }
+.foot-col h5 { font-size:.78rem; text-transform:uppercase; letter-spacing:.1em; font-family:'JetBrains Mono',monospace; color:var(--text-3); margin-bottom:16px; }
+.foot-col a { display:block; color:var(--text-2); font-size:.92rem; padding:5px 0; transition:.2s; }
+.foot-col a:hover { color:var(--violet); }
+.foot-bottom {
+  border-top:1px solid var(--border); padding-top:26px;
+  display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;
+  color:var(--text-3); font-size:.85rem;
+}
+.foot-bottom .mono { font-size:.78rem; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 980px) {
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-card { max-width: 440px; }
+  .auction-wrap { grid-template-columns:1fr; }
+  .auction-big { max-width: 480px; }
+  .foot-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 860px) {
+  .nav-links { display:none; }
+  .hamburger { display:grid; }
+  .wallet-badge { display:none !important; }
+  .connect-desktop { display:none; }
+}
+@media (max-width: 720px) {
+  .coll-head { display:none; }
+  .coll-row {
+    grid-template-columns: 30px 1fr auto;
+    grid-template-areas: "rank name price";
+    row-gap:4px;
+  }
+  .coll-row .coll-rank { grid-area:rank; }
+  .coll-row .coll-name { grid-area:name; }
+  .coll-row .c-vol { grid-area:price; text-align:right; }
+  .coll-row .c-floor, .coll-row .c-chg, .coll-row .c-spark { display:none; }
+}
+@media (max-width: 560px) {
+  .bid-grid { grid-template-columns:1fr; }
+  .foot-grid { grid-template-columns:1fr; }
+  .foot-bottom { flex-direction:column; align-items:flex-start; }
+  .hero-stats { gap:20px; }
+  .timer .seg { min-width:38px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Reveal */
+.reveal { opacity:0; transform: translateY(24px); transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1); }
+.reveal.in { opacity:1; transform:none; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity:1 !important; transform:none !important; } }
+</style>
+</head>
+<body>
+
+<!-- ============ NAVBAR ============ -->
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="#" class="brand" aria-label="NusArt beranda">
+      <span class="brand-mark"><b>N</b></span>
+      NusArt
+    </a>
+    <nav class="nav-links" aria-label="Navigasi utama">
+      <a href="#jelajah">Jelajah</a>
+      <a href="#lelang">Lelang</a>
+      <a href="#koleksi">Koleksi</a>
+      <a href="#kreator">Kreator</a>
+      <a href="#cara">Cara Kerja</a>
+    </nav>
+    <div class="nav-actions">
+      <span class="wallet-badge" id="walletBadge"><span class="dot"></span><span class="mono" id="walletAddr">0x8f…3aE1</span></span>
+      <button class="theme-toggle" id="themeToggle" aria-label="Ganti mode terang/gelap">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+      <button class="btn btn-primary btn-sm connect-desktop" id="connectBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M16 12h.01M2 10h20"/></svg>
+        Connect Wallet
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="Buka menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#jelajah">Jelajah</a>
+  <a href="#lelang">Lelang</a>
+  <a href="#koleksi">Koleksi</a>
+  <a href="#kreator">Kreator</a>
+  <a href="#cara">Cara Kerja</a>
+  <button class="btn btn-primary" id="connectBtnMobile">Connect Wallet</button>
+</div>
+
+<main>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="hero-grid-bg"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="wrap hero-inner">
+    <div class="hero-text">
+      <span class="hero-badge"><span class="pill">BARU</span> Musim lelang Nusantara Digital sedang berlangsung</span>
+      <h1>Jelajah, koleksi &amp; <span class="grad-text">mint</span> karya digital Nusantara</h1>
+      <p class="lede">NusArt adalah marketplace NFT untuk kreator Indonesia. Temukan seni, foto, musik, hingga item game — beli, tawar, dan mint dalam hitungan detik.</p>
+      <div class="hero-cta">
+        <a href="#jelajah" class="btn btn-primary">Mulai Jelajah</a>
+        <a href="#mint" class="btn btn-ghost">Mint Karyamu</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hs"><b data-count="248" data-suffix="K">0</b><span>Karya digital</span></div>
+        <div class="hs"><b data-count="42" data-suffix="K">0</b><span>Kreator aktif</span></div>
+        <div class="hs"><b data-count="128" data-prefix="Ξ" data-suffix="K">0</b><span>Volume total</span></div>
+      </div>
+    </div>
+
+    <!-- Hero featured auction card -->
+    <div class="hero-card reveal">
+      <div class="hero-art">
+        <span class="live-tag"><span class="live-dot"></span>LELANG LIVE</span>
+        <button class="fav" id="heroFav" aria-label="Simpan ke favorit" aria-pressed="false">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+        <div class="art art-1"></div>
+      </div>
+      <div class="hero-card-body">
+        <h3>Garuda Kuantum #017</h3>
+        <div class="creator">
+          <span class="art art-6 creator-av"></span>
+          oleh Raka Wicaksana
+          <span class="verified" title="Terverifikasi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 2.1 3.2-.3 1 3 2.8 1.5-1 3 1 3-2.8 1.5-1 3-3.2-.3L12 22l-2.4-2.1-3.2.3-1-3L2.6 14.7l1-3-1-3 2.8-1.5 1-3 3.2.3z"/><path d="M9.5 12.5l1.8 1.8 3.5-3.8" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+        <div class="auction-row">
+          <div>
+            <div class="lbl">Tawaran Tertinggi</div>
+            <div class="bid grad-text" id="heroBid">Ξ 4.28</div>
+            <div class="idr">≈ Rp 312,4 jt</div>
+          </div>
+          <div class="timer" id="heroTimer" role="timer" aria-label="Sisa waktu lelang">
+            <div class="seg"><b data-t="h">05</b><span>jam</span></div>
+            <div class="seg"><b data-t="m">42</b><span>mnt</span></div>
+            <div class="seg"><b data-t="s">18</b><span>dtk</span></div>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-block">Tawar Sekarang</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CATEGORY FILTER + NFT GRID ============ -->
+<section class="section" id="jelajah">
+  <div class="wrap">
+    <div class="sec-head between reveal">
+      <div>
+        <span class="eyebrow">Marketplace</span>
+        <h2 class="h-sec">Jelajahi karya <span class="grad-text">digital</span></h2>
+        <p class="sub-sec">Ribuan karya dari kreator Nusantara. Saring berdasarkan kategori dan simpan favoritmu.</p>
+      </div>
+      <a href="#" class="btn btn-ghost btn-sm">Lihat semua &rarr;</a>
+    </div>
+
+    <div class="filter-bar reveal" id="filterBar" role="tablist" aria-label="Filter kategori">
+      <button class="chip active" data-filter="all" role="tab" aria-selected="true">Semua <span class="cnt" id="cnt-all">12</span></button>
+      <button class="chip" data-filter="art" role="tab" aria-selected="false">🎨 Art <span class="cnt" id="cnt-art"></span></button>
+      <button class="chip" data-filter="koleksi" role="tab" aria-selected="false">🧩 Koleksi <span class="cnt" id="cnt-koleksi"></span></button>
+      <button class="chip" data-filter="foto" role="tab" aria-selected="false">📷 Foto <span class="cnt" id="cnt-foto"></span></button>
+      <button class="chip" data-filter="musik" role="tab" aria-selected="false">🎵 Musik <span class="cnt" id="cnt-musik"></span></button>
+      <button class="chip" data-filter="game" role="tab" aria-selected="false">🎮 Game <span class="cnt" id="cnt-game"></span></button>
+    </div>
+
+    <div class="nft-grid" id="nftGrid" aria-live="polite">
+      <!-- cards injected via JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ============ LIVE AUCTION ============ -->
+<section class="section auction-sec" id="lelang">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Lelang Berlangsung</span>
+      <h2 class="h-sec">Rebut karya <span class="grad-text">langka</span> sebelum waktu habis</h2>
+    </div>
+    <div class="auction-wrap">
+      <div class="auction-big reveal">
+        <span class="live-tag"><span class="live-dot"></span>LELANG LIVE</span>
+        <div class="art art-9"></div>
+      </div>
+      <div class="auction-detail reveal">
+        <span class="eyebrow">Koleksi Sakti Genesis</span>
+        <h3>Naga Sakti Astral #001</h3>
+        <div class="creator">
+          <span class="art art-3 creator-av"></span>
+          oleh Ayu Pramesti
+          <span class="verified"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 2.1 3.2-.3 1 3 2.8 1.5-1 3 1 3-2.8 1.5-1 3-3.2-.3L12 22l-2.4-2.1-3.2.3-1-3L2.6 14.7l1-3-1-3 2.8-1.5 1-3 3.2.3z"/><path d="M9.5 12.5l1.8 1.8 3.5-3.8" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+
+        <div class="bid-grid">
+          <div class="bid-box">
+            <div class="lbl">Tawaran Saat Ini</div>
+            <div class="val grad-text" id="aucBid">Ξ 12.75</div>
+            <div class="idr">≈ Rp 931,0 jt</div>
+          </div>
+          <div class="bid-box">
+            <div class="lbl">Harga Awal</div>
+            <div class="val">Ξ 5.00</div>
+            <div class="idr">≈ Rp 365,0 jt</div>
+          </div>
+        </div>
+
+        <div class="count-grid" id="aucTimer" role="timer" aria-label="Hitung mundur lelang">
+          <div class="count-seg"><b data-t="d">01</b><span>Hari</span></div>
+          <div class="count-seg"><b data-t="h">08</b><span>Jam</span></div>
+          <div class="count-seg"><b data-t="m">24</b><span>Menit</span></div>
+          <div class="count-seg"><b data-t="s">57</b><span>Detik</span></div>
+        </div>
+
+        <div class="bidders">
+          <div class="bidder-avs" aria-hidden="true">
+            <span class="art art-1"></span><span class="art art-5"></span><span class="art art-7"></span><span class="art art-2"></span>
+          </div>
+          <span><b>32 penawar</b> aktif dalam lelang ini</span>
+        </div>
+
+        <div class="hero-cta">
+          <button class="btn btn-primary">Pasang Tawaran</button>
+          <button class="btn btn-ghost">Detail Karya</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TRENDING COLLECTIONS ============ -->
+<section class="section" id="koleksi">
+  <div class="wrap">
+    <div class="sec-head between reveal">
+      <div>
+        <span class="eyebrow">Peringkat</span>
+        <h2 class="h-sec">Koleksi <span class="grad-text">trending</span></h2>
+        <p class="sub-sec">Koleksi teratas berdasarkan volume perdagangan 24 jam terakhir.</p>
+      </div>
+      <div class="tabs" role="tablist" aria-label="Rentang waktu">
+        <button class="tab active" role="tab" aria-selected="true">24 Jam</button>
+        <button class="tab" role="tab" aria-selected="false">7 Hari</button>
+        <button class="tab" role="tab" aria-selected="false">30 Hari</button>
+      </div>
+    </div>
+
+    <div class="coll-table reveal">
+      <div class="coll-head">
+        <div>#</div>
+        <div>Koleksi</div>
+        <div>Harga Dasar</div>
+        <div>Volume</div>
+        <div>Perubahan</div>
+        <div>7 Hari</div>
+      </div>
+      <div id="collBody"><!-- rows injected --></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TOP CREATORS ============ -->
+<section class="section auction-sec" id="kreator">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Kreator Teratas</span>
+      <h2 class="h-sec">Seniman <span class="grad-text">terpopuler</span> minggu ini</h2>
+    </div>
+    <div class="creators-grid" id="creatorsGrid"><!-- injected --></div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="section" id="cara">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Cara Kerja</span>
+      <h2 class="h-sec">Mulai dalam <span class="grad-text">tiga langkah</span></h2>
+      <p class="sub-sec">Tidak perlu jadi ahli kripto. Ikuti langkah sederhana untuk mulai koleksi atau mint karyamu.</p>
+    </div>
+    <div class="how-grid">
+      <article class="how-card reveal">
+        <span class="how-num">01</span>
+        <div class="how-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M16 12h.01M2 10h20"/></svg></div>
+        <h4>Buat Wallet</h4>
+        <p>Pasang MetaMask atau wallet Web3 lain, lalu amankan seed phrase-mu. Gratis dan hanya butuh 2 menit.</p>
+      </article>
+      <article class="how-card reveal">
+        <span class="how-num">02</span>
+        <div class="how-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <h4>Connect ke NusArt</h4>
+        <p>Klik "Connect Wallet" di kanan atas, pilih wallet, dan setujui koneksi. Tidak ada biaya pendaftaran.</p>
+      </article>
+      <article class="how-card reveal">
+        <span class="how-num">03</span>
+        <div class="how-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg></div>
+        <h4>Beli, Tawar &amp; Mint</h4>
+        <p>Jelajahi karya, beli langsung atau ikut lelang. Punya karya sendiri? Mint jadi NFT dalam sekali klik.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CREATE / MINT CTA ============ -->
+<section class="mint-cta" id="mint">
+  <div class="wrap">
+    <div class="mint-box reveal">
+      <div class="glow-orb go1" aria-hidden="true"></div>
+      <div class="glow-orb go2" aria-hidden="true"></div>
+      <div class="inner">
+        <h2>Punya karya? Ubah jadi NFT.</h2>
+        <p>Mint karya seni, foto, atau musikmu jadi NFT tanpa biaya gas awal. Tentukan royalti sendiri dan jual ke ribuan kolektor Nusantara.</p>
+        <div class="cta-row">
+          <a href="#" class="btn btn-white">Mulai Mint Sekarang</a>
+          <a href="#cara" class="btn btn-outline">Pelajari Cara Mint</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATS ============ -->
+<section class="section" style="padding-top:0;">
+  <div class="wrap">
+    <div class="stats-grid">
+      <div class="stat-card reveal">
+        <div class="num grad-text" data-count="248" data-suffix="K+">0</div>
+        <div class="lbl">Karya digital terjual</div>
+      </div>
+      <div class="stat-card reveal">
+        <div class="num grad-text" data-count="42" data-suffix="K+">0</div>
+        <div class="lbl">Kreator terdaftar</div>
+      </div>
+      <div class="stat-card reveal">
+        <div class="num grad-text" data-count="128" data-prefix="Ξ" data-suffix="K">0</div>
+        <div class="lbl">Volume perdagangan</div>
+      </div>
+      <div class="stat-card reveal">
+        <div class="num grad-text" data-count="99" data-suffix="%">0</div>
+        <div class="lbl">Transaksi aman</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a href="#" class="brand"><span class="brand-mark"><b>N</b></span> NusArt</a>
+        <p>Marketplace NFT &amp; karya digital untuk kreator Nusantara. Jelajah, lelang, koleksi, dan mint dengan aman.</p>
+        <div class="socials">
+          <a href="#" aria-label="X (Twitter)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 1.2h3.7l-8 9.1L24 22.8h-7.4l-5.8-7.6-6.6 7.6H.4l8.6-9.8L0 1.2h7.6l5.2 6.9 5.9-6.9zm-1.3 19.4h2L6.5 3.3H4.4L17.6 20.6z"/></svg></a>
+          <a href="#" aria-label="Discord"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.2.5a18 18 0 0 1 4.3 1.4A16.6 16.6 0 0 0 4.5 4.9 18 18 0 0 1 8.8 3.5L8.6 3a19.7 19.7 0 0 0-4.9 1.4C.9 8.6.1 12.7.5 16.7a19.9 19.9 0 0 0 6 3l.8-1.2c-.7-.3-1.4-.6-2-1l.5-.4a14.2 14.2 0 0 0 12.2 0l.5.4c-.6.4-1.3.7-2 1l.8 1.2a19.8 19.8 0 0 0 6-3c.5-4.7-.8-8.8-3-12.3zM8.5 14.3c-1.1 0-2-1-2-2.3s.9-2.3 2-2.3 2 1 2 2.3-.9 2.3-2 2.3zm7 0c-1.1 0-2-1-2-2.3s.9-2.3 2-2.3 2 1 2 2.3-.9 2.3-2 2.3z"/></svg></a>
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" aria-label="Telegram"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 3.2 2.7 10.6c-1 .4-1 1.4-.2 1.7l4.8 1.5 1.9 5.9c.2.6.4.7.8.7.4 0 .6-.2.8-.5l2.6-2.6 4.9 3.6c.9.5 1.5.2 1.7-.8l3.1-14.7c.3-1.2-.4-1.8-1.2-1.4z"/></svg></a>
+        </div>
+      </div>
+      <div class="foot-col">
+        <h5>Marketplace</h5>
+        <a href="#jelajah">Jelajah</a>
+        <a href="#lelang">Lelang Live</a>
+        <a href="#koleksi">Koleksi</a>
+        <a href="#kreator">Kreator</a>
+      </div>
+      <div class="foot-col">
+        <h5>Akun</h5>
+        <a href="#">Profil</a>
+        <a href="#">Favorit</a>
+        <a href="#mint">Mint Karya</a>
+        <a href="#">Pengaturan</a>
+      </div>
+      <div class="foot-col">
+        <h5>Bantuan</h5>
+        <a href="#cara">Cara Kerja</a>
+        <a href="#">Pusat Bantuan</a>
+        <a href="#">Ketentuan</a>
+        <a href="#">Privasi</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 NusArt. Marketplace NFT Nusantara.</span>
+      <span class="mono">Dibangun di atas Ethereum &amp; Polygon</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- THEME TOGGLE ---------- */
+  var root = document.documentElement;
+  var THEME_KEY = 'nusart_theme';
+  try {
+    var saved = localStorage.getItem(THEME_KEY);
+    if (saved === 'dark' || saved === 'light') root.setAttribute('data-theme', saved);
+  } catch (e) {}
+  var themeBtn = document.getElementById('themeToggle');
+  themeBtn.addEventListener('click', function () {
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+  });
+
+  /* ---------- MOBILE MENU ---------- */
+  var ham = document.getElementById('hamburger');
+  var menu = document.getElementById('mobileMenu');
+  function closeMenu() { menu.classList.remove('open'); ham.setAttribute('aria-expanded', 'false'); }
+  ham.addEventListener('click', function () {
+    var open = menu.classList.toggle('open');
+    ham.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  menu.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', closeMenu); });
+
+  /* ---------- CONNECT WALLET (mock) ---------- */
+  function connectWallet() {
+    var badge = document.getElementById('walletBadge');
+    var addr = document.getElementById('walletAddr');
+    var hex = '0123456789abcdef';
+    var a = '0x', b = '';
+    for (var i = 0; i < 4; i++) a += hex[Math.floor(Math.random() * 16)];
+    for (var j = 0; j < 4; j++) b += hex[Math.floor(Math.random() * 16)];
+    addr.textContent = a + '…' + b;
+    badge.classList.add('on');
+    document.getElementById('connectBtn').textContent = 'Wallet Terhubung';
+    var mob = document.getElementById('connectBtnMobile');
+    if (mob) mob.textContent = 'Wallet Terhubung';
+    closeMenu();
+  }
+  document.getElementById('connectBtn').addEventListener('click', connectWallet);
+  var connMob = document.getElementById('connectBtnMobile');
+  if (connMob) connMob.addEventListener('click', connectWallet);
+
+  /* ---------- NFT DATA ---------- */
+  var CHAIN_ETH = { name: 'ETH', color: '#627EEA' };
+  var CHAIN_POLY = { name: 'POLY', color: '#8247E5' };
+  var ETH_TO_IDR = 73000000; // ~Rp 73 jt / ETH (ilustrasi)
+
+  function idr(eth) {
+    var v = eth * ETH_TO_IDR;
+    if (v >= 1e9) return 'Rp ' + (v / 1e9).toFixed(1).replace('.', ',') + ' M';
+    return 'Rp ' + (v / 1e6).toFixed(1).replace('.', ',') + ' jt';
+  }
+
+  var nfts = [
+    { n: 'Garuda Kuantum #017', c: 'Raka Wicaksana', art: 'art-1', cat: 'art', eth: 4.28, chain: CHAIN_ETH, rank: '#017' },
+    { n: 'Batik Fraktal 08', c: 'Ayu Pramesti', art: 'art-4', cat: 'art', eth: 1.92, chain: CHAIN_POLY, rank: '#08' },
+    { n: 'Kera Sakti Genesis', c: 'Bimo Aditya', art: 'art-8', cat: 'koleksi', eth: 3.15, chain: CHAIN_ETH, rank: '#241' },
+    { n: 'Senja di Bromo', c: 'Dewi Larasati', art: 'art-3', cat: 'foto', eth: 0.86, chain: CHAIN_POLY, rank: '#004' },
+    { n: 'Gamelan Wave 03', c: 'Sekar Ayu', art: 'art-5', cat: 'musik', eth: 0.64, chain: CHAIN_ETH, rank: '#03' },
+    { n: 'Cyber Wayang #99', c: 'Fajar Nugroho', art: 'art-9', cat: 'game', eth: 2.40, chain: CHAIN_POLY, rank: '#99' },
+    { n: 'Mega Mendung Neon', c: 'Raka Wicaksana', art: 'art-10', cat: 'art', eth: 1.55, chain: CHAIN_ETH, rank: '#112' },
+    { n: 'Koleksi Kujang 12', c: 'Bimo Aditya', art: 'art-2', cat: 'koleksi', eth: 2.88, chain: CHAIN_ETH, rank: '#012' },
+    { n: 'Lautan Raja Ampat', c: 'Dewi Larasati', art: 'art-12', cat: 'foto', eth: 1.10, chain: CHAIN_POLY, rank: '#022' },
+    { n: 'Suara Sasando VII', c: 'Sekar Ayu', art: 'art-6', cat: 'musik', eth: 0.48, chain: CHAIN_POLY, rank: '#07' },
+    { n: 'Prajurit Nusantara', c: 'Fajar Nugroho', art: 'art-11', cat: 'game', eth: 3.72, chain: CHAIN_ETH, rank: '#300' },
+    { n: 'Pusaka Astral #044', c: 'Ayu Pramesti', art: 'art-7', cat: 'koleksi', eth: 5.05, chain: CHAIN_ETH, rank: '#044' }
+  ];
+
+  var favSet = new Set();
+  try {
+    var fav = JSON.parse(localStorage.getItem('nusart_favs') || '[]');
+    if (Array.isArray(fav)) fav.forEach(function (x) { favSet.add(x); });
+  } catch (e) {}
+  function saveFavs() {
+    try { localStorage.setItem('nusart_favs', JSON.stringify(Array.from(favSet))); } catch (e) {}
+  }
+
+  var ethIco = '<svg viewBox="0 0 12 20" fill="currentColor" aria-hidden="true"><path d="M6 0 0 10l6 3.5L12 10 6 0zM0 11.3 6 20l6-8.7L6 15 0 11.3z"/></svg>';
+
+  var grid = document.getElementById('nftGrid');
+  function renderNFTs() {
+    grid.innerHTML = '';
+    nfts.forEach(function (it, i) {
+      var isFav = favSet.has(String(i));
+      var el = document.createElement('article');
+      el.className = 'nft';
+      el.setAttribute('data-cat', it.cat);
+      el.innerHTML =
+        '<div class="nft-media">' +
+          '<span class="nft-chain"><span class="cdot" style="background:' + it.chain.color + '"></span>' + it.chain.name + '</span>' +
+          '<button class="nft-fav' + (isFav ? ' on' : '') + '" data-i="' + i + '" aria-label="Simpan ' + it.n + ' ke favorit" aria-pressed="' + (isFav ? 'true' : 'false') + '">' +
+            '<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>' +
+          '</button>' +
+          '<div class="art ' + it.art + '"></div>' +
+        '</div>' +
+        '<div class="nft-body">' +
+          '<div class="top">' +
+            '<div><h4>' + it.n + '</h4><div class="maker">oleh ' + it.c + '</div></div>' +
+            '<div class="rank">' + it.rank + '</div>' +
+          '</div>' +
+          '<div class="nft-meta">' +
+            '<div class="nft-price"><div class="lbl">Harga</div>' +
+              '<div class="eth">' + ethIco + ' ' + it.eth.toFixed(2) + '</div>' +
+              '<div class="idr">≈ ' + idr(it.eth) + '</div>' +
+            '</div>' +
+            '<button class="nft-buy">' + (it.cat === 'art' || it.cat === 'koleksi' ? 'Buy Now' : 'Tawar') + '</button>' +
+          '</div>' +
+        '</div>';
+      grid.appendChild(el);
+    });
+    bindFavs();
+  }
+
+  function bindFavs() {
+    grid.querySelectorAll('.nft-fav').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var k = b.getAttribute('data-i');
+        if (favSet.has(k)) { favSet.delete(k); b.classList.remove('on'); b.setAttribute('aria-pressed', 'false'); }
+        else { favSet.add(k); b.classList.add('on'); b.setAttribute('aria-pressed', 'true'); }
+        saveFavs();
+      });
+    });
+  }
+  renderNFTs();
+
+  /* ---------- CATEGORY FILTER ---------- */
+  var cats = { all: nfts.length, art: 0, koleksi: 0, foto: 0, musik: 0, game: 0 };
+  nfts.forEach(function (n) { cats[n.cat]++; });
+  Object.keys(cats).forEach(function (k) {
+    var el = document.getElementById('cnt-' + k);
+    if (el) el.textContent = cats[k];
+  });
+
+  var chips = document.querySelectorAll('#filterBar .chip');
+  chips.forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      chips.forEach(function (c) { c.classList.remove('active'); c.setAttribute('aria-selected', 'false'); });
+      chip.classList.add('active'); chip.setAttribute('aria-selected', 'true');
+      var f = chip.getAttribute('data-filter');
+      var shown = 0;
+      grid.querySelectorAll('.nft').forEach(function (card) {
+        var match = f === 'all' || card.getAttribute('data-cat') === f;
+        card.classList.toggle('hidden', !match);
+        if (match) shown++;
+      });
+      var existing = grid.querySelector('.empty-state');
+      if (existing) existing.remove();
+      if (shown === 0) {
+        var empty = document.createElement('div');
+        empty.className = 'empty-state';
+        empty.textContent = 'Belum ada karya di kategori ini.';
+        grid.appendChild(empty);
+      }
+    });
+  });
+
+  /* ---------- HERO FAV ---------- */
+  var heroFav = document.getElementById('heroFav');
+  heroFav.addEventListener('click', function () {
+    var on = heroFav.classList.toggle('on');
+    heroFav.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+
+  /* ---------- COUNTDOWN TIMERS ---------- */
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function makeCountdown(el, totalSec, onTick) {
+    var remaining = totalSec;
+    function update() {
+      if (remaining < 0) remaining = totalSec; // loop for demo
+      var d = Math.floor(remaining / 86400);
+      var h = Math.floor((remaining % 86400) / 3600);
+      var m = Math.floor((remaining % 3600) / 60);
+      var s = remaining % 60;
+      var setEl = function (t, v) { var n = el.querySelector('[data-t="' + t + '"]'); if (n) n.textContent = pad(v); };
+      setEl('d', d); setEl('h', h); setEl('m', m); setEl('s', s);
+      if (onTick) onTick(remaining);
+      remaining--;
+    }
+    update();
+    setInterval(update, 1000);
+  }
+
+  // Hero timer: ~5h 42m 18s
+  makeCountdown(document.getElementById('heroTimer'), 5 * 3600 + 42 * 60 + 18);
+
+  // Auction timer: 1d 8h 24m 57s + live bid increment
+  var aucBidEl = document.getElementById('aucBid');
+  var aucBid = 12.75;
+  makeCountdown(document.getElementById('aucTimer'), 1 * 86400 + 8 * 3600 + 24 * 60 + 57, function (rem) {
+    // occasionally raise the bid to feel live
+    if (rem % 17 === 0) {
+      aucBid += Math.round((Math.random() * 0.12 + 0.02) * 100) / 100;
+      aucBidEl.textContent = 'Ξ ' + aucBid.toFixed(2);
+    }
+  });
+
+  /* ---------- TRENDING COLLECTIONS TABLE ---------- */
+  var collections = [
+    { n: 'Sakti Genesis', items: '10.000 item', art: 'art-9', floor: 5.05, vol: 1240, chg: 18.4, verified: true, spark: [4,7,5,9,6,11,8] },
+    { n: 'Garuda Kuantum', items: '8.888 item', art: 'art-1', floor: 3.28, vol: 987, chg: 12.1, verified: true, spark: [3,4,6,5,8,7,10] },
+    { n: 'Batik Fraktal', items: '5.555 item', art: 'art-4', floor: 1.92, vol: 642, chg: -4.7, verified: true, spark: [9,7,8,6,5,6,4] },
+    { n: 'Cyber Wayang', items: '7.000 item', art: 'art-11', floor: 2.40, vol: 531, chg: 7.9, verified: false, spark: [4,5,4,6,7,6,8] },
+    { n: 'Nusantara Foto', items: '3.200 item', art: 'art-3', floor: 0.86, vol: 418, chg: 22.6, verified: true, spark: [2,4,3,6,5,8,9] },
+    { n: 'Gamelan Sound', items: '2.100 item', art: 'art-5', floor: 0.64, vol: 305, chg: -1.9, verified: false, spark: [6,5,7,6,5,4,5] },
+    { n: 'Pusaka Astral', items: '4.400 item', art: 'art-7', floor: 5.05, vol: 288, chg: 9.3, verified: true, spark: [5,6,5,7,8,7,9] }
+  ];
+
+  var collBody = document.getElementById('collBody');
+  collections.forEach(function (c, i) {
+    var maxS = Math.max.apply(null, c.spark);
+    var spark = c.spark.map(function (v) {
+      return '<span style="height:' + (v / maxS * 100) + '%"></span>';
+    }).join('');
+    var chgCls = c.chg >= 0 ? 'up' : 'down';
+    var chgTxt = (c.chg >= 0 ? '+' : '') + c.chg.toFixed(1) + '%';
+    var verified = c.verified ? '<span class="verified"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 2.1 3.2-.3 1 3 2.8 1.5-1 3 1 3-2.8 1.5-1 3-3.2-.3L12 22l-2.4-2.1-3.2.3-1-3L2.6 14.7l1-3-1-3 2.8-1.5 1-3 3.2.3z"/><path d="M9.5 12.5l1.8 1.8 3.5-3.8" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' : '';
+    var row = document.createElement('div');
+    row.className = 'coll-row';
+    row.innerHTML =
+      '<div class="coll-rank">' + (i + 1) + '</div>' +
+      '<div class="coll-name"><span class="coll-thumb"><span class="art ' + c.art + '"></span></span>' +
+        '<div><div class="nm">' + c.n + verified + '</div><div class="items">' + c.items + '</div></div></div>' +
+      '<div class="coll-cell c-floor">Ξ ' + c.floor.toFixed(2) + '<span class="idr">≈ ' + idr(c.floor) + '</span></div>' +
+      '<div class="coll-cell c-vol">Ξ ' + c.vol.toLocaleString('id-ID') + '<span class="idr">≈ ' + idr(c.vol) + '</span></div>' +
+      '<div class="chg ' + chgCls + ' c-chg">' + chgTxt + '</div>' +
+      '<div class="spark c-spark" aria-hidden="true">' + spark + '</div>';
+    collBody.appendChild(row);
+  });
+
+  // Tab visual toggle (demo)
+  document.querySelectorAll('.tabs').forEach(function (grp) {
+    grp.querySelectorAll('.tab').forEach(function (t) {
+      t.addEventListener('click', function () {
+        grp.querySelectorAll('.tab').forEach(function (x) { x.classList.remove('active'); x.setAttribute('aria-selected', 'false'); });
+        t.classList.add('active'); t.setAttribute('aria-selected', 'true');
+      });
+    });
+  });
+
+  /* ---------- TOP CREATORS ---------- */
+  var creators = [
+    { n: 'Raka Wicaksana', h: '@rakawx', cover: 'art-1', av: 'art-6', vol: 842, verified: true },
+    { n: 'Ayu Pramesti', h: '@ayup', cover: 'art-9', av: 'art-3', vol: 715, verified: true },
+    { n: 'Bimo Aditya', h: '@bimoa', cover: 'art-4', av: 'art-8', vol: 604, verified: true },
+    { n: 'Dewi Larasati', h: '@dewil', cover: 'art-12', av: 'art-5', vol: 488, verified: false },
+    { n: 'Fajar Nugroho', h: '@fajarn', cover: 'art-11', av: 'art-2', vol: 421, verified: true },
+    { n: 'Sekar Ayu', h: '@sekar', cover: 'art-10', av: 'art-7', vol: 356, verified: false }
+  ];
+  var cGrid = document.getElementById('creatorsGrid');
+  creators.forEach(function (c, i) {
+    var verified = c.verified ? '<span class="verified"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 2.1 3.2-.3 1 3 2.8 1.5-1 3 1 3-2.8 1.5-1 3-3.2-.3L12 22l-2.4-2.1-3.2.3-1-3L2.6 14.7l1-3-1-3 2.8-1.5 1-3 3.2.3z"/><path d="M9.5 12.5l1.8 1.8 3.5-3.8" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' : '';
+    var el = document.createElement('article');
+    el.className = 'creator-card reveal';
+    el.innerHTML =
+      '<div class="creator-cover art ' + c.cover + '"></div>' +
+      '<div class="av-wrap"><span class="rank-badge">' + (i + 1) + '</span><span class="av art ' + c.av + '"></span></div>' +
+      '<div class="info"><h4>' + c.n + verified + '</h4><div class="h">' + c.h + '</div>' +
+        '<div class="vol">Ξ ' + c.vol + '<span>volume total</span></div></div>';
+    cGrid.appendChild(el);
+  });
+
+  /* ---------- STAT / HERO COUNTERS ---------- */
+  function animateCount(el) {
+    var target = parseFloat(el.getAttribute('data-count')) || 0;
+    var prefix = el.getAttribute('data-prefix') || '';
+    var suffix = el.getAttribute('data-suffix') || '';
+    var dur = 1500, start = null;
+    function step(ts) {
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = prefix + Math.round(target * eased).toLocaleString('id-ID') + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ---------- REVEAL + COUNTER OBSERVERS ---------- */
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var counted = new Set();
+
+  if ('IntersectionObserver' in window && !reduce) {
+    var revObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); revObs.unobserve(e.target); }
+      });
+    }, { threshold: 0.14 });
+    document.querySelectorAll('.reveal').forEach(function (el) { revObs.observe(el); });
+
+    var cntObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting && !counted.has(e.target)) {
+          counted.add(e.target); animateCount(e.target); cntObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    document.querySelectorAll('[data-count]').forEach(function (el) { cntObs.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
+    document.querySelectorAll('[data-count]').forEach(function (el) {
+      var prefix = el.getAttribute('data-prefix') || '';
+      var suffix = el.getAttribute('data-suffix') || '';
+      el.textContent = prefix + (parseFloat(el.getAttribute('data-count')) || 0).toLocaleString('id-ID') + suffix;
+    });
+  }
+})();
+</script>
+</body>
+</html>
