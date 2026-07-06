@@ -32,7 +32,19 @@
   --font-body: 'DM Sans', sans-serif;
   --radius: 10px;
   --radius-sm: 6px;
+  --radius-lg: 20px;
   --transition: 0.2s ease;
+
+  /* Signature surface cards — full-bleed color blocks, one per use case,
+     replacing shadow-based depth with color-block depth. */
+  --sig-coral:   #B3401F;
+  --sig-forest:  #14532D;
+  --sig-dark:    #15161C;
+  --sig-peach:   #FBD9B7;
+  --sig-mint:    #C2E9D6;
+  --sig-mustard: #F0C868;
+  --sig-on-dark: #FBF7F2;
+  --sig-on-light: #1A1710;
 }
 [data-theme="dark"] {
   --bg:    #111111;
@@ -478,7 +490,25 @@ ul { list-style: none; }
 .usecase-panel.active { display: block; }
 .usecase-content {
   display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center;
+  padding: clamp(1.75rem, 4vw, 3rem);
+  border-radius: var(--radius-lg);
+  transition: background .35s ease;
 }
+/* Signature surface per use case — color-block depth instead of shadow,
+   borrowed from Airtable's full-bleed card pattern (see DESIGN.md).
+   Big 3 (coral/forest/dark) get white type; pastel 3 get ink type. */
+#tab-crm       .usecase-content { background: var(--sig-coral); }
+#tab-project   .usecase-content { background: var(--sig-forest); }
+#tab-inventory .usecase-content { background: var(--sig-dark); }
+#tab-hr        .usecase-content { background: var(--sig-peach); }
+#tab-bug       .usecase-content { background: var(--sig-mustard); }
+#tab-content   .usecase-content { background: var(--sig-mint); }
+
+#tab-crm .usecase-info h3, #tab-project .usecase-info h3, #tab-inventory .usecase-info h3 { color: var(--sig-on-dark); }
+#tab-crm .usecase-info p,  #tab-project .usecase-info p,  #tab-inventory .usecase-info p  { color: rgba(251,247,242,.78); }
+#tab-hr .usecase-info h3, #tab-bug .usecase-info h3, #tab-content .usecase-info h3 { color: var(--sig-on-light); }
+#tab-hr .usecase-info p,  #tab-bug .usecase-info p,  #tab-content .usecase-info p  { color: rgba(26,23,16,.72); }
+
 .usecase-info h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.75rem; }
 .usecase-info p { font-size: 0.9rem; color: var(--text2); line-height: 1.7; margin-bottom: 1rem; }
 .usecase-fields { display: flex; flex-wrap: wrap; gap: 0.4rem; }
@@ -487,21 +517,29 @@ ul { list-style: none; }
   font-weight: 500; border: 1.5px solid var(--border);
   color: var(--text2); background: var(--bg);
 }
+#tab-crm .usecase-field-tag, #tab-project .usecase-field-tag, #tab-inventory .usecase-field-tag {
+  background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.22);
+}
+#tab-hr .usecase-field-tag, #tab-bug .usecase-field-tag, #tab-content .usecase-field-tag {
+  background: rgba(0,0,0,.05); border-color: rgba(0,0,0,.12);
+}
 .usecase-preview {
-  background: var(--bg2); border-radius: var(--radius);
-  border: 1px solid var(--border); overflow: hidden;
+  background: #FFFFFF; border-radius: 14px;
+  border: none; overflow: hidden;
+  box-shadow: 0 20px 45px rgba(0,0,0,.22), 0 4px 14px rgba(0,0,0,.12);
 }
 .usecase-preview-title {
-  padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border);
-  font-size: 0.72rem; font-weight: 600; color: var(--text3);
+  padding: 0.6rem 0.8rem; border-bottom: 1px solid #EFEFEF;
+  font-size: 0.72rem; font-weight: 600; color: #8A8A8A;
   display: flex; align-items: center; gap: 0.4rem;
+  background: #FAFAFA;
 }
 .usecase-table { width: 100%; border-collapse: collapse; font-size: 0.72rem; }
 .usecase-table th, .usecase-table td {
   padding: 0.4rem 0.6rem; text-align: left;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid #EFEFEF; color: #1A1A1A;
 }
-.usecase-table th { color: var(--text3); font-weight: 500; font-size: 0.65rem; }
+.usecase-table th { color: #9A9A9A; font-weight: 500; font-size: 0.65rem; }
 
 /* ============================================================
    COLLABORATION
