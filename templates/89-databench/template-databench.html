@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Databench — No-Code Database</title>
+<meta name="description" content="Databench adalah database no-code untuk tim engineering.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DATABENCH — TANPA token Refero. Cuma modal query skill
+   ui-ux-pro-max ("no-code database devtools dark mode tool"
+   --design-system), tanpa brand acuan spesifik.
+   ------------------------------------------------------------
+   Palet keluaran skill: slate #1E293B + hijau #22C55E + navy
+   #0F172A + Fira Code/Fira Sans. Ini kombinasi Tailwind
+   slate-900+green-500 yang sangat umum dipakai dashboard AI —
+   BUKAN ditarik dari brand nyata manapun, beda dari T87/T88 yang
+   tiap hex-nya ada sumber terukur.
+   ============================================================ */
+:root {
+  --obsidian: #0F172A;   /* Background */
+  --ash:      #1E293B;   /* Primary/surface */
+  --charcoal: #334155;   /* Secondary/border */
+  --slate:    #475569;   /* Border kontras lebih tinggi */
+  --graphite: #64748B;   /* stroke ikon */
+  --snow:     #F8FAFC;   /* Foreground */
+  --silver:   #CBD5E1;   /* teks sekunder */
+  --smoke:    #94A3B8;   /* teks tersier/caption */
+  --green:      #22C55E; /* Accent/CTA */
+  --green-link: #22C55E;
+  --green-hover:#16A34A;
+  --green-bg:   #14532D;
+  --radius-btn: 8px;
+  --radius-card: 12px;
+  --radius-input: 8px;
+  --font-body: 'Fira Sans', sans-serif;
+  --font-mono: 'Fira Code', monospace;
+  --transition: .2s ease;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--obsidian);
+  color: var(--silver);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+button { font-family: inherit; cursor: pointer; }
+ul { list-style: none; }
+:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; border-radius: 4px; }
+
+.container { max-width: 1180px; margin: 0 auto; padding: 0 1.5rem; }
+.section { padding: 5.5rem 0; }
+h1, h2, h3, h4 { font-weight: 500; line-height: 1.2; color: var(--snow); }
+.eyebrow { font-size: .78rem; color: var(--smoke); margin-bottom: .9rem; }
+.sec-head { max-width: 620px; margin-bottom: 3rem; }
+.sec-head.center { margin-inline: auto; text-align: center; }
+.sec-head h2 { font-size: clamp(1.7rem, 3.6vw, 2.4rem); margin-bottom: .85rem; }
+.sec-head p { color: var(--silver); line-height: 1.7; }
+
+/* ============================================================
+   BUTTONS — pill only. No shadow anywhere in this file.
+   ============================================================ */
+.btn {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .75rem 1.5rem; border-radius: var(--radius-btn);
+  font-size: .92rem; font-weight: 500; border: 1px solid transparent;
+  transition: all var(--transition); min-height: 44px;
+}
+.btn-primary { background: var(--green); color: #06251a; }
+.btn-primary:hover { background: var(--green-hover); }
+.btn-outline { background: transparent; color: var(--snow); border-color: var(--charcoal); }
+.btn-outline:hover { border-color: var(--silver); }
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.navbar { position: sticky; top: 0; z-index: 100; background: rgba(15,23,42,.85); backdrop-filter: blur(10px); border-bottom: 1px solid var(--charcoal); }
+.nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; }
+.logo { display: flex; align-items: center; gap: .55rem; font-weight: 500; font-size: 1.05rem; }
+.logo-mark { width: 20px; height: 20px; border-radius: 5px; background: var(--green); }
+.nav-links { display: flex; gap: 1.8rem; }
+.nav-links a { font-size: .9rem; color: var(--silver); }
+.nav-links a:hover, .nav-links a.active { color: var(--green); }
+.nav-right { display: flex; align-items: center; gap: .9rem; }
+.hamburger { display: none; flex-direction: column; gap: 4px; background: none; border: none; min-height: 44px; min-width: 44px; align-items: center; justify-content: center; }
+.hamburger span { width: 20px; height: 1.5px; background: var(--snow); }
+.mobile-menu { display: none; }
+.mobile-menu.open { display: flex; flex-direction: column; gap: .3rem; padding: 1rem 0 1.4rem; border-top: 1px solid var(--charcoal); }
+.mobile-menu a { padding: .6rem 0; font-size: .95rem; color: var(--silver); }
+
+/* ============================================================
+   HERO — no gradient, no glow. Flat obsidian, hairline border table.
+   ============================================================ */
+.hero { padding: clamp(3.5rem, 8vw, 6rem) 0 3rem; text-align: center; }
+.hero .eyebrow { text-align: center; }
+.hero h1 { font-size: clamp(2.1rem, 5.2vw, 3.4rem); max-width: 760px; margin: 0 auto 1.2rem; }
+.hero p.lead { color: var(--silver); max-width: 540px; margin: 0 auto 2rem; font-size: 1.02rem; line-height: 1.7; }
+.hero-actions { display: flex; gap: .85rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3rem; }
+.hero-note { font-size: .8rem; color: var(--smoke); margin-top: 1.2rem; }
+
+.hero-table { max-width: 760px; margin: 0 auto; background: var(--ash); border: 1px solid var(--charcoal); border-radius: var(--radius-card); overflow: hidden; text-align: left; }
+.hero-table-bar { padding: .7rem 1rem; border-bottom: 1px solid var(--charcoal); font-size: .78rem; color: var(--smoke); font-family: var(--font-mono); }
+.hero-table table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: .82rem; }
+.hero-table th, .hero-table td { padding: .65rem 1rem; text-align: left; border-bottom: 1px solid var(--charcoal); color: var(--silver); }
+.hero-table th { color: var(--smoke); font-weight: 400; font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; }
+.hero-table tr:last-child td { border-bottom: none; }
+.hero-table td.col-status { color: var(--green); }
+
+/* ============================================================
+   FIELD TYPES — monokrom, satu badge hijau, bukan pelangi
+   ============================================================ */
+.field-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+.field-card { background: var(--ash); border: 1px solid var(--charcoal); border-radius: var(--radius-card); padding: 1.25rem; transition: border-color var(--transition); }
+.field-card:hover { border-color: var(--slate); }
+.field-badge { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: var(--radius-input); background: rgba(34,197,94,.12); color: var(--green); font-family: var(--font-mono); font-size: .75rem; font-weight: 500; margin-bottom: .8rem; }
+.field-card h4 { font-size: .92rem; margin-bottom: .4rem; }
+.field-card p { font-size: .82rem; color: var(--smoke); line-height: 1.55; }
+
+/* ============================================================
+   VIEWS
+   ============================================================ */
+.views-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1.1rem; }
+.view-card { background: var(--ash); border: 1px solid var(--charcoal); border-radius: var(--radius-card); overflow: hidden; transition: border-color var(--transition); }
+.view-card:hover { border-color: var(--slate); }
+.view-preview { height: 110px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--charcoal); padding: .8rem; }
+.view-info { padding: 1rem 1.1rem; }
+.view-info h4 { font-size: .92rem; margin-bottom: .3rem; }
+.view-info p { font-size: .8rem; color: var(--smoke); line-height: 1.5; }
+.mini-kanban { display: flex; gap: .4rem; width: 100%; }
+.mini-kanban-col { flex: 1; border: 1px solid var(--charcoal); border-radius: 6px; padding: .35rem; }
+.mini-kanban-col .bar { height: 5px; border-radius: 3px; background: var(--slate); margin-bottom: .3rem; }
+.mini-kanban-col .bar.on { background: var(--green); }
+.mini-grid-preview { width: 100%; display: grid; grid-template-columns: repeat(3,1fr); gap: 3px; }
+.mini-grid-preview span { height: 14px; border-radius: 3px; background: var(--slate); }
+.mini-cal-preview { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; width: 100%; }
+.mini-cal-preview span { aspect-ratio: 1; border-radius: 2px; background: var(--slate); }
+.mini-cal-preview span.on { background: var(--green); }
+.mini-gallery-preview { display: grid; grid-template-columns: repeat(3,1fr); gap: 3px; width: 100%; }
+.mini-gallery-preview span { aspect-ratio: 1; border-radius: 3px; background: var(--slate); }
+
+/* ============================================================
+   USE-CASE TABS — monokrom, panel ash, tanpa signature-color
+   ============================================================ */
+.usecase-tabs { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: 1.6rem; }
+.usecase-tab { padding: .5rem 1.1rem; border-radius: var(--radius-btn); font-size: .84rem; border: 1px solid var(--charcoal); background: transparent; color: var(--silver); min-height: 44px; }
+.usecase-tab.active { background: var(--green); color: #06251a; border-color: var(--green); }
+.usecase-tab:hover:not(.active) { border-color: var(--slate); color: var(--snow); }
+.usecase-panel { display: none; }
+.usecase-panel.active { display: block; }
+.usecase-content { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; background: var(--ash); border: 1px solid var(--charcoal); border-radius: var(--radius-card); padding: 2.2rem; }
+.usecase-content h3 { font-size: 1.2rem; margin-bottom: .7rem; }
+.usecase-content p { color: var(--silver); line-height: 1.7; margin-bottom: 1rem; }
+.usecase-fields { display: flex; flex-wrap: wrap; gap: .4rem; }
+.usecase-field-tag { font-size: .74rem; padding: .25rem .65rem; border-radius: var(--radius-btn); border: 1px solid var(--slate); color: var(--silver); font-family: var(--font-mono); }
+.usecase-preview { background: var(--obsidian); border: 1px solid var(--charcoal); border-radius: var(--radius-input); overflow: hidden; }
+.usecase-preview-title { padding: .6rem .8rem; border-bottom: 1px solid var(--charcoal); font-size: .74rem; color: var(--smoke); font-family: var(--font-mono); }
+.usecase-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: .76rem; }
+.usecase-table th, .usecase-table td { padding: .5rem .7rem; text-align: left; border-bottom: 1px solid var(--charcoal); color: var(--silver); }
+.usecase-table th { color: var(--smoke); font-weight: 400; }
+.usecase-table tr:last-child td { border-bottom: none; }
+
+/* ============================================================
+   INTEGRATIONS
+   ============================================================ */
+.integ-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .85rem; }
+.integ-card { display: flex; align-items: center; gap: .6rem; background: var(--ash); border: 1px solid var(--charcoal); border-radius: var(--radius-input); padding: .85rem 1rem; font-size: .86rem; transition: border-color var(--transition); }
+.integ-card:hover { border-color: var(--green-hover); }
+
+/* ============================================================
+   PRICING — satu warna, tier unggulan cuma beda border
+   ============================================================ */
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+.price-card { background: var(--ash); border: 1px solid var(--charcoal); border-radius: var(--radius-card); padding: 2rem; }
+.price-card.featured { border-color: var(--green); }
+.price-name { font-size: .95rem; margin-bottom: 1rem; color: var(--silver); }
+.price-amount { font-family: var(--font-mono); font-size: 2.2rem; font-weight: 500; margin-bottom: .3rem; }
+.price-amount span { font-size: .9rem; font-weight: 400; color: var(--smoke); }
+.price-muted { font-size: .85rem; color: var(--smoke); margin-bottom: 1.6rem; }
+.price-feat { font-size: .84rem; padding: .55rem 0; border-top: 1px solid var(--charcoal); color: var(--silver); }
+.price-cta { width: 100%; justify-content: center; margin-top: 1.6rem; }
+
+/* ============================================================
+   FAQ
+   ============================================================ */
+.faq-item { border-bottom: 1px solid var(--charcoal); }
+.faq-q { width: 100%; text-align: left; padding: 1.2rem 0; background: none; border: none; color: var(--snow); font-size: .95rem; display: flex; justify-content: space-between; align-items: center; min-height: 44px; }
+.faq-q .icon { color: var(--smoke); transition: transform var(--transition); }
+.faq-item.open .faq-q .icon { transform: rotate(45deg); color: var(--green); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height var(--transition); color: var(--silver); font-size: .88rem; line-height: 1.7; }
+.faq-item.open .faq-a { max-height: 220px; padding-bottom: 1.2rem; }
+
+/* ============================================================
+   CTA BAND & FOOTER
+   ============================================================ */
+.cta-band { background: var(--ash); border: 1px solid var(--charcoal); border-radius: var(--radius-card); padding: clamp(2.5rem, 6vw, 4rem); text-align: center; }
+.cta-band h2 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); margin-bottom: .9rem; }
+.cta-band p { color: var(--silver); margin-bottom: 1.8rem; }
+
+.footer { border-top: 1px solid var(--charcoal); padding: 3rem 0 1.8rem; }
+.footer-grid { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 2rem; margin-bottom: 2.2rem; }
+.footer-col h5 { font-size: .8rem; color: var(--snow); margin-bottom: .8rem; }
+.footer-col a { display: block; font-size: .86rem; color: var(--smoke); padding: .28rem 0; }
+.footer-col a:hover { color: var(--green-link); }
+.footer-bottom { display: flex; justify-content: space-between; padding-top: 1.6rem; border-top: 1px solid var(--charcoal); font-size: .8rem; color: var(--smoke); flex-wrap: wrap; gap: .7rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; scroll-behavior: auto !important; }
+}
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .usecase-content { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) {
+  .footer-grid { grid-template-columns: 1fr; }
+  .hero-table { font-size: .78rem; }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-inner">
+    <a href="#" class="logo"><span class="logo-mark"></span> Databench</a>
+    <div class="nav-links">
+      <a href="#fitur">Fitur</a>
+      <a href="#usecase">Use Cases</a>
+      <a href="#harga">Harga</a>
+    </div>
+    <div class="nav-right">
+      <a href="#harga" class="btn btn-primary">Mulai Gratis</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="container mobile-menu" id="mobileMenu">
+    <a href="#fitur">Fitur</a>
+    <a href="#usecase">Use Cases</a>
+    <a href="#harga">Harga</a>
+  </div>
+</nav>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero container">
+  <span class="eyebrow">DATABASE UNTUK TIM DEVELOPER</span>
+  <h1>Database no-code yang terasa seperti terminal, bukan mainan.</h1>
+  <p class="lead">Databench database relasional penuh, tampilan spreadsheet, tanpa noise visual. Satu warna aksen, seribu detail teknis di baliknya.</p>
+  <div class="hero-actions">
+    <a href="#harga" class="btn btn-primary">Mulai Gratis →</a>
+    <a href="#fitur" class="btn btn-outline">Lihat Fitur</a>
+  </div>
+  <div class="hero-table">
+    <div class="hero-table-bar">$ databench query --table=deployments --limit=3</div>
+    <table>
+      <thead><tr><th>id</th><th>project</th><th>status</th><th>region</th></tr></thead>
+      <tbody>
+        <tr><td>dpl_0912</td><td>api-gateway</td><td class="col-status">success</td><td>sin1</td></tr>
+        <tr><td>dpl_0911</td><td>web-app</td><td class="col-status">success</td><td>sin1</td></tr>
+        <tr><td>dpl_0910</td><td>worker-cron</td><td>building</td><td>sin1</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="hero-note">Tanpa kartu kredit &middot; Import dari PostgreSQL/CSV dalam satu klik</p>
+</section>
+
+<!-- ============================================================
+     FIELD TYPES
+     ============================================================ -->
+<section class="section container" id="fitur">
+  <div class="sec-head">
+    <span class="eyebrow">TIPE FIELD</span>
+    <h2>8 tipe data, satu bahasa visual</h2>
+    <p>Tidak ada pelangi warna per kolom. Satu badge hijau, dibedakan lewat label dan ikon monospace saja.</p>
+  </div>
+  <div class="field-grid">
+    <div class="field-card"><div class="field-badge">Aa</div><h4>Text</h4><p>String biasa, rich text, atau format panjang.</p></div>
+    <div class="field-card"><div class="field-badge">1.2</div><h4>Number</h4><p>Integer, desimal, mata uang dengan presisi tetap.</p></div>
+    <div class="field-card"><div class="field-badge">◉</div><h4>Enum</h4><p>Pilihan tunggal dari daftar tervalidasi di level skema.</p></div>
+    <div class="field-card"><div class="field-badge">✓</div><h4>Boolean</h4><p>True/false, dipetakan langsung ke tipe SQL native.</p></div>
+    <div class="field-card"><div class="field-badge">📅</div><h4>Timestamp</h4><p>Timezone-aware, ISO 8601 di seluruh API.</p></div>
+    <div class="field-card"><div class="field-badge">FK</div><h4>Relation</h4><p>Foreign key ke tabel lain, dengan cascade rules.</p></div>
+    <div class="field-card"><div class="field-badge">{}</div><h4>JSONB</h4><p>Struktur bebas, tetap bisa di-query dan di-index.</p></div>
+    <div class="field-card"><div class="field-badge">ƒ</div><h4>Computed</h4><p>Kolom hasil formula, dihitung ulang di level database.</p></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     VIEWS
+     ============================================================ -->
+<section class="section container">
+  <div class="sec-head">
+    <span class="eyebrow">TAMPILAN</span>
+    <h2>Satu tabel, empat cara melihat</h2>
+  </div>
+  <div class="views-grid">
+    <div class="view-card">
+      <div class="view-preview"><div class="mini-grid-preview"><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
+      <div class="view-info"><h4>Grid</h4><p>Tampilan default, mirip spreadsheet penuh.</p></div>
+    </div>
+    <div class="view-card">
+      <div class="view-preview"><div class="mini-kanban"><div class="mini-kanban-col"><div class="bar on"></div><div class="bar"></div></div><div class="mini-kanban-col"><div class="bar"></div><div class="bar on"></div></div><div class="mini-kanban-col"><div class="bar on"></div><div class="bar on"></div></div></div></div>
+      <div class="view-info"><h4>Kanban</h4><p>Kelompokkan record berdasarkan status.</p></div>
+    </div>
+    <div class="view-card">
+      <div class="view-preview"><div class="mini-cal-preview"><span></span><span class="on"></span><span></span><span></span><span class="on"></span><span></span><span></span></div></div>
+      <div class="view-info"><h4>Kalender</h4><p>Field timestamp jadi navigasi tanggal.</p></div>
+    </div>
+    <div class="view-card">
+      <div class="view-preview"><div class="mini-gallery-preview"><span></span><span></span><span></span></div></div>
+      <div class="view-info"><h4>Gallery</h4><p>Cocok untuk record dengan lampiran media.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     USE CASES
+     ============================================================ -->
+<section class="section container" id="usecase">
+  <div class="sec-head">
+    <span class="eyebrow">USE CASE</span>
+    <h2>Bukan cuma buat startup — buat tim engineering</h2>
+  </div>
+  <div class="usecase-tabs">
+    <button class="usecase-tab active" data-tab="feature">Feature Flags</button>
+    <button class="usecase-tab" data-tab="incident">Incident Log</button>
+    <button class="usecase-tab" data-tab="api">API Keys</button>
+  </div>
+  <div class="usecase-panel active" id="tab-feature">
+    <div class="usecase-content">
+      <div>
+        <h3>Feature Flags</h3>
+        <p>Kelola rollout fitur per environment tanpa deploy ulang. Toggle langsung dari record, tersinkron ke API real-time.</p>
+        <div class="usecase-fields">
+          <span class="usecase-field-tag">Aa key</span>
+          <span class="usecase-field-tag">✓ enabled</span>
+          <span class="usecase-field-tag">◉ environment</span>
+          <span class="usecase-field-tag">1.2 rollout_pct</span>
+        </div>
+      </div>
+      <div class="usecase-preview">
+        <div class="usecase-preview-title">flags — production</div>
+        <table class="usecase-table">
+          <thead><tr><th>key</th><th>enabled</th><th>rollout</th></tr></thead>
+          <tbody>
+            <tr><td>new_checkout</td><td>true</td><td>100%</td></tr>
+            <tr><td>dark_export</td><td>true</td><td>25%</td></tr>
+            <tr><td>beta_search</td><td>false</td><td>0%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="usecase-panel" id="tab-incident">
+    <div class="usecase-content">
+      <div>
+        <h3>Incident Log</h3>
+        <p>Catat insiden produksi, severity, dan waktu resolusi dalam satu base yang bisa di-query lintas layanan.</p>
+        <div class="usecase-fields">
+          <span class="usecase-field-tag">Aa title</span>
+          <span class="usecase-field-tag">◉ severity</span>
+          <span class="usecase-field-tag">📅 opened_at</span>
+          <span class="usecase-field-tag">FK service</span>
+        </div>
+      </div>
+      <div class="usecase-preview">
+        <div class="usecase-preview-title">incidents — last 7d</div>
+        <table class="usecase-table">
+          <thead><tr><th>title</th><th>severity</th><th>service</th></tr></thead>
+          <tbody>
+            <tr><td>Latency spike</td><td>sev2</td><td>api-gateway</td></tr>
+            <tr><td>Queue backlog</td><td>sev3</td><td>worker-cron</td></tr>
+            <tr><td>Auth timeout</td><td>sev1</td><td>auth-svc</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="usecase-panel" id="tab-api">
+    <div class="usecase-content">
+      <div>
+        <h3>API Keys</h3>
+        <p>Terbitkan dan cabut API key per project, dengan scope dan rate limit tersimpan langsung sebagai kolom.</p>
+        <div class="usecase-fields">
+          <span class="usecase-field-tag">Aa name</span>
+          <span class="usecase-field-tag">{} scopes</span>
+          <span class="usecase-field-tag">1.2 rate_limit</span>
+          <span class="usecase-field-tag">✓ revoked</span>
+        </div>
+      </div>
+      <div class="usecase-preview">
+        <div class="usecase-preview-title">api_keys — org_4471</div>
+        <table class="usecase-table">
+          <thead><tr><th>name</th><th>rate_limit</th><th>revoked</th></tr></thead>
+          <tbody>
+            <tr><td>ci-pipeline</td><td>1000/min</td><td>false</td></tr>
+            <tr><td>mobile-app</td><td>500/min</td><td>false</td></tr>
+            <tr><td>legacy-cron</td><td>100/min</td><td>true</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     INTEGRATIONS
+     ============================================================ -->
+<section class="section container">
+  <div class="sec-head">
+    <span class="eyebrow">INTEGRASI</span>
+    <h2>Terhubung ke stack yang sudah kamu pakai</h2>
+  </div>
+  <div class="integ-grid">
+    <div class="integ-card">⬡ Vercel</div>
+    <div class="integ-card">◈ GitHub Actions</div>
+    <div class="integ-card">⬢ Zapier</div>
+    <div class="integ-card">◆ n8n</div>
+    <div class="integ-card">▲ Next.js</div>
+    <div class="integ-card">⬣ Postgres</div>
+    <div class="integ-card">◐ Slack</div>
+    <div class="integ-card">⬡ REST API</div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PRICING
+     ============================================================ -->
+<section class="section container" id="harga">
+  <div class="sec-head center">
+    <span class="eyebrow">HARGA</span>
+    <h2>Bayar sesuai skala, bukan sesuai jumlah kolom</h2>
+  </div>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-name">Free</div>
+      <div class="price-amount">$0<span>/bulan</span></div>
+      <div class="price-muted">Untuk proyek sisi/prototipe</div>
+      <div class="price-feat">2 project, 500MB storage</div>
+      <div class="price-feat">50rb baris/bulan</div>
+      <a href="#" class="btn btn-outline price-cta">Mulai Gratis</a>
+    </div>
+    <div class="price-card featured">
+      <div class="price-name">Pro</div>
+      <div class="price-amount">$25<span>/bulan</span></div>
+      <div class="price-muted">Untuk tim yang sudah production</div>
+      <div class="price-feat">Project tanpa batas</div>
+      <div class="price-feat">8GB storage, daily backup</div>
+      <a href="#" class="btn btn-primary price-cta">Pilih Pro</a>
+    </div>
+    <div class="price-card">
+      <div class="price-name">Team</div>
+      <div class="price-amount">Custom</div>
+      <div class="price-muted">SSO, audit log, SLA dedicated</div>
+      <div class="price-feat">Region custom + compliance</div>
+      <div class="price-feat">Dukungan prioritas 24/7</div>
+      <a href="#" class="btn btn-outline price-cta">Hubungi Sales</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FAQ
+     ============================================================ -->
+<section class="section container">
+  <div class="sec-head center">
+    <span class="eyebrow">FAQ</span>
+    <h2>Pertanyaan yang sering ditanyakan</h2>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q">Apakah ini beneran database SQL? <span class="icon">+</span></button>
+    <div class="faq-a">Ya. Setiap base adalah database relasional penuh, bisa diakses lewat SQL editor, REST API, atau UI grid.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q">Bisa migrasi dari database lama? <span class="icon">+</span></button>
+    <div class="faq-a">Bisa import langsung dari dump PostgreSQL atau CSV, struktur kolom terdeteksi otomatis.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q">Ada mode terang (light mode)? <span class="icon">+</span></button>
+    <div class="faq-a">Tidak. Databench dirancang dark-only secara sengaja — satu canvas gelap konsisten, tanpa varian terang.</div>
+  </div>
+</section>
+
+<section class="container" style="padding-bottom: 5.5rem;">
+  <div class="cta-band">
+    <h2>Mulai bangun base pertamamu</h2>
+    <p>Tanpa kartu kredit, tanpa setup server, langsung query dalam hitungan menit.</p>
+    <a href="#harga" class="btn btn-primary">Mulai Gratis →</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="logo" style="margin-bottom:.7rem;"><span class="logo-mark"></span> Databench</div>
+        <p style="font-size:.84rem;color:var(--smoke);max-width:220px;">Database no-code untuk tim developer.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Produk</h5>
+        <a href="#fitur">Fitur</a>
+        <a href="#usecase">Use Cases</a>
+        <a href="#harga">Harga</a>
+      </div>
+      <div class="footer-col">
+        <h5>Developer</h5>
+        <a href="#">Dokumentasi</a>
+        <a href="#">API Reference</a>
+        <a href="#">Status</a>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <a href="#">Privasi</a>
+        <a href="#">Syarat Layanan</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Databench. Semua hak dilindungi.</span>
+      <span>Dark-only, sengaja.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+mobileMenu.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+});
+
+document.querySelectorAll('.usecase-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.usecase-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.usecase-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+});
+</script>
+</body>
+</html>
