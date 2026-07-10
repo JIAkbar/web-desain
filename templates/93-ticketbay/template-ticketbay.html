@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ticketbay — Live Chat & Ticketing untuk Tim Support</title>
+<meta name="description" content="Ticketbay gabungin live chat dan ticketing dalam satu antrian prioritas buat tim customer support B2B.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TICKETBAY — Application Chrome recipe (kemampuan-web-dev.md §125)
+   Variasi ke-2 dari kategori Helpdesk (beda dari Deskflow):
+   hero split, aksen amber-orange, fokus antrian prioritas.
+   ============================================================ */
+:root {
+  --bg: #FFFFFF; --bg2: #FBF8F4; --bg3: #F3ECE1;
+  --text: #201A12; --text2: #5C5142; --text3: #948873;
+  --border: #EAE1D2;
+  --accent1: #EA580C; --accent2: #F59E0B;
+  --accent: #EA580C; --accent-soft: rgba(234,88,12,.1);
+  --success: #16A34A; --warn: #D97706; --danger: #DC2626;
+  --shadow-lg: 0 16px 32px rgba(32,26,18,.14), 0 4px 10px rgba(32,26,18,.06);
+  --font: 'DM Sans', sans-serif;
+  --radius: 12px; --radius-sm: 8px; --radius-lg: 20px;
+  --transition: .2s ease;
+}
+[data-theme="dark"] {
+  --bg: #1A1611; --bg2: #211C15; --bg3: #2B241A;
+  --text: #F7F2E9; --text2: #C2B7A2; --text3: #7C725F;
+  --border: #362E22;
+  --shadow-lg: 0 20px 40px rgba(0,0,0,.5);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; transition: background var(--transition), color var(--transition); -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+button { font-family: inherit; cursor: pointer; }
+ul { list-style: none; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+.section { padding: clamp(3.5rem, 7vw, 6rem) 0; }
+.section-alt { background: var(--bg2); }
+.eyebrow { font-size: .78rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--accent); margin-bottom: .9rem; display: block; }
+.sec-head { max-width: 640px; margin-bottom: 3rem; }
+.sec-head.center { margin-inline: auto; text-align: center; }
+.sec-head h2 { font-size: clamp(1.7rem, 3.8vw, 2.5rem); font-weight: 800; line-height: 1.2; margin-bottom: .85rem; }
+.sec-head p { color: var(--text2); line-height: 1.7; }
+.btn { display: inline-flex; align-items: center; gap: .5rem; padding: .75rem 1.5rem; border-radius: var(--radius-sm); font-size: .92rem; font-weight: 600; border: 1px solid transparent; transition: all var(--transition); min-height: 44px; }
+.btn-primary { background: linear-gradient(135deg, var(--accent1), var(--accent2)); color: #fff; }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+.btn-outline { background: var(--bg); color: var(--text); border-color: var(--border); }
+.btn-outline:hover { border-color: var(--text3); }
+.navbar { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,.85); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+[data-theme="dark"] .navbar { background: rgba(26,22,17,.85); }
+.nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; gap: 1rem; }
+.logo { display: flex; align-items: center; gap: .55rem; font-weight: 800; font-size: 1.1rem; }
+.logo-mark { width: 24px; height: 24px; border-radius: 7px; background: linear-gradient(135deg, var(--accent1), var(--accent2)); }
+.nav-links { display: flex; gap: 1.8rem; }
+.nav-links a { font-size: .9rem; color: var(--text2); font-weight: 500; }
+.nav-links a:hover { color: var(--text); }
+.nav-right { display: flex; align-items: center; gap: .8rem; }
+.theme-toggle { width: 38px; height: 38px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg); display: flex; align-items: center; justify-content: center; }
+.hamburger { display: none; flex-direction: column; gap: 4px; background: none; border: none; min-height: 44px; min-width: 44px; align-items: center; justify-content: center; }
+.hamburger span { width: 20px; height: 2px; background: var(--text); }
+.mobile-menu { display: none; }
+.mobile-menu.open { display: flex; flex-direction: column; gap: .3rem; padding: 1rem 0 1.4rem; border-top: 1px solid var(--border); }
+.mobile-menu a { padding: .6rem 0; font-size: .95rem; color: var(--text2); }
+
+.hero { padding: clamp(3.5rem, 8vw, 6rem) 0 4rem; }
+.hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+.hero h1 { font-size: clamp(2.1rem, 4.6vw, 3.2rem); font-weight: 800; line-height: 1.12; margin-bottom: 1.1rem; }
+.hero h1 .grad { background: linear-gradient(135deg, var(--accent1), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero p.lead { color: var(--text2); font-size: 1.02rem; line-height: 1.7; margin-bottom: 1.8rem; max-width: 460px; }
+.hero-actions { display: flex; gap: .85rem; flex-wrap: wrap; }
+
+.app { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); }
+.app-topbar { padding: .75rem 1.1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.breadcrumb { font-size: .78rem; color: var(--text3); display: flex; gap: .3rem; align-items: center; }
+.breadcrumb b { color: var(--text); font-weight: 600; }
+.breadcrumb .sep { opacity: .5; }
+.toolbar { display: flex; gap: .4rem; flex-wrap: wrap; }
+.tb-btn { font-size: .76rem; padding: .38rem .75rem; border-radius: 7px; min-height: 32px; transition: all var(--transition); }
+.tb-btn.ghost { background: var(--bg); border: 1px solid var(--border); color: var(--text2); }
+.tb-btn.ghost:hover { border-color: var(--text3); }
+.tb-btn.solid { background: var(--accent); color: #fff; border: 1px solid var(--accent); font-weight: 600; }
+.tb-views { display: flex; gap: .2rem; padding: .5rem 1.1rem; border-bottom: 1px solid var(--border); }
+.tb-view { padding: .32rem .75rem; border-radius: 7px; font-size: .78rem; color: var(--text3); cursor: pointer; }
+.tb-view.active { background: var(--bg3); color: var(--text); font-weight: 600; }
+.tb-panel { display: none; }
+.tb-panel.active { display: block; }
+.grid-table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+.grid-table th, .grid-table td { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: .55rem .8rem; text-align: left; white-space: nowrap; }
+.grid-table th { background: var(--bg3); color: var(--text3); font-weight: 600; font-size: .68rem; text-transform: uppercase; }
+.grid-table th:last-child, .grid-table td:last-child { border-right: none; }
+.grid-table .th-check, .grid-table td:first-child { width: 32px; text-align: center; }
+.grid-table tbody tr:not(.tr-add):hover { background: var(--bg3); }
+.grid-table tbody tr.selected { background: var(--accent-soft); }
+.chip { display: inline-flex; align-items: center; padding: .16rem .55rem; border-radius: 999px; font-size: .68rem; font-weight: 600; }
+.chip.urgent { background: rgba(220,38,38,.12); color: var(--danger); }
+.chip.normal { background: rgba(217,119,6,.12); color: var(--warn); }
+.chip.done { background: rgba(22,163,74,.12); color: var(--success); }
+.tr-add { cursor: pointer; }
+.tr-add td { color: var(--text3); font-size: .78rem; padding: .55rem .8rem; }
+.tr-add:hover td { background: var(--bg3); }
+.statusbar { padding: .45rem 1.1rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; color: var(--text3); font-size: .72rem; background: var(--bg3); }
+.chat-preview { padding: 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.chat-bubble { max-width: 75%; padding: .6rem .9rem; border-radius: 12px; font-size: .82rem; }
+.chat-bubble.in { background: var(--bg3); align-self: flex-start; }
+.chat-bubble.out { background: var(--accent); color: #fff; align-self: flex-end; }
+
+.proof-strip { padding: 2.2rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.proof-inner { display: flex; align-items: center; justify-content: center; gap: 2.5rem; flex-wrap: wrap; }
+.proof-stat { text-align: center; }
+.proof-stat .num { font-size: 1.7rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.proof-stat .lbl { font-size: .78rem; color: var(--text3); margin-top: .15rem; }
+.proof-divider { width: 1px; height: 38px; background: var(--border); }
+
+.feat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1.1rem; }
+.feat-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.4rem; position: relative; overflow: hidden; transition: all var(--transition); }
+.feat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--card-color, var(--accent)); }
+.feat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--text3); }
+.feat-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: .9rem; background: var(--accent-soft); }
+.feat-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: .4rem; }
+.feat-card p { font-size: .86rem; color: var(--text3); line-height: 1.55; }
+
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-q { width: 100%; text-align: left; padding: 1.2rem 0; background: none; border: none; color: var(--text); font-size: .96rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; min-height: 44px; }
+.faq-q .icon { color: var(--text3); transition: transform var(--transition); }
+.faq-item.open .faq-q .icon { transform: rotate(45deg); color: var(--accent); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height var(--transition); color: var(--text2); font-size: .89rem; line-height: 1.7; }
+.faq-item.open .faq-a { max-height: 220px; padding-bottom: 1.2rem; }
+
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+.price-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.1rem; }
+.price-card.featured { border-color: var(--accent); border-width: 2px; position: relative; }
+.price-card.featured::before { content: 'Populer'; position: absolute; top: -12px; right: 1.5rem; background: var(--accent); color: #fff; font-size: .68rem; font-weight: 700; padding: .25rem .7rem; border-radius: 999px; }
+.price-name { font-size: .95rem; font-weight: 700; margin-bottom: 1rem; }
+.price-amount { font-size: 2.3rem; font-weight: 800; margin-bottom: .3rem; }
+.price-amount span { font-size: .9rem; font-weight: 500; color: var(--text3); }
+.price-muted { font-size: .85rem; color: var(--text3); margin-bottom: 1.6rem; }
+.price-feat { font-size: .85rem; padding: .55rem 0; border-top: 1px solid var(--border); }
+.price-cta { width: 100%; justify-content: center; margin-top: 1.6rem; }
+
+.cta-band { background: linear-gradient(135deg, var(--accent1), var(--accent2)); border-radius: var(--radius-lg); padding: clamp(2.5rem, 6vw, 4rem); text-align: center; color: #fff; }
+.cta-band h2 { font-size: clamp(1.7rem, 3.8vw, 2.4rem); font-weight: 800; margin-bottom: .9rem; }
+.cta-band p { opacity: .9; margin-bottom: 1.8rem; }
+.cta-band .btn-primary { background: #fff; color: var(--accent1); }
+.footer { border-top: 1px solid var(--border); padding: 3rem 0 1.8rem; }
+.footer-grid { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 2rem; margin-bottom: 2.2rem; }
+.footer-col h5 { font-size: .8rem; font-weight: 700; margin-bottom: .8rem; }
+.footer-col a { display: block; font-size: .86rem; color: var(--text3); padding: .28rem 0; }
+.footer-col a:hover { color: var(--text); }
+.footer-bottom { display: flex; justify-content: space-between; padding-top: 1.6rem; border-top: 1px solid var(--border); font-size: .8rem; color: var(--text3); flex-wrap: wrap; gap: .7rem; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .hero-grid { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 480px) {
+  .grid-table { font-size: .72rem; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .proof-inner { gap: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-inner">
+    <a href="#" class="logo"><span class="logo-mark"></span> Ticketbay</a>
+    <div class="nav-links">
+      <a href="#fitur">Fitur</a>
+      <a href="#harga">Harga</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Ganti tema">🌙</button>
+      <a href="#harga" class="btn btn-primary">Mulai Gratis</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="container mobile-menu" id="mobileMenu">
+    <a href="#fitur">Fitur</a>
+    <a href="#harga">Harga</a>
+    <a href="#faq">FAQ</a>
+  </div>
+</nav>
+
+<section class="hero container">
+  <div class="hero-grid">
+    <div>
+      <span class="eyebrow">LIVE CHAT & TICKETING B2B</span>
+      <h1>Antrian prioritas <span class="grad">yang gak pernah ketinggalan</span> tiket urgent.</h1>
+      <p class="lead">Ticketbay gabungin live chat dan ticketing dalam satu antrian — tiket urgent otomatis naik ke atas, agen gak perlu scroll cari yang penting.</p>
+      <div class="hero-actions">
+        <a href="#harga" class="btn btn-primary">Mulai Gratis →</a>
+        <a href="#fitur" class="btn btn-outline">Lihat Fitur</a>
+      </div>
+    </div>
+    <div class="app">
+      <div class="app-topbar">
+        <span class="breadcrumb">Workspace Saya <span class="sep">›</span> <b>Antrian Prioritas</b></span>
+        <div class="toolbar">
+          <button class="tb-btn ghost" id="filterBtn">Filter</button>
+          <button class="tb-btn solid" id="addTicket">+ Tiket</button>
+        </div>
+      </div>
+      <div class="tb-views">
+        <span class="tb-view active" data-view="grid">Antrian</span>
+        <span class="tb-view" data-view="chat">Live Chat</span>
+      </div>
+      <div class="tb-panel active" data-panel="grid">
+        <div style="overflow-x:auto;">
+          <table class="grid-table">
+            <thead><tr><th class="th-check"><input type="checkbox" id="checkAll" aria-label="Pilih semua"></th><th>Subjek</th><th>Prioritas</th><th>Status</th></tr></thead>
+            <tbody id="ticketBody">
+              <tr><td><input type="checkbox"></td><td>Pembayaran gagal 3x</td><td><span class="chip urgent">Urgent</span></td><td>Open</td></tr>
+              <tr><td><input type="checkbox"></td><td>Ganti alamat pengiriman</td><td><span class="chip normal">Normal</span></td><td>Open</td></tr>
+              <tr><td><input type="checkbox"></td><td>Konfirmasi refund</td><td><span class="chip done">Selesai</span></td><td>Closed</td></tr>
+              <tr class="tr-add" id="trAdd"><td colspan="4">+ Tambah tiket</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="statusbar"><span id="statusLeft">3 tiket · 0 dipilih</span><span>tersinkron otomatis</span></div>
+      </div>
+      <div class="tb-panel" data-panel="chat">
+        <div class="chat-preview">
+          <div class="chat-bubble in">Halo, pembayaran saya gagal terus</div>
+          <div class="chat-bubble out">Halo! Saya cek dulu ya, tunggu sebentar</div>
+          <div class="chat-bubble in">Oke makasih</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="proof-strip">
+  <div class="container proof-inner">
+    <div class="proof-stat"><div class="num" data-target="42" data-suffix=" dtk">0</div><div class="lbl">Respons live chat</div></div>
+    <div class="proof-divider"></div>
+    <div class="proof-stat"><div class="num" data-target="96" data-suffix="%">0</div><div class="lbl">Tiket urgent tertangani</div></div>
+    <div class="proof-divider"></div>
+    <div class="proof-stat"><div class="num" data-target="1800" data-suffix="+">0</div><div class="lbl">Tim support pakai</div></div>
+  </div>
+</section>
+
+<section class="section container" id="fitur">
+  <div class="sec-head">
+    <span class="eyebrow">FITUR</span>
+    <h2>Bikin tim support gak kewalahan</h2>
+    <p>Prioritas otomatis, live chat, dan riwayat percakapan dalam satu tempat.</p>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-card" style="--card-color:#EA580C"><div class="feat-icon">🔥</div><h4>Prioritas Otomatis</h4><p>Tiket urgent otomatis naik ke atas antrian.</p></div>
+    <div class="feat-card" style="--card-color:#F59E0B"><div class="feat-icon">💬</div><h4>Live Chat Terpadu</h4><p>Chat dan tiket dalam satu percakapan yang sama.</p></div>
+    <div class="feat-card" style="--card-color:#16A34A"><div class="feat-icon">🤖</div><h4>Auto-Reply Cerdas</h4><p>Jawaban otomatis buat pertanyaan yang sering muncul.</p></div>
+    <div class="feat-card" style="--card-color:#0891B2"><div class="feat-icon">📎</div><h4>Riwayat Lengkap</h4><p>Semua percakapan pelanggan tersimpan rapi per kontak.</p></div>
+    <div class="feat-card" style="--card-color:#7C3AED"><div class="feat-icon">⭐</div><h4>Rating Kepuasan</h4><p>Minta rating otomatis setelah tiket selesai.</p></div>
+    <div class="feat-card" style="--card-color:#DC2626"><div class="feat-icon">📱</div><h4>WhatsApp Business</h4><p>Terhubung langsung ke nomor WhatsApp Business.</p></div>
+  </div>
+</section>
+
+<section class="section container" id="harga">
+  <div class="sec-head center">
+    <span class="eyebrow">HARGA</span>
+    <h2>Mulai gratis, upgrade kapan saja</h2>
+  </div>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-name">Starter</div>
+      <div class="price-amount">Rp0<span>/agen/bulan</span></div>
+      <div class="price-muted">Untuk tim support kecil</div>
+      <div class="price-feat">2 agen, live chat dasar</div>
+      <a href="#" class="btn btn-outline price-cta">Mulai Gratis</a>
+    </div>
+    <div class="price-card featured">
+      <div class="price-name">Pro</div>
+      <div class="price-amount">Rp79rb<span>/agen/bulan</span></div>
+      <div class="price-muted">Untuk tim yang sudah scale</div>
+      <div class="price-feat">Prioritas otomatis + WhatsApp</div>
+      <a href="#" class="btn btn-primary price-cta">Pilih Pro</a>
+    </div>
+    <div class="price-card">
+      <div class="price-name">Enterprise</div>
+      <div class="price-amount">Custom</div>
+      <div class="price-muted">SSO, audit log, SLA dedicated</div>
+      <a href="#" class="btn btn-outline price-cta">Hubungi Sales</a>
+    </div>
+  </div>
+</section>
+
+<section class="section container" id="faq">
+  <div class="sec-head center">
+    <span class="eyebrow">FAQ</span>
+    <h2>Pertanyaan yang sering ditanyakan</h2>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q">Bagaimana prioritas ditentukan? <span class="icon">+</span></button>
+    <div class="faq-a">Berdasarkan kata kunci, riwayat pelanggan, dan aturan yang diset admin — bisa dikustomisasi.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q">Bisa dipakai buat WhatsApp Business? <span class="icon">+</span></button>
+    <div class="faq-a">Bisa, tinggal hubungkan nomor WhatsApp Business API langsung dari pengaturan.</div>
+  </div>
+</section>
+
+<section class="container" style="padding-bottom: 5.5rem;">
+  <div class="cta-band">
+    <h2>Jangan biarkan tiket urgent kelewat</h2>
+    <p>Tanpa kartu kredit, setup kurang dari 10 menit.</p>
+    <a href="#" class="btn btn-primary">Mulai Gratis →</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="logo" style="margin-bottom:.7rem;"><span class="logo-mark"></span> Ticketbay</div>
+        <p style="font-size:.85rem;color:var(--text3);max-width:220px;">Live chat & ticketing untuk tim support B2B.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Produk</h5>
+        <a href="#fitur">Fitur</a>
+        <a href="#harga">Harga</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div class="footer-col">
+        <h5>Perusahaan</h5>
+        <a href="#">Tentang</a>
+        <a href="#">Kontak</a>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <a href="#">Privasi</a>
+        <a href="#">Syarat Layanan</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Ticketbay. Semua hak dilindungi.</span>
+      <span>Gak ada tiket urgent yang kelewat.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const html = document.documentElement;
+const themeBtn = document.getElementById('themeToggle');
+function applyTheme(t) { html.setAttribute('data-theme', t); themeBtn.textContent = t === 'dark' ? '☀️' : '🌙'; localStorage.setItem('ticketbay_theme', t); }
+themeBtn.addEventListener('click', () => applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+try { const saved = localStorage.getItem('ticketbay_theme'); if (saved) applyTheme(saved); } catch(e) {}
+
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+mobileMenu.querySelectorAll('a').forEach(l => l.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+document.querySelectorAll('.tb-view').forEach(v => {
+  v.addEventListener('click', () => {
+    document.querySelectorAll('.tb-view').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.tb-panel').forEach(p => p.classList.remove('active'));
+    v.classList.add('active');
+    document.querySelector('.tb-panel[data-panel="' + v.dataset.view + '"]').classList.add('active');
+  });
+});
+
+function updateStatus() {
+  const rows = document.querySelectorAll('#ticketBody tr:not(.tr-add)');
+  const selected = document.querySelectorAll('#ticketBody tr.selected');
+  document.getElementById('statusLeft').textContent = rows.length + ' tiket · ' + selected.length + ' dipilih';
+}
+function bindRow(row) {
+  row.addEventListener('click', (e) => {
+    if (e.target.tagName === 'INPUT') return;
+    row.classList.toggle('selected');
+    row.querySelector('input[type="checkbox"]').checked = row.classList.contains('selected');
+    updateStatus();
+  });
+  row.querySelector('input[type="checkbox"]').addEventListener('change', (e) => {
+    row.classList.toggle('selected', e.target.checked);
+    updateStatus();
+  });
+}
+document.querySelectorAll('#ticketBody tr:not(.tr-add)').forEach(bindRow);
+document.getElementById('checkAll').addEventListener('change', function() {
+  document.querySelectorAll('#ticketBody tr:not(.tr-add)').forEach(row => {
+    row.classList.toggle('selected', this.checked);
+    row.querySelector('input[type="checkbox"]').checked = this.checked;
+  });
+  updateStatus();
+});
+
+function addTicket() {
+  const tbody = document.getElementById('ticketBody');
+  const row = document.createElement('tr');
+  row.innerHTML = '<td><input type="checkbox"></td>' +
+    '<td contenteditable="true" style="outline:1px solid var(--accent);outline-offset:-1px;min-width:120px;">Tiket baru...</td>' +
+    '<td><span class="chip normal">Normal</span></td><td>Open</td>';
+  tbody.insertBefore(row, document.getElementById('trAdd'));
+  bindRow(row);
+  updateStatus();
+  const editable = row.querySelector('[contenteditable]');
+  editable.focus();
+  const range = document.createRange();
+  range.selectNodeContents(editable);
+  window.getSelection().removeAllRanges();
+  window.getSelection().addRange(range);
+}
+document.getElementById('addTicket').addEventListener('click', addTicket);
+document.getElementById('trAdd').addEventListener('click', addTicket);
+
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+});
+
+function animateCounter(el) {
+  const target = parseFloat(el.dataset.target);
+  const suffix = el.dataset.suffix || '';
+  const duration = 1400;
+  const start = performance.now();
+  function step(now) {
+    const p = Math.min((now - start) / duration, 1);
+    el.textContent = Math.floor(target * p) + suffix;
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => { if (entry.isIntersecting) { animateCounter(entry.target); observer.unobserve(entry.target); } });
+}, { threshold: 0.5 });
+document.querySelectorAll('.proof-stat .num').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

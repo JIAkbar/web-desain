@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taskgrid — Roadmap & Timeline untuk Tim Produk</title>
+<meta name="description" content="Taskgrid adalah project management berbasis timeline/Gantt untuk tim produk B2B yang butuh visibilitas roadmap.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TASKGRID — Application Chrome recipe (kemampuan-web-dev.md §125)
+   Variasi ke-2 dari kategori Project Management (beda dari
+   Sprintly): light default, aksen biru-cyan, hero centered,
+   fokus roadmap/Gantt timeline bukan sprint kanban.
+   ============================================================ */
+:root {
+  --bg: #FFFFFF; --bg2: #F4F9FB; --bg3: #E7F1F6;
+  --text: #101A22; --text2: #46586A; --text3: #839AA9;
+  --border: #DCE8EF;
+  --accent1: #0284C7; --accent2: #06B6D4;
+  --accent: #0284C7; --accent-soft: rgba(2,132,199,.1);
+  --success: #16A34A; --warn: #D97706; --danger: #DC2626;
+  --shadow-lg: 0 16px 32px rgba(16,26,34,.12), 0 4px 10px rgba(16,26,34,.06);
+  --font: 'DM Sans', sans-serif;
+  --radius: 12px; --radius-sm: 8px; --radius-lg: 20px;
+  --transition: .2s ease;
+}
+[data-theme="dark"] {
+  --bg: #0E161B; --bg2: #131C22; --bg3: #1B2830;
+  --text: #EDF5F9; --text2: #A9BCC6; --text3: #64798A;
+  --border: #223038;
+  --shadow-lg: 0 20px 40px rgba(0,0,0,.5);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; transition: background var(--transition), color var(--transition); -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+button { font-family: inherit; cursor: pointer; }
+ul { list-style: none; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.container { max-width: 1180px; margin: 0 auto; padding: 0 1.5rem; }
+.section { padding: clamp(3.5rem, 7vw, 6rem) 0; }
+.section-alt { background: var(--bg2); }
+.eyebrow { font-size: .78rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--accent); margin-bottom: .9rem; display: block; }
+.sec-head { max-width: 640px; margin-bottom: 3rem; }
+.sec-head.center { margin-inline: auto; text-align: center; }
+.sec-head h2 { font-size: clamp(1.7rem, 3.8vw, 2.5rem); font-weight: 800; line-height: 1.2; margin-bottom: .85rem; }
+.sec-head p { color: var(--text2); line-height: 1.7; }
+.btn { display: inline-flex; align-items: center; gap: .5rem; padding: .75rem 1.5rem; border-radius: var(--radius-sm); font-size: .92rem; font-weight: 600; border: 1px solid transparent; transition: all var(--transition); min-height: 44px; }
+.btn-primary { background: linear-gradient(135deg, var(--accent1), var(--accent2)); color: #fff; }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+.btn-outline { background: var(--bg); color: var(--text); border-color: var(--border); }
+.btn-outline:hover { border-color: var(--text3); }
+.navbar { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,.85); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+[data-theme="dark"] .navbar { background: rgba(14,22,27,.85); }
+.nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; gap: 1rem; }
+.logo { display: flex; align-items: center; gap: .55rem; font-weight: 800; font-size: 1.1rem; }
+.logo-mark { width: 24px; height: 24px; border-radius: 7px; background: linear-gradient(135deg, var(--accent1), var(--accent2)); }
+.nav-links { display: flex; gap: 1.8rem; }
+.nav-links a { font-size: .9rem; color: var(--text2); font-weight: 500; }
+.nav-links a:hover { color: var(--text); }
+.nav-right { display: flex; align-items: center; gap: .8rem; }
+.theme-toggle { width: 38px; height: 38px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg); display: flex; align-items: center; justify-content: center; }
+.hamburger { display: none; flex-direction: column; gap: 4px; background: none; border: none; min-height: 44px; min-width: 44px; align-items: center; justify-content: center; }
+.hamburger span { width: 20px; height: 2px; background: var(--text); }
+.mobile-menu { display: none; }
+.mobile-menu.open { display: flex; flex-direction: column; gap: .3rem; padding: 1rem 0 1.4rem; border-top: 1px solid var(--border); }
+.mobile-menu a { padding: .6rem 0; font-size: .95rem; color: var(--text2); }
+
+.hero { padding: clamp(3.5rem, 8vw, 6rem) 0 3rem; text-align: center; }
+.hero .eyebrow { text-align: center; }
+.hero h1 { font-size: clamp(2.2rem, 5.4vw, 3.5rem); font-weight: 800; line-height: 1.12; max-width: 780px; margin: 0 auto 1.2rem; }
+.hero h1 .grad { background: linear-gradient(135deg, var(--accent1), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero p.lead { color: var(--text2); max-width: 540px; margin: 0 auto 2rem; font-size: 1.03rem; line-height: 1.7; }
+.hero-actions { display: flex; gap: .85rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3rem; }
+
+.app { max-width: 900px; margin: 0 auto; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); text-align: left; }
+.app-topbar { padding: .75rem 1.1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; background: var(--bg2); }
+.breadcrumb { font-size: .8rem; color: var(--text3); display: flex; gap: .3rem; align-items: center; }
+.breadcrumb b { color: var(--text); font-weight: 600; }
+.breadcrumb .sep { opacity: .5; }
+.toolbar { display: flex; gap: .4rem; flex-wrap: wrap; }
+.tb-btn { font-size: .78rem; padding: .4rem .8rem; border-radius: 7px; min-height: 34px; transition: all var(--transition); }
+.tb-btn.ghost { background: var(--bg); border: 1px solid var(--border); color: var(--text2); }
+.tb-btn.ghost:hover { border-color: var(--text3); }
+.tb-btn.solid { background: var(--text); color: var(--bg); border: 1px solid var(--text); font-weight: 600; }
+.tb-views { display: flex; gap: .2rem; padding: .55rem 1.1rem; border-bottom: 1px solid var(--border); }
+.tb-view { padding: .35rem .8rem; border-radius: 7px; font-size: .8rem; color: var(--text3); cursor: pointer; }
+.tb-view.active { background: var(--bg3); color: var(--text); font-weight: 600; }
+.tb-panel { display: none; }
+.tb-panel.active { display: block; }
+.grid-table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+.grid-table th, .grid-table td { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: .6rem .9rem; text-align: left; white-space: nowrap; }
+.grid-table th { background: var(--bg2); color: var(--text3); font-weight: 600; font-size: .72rem; text-transform: uppercase; }
+.grid-table th:last-child, .grid-table td:last-child { border-right: none; }
+.grid-table .th-check, .grid-table td:first-child { width: 34px; text-align: center; }
+.grid-table tbody tr:not(.tr-add):hover { background: var(--bg2); }
+.grid-table tbody tr.selected { background: var(--accent-soft); }
+.chip { display: inline-flex; align-items: center; padding: .18rem .6rem; border-radius: 999px; font-size: .72rem; font-weight: 600; }
+.chip.ontrack { background: rgba(22,163,74,.1); color: var(--success); }
+.chip.risk { background: rgba(217,119,6,.1); color: var(--warn); }
+.chip.late { background: rgba(220,38,38,.1); color: var(--danger); }
+.tr-add { cursor: pointer; }
+.tr-add td { color: var(--text3); font-size: .8rem; padding: .6rem .9rem; }
+.tr-add:hover td { background: var(--bg2); }
+.statusbar { padding: .5rem 1.1rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; color: var(--text3); font-size: .74rem; background: var(--bg2); }
+.gantt { padding: 1.2rem; display: flex; flex-direction: column; gap: .8rem; }
+.gantt-row { display: flex; align-items: center; gap: .8rem; }
+.gantt-label { width: 110px; font-size: .78rem; color: var(--text2); flex-shrink: 0; }
+.gantt-track { flex: 1; height: 10px; background: var(--bg3); border-radius: 5px; position: relative; }
+.gantt-bar { position: absolute; top: 0; height: 100%; border-radius: 5px; background: var(--accent); }
+
+.proof-strip { padding: 2.2rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.proof-inner { display: flex; align-items: center; justify-content: center; gap: 2.5rem; flex-wrap: wrap; }
+.proof-stat { text-align: center; }
+.proof-stat .num { font-size: 1.7rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.proof-stat .lbl { font-size: .78rem; color: var(--text3); margin-top: .15rem; }
+.proof-divider { width: 1px; height: 38px; background: var(--border); }
+
+.feat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1.1rem; }
+.feat-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.4rem; position: relative; overflow: hidden; transition: all var(--transition); }
+.feat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--card-color, var(--accent)); }
+.feat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--text3); }
+.feat-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: .9rem; background: var(--accent-soft); }
+.feat-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: .4rem; }
+.feat-card p { font-size: .86rem; color: var(--text3); line-height: 1.55; }
+
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-q { width: 100%; text-align: left; padding: 1.2rem 0; background: none; border: none; color: var(--text); font-size: .96rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; min-height: 44px; }
+.faq-q .icon { color: var(--text3); transition: transform var(--transition); }
+.faq-item.open .faq-q .icon { transform: rotate(45deg); color: var(--accent); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height var(--transition); color: var(--text2); font-size: .89rem; line-height: 1.7; }
+.faq-item.open .faq-a { max-height: 220px; padding-bottom: 1.2rem; }
+
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+.price-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.1rem; }
+.price-card.featured { border-color: var(--accent); border-width: 2px; position: relative; }
+.price-card.featured::before { content: 'Populer'; position: absolute; top: -12px; right: 1.5rem; background: var(--accent); color: #fff; font-size: .68rem; font-weight: 700; padding: .25rem .7rem; border-radius: 999px; }
+.price-name { font-size: .95rem; font-weight: 700; margin-bottom: 1rem; }
+.price-amount { font-size: 2.3rem; font-weight: 800; margin-bottom: .3rem; }
+.price-amount span { font-size: .9rem; font-weight: 500; color: var(--text3); }
+.price-muted { font-size: .85rem; color: var(--text3); margin-bottom: 1.6rem; }
+.price-feat { font-size: .85rem; padding: .55rem 0; border-top: 1px solid var(--border); }
+.price-cta { width: 100%; justify-content: center; margin-top: 1.6rem; }
+
+.cta-band { background: linear-gradient(135deg, var(--accent1), var(--accent2)); border-radius: var(--radius-lg); padding: clamp(2.5rem, 6vw, 4rem); text-align: center; color: #fff; }
+.cta-band h2 { font-size: clamp(1.7rem, 3.8vw, 2.4rem); font-weight: 800; margin-bottom: .9rem; }
+.cta-band p { opacity: .9; margin-bottom: 1.8rem; }
+.cta-band .btn-primary { background: #fff; color: var(--accent1); }
+.footer { border-top: 1px solid var(--border); padding: 3rem 0 1.8rem; }
+.footer-grid { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 2rem; margin-bottom: 2.2rem; }
+.footer-col h5 { font-size: .8rem; font-weight: 700; margin-bottom: .8rem; }
+.footer-col a { display: block; font-size: .86rem; color: var(--text3); padding: .28rem 0; }
+.footer-col a:hover { color: var(--text); }
+.footer-bottom { display: flex; justify-content: space-between; padding-top: 1.6rem; border-top: 1px solid var(--border); font-size: .8rem; color: var(--text3); flex-wrap: wrap; gap: .7rem; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .app-topbar { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 480px) {
+  .grid-table { font-size: .74rem; }
+  .gantt-label { width: 70px; font-size: .7rem; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .proof-inner { gap: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-inner">
+    <a href="#" class="logo"><span class="logo-mark"></span> Taskgrid</a>
+    <div class="nav-links">
+      <a href="#fitur">Fitur</a>
+      <a href="#harga">Harga</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Ganti tema">🌙</button>
+      <a href="#harga" class="btn btn-primary">Mulai Gratis</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="container mobile-menu" id="mobileMenu">
+    <a href="#fitur">Fitur</a>
+    <a href="#harga">Harga</a>
+    <a href="#faq">FAQ</a>
+  </div>
+</nav>
+
+<section class="hero container">
+  <span class="eyebrow">ROADMAP & TIMELINE UNTUK TIM PRODUK</span>
+  <h1>Roadmap yang <span class="grad">semua orang bisa lihat</span>, bukan cuma PM.</h1>
+  <p class="lead">Taskgrid nampilin timeline proyek secara visual — stakeholder lihat progress tanpa perlu tanya-tanya di Slack.</p>
+  <div class="hero-actions">
+    <a href="#harga" class="btn btn-primary">Mulai Gratis →</a>
+    <a href="#fitur" class="btn btn-outline">Lihat Fitur</a>
+  </div>
+  <div class="app">
+    <div class="app-topbar">
+      <span class="breadcrumb">Workspace Saya <span class="sep">›</span> <b>Roadmap Q3</b></span>
+      <div class="toolbar">
+        <button class="tb-btn ghost" id="filterBtn">Filter</button>
+        <button class="tb-btn solid" id="addMilestone">+ Milestone</button>
+      </div>
+    </div>
+    <div class="tb-views">
+      <span class="tb-view active" data-view="grid">List</span>
+      <span class="tb-view" data-view="gantt">Timeline</span>
+    </div>
+    <div class="tb-panel active" data-panel="grid">
+      <div style="overflow-x:auto;">
+        <table class="grid-table">
+          <thead><tr><th class="th-check"><input type="checkbox" id="checkAll" aria-label="Pilih semua"></th><th>Milestone</th><th>Deadline</th><th>Status</th></tr></thead>
+          <tbody id="msBody">
+            <tr><td><input type="checkbox"></td><td>Riset kebutuhan pengguna</td><td>12 Jul</td><td><span class="chip ontrack">On Track</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Desain wireframe v2</td><td>20 Jul</td><td><span class="chip risk">Berisiko</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>Rilis beta ke 50 user</td><td>2 Agu</td><td><span class="chip late">Terlambat</span></td></tr>
+            <tr class="tr-add" id="trAdd"><td colspan="4">+ Tambah milestone</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="statusbar"><span id="statusLeft">3 milestone · 0 dipilih</span><span>tersinkron otomatis</span></div>
+    </div>
+    <div class="tb-panel" data-panel="gantt">
+      <div class="gantt">
+        <div class="gantt-row"><span class="gantt-label">Riset</span><div class="gantt-track"><div class="gantt-bar" style="left:0%;width:35%;background:#16A34A"></div></div></div>
+        <div class="gantt-row"><span class="gantt-label">Desain</span><div class="gantt-track"><div class="gantt-bar" style="left:25%;width:40%;background:#D97706"></div></div></div>
+        <div class="gantt-row"><span class="gantt-label">Beta</span><div class="gantt-track"><div class="gantt-bar" style="left:60%;width:30%;background:#DC2626"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="proof-strip">
+  <div class="container proof-inner">
+    <div class="proof-stat"><div class="num" data-target="76" data-suffix="%">0</div><div class="lbl">Milestone tepat waktu</div></div>
+    <div class="proof-divider"></div>
+    <div class="proof-stat"><div class="num" data-target="12" data-suffix=" hari">0</div><div class="lbl">Rata-rata koreksi jadwal</div></div>
+    <div class="proof-divider"></div>
+    <div class="proof-stat"><div class="num" data-target="3600" data-suffix="+">0</div><div class="lbl">Tim produk pakai</div></div>
+  </div>
+</section>
+
+<section class="section container" id="fitur">
+  <div class="sec-head">
+    <span class="eyebrow">FITUR</span>
+    <h2>Visibilitas roadmap buat semua orang</h2>
+    <p>Bukan cuma buat PM — stakeholder juga bisa pantau progress.</p>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-card" style="--card-color:#0284C7"><div class="feat-icon">📅</div><h4>Timeline Visual</h4><p>Gantt chart interaktif, drag buat geser deadline.</p></div>
+    <div class="feat-card" style="--card-color:#06B6D4"><div class="feat-icon">⚠️</div><h4>Deteksi Risiko</h4><p>Milestone yang berisiko molor otomatis ditandai.</p></div>
+    <div class="feat-card" style="--card-color:#16A34A"><div class="feat-icon">🔗</div><h4>Dependency Chain</h4><p>Lihat milestone mana yang saling bergantung.</p></div>
+    <div class="feat-card" style="--card-color:#D97706"><div class="feat-icon">👥</div><h4>Akses Stakeholder</h4><p>Kasih akses lihat-saja buat klien atau eksekutif.</p></div>
+    <div class="feat-card" style="--card-color:#7C3AED"><div class="feat-icon">📤</div><h4>Ekspor Laporan</h4><p>Ekspor roadmap jadi PDF buat presentasi.</p></div>
+    <div class="feat-card" style="--card-color:#DC2626"><div class="feat-icon">🔔</div><h4>Alert Deadline</h4><p>Notifikasi otomatis H-3 sebelum deadline.</p></div>
+  </div>
+</section>
+
+<section class="section container" id="harga">
+  <div class="sec-head center">
+    <span class="eyebrow">HARGA</span>
+    <h2>Bayar per proyek aktif</h2>
+  </div>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-name">Starter</div>
+      <div class="price-amount">Rp0<span>/bulan</span></div>
+      <div class="price-muted">1 proyek aktif</div>
+      <div class="price-feat">Timeline dasar</div>
+      <a href="#" class="btn btn-outline price-cta">Mulai Gratis</a>
+    </div>
+    <div class="price-card featured">
+      <div class="price-name">Team</div>
+      <div class="price-amount">Rp249rb<span>/bulan</span></div>
+      <div class="price-muted">Proyek tanpa batas</div>
+      <div class="price-feat">Gantt + deteksi risiko</div>
+      <a href="#" class="btn btn-primary price-cta">Pilih Team</a>
+    </div>
+    <div class="price-card">
+      <div class="price-name">Enterprise</div>
+      <div class="price-amount">Custom</div>
+      <div class="price-muted">Multi-proyek, SSO</div>
+      <a href="#" class="btn btn-outline price-cta">Hubungi Sales</a>
+    </div>
+  </div>
+</section>
+
+<section class="section container" id="faq">
+  <div class="sec-head center">
+    <span class="eyebrow">FAQ</span>
+    <h2>Pertanyaan yang sering ditanyakan</h2>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q">Beda Taskgrid sama tool Kanban biasa apa? <span class="icon">+</span></button>
+    <div class="faq-a">Taskgrid fokus di timeline/roadmap level tinggi, bukan task harian — cocok buat komunikasi ke stakeholder.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q">Bisa kasih akses klien eksternal? <span class="icon">+</span></button>
+    <div class="faq-a">Bisa, ada mode akses lihat-saja tanpa perlu klien bikin akun.</div>
+  </div>
+</section>
+
+<section class="container" style="padding-bottom: 5.5rem;">
+  <div class="cta-band">
+    <h2>Bikin roadmap yang semua orang paham</h2>
+    <p>Tanpa kartu kredit, import proyek dalam hitungan menit.</p>
+    <a href="#" class="btn btn-primary">Mulai Gratis →</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="logo" style="margin-bottom:.7rem;"><span class="logo-mark"></span> Taskgrid</div>
+        <p style="font-size:.85rem;color:var(--text3);max-width:220px;">Roadmap & timeline untuk tim produk B2B.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Produk</h5>
+        <a href="#fitur">Fitur</a>
+        <a href="#harga">Harga</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div class="footer-col">
+        <h5>Perusahaan</h5>
+        <a href="#">Tentang</a>
+        <a href="#">Kontak</a>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <a href="#">Privasi</a>
+        <a href="#">Syarat Layanan</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Taskgrid. Semua hak dilindungi.</span>
+      <span>Roadmap yang semua orang paham.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const html = document.documentElement;
+const themeBtn = document.getElementById('themeToggle');
+function applyTheme(t) { html.setAttribute('data-theme', t); themeBtn.textContent = t === 'dark' ? '☀️' : '🌙'; localStorage.setItem('taskgrid_theme', t); }
+themeBtn.addEventListener('click', () => applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+try { const saved = localStorage.getItem('taskgrid_theme'); if (saved) applyTheme(saved); } catch(e) {}
+
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+mobileMenu.querySelectorAll('a').forEach(l => l.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+document.querySelectorAll('.tb-view').forEach(v => {
+  v.addEventListener('click', () => {
+    document.querySelectorAll('.tb-view').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.tb-panel').forEach(p => p.classList.remove('active'));
+    v.classList.add('active');
+    document.querySelector('.tb-panel[data-panel="' + v.dataset.view + '"]').classList.add('active');
+  });
+});
+
+function updateStatus() {
+  const rows = document.querySelectorAll('#msBody tr:not(.tr-add)');
+  const selected = document.querySelectorAll('#msBody tr.selected');
+  document.getElementById('statusLeft').textContent = rows.length + ' milestone · ' + selected.length + ' dipilih';
+}
+function bindRow(row) {
+  row.addEventListener('click', (e) => {
+    if (e.target.tagName === 'INPUT') return;
+    row.classList.toggle('selected');
+    row.querySelector('input[type="checkbox"]').checked = row.classList.contains('selected');
+    updateStatus();
+  });
+  row.querySelector('input[type="checkbox"]').addEventListener('change', (e) => {
+    row.classList.toggle('selected', e.target.checked);
+    updateStatus();
+  });
+}
+document.querySelectorAll('#msBody tr:not(.tr-add)').forEach(bindRow);
+document.getElementById('checkAll').addEventListener('change', function() {
+  document.querySelectorAll('#msBody tr:not(.tr-add)').forEach(row => {
+    row.classList.toggle('selected', this.checked);
+    row.querySelector('input[type="checkbox"]').checked = this.checked;
+  });
+  updateStatus();
+});
+
+function addMilestone() {
+  const tbody = document.getElementById('msBody');
+  const row = document.createElement('tr');
+  row.innerHTML = '<td><input type="checkbox"></td>' +
+    '<td contenteditable="true" style="outline:1px solid var(--accent);outline-offset:-1px;min-width:120px;">Milestone baru...</td>' +
+    '<td>Belum diset</td><td><span class="chip ontrack">On Track</span></td>';
+  tbody.insertBefore(row, document.getElementById('trAdd'));
+  bindRow(row);
+  updateStatus();
+  const editable = row.querySelector('[contenteditable]');
+  editable.focus();
+  const range = document.createRange();
+  range.selectNodeContents(editable);
+  window.getSelection().removeAllRanges();
+  window.getSelection().addRange(range);
+}
+document.getElementById('addMilestone').addEventListener('click', addMilestone);
+document.getElementById('trAdd').addEventListener('click', addMilestone);
+
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+});
+
+function animateCounter(el) {
+  const target = parseFloat(el.dataset.target);
+  const suffix = el.dataset.suffix || '';
+  const duration = 1400;
+  const start = performance.now();
+  function step(now) {
+    const p = Math.min((now - start) / duration, 1);
+    el.textContent = Math.floor(target * p) + suffix;
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => { if (entry.isIntersecting) { animateCounter(entry.target); observer.unobserve(entry.target); } });
+}, { threshold: 0.5 });
+document.querySelectorAll('.proof-stat .num').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
