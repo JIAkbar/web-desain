@@ -11,13 +11,16 @@
    DESIGN TOKENS
    ============================================================ */
 :root {
+  /* Page canvas: Parchment Cream — token Airtable Refero.
+     --bg tetap putih (component surface: card/navbar/mockup "lift" di atas canvas). */
+  --canvas:  #FAF5E8;
   --bg:      #FFFFFF;
-  --bg2:     #F8F8F8;
+  --bg2:     #F8FAFC;
   --bg3:     #F0F0F0;
   --bg4:     #E8E8E8;
-  --text:    #111111;
-  --text2:   #444444;
-  --text3:   #888888;
+  --text:    #333840;
+  --text2:   #525965;
+  --text3:   #9297A0;
   --col-text:   #3B82F6;
   --col-num:    #10B981;
   --col-select: #8B5CF6;
@@ -26,13 +29,17 @@
   --col-link:   #06B6D4;
   --col-attach: #F97316;
   --col-formula:#EC4899;
-  --border:  #E5E7EB;
+  --border:  #E0E2E6;
+  --onyx: #181D26;
+  --onyx-active: #0D1218;
   --shadow:  0 1px 3px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.05);
   --shadow-lg: 0 4px 24px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.05);
   --font-body: 'DM Sans', sans-serif;
-  --radius: 10px;
-  --radius-sm: 6px;
-  --radius-lg: 20px;
+  /* Base unit 8px (token Airtable): radius tombol 12px, kartu fitur 24px */
+  --radius: 16px;
+  --radius-sm: 8px;
+  --radius-lg: 24px;
+  --radius-btn: 12px;
   --transition: 0.2s ease;
 
   /* Signature surface cards — full-bleed color blocks, one per use case,
@@ -47,6 +54,7 @@
   --sig-on-light: #1A1710;
 }
 [data-theme="dark"] {
+  --canvas: #0E0D0A;
   --bg:    #111111;
   --bg2:   #1A1A1A;
   --bg3:   #222222;
@@ -66,7 +74,7 @@
 html { scroll-behavior: smooth; }
 body {
   font-family: var(--font-body);
-  background: var(--bg);
+  background: var(--canvas);
   color: var(--text);
   line-height: 1.6;
   transition: background var(--transition), color var(--transition);
@@ -107,14 +115,14 @@ ul { list-style: none; }
    ============================================================ */
 .btn {
   display: inline-flex; align-items: center; gap: 0.4rem;
-  padding: 0.65rem 1.4rem; border-radius: var(--radius-sm);
+  padding: 0.65rem 1.4rem; border-radius: var(--radius-btn);
   font-size: 0.9rem; font-weight: 600; border: none;
   transition: all var(--transition); cursor: pointer;
 }
 .btn-primary {
-  background: #111; color: #fff;
+  background: var(--onyx); color: #fff;
 }
-.btn-primary:hover { background: #333; transform: translateY(-1px); }
+.btn-primary:hover { background: var(--onyx-active); transform: translateY(-1px); }
 [data-theme="dark"] .btn-primary { background: #fff; color: #111; }
 [data-theme="dark"] .btn-primary:hover { background: #e5e5e5; }
 .btn-outline {
@@ -204,7 +212,7 @@ ul { list-style: none; }
    ============================================================ */
 .hero {
   padding: 4.5rem 0 3rem;
-  background: linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
+  background: var(--canvas);
 }
 .hero-content {
   display: flex; flex-direction: column; align-items: center;
@@ -221,7 +229,7 @@ ul { list-style: none; }
 }
 .hero-title {
   font-size: clamp(2.2rem, 6vw, 3.8rem);
-  font-weight: 800; line-height: 1.1; color: var(--text);
+  font-weight: 900; letter-spacing: -0.01em; line-height: 1.1; color: var(--text);
   max-width: 800px;
 }
 .hero-title .highlight {
@@ -264,11 +272,11 @@ ul { list-style: none; }
 }
 .gb-btn-outline:hover { background: var(--bg2); }
 .gb-btn-primary {
-  font-size: 0.72rem; padding: 0.3rem 0.7rem; border-radius: 6px;
-  background: #111; color: #fff; border: none; cursor: pointer;
+  font-size: 0.72rem; padding: 0.3rem 0.7rem; border-radius: var(--radius-sm);
+  background: var(--onyx); color: #fff; border: none; cursor: pointer;
   transition: background var(--transition);
 }
-.gb-btn-primary:hover { background: #333; }
+.gb-btn-primary:hover { background: var(--onyx-active); }
 [data-theme="dark"] .gb-btn-primary { background: #fff; color: #111; }
 [data-theme="dark"] .gb-btn-primary:hover { background: #e5e5e5; }
 .gb-views {
@@ -359,7 +367,7 @@ ul { list-style: none; }
 }
 .field-card {
   background: var(--bg); border: 1.5px solid var(--border);
-  border-radius: var(--radius); padding: 1.1rem 1.2rem;
+  border-radius: var(--radius-lg); padding: 1.1rem 1.2rem;
   cursor: default; transition: all var(--transition);
   position: relative; overflow: hidden;
 }
@@ -407,7 +415,7 @@ ul { list-style: none; }
 }
 .view-card {
   background: var(--bg); border: 1.5px solid var(--border);
-  border-radius: var(--radius); overflow: hidden;
+  border-radius: var(--radius-lg); overflow: hidden;
   transition: all var(--transition);
 }
 .view-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
