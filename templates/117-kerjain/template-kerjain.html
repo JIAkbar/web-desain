@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kerjain — Marketplace Freelancer, Temukan Talenta Terbaik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --coral:#FF5F5F;
+    --coral-dark:#E84545;
+    --navy:#132347;
+    --teal:#00B4A6;
+    --bg:#F8FAFB;
+    --bg-2:#EDF1F5;
+    --card:#FFFFFF;
+    --text:#111A2E;
+    --text-soft:#5F6B80;
+    --border:#E2E8F0;
+    --shadow:0 4px 18px rgba(17,26,46,.07);
+    --shadow-lg:0 24px 55px rgba(17,26,46,.16);
+  }
+  [data-theme="dark"]{
+    --coral:#FF8080;
+    --coral-dark:#FF9E9E;
+    --navy:#E9EDF6;
+    --teal:#33D1C3;
+    --bg:#0A0E17;
+    --bg-2:#111623;
+    --card:#161C2B;
+    --text:#E9EDF6;
+    --text-soft:#8D97AC;
+    --border:#232B3D;
+    --shadow:0 4px 18px rgba(0,0,0,.4);
+    --shadow-lg:0 24px 55px rgba(0,0,0,.6);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:.3s;}
+  h1,h2,h3,.disp{font-family:'DM Sans',sans-serif;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.7rem;border-radius:10px;font-weight:700;font-size:.95rem;cursor:pointer;border:none;transition:.25s;min-height:44px;}
+  .btn:hover{filter:brightness(1.04);}
+  .btn:active{transform:scale(.96);}
+  .btn-primary{background:var(--coral);color:#fff;box-shadow:0 10px 24px rgba(255,95,95,.32);}
+  .btn-primary:hover{background:var(--coral-dark);transform:translateY(-2px);}
+  .btn-ghost{background:var(--card);color:var(--text);border:1.5px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--coral);color:var(--coral-dark);transform:translateY(-2px);}
+  .btn-white{background:#fff;color:var(--coral-dark);}
+  .btn-white:hover{transform:translateY(-2px);}
+  .btn-outline-light{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.35);}
+  .btn-outline-light:hover{border-color:#fff;background:rgba(255,255,255,.1);transform:translateY(-2px);}
+
+  header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 24px;max-width:1200px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:.6rem;font-family:'DM Sans';font-weight:800;font-size:1.35rem;}
+  .logo-mark{width:37px;height:37px;border-radius:10px;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--coral);font-size:1.05rem;}
+  [data-theme="dark"] .logo-mark{color:var(--bg);}
+  .nav-links{display:flex;align-items:center;gap:2.1rem;}
+  .nav-item{position:relative;}
+  .nav-item>a{font-weight:600;font-size:.93rem;display:flex;align-items:center;gap:.3rem;}
+  .nav-item>a .caret{font-size:.6rem;color:var(--text-soft);transition:.2s;}
+  .nav-item:hover>a .caret{transform:rotate(180deg);}
+  /* avatar-stack category dropdown - varied pattern */
+  .nav-dropdown{
+    display:block;position:absolute;top:calc(100% + 14px);left:50%;
+    min-width:290px;background:var(--card);border:1px solid var(--border);
+    border-radius:14px;padding:.6rem;box-shadow:var(--shadow-lg);
+    opacity:0;visibility:hidden;pointer-events:none;
+    transform:translateX(-50%) translateY(6px);
+    transition:opacity .17s ease,transform .17s ease,visibility 0s linear .17s;
+  }
+  .nav-item:focus-within .nav-dropdown{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0);transition:opacity .17s ease,transform .17s ease;}
+  .nav-dropdown.open{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0);transition:opacity .17s ease,transform .17s ease;}
+  .nav-dropdown a{display:flex;align-items:center;justify-content:space-between;padding:.65rem .7rem;border-radius:10px;font-size:.86rem;font-weight:600;}
+  .nav-dropdown a:hover{background:var(--bg-2);}
+  .dd-avatars{display:flex;}
+  .dd-avatars span{width:22px;height:22px;border-radius:50%;border:2px solid var(--card);margin-left:-8px;background:linear-gradient(135deg,var(--coral),var(--teal));}
+  .dd-avatars span:first-child{margin-left:0;}
+  .nav-actions{display:flex;align-items:center;gap:.9rem;}
+  .theme-toggle{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:1.05rem;}
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;}
+  .hamburger span{width:24px;height:2px;background:var(--text);border-radius:2px;}
+  .mobile-panel{display:none;}
+
+  .hero{padding:4.5rem 0 3.5rem;}
+  .hero-grid{display:grid;grid-template-columns:1fr .9fr;gap:3rem;align-items:center;}
+  .badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--bg-2);color:var(--coral-dark);font-weight:700;font-size:.8rem;padding:.5rem 1rem;border-radius:100px;margin-bottom:1.3rem;}
+  .hero h1{font-size:clamp(2.2rem,4.2vw,3.3rem);font-weight:800;line-height:1.15;margin-bottom:1.2rem;letter-spacing:-.01em;}
+  .hero h1 span{color:var(--coral);}
+  .hero p{font-size:1.05rem;color:var(--text-soft);max-width:470px;margin-bottom:2rem;}
+  .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.8rem;}
+  .hero-badges{display:flex;gap:1.8rem;color:var(--text-soft);font-size:.85rem;flex-wrap:wrap;}
+  .hero-badges b{color:var(--text);display:block;font-family:'DM Sans';font-size:1.2rem;}
+
+  /* JOB BUDGET ESTIMATOR */
+  .job-card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:1.8rem;box-shadow:var(--shadow-lg);}
+  .job-head{font-family:'DM Sans';font-weight:700;font-size:1rem;margin-bottom:1.3rem;}
+  .job-row{margin-bottom:1.2rem;}
+  .job-row label{display:block;font-size:.8rem;color:var(--text-soft);margin-bottom:.5rem;font-weight:600;text-transform:uppercase;letter-spacing:.03em;}
+  .job-chips{display:flex;gap:.5rem;flex-wrap:wrap;}
+  .job-chip{padding:.5rem .9rem;border-radius:8px;border:1.5px solid var(--border);font-size:.82rem;font-weight:600;cursor:pointer;transition:.2s;}
+  .job-chip.active,.job-chip:hover{border-color:var(--coral);color:var(--coral-dark);background:var(--bg-2);}
+  .job-row input[type=range]{width:100%;accent-color:var(--coral);}
+  .job-row label b{color:var(--text);}
+  .job-result{background:var(--navy);color:#fff;border-radius:14px;padding:1.1rem 1.3rem;display:flex;justify-content:space-between;align-items:center;}
+  .job-result span{font-size:.8rem;color:#B8C0D4;display:block;}
+  .job-result strong{font-family:'DM Sans';font-size:1.4rem;color:var(--coral);}
+
+  .section{padding:5.4rem 0;}
+  .section-head{max-width:600px;margin:0 auto 3rem;text-align:center;}
+  .badge-center{margin:0 auto 1rem;width:fit-content;}
+  .section-head h2{font-size:clamp(1.8rem,3.4vw,2.5rem);font-weight:800;margin-bottom:.9rem;letter-spacing:-.01em;}
+  .section-head p{color:var(--text-soft);font-size:1.03rem;}
+
+  /* CATEGORIES - view types w/ hover (border-sweep pattern) */
+  .cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;}
+  .cat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.9rem 1.5rem;cursor:pointer;position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s;}
+  .cat-card::after{content:"";position:absolute;bottom:0;left:0;height:3px;width:0;background:var(--coral);transition:width .4s cubic-bezier(.2,.8,.2,1);}
+  .cat-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+  .cat-card:hover::after{width:100%;}
+  .cat-icon{width:50px;height:50px;border-radius:12px;background:var(--bg-2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.1rem;}
+  .cat-card h3{font-size:1rem;font-weight:700;margin-bottom:.4rem;}
+  .cat-card span{font-size:.8rem;color:var(--text-soft);}
+
+  /* FEATURED FREELANCERS */
+  .freelancer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;}
+  .freelancer-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:1.6rem;transition:.3s;}
+  .freelancer-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);}
+  .fl-top{display:flex;align-items:center;gap:.9rem;margin-bottom:1rem;}
+  .fl-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--coral),var(--teal));position:relative;flex-shrink:0;}
+  .fl-online{position:absolute;bottom:0;right:0;width:12px;height:12px;border-radius:50%;background:#22C55E;border:2px solid var(--card);}
+  .fl-top h3{font-size:1rem;}
+  .fl-top span{font-size:.8rem;color:var(--text-soft);}
+  .fl-tags{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem;}
+  .fl-tags span{background:var(--bg-2);font-size:.72rem;font-weight:600;padding:.3rem .6rem;border-radius:100px;color:var(--text-soft);}
+  .fl-footer{display:flex;justify-content:space-between;align-items:center;}
+  .fl-rate strong{font-size:1rem;}
+  .fl-rate small{color:var(--text-soft);font-size:.76rem;}
+  .fl-rating{font-size:.85rem;color:#F59E0B;font-weight:700;}
+
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;}
+  .step{text-align:center;}
+  .step-num{width:56px;height:56px;border-radius:50%;background:var(--navy);color:var(--coral);display:flex;align-items:center;justify-content:center;font-family:'DM Sans';font-weight:700;font-size:1.4rem;margin:0 auto 1.2rem;}
+  [data-theme="dark"] .step-num{color:var(--bg);}
+  .step h3{font-size:1.05rem;margin-bottom:.5rem;}
+  .step p{color:var(--text-soft);font-size:.88rem;}
+
+  .stats-band{background:var(--navy);color:#fff;border-radius:24px;padding:3.2rem 2.5rem;}
+  [data-theme="dark"] .stats-band{background:var(--card);border:1px solid var(--border);color:var(--text);}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);text-align:center;}
+  .stats-grid div strong{font-family:'DM Sans';font-size:2.1rem;display:block;color:var(--coral);}
+  .stats-grid div span{font-size:.85rem;color:#B8C0D4;}
+  [data-theme="dark"] .stats-grid div span{color:var(--text-soft);}
+
+  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;}
+  .testi-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.8rem;transition:.3s;}
+  .testi-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+  .testi-stars{color:#F59E0B;margin-bottom:1rem;font-size:1rem;letter-spacing:2px;}
+  .testi-card p{font-size:.93rem;margin-bottom:1.2rem;}
+  .testi-who strong{font-size:.87rem;display:block;}
+  .testi-who span{font-size:.76rem;color:var(--text-soft);}
+
+  .cta-band{background:linear-gradient(135deg,var(--navy),#1D3A6B);border-radius:24px;padding:3.5rem 2.5rem;text-align:center;color:#fff;}
+  .cta-band h2{font-size:clamp(1.7rem,3.4vw,2.3rem);margin-bottom:.9rem;}
+  .cta-band p{color:#B8C0D4;max-width:460px;margin:0 auto 1.8rem;}
+  .cta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+
+  footer{background:var(--navy);color:#B8C0D4;padding:4rem 0 2rem;margin-top:5rem;}
+  [data-theme="dark"] footer{background:var(--card);border-top:1px solid var(--border);color:var(--text-soft);}
+  .footer-grid{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:2.5rem;margin-bottom:3rem;}
+  .footer-brand .logo{color:#fff;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-brand .logo{color:var(--text);}
+  .footer-brand p{font-size:.86rem;max-width:280px;}
+  .footer-col h4{color:#fff;font-size:.88rem;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-col h4{color:var(--text);}
+  .footer-col a{display:block;font-size:.84rem;padding:.4rem 0;color:#8A93AC;}
+  .footer-col a:hover{color:#fff;}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1.6rem;text-align:center;font-size:.8rem;}
+
+  @media(max-width:980px){
+    .hero-grid{grid-template-columns:1fr;}
+    .cat-grid{grid-template-columns:repeat(2,1fr);}
+    .freelancer-grid{grid-template-columns:repeat(2,1fr);}
+    .steps{grid-template-columns:1fr;gap:2.5rem;}
+    .stats-grid{grid-template-columns:repeat(2,1fr);gap:1.8rem;}
+    .testi-grid{grid-template-columns:repeat(2,1fr);}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media(max-width:768px){
+    .nav-links{display:none;}
+    .hamburger{display:flex;}
+    .mobile-panel.open{display:block;background:var(--bg);border-top:1px solid var(--border);padding:1rem 24px 1.6rem;}
+    .mobile-panel a{display:block;padding:.8rem 0;font-weight:600;border-bottom:1px solid var(--border);}
+    .mobile-sub{padding-left:1rem;display:none;}
+    .mobile-sub.open{display:block;}
+    .mobile-sub a{border-bottom:none;padding:.6rem 0;font-weight:500;color:var(--text-soft);}
+    .mobile-caret{float:right;transition:transform .2s;}
+    .mobile-caret.open{transform:rotate(180deg);}
+    .nav-actions{gap:.5rem;}
+    .nav-actions .btn-primary{padding:.6rem .9rem;font-size:.74rem;white-space:nowrap;}
+    .theme-toggle{width:34px;height:34px;font-size:.9rem;}
+    .hero{padding:2.6rem 0;}
+    .hero-actions .btn{width:100%;justify-content:center;}
+    .hero-actions{flex-direction:column;}
+    .section{padding:3.2rem 0;}
+    .cat-grid{grid-template-columns:1fr 1fr;gap:1rem;}
+    .freelancer-grid{grid-template-columns:1fr;}
+    .stats-grid{grid-template-columns:1fr 1fr;}
+    .testi-grid{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr;gap:2rem;}
+    .stats-band,.cta-band{padding:2.4rem 1.5rem;border-radius:20px;}
+  }
+  @media(max-width:480px){
+    .cat-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="#" class="logo"><span class="logo-mark">K</span>Kerjain</a>
+    <div class="nav-links">
+      <div class="nav-item">
+        <a href="#categories">Kategori <span class="caret">▾</span></a>
+        <div class="nav-dropdown">
+          <a href="#categories"><span>🎨 Desain & Kreatif</span><span class="dd-avatars"><span></span><span></span><span></span></span></a>
+          <a href="#categories"><span>💻 Development</span><span class="dd-avatars"><span></span><span></span><span></span></span></a>
+          <a href="#categories"><span>✍️ Menulis & Konten</span><span class="dd-avatars"><span></span><span></span><span></span></span></a>
+          <a href="#categories"><span>📈 Marketing</span><span class="dd-avatars"><span></span><span></span><span></span></span></a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="#freelancers">Freelancer</a></div>
+      <div class="nav-item"><a href="#how">Cara Kerja</a></div>
+      <div class="nav-item"><a href="#">Jadi Freelancer</a></div>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Ganti tema">🌙</button>
+      <a href="#job" class="btn btn-primary">Posting Proyek</a>
+      <button class="hamburger" onclick="toggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-panel" id="mobilePanel">
+    <a href="javascript:void(0)" onclick="toggleSub(this)">Kategori <span class="mobile-caret">▾</span></a>
+    <div class="mobile-sub">
+      <a href="#categories">🎨 Desain & Kreatif</a>
+      <a href="#categories">💻 Development</a>
+      <a href="#categories">✍️ Menulis & Konten</a>
+      <a href="#categories">📈 Marketing</a>
+    </div>
+    <a href="#freelancers">Freelancer</a>
+    <a href="#how">Cara Kerja</a>
+    <a href="#">Jadi Freelancer</a>
+  </div>
+</header>
+
+<section class="hero" id="job">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="badge">🚀 45rb+ freelancer siap kerja</span>
+      <h1>Temukan talenta <span>tepat</span>, kerjakan proyek <span>lebih cepat</span></h1>
+      <p>Dari desain, development, sampai marketing — posting proyekmu dan terima proposal dari freelancer terbaik dalam hitungan jam.</p>
+      <div class="hero-actions">
+        <a href="#job" class="btn btn-primary">Posting Proyek</a>
+        <a href="#freelancers" class="btn btn-ghost">Cari Freelancer</a>
+      </div>
+      <div class="hero-badges">
+        <div><b>45rb+</b>Freelancer aktif</div>
+        <div><b>210rb+</b>Proyek selesai</div>
+        <div><b>4.8/5</b>Rating klien</div>
+      </div>
+    </div>
+
+    <div class="job-card">
+      <div class="job-head">Estimasi Budget Proyek</div>
+      <div class="job-row">
+        <label>Jenis Proyek</label>
+        <div class="job-chips">
+          <div class="job-chip active" data-rate="1500000">Desain Logo</div>
+          <div class="job-chip" data-rate="8000000">Website</div>
+          <div class="job-chip" data-rate="3500000">Artikel SEO</div>
+        </div>
+      </div>
+      <div class="job-row">
+        <label>Kompleksitas <b id="complexVal">Sedang</b></label>
+        <input type="range" id="complexRange" min="1" max="3" value="2" oninput="updateJob()">
+      </div>
+      <div class="job-result">
+        <div><span>Estimasi budget</span><strong id="jobResult">Rp1.500.000</strong></div>
+        <a href="#" class="btn btn-primary btn-sm" style="padding:.6rem 1.1rem;">Posting →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="categories" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Kategori Populer</span>
+      <h2>Semua kebutuhan proyek, satu platform</h2>
+    </div>
+    <div class="cat-grid">
+      <div class="cat-card"><div class="cat-icon">🎨</div><h3>Desain & Kreatif</h3><span>12.400 freelancer</span></div>
+      <div class="cat-card"><div class="cat-icon">💻</div><h3>Development</h3><span>18.200 freelancer</span></div>
+      <div class="cat-card"><div class="cat-icon">✍️</div><h3>Menulis & Konten</h3><span>8.100 freelancer</span></div>
+      <div class="cat-card"><div class="cat-icon">📈</div><h3>Marketing</h3><span>6.300 freelancer</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="freelancers">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Freelancer Pilihan</span>
+      <h2>Talenta terbaik siap kerja sekarang</h2>
+    </div>
+    <div class="freelancer-grid">
+      <div class="freelancer-card">
+        <div class="fl-top">
+          <div class="fl-avatar"><span class="fl-online"></span></div>
+          <div><h3>Aditya Ramadhan</h3><span>UI/UX Designer</span></div>
+        </div>
+        <div class="fl-tags"><span>Figma</span><span>Design System</span><span>Mobile</span></div>
+        <div class="fl-footer">
+          <div class="fl-rate"><strong>Rp150rb</strong><small>/jam</small></div>
+          <div class="fl-rating">⭐ 4.9 (210)</div>
+        </div>
+      </div>
+      <div class="freelancer-card">
+        <div class="fl-top">
+          <div class="fl-avatar"><span class="fl-online"></span></div>
+          <div><h3>Sinta Wulandari</h3><span>Full-Stack Developer</span></div>
+        </div>
+        <div class="fl-tags"><span>React</span><span>Node.js</span><span>API</span></div>
+        <div class="fl-footer">
+          <div class="fl-rate"><strong>Rp220rb</strong><small>/jam</small></div>
+          <div class="fl-rating">⭐ 5.0 (156)</div>
+        </div>
+      </div>
+      <div class="freelancer-card">
+        <div class="fl-top">
+          <div class="fl-avatar"></div>
+          <div><h3>Bagas Nugroho</h3><span>Content Writer & SEO</span></div>
+        </div>
+        <div class="fl-tags"><span>SEO</span><span>Copywriting</span><span>Blog</span></div>
+        <div class="fl-footer">
+          <div class="fl-rate"><strong>Rp95rb</strong><small>/jam</small></div>
+          <div class="fl-rating">⭐ 4.8 (302)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="how" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Cara Kerja</span>
+      <h2>Selesaikan proyek 3 langkah</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Posting proyekmu</h3>
+        <p>Jelaskan kebutuhan & budget, gratis posting.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Terima proposal</h3>
+        <p>Bandingkan portofolio, rating, dan penawaran freelancer.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Kerja & bayar aman</h3>
+        <p>Dana ditahan sistem, cair setelah kamu approve hasil.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="stats-band">
+      <div class="stats-grid">
+        <div><strong>45rb+</strong><span>Freelancer aktif</span></div>
+        <div><strong>210rb+</strong><span>Proyek selesai</span></div>
+        <div><strong>4.8/5</strong><span>Rating klien</span></div>
+        <div><strong>98%</strong><span>Tingkat kepuasan</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Testimoni</span>
+      <h2>Kata klien & freelancer kami</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Dapat freelancer desain yang pas banget sama vision brand kami, prosesnya juga cepat."</p>
+        <div class="testi-who"><strong>Diana Putri</strong><span>Startup founder</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Sebagai freelancer, sistem pembayarannya aman dan proyeknya juga terus mengalir."</p>
+        <div class="testi-who"><strong>Aditya Ramadhan</strong><span>UI/UX Designer</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Posting proyek gampang, dalam sehari udah dapat beberapa proposal berkualitas."</p>
+        <div class="testi-who"><strong>Rendra Kusuma</strong><span>Marketing Manager</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Mulai proyekmu atau jadi freelancer</h2>
+      <p>Gratis posting proyek, atau daftar jadi freelancer dan mulai dapat klien hari ini.</p>
+      <div class="cta-actions">
+        <a href="#job" class="btn btn-primary">Posting Proyek</a>
+        <a href="#" class="btn btn-outline-light">Daftar Jadi Freelancer →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo"><span class="logo-mark">K</span>Kerjain</a>
+        <p>Marketplace freelancer yang menghubungkan klien dengan talenta terbaik di berbagai bidang.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Kategori</h4>
+        <a href="#categories">Desain & Kreatif</a>
+        <a href="#categories">Development</a>
+        <a href="#categories">Marketing</a>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <a href="#">Tentang Kami</a>
+        <a href="#">Blog</a>
+        <a href="#">Karir</a>
+      </div>
+      <div class="footer-col">
+        <h4>Bantuan</h4>
+        <a href="#how">Cara Kerja</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat & Ketentuan</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 Kerjain. Semua hak dilindungi.</div>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme(){
+    const html=document.documentElement;
+    const next=html.getAttribute('data-theme')==='dark'?'light':'dark';
+    html.setAttribute('data-theme',next);
+    localStorage.setItem('kerjain-theme',next);
+    document.querySelector('.theme-toggle').textContent=next==='dark'?'☀️':'🌙';
+  }
+  (function(){ if(localStorage.getItem('kerjain-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); } })();
+  window.addEventListener('DOMContentLoaded',()=>{
+    document.querySelector('.theme-toggle').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';
+  });
+
+  function toggleMobile(){ document.getElementById('mobilePanel').classList.toggle('open'); }
+  function toggleSub(el){
+    el.nextElementSibling.classList.toggle('open');
+    el.querySelector('.mobile-caret').classList.toggle('open');
+  }
+
+  let baseRate=1500000;
+  document.querySelectorAll('.job-chip').forEach(chip=>{
+    chip.addEventListener('click',()=>{
+      document.querySelectorAll('.job-chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      baseRate=parseInt(chip.dataset.rate);
+      updateJob();
+    });
+  });
+  const complexLabels=['Sederhana','Sedang','Kompleks'];
+  const complexMult=[0.7,1,1.6];
+  function updateJob(){
+    const level=parseInt(document.getElementById('complexRange').value)-1;
+    document.getElementById('complexVal').textContent=complexLabels[level];
+    const total=Math.round((baseRate*complexMult[level])/50000)*50000;
+    document.getElementById('jobResult').textContent='Rp'+total.toLocaleString('id-ID');
+  }
+  updateJob();
+
+  document.querySelectorAll('.nav-item').forEach(item=>{
+    const dd=item.querySelector('.nav-dropdown');
+    if(!dd) return;
+    let closeTimer;
+    item.addEventListener('mouseenter',()=>{ clearTimeout(closeTimer); dd.classList.add('open'); });
+    item.addEventListener('mouseleave',()=>{ closeTimer=setTimeout(()=>dd.classList.remove('open'),400); });
+  });
+</script>
+
+</body>
+</html>

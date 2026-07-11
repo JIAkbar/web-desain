@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Poinku — Program Loyalty & Rewards, Kumpulkan Poin Setiap Belanja</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --purple:#6D3FE0;
+    --purple-dark:#5A2EC7;
+    --gold:#F0B429;
+    --gold-dark:#D69A15;
+    --ink:#1A1330;
+    --bg:#FAF8FE;
+    --bg-2:#F0EAFB;
+    --card:#FFFFFF;
+    --text:#1E1A2E;
+    --text-soft:#6C6480;
+    --border:#E5DEF5;
+    --shadow:0 4px 18px rgba(26,19,48,.08);
+    --shadow-lg:0 24px 55px rgba(26,19,48,.18);
+  }
+  [data-theme="dark"]{
+    --purple:#9B7CFF;
+    --purple-dark:#B29AFF;
+    --gold:#FFCB5C;
+    --gold-dark:#FFDA85;
+    --ink:#EEE9FA;
+    --bg:#0F0B1C;
+    --bg-2:#171125;
+    --card:#1D1730;
+    --text:#EEE9FA;
+    --text-soft:#9C92B5;
+    --border:#2C2444;
+    --shadow:0 4px 18px rgba(0,0,0,.4);
+    --shadow-lg:0 24px 55px rgba(0,0,0,.6);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:.3s;}
+  h1,h2,h3,.disp{font-family:'Figtree',sans-serif;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.7rem;border-radius:100px;font-weight:700;font-size:.95rem;cursor:pointer;border:none;transition:.25s;min-height:44px;}
+  .btn:hover{filter:brightness(1.04);}
+  .btn:active{transform:scale(.96);}
+  .btn-primary{background:var(--purple);color:#fff;box-shadow:0 10px 24px rgba(109,63,224,.32);}
+  .btn-primary:hover{background:var(--purple-dark);transform:translateY(-2px);}
+  .btn-ghost{background:var(--card);color:var(--text);border:1.5px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--purple);color:var(--purple-dark);transform:translateY(-2px);}
+  .btn-white{background:#fff;color:var(--purple-dark);}
+  .btn-white:hover{transform:translateY(-2px);}
+  .btn-outline-light{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.35);}
+  .btn-outline-light:hover{border-color:#fff;background:rgba(255,255,255,.1);transform:translateY(-2px);}
+
+  header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 24px;max-width:1200px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:.6rem;font-family:'Figtree';font-weight:800;font-size:1.35rem;}
+  .logo-mark{width:37px;height:37px;border-radius:10px;background:linear-gradient(135deg,var(--purple),var(--gold));display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.05rem;}
+  .nav-links{display:flex;align-items:center;gap:2.1rem;}
+  .nav-item{position:relative;}
+  .nav-item>a{font-weight:600;font-size:.93rem;display:flex;align-items:center;gap:.3rem;}
+  .nav-item>a .caret{font-size:.6rem;color:var(--text-soft);transition:.2s;}
+  .nav-item:hover>a .caret{transform:rotate(180deg);}
+  /* vertical tier-timeline dropdown - varied pattern */
+  .nav-dropdown{
+    display:block;position:absolute;top:calc(100% + 14px);left:50%;
+    min-width:270px;background:var(--card);border:1px solid var(--border);
+    border-radius:14px;padding:1rem 1.1rem;box-shadow:var(--shadow-lg);
+    opacity:0;visibility:hidden;pointer-events:none;
+    transform:translateX(-50%) translateY(6px);
+    transition:opacity .17s ease,transform .17s ease,visibility 0s linear .17s;
+  }
+  .nav-item:focus-within .nav-dropdown{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0);transition:opacity .17s ease,transform .17s ease;}
+  .nav-dropdown.open{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0);transition:opacity .17s ease,transform .17s ease;}
+  .tier-line{position:relative;padding-left:1.4rem;}
+  .tier-line::before{content:"";position:absolute;left:5px;top:8px;bottom:8px;width:2px;background:var(--border);}
+  .tier-line a{display:block;position:relative;padding:.55rem 0;font-size:.86rem;font-weight:600;}
+  .tier-line a::before{content:"";position:absolute;left:-1.4rem;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;background:var(--border);border:2px solid var(--card);}
+  .tier-line a.b1::before{background:#CD7F32;}
+  .tier-line a.b2::before{background:#A0A0A0;}
+  .tier-line a.b3::before{background:var(--gold);}
+  .tier-line a.b4::before{background:var(--purple);}
+  .tier-line a:hover{color:var(--purple-dark);}
+  .nav-actions{display:flex;align-items:center;gap:.9rem;}
+  .theme-toggle{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:1.05rem;}
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;}
+  .hamburger span{width:24px;height:2px;background:var(--text);border-radius:2px;}
+  .mobile-panel{display:none;}
+
+  .hero{padding:4.5rem 0 3.5rem;}
+  .hero-grid{display:grid;grid-template-columns:1fr .9fr;gap:3rem;align-items:center;}
+  .badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--bg-2);color:var(--purple-dark);font-weight:700;font-size:.8rem;padding:.5rem 1rem;border-radius:100px;margin-bottom:1.3rem;}
+  .hero h1{font-size:clamp(2.2rem,4.2vw,3.3rem);font-weight:800;line-height:1.15;margin-bottom:1.2rem;letter-spacing:-.01em;}
+  .hero h1 span{color:var(--purple);}
+  .hero p{font-size:1.05rem;color:var(--text-soft);max-width:470px;margin-bottom:2rem;}
+  .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.8rem;}
+  .hero-badges{display:flex;gap:1.8rem;color:var(--text-soft);font-size:.85rem;flex-wrap:wrap;}
+  .hero-badges b{color:var(--text);display:block;font-family:'Figtree';font-size:1.2rem;}
+
+  /* POINTS + TIER PROGRESS CARD */
+  .points-card{background:linear-gradient(160deg,var(--purple),#8B5FF0);border-radius:22px;padding:1.9rem;box-shadow:var(--shadow-lg);color:#fff;}
+  .points-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;}
+  .points-top span{font-size:.8rem;color:rgba(255,255,255,.75);}
+  .points-count{font-family:'Figtree';font-size:2.6rem;font-weight:800;}
+  .tier-badge{background:rgba(255,255,255,.18);padding:.4rem .8rem;border-radius:100px;font-size:.75rem;font-weight:700;display:flex;align-items:center;gap:.4rem;}
+  .tier-progress{margin-bottom:1.5rem;}
+  .tier-progress-bar{height:10px;background:rgba(255,255,255,.18);border-radius:8px;overflow:hidden;margin-bottom:.5rem;}
+  .tier-progress-fill{height:100%;background:var(--gold);border-radius:8px;width:0%;transition:width 1.4s cubic-bezier(.2,.8,.2,1);}
+  .tier-progress-label{display:flex;justify-content:space-between;font-size:.78rem;color:rgba(255,255,255,.85);}
+  .redeem-preview{display:flex;gap:.7rem;}
+  .redeem-item{flex:1;background:rgba(255,255,255,.12);border-radius:12px;padding:.8rem;text-align:center;}
+  .redeem-item .ic{font-size:1.3rem;margin-bottom:.3rem;}
+  .redeem-item span{font-size:.72rem;display:block;}
+
+  .section{padding:5.4rem 0;}
+  .section-head{max-width:600px;margin:0 auto 3rem;text-align:center;}
+  .badge-center{margin:0 auto 1rem;width:fit-content;}
+  .section-head h2{font-size:clamp(1.8rem,3.4vw,2.5rem);font-weight:800;margin-bottom:.9rem;letter-spacing:-.01em;}
+  .section-head p{color:var(--text-soft);font-size:1.03rem;}
+
+  /* REWARD CATEGORIES - view types w/ hover (skew+shadow pattern) */
+  .reward-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;}
+  .reward-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.9rem 1.5rem;cursor:pointer;transition:transform .4s cubic-bezier(.2,.8,.2,1),box-shadow .4s;}
+  .reward-card:hover{transform:translateY(-8px) skewY(-1deg);box-shadow:var(--shadow-lg);}
+  .reward-icon{width:50px;height:50px;border-radius:12px;background:var(--bg-2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.1rem;}
+  .reward-card h3{font-size:1rem;font-weight:700;margin-bottom:.5rem;}
+  .reward-card p{font-size:.84rem;color:var(--text-soft);}
+
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;}
+  .step{text-align:center;}
+  .step-num{width:56px;height:56px;border-radius:50%;background:var(--purple);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Figtree';font-weight:700;font-size:1.4rem;margin:0 auto 1.2rem;}
+  .step h3{font-size:1.05rem;margin-bottom:.5rem;}
+  .step p{color:var(--text-soft);font-size:.88rem;}
+
+  /* TIER COMPARISON TABLE */
+  .tier-table{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);}
+  .tier-row{display:grid;grid-template-columns:1.6fr repeat(4,1fr);align-items:center;padding:1rem 1.3rem;border-bottom:1px solid var(--border);}
+  .tier-row:last-child{border-bottom:none;}
+  .tier-row.head{background:var(--bg-2);font-weight:700;font-size:.85rem;}
+  .tier-row div{text-align:center;font-size:.86rem;}
+  .tier-row div:first-child{text-align:left;font-weight:600;}
+
+  .stats-band{background:var(--ink);color:#fff;border-radius:24px;padding:3.2rem 2.5rem;}
+  [data-theme="dark"] .stats-band{background:var(--card);border:1px solid var(--border);color:var(--text);}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);text-align:center;}
+  .stats-grid div strong{font-family:'Figtree';font-size:2.1rem;display:block;color:var(--gold);}
+  .stats-grid div span{font-size:.85rem;color:#B3A9CC;}
+  [data-theme="dark"] .stats-grid div span{color:var(--text-soft);}
+
+  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;}
+  .testi-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.8rem;transition:.3s;}
+  .testi-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+  .testi-stars{color:var(--gold);margin-bottom:1rem;font-size:1rem;letter-spacing:2px;}
+  .testi-card p{font-size:.93rem;margin-bottom:1.2rem;}
+  .testi-who strong{font-size:.87rem;display:block;}
+  .testi-who span{font-size:.76rem;color:var(--text-soft);}
+
+  .cta-band{background:linear-gradient(135deg,var(--purple),#8B5FF0);border-radius:24px;padding:3.5rem 2.5rem;text-align:center;color:#fff;}
+  .cta-band h2{font-size:clamp(1.7rem,3.4vw,2.3rem);margin-bottom:.9rem;}
+  .cta-band p{color:rgba(255,255,255,.92);max-width:460px;margin:0 auto 1.8rem;}
+  .cta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+
+  footer{background:var(--ink);color:#B3A9CC;padding:4rem 0 2rem;margin-top:5rem;}
+  [data-theme="dark"] footer{background:var(--card);border-top:1px solid var(--border);color:var(--text-soft);}
+  .footer-grid{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:2.5rem;margin-bottom:3rem;}
+  .footer-brand .logo{color:#fff;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-brand .logo{color:var(--text);}
+  .footer-brand p{font-size:.86rem;max-width:280px;}
+  .footer-col h4{color:#fff;font-size:.88rem;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-col h4{color:var(--text);}
+  .footer-col a{display:block;font-size:.84rem;padding:.4rem 0;color:#8E82A8;}
+  .footer-col a:hover{color:#fff;}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1.6rem;text-align:center;font-size:.8rem;}
+
+  @media(max-width:980px){
+    .hero-grid{grid-template-columns:1fr;}
+    .reward-grid{grid-template-columns:repeat(2,1fr);}
+    .steps{grid-template-columns:1fr;gap:2.5rem;}
+    .stats-grid{grid-template-columns:repeat(2,1fr);gap:1.8rem;}
+    .testi-grid{grid-template-columns:repeat(2,1fr);}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+    .tier-row{grid-template-columns:1.4fr repeat(2,1fr);}
+    .tier-row div:nth-child(4),.tier-row div:nth-child(5){display:none;}
+  }
+  @media(max-width:768px){
+    .nav-links{display:none;}
+    .hamburger{display:flex;}
+    .mobile-panel.open{display:block;background:var(--bg);border-top:1px solid var(--border);padding:1rem 24px 1.6rem;}
+    .mobile-panel a{display:block;padding:.8rem 0;font-weight:600;border-bottom:1px solid var(--border);}
+    .mobile-sub{padding-left:1rem;display:none;}
+    .mobile-sub.open{display:block;}
+    .mobile-sub a{border-bottom:none;padding:.6rem 0;font-weight:500;color:var(--text-soft);}
+    .mobile-caret{float:right;transition:transform .2s;}
+    .mobile-caret.open{transform:rotate(180deg);}
+    .nav-actions{gap:.5rem;}
+    .nav-actions .btn-primary{padding:.6rem .9rem;font-size:.74rem;white-space:nowrap;}
+    .theme-toggle{width:34px;height:34px;font-size:.9rem;}
+    .hero{padding:2.6rem 0;}
+    .hero-actions .btn{width:100%;justify-content:center;}
+    .hero-actions{flex-direction:column;}
+    .section{padding:3.2rem 0;}
+    .reward-grid{grid-template-columns:1fr 1fr;gap:1rem;}
+    .stats-grid{grid-template-columns:1fr 1fr;}
+    .testi-grid{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr;gap:2rem;}
+    .stats-band,.cta-band{padding:2.4rem 1.5rem;border-radius:20px;}
+    .redeem-preview{flex-wrap:wrap;}
+  }
+  @media(max-width:480px){
+    .reward-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="#" class="logo"><span class="logo-mark">P</span>Poinku</a>
+    <div class="nav-links">
+      <div class="nav-item">
+        <a href="#tiers">Tingkatan <span class="caret">▾</span></a>
+        <div class="nav-dropdown">
+          <div class="tier-line">
+            <a href="#tiers" class="b1">🥉 Bronze — 0 poin</a>
+            <a href="#tiers" class="b2">🥈 Silver — 5.000 poin</a>
+            <a href="#tiers" class="b3">🥇 Gold — 15.000 poin</a>
+            <a href="#tiers" class="b4">💎 Platinum — 40.000 poin</a>
+          </div>
+        </div>
+      </div>
+      <div class="nav-item"><a href="#rewards">Tukar Poin</a></div>
+      <div class="nav-item"><a href="#how">Cara Kerja</a></div>
+      <div class="nav-item"><a href="#">Mitra Merchant</a></div>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Ganti tema">🌙</button>
+      <a href="#rewards" class="btn btn-primary">Gabung Gratis</a>
+      <button class="hamburger" onclick="toggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-panel" id="mobilePanel">
+    <a href="javascript:void(0)" onclick="toggleSub(this)">Tingkatan <span class="mobile-caret">▾</span></a>
+    <div class="mobile-sub">
+      <a href="#tiers">🥉 Bronze</a>
+      <a href="#tiers">🥈 Silver</a>
+      <a href="#tiers">🥇 Gold</a>
+      <a href="#tiers">💎 Platinum</a>
+    </div>
+    <a href="#rewards">Tukar Poin</a>
+    <a href="#how">Cara Kerja</a>
+    <a href="#">Mitra Merchant</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="badge">🎁 Kumpulkan poin, tukar hadiah</span>
+      <h1>Belanja jadi lebih <span>menguntungkan</span></h1>
+      <p>Kumpulkan poin dari setiap transaksi di merchant partner, naik tingkat, dan tukar dengan hadiah eksklusif.</p>
+      <div class="hero-actions">
+        <a href="#rewards" class="btn btn-primary">Gabung Gratis</a>
+        <a href="#tiers" class="btn btn-ghost">Lihat Tingkatan</a>
+      </div>
+      <div class="hero-badges">
+        <div><b>1.4jt+</b>Member aktif</div>
+        <div><b>2.800+</b>Merchant partner</div>
+        <div><b>4.8/5</b>Rating member</div>
+      </div>
+    </div>
+
+    <div class="points-card">
+      <div class="points-top">
+        <div><span>Poin kamu</span><div class="points-count" id="pointsCount">0</div></div>
+        <div class="tier-badge">🥇 Gold</div>
+      </div>
+      <div class="tier-progress">
+        <div class="tier-progress-bar"><div class="tier-progress-fill" id="tierFill"></div></div>
+        <div class="tier-progress-label"><span>15.000 poin</span><span>5.000 lagi ke Platinum</span></div>
+      </div>
+      <div class="redeem-preview">
+        <div class="redeem-item"><div class="ic">☕</div><span>Kopi Gratis</span></div>
+        <div class="redeem-item"><div class="ic">🎬</div><span>Tiket Bioskop</span></div>
+        <div class="redeem-item"><div class="ic">💰</div><span>Cashback</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="rewards" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Tukar Poin</span>
+      <h2>Kategori hadiah favorit</h2>
+      <p>Ratusan pilihan reward dari merchant partner kami.</p>
+    </div>
+    <div class="reward-grid">
+      <div class="reward-card">
+        <div class="reward-icon">🍔</div>
+        <h3>Voucher F&B</h3>
+        <p>Diskon & gratis menu di ribuan resto</p>
+      </div>
+      <div class="reward-card">
+        <div class="reward-icon">🛍️</div>
+        <h3>Voucher Belanja</h3>
+        <p>Potongan harga di merchant retail</p>
+      </div>
+      <div class="reward-card">
+        <div class="reward-icon">✈️</div>
+        <h3>Travel & Hotel</h3>
+        <p>Tukar poin dengan tiket & menginap</p>
+      </div>
+      <div class="reward-card">
+        <div class="reward-icon">💵</div>
+        <h3>Cashback</h3>
+        <p>Konversi poin langsung ke saldo</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Cara Kerja</span>
+      <h2>Kumpulkan poin 3 langkah</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Daftar gratis</h3>
+        <p>Buat akun dan dapatkan 500 poin selamat datang.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Belanja di merchant partner</h3>
+        <p>Scan kode member setiap transaksi untuk dapat poin.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Tukar hadiah</h3>
+        <p>Gunakan poin untuk voucher, cashback, atau merchandise.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="tiers" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Tingkatan Member</span>
+      <h2>Makin sering belanja, makin banyak untung</h2>
+    </div>
+    <div class="tier-table">
+      <div class="tier-row head"><div>Benefit</div><div>🥉 Bronze</div><div>🥈 Silver</div><div>🥇 Gold</div><div>💎 Platinum</div></div>
+      <div class="tier-row"><div>Poin per Rp10rb</div><div>1x</div><div>1.5x</div><div>2x</div><div>3x</div></div>
+      <div class="tier-row"><div>Voucher ulang tahun</div><div>—</div><div>✔</div><div>✔</div><div>✔</div></div>
+      <div class="tier-row"><div>Prioritas customer service</div><div>—</div><div>—</div><div>✔</div><div>✔</div></div>
+      <div class="tier-row"><div>Akses event eksklusif</div><div>—</div><div>—</div><div>—</div><div>✔</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="stats-band">
+      <div class="stats-grid">
+        <div><strong>1.4jt+</strong><span>Member aktif</span></div>
+        <div><strong>2.800+</strong><span>Merchant partner</span></div>
+        <div><strong>85rb+</strong><span>Reward ditukar/bulan</span></div>
+        <div><strong>4.8/5</strong><span>Rating member</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Testimoni</span>
+      <h2>Kata member kami</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Poin dari belanja bulanan aja udah cukup buat tukar voucher makan tiap minggu."</p>
+        <div class="testi-who"><strong>Nadia Kusuma</strong><span>Member Gold</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Naik ke Platinum worth it banget, akses event eksklusifnya seru-seru."</p>
+        <div class="testi-who"><strong>Reza Firmansyah</strong><span>Member Platinum</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Simpel banget, tinggal scan tiap belanja, poinnya otomatis masuk."</p>
+        <div class="testi-who"><strong>Bunga Lestari</strong><span>Member Silver</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Mulai kumpulkan poin sekarang</h2>
+      <p>Gabung gratis, dapatkan 500 poin selamat datang untuk transaksi pertamamu.</p>
+      <div class="cta-actions">
+        <a href="#rewards" class="btn btn-white">Gabung Gratis</a>
+        <a href="#" class="btn btn-outline-light">Jadi Mitra Merchant →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo"><span class="logo-mark">P</span>Poinku</a>
+        <p>Program loyalty yang bikin setiap belanja lebih menguntungkan lewat poin dan reward eksklusif.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Program</h4>
+        <a href="#tiers">Tingkatan Member</a>
+        <a href="#rewards">Tukar Poin</a>
+        <a href="#how">Cara Kerja</a>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <a href="#">Tentang Kami</a>
+        <a href="#">Jadi Mitra Merchant</a>
+        <a href="#">Karir</a>
+      </div>
+      <div class="footer-col">
+        <h4>Bantuan</h4>
+        <a href="#">Pusat Bantuan</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat & Ketentuan</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 Poinku. Belanja untung, poin numpuk.</div>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme(){
+    const html=document.documentElement;
+    const next=html.getAttribute('data-theme')==='dark'?'light':'dark';
+    html.setAttribute('data-theme',next);
+    localStorage.setItem('poinku-theme',next);
+    document.querySelector('.theme-toggle').textContent=next==='dark'?'☀️':'🌙';
+  }
+  (function(){ if(localStorage.getItem('poinku-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); } })();
+  window.addEventListener('DOMContentLoaded',()=>{
+    document.querySelector('.theme-toggle').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';
+  });
+
+  function toggleMobile(){ document.getElementById('mobilePanel').classList.toggle('open'); }
+  function toggleSub(el){
+    el.nextElementSibling.classList.toggle('open');
+    el.querySelector('.mobile-caret').classList.toggle('open');
+  }
+
+  window.addEventListener('DOMContentLoaded',()=>{
+    const target=15000;
+    let cur=0;
+    const el=document.getElementById('pointsCount');
+    const step=Math.ceil(target/40);
+    const timer=setInterval(()=>{
+      cur+=step;
+      if(cur>=target){ cur=target; clearInterval(timer); }
+      el.textContent=cur.toLocaleString('id-ID');
+    },25);
+    setTimeout(()=>{ document.getElementById('tierFill').style.width='75%'; },150);
+  });
+
+  document.querySelectorAll('.nav-item').forEach(item=>{
+    const dd=item.querySelector('.nav-dropdown');
+    if(!dd) return;
+    let closeTimer;
+    item.addEventListener('mouseenter',()=>{ clearTimeout(closeTimer); dd.classList.add('open'); });
+    item.addEventListener('mouseleave',()=>{ closeTimer=setTimeout(()=>dd.classList.remove('open'),400); });
+  });
+</script>
+
+</body>
+</html>

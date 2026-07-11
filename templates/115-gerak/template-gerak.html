@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerak — Transportasi Online, Antar Kamu Ke Mana Saja</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --lime:#B4F400;
+    --lime-dark:#94CC00;
+    --ink:#0D0F0B;
+    --ink-2:#171A13;
+    --bg:#F7F9F3;
+    --bg-2:#ECF2E2;
+    --card:#FFFFFF;
+    --text:#12140F;
+    --text-soft:#5C6354;
+    --border:#DEE6D0;
+    --shadow:0 4px 18px rgba(13,15,11,.08);
+    --shadow-lg:0 24px 55px rgba(13,15,11,.2);
+  }
+  [data-theme="dark"]{
+    --lime:#C6FF33;
+    --lime-dark:#D9FF66;
+    --ink:#EDF2E4;
+    --bg:#0A0C08;
+    --bg-2:#12150D;
+    --card:#181C12;
+    --text:#EDF2E4;
+    --text-soft:#96A085;
+    --border:#262B1C;
+    --shadow:0 4px 18px rgba(0,0,0,.4);
+    --shadow-lg:0 24px 55px rgba(0,0,0,.6);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:.3s;}
+  h1,h2,h3,.disp{font-family:'Urbanist',sans-serif;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.7rem;border-radius:100px;font-weight:700;font-size:.95rem;cursor:pointer;border:none;transition:.25s;min-height:44px;}
+  .btn:hover{filter:brightness(1.04);}
+  .btn:active{transform:scale(.96);}
+  .btn-primary{background:var(--lime);color:var(--ink);box-shadow:0 10px 24px rgba(180,244,0,.35);}
+  .btn-primary:hover{background:var(--lime-dark);transform:translateY(-2px);}
+  .btn-ghost{background:var(--card);color:var(--text);border:1.5px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--lime-dark);color:var(--text);transform:translateY(-2px);}
+  .btn-dark{background:var(--ink);color:var(--lime);}
+  .btn-dark:hover{transform:translateY(-2px);}
+  .btn-outline-light{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.3);}
+  .btn-outline-light:hover{border-color:#fff;background:rgba(255,255,255,.08);transform:translateY(-2px);}
+
+  header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 24px;max-width:1200px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:.6rem;font-family:'Urbanist';font-weight:800;font-size:1.4rem;}
+  .logo-mark{width:38px;height:38px;border-radius:10px;background:var(--ink);display:flex;align-items:center;justify-content:center;color:var(--lime);font-size:1.1rem;}
+  .nav-links{display:flex;align-items:center;gap:2.1rem;}
+  .nav-item{position:relative;}
+  .nav-item>a{font-weight:600;font-size:.93rem;display:flex;align-items:center;gap:.3rem;}
+  .nav-item>a .caret{font-size:.6rem;color:var(--text-soft);transition:.2s;}
+  .nav-item:hover>a .caret{transform:rotate(180deg);}
+  /* search-style dropdown w/ mini destination input - varied pattern */
+  .nav-dropdown{
+    display:block;position:absolute;top:calc(100% + 14px);left:50%;
+    width:300px;background:var(--card);border:1px solid var(--border);
+    border-radius:16px;padding:1rem;box-shadow:var(--shadow-lg);
+    opacity:0;visibility:hidden;pointer-events:none;
+    transform:translateX(-50%) translateY(6px);
+    transition:opacity .17s ease,transform .17s ease,visibility 0s linear .17s;
+  }
+  .nav-item:focus-within .nav-dropdown{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0);transition:opacity .17s ease,transform .17s ease;}
+  .nav-dropdown.open{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0);transition:opacity .17s ease,transform .17s ease;}
+  .nav-dd-search{display:flex;align-items:center;gap:.5rem;background:var(--bg-2);border-radius:10px;padding:.6rem .8rem;margin-bottom:.7rem;font-size:.83rem;color:var(--text-soft);}
+  .nav-dropdown a{display:flex;align-items:center;gap:.6rem;padding:.55rem .3rem;font-size:.86rem;font-weight:600;border-radius:8px;}
+  .nav-dropdown a:hover{background:var(--bg-2);}
+  .nav-actions{display:flex;align-items:center;gap:.9rem;}
+  .theme-toggle{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:1.05rem;}
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;}
+  .hamburger span{width:24px;height:2px;background:var(--text);border-radius:2px;}
+  .mobile-panel{display:none;}
+
+  .hero{padding:4.5rem 0 3.5rem;background:var(--ink);color:#fff;position:relative;overflow:hidden;}
+  [data-theme="dark"] .hero{background:var(--bg-2);}
+  .hero::after{content:"";position:absolute;right:-10%;top:-25%;width:55%;height:150%;background:radial-gradient(circle,rgba(180,244,0,.14),transparent 65%);}
+  .hero-grid{display:grid;grid-template-columns:1fr .95fr;gap:3rem;align-items:center;position:relative;z-index:1;}
+  .badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(180,244,0,.14);color:var(--lime);font-weight:700;font-size:.8rem;padding:.5rem 1rem;border-radius:100px;margin-bottom:1.3rem;}
+  .hero h1{font-size:clamp(2.2rem,4.2vw,3.3rem);font-weight:800;line-height:1.15;margin-bottom:1.2rem;letter-spacing:-.01em;}
+  .hero h1 span{color:var(--lime);}
+  .hero p{font-size:1.05rem;color:#B9C2AB;max-width:470px;margin-bottom:2rem;}
+  [data-theme="dark"] .hero p{color:var(--text-soft);}
+  .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.8rem;}
+  .hero-badges{display:flex;gap:1.8rem;font-size:.85rem;flex-wrap:wrap;color:#B9C2AB;}
+  [data-theme="dark"] .hero-badges{color:var(--text-soft);}
+  .hero-badges b{color:var(--lime);display:block;font-family:'Urbanist';font-size:1.2rem;}
+
+  /* RIDE REQUEST + FARE ESTIMATE */
+  .ride-card{background:var(--card);border-radius:22px;padding:1.8rem;box-shadow:var(--shadow-lg);color:var(--text);}
+  .ride-inputs{display:flex;flex-direction:column;gap:.7rem;margin-bottom:1.3rem;}
+  .ride-input{display:flex;align-items:center;gap:.7rem;background:var(--bg-2);border-radius:10px;padding:.8rem 1rem;font-size:.88rem;}
+  .ride-input .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .ride-input.pickup .dot{background:var(--lime-dark);}
+  .ride-input.dest .dot{background:#EF4444;}
+  .fare-row{margin-bottom:1.2rem;}
+  .fare-row label{display:flex;justify-content:space-between;font-size:.85rem;color:var(--text-soft);margin-bottom:.5rem;}
+  .fare-row label b{color:var(--text);}
+  .fare-row input[type=range]{width:100%;accent-color:var(--lime-dark);}
+  .fare-result{background:var(--ink);color:#fff;border-radius:14px;padding:1.1rem 1.3rem;display:flex;justify-content:space-between;align-items:center;}
+  .fare-result span{font-size:.8rem;color:#B9C2AB;display:block;}
+  .fare-result strong{font-family:'Urbanist';font-size:1.4rem;color:var(--lime);}
+
+  .section{padding:5.4rem 0;}
+  .section-head{max-width:600px;margin:0 auto 3rem;text-align:center;}
+  .badge-center{margin:0 auto 1rem;width:fit-content;background:var(--bg-2);color:var(--text);}
+  .section-head h2{font-size:clamp(1.8rem,3.4vw,2.5rem);font-weight:800;margin-bottom:.9rem;letter-spacing:-.01em;}
+  .section-head p{color:var(--text-soft);font-size:1.03rem;}
+
+  /* SERVICE TYPES - icon bounce + shadow pop hover */
+  .service-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;}
+  .service-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:1.9rem 1.5rem;cursor:pointer;transition:box-shadow .3s,border-color .3s;}
+  .service-card:hover{box-shadow:var(--shadow-lg);border-color:var(--lime-dark);}
+  .service-icon{width:54px;height:54px;border-radius:14px;background:var(--bg-2);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:1.1rem;transition:transform .5s cubic-bezier(.34,1.56,.64,1);}
+  .service-card:hover .service-icon{transform:scale(1.15) rotate(8deg);}
+  .service-card h3{font-size:1.02rem;font-weight:700;margin-bottom:.5rem;}
+  .service-card p{font-size:.84rem;color:var(--text-soft);}
+
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;}
+  .step{text-align:center;}
+  .step-num{width:56px;height:56px;border-radius:50%;background:var(--ink);color:var(--lime);display:flex;align-items:center;justify-content:center;font-family:'Urbanist';font-weight:700;font-size:1.4rem;margin:0 auto 1.2rem;}
+  .step h3{font-size:1.05rem;margin-bottom:.5rem;}
+  .step p{color:var(--text-soft);font-size:.88rem;}
+
+  .stats-band{background:var(--ink);color:#fff;border-radius:24px;padding:3.2rem 2.5rem;}
+  [data-theme="dark"] .stats-band{background:var(--card);border:1px solid var(--border);color:var(--text);}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);text-align:center;}
+  .stats-grid div strong{font-family:'Urbanist';font-size:2.1rem;display:block;color:var(--lime);}
+  .stats-grid div span{font-size:.85rem;color:#B9C2AB;}
+  [data-theme="dark"] .stats-grid div span{color:var(--text-soft);}
+
+  .safety-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;}
+  .safety-card{text-align:center;padding:1.5rem;}
+  .safety-card .ic{font-size:2rem;margin-bottom:.8rem;}
+  .safety-card h3{font-size:1rem;margin-bottom:.5rem;}
+  .safety-card p{font-size:.85rem;color:var(--text-soft);}
+
+  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;}
+  .testi-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.8rem;transition:.3s;}
+  .testi-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+  .testi-stars{color:var(--lime-dark);margin-bottom:1rem;font-size:1rem;letter-spacing:2px;}
+  .testi-card p{font-size:.93rem;margin-bottom:1.2rem;}
+  .testi-who strong{font-size:.87rem;display:block;}
+  .testi-who span{font-size:.76rem;color:var(--text-soft);}
+
+  .cta-band{background:linear-gradient(135deg,var(--ink),var(--ink-2));border-radius:24px;padding:3.5rem 2.5rem;text-align:center;color:#fff;position:relative;overflow:hidden;}
+  .cta-band::after{content:"";position:absolute;right:-15%;bottom:-30%;width:50%;height:120%;background:radial-gradient(circle,rgba(180,244,0,.16),transparent 65%);}
+  .cta-band h2{font-size:clamp(1.7rem,3.4vw,2.3rem);margin-bottom:.9rem;position:relative;}
+  .cta-band p{color:#B9C2AB;max-width:460px;margin:0 auto 1.8rem;position:relative;}
+  .cta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;position:relative;}
+
+  footer{background:var(--ink);color:#98A188;padding:4rem 0 2rem;margin-top:5rem;}
+  [data-theme="dark"] footer{background:var(--card);border-top:1px solid var(--border);color:var(--text-soft);}
+  .footer-grid{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:2.5rem;margin-bottom:3rem;}
+  .footer-brand .logo{color:#fff;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-brand .logo{color:var(--text);}
+  .footer-brand p{font-size:.86rem;max-width:280px;}
+  .footer-col h4{color:#fff;font-size:.88rem;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-col h4{color:var(--text);}
+  .footer-col a{display:block;font-size:.84rem;padding:.4rem 0;color:#7C8570;}
+  .footer-col a:hover{color:var(--lime);}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1.6rem;text-align:center;font-size:.8rem;}
+
+  @media(max-width:980px){
+    .hero-grid{grid-template-columns:1fr;}
+    .service-grid{grid-template-columns:repeat(2,1fr);}
+    .steps,.safety-grid{grid-template-columns:1fr;gap:2rem;}
+    .stats-grid{grid-template-columns:repeat(2,1fr);gap:1.8rem;}
+    .testi-grid{grid-template-columns:repeat(2,1fr);}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media(max-width:768px){
+    .nav-links{display:none;}
+    .hamburger{display:flex;}
+    .mobile-panel.open{display:block;background:var(--bg);border-top:1px solid var(--border);padding:1rem 24px 1.6rem;}
+    .mobile-panel a{display:block;padding:.8rem 0;font-weight:600;border-bottom:1px solid var(--border);}
+    .mobile-sub{padding-left:1rem;display:none;}
+    .mobile-sub.open{display:block;}
+    .mobile-sub a{border-bottom:none;padding:.6rem 0;font-weight:500;color:var(--text-soft);}
+    .mobile-caret{float:right;transition:transform .2s;}
+    .mobile-caret.open{transform:rotate(180deg);}
+    .nav-actions{gap:.5rem;}
+    .nav-actions .btn-primary{padding:.6rem .9rem;font-size:.74rem;white-space:nowrap;}
+    .theme-toggle{width:34px;height:34px;font-size:.9rem;}
+    .hero{padding:2.6rem 0;}
+    .hero-actions .btn{width:100%;justify-content:center;}
+    .hero-actions{flex-direction:column;}
+    .section{padding:3.2rem 0;}
+    .service-grid{grid-template-columns:1fr 1fr;gap:1rem;}
+    .stats-grid{grid-template-columns:1fr 1fr;}
+    .testi-grid{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr;gap:2rem;}
+    .stats-band,.cta-band{padding:2.4rem 1.5rem;border-radius:20px;}
+  }
+  @media(max-width:480px){
+    .service-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="#" class="logo"><span class="logo-mark">G</span>Gerak</a>
+    <div class="nav-links">
+      <div class="nav-item">
+        <a href="#services">Layanan <span class="caret">▾</span></a>
+        <div class="nav-dropdown">
+          <div class="nav-dd-search">📍 Cari tujuanmu...</div>
+          <a href="#services">🏍️ GerakBike — Motor</a>
+          <a href="#services">🚗 GerakCar — Mobil</a>
+          <a href="#services">📦 GerakSend — Kirim Barang</a>
+          <a href="#services">🍔 GerakFood — Antar Makanan</a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="#how">Cara Kerja</a></div>
+      <div class="nav-item"><a href="#safety">Keamanan</a></div>
+      <div class="nav-item"><a href="#">Jadi Mitra</a></div>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Ganti tema">🌙</button>
+      <a href="#services" class="btn btn-primary">Pesan Sekarang</a>
+      <button class="hamburger" onclick="toggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-panel" id="mobilePanel">
+    <a href="javascript:void(0)" onclick="toggleSub(this)">Layanan <span class="mobile-caret">▾</span></a>
+    <div class="mobile-sub">
+      <a href="#services">🏍️ GerakBike</a>
+      <a href="#services">🚗 GerakCar</a>
+      <a href="#services">📦 GerakSend</a>
+      <a href="#services">🍔 GerakFood</a>
+    </div>
+    <a href="#how">Cara Kerja</a>
+    <a href="#safety">Keamanan</a>
+    <a href="#">Jadi Mitra</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="badge">🛵 Ribuan mitra siap jemput</span>
+      <h1>Ke mana pun, <span>gerak cepat</span> tanpa nunggu lama</h1>
+      <p>Ojek, mobil, kirim barang, sampai antar makanan — semua dalam satu aplikasi. Harga transparan sebelum pesan.</p>
+      <div class="hero-actions">
+        <a href="#services" class="btn btn-primary">Pesan Sekarang</a>
+        <a href="#how" class="btn btn-outline-light">Cara Kerja</a>
+      </div>
+      <div class="hero-badges">
+        <div><b>4.2jt+</b>Perjalanan/bulan</div>
+        <div><b>380rb+</b>Mitra pengemudi</div>
+        <div><b>4.8/5</b>Rating penumpang</div>
+      </div>
+    </div>
+
+    <div class="ride-card">
+      <div class="ride-inputs">
+        <div class="ride-input pickup"><span class="dot"></span> Jl. Sudirman No. 45, Jakarta</div>
+        <div class="ride-input dest"><span class="dot"></span> Mall Kota Kasablanka</div>
+      </div>
+      <div class="fare-row">
+        <label>Estimasi jarak <b id="distVal">4.5 km</b></label>
+        <input type="range" id="distRange" min="1" max="25" value="4.5" step=".5" oninput="updateFare()">
+      </div>
+      <div class="fare-result">
+        <div><span>Estimasi tarif GerakBike</span><strong id="fareResult">Rp13.500</strong></div>
+        <a href="#" class="btn btn-primary" style="padding:.6rem 1.1rem;background:var(--lime);">Pesan →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="services" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Layanan</span>
+      <h2>Satu aplikasi, semua kebutuhan mobilitas</h2>
+    </div>
+    <div class="service-grid">
+      <div class="service-card">
+        <div class="service-icon">🏍️</div>
+        <h3>GerakBike</h3>
+        <p>Ojek motor, cepat & terjangkau</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🚗</div>
+        <h3>GerakCar</h3>
+        <p>Mobil nyaman untuk perjalanan jauh</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📦</div>
+        <h3>GerakSend</h3>
+        <p>Kirim barang & dokumen cepat</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🍔</div>
+        <h3>GerakFood</h3>
+        <p>Antar makanan favoritmu ke rumah</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Cara Kerja</span>
+      <h2>Pesan perjalanan 3 langkah</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Tentukan tujuan</h3>
+        <p>Isi lokasi jemput dan tujuan perjalananmu.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Pilih layanan</h3>
+        <p>Motor, mobil, atau kirim barang sesuai kebutuhan.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Jalan!</h3>
+        <p>Pengemudi terdekat otomatis dijemput ke lokasimu.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="stats-band">
+      <div class="stats-grid">
+        <div><strong>4.2jt+</strong><span>Perjalanan/bulan</span></div>
+        <div><strong>380rb+</strong><span>Mitra pengemudi</span></div>
+        <div><strong>4.8/5</strong><span>Rating penumpang</span></div>
+        <div><strong>65</strong><span>Kota terlayani</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="safety">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Keamanan</span>
+      <h2>Perjalanan aman, kami jamin</h2>
+    </div>
+    <div class="safety-grid">
+      <div class="safety-card"><div class="ic">🛡️</div><h3>Verifikasi Mitra</h3><p>Semua pengemudi lolos verifikasi identitas & latar belakang.</p></div>
+      <div class="safety-card"><div class="ic">📍</div><h3>Share Lokasi Live</h3><p>Bagikan perjalananmu real-time ke keluarga/teman.</p></div>
+      <div class="safety-card"><div class="ic">🆘</div><h3>Tombol Darurat</h3><p>Akses langsung ke bantuan darurat kapan saja.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Testimoni</span>
+      <h2>Kata penumpang kami</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Estimasi tarifnya akurat, gak pernah beda jauh sama yang dibayar. Drivernya juga ramah."</p>
+        <div class="testi-who"><strong>Yoga Prasetya</strong><span>Pengguna harian</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Fitur share lokasi bikin keluarga tenang pas aku pulang malam sendirian."</p>
+        <div class="testi-who"><strong>Rizka Amelia</strong><span>Pengguna GerakCar</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"GerakSend nyelamatin banget pas butuh kirim dokumen mendadak ke klien."</p>
+        <div class="testi-who"><strong>Fandi Ahmad</strong><span>Pengguna GerakSend</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Download & mulai perjalanan pertamamu</h2>
+      <p>Promo diskon 50% untuk 3 perjalanan pertama pengguna baru.</p>
+      <div class="cta-actions">
+        <a href="#" class="btn btn-primary">Download Aplikasi</a>
+        <a href="#" class="btn btn-outline-light">Jadi Mitra Pengemudi →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo"><span class="logo-mark">G</span>Gerak</a>
+        <p>Aplikasi transportasi online untuk semua kebutuhan mobilitas dan pengiriman harianmu.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Layanan</h4>
+        <a href="#services">GerakBike</a>
+        <a href="#services">GerakCar</a>
+        <a href="#services">GerakSend</a>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <a href="#">Tentang Kami</a>
+        <a href="#">Jadi Mitra</a>
+        <a href="#">Karir</a>
+      </div>
+      <div class="footer-col">
+        <h4>Bantuan</h4>
+        <a href="#safety">Keamanan</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat & Ketentuan</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 Gerak. Ke mana pun, gerak cepat.</div>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme(){
+    const html=document.documentElement;
+    const next=html.getAttribute('data-theme')==='dark'?'light':'dark';
+    html.setAttribute('data-theme',next);
+    localStorage.setItem('gerak-theme',next);
+    document.querySelector('.theme-toggle').textContent=next==='dark'?'☀️':'🌙';
+  }
+  (function(){ if(localStorage.getItem('gerak-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); } })();
+  window.addEventListener('DOMContentLoaded',()=>{
+    document.querySelector('.theme-toggle').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';
+  });
+
+  function toggleMobile(){ document.getElementById('mobilePanel').classList.toggle('open'); }
+  function toggleSub(el){
+    el.nextElementSibling.classList.toggle('open');
+    el.querySelector('.mobile-caret').classList.toggle('open');
+  }
+
+  function updateFare(){
+    const dist=parseFloat(document.getElementById('distRange').value);
+    document.getElementById('distVal').textContent=dist+' km';
+    const fare=Math.round((3000+dist*2333)/500)*500;
+    document.getElementById('fareResult').textContent='Rp'+fare.toLocaleString('id-ID');
+  }
+  updateFare();
+
+  document.querySelectorAll('.nav-item').forEach(item=>{
+    const dd=item.querySelector('.nav-dropdown');
+    if(!dd) return;
+    let closeTimer;
+    item.addEventListener('mouseenter',()=>{ clearTimeout(closeTimer); dd.classList.add('open'); });
+    item.addEventListener('mouseleave',()=>{ closeTimer=setTimeout(()=>dd.classList.remove('open'),400); });
+  });
+</script>
+
+</body>
+</html>

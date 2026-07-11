@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nirawa — Bank Digital, Kelola Uang Tanpa Ribet Antre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --indigo:#4338CA;
+    --indigo-dark:#362DA8;
+    --mint:#2DD4A7;
+    --ink:#0E1024;
+    --bg:#F6F7FC;
+    --bg-2:#ECEEF9;
+    --card:#FFFFFF;
+    --text:#12142B;
+    --text-soft:#5C6178;
+    --border:#DFE2F2;
+    --shadow:0 4px 18px rgba(14,16,36,.08);
+    --shadow-lg:0 24px 55px rgba(14,16,36,.2);
+  }
+  [data-theme="dark"]{
+    --indigo:#8B7FFF;
+    --indigo-dark:#A79DFF;
+    --mint:#4DE8C0;
+    --ink:#EBEBFA;
+    --bg:#0A0A18;
+    --bg-2:#111124;
+    --card:#161630;
+    --text:#EBEBFA;
+    --text-soft:#8F92AE;
+    --border:#242545;
+    --shadow:0 4px 18px rgba(0,0,0,.4);
+    --shadow-lg:0 24px 55px rgba(0,0,0,.6);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:.3s;}
+  h1,h2,h3,.disp{font-family:'Onest',sans-serif;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.7rem;border-radius:12px;font-weight:700;font-size:.95rem;cursor:pointer;border:none;transition:.25s;min-height:44px;}
+  .btn:hover{filter:brightness(1.04);}
+  .btn:active{transform:scale(.96);}
+  .btn-primary{background:var(--indigo);color:#fff;box-shadow:0 10px 24px rgba(67,56,202,.32);}
+  .btn-primary:hover{background:var(--indigo-dark);transform:translateY(-2px);}
+  .btn-ghost{background:var(--card);color:var(--text);border:1.5px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--indigo);color:var(--indigo-dark);transform:translateY(-2px);}
+  .btn-white{background:#fff;color:var(--indigo-dark);}
+  .btn-white:hover{transform:translateY(-2px);}
+  .btn-outline-light{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.35);}
+  .btn-outline-light:hover{border-color:#fff;background:rgba(255,255,255,.1);transform:translateY(-2px);}
+
+  header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 24px;max-width:1200px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:.6rem;font-family:'Onest';font-weight:800;font-size:1.35rem;}
+  .logo-mark{width:37px;height:37px;border-radius:10px;background:linear-gradient(135deg,var(--indigo),var(--mint));display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.05rem;}
+  .nav-links{display:flex;align-items:center;gap:2.1rem;}
+  .nav-item{position:relative;}
+  .nav-item>a{font-weight:600;font-size:.93rem;display:flex;align-items:center;gap:.3rem;}
+  .nav-item>a .caret{font-size:.6rem;color:var(--text-soft);transition:.2s;}
+  .nav-item:hover>a .caret{transform:rotate(180deg);}
+  /* multi-color-accent list dropdown - varied pattern (finale) */
+  .nav-dropdown{
+    display:block;position:absolute;top:calc(100% + 14px);left:50%;
+    min-width:280px;background:var(--card);border:1px solid var(--border);
+    border-radius:14px;padding:.5rem;box-shadow:var(--shadow-lg);
+    opacity:0;visibility:hidden;pointer-events:none;
+    transform:translateX(-50%) translateY(6px);
+    transition:opacity .17s ease,transform .17s ease,visibility 0s linear .17s;
+  }
+  .nav-item:focus-within .nav-dropdown{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0);transition:opacity .17s ease,transform .17s ease;}
+  .nav-dropdown.open{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0);transition:opacity .17s ease,transform .17s ease;}
+  .nav-dropdown a{display:flex;align-items:center;gap:.7rem;padding:.65rem .7rem;border-radius:8px;font-size:.86rem;font-weight:600;border-left:3px solid transparent;transition:.2s;}
+  .nav-dropdown a:hover{background:var(--bg-2);padding-left:.9rem;}
+  .nav-dropdown a.c1:hover{border-left-color:var(--indigo);}
+  .nav-dropdown a.c2:hover{border-left-color:var(--mint);}
+  .nav-dropdown a.c3:hover{border-left-color:#F59E0B;}
+  .nav-dropdown a.c4:hover{border-left-color:#EC4899;}
+  .nav-actions{display:flex;align-items:center;gap:.9rem;}
+  .theme-toggle{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:1.05rem;}
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;}
+  .hamburger span{width:24px;height:2px;background:var(--text);border-radius:2px;}
+  .mobile-panel{display:none;}
+
+  .hero{padding:4.5rem 0 3.5rem;}
+  .hero-grid{display:grid;grid-template-columns:1fr .85fr;gap:3rem;align-items:center;}
+  .badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--bg-2);color:var(--indigo-dark);font-weight:700;font-size:.8rem;padding:.5rem 1rem;border-radius:100px;margin-bottom:1.3rem;}
+  .hero h1{font-size:clamp(2.2rem,4.2vw,3.3rem);font-weight:800;line-height:1.15;margin-bottom:1.2rem;letter-spacing:-.01em;}
+  .hero h1 span{color:var(--indigo);}
+  .hero p{font-size:1.05rem;color:var(--text-soft);max-width:460px;margin-bottom:2rem;}
+  .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.8rem;}
+  .hero-badges{display:flex;gap:1.8rem;color:var(--text-soft);font-size:.85rem;flex-wrap:wrap;}
+  .hero-badges b{color:var(--text);display:block;font-family:'Onest';font-size:1.2rem;}
+
+  /* FLIP CARD */
+  .card-scene{perspective:1200px;}
+  .flip-card{position:relative;width:100%;aspect-ratio:16/10;cursor:pointer;}
+  .flip-inner{position:relative;width:100%;height:100%;transition:transform .7s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d;}
+  .flip-card.flipped .flip-inner{transform:rotateY(180deg);}
+  .flip-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:20px;padding:1.7rem;color:#fff;box-shadow:var(--shadow-lg);}
+  .flip-front{background:linear-gradient(140deg,var(--indigo),#6E5AF0);display:flex;flex-direction:column;justify-content:space-between;}
+  .flip-back{background:linear-gradient(140deg,var(--ink),#2A2A4A);transform:rotateY(180deg);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:.8rem;}
+  .card-top{display:flex;justify-content:space-between;align-items:center;}
+  .card-top span{font-size:.8rem;opacity:.85;}
+  .card-chip{width:38px;height:28px;border-radius:6px;background:rgba(255,255,255,.25);}
+  .card-num{font-family:'Onest';font-size:1.3rem;letter-spacing:.15em;margin:1rem 0;}
+  .card-bottom{display:flex;justify-content:space-between;font-size:.8rem;opacity:.9;}
+  .flip-hint{font-size:.75rem;opacity:.7;}
+  .flip-back .stripe{width:100%;height:36px;background:rgba(0,0,0,.4);}
+  .flip-back .cvv{align-self:flex-end;margin-right:1.5rem;background:#fff;color:var(--ink);padding:.3rem .8rem;border-radius:4px;font-size:.8rem;font-weight:700;}
+
+  .section{padding:5.4rem 0;}
+  .section-head{max-width:600px;margin:0 auto 3rem;text-align:center;}
+  .badge-center{margin:0 auto 1rem;width:fit-content;}
+  .section-head h2{font-size:clamp(1.8rem,3.4vw,2.5rem);font-weight:800;margin-bottom:.9rem;letter-spacing:-.01em;}
+  .section-head p{color:var(--text-soft);font-size:1.03rem;}
+
+  /* FEATURES - view types w/ hover */
+  .feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;}
+  .feat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.9rem 1.5rem;cursor:pointer;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s;}
+  .feat-card:hover{transform:translateY(-10px);box-shadow:var(--shadow-lg);border-color:var(--indigo);}
+  .feat-icon{width:50px;height:50px;border-radius:12px;background:var(--bg-2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.1rem;transition:.35s;}
+  .feat-card:hover .feat-icon{background:var(--indigo);transform:scale(1.1);}
+  .feat-card h3{font-size:1rem;font-weight:700;margin-bottom:.5rem;}
+  .feat-card p{font-size:.84rem;color:var(--text-soft);}
+
+  /* SPENDING INSIGHTS */
+  .insight-card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:2.1rem;box-shadow:var(--shadow);}
+  .insight-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.6rem;}
+  .insight-head h4{font-family:'Onest';font-size:1.1rem;}
+  .insight-head span{font-size:.82rem;color:var(--mint);font-weight:700;background:var(--bg-2);padding:.35rem .8rem;border-radius:100px;}
+  .chart-bars{display:flex;align-items:flex-end;gap:1rem;height:160px;}
+  .chart-bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:.5rem;}
+  .chart-bar .bar{width:100%;background:linear-gradient(180deg,var(--indigo),var(--mint));border-radius:6px 6px 0 0;transition:height 1s cubic-bezier(.2,.8,.2,1);}
+  .chart-bar span{font-size:.72rem;color:var(--text-soft);}
+
+  .stats-band{background:var(--ink);color:#fff;border-radius:24px;padding:3.2rem 2.5rem;}
+  [data-theme="dark"] .stats-band{background:var(--card);border:1px solid var(--border);color:var(--text);}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);text-align:center;}
+  .stats-grid div strong{font-family:'Onest';font-size:2.1rem;display:block;color:var(--mint);}
+  .stats-grid div span{font-size:.85rem;color:#A5AAC8;}
+  [data-theme="dark"] .stats-grid div span{color:var(--text-soft);}
+
+  .price-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.6rem;max-width:760px;margin:0 auto;}
+  .price-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:2.1rem 1.7rem;display:flex;flex-direction:column;transition:.3s;}
+  .price-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+  .price-card.featured{background:var(--indigo);color:#fff;border-color:var(--indigo);position:relative;}
+  .price-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--mint);color:var(--ink);font-size:.7rem;font-weight:700;padding:.35rem .8rem;border-radius:100px;}
+  .price-card h3{font-size:1.05rem;margin-bottom:.3rem;}
+  .price-card .desc{font-size:.83rem;color:var(--text-soft);margin-bottom:1.2rem;}
+  .price-card.featured .desc{color:#D6D3FF;}
+  .price-amount{font-family:'Onest';font-size:1.9rem;margin-bottom:1.3rem;}
+  .price-amount span{font-size:.85rem;font-weight:400;color:var(--text-soft);}
+  .price-card.featured .price-amount span{color:#D6D3FF;}
+  .price-list{list-style:none;margin-bottom:1.5rem;flex:1;}
+  .price-list li{padding:.5rem 0;font-size:.86rem;display:flex;gap:.6rem;border-bottom:1px dashed var(--border);}
+  .price-card.featured .price-list li{border-color:rgba(255,255,255,.2);}
+  .price-list li:last-child{border-bottom:none;}
+
+  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;}
+  .testi-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.8rem;transition:.3s;}
+  .testi-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+  .testi-stars{color:#F59E0B;margin-bottom:1rem;font-size:1rem;letter-spacing:2px;}
+  .testi-card p{font-size:.93rem;margin-bottom:1.2rem;}
+  .testi-who strong{font-size:.87rem;display:block;}
+  .testi-who span{font-size:.76rem;color:var(--text-soft);}
+
+  .cta-band{background:linear-gradient(135deg,var(--indigo),#6E5AF0);border-radius:24px;padding:3.5rem 2.5rem;text-align:center;color:#fff;}
+  .cta-band h2{font-size:clamp(1.7rem,3.4vw,2.3rem);margin-bottom:.9rem;}
+  .cta-band p{color:rgba(255,255,255,.92);max-width:460px;margin:0 auto 1.8rem;}
+  .cta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+
+  footer{background:var(--ink);color:#A5AAC8;padding:4rem 0 2rem;margin-top:5rem;}
+  [data-theme="dark"] footer{background:var(--card);border-top:1px solid var(--border);color:var(--text-soft);}
+  .footer-grid{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:2.5rem;margin-bottom:3rem;}
+  .footer-brand .logo{color:#fff;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-brand .logo{color:var(--text);}
+  .footer-brand p{font-size:.86rem;max-width:280px;}
+  .footer-col h4{color:#fff;font-size:.88rem;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-col h4{color:var(--text);}
+  .footer-col a{display:block;font-size:.84rem;padding:.4rem 0;color:#7B80A0;}
+  .footer-col a:hover{color:#fff;}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1.6rem;text-align:center;font-size:.8rem;}
+
+  @media(max-width:980px){
+    .hero-grid{grid-template-columns:1fr;}
+    .hero-grid > div:last-child{max-width:420px;}
+    .feat-grid{grid-template-columns:repeat(2,1fr);}
+    .stats-grid{grid-template-columns:repeat(2,1fr);gap:1.8rem;}
+    .testi-grid{grid-template-columns:repeat(2,1fr);}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media(max-width:768px){
+    .nav-links{display:none;}
+    .hamburger{display:flex;}
+    .mobile-panel.open{display:block;background:var(--bg);border-top:1px solid var(--border);padding:1rem 24px 1.6rem;}
+    .mobile-panel a{display:block;padding:.8rem 0;font-weight:600;border-bottom:1px solid var(--border);}
+    .mobile-sub{padding-left:1rem;display:none;}
+    .mobile-sub.open{display:block;}
+    .mobile-sub a{border-bottom:none;padding:.6rem 0;font-weight:500;color:var(--text-soft);}
+    .mobile-caret{float:right;transition:transform .2s;}
+    .mobile-caret.open{transform:rotate(180deg);}
+    .nav-actions{gap:.5rem;}
+    .nav-actions .btn-primary{padding:.6rem .9rem;font-size:.74rem;white-space:nowrap;}
+    .theme-toggle{width:34px;height:34px;font-size:.9rem;}
+    .hero{padding:2.6rem 0;}
+    .hero-actions .btn{width:100%;justify-content:center;}
+    .hero-actions{flex-direction:column;}
+    .section{padding:3.2rem 0;}
+    .feat-grid{grid-template-columns:1fr 1fr;gap:1rem;}
+    .stats-grid{grid-template-columns:1fr 1fr;}
+    .price-grid{grid-template-columns:1fr;}
+    .testi-grid{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr;gap:2rem;}
+    .stats-band,.cta-band{padding:2.4rem 1.5rem;border-radius:20px;}
+    .chart-bars{height:120px;}
+  }
+  @media(max-width:480px){
+    .feat-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="#" class="logo"><span class="logo-mark">N</span>Nirawa</a>
+    <div class="nav-links">
+      <div class="nav-item">
+        <a href="#features">Produk <span class="caret">▾</span></a>
+        <div class="nav-dropdown">
+          <a href="#features" class="c1">💳 Kartu Debit Virtual</a>
+          <a href="#features" class="c2">💰 Tabungan Berbunga</a>
+          <a href="#features" class="c3">📊 Insight Pengeluaran</a>
+          <a href="#features" class="c4">🔒 Proteksi Transaksi</a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="#insights">Fitur</a></div>
+      <div class="nav-item"><a href="#pricing">Harga</a></div>
+      <div class="nav-item"><a href="#">Keamanan</a></div>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Ganti tema">🌙</button>
+      <a href="#pricing" class="btn btn-primary">Buka Rekening</a>
+      <button class="hamburger" onclick="toggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-panel" id="mobilePanel">
+    <a href="javascript:void(0)" onclick="toggleSub(this)">Produk <span class="mobile-caret">▾</span></a>
+    <div class="mobile-sub">
+      <a href="#features">💳 Kartu Debit Virtual</a>
+      <a href="#features">💰 Tabungan Berbunga</a>
+      <a href="#features">📊 Insight Pengeluaran</a>
+    </div>
+    <a href="#insights">Fitur</a>
+    <a href="#pricing">Harga</a>
+    <a href="#">Keamanan</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="badge">🏦 Bank digital berizin OJK</span>
+      <h1>Kelola uang jadi <span>lebih pintar</span>, tanpa antre bank</h1>
+      <p>Buka rekening dalam 5 menit, kartu debit virtual instan, tabungan berbunga tinggi — semua dari HP kamu.</p>
+      <div class="hero-actions">
+        <a href="#pricing" class="btn btn-primary">Buka Rekening Gratis</a>
+        <a href="#features" class="btn btn-ghost">Lihat Fitur</a>
+      </div>
+      <div class="hero-badges">
+        <div><b>2.8jt+</b>Nasabah aktif</div>
+        <div><b>5 mnt</b>Buka rekening</div>
+        <div><b>4.9/5</b>Rating pengguna</div>
+      </div>
+    </div>
+
+    <div class="card-scene">
+      <div class="flip-card" id="flipCard" onclick="document.getElementById('flipCard').classList.toggle('flipped')">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <div class="card-top"><span>Nirawa Card</span><div class="card-chip"></div></div>
+            <div class="card-num">•••• •••• •••• 8842</div>
+            <div class="card-bottom"><span>ANDI PRATAMA</span><span>12/29</span></div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="stripe"></div>
+            <div class="cvv">CVV 482</div>
+            <span class="flip-hint" style="color:rgba(255,255,255,.6);">Klik untuk balik lagi</span>
+          </div>
+        </div>
+      </div>
+      <p class="flip-hint" style="text-align:center;margin-top:.8rem;color:var(--text-soft);">👆 Klik kartu untuk lihat sisi belakang</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="features" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Fitur Utama</span>
+      <h2>Semua kebutuhan finansialmu, satu aplikasi</h2>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">💳</div>
+        <h3>Kartu Virtual Instan</h3>
+        <p>Kartu debit virtual aktif langsung setelah daftar.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">💰</div>
+        <h3>Tabungan Berbunga</h3>
+        <p>Bunga harian hingga 6% per tahun, cair tiap hari.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <h3>Insight Pengeluaran</h3>
+        <p>Kategori otomatis, tau ke mana uangmu mengalir.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔒</div>
+        <h3>Proteksi Transaksi</h3>
+        <p>Kunci kartu instan & deteksi transaksi mencurigakan.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="insights">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Insight</span>
+      <h2>Pahami pola pengeluaranmu</h2>
+    </div>
+    <div class="insight-card">
+      <div class="insight-head"><h4>Pengeluaran 6 Bulan Terakhir</h4><span>▼ 8% dari bulan lalu</span></div>
+      <div class="chart-bars" id="chartBars">
+        <div class="chart-bar"><div class="bar" data-h="55%" style="height:0;"></div><span>Feb</span></div>
+        <div class="chart-bar"><div class="bar" data-h="70%" style="height:0;"></div><span>Mar</span></div>
+        <div class="chart-bar"><div class="bar" data-h="45%" style="height:0;"></div><span>Apr</span></div>
+        <div class="chart-bar"><div class="bar" data-h="85%" style="height:0;"></div><span>Mei</span></div>
+        <div class="chart-bar"><div class="bar" data-h="60%" style="height:0;"></div><span>Jun</span></div>
+        <div class="chart-bar"><div class="bar" data-h="40%" style="height:0;"></div><span>Jul</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="stats-band">
+      <div class="stats-grid">
+        <div><strong>2.8jt+</strong><span>Nasabah aktif</span></div>
+        <div><strong>5 mnt</strong><span>Buka rekening</span></div>
+        <div><strong>6%</strong><span>Bunga tabungan/tahun</span></div>
+        <div><strong>4.9/5</strong><span>Rating pengguna</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pricing">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Harga</span>
+      <h2>Gratis untuk mulai, upgrade kapan saja</h2>
+    </div>
+    <div class="price-grid">
+      <div class="price-card">
+        <h3>Nirawa Basic</h3>
+        <p class="desc">Untuk kebutuhan harian</p>
+        <div class="price-amount">Gratis<span></span></div>
+        <ul class="price-list">
+          <li>✔ Kartu debit virtual</li>
+          <li>✔ Tabungan bunga 4%/tahun</li>
+          <li>✔ Transfer gratis 10x/bulan</li>
+        </ul>
+        <a href="#" class="btn btn-ghost" style="justify-content:center;">Buka Rekening</a>
+      </div>
+      <div class="price-card featured">
+        <span class="price-badge">Paling Lengkap</span>
+        <h3>Nirawa Plus</h3>
+        <p class="desc">Untuk kamu yang lebih aktif</p>
+        <div class="price-amount">Rp25rb<span>/bulan</span></div>
+        <ul class="price-list">
+          <li>✔ Bunga tabungan 6%/tahun</li>
+          <li>✔ Transfer gratis unlimited</li>
+          <li>✔ Kartu fisik gratis</li>
+          <li>✔ Prioritas customer service</li>
+        </ul>
+        <a href="#" class="btn btn-white" style="justify-content:center;">Upgrade ke Plus</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Testimoni</span>
+      <h2>Kata nasabah kami</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Buka rekening beneran cuma 5 menit, langsung dapat kartu virtual buat belanja online."</p>
+        <div class="testi-who"><strong>Andi Pratama</strong><span>Nasabah Plus</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Bunga tabungannya cair tiap hari, kerasa banget bedanya sama bank biasa."</p>
+        <div class="testi-who"><strong>Melati Sari</strong><span>Nasabah Basic</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Insight pengeluarannya bikin aku sadar banyak subscription yang gak kepake lagi."</p>
+        <div class="testi-who"><strong>Fajar Nugraha</strong><span>Nasabah Plus</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Buka rekening digital pertamamu</h2>
+      <p>Gratis, tanpa saldo minimum, tanpa biaya admin bulanan.</p>
+      <div class="cta-actions">
+        <a href="#pricing" class="btn btn-white">Buka Rekening Gratis</a>
+        <a href="#" class="btn btn-outline-light">Download Aplikasi →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo"><span class="logo-mark">N</span>Nirawa</a>
+        <p>Bank digital berizin OJK yang bikin kelola uang jadi lebih simpel dan transparan.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Produk</h4>
+        <a href="#features">Kartu Virtual</a>
+        <a href="#features">Tabungan</a>
+        <a href="#insights">Insight</a>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <a href="#">Tentang Kami</a>
+        <a href="#">Karir</a>
+        <a href="#">Investor Relations</a>
+      </div>
+      <div class="footer-col">
+        <h4>Bantuan</h4>
+        <a href="#">Pusat Bantuan</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat & Ketentuan</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 Nirawa. Berizin dan diawasi OJK.</div>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme(){
+    const html=document.documentElement;
+    const next=html.getAttribute('data-theme')==='dark'?'light':'dark';
+    html.setAttribute('data-theme',next);
+    localStorage.setItem('nirawa-theme',next);
+    document.querySelector('.theme-toggle').textContent=next==='dark'?'☀️':'🌙';
+  }
+  (function(){ if(localStorage.getItem('nirawa-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); } })();
+  window.addEventListener('DOMContentLoaded',()=>{
+    document.querySelector('.theme-toggle').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';
+  });
+
+  function toggleMobile(){ document.getElementById('mobilePanel').classList.toggle('open'); }
+  function toggleSub(el){
+    el.nextElementSibling.classList.toggle('open');
+    el.querySelector('.mobile-caret').classList.toggle('open');
+  }
+
+  window.addEventListener('DOMContentLoaded',()=>{
+    setTimeout(()=>{
+      document.querySelectorAll('#chartBars .bar').forEach(bar=>{
+        bar.style.height=bar.dataset.h;
+      });
+    },200);
+  });
+
+  document.querySelectorAll('.nav-item').forEach(item=>{
+    const dd=item.querySelector('.nav-dropdown');
+    if(!dd) return;
+    let closeTimer;
+    item.addEventListener('mouseenter',()=>{ clearTimeout(closeTimer); dd.classList.add('open'); });
+    item.addEventListener('mouseleave',()=>{ closeTimer=setTimeout(()=>dd.classList.remove('open'),400); });
+  });
+</script>
+
+</body>
+</html>
