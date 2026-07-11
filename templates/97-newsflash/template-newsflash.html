@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newsflash — Portal Berita Multi-Kategori</title>
+<meta name="description" content="Newsflash adalah portal berita terkini — politik, ekonomi, teknologi, olahraga — dengan newsroom CMS buat redaksi.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   NEWSFLASH — Application Chrome recipe (kemampuan-web-dev.md §125)
+   Portal berita — layout editorial (bukan dashboard SaaS), tapi
+   section "Newsroom CMS" tetap pakai breadcrumb+grid bergaris+
+   toolbar buat sisi redaksi/publisher.
+   ============================================================ */
+:root {
+  --bg: #FFFFFF; --bg2: #F7F7F5; --bg3: #EDEDE9;
+  --text: #191714; --text2: #4E4A44; --text3: #8A857C;
+  --border: #E4E1DA;
+  --accent1: #B91C1C; --accent2: #DC2626;
+  --accent: #B91C1C; --accent-soft: rgba(185,28,28,.08);
+  --success: #16A34A; --warn: #D97706; --danger: #DC2626;
+  --shadow-lg: 0 16px 32px rgba(25,23,20,.12), 0 4px 10px rgba(25,23,20,.06);
+  --font: 'DM Sans', sans-serif;
+  --font-serif: 'DM Serif Display', serif;
+  --radius: 10px; --radius-sm: 6px; --radius-lg: 18px;
+  --transition: .2s ease;
+}
+[data-theme="dark"] {
+  --bg: #17161A; --bg2: #1D1C21; --bg3: #26252B;
+  --text: #F4F2EE; --text2: #B7B3AA; --text3: #726E67;
+  --border: #302E33;
+  --shadow-lg: 0 20px 40px rgba(0,0,0,.5);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; transition: background var(--transition), color var(--transition); -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+button { font-family: inherit; cursor: pointer; }
+ul { list-style: none; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+.section { padding: clamp(3rem, 6vw, 5rem) 0; }
+.section-alt { background: var(--bg2); }
+.eyebrow { font-size: .74rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); margin-bottom: .8rem; display: block; }
+.sec-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 2.2rem; flex-wrap: wrap; gap: 1rem; }
+.sec-head h2 { font-family: var(--font-serif); font-size: clamp(1.6rem, 3.4vw, 2.2rem); font-weight: 400; }
+.sec-head a { font-size: .86rem; color: var(--accent); font-weight: 600; }
+.btn { display: inline-flex; align-items: center; gap: .5rem; padding: .75rem 1.5rem; border-radius: var(--radius-sm); font-size: .92rem; font-weight: 600; border: 1px solid transparent; transition: all var(--transition); min-height: 44px; }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #991717; }
+.btn-outline { background: var(--bg); color: var(--text); border-color: var(--border); }
+.btn-outline:hover { border-color: var(--text3); }
+.navbar { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+[data-theme="dark"] .navbar { background: rgba(23,22,26,.92); }
+.nav-top { display: flex; align-items: center; justify-content: space-between; padding: .8rem 0; border-bottom: 1px solid var(--border); }
+.logo { font-family: var(--font-serif); font-weight: 400; font-size: 1.4rem; display: flex; align-items: center; gap: .5rem; }
+.logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.nav-right { display: flex; align-items: center; gap: .8rem; }
+.theme-toggle { width: 36px; height: 36px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg); display: flex; align-items: center; justify-content: center; }
+.nav-bottom { display: flex; gap: 1.6rem; padding: .7rem 0; overflow-x: auto; }
+.nav-bottom a { font-size: .84rem; font-weight: 600; color: var(--text2); white-space: nowrap; }
+.nav-bottom a.active, .nav-bottom a:hover { color: var(--accent); }
+.hamburger { display: none; flex-direction: column; gap: 4px; background: none; border: none; min-height: 44px; min-width: 44px; align-items: center; justify-content: center; }
+.hamburger span { width: 20px; height: 2px; background: var(--text); }
+.mobile-menu { display: none; }
+.mobile-menu.open { display: flex; flex-direction: column; gap: .2rem; padding: .8rem 0 1rem; border-top: 1px solid var(--border); }
+.mobile-menu a { padding: .5rem 0; font-size: .9rem; color: var(--text2); }
+
+/* HERO — headline utama + grid berita sekunder */
+.hero-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.5rem; padding: 2rem 0; }
+.hero-main { border-radius: var(--radius-lg); overflow: hidden; position: relative; min-height: 380px; display: flex; align-items: flex-end; background: linear-gradient(160deg, #2b2320, #12100e); color: #fff; padding: 2rem; }
+.hero-main .cat-tag { background: var(--accent); color: #fff; font-size: .72rem; font-weight: 700; padding: .3rem .7rem; border-radius: 999px; display: inline-block; margin-bottom: .9rem; text-transform: uppercase; letter-spacing: .04em; }
+.hero-main h1 { font-family: var(--font-serif); font-weight: 400; font-size: clamp(1.6rem, 3.6vw, 2.4rem); line-height: 1.25; margin-bottom: .7rem; max-width: 520px; }
+.hero-main p { color: rgba(255,255,255,.75); font-size: .92rem; max-width: 460px; }
+.hero-side { display: flex; flex-direction: column; gap: 1.1rem; }
+.hero-side-item { display: flex; gap: .9rem; align-items: flex-start; }
+.hero-side-thumb { width: 84px; height: 64px; border-radius: 8px; background: var(--bg3); flex-shrink: 0; }
+.hero-side-item h4 { font-size: .9rem; font-weight: 700; line-height: 1.35; margin-bottom: .3rem; }
+.hero-side-item span { font-size: .74rem; color: var(--text3); }
+
+/* Article grid */
+.article-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
+.article-card { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); background: var(--bg); transition: all var(--transition); }
+.article-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.article-thumb { height: 120px; background: var(--bg3); }
+.article-body { padding: 1rem 1.1rem; }
+.article-body .cat { font-size: .68rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .04em; }
+.article-body h4 { font-size: .92rem; font-weight: 700; margin: .4rem 0 .5rem; line-height: 1.35; }
+.article-body span { font-size: .74rem; color: var(--text3); }
+
+/* Newsroom CMS chrome */
+.app { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); }
+.app-topbar { padding: .75rem 1.1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; background: var(--bg2); }
+.breadcrumb { font-size: .8rem; color: var(--text3); display: flex; gap: .3rem; align-items: center; }
+.breadcrumb b { color: var(--text); font-weight: 600; }
+.breadcrumb .sep { opacity: .5; }
+.toolbar { display: flex; gap: .4rem; flex-wrap: wrap; }
+.tb-btn { font-size: .78rem; padding: .4rem .8rem; border-radius: 7px; min-height: 34px; transition: all var(--transition); }
+.tb-btn.ghost { background: var(--bg); border: 1px solid var(--border); color: var(--text2); }
+.tb-btn.ghost:hover { border-color: var(--text3); }
+.tb-btn.solid { background: var(--text); color: var(--bg); border: 1px solid var(--text); font-weight: 600; }
+.grid-table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+.grid-table th, .grid-table td { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: .6rem .9rem; text-align: left; white-space: nowrap; }
+.grid-table th { background: var(--bg2); color: var(--text3); font-weight: 600; font-size: .72rem; text-transform: uppercase; }
+.grid-table th:last-child, .grid-table td:last-child { border-right: none; }
+.grid-table .th-check, .grid-table td:first-child { width: 34px; text-align: center; }
+.grid-table tbody tr:not(.tr-add):hover { background: var(--bg2); }
+.grid-table tbody tr.selected { background: var(--accent-soft); }
+.chip { display: inline-flex; align-items: center; padding: .18rem .6rem; border-radius: 999px; font-size: .72rem; font-weight: 600; }
+.chip.published { background: rgba(22,163,74,.1); color: var(--success); }
+.chip.review { background: rgba(217,119,6,.1); color: var(--warn); }
+.chip.draft { background: rgba(138,133,124,.15); color: var(--text3); }
+.tr-add { cursor: pointer; }
+.tr-add td { color: var(--text3); font-size: .8rem; padding: .6rem .9rem; }
+.tr-add:hover td { background: var(--bg2); }
+.statusbar { padding: .5rem 1.1rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; color: var(--text3); font-size: .74rem; background: var(--bg2); }
+
+.newsletter { background: var(--text); color: var(--bg); border-radius: var(--radius-lg); padding: clamp(2.2rem, 5vw, 3.5rem); text-align: center; }
+.newsletter h2 { font-family: var(--font-serif); font-weight: 400; font-size: clamp(1.5rem, 3.2vw, 2.1rem); margin-bottom: .8rem; }
+.newsletter p { opacity: .75; margin-bottom: 1.6rem; }
+.newsletter-form { display: flex; gap: .6rem; max-width: 420px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+.newsletter-form input { flex: 1; min-width: 200px; padding: .75rem 1rem; border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.08); color: var(--bg); font-family: inherit; font-size: .9rem; }
+.newsletter-form input::placeholder { color: rgba(255,255,255,.5); }
+
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+.price-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.1rem; }
+.price-card.featured { border-color: var(--accent); border-width: 2px; position: relative; }
+.price-card.featured::before { content: 'Populer'; position: absolute; top: -12px; right: 1.5rem; background: var(--accent); color: #fff; font-size: .68rem; font-weight: 700; padding: .25rem .7rem; border-radius: 999px; }
+.price-name { font-size: .95rem; font-weight: 700; margin-bottom: 1rem; }
+.price-amount { font-size: 2.1rem; font-weight: 800; margin-bottom: .3rem; }
+.price-amount span { font-size: .9rem; font-weight: 500; color: var(--text3); }
+.price-muted { font-size: .85rem; color: var(--text3); margin-bottom: 1.6rem; }
+.price-feat { font-size: .85rem; padding: .55rem 0; border-top: 1px solid var(--border); }
+.price-cta { width: 100%; justify-content: center; margin-top: 1.6rem; }
+
+.footer { border-top: 1px solid var(--border); padding: 2.6rem 0 1.6rem; }
+.footer-grid { display: grid; grid-template-columns: 1.4fr repeat(4, 1fr); gap: 1.6rem; margin-bottom: 2rem; }
+.footer-col h5 { font-size: .78rem; font-weight: 700; margin-bottom: .7rem; }
+.footer-col a { display: block; font-size: .84rem; color: var(--text3); padding: .24rem 0; }
+.footer-col a:hover { color: var(--text); }
+.footer-bottom { display: flex; justify-content: space-between; padding-top: 1.4rem; border-top: 1px solid var(--border); font-size: .78rem; color: var(--text3); flex-wrap: wrap; gap: .6rem; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+@media (max-width: 900px) {
+  .nav-bottom { display: none; }
+  .hamburger { display: flex; }
+  .hero-grid { grid-template-columns: 1fr; }
+  .article-grid { grid-template-columns: repeat(2, 1fr); }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .app-topbar { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 480px) {
+  .article-grid { grid-template-columns: 1fr; }
+  .grid-table { font-size: .74rem; }
+  .footer-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-top">
+    <a href="#" class="logo"><span class="logo-dot"></span> Newsflash</a>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Ganti tema">🌙</button>
+      <a href="#harga" class="btn btn-primary">Berlangganan</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="container nav-bottom">
+    <a href="#" class="active">Terkini</a>
+    <a href="#">Politik</a>
+    <a href="#">Ekonomi</a>
+    <a href="#">Teknologi</a>
+    <a href="#">Olahraga</a>
+    <a href="#">Hiburan</a>
+    <a href="#redaksi">Redaksi</a>
+  </div>
+  <div class="container mobile-menu" id="mobileMenu">
+    <a href="#">Terkini</a>
+    <a href="#">Politik</a>
+    <a href="#">Ekonomi</a>
+    <a href="#">Teknologi</a>
+    <a href="#redaksi">Redaksi</a>
+  </div>
+</nav>
+
+<section class="container">
+  <div class="hero-grid">
+    <div class="hero-main">
+      <div>
+        <span class="cat-tag">Ekonomi</span>
+        <h1>Bank Indonesia pertahankan suku bunga acuan di 5,75%</h1>
+        <p>Keputusan ini diambil di tengah tekanan inflasi global dan pelemahan nilai tukar rupiah terhadap dolar AS minggu ini.</p>
+      </div>
+    </div>
+    <div class="hero-side">
+      <div class="hero-side-item"><div class="hero-side-thumb"></div><div><h4>Startup lokal raih pendanaan seri B Rp180 miliar</h4><span>Teknologi · 2 jam lalu</span></div></div>
+      <div class="hero-side-item"><div class="hero-side-thumb"></div><div><h4>Timnas U-23 lolos ke semifinal setelah menang adu penalti</h4><span>Olahraga · 4 jam lalu</span></div></div>
+      <div class="hero-side-item"><div class="hero-side-thumb"></div><div><h4>DPR sahkan revisi undang-undang ketenagakerjaan</h4><span>Politik · 6 jam lalu</span></div></div>
+      <div class="hero-side-item"><div class="hero-side-thumb"></div><div><h4>Harga emas Antam naik tipis di perdagangan pagi ini</h4><span>Ekonomi · 8 jam lalu</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section container">
+  <div class="sec-head">
+    <h2>Berita Terkini</h2>
+    <a href="#">Lihat semua →</a>
+  </div>
+  <div class="article-grid">
+    <div class="article-card"><div class="article-thumb"></div><div class="article-body"><span class="cat">Teknologi</span><h4>Perusahaan AI lokal luncurkan model bahasa Indonesia terbaru</h4><span>1 jam lalu</span></div></div>
+    <div class="article-card"><div class="article-thumb"></div><div class="article-body"><span class="cat">Politik</span><h4>Menteri keuangan umumkan paket stimulus UMKM</h4><span>3 jam lalu</span></div></div>
+    <div class="article-card"><div class="article-thumb"></div><div class="article-body"><span class="cat">Olahraga</span><h4>Pebulutangkis Indonesia juara turnamen internasional</h4><span>5 jam lalu</span></div></div>
+    <div class="article-card"><div class="article-thumb"></div><div class="article-body"><span class="cat">Hiburan</span><h4>Festival film nasional umumkan daftar nominasi</h4><span>7 jam lalu</span></div></div>
+  </div>
+</section>
+
+<section class="section container section-alt" id="redaksi">
+  <div class="sec-head">
+    <span class="eyebrow" style="display:block;width:100%;">NEWSROOM CMS</span>
+  </div>
+  <div style="margin-top:-1.5rem;margin-bottom:2rem;max-width:520px;">
+    <p style="color:var(--text2);line-height:1.7;">Redaksi kelola draft, review, dan publikasi artikel dalam satu dashboard — bukan email bolak-balik.</p>
+  </div>
+  <div class="app">
+    <div class="app-topbar">
+      <span class="breadcrumb">Redaksi <span class="sep">›</span> <b>Draft Artikel</b></span>
+      <div class="toolbar">
+        <button class="tb-btn ghost" id="filterBtn">Filter</button>
+        <button class="tb-btn solid" id="addArticle">+ Artikel</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="grid-table">
+        <thead><tr><th class="th-check"><input type="checkbox" id="checkAll" aria-label="Pilih semua"></th><th>Judul</th><th>Penulis</th><th>Kategori</th><th>Status</th></tr></thead>
+        <tbody id="artBody">
+          <tr><td><input type="checkbox"></td><td>Suku bunga BI dipertahankan</td><td>Dinda R.</td><td>Ekonomi</td><td><span class="chip published">Publikasi</span></td></tr>
+          <tr><td><input type="checkbox"></td><td>Startup AI raih pendanaan</td><td>Reza P.</td><td>Teknologi</td><td><span class="chip review">Review</span></td></tr>
+          <tr><td><input type="checkbox"></td><td>Analisis pasar saham minggu ini</td><td>Ayu S.</td><td>Ekonomi</td><td><span class="chip draft">Draft</span></td></tr>
+          <tr class="tr-add" id="trAdd"><td colspan="5">+ Tambah artikel</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="statusbar"><span id="statusLeft">3 artikel · 0 dipilih</span><span>tersinkron otomatis</span></div>
+  </div>
+</section>
+
+<section class="container" style="padding-bottom: 3rem;">
+  <div class="newsletter">
+    <h2>Berita penting, langsung ke email kamu</h2>
+    <p>Ringkasan harian, tanpa spam, bisa berhenti kapan saja.</p>
+    <form class="newsletter-form" id="newsletterForm">
+      <input type="email" name="email" id="newsletterEmail" autocomplete="email" placeholder="Alamat email kamu" required>
+      <button type="submit" class="btn btn-primary">Berlangganan</button>
+    </form>
+  </div>
+</section>
+
+<section class="section container" id="harga">
+  <div class="sec-head" style="justify-content:center;text-align:center;flex-direction:column;">
+    <span class="eyebrow">BERLANGGANAN</span>
+    <h2>Baca tanpa batas, dukung jurnalisme independen</h2>
+  </div>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-name">Gratis</div>
+      <div class="price-amount">Rp0<span>/bulan</span></div>
+      <div class="price-muted">5 artikel premium/bulan</div>
+      <a href="#" class="btn btn-outline price-cta">Mulai Baca</a>
+    </div>
+    <div class="price-card featured">
+      <div class="price-name">Pembaca</div>
+      <div class="price-amount">Rp39rb<span>/bulan</span></div>
+      <div class="price-muted">Akses penuh, tanpa iklan</div>
+      <a href="#" class="btn btn-primary price-cta">Berlangganan</a>
+    </div>
+    <div class="price-card">
+      <div class="price-name">Tim</div>
+      <div class="price-amount">Custom</div>
+      <div class="price-muted">Akses multi-akun untuk redaksi</div>
+      <a href="#" class="btn btn-outline price-cta">Hubungi Kami</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="logo" style="margin-bottom:.6rem;font-size:1.1rem;"><span class="logo-dot"></span> Newsflash</div>
+        <p style="font-size:.83rem;color:var(--text3);max-width:200px;">Portal berita terkini, terpercaya.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Kategori</h5>
+        <a href="#">Politik</a>
+        <a href="#">Ekonomi</a>
+        <a href="#">Teknologi</a>
+      </div>
+      <div class="footer-col">
+        <h5>Perusahaan</h5>
+        <a href="#">Redaksi</a>
+        <a href="#">Karir</a>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <a href="#">Privasi</a>
+        <a href="#">Pedoman Media Siber</a>
+      </div>
+      <div class="footer-col">
+        <h5>Ikuti Kami</h5>
+        <a href="#">Twitter/X</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Newsflash. Semua hak dilindungi.</span>
+      <span>Jurnalisme independen sejak 2026.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const html = document.documentElement;
+const themeBtn = document.getElementById('themeToggle');
+function applyTheme(t) { html.setAttribute('data-theme', t); themeBtn.textContent = t === 'dark' ? '☀️' : '🌙'; localStorage.setItem('newsflash_theme', t); }
+themeBtn.addEventListener('click', () => applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+try { const saved = localStorage.getItem('newsflash_theme'); if (saved) applyTheme(saved); } catch(e) {}
+
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+mobileMenu.querySelectorAll('a').forEach(l => l.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+function updateStatus() {
+  const rows = document.querySelectorAll('#artBody tr:not(.tr-add)');
+  const selected = document.querySelectorAll('#artBody tr.selected');
+  document.getElementById('statusLeft').textContent = rows.length + ' artikel · ' + selected.length + ' dipilih';
+}
+function bindRow(row) {
+  row.addEventListener('click', (e) => {
+    if (e.target.tagName === 'INPUT') return;
+    row.classList.toggle('selected');
+    row.querySelector('input[type="checkbox"]').checked = row.classList.contains('selected');
+    updateStatus();
+  });
+  row.querySelector('input[type="checkbox"]').addEventListener('change', (e) => {
+    row.classList.toggle('selected', e.target.checked);
+    updateStatus();
+  });
+}
+document.querySelectorAll('#artBody tr:not(.tr-add)').forEach(bindRow);
+document.getElementById('checkAll').addEventListener('change', function() {
+  document.querySelectorAll('#artBody tr:not(.tr-add)').forEach(row => {
+    row.classList.toggle('selected', this.checked);
+    row.querySelector('input[type="checkbox"]').checked = this.checked;
+  });
+  updateStatus();
+});
+
+function addArticle() {
+  const tbody = document.getElementById('artBody');
+  const row = document.createElement('tr');
+  row.innerHTML = '<td><input type="checkbox"></td>' +
+    '<td contenteditable="true" style="outline:1px solid var(--accent);outline-offset:-1px;min-width:120px;">Judul artikel baru...</td>' +
+    '<td>Belum ada</td><td>Umum</td><td><span class="chip draft">Draft</span></td>';
+  tbody.insertBefore(row, document.getElementById('trAdd'));
+  bindRow(row);
+  updateStatus();
+  const editable = row.querySelector('[contenteditable]');
+  editable.focus();
+  const range = document.createRange();
+  range.selectNodeContents(editable);
+  window.getSelection().removeAllRanges();
+  window.getSelection().addRange(range);
+}
+document.getElementById('addArticle').addEventListener('click', addArticle);
+document.getElementById('trAdd').addEventListener('click', addArticle);
+
+document.getElementById('newsletterForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const btn = e.target.querySelector('button');
+  const orig = btn.textContent;
+  btn.textContent = 'Terima kasih!';
+  btn.disabled = true;
+  setTimeout(() => { btn.textContent = orig; btn.disabled = false; e.target.reset(); }, 2500);
+});
+</script>
+</body>
+</html>
