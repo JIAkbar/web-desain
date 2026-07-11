@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexpense — Manajemen Pengeluaran & Reimbursement Tim</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal:#0D9488;
+    --teal-dark:#0B7A70;
+    --slate:#0F172A;
+    --amber:#F59E0B;
+    --red:#EF4444;
+    --bg:#F6FAF9;
+    --bg-2:#EAF3F1;
+    --card:#FFFFFF;
+    --text:#12201D;
+    --text-soft:#5C6E69;
+    --border:#DCE9E5;
+    --shadow:0 4px 18px rgba(15,23,42,.07);
+    --shadow-lg:0 24px 55px rgba(15,23,42,.16);
+  }
+  [data-theme="dark"]{
+    --teal:#2DD4BF;
+    --teal-dark:#5EEAD4;
+    --slate:#E2E8F0;
+    --amber:#FBBF24;
+    --red:#F87171;
+    --bg:#0A1210;
+    --bg-2:#101B18;
+    --card:#152220;
+    --text:#E7F1EE;
+    --text-soft:#8FA39D;
+    --border:#213330;
+    --shadow:0 4px 18px rgba(0,0,0,.4);
+    --shadow-lg:0 24px 55px rgba(0,0,0,.6);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:.3s;}
+  h1,h2,h3,.disp{font-family:'Outfit',sans-serif;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.7rem;border-radius:10px;font-weight:700;font-size:.95rem;cursor:pointer;border:none;transition:.25s;min-height:44px;}
+  .btn:hover{filter:brightness(1.04);}
+  .btn:active{transform:scale(.96);}
+  .btn-primary{background:var(--teal);color:#fff;box-shadow:0 10px 24px rgba(13,148,136,.3);}
+  .btn-primary:hover{background:var(--teal-dark);transform:translateY(-2px);}
+  .btn-ghost{background:var(--card);color:var(--text);border:1.5px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--teal);color:var(--teal-dark);transform:translateY(-2px);}
+  .btn-white{background:#fff;color:var(--teal-dark);}
+  .btn-white:hover{transform:translateY(-2px);}
+
+  header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 24px;max-width:1200px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:.6rem;font-family:'Outfit';font-weight:800;font-size:1.35rem;}
+  .logo-mark{width:36px;height:36px;border-radius:10px;background:var(--teal);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.05rem;}
+  .nav-links{display:flex;align-items:center;gap:2.1rem;}
+  .nav-item{position:relative;}
+  .nav-item>a{font-weight:600;font-size:.93rem;display:flex;align-items:center;gap:.3rem;}
+  .nav-item>a .caret{font-size:.6rem;color:var(--text-soft);transition:.2s;}
+  .nav-item:hover>a .caret{transform:rotate(180deg);}
+  /* labeled-group dropdown - varied pattern */
+  .nav-dropdown{
+    display:flex;position:absolute;top:calc(100% + 14px);left:50%;
+    min-width:400px;background:var(--card);border:1px solid var(--border);
+    border-radius:14px;box-shadow:var(--shadow-lg);overflow:hidden;
+    opacity:0;visibility:hidden;pointer-events:none;
+    transform:translateX(-50%) translateY(6px);
+    transition:opacity .17s ease,transform .17s ease,visibility 0s linear .17s;
+  }
+  .nav-item:focus-within .nav-dropdown{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0);transition:opacity .17s ease,transform .17s ease;}
+  .nav-dropdown.open{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0);transition:opacity .17s ease,transform .17s ease;}
+  .nav-dd-group{flex:1;padding:1rem;}
+  .nav-dd-group:first-child{border-right:1px solid var(--border);}
+  .nav-dd-group h5{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-soft);margin-bottom:.6rem;font-weight:700;}
+  .nav-dropdown a{display:block;padding:.55rem 0;font-size:.86rem;font-weight:600;}
+  .nav-dropdown a:hover{color:var(--teal-dark);}
+  .nav-actions{display:flex;align-items:center;gap:.9rem;}
+  .theme-toggle{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:1.05rem;}
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;}
+  .hamburger span{width:24px;height:2px;background:var(--text);border-radius:2px;}
+  .mobile-panel{display:none;}
+
+  .hero{padding:4.5rem 0 3.5rem;}
+  .hero-grid{display:grid;grid-template-columns:1fr .9fr;gap:3rem;align-items:center;}
+  .badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--bg-2);color:var(--teal-dark);font-weight:700;font-size:.8rem;padding:.5rem 1rem;border-radius:100px;margin-bottom:1.3rem;}
+  .hero h1{font-size:clamp(2.2rem,4.2vw,3.3rem);font-weight:700;line-height:1.15;margin-bottom:1.2rem;letter-spacing:-.01em;}
+  .hero h1 span{color:var(--teal);}
+  .hero p{font-size:1.05rem;color:var(--text-soft);max-width:470px;margin-bottom:2rem;}
+  .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.8rem;}
+  .hero-badges{display:flex;gap:1.8rem;color:var(--text-soft);font-size:.85rem;flex-wrap:wrap;}
+  .hero-badges b{color:var(--text);display:block;font-family:'Outfit';font-size:1.15rem;}
+
+  /* SWIPE-TO-APPROVE STACK */
+  .stack-wrap{position:relative;height:340px;}
+  .exp-card{position:absolute;top:0;left:0;right:0;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.6rem;box-shadow:var(--shadow-lg);transition:transform .4s cubic-bezier(.2,.8,.2,1),opacity .4s;}
+  .exp-card:nth-child(1){transform:translateY(0) scale(1);z-index:3;}
+  .exp-card:nth-child(2){transform:translateY(14px) scale(.96);z-index:2;opacity:.7;}
+  .exp-card:nth-child(3){transform:translateY(28px) scale(.92);z-index:1;opacity:.4;}
+  .exp-card.swiped-approve{transform:translateX(140%) rotate(12deg)!important;opacity:0!important;}
+  .exp-card.swiped-reject{transform:translateX(-140%) rotate(-12deg)!important;opacity:0!important;}
+  .exp-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.2rem;}
+  .exp-cat{width:44px;height:44px;border-radius:12px;background:var(--bg-2);display:flex;align-items:center;justify-content:center;font-size:1.3rem;}
+  .exp-amount{font-family:'Outfit';font-size:1.5rem;font-weight:700;}
+  .exp-title{font-weight:700;margin-bottom:.3rem;}
+  .exp-meta{font-size:.82rem;color:var(--text-soft);margin-bottom:1.4rem;}
+  .exp-actions{display:flex;gap:.8rem;}
+  .exp-btn{flex:1;padding:.75rem;border-radius:10px;border:none;font-weight:700;font-size:.87rem;cursor:pointer;transition:.2s;}
+  .exp-btn.reject{background:var(--bg-2);color:var(--red);}
+  .exp-btn.reject:hover{background:#FEE2E2;}
+  .exp-btn.approve{background:var(--teal);color:#fff;}
+  .exp-btn.approve:hover{background:var(--teal-dark);}
+
+  .section{padding:5.4rem 0;}
+  .section-head{max-width:600px;margin:0 auto 3rem;text-align:center;}
+  .badge-center{margin:0 auto 1rem;width:fit-content;}
+  .section-head h2{font-size:clamp(1.8rem,3.4vw,2.5rem);font-weight:700;margin-bottom:.9rem;letter-spacing:-.01em;}
+  .section-head p{color:var(--text-soft);font-size:1.03rem;}
+
+  /* FEATURES - view types w/ hover */
+  .feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;}
+  .feat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.9rem 1.5rem;cursor:pointer;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s;}
+  .feat-card:hover{transform:translateY(-10px);box-shadow:var(--shadow-lg);border-color:var(--teal);}
+  .feat-icon{width:50px;height:50px;border-radius:12px;background:var(--bg-2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.1rem;transition:.35s;}
+  .feat-card:hover .feat-icon{background:var(--teal);transform:scale(1.1);}
+  .feat-card h3{font-size:1rem;font-weight:700;margin-bottom:.5rem;}
+  .feat-card p{font-size:.84rem;color:var(--text-soft);}
+
+  /* SPENDING BREAKDOWN */
+  .breakdown-card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:2.1rem;box-shadow:var(--shadow);}
+  .breakdown-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.6rem;}
+  .breakdown-head h4{font-family:'Outfit';font-size:1.1rem;}
+  .breakdown-head span{font-size:.82rem;color:var(--teal-dark);font-weight:700;background:var(--bg-2);padding:.35rem .8rem;border-radius:100px;}
+  .bar-row{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;}
+  .bar-row .lbl{width:140px;font-size:.86rem;color:var(--text-soft);flex-shrink:0;}
+  .bar-track{flex:1;height:14px;background:var(--bg-2);border-radius:8px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:8px;background:var(--teal);}
+  .bar-row .amt{width:100px;text-align:right;font-weight:700;font-size:.86rem;}
+
+  .stats-band{background:var(--slate);color:#fff;border-radius:24px;padding:3.2rem 2.5rem;}
+  [data-theme="dark"] .stats-band{background:var(--card);border:1px solid var(--border);color:var(--text);}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);text-align:center;}
+  .stats-grid div strong{font-family:'Outfit';font-size:2.1rem;display:block;color:var(--teal);}
+  .stats-grid div span{font-size:.85rem;color:#94A3B8;}
+  [data-theme="dark"] .stats-grid div span{color:var(--text-soft);}
+
+  /* PRICING */
+  .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;}
+  .price-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:2.1rem 1.7rem;display:flex;flex-direction:column;transition:.3s;}
+  .price-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+  .price-card.featured{background:var(--slate);color:#fff;border-color:var(--slate);position:relative;}
+  [data-theme="dark"] .price-card.featured{background:var(--teal);color:var(--bg);}
+  .price-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--teal);color:#fff;font-size:.7rem;font-weight:700;padding:.35rem .8rem;border-radius:100px;}
+  .price-card h3{font-size:1.05rem;margin-bottom:.3rem;}
+  .price-card .desc{font-size:.83rem;color:var(--text-soft);margin-bottom:1.2rem;}
+  .price-card.featured .desc{color:#94A3B8;}
+  .price-amount{font-family:'Outfit';font-size:1.9rem;margin-bottom:1.3rem;}
+  .price-amount span{font-size:.85rem;font-weight:400;color:var(--text-soft);}
+  .price-card.featured .price-amount span{color:#94A3B8;}
+  .price-list{list-style:none;margin-bottom:1.5rem;flex:1;}
+  .price-list li{padding:.5rem 0;font-size:.86rem;display:flex;gap:.6rem;border-bottom:1px dashed var(--border);}
+  .price-card.featured .price-list li{border-color:rgba(255,255,255,.15);}
+  .price-list li:last-child{border-bottom:none;}
+
+  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;}
+  .testi-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.8rem;transition:.3s;}
+  .testi-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+  .testi-stars{color:var(--amber);margin-bottom:1rem;font-size:1rem;letter-spacing:2px;}
+  .testi-card p{font-size:.93rem;margin-bottom:1.2rem;}
+  .testi-who strong{font-size:.87rem;display:block;}
+  .testi-who span{font-size:.76rem;color:var(--text-soft);}
+
+  .cta-band{background:linear-gradient(135deg,var(--teal),#14B8A6);border-radius:24px;padding:3.5rem 2.5rem;text-align:center;color:#fff;}
+  .cta-band h2{font-size:clamp(1.7rem,3.4vw,2.3rem);margin-bottom:.9rem;}
+  .cta-band p{color:rgba(255,255,255,.92);max-width:460px;margin:0 auto 1.8rem;}
+  .cta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+
+  footer{background:var(--slate);color:#94A3B8;padding:4rem 0 2rem;margin-top:5rem;}
+  [data-theme="dark"] footer{background:var(--card);border-top:1px solid var(--border);color:var(--text-soft);}
+  .footer-grid{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:2.5rem;margin-bottom:3rem;}
+  .footer-brand .logo{color:#fff;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-brand .logo{color:var(--text);}
+  .footer-brand p{font-size:.86rem;max-width:280px;}
+  .footer-col h4{color:#fff;font-size:.88rem;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-col h4{color:var(--text);}
+  .footer-col a{display:block;font-size:.84rem;padding:.4rem 0;color:#7C8B99;}
+  .footer-col a:hover{color:#fff;}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1.6rem;text-align:center;font-size:.8rem;}
+
+  @media(max-width:980px){
+    .hero-grid{grid-template-columns:1fr;}
+    .feat-grid{grid-template-columns:repeat(2,1fr);}
+    .stats-grid{grid-template-columns:repeat(2,1fr);gap:1.8rem;}
+    .price-grid{grid-template-columns:repeat(2,1fr);}
+    .testi-grid{grid-template-columns:repeat(2,1fr);}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+    .nav-dropdown{min-width:320px;}
+  }
+  @media(max-width:768px){
+    .nav-links{display:none;}
+    .hamburger{display:flex;}
+    .mobile-panel.open{display:block;background:var(--bg);border-top:1px solid var(--border);padding:1rem 24px 1.6rem;}
+    .mobile-panel a{display:block;padding:.8rem 0;font-weight:600;border-bottom:1px solid var(--border);}
+    .mobile-sub{padding-left:1rem;display:none;}
+    .mobile-sub.open{display:block;}
+    .mobile-sub a{border-bottom:none;padding:.6rem 0;font-weight:500;color:var(--text-soft);}
+    .mobile-caret{float:right;transition:transform .2s;}
+    .mobile-caret.open{transform:rotate(180deg);}
+    .nav-actions{gap:.5rem;}
+    .nav-actions .btn-primary{padding:.6rem .9rem;font-size:.74rem;white-space:nowrap;}
+    .theme-toggle{width:34px;height:34px;font-size:.9rem;}
+    .hero{padding:2.6rem 0;}
+    .hero-actions .btn{width:100%;justify-content:center;}
+    .hero-actions{flex-direction:column;}
+    .section{padding:3.2rem 0;}
+    .feat-grid{grid-template-columns:1fr 1fr;gap:1rem;}
+    .stats-grid{grid-template-columns:1fr 1fr;}
+    .price-grid{grid-template-columns:1fr;}
+    .testi-grid{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr;gap:2rem;}
+    .stats-band,.cta-band{padding:2.4rem 1.5rem;border-radius:20px;}
+    .bar-row .lbl{width:90px;font-size:.78rem;}
+    .bar-row .amt{width:80px;font-size:.78rem;}
+  }
+  @media(max-width:480px){
+    .feat-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="#" class="logo"><span class="logo-mark">N</span>Nexpense</a>
+    <div class="nav-links">
+      <div class="nav-item">
+        <a href="#features">Produk <span class="caret">▾</span></a>
+        <div class="nav-dropdown">
+          <div class="nav-dd-group">
+            <h5>Untuk Tim</h5>
+            <a href="#features">Approval Workflow</a>
+            <a href="#features">Corporate Card</a>
+            <a href="#features">Kebijakan Pengeluaran</a>
+          </div>
+          <div class="nav-dd-group">
+            <h5>Untuk Individu</h5>
+            <a href="#features">Scan Struk</a>
+            <a href="#features">Reimbursement</a>
+            <a href="#features">Laporan Perjalanan</a>
+          </div>
+        </div>
+      </div>
+      <div class="nav-item"><a href="#breakdown">Analitik</a></div>
+      <div class="nav-item"><a href="#pricing">Harga</a></div>
+      <div class="nav-item"><a href="#">Integrasi</a></div>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Ganti tema">🌙</button>
+      <a href="#pricing" class="btn btn-primary">Coba Gratis</a>
+      <button class="hamburger" onclick="toggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-panel" id="mobilePanel">
+    <a href="javascript:void(0)" onclick="toggleSub(this)">Produk <span class="mobile-caret">▾</span></a>
+    <div class="mobile-sub">
+      <a href="#features">Approval Workflow</a>
+      <a href="#features">Corporate Card</a>
+      <a href="#features">Scan Struk</a>
+      <a href="#features">Reimbursement</a>
+    </div>
+    <a href="#breakdown">Analitik</a>
+    <a href="#pricing">Harga</a>
+    <a href="#">Integrasi</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="badge">💳 Approval pengeluaran dalam hitungan detik</span>
+      <h1>Reimbursement tim, <span>tanpa spreadsheet</span> lagi</h1>
+      <p>Scan struk, ajukan, dan setujui pengeluaran tim langsung dari HP. Semua tercatat rapi untuk laporan keuangan.</p>
+      <div class="hero-actions">
+        <a href="#pricing" class="btn btn-primary">Coba Gratis 14 Hari</a>
+        <a href="#features" class="btn btn-ghost">Lihat Fitur</a>
+      </div>
+      <div class="hero-badges">
+        <div><b>3.400+</b>Tim menggunakan</div>
+        <div><b>70%</b>Lebih cepat approval</div>
+        <div><b>Rp8M+</b>Diproses/bulan</div>
+      </div>
+    </div>
+
+    <div class="stack-wrap">
+      <div class="exp-card" id="expCard1">
+        <div class="exp-top"><div class="exp-cat">💻</div><div class="exp-amount">Rp1.250.000</div></div>
+        <div class="exp-title">Software Berlangganan</div>
+        <div class="exp-meta">Diajukan oleh Sinta W. • Hari ini</div>
+        <div class="exp-actions">
+          <button class="exp-btn reject" onclick="swipeCard('reject')">✕ Tolak</button>
+          <button class="exp-btn approve" onclick="swipeCard('approve')">✓ Setujui</button>
+        </div>
+      </div>
+      <div class="exp-card" id="expCard2">
+        <div class="exp-top"><div class="exp-cat">🍽️</div><div class="exp-amount">Rp340.000</div></div>
+        <div class="exp-title">Makan Siang Tim</div>
+        <div class="exp-meta">Diajukan oleh Bagas P. • 1 hari lalu</div>
+      </div>
+      <div class="exp-card" id="expCard3">
+        <div class="exp-top"><div class="exp-cat">🚕</div><div class="exp-amount">Rp85.000</div></div>
+        <div class="exp-title">Transportasi Klien</div>
+        <div class="exp-meta">Diajukan oleh Dina R. • 2 hari lalu</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="features" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Fitur Utama</span>
+      <h2>Semua yang tim finance butuhkan</h2>
+      <p>Dari scan struk sampai laporan keuangan otomatis.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">📸</div>
+        <h3>Scan Struk OCR</h3>
+        <p>Foto struk, data otomatis terisi tanpa input manual.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">✅</div>
+        <h3>Approval Workflow</h3>
+        <p>Alur persetujuan berjenjang sesuai struktur tim.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">💳</div>
+        <h3>Corporate Card</h3>
+        <p>Kartu virtual dengan limit per kategori pengeluaran.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <h3>Laporan Real-time</h3>
+        <p>Dashboard pengeluaran tim update setiap saat.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="breakdown">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Analitik</span>
+      <h2>Lihat ke mana budget tim mengalir</h2>
+    </div>
+    <div class="breakdown-card">
+      <div class="breakdown-head"><h4>Pengeluaran Bulan Ini</h4><span>Total Rp48,2jt</span></div>
+      <div class="bar-row"><div class="lbl">Transportasi</div><div class="bar-track"><div class="bar-fill" style="width:78%;"></div></div><div class="amt">Rp18,5jt</div></div>
+      <div class="bar-row"><div class="lbl">Makan & Meeting</div><div class="bar-track"><div class="bar-fill" style="width:60%;"></div></div><div class="amt">Rp12,1jt</div></div>
+      <div class="bar-row"><div class="lbl">Software & Tools</div><div class="bar-track"><div class="bar-fill" style="width:45%;"></div></div><div class="amt">Rp9,4jt</div></div>
+      <div class="bar-row"><div class="lbl">Perjalanan Dinas</div><div class="bar-track"><div class="bar-fill" style="width:32%;"></div></div><div class="amt">Rp8,2jt</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="stats-band">
+      <div class="stats-grid">
+        <div><strong>3.400+</strong><span>Tim menggunakan</span></div>
+        <div><strong>70%</strong><span>Lebih cepat approval</span></div>
+        <div><strong>Rp8M+</strong><span>Diproses/bulan</span></div>
+        <div><strong>4.8/5</strong><span>Rating pengguna</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pricing">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Harga</span>
+      <h2>Pilih paket sesuai ukuran tim</h2>
+    </div>
+    <div class="price-grid">
+      <div class="price-card">
+        <h3>Starter</h3>
+        <p class="desc">Untuk tim kecil & startup</p>
+        <div class="price-amount">Rp0<span>/bulan</span></div>
+        <ul class="price-list">
+          <li>✔ Sampai 5 pengguna</li>
+          <li>✔ Scan struk dasar</li>
+          <li>✔ 1 alur approval</li>
+        </ul>
+        <a href="#" class="btn btn-ghost" style="justify-content:center;">Mulai Gratis</a>
+      </div>
+      <div class="price-card featured">
+        <span class="price-badge">Paling Populer</span>
+        <h3>Business</h3>
+        <p class="desc">Untuk tim yang berkembang</p>
+        <div class="price-amount">Rp39rb<span>/orang/bulan</span></div>
+        <ul class="price-list">
+          <li>✔ Pengguna tanpa batas</li>
+          <li>✔ Corporate card virtual</li>
+          <li>✔ Alur approval berjenjang</li>
+          <li>✔ Integrasi akuntansi</li>
+        </ul>
+        <a href="#" class="btn btn-white" style="justify-content:center;">Coba 14 Hari Gratis</a>
+      </div>
+      <div class="price-card">
+        <h3>Enterprise</h3>
+        <p class="desc">Untuk organisasi besar</p>
+        <div class="price-amount">Custom<span></span></div>
+        <ul class="price-list">
+          <li>✔ SSO & keamanan lanjutan</li>
+          <li>✔ Dedicated account manager</li>
+          <li>✔ Custom integration</li>
+        </ul>
+        <a href="#" class="btn btn-ghost" style="justify-content:center;">Hubungi Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Testimoni</span>
+      <h2>Dipercaya tim finance dari berbagai industri</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Proses reimbursement yang tadinya makan waktu berhari-hari, sekarang beres dalam hitungan jam."</p>
+        <div class="testi-who"><strong>Reza Firmansyah</strong><span>Finance Manager</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Scan struk-nya akurat banget, jarang perlu koreksi manual. Hemat waktu tim finance kami."</p>
+        <div class="testi-who"><strong>Amanda Putri</strong><span>Operations Lead</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Dashboard analitiknya membantu kami spot pemborosan yang sebelumnya gak kelihatan."</p>
+        <div class="testi-who"><strong>Yoga Pratama</strong><span>CFO Startup</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Rapikan pengeluaran timmu hari ini</h2>
+      <p>Gratis untuk tim kecil, upgrade kapan saja. Setup kurang dari 10 menit.</p>
+      <div class="cta-actions">
+        <a href="#pricing" class="btn btn-white">Coba Gratis Sekarang</a>
+        <a href="#" class="btn btn-ghost" style="background:transparent;border-color:rgba(255,255,255,.5);color:#fff;">Jadwalkan Demo →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo"><span class="logo-mark">N</span>Nexpense</a>
+        <p>Platform manajemen pengeluaran dan reimbursement yang bikin tim finance kerja lebih cepat.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Produk</h4>
+        <a href="#features">Scan Struk</a>
+        <a href="#features">Approval Workflow</a>
+        <a href="#features">Corporate Card</a>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <a href="#">Tentang Kami</a>
+        <a href="#">Blog</a>
+        <a href="#">Karir</a>
+      </div>
+      <div class="footer-col">
+        <h4>Bantuan</h4>
+        <a href="#">Pusat Bantuan</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat & Ketentuan</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 Nexpense. Semua hak dilindungi.</div>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme(){
+    const html=document.documentElement;
+    const next=html.getAttribute('data-theme')==='dark'?'light':'dark';
+    html.setAttribute('data-theme',next);
+    localStorage.setItem('nexpense-theme',next);
+    document.querySelector('.theme-toggle').textContent=next==='dark'?'☀️':'🌙';
+  }
+  (function(){ if(localStorage.getItem('nexpense-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); } })();
+  window.addEventListener('DOMContentLoaded',()=>{
+    document.querySelector('.theme-toggle').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';
+  });
+
+  function toggleMobile(){ document.getElementById('mobilePanel').classList.toggle('open'); }
+  function toggleSub(el){
+    el.nextElementSibling.classList.toggle('open');
+    el.querySelector('.mobile-caret').classList.toggle('open');
+  }
+
+  function swipeCard(action){
+    const top = document.getElementById('expCard1');
+    top.classList.add(action==='approve' ? 'swiped-approve' : 'swiped-reject');
+    setTimeout(()=>{ top.remove(); }, 420);
+  }
+
+  document.querySelectorAll('.nav-item').forEach(item=>{
+    const dd=item.querySelector('.nav-dropdown');
+    if(!dd) return;
+    let closeTimer;
+    item.addEventListener('mouseenter',()=>{ clearTimeout(closeTimer); dd.classList.add('open'); });
+    item.addEventListener('mouseleave',()=>{ closeTimer=setTimeout(()=>dd.classList.remove('open'),400); });
+  });
+</script>
+
+</body>
+</html>

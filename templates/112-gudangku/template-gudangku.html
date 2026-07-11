@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gudangku — Sistem Manajemen Gudang & Inventori Real-time</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#1D4ED8;
+    --blue-dark:#1739A8;
+    --orange:#F97316;
+    --green:#16A34A;
+    --slate:#0F1B2E;
+    --bg:#F5F7FB;
+    --bg-2:#EAEFF7;
+    --card:#FFFFFF;
+    --text:#101827;
+    --text-soft:#5C6B84;
+    --border:#DDE4F0;
+    --shadow:0 4px 18px rgba(16,24,39,.07);
+    --shadow-lg:0 24px 55px rgba(16,24,39,.16);
+  }
+  [data-theme="dark"]{
+    --blue:#5C86FF;
+    --blue-dark:#7FA0FF;
+    --orange:#FB923C;
+    --green:#4ADE80;
+    --slate:#E7ECF6;
+    --bg:#0A0E17;
+    --bg-2:#10151F;
+    --card:#161C29;
+    --text:#E7ECF6;
+    --text-soft:#8D98AF;
+    --border:#232B3D;
+    --shadow:0 4px 18px rgba(0,0,0,.4);
+    --shadow-lg:0 24px 55px rgba(0,0,0,.6);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:.3s;}
+  h1,h2,h3,.disp{font-family:'IBM Plex Sans',sans-serif;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.7rem;border-radius:8px;font-weight:700;font-size:.92rem;cursor:pointer;border:none;transition:.25s;min-height:44px;}
+  .btn:hover{filter:brightness(1.05);}
+  .btn:active{transform:scale(.96);}
+  .btn-primary{background:var(--blue);color:#fff;box-shadow:0 10px 24px rgba(29,78,216,.3);}
+  .btn-primary:hover{background:var(--blue-dark);transform:translateY(-2px);}
+  .btn-ghost{background:var(--card);color:var(--text);border:1.5px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--blue);color:var(--blue-dark);transform:translateY(-2px);}
+  .btn-white{background:#fff;color:var(--blue-dark);}
+  .btn-white:hover{transform:translateY(-2px);}
+
+  header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 24px;max-width:1200px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:.6rem;font-family:'IBM Plex Sans';font-weight:700;font-size:1.3rem;}
+  .logo-mark{width:36px;height:36px;border-radius:8px;background:var(--blue);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;}
+  .nav-links{display:flex;align-items:center;gap:2.1rem;}
+  .nav-item{position:relative;}
+  .nav-item>a{font-weight:600;font-size:.9rem;display:flex;align-items:center;gap:.3rem;}
+  .nav-item>a .caret{font-size:.6rem;color:var(--text-soft);transition:.2s;}
+  .nav-item:hover>a .caret{transform:rotate(180deg);}
+  /* numbered-badge list dropdown - varied pattern */
+  .nav-dropdown{
+    display:block;position:absolute;top:calc(100% + 14px);left:50%;
+    min-width:280px;background:var(--card);border:1px solid var(--border);
+    border-radius:12px;padding:.6rem;box-shadow:var(--shadow-lg);
+    opacity:0;visibility:hidden;pointer-events:none;
+    transform:translateX(-50%) translateY(6px);
+    transition:opacity .17s ease,transform .17s ease,visibility 0s linear .17s;
+  }
+  .nav-item:focus-within .nav-dropdown{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0);transition:opacity .17s ease,transform .17s ease;}
+  .nav-dropdown.open{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0);transition:opacity .17s ease,transform .17s ease;}
+  .nav-dropdown a{display:flex;align-items:center;gap:.7rem;padding:.6rem .6rem;border-radius:8px;font-size:.87rem;font-weight:600;}
+  .nav-dropdown a .n{width:22px;height:22px;border-radius:6px;background:var(--bg-2);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0;}
+  .nav-dropdown a:hover{background:var(--bg-2);}
+  .nav-actions{display:flex;align-items:center;gap:.9rem;}
+  .theme-toggle{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:1.05rem;}
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;}
+  .hamburger span{width:24px;height:2px;background:var(--text);border-radius:2px;}
+  .mobile-panel{display:none;}
+
+  .hero{padding:4.5rem 0 3.5rem;}
+  .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;}
+  .badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--bg-2);color:var(--blue-dark);font-weight:700;font-size:.8rem;padding:.5rem 1rem;border-radius:100px;margin-bottom:1.3rem;}
+  .hero h1{font-size:clamp(2.2rem,4.2vw,3.3rem);font-weight:700;line-height:1.15;margin-bottom:1.2rem;letter-spacing:-.01em;}
+  .hero h1 span{color:var(--blue);}
+  .hero p{font-size:1.05rem;color:var(--text-soft);max-width:470px;margin-bottom:2rem;}
+  .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.8rem;}
+  .hero-badges{display:flex;gap:1.8rem;color:var(--text-soft);font-size:.85rem;flex-wrap:wrap;}
+  .hero-badges b{color:var(--text);display:block;font-family:'IBM Plex Sans';font-size:1.15rem;}
+
+  /* ZONE MAP WIDGET */
+  .zone-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.6rem;box-shadow:var(--shadow-lg);}
+  .zone-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;}
+  .zone-head h4{font-family:'IBM Plex Sans';font-size:1rem;}
+  .zone-head span{font-size:.75rem;color:var(--green);font-weight:700;background:var(--bg-2);padding:.3rem .6rem;border-radius:100px;}
+  .zone-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-bottom:1.2rem;}
+  .zone{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;cursor:pointer;transition:.2s;}
+  .zone:hover{transform:scale(1.08);}
+  .zone.full{background:#FEE2E2;color:#B91C1C;}
+  [data-theme="dark"] .zone.full{background:#3A1414;color:#FF8A8A;}
+  .zone.mid{background:#FEF3C7;color:#92400E;}
+  [data-theme="dark"] .zone.mid{background:#3A2E10;color:#FBBF24;}
+  .zone.low{background:#DCFCE7;color:#15803D;}
+  [data-theme="dark"] .zone.low{background:#0F2E1B;color:#4ADE80;}
+  .zone-legend{display:flex;gap:1rem;font-size:.76rem;color:var(--text-soft);flex-wrap:wrap;}
+  .zone-legend span{display:flex;align-items:center;gap:.4rem;}
+  .zone-legend .dot{width:8px;height:8px;border-radius:50%;}
+
+  .section{padding:5.4rem 0;}
+  .section-head{max-width:600px;margin:0 auto 3rem;text-align:center;}
+  .badge-center{margin:0 auto 1rem;width:fit-content;}
+  .section-head h2{font-size:clamp(1.8rem,3.4vw,2.5rem);font-weight:700;margin-bottom:.9rem;letter-spacing:-.01em;}
+  .section-head p{color:var(--text-soft);font-size:1.03rem;}
+
+  /* FEATURES - view types w/ hover */
+  .feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;}
+  .feat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.9rem 1.5rem;cursor:pointer;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s;}
+  .feat-card:hover{transform:translateY(-10px);box-shadow:var(--shadow-lg);border-color:var(--blue);}
+  .feat-icon{width:50px;height:50px;border-radius:10px;background:var(--bg-2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.1rem;transition:.35s;}
+  .feat-card:hover .feat-icon{background:var(--blue);transform:scale(1.1);}
+  .feat-card h3{font-size:1rem;font-weight:700;margin-bottom:.5rem;}
+  .feat-card p{font-size:.84rem;color:var(--text-soft);}
+
+  /* PICK-PACK-SHIP PIPELINE */
+  .pipeline{display:flex;align-items:center;justify-content:space-between;position:relative;}
+  .pipeline::before{content:"";position:absolute;top:26px;left:6%;right:6%;height:2px;background:var(--border);z-index:0;}
+  .pipe-step{text-align:center;position:relative;z-index:1;flex:1;}
+  .pipe-icon{width:54px;height:54px;border-radius:50%;background:var(--card);border:2px solid var(--blue);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin:0 auto 1rem;}
+  .pipe-step h3{font-size:.95rem;margin-bottom:.4rem;}
+  .pipe-step p{font-size:.8rem;color:var(--text-soft);}
+
+  /* STOCK ALERTS FEED */
+  .alert-list{max-width:720px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:.6rem;box-shadow:var(--shadow);}
+  .alert-item{display:flex;align-items:center;gap:1rem;padding:1rem 1.1rem;border-radius:12px;transition:.2s;}
+  .alert-item:hover{background:var(--bg-2);}
+  .alert-dot{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+  .alert-dot.low{background:#FEE2E2;}
+  .alert-dot.ok{background:#DCFCE7;}
+  [data-theme="dark"] .alert-dot.low{background:#3A1414;}
+  [data-theme="dark"] .alert-dot.ok{background:#0F2E1B;}
+  .alert-body{flex:1;}
+  .alert-body strong{font-size:.9rem;}
+  .alert-body p{font-size:.8rem;color:var(--text-soft);}
+  .alert-time{font-size:.78rem;color:var(--text-soft);white-space:nowrap;}
+
+  .stats-band{background:var(--slate);color:#fff;border-radius:20px;padding:3.2rem 2.5rem;}
+  [data-theme="dark"] .stats-band{background:var(--card);border:1px solid var(--border);color:var(--text);}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);text-align:center;}
+  .stats-grid div strong{font-family:'IBM Plex Sans';font-size:2.1rem;display:block;color:var(--orange);}
+  .stats-grid div span{font-size:.85rem;color:#94A3B8;}
+  [data-theme="dark"] .stats-grid div span{color:var(--text-soft);}
+
+  .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;}
+  .price-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2.1rem 1.7rem;display:flex;flex-direction:column;transition:.3s;}
+  .price-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+  .price-card.featured{background:var(--slate);color:#fff;border-color:var(--slate);position:relative;}
+  [data-theme="dark"] .price-card.featured{background:var(--blue);color:var(--bg);}
+  .price-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--orange);color:#fff;font-size:.7rem;font-weight:700;padding:.35rem .8rem;border-radius:100px;}
+  .price-card h3{font-size:1.05rem;margin-bottom:.3rem;}
+  .price-card .desc{font-size:.83rem;color:var(--text-soft);margin-bottom:1.2rem;}
+  .price-card.featured .desc{color:#94A3B8;}
+  .price-amount{font-family:'IBM Plex Sans';font-size:1.9rem;margin-bottom:1.3rem;}
+  .price-amount span{font-size:.85rem;font-weight:400;color:var(--text-soft);}
+  .price-card.featured .price-amount span{color:#94A3B8;}
+  .price-list{list-style:none;margin-bottom:1.5rem;flex:1;}
+  .price-list li{padding:.5rem 0;font-size:.86rem;display:flex;gap:.6rem;border-bottom:1px dashed var(--border);}
+  .price-card.featured .price-list li{border-color:rgba(255,255,255,.15);}
+  .price-list li:last-child{border-bottom:none;}
+
+  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;}
+  .testi-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.8rem;transition:.3s;}
+  .testi-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+  .testi-stars{color:var(--orange);margin-bottom:1rem;font-size:1rem;letter-spacing:2px;}
+  .testi-card p{font-size:.93rem;margin-bottom:1.2rem;}
+  .testi-who strong{font-size:.87rem;display:block;}
+  .testi-who span{font-size:.76rem;color:var(--text-soft);}
+
+  .cta-band{background:var(--blue);border-radius:20px;padding:3.5rem 2.5rem;text-align:center;color:#fff;}
+  .cta-band h2{font-size:clamp(1.7rem,3.4vw,2.3rem);margin-bottom:.9rem;}
+  .cta-band p{color:rgba(255,255,255,.92);max-width:460px;margin:0 auto 1.8rem;}
+  .cta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+
+  footer{background:var(--slate);color:#94A3B8;padding:4rem 0 2rem;margin-top:5rem;}
+  [data-theme="dark"] footer{background:var(--card);border-top:1px solid var(--border);color:var(--text-soft);}
+  .footer-grid{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:2.5rem;margin-bottom:3rem;}
+  .footer-brand .logo{color:#fff;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-brand .logo{color:var(--text);}
+  .footer-brand p{font-size:.86rem;max-width:280px;}
+  .footer-col h4{color:#fff;font-size:.88rem;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-col h4{color:var(--text);}
+  .footer-col a{display:block;font-size:.84rem;padding:.4rem 0;color:#7C8B99;}
+  .footer-col a:hover{color:#fff;}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1.6rem;text-align:center;font-size:.8rem;}
+
+  @media(max-width:980px){
+    .hero-grid{grid-template-columns:1fr;}
+    .feat-grid{grid-template-columns:repeat(2,1fr);}
+    .pipeline{flex-wrap:wrap;gap:1.5rem;}
+    .pipeline::before{display:none;}
+    .pipe-step{flex:1 1 40%;}
+    .stats-grid{grid-template-columns:repeat(2,1fr);gap:1.8rem;}
+    .price-grid{grid-template-columns:repeat(2,1fr);}
+    .testi-grid{grid-template-columns:repeat(2,1fr);}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media(max-width:768px){
+    .nav-links{display:none;}
+    .hamburger{display:flex;}
+    .mobile-panel.open{display:block;background:var(--bg);border-top:1px solid var(--border);padding:1rem 24px 1.6rem;}
+    .mobile-panel a{display:block;padding:.8rem 0;font-weight:600;border-bottom:1px solid var(--border);}
+    .mobile-sub{padding-left:1rem;display:none;}
+    .mobile-sub.open{display:block;}
+    .mobile-sub a{border-bottom:none;padding:.6rem 0;font-weight:500;color:var(--text-soft);}
+    .mobile-caret{float:right;transition:transform .2s;}
+    .mobile-caret.open{transform:rotate(180deg);}
+    .nav-actions{gap:.5rem;}
+    .nav-actions .btn-primary{padding:.6rem .9rem;font-size:.72rem;white-space:nowrap;}
+    .theme-toggle{width:34px;height:34px;font-size:.9rem;}
+    .hero{padding:2.6rem 0;}
+    .hero-actions .btn{width:100%;justify-content:center;}
+    .hero-actions{flex-direction:column;}
+    .section{padding:3.2rem 0;}
+    .feat-grid{grid-template-columns:1fr 1fr;gap:1rem;}
+    .zone-grid{grid-template-columns:repeat(4,1fr);}
+    .pipe-step{flex:1 1 100%;}
+    .stats-grid{grid-template-columns:1fr 1fr;}
+    .price-grid{grid-template-columns:1fr;}
+    .testi-grid{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr;gap:2rem;}
+    .stats-band,.cta-band{padding:2.4rem 1.5rem;}
+    .alert-item{flex-wrap:wrap;}
+  }
+  @media(max-width:480px){
+    .feat-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="#" class="logo"><span class="logo-mark">G</span>Gudangku</a>
+    <div class="nav-links">
+      <div class="nav-item">
+        <a href="#features">Produk <span class="caret">▾</span></a>
+        <div class="nav-dropdown">
+          <a href="#features"><span class="n">1</span> Manajemen Inventori</a>
+          <a href="#pipeline"><span class="n">2</span> Pick, Pack & Ship</a>
+          <a href="#alerts"><span class="n">3</span> Alert Stok Real-time</a>
+          <a href="#features"><span class="n">4</span> Laporan & Analitik</a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="#pipeline">Alur Kerja</a></div>
+      <div class="nav-item"><a href="#pricing">Harga</a></div>
+      <div class="nav-item"><a href="#">Integrasi</a></div>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Ganti tema">🌙</button>
+      <a href="#pricing" class="btn btn-primary">Coba Gratis</a>
+      <button class="hamburger" onclick="toggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-panel" id="mobilePanel">
+    <a href="javascript:void(0)" onclick="toggleSub(this)">Produk <span class="mobile-caret">▾</span></a>
+    <div class="mobile-sub">
+      <a href="#features">Manajemen Inventori</a>
+      <a href="#pipeline">Pick, Pack & Ship</a>
+      <a href="#alerts">Alert Stok Real-time</a>
+    </div>
+    <a href="#pipeline">Alur Kerja</a>
+    <a href="#pricing">Harga</a>
+    <a href="#">Integrasi</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="badge">📦 Kelola gudang tanpa Excel lagi</span>
+      <h1>Stok akurat, <span>pengiriman lebih cepat</span></h1>
+      <p>Pantau inventori real-time di semua zona gudang, otomatiskan pick-pack-ship, dan dapat alert sebelum stok habis.</p>
+      <div class="hero-actions">
+        <a href="#pricing" class="btn btn-primary">Coba Gratis 14 Hari</a>
+        <a href="#features" class="btn btn-ghost">Lihat Fitur</a>
+      </div>
+      <div class="hero-badges">
+        <div><b>2.100+</b>Gudang menggunakan</div>
+        <div><b>99.4%</b>Akurasi stok</div>
+        <div><b>35%</b>Lebih cepat pengiriman</div>
+      </div>
+    </div>
+
+    <div class="zone-card">
+      <div class="zone-head">
+        <h4>Status Zona Gudang</h4>
+        <span>Live</span>
+      </div>
+      <div class="zone-grid">
+        <div class="zone low">A1</div>
+        <div class="zone mid">A2</div>
+        <div class="zone full">A3</div>
+        <div class="zone low">A4</div>
+        <div class="zone mid">B1</div>
+        <div class="zone low">B2</div>
+        <div class="zone full">B3</div>
+        <div class="zone low">B4</div>
+      </div>
+      <div class="zone-legend">
+        <span><span class="dot" style="background:#16A34A;"></span>Stok Aman</span>
+        <span><span class="dot" style="background:#F59E0B;"></span>Menipis</span>
+        <span><span class="dot" style="background:#DC2626;"></span>Penuh</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="features" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Fitur Utama</span>
+      <h2>Semua yang tim gudang butuhkan</h2>
+      <p>Dari tracking inventori sampai laporan performa gudang.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">📦</div>
+        <h3>Manajemen Inventori</h3>
+        <p>Tracking stok real-time per SKU dan lokasi rak.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📱</div>
+        <h3>Scan Barcode</h3>
+        <p>Input & update stok cepat lewat scanner mobile.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🚚</div>
+        <h3>Pick, Pack & Ship</h3>
+        <p>Alur kerja terotomatisasi dari order sampai kirim.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔔</div>
+        <h3>Alert Stok Rendah</h3>
+        <p>Notifikasi otomatis sebelum stok benar-benar habis.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pipeline">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Alur Kerja</span>
+      <h2>Dari order sampai terkirim</h2>
+    </div>
+    <div class="pipeline">
+      <div class="pipe-step"><div class="pipe-icon">🛒</div><h3>Order Masuk</h3><p>Sinkron otomatis dari semua channel jual</p></div>
+      <div class="pipe-step"><div class="pipe-icon">📋</div><h3>Picking</h3><p>Rute pengambilan barang paling efisien</p></div>
+      <div class="pipe-step"><div class="pipe-icon">📦</div><h3>Packing</h3><p>Verifikasi barang sebelum dikemas</p></div>
+      <div class="pipe-step"><div class="pipe-icon">🚚</div><h3>Shipping</h3><p>Label otomatis & tracking terintegrasi</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="alerts" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Real-time</span>
+      <h2>Alert stok hari ini</h2>
+    </div>
+    <div class="alert-list">
+      <div class="alert-item">
+        <div class="alert-dot low">⚠️</div>
+        <div class="alert-body"><strong>SKU-3021 — Kabel USB-C</strong><p>Stok tersisa 12 unit, di bawah minimum</p></div>
+        <div class="alert-time">10 menit lalu</div>
+      </div>
+      <div class="alert-item">
+        <div class="alert-dot ok">✓</div>
+        <div class="alert-body"><strong>SKU-1187 — Botol Minum 500ml</strong><p>Restock 500 unit berhasil diterima</p></div>
+        <div class="alert-time">1 jam lalu</div>
+      </div>
+      <div class="alert-item">
+        <div class="alert-dot low">⚠️</div>
+        <div class="alert-body"><strong>SKU-4402 — Masker Medis Box</strong><p>Stok tersisa 8 box, segera restock</p></div>
+        <div class="alert-time">3 jam lalu</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="stats-band">
+      <div class="stats-grid">
+        <div><strong>2.100+</strong><span>Gudang menggunakan</span></div>
+        <div><strong>99.4%</strong><span>Akurasi stok</span></div>
+        <div><strong>35%</strong><span>Lebih cepat pengiriman</span></div>
+        <div><strong>4.8/5</strong><span>Rating pengguna</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pricing" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Harga</span>
+      <h2>Pilih paket sesuai skala gudang</h2>
+    </div>
+    <div class="price-grid">
+      <div class="price-card">
+        <h3>Starter</h3>
+        <p class="desc">Untuk gudang kecil</p>
+        <div class="price-amount">Rp299rb<span>/bulan</span></div>
+        <ul class="price-list">
+          <li>✔ Sampai 500 SKU</li>
+          <li>✔ 1 lokasi gudang</li>
+          <li>✔ Alert stok dasar</li>
+        </ul>
+        <a href="#" class="btn btn-ghost" style="justify-content:center;">Mulai Gratis</a>
+      </div>
+      <div class="price-card featured">
+        <span class="price-badge">Paling Populer</span>
+        <h3>Growth</h3>
+        <p class="desc">Untuk bisnis berkembang</p>
+        <div class="price-amount">Rp899rb<span>/bulan</span></div>
+        <ul class="price-list">
+          <li>✔ SKU tanpa batas</li>
+          <li>✔ Multi-lokasi gudang</li>
+          <li>✔ Scan barcode mobile</li>
+          <li>✔ Integrasi marketplace</li>
+        </ul>
+        <a href="#" class="btn btn-white" style="justify-content:center;">Coba 14 Hari Gratis</a>
+      </div>
+      <div class="price-card">
+        <h3>Enterprise</h3>
+        <p class="desc">Untuk operasi skala besar</p>
+        <div class="price-amount">Custom<span></span></div>
+        <ul class="price-list">
+          <li>✔ Dedicated support</li>
+          <li>✔ Custom integration</li>
+          <li>✔ SLA & keamanan lanjutan</li>
+        </ul>
+        <a href="#" class="btn btn-ghost" style="justify-content:center;">Hubungi Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Testimoni</span>
+      <h2>Dipercaya tim logistik & UMKM</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Stok opname yang tadinya seharian, sekarang cukup beberapa jam berkat scan barcode."</p>
+        <div class="testi-who"><strong>Aditya Kurniawan</strong><span>Warehouse Manager</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Alert stok rendah bener-bener menyelamatkan kami dari kehabisan stok pas lagi ramai."</p>
+        <div class="testi-who"><strong>Sari Handayani</strong><span>Owner UMKM</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Integrasi multi-gudang bikin kami bisa distribusi barang lebih efisien antar cabang."</p>
+        <div class="testi-who"><strong>Bram Wicaksono</strong><span>Operations Director</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Rapikan gudangmu hari ini</h2>
+      <p>Gratis untuk mulai, upgrade kapan saja saat gudangmu berkembang.</p>
+      <div class="cta-actions">
+        <a href="#pricing" class="btn btn-white">Coba Gratis Sekarang</a>
+        <a href="#" class="btn btn-ghost" style="background:transparent;border-color:rgba(255,255,255,.5);color:#fff;">Jadwalkan Demo →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo"><span class="logo-mark">G</span>Gudangku</a>
+        <p>Sistem manajemen gudang dan inventori yang bikin stok selalu akurat dan pengiriman lebih cepat.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Produk</h4>
+        <a href="#features">Manajemen Inventori</a>
+        <a href="#pipeline">Pick, Pack & Ship</a>
+        <a href="#alerts">Alert Stok</a>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <a href="#">Tentang Kami</a>
+        <a href="#">Blog</a>
+        <a href="#">Karir</a>
+      </div>
+      <div class="footer-col">
+        <h4>Bantuan</h4>
+        <a href="#">Pusat Bantuan</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat & Ketentuan</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 Gudangku. Semua hak dilindungi.</div>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme(){
+    const html=document.documentElement;
+    const next=html.getAttribute('data-theme')==='dark'?'light':'dark';
+    html.setAttribute('data-theme',next);
+    localStorage.setItem('gudangku-theme',next);
+    document.querySelector('.theme-toggle').textContent=next==='dark'?'☀️':'🌙';
+  }
+  (function(){ if(localStorage.getItem('gudangku-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); } })();
+  window.addEventListener('DOMContentLoaded',()=>{
+    document.querySelector('.theme-toggle').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';
+  });
+
+  function toggleMobile(){ document.getElementById('mobilePanel').classList.toggle('open'); }
+  function toggleSub(el){
+    el.nextElementSibling.classList.toggle('open');
+    el.querySelector('.mobile-caret').classList.toggle('open');
+  }
+
+  document.querySelectorAll('.nav-item').forEach(item=>{
+    const dd=item.querySelector('.nav-dropdown');
+    if(!dd) return;
+    let closeTimer;
+    item.addEventListener('mouseenter',()=>{ clearTimeout(closeTimer); dd.classList.add('open'); });
+    item.addEventListener('mouseleave',()=>{ closeTimer=setTimeout(()=>dd.classList.remove('open'),400); });
+  });
+</script>
+
+</body>
+</html>
