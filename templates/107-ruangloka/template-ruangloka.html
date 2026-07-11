@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ruangloka — Studio Desain Interior & Arsitektur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --terracotta:#B5603E;
+    --terracotta-dark:#98492C;
+    --olive:#6B7259;
+    --cream:#F7F2EA;
+    --cream-2:#EFE6D8;
+    --ink:#2B241C;
+    --card:#FFFFFF;
+    --text:#2B241C;
+    --text-soft:#7A6F60;
+    --border:#E5DBC9;
+    --shadow:0 4px 18px rgba(43,36,28,.08);
+    --shadow-lg:0 26px 55px rgba(43,36,28,.18);
+  }
+  [data-theme="dark"]{
+    --terracotta:#D68159;
+    --terracotta-dark:#E39B76;
+    --olive:#8B9375;
+    --cream:#171410;
+    --cream-2:#1F1B15;
+    --ink:#F3ECE0;
+    --card:#221D16;
+    --text:#F3ECE0;
+    --text-soft:#A69A87;
+    --border:#332C22;
+    --shadow:0 4px 18px rgba(0,0,0,.4);
+    --shadow-lg:0 26px 55px rgba(0,0,0,.6);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--text);line-height:1.65;transition:.3s;}
+  h1,h2,h3,.disp{font-family:'DM Serif Display',serif;font-weight:400;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.9rem 1.8rem;border-radius:2px;font-weight:600;font-size:.9rem;letter-spacing:.03em;cursor:pointer;border:none;transition:.25s;min-height:44px;}
+  .btn:hover{filter:brightness(1.05);}
+  .btn:active{transform:scale(.96);}
+  .btn-primary{background:var(--terracotta);color:#fff;}
+  .btn-primary:hover{background:var(--terracotta-dark);transform:translateY(-2px);}
+  .btn-ghost{background:transparent;color:var(--text);border:1.5px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--terracotta);color:var(--terracotta);transform:translateY(-2px);}
+  .btn-outline-light{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.5);}
+  .btn-outline-light:hover{border-color:#fff;background:rgba(255,255,255,.1);transform:translateY(-2px);}
+
+  header{position:sticky;top:0;z-index:100;background:var(--cream);border-bottom:1px solid var(--border);}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.3rem 24px;max-width:1200px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:.7rem;font-family:'DM Serif Display';font-size:1.5rem;}
+  .logo-mark{width:36px;height:36px;background:var(--terracotta);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;font-family:'Work Sans';font-weight:700;}
+  .nav-links{display:flex;align-items:center;gap:2.3rem;}
+  .nav-item{position:relative;}
+  .nav-item>a{font-weight:500;font-size:.88rem;letter-spacing:.02em;display:flex;align-items:center;gap:.3rem;}
+  .nav-item>a .caret{font-size:.6rem;color:var(--text-soft);transition:.2s;}
+  .nav-item:hover>a .caret{transform:rotate(180deg);}
+  /* minimal elegant centered dropdown w/ serif italic + top accent line - varied pattern */
+  .nav-dropdown{
+    display:block;position:absolute;top:calc(100% + 16px);left:50%;
+    min-width:240px;background:var(--card);border:1px solid var(--border);
+    padding:1.1rem 0;box-shadow:var(--shadow-lg);text-align:center;
+    opacity:0;visibility:hidden;pointer-events:none;
+    transform:translateX(-50%) translateY(4px);
+    transition:opacity .2s ease,transform .2s ease,visibility 0s linear .2s;
+  }
+  .nav-dropdown::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:32px;height:2px;background:var(--terracotta);}
+  .nav-item:focus-within .nav-dropdown{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0);transition:opacity .2s ease,transform .2s ease;}
+  .nav-dropdown.open{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0);transition:opacity .2s ease,transform .2s ease;}
+  .nav-dropdown a{display:block;padding:.65rem 1.4rem;font-family:'DM Serif Display';font-style:italic;font-size:1.02rem;}
+  .nav-dropdown a:hover{color:var(--terracotta);}
+  .nav-actions{display:flex;align-items:center;gap:.9rem;}
+  .theme-toggle{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:1.05rem;}
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;}
+  .hamburger span{width:24px;height:2px;background:var(--text);border-radius:2px;}
+  .mobile-panel{display:none;}
+
+  .hero{padding:4.5rem 0 5.5rem;}
+  .hero-grid{display:grid;grid-template-columns:1fr .95fr;gap:3.5rem;align-items:center;}
+  .badge{display:inline-flex;align-items:center;gap:.5rem;color:var(--terracotta-dark);font-weight:600;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1.4rem;}
+  .badge::before{content:"";width:24px;height:1px;background:var(--terracotta);}
+  .hero h1{font-size:clamp(2.4rem,4.6vw,3.7rem);line-height:1.1;margin-bottom:1.4rem;font-style:italic;}
+  .hero p{font-size:1.05rem;color:var(--text-soft);max-width:460px;margin-bottom:2.2rem;}
+  .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem;}
+  .hero-meta{display:flex;gap:2.2rem;color:var(--text-soft);font-size:.85rem;}
+  .hero-meta b{color:var(--text);display:block;font-family:'DM Serif Display';font-size:1.5rem;}
+  .hero-visual{position:relative;aspect-ratio:4/5;background:linear-gradient(150deg,var(--olive),var(--terracotta));}
+  .hero-visual-tag{position:absolute;bottom:1.5rem;left:1.5rem;background:var(--card);padding:1rem 1.3rem;box-shadow:var(--shadow-lg);}
+  .hero-visual-tag span{font-size:.72rem;color:var(--text-soft);text-transform:uppercase;letter-spacing:.06em;}
+  .hero-visual-tag strong{display:block;font-family:'DM Serif Display';font-size:1.1rem;}
+
+  .section{padding:5.6rem 0;}
+  .section-head{max-width:600px;margin:0 auto 3.2rem;text-align:center;}
+  .section-head h2{font-size:clamp(2rem,3.8vw,2.8rem);margin-bottom:.9rem;}
+  .section-head p{color:var(--text-soft);font-size:1.02rem;}
+
+  /* PROJECTS - view types w/ hover animation, image-zoom overlay */
+  .project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;}
+  .project-card{position:relative;aspect-ratio:4/5;overflow:hidden;cursor:pointer;}
+  .project-img{position:absolute;inset:0;transition:transform .5s ease;}
+  .project-card:nth-child(1) .project-img{background:linear-gradient(150deg,#C9AD8F,#8C6F52);}
+  .project-card:nth-child(2) .project-img{background:linear-gradient(150deg,var(--olive),#4B5240);}
+  .project-card:nth-child(3) .project-img{background:linear-gradient(150deg,var(--terracotta),#7A3D24);}
+  .project-card:hover .project-img{transform:scale(1.08);}
+  .project-overlay{position:absolute;inset:0;background:linear-gradient(0deg,rgba(20,16,10,.75),transparent 55%);display:flex;flex-direction:column;justify-content:flex-end;padding:1.5rem;opacity:0;transition:opacity .4s;}
+  .project-card:hover .project-overlay{opacity:1;}
+  .project-overlay span{color:#E9DFCE;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;}
+  .project-overlay strong{color:#fff;font-family:'DM Serif Display';font-size:1.3rem;font-style:italic;}
+
+  /* SERVICES - alternating rows, not grid */
+  .service-row{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;margin-bottom:4rem;}
+  .service-row:last-child{margin-bottom:0;}
+  .service-row.reverse{direction:rtl;}
+  .service-row.reverse > *{direction:ltr;}
+  .service-visual{aspect-ratio:5/4;background:var(--cream-2);position:relative;}
+  .service-num{position:absolute;top:1.2rem;left:1.2rem;font-family:'DM Serif Display';font-size:1rem;color:var(--terracotta);}
+  .service-text h3{font-size:1.7rem;margin-bottom:.9rem;font-style:italic;}
+  .service-text p{color:var(--text-soft);font-size:.95rem;margin-bottom:1.2rem;}
+  .service-text ul{list-style:none;}
+  .service-text li{padding:.5rem 0;font-size:.88rem;border-top:1px solid var(--border);}
+  .service-text li:first-child{border-top:none;}
+
+  .stats-band{background:var(--ink);color:#fff;padding:3.2rem 0;}
+  [data-theme="dark"] .stats-band{background:var(--card);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);text-align:center;}
+  .stats-grid div strong{font-family:'DM Serif Display';font-size:2.2rem;display:block;color:var(--terracotta);font-style:italic;}
+  .stats-grid div span{font-size:.8rem;color:#C7BFAF;text-transform:uppercase;letter-spacing:.05em;}
+  [data-theme="dark"] .stats-grid div span{color:var(--text-soft);}
+
+  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.8rem;}
+  .testi-card{padding:1.8rem 0 0;border-top:2px solid var(--terracotta);}
+  .testi-card p{font-family:'DM Serif Display';font-style:italic;font-size:1.15rem;line-height:1.5;margin-bottom:1.3rem;}
+  .testi-who strong{font-size:.87rem;display:block;font-family:'Work Sans';font-weight:600;}
+  .testi-who span{font-size:.78rem;color:var(--text-soft);}
+
+  .cta-band{background:linear-gradient(150deg,var(--olive),var(--terracotta));padding:4rem 2.5rem;text-align:center;color:#fff;}
+  .cta-band h2{font-size:clamp(2rem,3.8vw,2.8rem);margin-bottom:1rem;font-style:italic;}
+  .cta-band p{color:rgba(255,255,255,.9);max-width:460px;margin:0 auto 1.9rem;}
+  .cta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+
+  footer{background:var(--ink);color:#C7BFAF;padding:4rem 0 2rem;margin-top:5rem;}
+  [data-theme="dark"] footer{background:var(--card);border-top:1px solid var(--border);}
+  .footer-grid{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:2.5rem;margin-bottom:3rem;}
+  .footer-brand .logo{color:#fff;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-brand .logo{color:var(--text);}
+  .footer-brand p{font-size:.87rem;max-width:280px;}
+  .footer-col h4{color:#fff;font-family:'DM Serif Display';font-size:1rem;margin-bottom:1rem;font-style:italic;}
+  [data-theme="dark"] .footer-col h4{color:var(--text);}
+  .footer-col a{display:block;font-size:.85rem;padding:.4rem 0;color:#A69A87;}
+  .footer-col a:hover{color:#fff;}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1.6rem;text-align:center;font-size:.8rem;}
+
+  @media(max-width:980px){
+    .hero-grid{grid-template-columns:1fr;}
+    .project-grid{grid-template-columns:repeat(2,1fr);}
+    .service-row{grid-template-columns:1fr;gap:1.5rem;}
+    .service-row.reverse{direction:ltr;}
+    .stats-grid{grid-template-columns:repeat(2,1fr);gap:1.8rem;}
+    .testi-grid{grid-template-columns:repeat(2,1fr);}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media(max-width:768px){
+    .nav-links{display:none;}
+    .hamburger{display:flex;}
+    .mobile-panel.open{display:block;background:var(--cream);border-top:1px solid var(--border);padding:1rem 24px 1.6rem;}
+    .mobile-panel a{display:block;padding:.8rem 0;font-weight:600;border-bottom:1px solid var(--border);}
+    .mobile-sub{padding-left:1rem;display:none;}
+    .mobile-sub.open{display:block;}
+    .mobile-sub a{border-bottom:none;padding:.6rem 0;font-weight:500;color:var(--text-soft);}
+    .mobile-caret{float:right;transition:transform .2s;}
+    .mobile-caret.open{transform:rotate(180deg);}
+    .nav-actions{gap:.5rem;}
+    .nav-actions .btn-primary{padding:.6rem .9rem;font-size:.72rem;white-space:nowrap;}
+    .theme-toggle{width:34px;height:34px;font-size:.9rem;}
+    .hero{padding:2.6rem 0 3rem;}
+    .hero-actions .btn{width:100%;justify-content:center;}
+    .hero-actions{flex-direction:column;}
+    .hero-meta{gap:1.4rem;flex-wrap:wrap;}
+    .section{padding:3.4rem 0;}
+    .project-grid{grid-template-columns:1fr;}
+    .stats-grid{grid-template-columns:1fr 1fr;}
+    .testi-grid{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr;gap:2rem;}
+    .cta-band{padding:2.6rem 1.5rem;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="#" class="logo"><span class="logo-mark">R</span>Ruangloka</a>
+    <div class="nav-links">
+      <div class="nav-item">
+        <a href="#services">Layanan <span class="caret">▾</span></a>
+        <div class="nav-dropdown">
+          <a href="#services">Desain Interior</a>
+          <a href="#services">Arsitektur</a>
+          <a href="#services">Konsultasi Ruang</a>
+          <a href="#services">Build & Furnish</a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="#projects">Portofolio</a></div>
+      <div class="nav-item"><a href="#about">Studio Kami</a></div>
+      <div class="nav-item"><a href="#contact">Kontak</a></div>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Ganti tema">🌙</button>
+      <a href="#contact" class="btn btn-primary">Konsultasi</a>
+      <button class="hamburger" onclick="toggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-panel" id="mobilePanel">
+    <a href="javascript:void(0)" onclick="toggleSub(this)">Layanan <span class="mobile-caret">▾</span></a>
+    <div class="mobile-sub">
+      <a href="#services">Desain Interior</a>
+      <a href="#services">Arsitektur</a>
+      <a href="#services">Konsultasi Ruang</a>
+      <a href="#services">Build & Furnish</a>
+    </div>
+    <a href="#projects">Portofolio</a>
+    <a href="#about">Studio Kami</a>
+    <a href="#contact">Kontak</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="badge">Studio Desain Sejak 2014</span>
+      <h1>Ruang yang bercerita tentang kamu</h1>
+      <p>Kami merancang interior dan arsitektur yang menyatukan fungsi, estetika, dan karakter penghuninya — dari rumah tinggal sampai ruang komersial.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn btn-primary">Konsultasi Gratis</a>
+        <a href="#projects" class="btn btn-ghost">Lihat Portofolio</a>
+      </div>
+      <div class="hero-meta">
+        <div><b>180+</b>Proyek selesai</div>
+        <div><b>11 Thn</b>Pengalaman</div>
+        <div><b>4.9/5</b>Rating klien</div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-visual-tag"><span>Proyek Terbaru</span><strong>Rumah Kayu Cimanggis</strong></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="projects" style="background:var(--cream-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge" style="justify-content:center;">Portofolio Pilihan</span>
+      <h2>Karya yang kami banggakan</h2>
+      <p>Sebagian dari proyek interior dan arsitektur yang sudah kami wujudkan.</p>
+    </div>
+    <div class="project-grid">
+      <div class="project-card">
+        <div class="project-img"></div>
+        <div class="project-overlay"><span>Residensial</span><strong>Rumah Kayu Cimanggis</strong></div>
+      </div>
+      <div class="project-card">
+        <div class="project-img"></div>
+        <div class="project-overlay"><span>Komersial</span><strong>Kantor Hijau Senopati</strong></div>
+      </div>
+      <div class="project-card">
+        <div class="project-img"></div>
+        <div class="project-overlay"><span>Residensial</span><strong>Apartemen Minimalis Kemang</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="services">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge" style="justify-content:center;">Layanan Kami</span>
+      <h2>Dari konsep sampai eksekusi</h2>
+    </div>
+    <div class="service-row">
+      <div class="service-visual"><span class="service-num">01</span></div>
+      <div class="service-text">
+        <h3>Desain Interior</h3>
+        <p>Konsep ruang yang selaras dengan gaya hidup dan kebutuhan fungsional kamu, lengkap dengan visualisasi 3D.</p>
+        <ul>
+          <li>Konsultasi & moodboard</li>
+          <li>Rendering 3D fotorealistik</li>
+          <li>Pemilihan furnitur & material</li>
+        </ul>
+      </div>
+    </div>
+    <div class="service-row reverse">
+      <div class="service-visual"><span class="service-num">02</span></div>
+      <div class="service-text">
+        <h3>Arsitektur</h3>
+        <p>Perancangan bangunan dari nol, mempertimbangkan iklim, struktur, dan estetika jangka panjang.</p>
+        <ul>
+          <li>Desain skematik & gambar kerja</li>
+          <li>Perhitungan struktur</li>
+          <li>Pengawasan konstruksi</li>
+        </ul>
+      </div>
+    </div>
+    <div class="service-row">
+      <div class="service-visual"><span class="service-num">03</span></div>
+      <div class="service-text">
+        <h3>Build & Furnish</h3>
+        <p>Eksekusi penuh dari desain ke kenyataan — kami kelola kontraktor, furnitur, sampai finishing akhir.</p>
+        <ul>
+          <li>Manajemen proyek turnkey</li>
+          <li>Custom furniture</li>
+          <li>Styling & finishing</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stats-band">
+  <div class="wrap stats-grid">
+    <div><strong>180+</strong><span>Proyek Selesai</span></div>
+    <div><strong>11</strong><span>Tahun Pengalaman</span></div>
+    <div><strong>4.9</strong><span>Rating Klien</span></div>
+    <div><strong>24</strong><span>Penghargaan Desain</span></div>
+  </div>
+</div>
+
+<section class="section" id="about">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge" style="justify-content:center;">Kata Klien</span>
+      <h2>Yang mereka rasakan setelah bekerja sama</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <p>"Ruangloka paham betul apa yang kami mau bahkan sebelum kami jelaskan detail. Hasilnya melebihi ekspektasi."</p>
+        <div class="testi-who"><strong>Aditya & Nadya Pratama</strong><span>Rumah Kayu Cimanggis</span></div>
+      </div>
+      <div class="testi-card">
+        <p>"Prosesnya transparan dari awal sampai akhir. Setiap detail dikerjakan dengan sangat teliti."</p>
+        <div class="testi-who"><strong>PT Hijau Senopati</strong><span>Kantor Hijau Senopati</span></div>
+      </div>
+      <div class="testi-card">
+        <p>"Timeline dijaga ketat, komunikasi lancar. Apartemen kami sekarang terasa jauh lebih luas dan tenang."</p>
+        <div class="testi-who"><strong>Ibu Sinta Wijaya</strong><span>Apartemen Kemang</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="contact">
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Mari wujudkan ruang impianmu</h2>
+      <p>Jadwalkan konsultasi gratis dengan tim desainer kami, tanpa komitmen.</p>
+      <div class="cta-actions">
+        <a href="#" class="btn" style="background:#fff;color:var(--terracotta-dark);">Konsultasi Gratis</a>
+        <a href="#" class="btn btn-outline-light">Lihat Portofolio Lengkap →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo"><span class="logo-mark">R</span>Ruangloka</a>
+        <p>Studio desain interior dan arsitektur yang merancang ruang bercerita tentang penghuninya.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Layanan</h4>
+        <a href="#services">Desain Interior</a>
+        <a href="#services">Arsitektur</a>
+        <a href="#services">Build & Furnish</a>
+      </div>
+      <div class="footer-col">
+        <h4>Studio</h4>
+        <a href="#about">Tentang Kami</a>
+        <a href="#projects">Portofolio</a>
+        <a href="#">Karir</a>
+      </div>
+      <div class="footer-col">
+        <h4>Kontak</h4>
+        <a href="#contact">Konsultasi</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat & Ketentuan</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 Ruangloka Studio. Ruang yang bercerita.</div>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme(){
+    const html=document.documentElement;
+    const next=html.getAttribute('data-theme')==='dark'?'light':'dark';
+    html.setAttribute('data-theme',next);
+    localStorage.setItem('ruangloka-theme',next);
+    document.querySelector('.theme-toggle').textContent=next==='dark'?'☀️':'🌙';
+  }
+  (function(){ if(localStorage.getItem('ruangloka-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); } })();
+  window.addEventListener('DOMContentLoaded',()=>{
+    document.querySelector('.theme-toggle').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';
+  });
+
+  function toggleMobile(){ document.getElementById('mobilePanel').classList.toggle('open'); }
+  function toggleSub(el){
+    el.nextElementSibling.classList.toggle('open');
+    el.querySelector('.mobile-caret').classList.toggle('open');
+  }
+
+  document.querySelectorAll('.nav-item').forEach(item=>{
+    const dd=item.querySelector('.nav-dropdown');
+    if(!dd) return;
+    let closeTimer;
+    item.addEventListener('mouseenter',()=>{ clearTimeout(closeTimer); dd.classList.add('open'); });
+    item.addEventListener('mouseleave',()=>{ closeTimer=setTimeout(()=>dd.classList.remove('open'),400); });
+  });
+</script>
+
+</body>
+</html>
