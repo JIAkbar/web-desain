@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formix — Bikin Survey & Form Interaktif Tanpa Coding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --violet:#7C5CFF;
+    --violet-dark:#6242E8;
+    --pink:#FF5CA8;
+    --mint:#2BD9A6;
+    --ink:#161327;
+    --bg:#FAF9FF;
+    --bg-2:#F1EEFE;
+    --card:#FFFFFF;
+    --text:#1E1B33;
+    --text-soft:#69648A;
+    --border:#E5E1F7;
+    --shadow:0 4px 18px rgba(30,27,51,.06);
+    --shadow-lg:0 24px 55px rgba(30,27,51,.15);
+  }
+  [data-theme="dark"]{
+    --violet:#9C85FF;
+    --violet-dark:#B29EFF;
+    --pink:#FF7EBB;
+    --mint:#4FE8BC;
+    --ink:#EDEAFB;
+    --bg:#0E0C18;
+    --bg-2:#161327;
+    --card:#1B1830;
+    --text:#EDEAFB;
+    --text-soft:#9791BE;
+    --border:#2C2748;
+    --shadow:0 4px 18px rgba(0,0,0,.4);
+    --shadow-lg:0 24px 55px rgba(0,0,0,.6);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:.3s;}
+  h1,h2,h3,.disp{font-family:'Space Grotesk',sans-serif;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.7rem;border-radius:12px;font-weight:700;font-size:.95rem;cursor:pointer;border:none;transition:.25s;min-height:44px;}
+  .btn-primary{background:var(--violet);color:#fff;box-shadow:0 10px 24px rgba(124,92,255,.32);}
+  .btn-primary:hover{background:var(--violet-dark);transform:translateY(-2px);}
+  .btn-ghost{background:var(--card);color:var(--text);border:1.5px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--violet);color:var(--violet);}
+  .btn-white{background:#fff;color:var(--violet-dark);}
+
+  header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 24px;max-width:1200px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:.6rem;font-family:'Space Grotesk';font-weight:700;font-size:1.35rem;}
+  .logo-mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--violet),var(--pink));display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.05rem;}
+  .nav-links{display:flex;align-items:center;gap:2.1rem;}
+  .nav-item{position:relative;}
+  .nav-item>a{font-weight:600;font-size:.93rem;display:flex;align-items:center;gap:.3rem;}
+  .nav-item>a .caret{font-size:.6rem;color:var(--text-soft);transition:.2s;}
+  .nav-item:hover>a .caret{transform:rotate(180deg);}
+  .nav-dropdown{display:none;position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%);min-width:290px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:.7rem;box-shadow:var(--shadow-lg);}
+  .nav-item:hover .nav-dropdown,.nav-item:focus-within .nav-dropdown{display:block;}
+  .nav-dropdown a{display:flex;gap:.7rem;padding:.7rem;border-radius:10px;align-items:flex-start;}
+  .nav-dropdown a:hover{background:var(--bg-2);}
+  .nav-dropdown .ic{width:36px;height:36px;border-radius:9px;background:var(--bg-2);display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex-shrink:0;}
+  .nav-dropdown strong{display:block;font-size:.87rem;}
+  .nav-dropdown span{font-size:.76rem;color:var(--text-soft);}
+  .nav-actions{display:flex;align-items:center;gap:.9rem;}
+  .theme-toggle{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:1.05rem;}
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;}
+  .hamburger span{width:24px;height:2px;background:var(--text);border-radius:2px;}
+  .mobile-panel{display:none;}
+
+  .hero{padding:4.5rem 0 3.5rem;}
+  .hero-grid{display:grid;grid-template-columns:1fr .95fr;gap:3rem;align-items:center;}
+  .badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--bg-2);color:var(--violet-dark);font-weight:700;font-size:.8rem;padding:.5rem 1rem;border-radius:100px;margin-bottom:1.3rem;}
+  .hero h1{font-size:clamp(2.2rem,4.2vw,3.3rem);font-weight:700;line-height:1.15;margin-bottom:1.2rem;letter-spacing:-.01em;}
+  .hero h1 span{color:var(--violet);}
+  .hero p{font-size:1.06rem;color:var(--text-soft);max-width:480px;margin-bottom:2rem;}
+  .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.8rem;}
+  .hero-badges{display:flex;gap:1.8rem;color:var(--text-soft);font-size:.85rem;flex-wrap:wrap;}
+  .hero-badges b{color:var(--text);display:block;font-family:'Space Grotesk';font-size:1.15rem;}
+
+  /* LIVE TYPEFORM DEMO */
+  .demo-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:2rem;box-shadow:var(--shadow-lg);min-height:340px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;}
+  .demo-progress{height:4px;background:var(--bg-2);border-radius:4px;margin-bottom:1.6rem;overflow:hidden;}
+  .demo-progress span{display:block;height:100%;background:linear-gradient(90deg,var(--violet),var(--pink));border-radius:4px;transition:width .4s ease;width:25%;}
+  .demo-q-num{color:var(--violet);font-weight:700;font-size:.85rem;margin-bottom:.6rem;}
+  .demo-q{font-family:'Space Grotesk';font-size:1.3rem;font-weight:600;margin-bottom:1.6rem;min-height:64px;}
+  .demo-options{display:flex;flex-direction:column;gap:.7rem;margin-bottom:1.2rem;}
+  .demo-opt{border:1.5px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;font-size:.92rem;font-weight:600;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:.7rem;}
+  .demo-opt:hover{border-color:var(--violet);background:var(--bg-2);transform:translateX(4px);}
+  .demo-opt .k{width:24px;height:24px;border-radius:6px;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--text-soft);flex-shrink:0;}
+  .demo-foot{display:flex;justify-content:space-between;align-items:center;}
+  .demo-foot span{font-size:.78rem;color:var(--text-soft);}
+
+  .section{padding:5.4rem 0;}
+  .section-head{max-width:600px;margin:0 auto 3rem;text-align:center;}
+  .badge-center{margin:0 auto 1rem;width:fit-content;}
+  .section-head h2{font-size:clamp(1.8rem,3.4vw,2.5rem);font-weight:700;margin-bottom:.9rem;letter-spacing:-.01em;}
+  .section-head p{color:var(--text-soft);font-size:1.03rem;}
+
+  /* TEMPLATES - view types w/ hover */
+  .tmpl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+  .tmpl-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;cursor:pointer;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s;}
+  .tmpl-card:hover{transform:translateY(-10px);box-shadow:var(--shadow-lg);}
+  .tmpl-preview{height:150px;position:relative;display:flex;align-items:center;justify-content:center;font-size:2rem;}
+  .tmpl-preview.p1{background:linear-gradient(135deg,#EFE9FF,#DCCEFF);}
+  .tmpl-preview.p2{background:linear-gradient(135deg,#FFE7F1,#FFC9DE);}
+  .tmpl-preview.p3{background:linear-gradient(135deg,#E3FBF3,#B8F3DB);}
+  .tmpl-preview.p4{background:linear-gradient(135deg,#FFF3DA,#FFE0A3);}
+  .tmpl-preview.p5{background:linear-gradient(135deg,#E2EEFF,#C2DBFF);}
+  .tmpl-preview.p6{background:linear-gradient(135deg,#FDE8FF,#F3C6FF);}
+  .tmpl-use{position:absolute;inset:0;background:rgba(22,19,39,.55);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s;}
+  .tmpl-card:hover .tmpl-use{opacity:1;}
+  .tmpl-use span{background:#fff;color:var(--ink);font-weight:700;font-size:.82rem;padding:.6rem 1.2rem;border-radius:100px;transform:translateY(8px);transition:transform .3s;}
+  .tmpl-card:hover .tmpl-use span{transform:translateY(0);}
+  .tmpl-body{padding:1.2rem 1.4rem 1.4rem;}
+  .tmpl-body h3{font-size:1rem;font-weight:700;margin-bottom:.3rem;}
+  .tmpl-body p{font-size:.82rem;color:var(--text-soft);}
+
+  /* FEATURES */
+  .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;}
+  .feat-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:1.8rem;transition:.3s;}
+  .feat-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--violet);}
+  .feat-icon{width:48px;height:48px;border-radius:12px;background:var(--bg-2);display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:1.1rem;}
+  .feat-card h3{font-size:1.02rem;margin-bottom:.5rem;}
+  .feat-card p{font-size:.86rem;color:var(--text-soft);}
+
+  /* ANALYTICS PREVIEW */
+  .analytics-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:2rem;box-shadow:var(--shadow);}
+  .analytics-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.6rem;}
+  .analytics-head h4{font-size:1.05rem;}
+  .analytics-head span{font-size:.78rem;color:var(--mint);font-weight:700;background:var(--bg-2);padding:.3rem .7rem;border-radius:100px;}
+  .bar-row{display:flex;align-items:center;gap:1rem;margin-bottom:1.1rem;}
+  .bar-row .lbl{width:130px;font-size:.85rem;color:var(--text-soft);flex-shrink:0;}
+  .bar-track{flex:1;height:12px;background:var(--bg-2);border-radius:8px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,var(--violet),var(--pink));}
+  .bar-row .pct{width:44px;text-align:right;font-weight:700;font-size:.85rem;}
+
+  .stats-band{background:var(--ink);color:#fff;border-radius:28px;padding:3.2rem 2.5rem;}
+  [data-theme="dark"] .stats-band{background:var(--card);border:1px solid var(--border);}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);text-align:center;}
+  .stats-grid div strong{font-family:'Space Grotesk';font-size:2.1rem;display:block;color:var(--violet);}
+  .stats-grid div span{font-size:.85rem;color:rgba(255,255,255,.7);}
+  [data-theme="dark"] .stats-grid div span{color:var(--text-soft);}
+
+  /* PRICING */
+  .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;}
+  .price-card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:2.2rem 1.8rem;display:flex;flex-direction:column;transition:.3s;}
+  .price-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+  .price-card.featured{background:linear-gradient(160deg,var(--violet),#9B7CFF);color:#fff;border-color:transparent;transform:scale(1.04);}
+  .price-card.featured:hover{transform:scale(1.04) translateY(-6px);}
+  .price-badge{background:rgba(255,255,255,.2);color:#fff;font-size:.72rem;font-weight:700;padding:.35rem .8rem;border-radius:100px;display:inline-block;margin-bottom:.8rem;width:fit-content;}
+  .price-card h3{font-size:1.1rem;margin-bottom:.3rem;}
+  .price-card .desc{font-size:.85rem;color:var(--text-soft);margin-bottom:1.3rem;}
+  .price-card.featured .desc{color:rgba(255,255,255,.85);}
+  .price-amount{font-family:'Space Grotesk';font-size:2.1rem;margin-bottom:1.4rem;}
+  .price-amount span{font-size:.9rem;font-weight:400;color:var(--text-soft);}
+  .price-card.featured .price-amount span{color:rgba(255,255,255,.85);}
+  .price-list{list-style:none;margin-bottom:1.6rem;flex:1;}
+  .price-list li{padding:.5rem 0;font-size:.88rem;display:flex;gap:.6rem;border-bottom:1px dashed var(--border);}
+  .price-card.featured .price-list li{border-color:rgba(255,255,255,.2);}
+  .price-list li:last-child{border-bottom:none;}
+
+  .cta-band{background:linear-gradient(135deg,var(--violet),var(--pink));border-radius:28px;padding:3.5rem 2.5rem;text-align:center;color:#fff;}
+  .cta-band h2{font-size:clamp(1.7rem,3.4vw,2.3rem);margin-bottom:.9rem;}
+  .cta-band p{color:rgba(255,255,255,.92);max-width:480px;margin:0 auto 1.8rem;}
+  .cta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+
+  footer{background:var(--ink);color:#B9B4D9;padding:4rem 0 2rem;margin-top:5rem;}
+  [data-theme="dark"] footer{background:var(--card);border-top:1px solid var(--border);}
+  .footer-grid{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:2.5rem;margin-bottom:3rem;}
+  .footer-brand .logo{color:#fff;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-brand .logo{color:var(--text);}
+  .footer-brand p{font-size:.87rem;max-width:280px;}
+  .footer-col h4{color:#fff;font-size:.9rem;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-col h4{color:var(--text);}
+  .footer-col a{display:block;font-size:.84rem;padding:.4rem 0;color:#9791BE;}
+  .footer-col a:hover{color:#fff;}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1.6rem;text-align:center;font-size:.8rem;color:#7D77A3;}
+
+  @media(max-width:980px){
+    .hero-grid{grid-template-columns:1fr;}
+    .tmpl-grid{grid-template-columns:repeat(2,1fr);}
+    .feat-grid{grid-template-columns:repeat(2,1fr);}
+    .price-grid{grid-template-columns:repeat(2,1fr);}
+    .stats-grid{grid-template-columns:repeat(2,1fr);gap:1.8rem;}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+    .price-card.featured{transform:none;}
+    .price-card.featured:hover{transform:translateY(-6px);}
+  }
+  @media(max-width:768px){
+    .nav-links{display:none;}
+    .hamburger{display:flex;}
+    .mobile-panel.open{display:block;background:var(--bg);border-top:1px solid var(--border);padding:1rem 24px 1.6rem;}
+    .mobile-panel a{display:block;padding:.8rem 0;font-weight:600;border-bottom:1px solid var(--border);}
+    .mobile-sub{padding-left:1rem;display:none;}
+    .mobile-sub.open{display:block;}
+    .mobile-sub a{border-bottom:none;padding:.6rem 0;font-weight:500;color:var(--text-soft);}
+    .mobile-caret{float:right;transition:transform .2s;}
+    .mobile-caret.open{transform:rotate(180deg);}
+    .hero{padding:2.6rem 0;}
+    .hero-actions .btn{width:100%;justify-content:center;}
+    .hero-actions{flex-direction:column;}
+    .section{padding:3.2rem 0;}
+    .tmpl-grid,.feat-grid,.price-grid{grid-template-columns:1fr;}
+    .stats-grid{grid-template-columns:1fr 1fr;}
+    .footer-grid{grid-template-columns:1fr;gap:2rem;}
+    .stats-band,.cta-band{padding:2.4rem 1.5rem;border-radius:20px;}
+    .price-card.featured{transform:none;}
+    .bar-row .lbl{width:90px;font-size:.78rem;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="#" class="logo"><span class="logo-mark">F</span>Formix</a>
+    <div class="nav-links">
+      <div class="nav-item">
+        <a href="#templates">Produk <span class="caret">▾</span></a>
+        <div class="nav-dropdown">
+          <a href="#templates"><span class="ic">📊</span><div><strong>Survey</strong><span>Riset pasar & kepuasan pelanggan</span></div></a>
+          <a href="#templates"><span class="ic">🧠</span><div><strong>Quiz</strong><span>Kuis interaktif & scoring otomatis</span></div></a>
+          <a href="#templates"><span class="ic">✉️</span><div><strong>Formulir Kontak</strong><span>Lead capture untuk website</span></div></a>
+          <a href="#templates"><span class="ic">🎟️</span><div><strong>Registrasi Event</strong><span>Pendaftaran & RSVP peserta</span></div></a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="#features">Fitur</a></div>
+      <div class="nav-item"><a href="#analytics">Analitik</a></div>
+      <div class="nav-item"><a href="#pricing">Harga</a></div>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Ganti tema">🌙</button>
+      <a href="#pricing" class="btn btn-primary">Buat Form Gratis</a>
+      <button class="hamburger" onclick="toggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-panel" id="mobilePanel">
+    <a href="javascript:void(0)" onclick="toggleSub(this)">Produk <span class="mobile-caret">▾</span></a>
+    <div class="mobile-sub">
+      <a href="#templates">📊 Survey</a>
+      <a href="#templates">🧠 Quiz</a>
+      <a href="#templates">✉️ Formulir Kontak</a>
+      <a href="#templates">🎟️ Registrasi Event</a>
+    </div>
+    <a href="#features">Fitur</a>
+    <a href="#analytics">Analitik</a>
+    <a href="#pricing">Harga</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="badge">✨ Tanpa coding, tanpa ribet</span>
+      <h1>Bikin survey terasa <span>ngobrol</span>, bukan interogasi</h1>
+      <p>Form satu-pertanyaan-per-layar yang bikin response rate naik hingga 3x lipat. Drag, drop, publish dalam 5 menit.</p>
+      <div class="hero-actions">
+        <a href="#templates" class="btn btn-primary">Coba Interaktif →</a>
+        <a href="#features" class="btn btn-ghost">Lihat Fitur</a>
+      </div>
+      <div class="hero-badges">
+        <div><b>3x</b>Response rate lebih tinggi</div>
+        <div><b>40rb+</b>Form dibuat</div>
+        <div><b>2 menit</b>Rata-rata waktu isi</div>
+      </div>
+    </div>
+
+    <div class="demo-card">
+      <div>
+        <div class="demo-progress"><span id="demoProgress" style="width:25%;"></span></div>
+        <div class="demo-q-num" id="demoQNum">Pertanyaan 1 dari 4</div>
+        <div class="demo-q" id="demoQ">Seberapa puas kamu dengan produk kami?</div>
+        <div class="demo-options" id="demoOptions">
+          <div class="demo-opt" onclick="nextDemo()"><span class="k">A</span> Sangat puas</div>
+          <div class="demo-opt" onclick="nextDemo()"><span class="k">B</span> Cukup puas</div>
+          <div class="demo-opt" onclick="nextDemo()"><span class="k">C</span> Biasa saja</div>
+        </div>
+      </div>
+      <div class="demo-foot">
+        <span>Coba klik salah satu jawaban ↑</span>
+        <span>Powered by Formix</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="templates" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Template Siap Pakai</span>
+      <h2>Mulai dari template, bukan dari nol</h2>
+      <p>Puluhan template siap dipakai untuk berbagai kebutuhan.</p>
+    </div>
+    <div class="tmpl-grid">
+      <div class="tmpl-card">
+        <div class="tmpl-preview p1">📊<div class="tmpl-use"><span>Pakai Template →</span></div></div>
+        <div class="tmpl-body"><h3>Survey Kepuasan Pelanggan</h3><p>NPS + open feedback dalam 6 pertanyaan</p></div>
+      </div>
+      <div class="tmpl-card">
+        <div class="tmpl-preview p2">🧠<div class="tmpl-use"><span>Pakai Template →</span></div></div>
+        <div class="tmpl-body"><h3>Quiz Kepribadian</h3><p>Scoring otomatis dengan hasil personal</p></div>
+      </div>
+      <div class="tmpl-card">
+        <div class="tmpl-preview p3">✉️<div class="tmpl-use"><span>Pakai Template →</span></div></div>
+        <div class="tmpl-body"><h3>Form Kontak Landing Page</h3><p>Lead capture ringkas untuk website</p></div>
+      </div>
+      <div class="tmpl-card">
+        <div class="tmpl-preview p4">🎟️<div class="tmpl-use"><span>Pakai Template →</span></div></div>
+        <div class="tmpl-body"><h3>Registrasi Webinar</h3><p>Form pendaftaran + reminder otomatis</p></div>
+      </div>
+      <div class="tmpl-card">
+        <div class="tmpl-preview p5">💼</div>
+        <div class="tmpl-body"><h3>Form Lamaran Kerja</h3><p>Upload CV + screening question</p></div>
+      </div>
+      <div class="tmpl-card">
+        <div class="tmpl-preview p6">🎉</div>
+        <div class="tmpl-body"><h3>RSVP Undangan Acara</h3><p>Konfirmasi kehadiran + preferensi menu</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="features">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Fitur Utama</span>
+      <h2>Semua yang kamu butuh, satu platform</h2>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card"><div class="feat-icon">🎨</div><h3>Logic Bercabang</h3><p>Tampilkan pertanyaan berbeda sesuai jawaban sebelumnya.</p></div>
+      <div class="feat-card"><div class="feat-icon">📱</div><h3>Mobile-first</h3><p>Semua form otomatis nyaman diisi dari HP.</p></div>
+      <div class="feat-card"><div class="feat-icon">🔌</div><h3>Integrasi Mudah</h3><p>Kirim response langsung ke Sheets, Slack, atau email.</p></div>
+      <div class="feat-card"><div class="feat-icon">📈</div><h3>Analitik Real-time</h3><p>Lihat tingkat penyelesaian & drop-off per pertanyaan.</p></div>
+      <div class="feat-card"><div class="feat-icon">🎯</div><h3>A/B Testing</h3><p>Uji dua versi form untuk lihat mana yang lebih efektif.</p></div>
+      <div class="feat-card"><div class="feat-icon">🔒</div><h3>GDPR Ready</h3><p>Kontrol penuh atas data & consent responden.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="analytics" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Analitik</span>
+      <h2>Lihat performa form secara real-time</h2>
+      <p>Pahami di mana responden berhenti mengisi dan optimalkan.</p>
+    </div>
+    <div class="analytics-card">
+      <div class="analytics-head"><h4>Tingkat Penyelesaian per Pertanyaan</h4><span>▲ 12% minggu ini</span></div>
+      <div class="bar-row"><div class="lbl">Pertanyaan 1</div><div class="bar-track"><div class="bar-fill" style="width:96%;"></div></div><div class="pct">96%</div></div>
+      <div class="bar-row"><div class="lbl">Pertanyaan 2</div><div class="bar-track"><div class="bar-fill" style="width:88%;"></div></div><div class="pct">88%</div></div>
+      <div class="bar-row"><div class="lbl">Pertanyaan 3</div><div class="bar-track"><div class="bar-fill" style="width:74%;"></div></div><div class="pct">74%</div></div>
+      <div class="bar-row"><div class="lbl">Pertanyaan 4</div><div class="bar-track"><div class="bar-fill" style="width:61%;"></div></div><div class="pct">61%</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="stats-band">
+      <div class="stats-grid">
+        <div><strong>40rb+</strong><span>Form dibuat</span></div>
+        <div><strong>3x</strong><span>Response rate lebih tinggi</span></div>
+        <div><strong>2.1jt</strong><span>Response terkumpul</span></div>
+        <div><strong>4.8/5</strong><span>Rating pengguna</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pricing" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Harga</span>
+      <h2>Mulai gratis, upgrade kapan saja</h2>
+    </div>
+    <div class="price-grid">
+      <div class="price-card">
+        <h3>Free</h3>
+        <p class="desc">Untuk coba-coba & proyek kecil</p>
+        <div class="price-amount">Rp0<span>/bulan</span></div>
+        <ul class="price-list">
+          <li>✔ 3 form aktif</li>
+          <li>✔ 100 response/bulan</li>
+          <li>✔ Template dasar</li>
+        </ul>
+        <a href="#" class="btn btn-ghost" style="justify-content:center;">Mulai Gratis</a>
+      </div>
+      <div class="price-card featured">
+        <span class="price-badge">Paling Populer</span>
+        <h3>Pro</h3>
+        <p class="desc">Untuk tim & bisnis berkembang</p>
+        <div class="price-amount">Rp149rb<span>/bulan</span></div>
+        <ul class="price-list">
+          <li>✔ Form tanpa batas</li>
+          <li>✔ 10rb response/bulan</li>
+          <li>✔ Logic bercabang & A/B testing</li>
+          <li>✔ Integrasi Sheets, Slack, Zapier</li>
+        </ul>
+        <a href="#" class="btn btn-white" style="justify-content:center;">Coba 14 Hari Gratis</a>
+      </div>
+      <div class="price-card">
+        <h3>Business</h3>
+        <p class="desc">Untuk organisasi & enterprise</p>
+        <div class="price-amount">Rp499rb<span>/bulan</span></div>
+        <ul class="price-list">
+          <li>✔ Semua fitur Pro</li>
+          <li>✔ Response tanpa batas</li>
+          <li>✔ Custom domain & branding</li>
+          <li>✔ Dukungan prioritas</li>
+        </ul>
+        <a href="#" class="btn btn-ghost" style="justify-content:center;">Hubungi Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Form pertamamu, live dalam 5 menit</h2>
+      <p>Gratis untuk mulai, tanpa kartu kredit. Upgrade kapan saja saat butuh lebih.</p>
+      <div class="cta-actions">
+        <a href="#pricing" class="btn btn-white">Buat Form Gratis</a>
+        <a href="#templates" class="btn btn-ghost" style="background:transparent;border-color:rgba(255,255,255,.5);color:#fff;">Lihat Template →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo"><span class="logo-mark">F</span>Formix</a>
+        <p>Platform pembuat survey & form interaktif yang bikin response rate jauh lebih tinggi.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Produk</h4>
+        <a href="#templates">Survey</a>
+        <a href="#templates">Quiz</a>
+        <a href="#templates">Formulir Kontak</a>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <a href="#">Tentang Kami</a>
+        <a href="#">Blog</a>
+        <a href="#">Karir</a>
+      </div>
+      <div class="footer-col">
+        <h4>Bantuan</h4>
+        <a href="#">Pusat Bantuan</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat & Ketentuan</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 Formix. Semua hak dilindungi.</div>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme(){
+    const html=document.documentElement;
+    const next=html.getAttribute('data-theme')==='dark'?'light':'dark';
+    html.setAttribute('data-theme',next);
+    localStorage.setItem('formix-theme',next);
+    document.querySelector('.theme-toggle').textContent=next==='dark'?'☀️':'🌙';
+  }
+  (function(){ if(localStorage.getItem('formix-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); } })();
+  window.addEventListener('DOMContentLoaded',()=>{
+    document.querySelector('.theme-toggle').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';
+  });
+
+  function toggleMobile(){ document.getElementById('mobilePanel').classList.toggle('open'); }
+  function toggleSub(el){
+    el.nextElementSibling.classList.toggle('open');
+    el.querySelector('.mobile-caret').classList.toggle('open');
+  }
+
+  const demoQuestions=[
+    {q:"Seberapa puas kamu dengan produk kami?",opts:["Sangat puas","Cukup puas","Biasa saja"]},
+    {q:"Seberapa besar kemungkinan kamu merekomendasikan kami ke teman?",opts:["Sangat besar","Cukup besar","Kecil"]},
+    {q:"Fitur apa yang paling sering kamu pakai?",opts:["Template siap pakai","Logic bercabang","Analitik real-time"]},
+    {q:"Terima kasih! Mau lihat hasil analitiknya?",opts:["Ya, tunjukkan →","Nanti saja"]}
+  ];
+  let demoIdx=0;
+  function nextDemo(){
+    demoIdx=(demoIdx+1)%demoQuestions.length;
+    renderDemo();
+  }
+  function renderDemo(){
+    const d=demoQuestions[demoIdx];
+    document.getElementById('demoQNum').textContent='Pertanyaan '+(demoIdx+1)+' dari '+demoQuestions.length;
+    document.getElementById('demoQ').textContent=d.q;
+    document.getElementById('demoProgress').style.width=((demoIdx+1)/demoQuestions.length*100)+'%';
+    const optsWrap=document.getElementById('demoOptions');
+    optsWrap.innerHTML='';
+    const letters=['A','B','C','D'];
+    d.opts.forEach((opt,i)=>{
+      const div=document.createElement('div');
+      div.className='demo-opt';
+      div.onclick=nextDemo;
+      div.innerHTML='<span class="k">'+letters[i]+'</span> '+opt;
+      optsWrap.appendChild(div);
+    });
+  }
+</script>
+
+</body>
+</html>

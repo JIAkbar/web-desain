@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suriya — Asuransi Jiwa, Kesehatan & Kendaraan Jadi Simpel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#1657FF;
+    --blue-dark:#0E3FC4;
+    --green:#00C48C;
+    --ink:#0B1B33;
+    --bg:#F6F8FC;
+    --bg-2:#EEF2FA;
+    --card:#FFFFFF;
+    --text:#1C2740;
+    --text-soft:#5D6B87;
+    --border:#E2E8F5;
+    --shadow:0 4px 18px rgba(11,27,51,.06);
+    --shadow-lg:0 24px 55px rgba(11,27,51,.14);
+  }
+  [data-theme="dark"]{
+    --blue:#4C7CFF;
+    --blue-dark:#6C93FF;
+    --green:#2CE0A6;
+    --ink:#EEF2FA;
+    --bg:#0B0F1A;
+    --bg-2:#121826;
+    --card:#161E2F;
+    --text:#EAEEF9;
+    --text-soft:#8D97B3;
+    --border:#242D42;
+    --shadow:0 4px 18px rgba(0,0,0,.35);
+    --shadow-lg:0 24px 55px rgba(0,0,0,.55);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:.3s;}
+  h1,h2,h3,.disp{font-family:'Sora',sans-serif;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1220px;margin:0 auto;padding:0 24px;}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.7rem;border-radius:12px;font-weight:700;font-size:.95rem;cursor:pointer;border:none;transition:.25s;min-height:44px;}
+  .btn-primary{background:var(--blue);color:#fff;box-shadow:0 10px 24px rgba(22,87,255,.3);}
+  .btn-primary:hover{background:var(--blue-dark);transform:translateY(-2px);}
+  .btn-ghost{background:var(--card);color:var(--text);border:1.5px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--blue);color:var(--blue);}
+  .btn-white{background:#fff;color:var(--blue-dark);}
+  .btn-white:hover{transform:translateY(-2px);}
+
+  header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 24px;max-width:1220px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:.6rem;font-family:'Sora';font-weight:800;font-size:1.35rem;}
+  .logo-mark{width:36px;height:36px;border-radius:10px;background:var(--blue);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;}
+  .nav-links{display:flex;align-items:center;gap:2.1rem;}
+  .nav-item{position:relative;}
+  .nav-item>a{font-weight:600;font-size:.93rem;display:flex;align-items:center;gap:.3rem;}
+  .nav-item>a .caret{font-size:.6rem;color:var(--text-soft);transition:.2s;}
+  .nav-item:hover>a .caret{transform:rotate(180deg);}
+  .nav-dropdown{display:none;position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%);min-width:300px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:.7rem;box-shadow:var(--shadow-lg);}
+  .nav-item:hover .nav-dropdown,.nav-item:focus-within .nav-dropdown{display:block;}
+  .nav-dropdown a{display:flex;gap:.7rem;padding:.7rem;border-radius:10px;align-items:flex-start;}
+  .nav-dropdown a:hover{background:var(--bg-2);}
+  .nav-dropdown .ic{width:36px;height:36px;border-radius:9px;background:var(--bg-2);display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex-shrink:0;}
+  .nav-dropdown strong{display:block;font-size:.87rem;}
+  .nav-dropdown span{font-size:.76rem;color:var(--text-soft);}
+  .nav-actions{display:flex;align-items:center;gap:.9rem;}
+  .theme-toggle{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:1.05rem;}
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;}
+  .hamburger span{width:24px;height:2px;background:var(--text);border-radius:2px;}
+  .mobile-panel{display:none;}
+
+  .hero{padding:4.5rem 0 3.5rem;background:linear-gradient(180deg,var(--bg-2),var(--bg));}
+  .hero-grid{display:grid;grid-template-columns:1fr .95fr;gap:3rem;align-items:center;}
+  .badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--card);border:1px solid var(--border);color:var(--blue);font-weight:700;font-size:.8rem;padding:.5rem 1rem;border-radius:100px;margin-bottom:1.3rem;}
+  .hero h1{font-size:clamp(2.2rem,4.2vw,3.3rem);font-weight:700;line-height:1.15;margin-bottom:1.2rem;letter-spacing:-.01em;}
+  .hero h1 span{color:var(--blue);}
+  .hero p{font-size:1.06rem;color:var(--text-soft);max-width:480px;margin-bottom:2rem;}
+  .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.8rem;}
+  .hero-badges{display:flex;gap:1.8rem;color:var(--text-soft);font-size:.85rem;flex-wrap:wrap;}
+  .hero-badges b{color:var(--text);display:block;font-family:'Sora';font-size:1.15rem;}
+
+  .calc-card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:1.8rem;box-shadow:var(--shadow-lg);}
+  .calc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.4rem;}
+  .calc-head h4{font-size:1rem;}
+  .calc-head span{background:var(--bg-2);color:var(--green);font-size:.72rem;font-weight:700;padding:.3rem .6rem;border-radius:100px;}
+  .calc-row{margin-bottom:1.3rem;}
+  .calc-row label{display:flex;justify-content:space-between;font-size:.85rem;color:var(--text-soft);margin-bottom:.5rem;}
+  .calc-row label b{color:var(--text);}
+  .calc-row input[type=range]{width:100%;accent-color:var(--blue);}
+  .calc-chips{display:flex;gap:.5rem;flex-wrap:wrap;}
+  .calc-chip{padding:.5rem .9rem;border-radius:10px;border:1.5px solid var(--border);font-size:.82rem;font-weight:600;cursor:pointer;transition:.2s;}
+  .calc-chip.active,.calc-chip:hover{border-color:var(--blue);color:var(--blue);background:var(--bg-2);}
+  .calc-result{background:var(--bg-2);border-radius:14px;padding:1.1rem 1.3rem;display:flex;justify-content:space-between;align-items:center;margin-top:.4rem;}
+  .calc-result span{font-size:.8rem;color:var(--text-soft);display:block;}
+  .calc-result strong{font-family:'Sora';font-size:1.5rem;color:var(--blue-dark);}
+
+  .trustbar{padding:2.2rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+  .trust-grid{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.5rem;color:var(--text-soft);font-weight:700;font-size:1rem;opacity:.75;}
+
+  .section{padding:5.5rem 0;}
+  .section-head{max-width:600px;margin:0 auto 3rem;text-align:center;}
+  .badge-center{margin:0 auto 1rem;width:fit-content;}
+  .section-head h2{font-size:clamp(1.8rem,3.4vw,2.5rem);font-weight:700;margin-bottom:.9rem;letter-spacing:-.01em;}
+  .section-head p{color:var(--text-soft);font-size:1.03rem;}
+
+  /* PRODUCTS - view types w/ hover animation */
+  .product-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;}
+  .product-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.9rem 1.6rem;cursor:pointer;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s;position:relative;}
+  .product-card:hover{transform:translateY(-10px);box-shadow:var(--shadow-lg);border-color:var(--blue);}
+  .product-icon{width:54px;height:54px;border-radius:14px;background:var(--bg-2);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:1.2rem;transition:.35s;}
+  .product-card:hover .product-icon{background:var(--blue);transform:scale(1.1) rotate(-6deg);}
+  .product-card h3{font-size:1.08rem;font-weight:700;margin-bottom:.5rem;}
+  .product-card p{font-size:.86rem;color:var(--text-soft);margin-bottom:1.1rem;}
+  .product-from{font-size:.78rem;color:var(--text-soft);}
+  .product-from b{color:var(--blue-dark);font-size:.95rem;}
+  .product-arrow{position:absolute;top:1.7rem;right:1.6rem;width:32px;height:32px;border-radius:50%;background:var(--bg-2);display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:.35s;}
+  .product-card:hover .product-arrow{background:var(--blue);color:#fff;transform:translate(3px,-3px);}
+
+  /* CLAIM STEPS - horizontal timeline */
+  .timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;position:relative;}
+  .timeline::before{content:"";position:absolute;top:26px;left:12%;right:12%;height:2px;background:var(--border);z-index:0;}
+  .tl-step{text-align:center;position:relative;z-index:1;}
+  .tl-num{width:54px;height:54px;border-radius:50%;background:var(--card);border:2px solid var(--blue);color:var(--blue);display:flex;align-items:center;justify-content:center;font-family:'Sora';font-weight:700;margin:0 auto 1.2rem;}
+  .tl-step h3{font-size:1.02rem;margin-bottom:.5rem;}
+  .tl-step p{font-size:.85rem;color:var(--text-soft);}
+
+  .stats-band{background:var(--ink);color:#fff;border-radius:28px;padding:3.2rem 2.5rem;}
+  [data-theme="dark"] .stats-band{background:var(--card);border:1px solid var(--border);}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);text-align:center;}
+  .stats-grid div strong{font-family:'Sora';font-size:2.1rem;display:block;color:var(--green);}
+  .stats-grid div span{font-size:.85rem;color:rgba(255,255,255,.7);}
+  [data-theme="dark"] .stats-grid div span{color:var(--text-soft);}
+
+  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;}
+  .testi-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.8rem;transition:.3s;}
+  .testi-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+  .testi-stars{color:#FFB020;margin-bottom:1rem;font-size:1rem;letter-spacing:2px;}
+  .testi-card p{font-size:.94rem;margin-bottom:1.2rem;}
+  .testi-who{display:flex;align-items:center;gap:.7rem;}
+  .testi-who .av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--green));}
+  .testi-who strong{font-size:.87rem;display:block;}
+  .testi-who span{font-size:.76rem;color:var(--text-soft);}
+
+  /* FAQ accordion */
+  .faq-list{max-width:780px;margin:0 auto;}
+  .faq-item{border-bottom:1px solid var(--border);}
+  .faq-q{display:flex;justify-content:space-between;align-items:center;padding:1.4rem 0;cursor:pointer;font-weight:600;font-size:1rem;}
+  .faq-q .plus{font-size:1.3rem;color:var(--blue);transition:.25s;flex-shrink:0;margin-left:1rem;}
+  .faq-item.open .plus{transform:rotate(45deg);}
+  .faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+  .faq-item.open .faq-a{max-height:200px;}
+  .faq-a p{padding-bottom:1.4rem;color:var(--text-soft);font-size:.92rem;max-width:640px;}
+
+  .cta-band{background:linear-gradient(135deg,var(--blue),#3A7BFF);border-radius:28px;padding:3.5rem 2.5rem;text-align:center;color:#fff;}
+  .cta-band h2{font-size:clamp(1.7rem,3.4vw,2.3rem);margin-bottom:.9rem;}
+  .cta-band p{color:rgba(255,255,255,.9);max-width:480px;margin:0 auto 1.8rem;}
+  .cta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+
+  footer{background:var(--ink);color:#B9C2DB;padding:4rem 0 2rem;margin-top:5rem;}
+  [data-theme="dark"] footer{background:var(--card);border-top:1px solid var(--border);}
+  .footer-grid{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:2.5rem;margin-bottom:3rem;}
+  .footer-brand .logo{color:#fff;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-brand .logo{color:var(--text);}
+  .footer-brand p{font-size:.87rem;max-width:280px;}
+  .footer-col h4{color:#fff;font-size:.9rem;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-col h4{color:var(--text);}
+  .footer-col a{display:block;font-size:.84rem;padding:.4rem 0;color:#93A0C2;}
+  .footer-col a:hover{color:#fff;}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1.6rem;text-align:center;font-size:.8rem;color:#7C88A8;}
+
+  @media(max-width:980px){
+    .hero-grid{grid-template-columns:1fr;}
+    .product-grid{grid-template-columns:repeat(2,1fr);}
+    .timeline{grid-template-columns:repeat(2,1fr);gap:2.2rem;}
+    .timeline::before{display:none;}
+    .stats-grid{grid-template-columns:repeat(2,1fr);gap:1.8rem;}
+    .testi-grid{grid-template-columns:repeat(2,1fr);}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media(max-width:768px){
+    .nav-links{display:none;}
+    .hamburger{display:flex;}
+    .mobile-panel.open{display:block;background:var(--bg);border-top:1px solid var(--border);padding:1rem 24px 1.6rem;}
+    .mobile-panel a{display:block;padding:.8rem 0;font-weight:600;border-bottom:1px solid var(--border);}
+    .mobile-sub{padding-left:1rem;display:none;}
+    .mobile-sub.open{display:block;}
+    .mobile-sub a{border-bottom:none;padding:.6rem 0;font-weight:500;color:var(--text-soft);}
+    .mobile-caret{float:right;transition:transform .2s;}
+    .mobile-caret.open{transform:rotate(180deg);}
+    .hero{padding:2.6rem 0 2.6rem;}
+    .hero-actions .btn{width:100%;justify-content:center;}
+    .hero-actions{flex-direction:column;}
+    .hero-badges{gap:1.2rem;}
+    .section{padding:3.4rem 0;}
+    .product-grid{grid-template-columns:1fr 1fr;gap:1rem;}
+    .timeline{grid-template-columns:1fr;gap:1.8rem;}
+    .stats-grid{grid-template-columns:1fr 1fr;}
+    .testi-grid{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr;gap:2rem;}
+    .stats-band,.cta-band{padding:2.4rem 1.5rem;border-radius:20px;}
+    .trust-grid{justify-content:center;gap:1.2rem;}
+  }
+  @media(max-width:480px){
+    .product-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="#" class="logo"><span class="logo-mark">S</span>Suriya</a>
+    <div class="nav-links">
+      <div class="nav-item">
+        <a href="#products">Produk Asuransi <span class="caret">▾</span></a>
+        <div class="nav-dropdown">
+          <a href="#products"><span class="ic">❤️</span><div><strong>Asuransi Jiwa</strong><span>Lindungi keluarga jangka panjang</span></div></a>
+          <a href="#products"><span class="ic">🏥</span><div><strong>Asuransi Kesehatan</strong><span>Rawat inap & rawat jalan cashless</span></div></a>
+          <a href="#products"><span class="ic">🚗</span><div><strong>Asuransi Kendaraan</strong><span>All risk & TLO mobil/motor</span></div></a>
+          <a href="#products"><span class="ic">🏠</span><div><strong>Asuransi Properti</strong><span>Rumah & isi rumah dari risiko</span></div></a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="#claim">Proses Klaim</a></div>
+      <div class="nav-item">
+        <a href="#faq">Bantuan <span class="caret">▾</span></a>
+        <div class="nav-dropdown" style="min-width:220px;">
+          <a href="#faq"><span class="ic">❓</span><div><strong>FAQ</strong><span>Pertanyaan umum</span></div></a>
+          <a href="#"><span class="ic">📞</span><div><strong>Hubungi Kami</strong><span>Chat & telepon 24/7</span></div></a>
+        </div>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Ganti tema">🌙</button>
+      <a href="#products" class="btn btn-primary">Ajukan Polis</a>
+      <button class="hamburger" onclick="toggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-panel" id="mobilePanel">
+    <a href="javascript:void(0)" onclick="toggleSub(this)">Produk Asuransi <span class="mobile-caret">▾</span></a>
+    <div class="mobile-sub">
+      <a href="#products">❤️ Asuransi Jiwa</a>
+      <a href="#products">🏥 Asuransi Kesehatan</a>
+      <a href="#products">🚗 Asuransi Kendaraan</a>
+      <a href="#products">🏠 Asuransi Properti</a>
+    </div>
+    <a href="#claim">Proses Klaim</a>
+    <a href="#faq">FAQ</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="badge">🛡️ OJK terdaftar & diawasi</span>
+      <h1>Proteksi hidup jadi <span>lebih tenang</span>, klaim cair dalam hitungan hari</h1>
+      <p>Bandingkan dan ajukan asuransi jiwa, kesehatan, kendaraan, dan properti — semua dalam satu platform, tanpa ribet ke banyak agen.</p>
+      <div class="hero-actions">
+        <a href="#products" class="btn btn-primary">Hitung Premi Saya</a>
+        <a href="#claim" class="btn btn-ghost">Lihat Proses Klaim</a>
+      </div>
+      <div class="hero-badges">
+        <div><b>98.2%</b>Klaim disetujui</div>
+        <div><b>2 hari</b>Rata-rata pencairan</div>
+        <div><b>210rb+</b>Polis aktif</div>
+      </div>
+    </div>
+
+    <div class="calc-card">
+      <div class="calc-head">
+        <h4>Simulasi Premi Bulanan</h4>
+        <span>Estimasi instan</span>
+      </div>
+      <div class="calc-row">
+        <label>Usia <b id="ageVal">30 tahun</b></label>
+        <input type="range" id="ageRange" min="18" max="60" value="30" oninput="updateCalc()">
+      </div>
+      <div class="calc-row">
+        <label>Jenis Perlindungan</label>
+        <div class="calc-chips">
+          <div class="calc-chip active" data-rate="120000">Jiwa</div>
+          <div class="calc-chip" data-rate="185000">Kesehatan</div>
+          <div class="calc-chip" data-rate="95000">Kendaraan</div>
+        </div>
+      </div>
+      <div class="calc-result">
+        <div><span>Estimasi premi/bulan</span><strong id="calcResult">Rp142.000</strong></div>
+        <a href="#" class="btn btn-primary btn-sm" style="padding:.6rem 1.1rem;">Lanjut →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="trustbar">
+  <div class="wrap trust-grid">
+    <span>OJK</span><span>AAJI</span><span>ISO 27001</span><span>PCI-DSS</span><span>BPJS Partner</span>
+  </div>
+</div>
+
+<section class="section" id="products">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Pilih Produk</span>
+      <h2>Perlindungan untuk setiap fase hidup</h2>
+      <p>Satu platform, empat kategori proteksi utama.</p>
+    </div>
+    <div class="product-grid">
+      <div class="product-card">
+        <span class="product-arrow">↗</span>
+        <div class="product-icon">❤️</div>
+        <h3>Asuransi Jiwa</h3>
+        <p>Santunan untuk keluarga jika terjadi risiko meninggal dunia.</p>
+        <div class="product-from">Mulai dari <b>Rp85rb/bln</b></div>
+      </div>
+      <div class="product-card">
+        <span class="product-arrow">↗</span>
+        <div class="product-icon">🏥</div>
+        <h3>Asuransi Kesehatan</h3>
+        <p>Rawat inap & rawat jalan cashless di 500+ rumah sakit rekanan.</p>
+        <div class="product-from">Mulai dari <b>Rp150rb/bln</b></div>
+      </div>
+      <div class="product-card">
+        <span class="product-arrow">↗</span>
+        <div class="product-icon">🚗</div>
+        <h3>Asuransi Kendaraan</h3>
+        <p>Perlindungan all risk atau TLO untuk mobil dan motor kamu.</p>
+        <div class="product-from">Mulai dari <b>Rp95rb/bln</b></div>
+      </div>
+      <div class="product-card">
+        <span class="product-arrow">↗</span>
+        <div class="product-icon">🏠</div>
+        <h3>Asuransi Properti</h3>
+        <p>Lindungi rumah & isi rumah dari kebakaran, banjir, dan pencurian.</p>
+        <div class="product-from">Mulai dari <b>Rp60rb/bln</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="claim" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Tanpa Ribet</span>
+      <h2>Proses klaim 4 langkah</h2>
+      <p>Semua bisa dilakukan dari aplikasi, tanpa perlu ke kantor cabang.</p>
+    </div>
+    <div class="timeline">
+      <div class="tl-step">
+        <div class="tl-num">1</div>
+        <h3>Ajukan klaim</h3>
+        <p>Isi form klaim & upload dokumen pendukung lewat aplikasi.</p>
+      </div>
+      <div class="tl-step">
+        <div class="tl-num">2</div>
+        <h3>Verifikasi</h3>
+        <p>Tim kami verifikasi dokumen dalam 1x24 jam kerja.</p>
+      </div>
+      <div class="tl-step">
+        <div class="tl-num">3</div>
+        <h3>Persetujuan</h3>
+        <p>Dapatkan notifikasi status klaim langsung ke HP kamu.</p>
+      </div>
+      <div class="tl-step">
+        <div class="tl-num">4</div>
+        <h3>Dana cair</h3>
+        <p>Dana ditransfer langsung ke rekening dalam 1-2 hari kerja.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="stats-band">
+      <div class="stats-grid">
+        <div><strong>210rb+</strong><span>Polis aktif</span></div>
+        <div><strong>98.2%</strong><span>Tingkat persetujuan klaim</span></div>
+        <div><strong>2 hari</strong><span>Rata-rata pencairan</span></div>
+        <div><strong>500+</strong><span>Rumah sakit rekanan</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Testimoni</span>
+      <h2>Dipercaya ratusan ribu keluarga</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Klaim kesehatan cair cuma 2 hari, dokumennya juga gampang diupload lewat app."</p>
+        <div class="testi-who"><div class="av"></div><div><strong>Andra Wijaya</strong><span>Nasabah sejak 2023</span></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Premi kendaraan lebih murah dari yang lain, tapi coverage-nya tetap lengkap."</p>
+        <div class="testi-who"><div class="av"></div><div><strong>Melati Putri</strong><span>Nasabah sejak 2024</span></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Simulasi premi di web-nya akurat, gak ada biaya tersembunyi pas ajukan polis."</p>
+        <div class="testi-who"><div class="av"></div><div><strong>Rendy Kurniawan</strong><span>Nasabah sejak 2022</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">FAQ</span>
+      <h2>Pertanyaan yang sering ditanyakan</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item open">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>Berapa lama proses pengajuan polis baru?</span><span class="plus">+</span></div>
+        <div class="faq-a"><p>Untuk asuransi jiwa dan kesehatan, polis biasanya aktif dalam 1-3 hari kerja setelah dokumen lengkap dan pembayaran premi pertama diterima.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>Apakah bisa klaim tanpa datang ke kantor cabang?</span><span class="plus">+</span></div>
+        <div class="faq-a"><p>Bisa. Semua proses klaim — dari pengajuan, upload dokumen, sampai pemantauan status — dilakukan lewat aplikasi Suriya.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>Apakah premi bisa dibayar per bulan?</span><span class="plus">+</span></div>
+        <div class="faq-a"><p>Ya, semua produk mendukung pembayaran bulanan, triwulan, atau tahunan sesuai preferensi kamu.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>Rumah sakit mana saja yang menerima cashless?</span><span class="plus">+</span></div>
+        <div class="faq-a"><p>Lebih dari 500 rumah sakit rekanan di seluruh Indonesia menerima sistem cashless untuk pemegang polis kesehatan Suriya.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Mulai lindungi apa yang berharga hari ini</h2>
+      <p>Simulasi premi gratis, tanpa perlu kartu kredit. Ajukan polis dalam 5 menit.</p>
+      <div class="cta-actions">
+        <a href="#products" class="btn btn-white">Hitung Premi Gratis</a>
+        <a href="#" class="btn btn-ghost" style="background:transparent;border-color:rgba(255,255,255,.5);color:#fff;">Konsultasi Agen →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo"><span class="logo-mark">S</span>Suriya</a>
+        <p>Platform asuransi digital terdaftar & diawasi OJK, membantu keluarga Indonesia hidup lebih tenang.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Produk</h4>
+        <a href="#products">Asuransi Jiwa</a>
+        <a href="#products">Asuransi Kesehatan</a>
+        <a href="#products">Asuransi Kendaraan</a>
+        <a href="#products">Asuransi Properti</a>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <a href="#">Tentang Kami</a>
+        <a href="#">Karir</a>
+        <a href="#">Blog</a>
+      </div>
+      <div class="footer-col">
+        <h4>Bantuan</h4>
+        <a href="#faq">FAQ</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat & Ketentuan</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 Suriya Insurance. Terdaftar dan diawasi OJK.</div>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme(){
+    const html=document.documentElement;
+    const next=html.getAttribute('data-theme')==='dark'?'light':'dark';
+    html.setAttribute('data-theme',next);
+    localStorage.setItem('suriya-theme',next);
+    document.querySelector('.theme-toggle').textContent=next==='dark'?'☀️':'🌙';
+  }
+  (function(){ if(localStorage.getItem('suriya-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); } })();
+  window.addEventListener('DOMContentLoaded',()=>{
+    document.querySelector('.theme-toggle').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';
+  });
+
+  function toggleMobile(){ document.getElementById('mobilePanel').classList.toggle('open'); }
+  function toggleSub(el){
+    el.nextElementSibling.classList.toggle('open');
+    el.querySelector('.mobile-caret').classList.toggle('open');
+  }
+  function toggleFaq(el){
+    el.parentElement.classList.toggle('open');
+  }
+
+  let activeRate=120000;
+  document.querySelectorAll('.calc-chip').forEach(chip=>{
+    chip.addEventListener('click',()=>{
+      document.querySelectorAll('.calc-chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      activeRate=parseInt(chip.dataset.rate);
+      updateCalc();
+    });
+  });
+  function updateCalc(){
+    const age=parseInt(document.getElementById('ageRange').value);
+    document.getElementById('ageVal').textContent=age+' tahun';
+    const ageFactor=1+((age-18)/42)*0.6;
+    const premium=Math.round((activeRate*ageFactor)/1000)*1000;
+    document.getElementById('calcResult').textContent='Rp'+premium.toLocaleString('id-ID');
+  }
+  updateCalc();
+</script>
+
+</body>
+</html>

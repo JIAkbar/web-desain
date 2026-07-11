@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clockwise — Time Tracking & Absensi Tim Jadi Simpel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --indigo:#4F46E5;
+    --indigo-dark:#3F35D4;
+    --amber:#F5A524;
+    --emerald:#12B76A;
+    --ink:#12142B;
+    --bg:#F7F8FC;
+    --bg-2:#EEF0FB;
+    --card:#FFFFFF;
+    --text:#1B1E33;
+    --text-soft:#65697F;
+    --border:#E4E6F3;
+    --shadow:0 4px 18px rgba(18,20,43,.06);
+    --shadow-lg:0 24px 55px rgba(18,20,43,.14);
+  }
+  [data-theme="dark"]{
+    --indigo:#818CF8;
+    --indigo-dark:#A5AEFF;
+    --amber:#FBC55C;
+    --emerald:#3DDC91;
+    --ink:#EAEBF7;
+    --bg:#0C0D1A;
+    --bg-2:#141628;
+    --card:#191B31;
+    --text:#EAEBF7;
+    --text-soft:#9498B8;
+    --border:#282B47;
+    --shadow:0 4px 18px rgba(0,0,0,.4);
+    --shadow-lg:0 24px 55px rgba(0,0,0,.6);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:.3s;}
+  h1,h2,h3,.disp{font-family:'Plus Jakarta Sans',sans-serif;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.7rem;border-radius:12px;font-weight:700;font-size:.95rem;cursor:pointer;border:none;transition:.25s;min-height:44px;}
+  .btn-primary{background:var(--indigo);color:#fff;box-shadow:0 10px 24px rgba(79,70,229,.32);}
+  .btn-primary:hover{background:var(--indigo-dark);transform:translateY(-2px);}
+  .btn-ghost{background:var(--card);color:var(--text);border:1.5px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--indigo);color:var(--indigo);}
+  .btn-white{background:#fff;color:var(--indigo-dark);}
+
+  header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 24px;max-width:1200px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:.6rem;font-family:'Plus Jakarta Sans';font-weight:800;font-size:1.35rem;}
+  .logo-mark{width:36px;height:36px;border-radius:10px;background:var(--indigo);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.05rem;}
+  .nav-links{display:flex;align-items:center;gap:2.1rem;}
+  .nav-item{position:relative;}
+  .nav-item>a{font-weight:600;font-size:.93rem;display:flex;align-items:center;gap:.3rem;}
+  .nav-item>a .caret{font-size:.6rem;color:var(--text-soft);transition:.2s;}
+  .nav-item:hover>a .caret{transform:rotate(180deg);}
+  .nav-dropdown{display:none;position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%);min-width:280px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:.7rem;box-shadow:var(--shadow-lg);}
+  .nav-item:hover .nav-dropdown,.nav-item:focus-within .nav-dropdown{display:block;}
+  .nav-dropdown a{display:flex;gap:.7rem;padding:.7rem;border-radius:10px;align-items:flex-start;}
+  .nav-dropdown a:hover{background:var(--bg-2);}
+  .nav-dropdown .ic{width:36px;height:36px;border-radius:9px;background:var(--bg-2);display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex-shrink:0;}
+  .nav-dropdown strong{display:block;font-size:.87rem;}
+  .nav-dropdown span{font-size:.76rem;color:var(--text-soft);}
+  .nav-actions{display:flex;align-items:center;gap:.9rem;}
+  .theme-toggle{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:1.05rem;}
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;}
+  .hamburger span{width:24px;height:2px;background:var(--text);border-radius:2px;}
+  .mobile-panel{display:none;}
+
+  .hero{padding:4.5rem 0 3.5rem;}
+  .hero-grid{display:grid;grid-template-columns:1fr .9fr;gap:3rem;align-items:center;}
+  .badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--bg-2);color:var(--indigo);font-weight:700;font-size:.8rem;padding:.5rem 1rem;border-radius:100px;margin-bottom:1.3rem;}
+  .hero h1{font-size:clamp(2.2rem,4.2vw,3.3rem);font-weight:700;line-height:1.15;margin-bottom:1.2rem;letter-spacing:-.01em;}
+  .hero h1 span{color:var(--indigo);}
+  .hero p{font-size:1.06rem;color:var(--text-soft);max-width:480px;margin-bottom:2rem;}
+  .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.8rem;}
+  .hero-badges{display:flex;gap:1.8rem;color:var(--text-soft);font-size:.85rem;flex-wrap:wrap;}
+  .hero-badges b{color:var(--text);display:block;font-family:'Plus Jakarta Sans';font-size:1.15rem;}
+
+  /* LIVE STOPWATCH */
+  .clock-card{background:var(--ink);color:#fff;border-radius:24px;padding:2rem;box-shadow:var(--shadow-lg);text-align:center;}
+  [data-theme="dark"] .clock-card{background:var(--card);border:1px solid var(--border);}
+  .clock-project{font-size:.82rem;color:#A6ABD6;margin-bottom:.5rem;}
+  [data-theme="dark"] .clock-project{color:var(--text-soft);}
+  .clock-time{font-family:'Plus Jakarta Sans';font-size:3.4rem;font-weight:700;letter-spacing:.02em;margin-bottom:1.6rem;font-variant-numeric:tabular-nums;}
+  .clock-controls{display:flex;gap:.8rem;justify-content:center;margin-bottom:1.8rem;}
+  .clock-btn{width:56px;height:56px;border-radius:50%;border:none;cursor:pointer;font-size:1.3rem;display:flex;align-items:center;justify-content:center;transition:.2s;}
+  .clock-btn.start{background:var(--emerald);color:#fff;}
+  .clock-btn.start:hover{transform:scale(1.08);}
+  .clock-btn.reset{background:rgba(255,255,255,.12);color:#fff;}
+  [data-theme="dark"] .clock-btn.reset{background:var(--bg-2);color:var(--text);}
+  .clock-btn.reset:hover{background:rgba(255,255,255,.2);}
+  .clock-tasks{display:flex;flex-direction:column;gap:.6rem;text-align:left;}
+  .clock-task{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.06);padding:.7rem .9rem;border-radius:10px;font-size:.83rem;}
+  [data-theme="dark"] .clock-task{background:var(--bg-2);}
+  .clock-task span.tt{color:#8B90BE;}
+  [data-theme="dark"] .clock-task span.tt{color:var(--text-soft);}
+
+  .section{padding:5.4rem 0;}
+  .section-head{max-width:600px;margin:0 auto 3rem;text-align:center;}
+  .badge-center{margin:0 auto 1rem;width:fit-content;}
+  .section-head h2{font-size:clamp(1.8rem,3.4vw,2.5rem);font-weight:700;margin-bottom:.9rem;letter-spacing:-.01em;}
+  .section-head p{color:var(--text-soft);font-size:1.03rem;}
+
+  /* FEATURES - view types w/ hover */
+  .feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;}
+  .feat-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.9rem 1.6rem;cursor:pointer;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s;}
+  .feat-card:hover{transform:translateY(-10px);box-shadow:var(--shadow-lg);border-color:var(--indigo);}
+  .feat-icon{width:52px;height:52px;border-radius:14px;background:var(--bg-2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.1rem;transition:.35s;}
+  .feat-card:hover .feat-icon{background:var(--indigo);transform:scale(1.1);}
+  .feat-card h3{font-size:1.02rem;font-weight:700;margin-bottom:.5rem;}
+  .feat-card p{font-size:.85rem;color:var(--text-soft);}
+
+  /* WEEKLY SUMMARY CARDS */
+  .week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.9rem;}
+  .day-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.1rem .8rem;text-align:center;transition:.3s;}
+  .day-card.today{border-color:var(--indigo);background:var(--bg-2);}
+  .day-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);}
+  .day-card .dname{font-size:.75rem;color:var(--text-soft);margin-bottom:.6rem;font-weight:600;}
+  .day-ring{width:52px;height:52px;border-radius:50%;margin:0 auto .7rem;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;position:relative;}
+  .day-card .hrs{font-family:'Plus Jakarta Sans';font-size:1rem;font-weight:700;}
+
+  /* ACTIVITY FEED */
+  .activity-list{max-width:720px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:.6rem;box-shadow:var(--shadow);}
+  .activity-item{display:flex;align-items:center;gap:1rem;padding:1rem 1.1rem;border-radius:12px;transition:.2s;}
+  .activity-item:hover{background:var(--bg-2);}
+  .activity-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--indigo),var(--amber));flex-shrink:0;}
+  .activity-body{flex:1;}
+  .activity-body strong{font-size:.9rem;}
+  .activity-body p{font-size:.82rem;color:var(--text-soft);}
+  .activity-time{font-size:.78rem;color:var(--text-soft);white-space:nowrap;}
+  .activity-status{font-size:.72rem;font-weight:700;padding:.3rem .6rem;border-radius:100px;background:#E6F9EE;color:var(--emerald);}
+  [data-theme="dark"] .activity-status{background:#0F2E20;}
+
+  .stats-band{background:var(--indigo);color:#fff;border-radius:28px;padding:3.2rem 2.5rem;}
+  [data-theme="dark"] .stats-band{background:var(--card);border:1px solid var(--border);}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);text-align:center;}
+  .stats-grid div strong{font-family:'Plus Jakarta Sans';font-size:2.1rem;display:block;color:var(--amber);}
+  .stats-grid div span{font-size:.85rem;color:rgba(255,255,255,.8);}
+  [data-theme="dark"] .stats-grid div span{color:var(--text-soft);}
+
+  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;}
+  .testi-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.8rem;transition:.3s;}
+  .testi-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+  .testi-stars{color:var(--amber);margin-bottom:1rem;font-size:1rem;letter-spacing:2px;}
+  .testi-card p{font-size:.93rem;margin-bottom:1.2rem;}
+  .testi-who strong{font-size:.87rem;display:block;}
+  .testi-who span{font-size:.76rem;color:var(--text-soft);}
+
+  .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;}
+  .price-card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:2.2rem 1.8rem;display:flex;flex-direction:column;transition:.3s;}
+  .price-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+  .price-card.featured{background:var(--ink);color:#fff;border-color:var(--ink);position:relative;transform:scale(1.04);}
+  [data-theme="dark"] .price-card.featured{background:var(--indigo);border-color:var(--indigo);}
+  .price-card.featured:hover{transform:scale(1.04) translateY(-6px);}
+  .price-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--amber);color:var(--ink);font-size:.72rem;font-weight:700;padding:.4rem .9rem;border-radius:100px;}
+  .price-card h3{font-size:1.1rem;margin-bottom:.3rem;}
+  .price-card .desc{font-size:.85rem;color:var(--text-soft);margin-bottom:1.3rem;}
+  .price-card.featured .desc{color:#A6ABD6;}
+  .price-amount{font-family:'Plus Jakarta Sans';font-size:2.1rem;margin-bottom:1.4rem;}
+  .price-amount span{font-size:.9rem;font-weight:400;color:var(--text-soft);}
+  .price-card.featured .price-amount span{color:#A6ABD6;}
+  .price-list{list-style:none;margin-bottom:1.6rem;flex:1;}
+  .price-list li{padding:.5rem 0;font-size:.88rem;display:flex;gap:.6rem;border-bottom:1px dashed var(--border);}
+  .price-card.featured .price-list li{border-color:rgba(255,255,255,.15);}
+  .price-list li:last-child{border-bottom:none;}
+
+  .cta-band{background:linear-gradient(135deg,var(--indigo),#7B74F0);border-radius:28px;padding:3.5rem 2.5rem;text-align:center;color:#fff;}
+  .cta-band h2{font-size:clamp(1.7rem,3.4vw,2.3rem);margin-bottom:.9rem;}
+  .cta-band p{color:rgba(255,255,255,.9);max-width:480px;margin:0 auto 1.8rem;}
+  .cta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+
+  footer{background:var(--ink);color:#B4B7DB;padding:4rem 0 2rem;margin-top:5rem;}
+  [data-theme="dark"] footer{background:var(--card);border-top:1px solid var(--border);}
+  .footer-grid{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:2.5rem;margin-bottom:3rem;}
+  .footer-brand .logo{color:#fff;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-brand .logo{color:var(--text);}
+  .footer-brand p{font-size:.87rem;max-width:280px;}
+  .footer-col h4{color:#fff;font-size:.9rem;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-col h4{color:var(--text);}
+  .footer-col a{display:block;font-size:.84rem;padding:.4rem 0;color:#9498C4;}
+  .footer-col a:hover{color:#fff;}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1.6rem;text-align:center;font-size:.8rem;color:#7A7DA6;}
+
+  @media(max-width:980px){
+    .hero-grid{grid-template-columns:1fr;}
+    .feat-grid{grid-template-columns:repeat(2,1fr);}
+    .week-grid{grid-template-columns:repeat(4,1fr);}
+    .stats-grid{grid-template-columns:repeat(2,1fr);gap:1.8rem;}
+    .testi-grid{grid-template-columns:repeat(2,1fr);}
+    .price-grid{grid-template-columns:repeat(2,1fr);}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+    .price-card.featured{transform:none;}
+    .price-card.featured:hover{transform:translateY(-6px);}
+  }
+  @media(max-width:768px){
+    .nav-links{display:none;}
+    .hamburger{display:flex;}
+    .mobile-panel.open{display:block;background:var(--bg);border-top:1px solid var(--border);padding:1rem 24px 1.6rem;}
+    .mobile-panel a{display:block;padding:.8rem 0;font-weight:600;border-bottom:1px solid var(--border);}
+    .mobile-sub{padding-left:1rem;display:none;}
+    .mobile-sub.open{display:block;}
+    .mobile-sub a{border-bottom:none;padding:.6rem 0;font-weight:500;color:var(--text-soft);}
+    .mobile-caret{float:right;transition:transform .2s;}
+    .mobile-caret.open{transform:rotate(180deg);}
+    .hero{padding:2.6rem 0;}
+    .hero-actions .btn{width:100%;justify-content:center;}
+    .hero-actions{flex-direction:column;}
+    .section{padding:3.2rem 0;}
+    .feat-grid{grid-template-columns:1fr 1fr;gap:1rem;}
+    .week-grid{grid-template-columns:repeat(4,1fr);gap:.6rem;}
+    .stats-grid{grid-template-columns:1fr 1fr;}
+    .testi-grid,.price-grid{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr;gap:2rem;}
+    .stats-band,.cta-band{padding:2.4rem 1.5rem;border-radius:20px;}
+    .price-card.featured{transform:none;}
+    .clock-time{font-size:2.6rem;}
+    .activity-item{flex-wrap:wrap;}
+  }
+  @media(max-width:480px){
+    .feat-grid{grid-template-columns:1fr;}
+    .week-grid{grid-template-columns:repeat(4,1fr);}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="#" class="logo"><span class="logo-mark">⏱</span>Clockwise</a>
+    <div class="nav-links">
+      <div class="nav-item">
+        <a href="#features">Produk <span class="caret">▾</span></a>
+        <div class="nav-dropdown">
+          <a href="#features"><span class="ic">⏱️</span><div><strong>Time Tracking</strong><span>Catat waktu kerja per proyek</span></div></a>
+          <a href="#week"><span class="ic">📍</span><div><strong>Absensi Kantor</strong><span>Check-in/out lokasi & shift</span></div></a>
+          <a href="#week"><span class="ic">🧾</span><div><strong>Timesheet</strong><span>Rekap mingguan otomatis</span></div></a>
+          <a href="#activity"><span class="ic">📊</span><div><strong>Laporan Tim</strong><span>Produktivitas per anggota</span></div></a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="#week">Timesheet</a></div>
+      <div class="nav-item"><a href="#activity">Aktivitas Tim</a></div>
+      <div class="nav-item"><a href="#pricing">Harga</a></div>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Ganti tema">🌙</button>
+      <a href="#pricing" class="btn btn-primary">Coba Gratis</a>
+      <button class="hamburger" onclick="toggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-panel" id="mobilePanel">
+    <a href="javascript:void(0)" onclick="toggleSub(this)">Produk <span class="mobile-caret">▾</span></a>
+    <div class="mobile-sub">
+      <a href="#features">⏱️ Time Tracking</a>
+      <a href="#week">📍 Absensi Kantor</a>
+      <a href="#week">🧾 Timesheet</a>
+      <a href="#activity">📊 Laporan Tim</a>
+    </div>
+    <a href="#week">Timesheet</a>
+    <a href="#activity">Aktivitas Tim</a>
+    <a href="#pricing">Harga</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="badge">⏱️ Time tracking + absensi dalam satu app</span>
+      <h1>Tau persis ke mana <span>waktu tim</span> kamu habis</h1>
+      <p>Satu tombol untuk mulai kerja, absensi otomatis tercatat, timesheet mingguan langsung jadi tanpa rekap manual.</p>
+      <div class="hero-actions">
+        <a href="#pricing" class="btn btn-primary">Coba Gratis 14 Hari</a>
+        <a href="#features" class="btn btn-ghost">Lihat Fitur</a>
+      </div>
+      <div class="hero-badges">
+        <div><b>18rb+</b>Tim menggunakan</div>
+        <div><b>2.4jt</b>Jam tercatat/bulan</div>
+        <div><b>99.9%</b>Uptime</div>
+      </div>
+    </div>
+
+    <div class="clock-card">
+      <div class="clock-project">Sedang mengerjakan</div>
+      <div class="clock-time" id="clockDisplay">00:00:00</div>
+      <div class="clock-controls">
+        <button class="clock-btn start" id="clockToggle" onclick="toggleClock()">▶</button>
+        <button class="clock-btn reset" onclick="resetClock()">↺</button>
+      </div>
+      <div class="clock-tasks">
+        <div class="clock-task"><span>Redesign Landing Page</span><span class="tt">02:14:08</span></div>
+        <div class="clock-task"><span>Client Sync Meeting</span><span class="tt">00:45:00</span></div>
+        <div class="clock-task"><span>Bug Fixing Sprint 12</span><span class="tt">01:30:22</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="features" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Fitur Utama</span>
+      <h2>Semua yang tim kamu butuhkan</h2>
+      <p>Dari time tracking individu sampai laporan produktivitas tim.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">⏱️</div>
+        <h3>One-click Timer</h3>
+        <p>Mulai & hentikan pencatatan waktu kerja dengan satu klik.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📍</div>
+        <h3>Absensi Geo-tag</h3>
+        <p>Check-in/out otomatis tercatat lokasi untuk kerja lapangan.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🧾</div>
+        <h3>Timesheet Otomatis</h3>
+        <p>Rekap mingguan & bulanan langsung jadi tanpa input manual.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <h3>Laporan Produktivitas</h3>
+        <p>Lihat distribusi waktu tim per proyek dan klien.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="week">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Ringkasan Mingguan</span>
+      <h2>Timesheet minggu ini</h2>
+      <p>Lihat sekilas jam kerja harian tanpa buka spreadsheet.</p>
+    </div>
+    <div class="week-grid">
+      <div class="day-card"><div class="dname">Sen</div><div class="day-ring" style="background:conic-gradient(var(--indigo) 92%,var(--border) 0);"><div class="hrs" style="background:var(--card);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;">7.4</div></div><div class="hrs">7.4 jam</div></div>
+      <div class="day-card"><div class="dname">Sel</div><div class="day-ring" style="background:conic-gradient(var(--indigo) 100%,var(--border) 0);"><div class="hrs" style="background:var(--card);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;">8.0</div></div><div class="hrs">8.0 jam</div></div>
+      <div class="day-card today"><div class="dname">Rab</div><div class="day-ring" style="background:conic-gradient(var(--amber) 55%,var(--border) 0);"><div class="hrs" style="background:var(--card);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;">4.4</div></div><div class="hrs">4.4 jam</div></div>
+      <div class="day-card"><div class="dname">Kam</div><div class="day-ring" style="background:conic-gradient(var(--border) 0);"><div class="hrs" style="background:var(--card);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;">—</div></div><div class="hrs">Belum</div></div>
+      <div class="day-card"><div class="dname">Jum</div><div class="day-ring" style="background:conic-gradient(var(--border) 0);"><div class="hrs" style="background:var(--card);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;">—</div></div><div class="hrs">Belum</div></div>
+      <div class="day-card"><div class="dname">Sab</div><div class="day-ring" style="background:conic-gradient(var(--border) 0);"><div class="hrs" style="background:var(--card);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;">Off</div></div><div class="hrs">Libur</div></div>
+      <div class="day-card"><div class="dname">Min</div><div class="day-ring" style="background:conic-gradient(var(--border) 0);"><div class="hrs" style="background:var(--card);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;">Off</div></div><div class="hrs">Libur</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="activity" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Real-time</span>
+      <h2>Aktivitas tim hari ini</h2>
+      <p>Pantau siapa yang sedang aktif bekerja tanpa perlu bertanya.</p>
+    </div>
+    <div class="activity-list">
+      <div class="activity-item">
+        <div class="activity-av"></div>
+        <div class="activity-body"><strong>Dewi Anggraini</strong><p>Check-in dari Kantor Pusat Jakarta</p></div>
+        <div class="activity-time">08:02</div>
+        <span class="activity-status">● Aktif</span>
+      </div>
+      <div class="activity-item">
+        <div class="activity-av"></div>
+        <div class="activity-body"><strong>Fikri Ramadhan</strong><p>Mulai timer — Redesign Landing Page</p></div>
+        <div class="activity-time">08:15</div>
+        <span class="activity-status">● Aktif</span>
+      </div>
+      <div class="activity-item">
+        <div class="activity-av"></div>
+        <div class="activity-body"><strong>Sinta Wulandari</strong><p>Check-out — total 8.0 jam hari ini</p></div>
+        <div class="activity-time">17:00</div>
+        <span class="activity-status" style="background:var(--bg-2);color:var(--text-soft);">Selesai</span>
+      </div>
+      <div class="activity-item">
+        <div class="activity-av"></div>
+        <div class="activity-body"><strong>Ardi Prasetyo</strong><p>Mengajukan izin cuti — 2 hari</p></div>
+        <div class="activity-time">09:40</div>
+        <span class="activity-status" style="background:#FFF3DC;color:var(--amber);">Menunggu</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="stats-band">
+      <div class="stats-grid">
+        <div><strong>18rb+</strong><span>Tim menggunakan</span></div>
+        <div><strong>2.4jt</strong><span>Jam tercatat/bulan</span></div>
+        <div><strong>99.9%</strong><span>Uptime</span></div>
+        <div><strong>4.8/5</strong><span>Rating pengguna</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Testimoni</span>
+      <h2>Dipercaya tim dari berbagai industri</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Rekap payroll jadi jauh lebih cepat karena timesheet udah otomatis rapi tiap minggu."</p>
+        <div class="testi-who"><strong>Novita Sari</strong><span>HR Manager</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Absensi geo-tag membantu banget buat tim lapangan yang kerja di banyak lokasi."</p>
+        <div class="testi-who"><strong>Bimo Santoso</strong><span>Operations Lead</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Laporan produktivitas per klien bikin kita tau proyek mana yang paling menguntungkan."</p>
+        <div class="testi-who"><strong>Clara Puspita</strong><span>Agency Owner</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pricing">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Harga</span>
+      <h2>Pilih paket sesuai ukuran tim</h2>
+    </div>
+    <div class="price-grid">
+      <div class="price-card">
+        <h3>Starter</h3>
+        <p class="desc">Untuk freelancer & tim kecil</p>
+        <div class="price-amount">Gratis<span></span></div>
+        <ul class="price-list">
+          <li>✔ Sampai 3 pengguna</li>
+          <li>✔ Time tracking dasar</li>
+          <li>✔ Timesheet mingguan</li>
+        </ul>
+        <a href="#" class="btn btn-ghost" style="justify-content:center;">Mulai Gratis</a>
+      </div>
+      <div class="price-card featured">
+        <span class="price-badge">Paling Populer</span>
+        <h3>Team</h3>
+        <p class="desc">Untuk tim yang berkembang</p>
+        <div class="price-amount">Rp29rb<span>/orang/bulan</span></div>
+        <ul class="price-list">
+          <li>✔ Pengguna tanpa batas</li>
+          <li>✔ Absensi geo-tag</li>
+          <li>✔ Laporan produktivitas</li>
+          <li>✔ Integrasi payroll</li>
+        </ul>
+        <a href="#" class="btn btn-white" style="justify-content:center;">Coba 14 Hari Gratis</a>
+      </div>
+      <div class="price-card">
+        <h3>Enterprise</h3>
+        <p class="desc">Untuk organisasi besar</p>
+        <div class="price-amount">Custom<span></span></div>
+        <ul class="price-list">
+          <li>✔ Semua fitur Team</li>
+          <li>✔ SSO & keamanan lanjutan</li>
+          <li>✔ Dukungan khusus 24/7</li>
+        </ul>
+        <a href="#" class="btn btn-ghost" style="justify-content:center;">Hubungi Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Mulai lacak waktu tim hari ini</h2>
+      <p>Gratis untuk tim kecil, upgrade kapan saja. Setup kurang dari 5 menit.</p>
+      <div class="cta-actions">
+        <a href="#pricing" class="btn btn-white">Coba Gratis Sekarang</a>
+        <a href="#" class="btn btn-ghost" style="background:transparent;border-color:rgba(255,255,255,.5);color:#fff;">Jadwalkan Demo →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo"><span class="logo-mark">⏱</span>Clockwise</a>
+        <p>Platform time tracking & absensi tim yang bikin laporan kerja selalu akurat dan up-to-date.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Produk</h4>
+        <a href="#features">Time Tracking</a>
+        <a href="#week">Absensi</a>
+        <a href="#activity">Laporan Tim</a>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <a href="#">Tentang Kami</a>
+        <a href="#">Blog</a>
+        <a href="#">Karir</a>
+      </div>
+      <div class="footer-col">
+        <h4>Bantuan</h4>
+        <a href="#">Pusat Bantuan</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat & Ketentuan</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 Clockwise. Semua hak dilindungi.</div>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme(){
+    const html=document.documentElement;
+    const next=html.getAttribute('data-theme')==='dark'?'light':'dark';
+    html.setAttribute('data-theme',next);
+    localStorage.setItem('clockwise-theme',next);
+    document.querySelector('.theme-toggle').textContent=next==='dark'?'☀️':'🌙';
+  }
+  (function(){ if(localStorage.getItem('clockwise-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); } })();
+  window.addEventListener('DOMContentLoaded',()=>{
+    document.querySelector('.theme-toggle').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';
+  });
+
+  function toggleMobile(){ document.getElementById('mobilePanel').classList.toggle('open'); }
+  function toggleSub(el){
+    el.nextElementSibling.classList.toggle('open');
+    el.querySelector('.mobile-caret').classList.toggle('open');
+  }
+
+  let clockSeconds=0;
+  let clockInterval=null;
+  let clockRunning=false;
+  function formatTime(s){
+    const h=String(Math.floor(s/3600)).padStart(2,'0');
+    const m=String(Math.floor((s%3600)/60)).padStart(2,'0');
+    const sec=String(s%60).padStart(2,'0');
+    return h+':'+m+':'+sec;
+  }
+  function toggleClock(){
+    const btn=document.getElementById('clockToggle');
+    clockRunning=!clockRunning;
+    if(clockRunning){
+      btn.textContent='❚❚';
+      btn.classList.remove('start');
+      clockInterval=setInterval(()=>{
+        clockSeconds++;
+        document.getElementById('clockDisplay').textContent=formatTime(clockSeconds);
+      },1000);
+    }else{
+      btn.textContent='▶';
+      btn.classList.add('start');
+      clearInterval(clockInterval);
+    }
+  }
+  function resetClock(){
+    clockSeconds=0;
+    document.getElementById('clockDisplay').textContent=formatTime(0);
+    if(clockRunning){ toggleClock(); }
+  }
+</script>
+
+</body>
+</html>

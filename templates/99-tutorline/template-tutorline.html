@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TutorLine — Les Privat 1-on-1, Belajar Sesuai Ritme Kamu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --coral:#FF6B4A;
+    --coral-dark:#E8532F;
+    --navy:#1B2A4A;
+    --navy-soft:#2E3F63;
+    --cream:#FFF9F3;
+    --cream-2:#FFF1E4;
+    --card:#FFFFFF;
+    --text:#2A2118;
+    --text-soft:#6B6157;
+    --border:#EFE4D6;
+    --shadow:0 4px 16px rgba(27,42,74,.06);
+    --shadow-lg:0 20px 50px rgba(27,42,74,.14);
+    --radius:20px;
+  }
+  [data-theme="dark"]{
+    --coral:#FF7A5C;
+    --coral-dark:#FF957C;
+    --navy:#0F1522;
+    --navy-soft:#1B2436;
+    --cream:#12161F;
+    --cream-2:#171C28;
+    --card:#1A2030;
+    --text:#F3EEE6;
+    --text-soft:#A9A195;
+    --border:#2A3142;
+    --shadow:0 4px 16px rgba(0,0,0,.3);
+    --shadow-lg:0 20px 50px rgba(0,0,0,.5);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--cream);
+    color:var(--text);
+    line-height:1.6;
+    transition:background .3s,color .3s;
+  }
+  h1,h2,h3,.serif{font-family:'Fraunces',serif;}
+  a{text-decoration:none;color:inherit;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
+  .btn{
+    display:inline-flex;align-items:center;gap:.5rem;
+    padding:.85rem 1.6rem;border-radius:100px;font-weight:700;
+    font-size:.95rem;cursor:pointer;border:none;transition:.25s;
+    min-height:44px;
+  }
+  .btn-primary{background:var(--coral);color:#fff;box-shadow:0 8px 20px rgba(255,107,74,.35);}
+  .btn-primary:hover{background:var(--coral-dark);transform:translateY(-2px);box-shadow:0 12px 28px rgba(255,107,74,.45);}
+  .btn-ghost{background:transparent;color:var(--navy);border:2px solid var(--border);}
+  [data-theme="dark"] .btn-ghost{color:var(--text);}
+  .btn-ghost:hover{border-color:var(--coral);color:var(--coral);}
+  .btn-outline-light{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.5);}
+  .btn-outline-light:hover{border-color:#fff;background:rgba(255,255,255,.1);}
+
+  /* NAVBAR */
+  header{
+    position:sticky;top:0;z-index:100;
+    background:var(--cream);
+    border-bottom:1px solid var(--border);
+    backdrop-filter:blur(8px);
+  }
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 24px;max-width:1200px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:.6rem;font-family:'Fraunces',serif;font-weight:700;font-size:1.4rem;}
+  .logo-mark{
+    width:38px;height:38px;border-radius:11px;
+    background:linear-gradient(135deg,var(--coral),#FFB199);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;font-weight:700;
+  }
+  .nav-links{display:flex;align-items:center;gap:2rem;}
+  .nav-item{position:relative;}
+  .nav-item > a{font-weight:600;font-size:.95rem;display:flex;align-items:center;gap:.3rem;padding:.5rem 0;}
+  .nav-item > a .caret{font-size:.65rem;transition:transform .2s;color:var(--text-soft);}
+  .nav-item:hover > a .caret{transform:rotate(180deg);}
+  .nav-dropdown{
+    display:none;position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);
+    min-width:280px;background:var(--card);border:1px solid var(--border);
+    border-radius:16px;padding:.75rem;box-shadow:var(--shadow-lg);
+    grid-template-columns:1fr 1fr;gap:.25rem;
+  }
+  .nav-item:hover .nav-dropdown,.nav-item:focus-within .nav-dropdown{display:grid;}
+  .nav-dropdown a{
+    display:flex;align-items:center;gap:.6rem;padding:.6rem .7rem;border-radius:10px;
+    font-size:.87rem;font-weight:500;color:var(--text);
+  }
+  .nav-dropdown a:hover{background:var(--cream-2);color:var(--coral-dark);}
+  .nav-dropdown .ic{font-size:1.1rem;}
+  .nav-actions{display:flex;align-items:center;gap:.9rem;}
+  .theme-toggle{
+    width:40px;height:40px;border-radius:50%;border:1px solid var(--border);
+    background:var(--card);display:flex;align-items:center;justify-content:center;
+    cursor:pointer;font-size:1.1rem;
+  }
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;}
+  .hamburger span{width:24px;height:2px;background:var(--text);border-radius:2px;}
+  .mobile-panel{display:none;}
+
+  /* HERO */
+  .hero{
+    padding:4.5rem 0 5rem;position:relative;overflow:hidden;
+    background:radial-gradient(circle at 85% 20%,var(--cream-2),var(--cream) 60%);
+  }
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:3rem;align-items:center;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:.5rem;background:var(--cream-2);
+    color:var(--coral-dark);font-weight:700;font-size:.8rem;padding:.5rem 1rem;
+    border-radius:100px;margin-bottom:1.3rem;
+  }
+  .hero h1{font-size:clamp(2.3rem,4.5vw,3.6rem);font-weight:600;line-height:1.12;margin-bottom:1.3rem;letter-spacing:-.01em;}
+  .hero h1 em{font-style:italic;color:var(--coral);}
+  .hero p{font-size:1.1rem;color:var(--text-soft);max-width:520px;margin-bottom:2rem;}
+  .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2.2rem;}
+  .hero-trust{display:flex;align-items:center;gap:1rem;color:var(--text-soft);font-size:.88rem;}
+  .avatar-stack{display:flex;}
+  .avatar-stack span{
+    width:34px;height:34px;border-radius:50%;border:3px solid var(--cream);
+    margin-left:-10px;background:linear-gradient(135deg,var(--coral),#FFD3A8);
+  }
+  .avatar-stack span:first-child{margin-left:0;}
+  .hero-visual{position:relative;}
+  .hero-card{
+    background:var(--card);border-radius:24px;box-shadow:var(--shadow-lg);
+    padding:1.6rem;border:1px solid var(--border);
+  }
+  .hero-card-top{display:flex;align-items:center;gap:.9rem;margin-bottom:1.2rem;}
+  .hero-card-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy-soft));}
+  .hero-card-top h4{font-family:'Inter';font-size:1.02rem;}
+  .hero-card-top span{font-size:.82rem;color:var(--text-soft);}
+  .live-badge{margin-left:auto;background:#E9F9EE;color:#1E9E4C;font-size:.72rem;font-weight:700;padding:.3rem .6rem;border-radius:100px;display:flex;align-items:center;gap:.35rem;}
+  [data-theme="dark"] .live-badge{background:#12321E;color:#5FD989;}
+  .live-badge::before{content:"";width:6px;height:6px;border-radius:50%;background:#1E9E4C;}
+  .hero-mock-lines{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.2rem;}
+  .hero-mock-lines div{height:10px;border-radius:6px;background:var(--cream-2);}
+  .hero-mock-lines div:nth-child(1){width:92%;}
+  .hero-mock-lines div:nth-child(2){width:70%;}
+  .hero-mock-lines div:nth-child(3){width:82%;}
+  .hero-progress{display:flex;justify-content:space-between;align-items:center;font-size:.8rem;color:var(--text-soft);margin-top:1rem;}
+  .hero-progress-bar{flex:1;height:6px;background:var(--cream-2);border-radius:6px;margin:0 .8rem;overflow:hidden;}
+  .hero-progress-bar span{display:block;width:68%;height:100%;background:linear-gradient(90deg,var(--coral),#FFB199);border-radius:6px;}
+  .float-chip{
+    position:absolute;background:var(--card);border:1px solid var(--border);border-radius:14px;
+    padding:.7rem 1rem;box-shadow:var(--shadow-lg);font-size:.85rem;font-weight:700;
+    display:flex;align-items:center;gap:.5rem;
+  }
+  .float-chip.c1{top:-18px;right:-10px;color:var(--coral-dark);}
+  .float-chip.c2{bottom:20px;left:-30px;color:var(--navy);}
+  [data-theme="dark"] .float-chip.c2{color:var(--text);}
+
+  /* SECTION HEADS */
+  .section{padding:5.5rem 0;}
+  .section-head{max-width:600px;margin:0 auto 3rem;text-align:center;}
+  .section-head .eyebrow{margin-bottom:1rem;}
+  .section-head h2{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:600;margin-bottom:.9rem;letter-spacing:-.01em;}
+  .section-head p{color:var(--text-soft);font-size:1.05rem;}
+
+  /* SUBJECT CARDS - view types w/ hover animation */
+  .subject-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;}
+  .subject-card{
+    background:var(--card);border:1px solid var(--border);border-radius:20px;
+    padding:1.8rem 1.5rem;cursor:pointer;
+    transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s;
+    position:relative;overflow:hidden;
+  }
+  .subject-card::before{
+    content:"";position:absolute;inset:0;opacity:0;
+    background:linear-gradient(135deg,var(--coral),#FFB199);
+    transition:opacity .35s;z-index:0;
+  }
+  .subject-card:hover{transform:translateY(-10px) scale(1.03);box-shadow:var(--shadow-lg);border-color:transparent;}
+  .subject-card:hover::before{opacity:1;}
+  .subject-card:hover .subject-icon,.subject-card:hover h3,.subject-card:hover p,.subject-card:hover .subject-count{color:#fff;position:relative;z-index:1;}
+  .subject-card > *{position:relative;z-index:1;}
+  .subject-icon{
+    width:52px;height:52px;border-radius:14px;background:var(--cream-2);
+    display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:1.1rem;
+    transition:.35s;
+  }
+  .subject-card h3{font-family:'Inter';font-size:1.08rem;font-weight:700;margin-bottom:.4rem;transition:.35s;}
+  .subject-card p{font-size:.85rem;color:var(--text-soft);transition:.35s;}
+  .subject-count{display:inline-block;margin-top:.9rem;font-size:.78rem;font-weight:700;color:var(--coral-dark);transition:.35s;}
+
+  /* HOW IT WORKS */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;position:relative;}
+  .step{text-align:center;padding:0 1rem;}
+  .step-num{
+    width:60px;height:60px;border-radius:50%;background:var(--navy);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-family:'Fraunces';font-size:1.4rem;
+    margin:0 auto 1.3rem;
+  }
+  .step h3{font-size:1.15rem;margin-bottom:.6rem;}
+  .step p{color:var(--text-soft);font-size:.92rem;}
+
+  /* STATS BAR */
+  .stats-bar{background:var(--navy);color:#fff;padding:3rem 0;}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);text-align:center;}
+  .stats-grid div strong{font-family:'Fraunces';font-size:2.2rem;display:block;color:var(--coral);}
+  .stats-grid div span{font-size:.85rem;color:#C7CEDD;}
+
+  /* TUTOR SHOWCASE */
+  .tutor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;}
+  .tutor-card{
+    background:var(--card);border:1px solid var(--border);border-radius:22px;overflow:hidden;
+    transition:transform .3s,box-shadow .3s;
+  }
+  .tutor-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);}
+  .tutor-photo{height:190px;background:linear-gradient(135deg,var(--coral),#FFD3A8);position:relative;}
+  .tutor-rating{
+    position:absolute;bottom:12px;right:12px;background:#fff;color:var(--text);
+    font-size:.78rem;font-weight:700;padding:.35rem .6rem;border-radius:100px;
+    display:flex;align-items:center;gap:.3rem;
+  }
+  .tutor-body{padding:1.3rem 1.4rem 1.5rem;}
+  .tutor-body h3{font-size:1.1rem;margin-bottom:.2rem;}
+  .tutor-body .subj{color:var(--coral-dark);font-size:.85rem;font-weight:600;margin-bottom:.8rem;}
+  .tutor-tags{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.1rem;}
+  .tutor-tags span{background:var(--cream-2);font-size:.72rem;font-weight:600;padding:.3rem .6rem;border-radius:100px;color:var(--text-soft);}
+  .tutor-footer{display:flex;align-items:center;justify-content:space-between;}
+  .tutor-price strong{font-size:1.1rem;}
+  .tutor-price small{color:var(--text-soft);font-size:.78rem;}
+  .btn-sm{padding:.6rem 1.2rem;font-size:.83rem;}
+
+  /* TESTIMONIALS */
+  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;}
+  .testi-card{background:var(--cream-2);border-radius:20px;padding:1.8rem;}
+  .testi-stars{color:var(--coral);margin-bottom:1rem;font-size:1rem;letter-spacing:2px;}
+  .testi-card p{font-size:.95rem;color:var(--text);margin-bottom:1.2rem;}
+  .testi-who{display:flex;align-items:center;gap:.7rem;}
+  .testi-who .av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy-soft));}
+  .testi-who strong{font-size:.88rem;display:block;}
+  .testi-who span{font-size:.76rem;color:var(--text-soft);}
+
+  /* PRICING */
+  .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;align-items:stretch;}
+  .price-card{
+    background:var(--card);border:1px solid var(--border);border-radius:22px;padding:2.2rem 1.8rem;
+    display:flex;flex-direction:column;transition:transform .3s,box-shadow .3s;
+  }
+  .price-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+  .price-card.featured{background:var(--navy);color:#fff;border-color:var(--navy);position:relative;transform:scale(1.04);}
+  .price-card.featured:hover{transform:scale(1.04) translateY(-6px);}
+  .price-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--coral);color:#fff;font-size:.72rem;font-weight:700;padding:.4rem .9rem;border-radius:100px;}
+  .price-card h3{font-size:1.1rem;margin-bottom:.3rem;}
+  .price-card .desc{font-size:.85rem;color:var(--text-soft);margin-bottom:1.3rem;}
+  .price-card.featured .desc{color:#C7CEDD;}
+  .price-amount{font-family:'Fraunces';font-size:2.1rem;margin-bottom:1.4rem;}
+  .price-amount span{font-size:.9rem;font-weight:400;color:var(--text-soft);}
+  .price-card.featured .price-amount span{color:#C7CEDD;}
+  .price-list{list-style:none;margin-bottom:1.6rem;flex:1;}
+  .price-list li{padding:.5rem 0;font-size:.88rem;display:flex;gap:.6rem;border-bottom:1px dashed var(--border);}
+  .price-card.featured .price-list li{border-color:rgba(255,255,255,.15);}
+  .price-list li:last-child{border-bottom:none;}
+
+  /* CTA */
+  .cta-band{
+    background:linear-gradient(135deg,var(--coral),#FF8F6E);
+    border-radius:28px;padding:3.5rem 2.5rem;text-align:center;color:#fff;
+    margin:0 24px;max-width:1152px;margin:0 auto;
+  }
+  .cta-band h2{font-size:clamp(1.7rem,3.5vw,2.4rem);margin-bottom:.9rem;}
+  .cta-band p{color:rgba(255,255,255,.9);max-width:480px;margin:0 auto 1.8rem;}
+  .cta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+
+  /* FOOTER */
+  footer{background:var(--navy);color:#C7CEDD;padding:4rem 0 2rem;margin-top:5rem;}
+  .footer-grid{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:2.5rem;margin-bottom:3rem;}
+  .footer-brand .logo{color:#fff;margin-bottom:1rem;}
+  .footer-brand p{font-size:.88rem;max-width:280px;}
+  .footer-col h4{color:#fff;font-size:.92rem;margin-bottom:1rem;}
+  .footer-col a{display:block;font-size:.85rem;padding:.4rem 0;color:#A9B2C8;}
+  .footer-col a:hover{color:#fff;}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1.6rem;text-align:center;font-size:.8rem;color:#8891A8;}
+
+  @media(max-width:980px){
+    .hero-grid{grid-template-columns:1fr;}
+    .subject-grid{grid-template-columns:repeat(2,1fr);}
+    .tutor-grid,.testi-grid,.price-grid{grid-template-columns:repeat(2,1fr);}
+    .steps{grid-template-columns:1fr;gap:2.5rem;}
+    .stats-grid{grid-template-columns:repeat(2,1fr);gap:2rem;}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+    .price-card.featured{transform:none;}
+    .price-card.featured:hover{transform:translateY(-6px);}
+  }
+  @media(max-width:768px){
+    .nav-links{
+      display:none;
+    }
+    .hamburger{display:flex;}
+    .mobile-panel.open{
+      display:block;background:var(--cream);border-top:1px solid var(--border);
+      padding:1rem 24px 1.6rem;
+    }
+    .mobile-panel a{display:block;padding:.8rem 0;font-weight:600;border-bottom:1px solid var(--border);}
+    .mobile-sub{padding-left:1rem;display:none;}
+    .mobile-sub.open{display:block;}
+    .mobile-sub a{border-bottom:none;padding:.6rem 0;font-weight:500;color:var(--text-soft);}
+    .mobile-caret{float:right;transition:transform .2s;}
+    .mobile-caret.open{transform:rotate(180deg);}
+    .hero{padding:2.8rem 0 3.5rem;}
+    .hero-actions .btn{width:100%;justify-content:center;}
+    .hero-actions{flex-direction:column;}
+    .section{padding:3.5rem 0;}
+    .subject-grid{grid-template-columns:1fr 1fr;gap:1rem;}
+    .tutor-grid,.testi-grid,.price-grid{grid-template-columns:1fr;}
+    .stats-grid{grid-template-columns:1fr 1fr;}
+    .footer-grid{grid-template-columns:1fr;gap:2rem;}
+    .cta-band{margin:0 16px;padding:2.6rem 1.5rem;}
+    .float-chip{display:none;}
+  }
+  @media(max-width:480px){
+    .subject-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="#" class="logo"><span class="logo-mark">TL</span>TutorLine</a>
+
+    <div class="nav-links">
+      <div class="nav-item">
+        <a href="#subjects">Mata Pelajaran <span class="caret">▾</span></a>
+        <div class="nav-dropdown">
+          <a href="#subjects"><span class="ic">📐</span> Matematika</a>
+          <a href="#subjects"><span class="ic">🔤</span> Bahasa Inggris</a>
+          <a href="#subjects"><span class="ic">🧪</span> Sains (IPA)</a>
+          <a href="#subjects"><span class="ic">💻</span> Coding</a>
+          <a href="#subjects"><span class="ic">🎹</span> Musik</a>
+          <a href="#subjects"><span class="ic">📊</span> Lihat Semua →</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <a href="#how">Cara Kerja</a>
+      </div>
+      <div class="nav-item">
+        <a href="#tutors">Tutor <span class="caret">▾</span></a>
+        <div class="nav-dropdown" style="grid-template-columns:1fr;min-width:220px;">
+          <a href="#tutors"><span class="ic">⭐</span> Tutor Terpopuler</a>
+          <a href="#tutors"><span class="ic">🎓</span> Jadi Tutor</a>
+          <a href="#tutors"><span class="ic">🏫</span> Untuk Sekolah</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <a href="#pricing">Harga</a>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Ganti tema">🌙</button>
+      <a href="#" class="btn btn-ghost" style="display:none">Masuk</a>
+      <a href="#pricing" class="btn btn-primary">Coba Gratis</a>
+      <button class="hamburger" onclick="toggleMobile()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-panel" id="mobilePanel">
+    <a href="javascript:void(0)" onclick="toggleSub(this)">Mata Pelajaran <span class="mobile-caret">▾</span></a>
+    <div class="mobile-sub">
+      <a href="#subjects">📐 Matematika</a>
+      <a href="#subjects">🔤 Bahasa Inggris</a>
+      <a href="#subjects">🧪 Sains (IPA)</a>
+      <a href="#subjects">💻 Coding</a>
+    </div>
+    <a href="#how">Cara Kerja</a>
+    <a href="#tutors">Tutor</a>
+    <a href="#pricing">Harga</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">✨ Les privat 1-on-1, online & tatap muka</span>
+      <h1>Belajar jadi <em>lebih paham</em>,<br>bukan sekadar lebih lama</h1>
+      <p>Cocokkan anak dengan tutor terbaik sesuai mata pelajaran, level, dan gaya belajarnya. Sesi pertama gratis, tanpa kartu kredit.</p>
+      <div class="hero-actions">
+        <a href="#subjects" class="btn btn-primary">Cari Tutor Sekarang</a>
+        <a href="#how" class="btn btn-ghost">Lihat Cara Kerja</a>
+      </div>
+      <div class="hero-trust">
+        <div class="avatar-stack"><span></span><span></span><span></span><span></span></div>
+        <span>Dipercaya 12.400+ orang tua & siswa</span>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="float-chip c1">🔥 4.9/5 rating</div>
+      <div class="hero-card">
+        <div class="hero-card-top">
+          <div class="hero-card-avatar"></div>
+          <div>
+            <h4>Kak Nadia — Matematika</h4>
+            <span>Sesi berlangsung • 32 menit</span>
+          </div>
+          <div class="live-badge">Live</div>
+        </div>
+        <div class="hero-mock-lines">
+          <div></div><div></div><div></div>
+        </div>
+        <div class="hero-progress">
+          <span>Progress modul</span>
+          <div class="hero-progress-bar"><span></span></div>
+          <span>68%</span>
+        </div>
+      </div>
+      <div class="float-chip c2">📚 500+ tutor aktif</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="subjects">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Pilih Sesuai Kebutuhan</span>
+      <h2>Mata pelajaran favorit</h2>
+      <p>Dari akademik sampai skill baru — semua ada tutornya.</p>
+    </div>
+    <div class="subject-grid">
+      <div class="subject-card">
+        <div class="subject-icon">📐</div>
+        <h3>Matematika</h3>
+        <p>SD, SMP, SMA & persiapan UTBK</p>
+        <span class="subject-count">128 tutor</span>
+      </div>
+      <div class="subject-card">
+        <div class="subject-icon">🔤</div>
+        <h3>Bahasa Inggris</h3>
+        <p>Conversation, grammar, TOEFL/IELTS</p>
+        <span class="subject-count">96 tutor</span>
+      </div>
+      <div class="subject-card">
+        <div class="subject-icon">🧪</div>
+        <h3>Sains (IPA)</h3>
+        <p>Fisika, Kimia, Biologi</p>
+        <span class="subject-count">84 tutor</span>
+      </div>
+      <div class="subject-card">
+        <div class="subject-icon">💻</div>
+        <h3>Coding</h3>
+        <p>Scratch, Python, Web Dev dasar</p>
+        <span class="subject-count">57 tutor</span>
+      </div>
+      <div class="subject-card">
+        <div class="subject-icon">🎹</div>
+        <h3>Musik</h3>
+        <p>Piano, gitar, vokal</p>
+        <span class="subject-count">41 tutor</span>
+      </div>
+      <div class="subject-card">
+        <div class="subject-icon">🗣️</div>
+        <h3>Public Speaking</h3>
+        <p>Presentasi & kepercayaan diri</p>
+        <span class="subject-count">23 tutor</span>
+      </div>
+      <div class="subject-card">
+        <div class="subject-icon">✍️</div>
+        <h3>Menulis Kreatif</h3>
+        <p>Cerpen, esai, jurnal pribadi</p>
+        <span class="subject-count">18 tutor</span>
+      </div>
+      <div class="subject-card">
+        <div class="subject-icon">🧮</div>
+        <h3>Persiapan Ujian</h3>
+        <p>UTBK, SNBT, sekolah kedinasan</p>
+        <span class="subject-count">65 tutor</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="how" style="background:var(--cream-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Simpel & Cepat</span>
+      <h2>Cara kerja TutorLine</h2>
+      <p>Tiga langkah dari daftar sampai sesi belajar pertama.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Ceritakan kebutuhanmu</h3>
+        <p>Pilih mata pelajaran, level, dan jadwal yang cocok buat kamu atau anak kamu.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Cocok dengan tutor</h3>
+        <p>Kami rekomendasikan 3 tutor terbaik. Lihat profil, review, dan video perkenalan.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Mulai sesi pertama gratis</h3>
+        <p>Coba dulu 30 menit tanpa bayar. Lanjut kalau cocok, ganti tutor kalau belum pas.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stats-bar">
+  <div class="wrap stats-grid">
+    <div><strong>12.4rb+</strong><span>Siswa aktif</span></div>
+    <div><strong>540+</strong><span>Tutor terverifikasi</span></div>
+    <div><strong>4.9/5</strong><span>Rating rata-rata</span></div>
+    <div><strong>60+</strong><span>Mata pelajaran</span></div>
+  </div>
+</div>
+
+<section class="section" id="tutors">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Tutor Pilihan</span>
+      <h2>Bertemu tutor terbaik kami</h2>
+      <p>Semua tutor lolos verifikasi latar belakang & tes mengajar.</p>
+    </div>
+    <div class="tutor-grid">
+      <div class="tutor-card">
+        <div class="tutor-photo"><span class="tutor-rating">⭐ 4.9</span></div>
+        <div class="tutor-body">
+          <h3>Kak Nadia Putri</h3>
+          <div class="subj">Matematika · SMP-SMA</div>
+          <div class="tutor-tags"><span>UTBK</span><span>Online</span><span>5 thn</span></div>
+          <div class="tutor-footer">
+            <div class="tutor-price"><strong>Rp75rb</strong><small>/sesi 60 menit</small></div>
+            <a href="#" class="btn btn-primary btn-sm">Booking</a>
+          </div>
+        </div>
+      </div>
+      <div class="tutor-card">
+        <div class="tutor-photo"><span class="tutor-rating">⭐ 5.0</span></div>
+        <div class="tutor-body">
+          <h3>Kak Rio Ananta</h3>
+          <div class="subj">Bahasa Inggris · TOEFL</div>
+          <div class="tutor-tags"><span>Native-level</span><span>Online</span><span>7 thn</span></div>
+          <div class="tutor-footer">
+            <div class="tutor-price"><strong>Rp95rb</strong><small>/sesi 60 menit</small></div>
+            <a href="#" class="btn btn-primary btn-sm">Booking</a>
+          </div>
+        </div>
+      </div>
+      <div class="tutor-card">
+        <div class="tutor-photo"><span class="tutor-rating">⭐ 4.8</span></div>
+        <div class="tutor-body">
+          <h3>Kak Bella Safira</h3>
+          <div class="subj">Coding · Python & Web</div>
+          <div class="tutor-tags"><span>Pemula</span><span>Online</span><span>3 thn</span></div>
+          <div class="tutor-footer">
+            <div class="tutor-price"><strong>Rp85rb</strong><small>/sesi 60 menit</small></div>
+            <a href="#" class="btn btn-primary btn-sm">Booking</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--cream-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Kata Mereka</span>
+      <h2>Cerita dari orang tua & siswa</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Anak saya yang tadinya benci matematika sekarang malah nunggu jadwal les. Tutornya sabar banget."</p>
+        <div class="testi-who"><div class="av"></div><div><strong>Ibu Sari</strong><span>Orang tua siswa kelas 8</span></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Sesi trial gratis bikin saya yakin sebelum lanjut paket bulanan. Fleksibel banget jadwalnya."</p>
+        <div class="testi-who"><div class="av"></div><div><strong>Dimas A.</strong><span>Siswa persiapan UTBK</span></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Tutor coding-nya asik, materinya sesuai proyek nyata bukan cuma teori doang."</p>
+        <div class="testi-who"><div class="av"></div><div><strong>Farah Z.</strong><span>Mahasiswa</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pricing">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Harga Transparan</span>
+      <h2>Pilih paket sesuai kebutuhan</h2>
+      <p>Tanpa biaya tersembunyi, batalkan kapan saja.</p>
+    </div>
+    <div class="price-grid">
+      <div class="price-card">
+        <h3>Sekali Sesi</h3>
+        <p class="desc">Cocok untuk coba-coba dulu</p>
+        <div class="price-amount">Rp75rb<span>/sesi</span></div>
+        <ul class="price-list">
+          <li>✔ 1x sesi 60 menit</li>
+          <li>✔ Pilih tutor bebas</li>
+          <li>✔ Rekaman sesi</li>
+        </ul>
+        <a href="#" class="btn btn-ghost" style="justify-content:center;">Pilih Paket</a>
+      </div>
+      <div class="price-card featured">
+        <span class="price-badge">Paling Populer</span>
+        <h3>Paket 4x Sesi</h3>
+        <p class="desc">Belajar rutin tiap minggu</p>
+        <div class="price-amount">Rp270rb<span>/bulan</span></div>
+        <ul class="price-list">
+          <li>✔ 4x sesi 60 menit</li>
+          <li>✔ Tutor tetap & konsisten</li>
+          <li>✔ Laporan progress mingguan</li>
+          <li>✔ Chat tanya-jawab 24/7</li>
+        </ul>
+        <a href="#" class="btn btn-primary" style="justify-content:center;">Pilih Paket</a>
+      </div>
+      <div class="price-card">
+        <h3>Paket Bulanan Plus</h3>
+        <p class="desc">Untuk persiapan ujian intensif</p>
+        <div class="price-amount">Rp520rb<span>/bulan</span></div>
+        <ul class="price-list">
+          <li>✔ 8x sesi 60 menit</li>
+          <li>✔ Try out mingguan</li>
+          <li>✔ Konsultasi orang tua</li>
+        </ul>
+        <a href="#" class="btn btn-ghost" style="justify-content:center;">Pilih Paket</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="cta-band">
+    <h2>Mulai belajar lebih efektif hari ini</h2>
+    <p>Sesi pertama gratis 30 menit. Tanpa kartu kredit, tanpa komitmen jangka panjang.</p>
+    <div class="cta-actions">
+      <a href="#subjects" class="btn" style="background:#fff;color:var(--coral-dark);">Cari Tutor Gratis</a>
+      <a href="#" class="btn btn-outline-light">Jadi Tutor →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo"><span class="logo-mark">TL</span>TutorLine</a>
+        <p>Platform les privat 1-on-1 yang menghubungkan siswa dengan tutor terbaik, online maupun tatap muka.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Produk</h4>
+        <a href="#subjects">Cari Tutor</a>
+        <a href="#how">Cara Kerja</a>
+        <a href="#pricing">Harga</a>
+      </div>
+      <div class="footer-col">
+        <h4>Untuk Tutor</h4>
+        <a href="#">Daftar Jadi Tutor</a>
+        <a href="#">Panduan Mengajar</a>
+        <a href="#">Komunitas Tutor</a>
+      </div>
+      <div class="footer-col">
+        <h4>Bantuan</h4>
+        <a href="#">Pusat Bantuan</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat & Ketentuan</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 TutorLine. Semua hak dilindungi.</div>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme(){
+    const html=document.documentElement;
+    const cur=html.getAttribute('data-theme');
+    const next=cur==='dark'?'light':'dark';
+    html.setAttribute('data-theme',next);
+    localStorage.setItem('tutorline-theme',next);
+    document.querySelector('.theme-toggle').textContent = next==='dark' ? '☀️' : '🌙';
+  }
+  (function(){
+    const saved=localStorage.getItem('tutorline-theme');
+    if(saved==='dark'){
+      document.documentElement.setAttribute('data-theme','dark');
+    }
+  })();
+  window.addEventListener('DOMContentLoaded',()=>{
+    const cur=document.documentElement.getAttribute('data-theme');
+    document.querySelector('.theme-toggle').textContent = cur==='dark' ? '☀️' : '🌙';
+  });
+
+  function toggleMobile(){
+    document.getElementById('mobilePanel').classList.toggle('open');
+  }
+  function toggleSub(el){
+    const sub=el.nextElementSibling;
+    const caret=el.querySelector('.mobile-caret');
+    sub.classList.toggle('open');
+    caret.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>

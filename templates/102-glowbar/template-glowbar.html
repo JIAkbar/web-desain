@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glowbar — Salon & Barbershop Premium, Booking Instan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gold:#C9A24B;
+    --gold-bright:#E4C36D;
+    --ink:#0E0D0C;
+    --ink-2:#161513;
+    --bg:#FAF8F4;
+    --bg-2:#F1ECE1;
+    --card:#FFFFFF;
+    --text:#1C1A16;
+    --text-soft:#6B6558;
+    --border:#E8E1D2;
+    --shadow:0 4px 18px rgba(20,17,10,.07);
+    --shadow-lg:0 24px 55px rgba(20,17,10,.18);
+  }
+  [data-theme="dark"]{
+    --gold:#E4C36D;
+    --gold-bright:#F0D68C;
+    --ink:#F5F1E8;
+    --bg:#0C0B09;
+    --bg-2:#141210;
+    --card:#1A1815;
+    --text:#F2EEE3;
+    --text-soft:#A79E8A;
+    --border:#2C2822;
+    --shadow:0 4px 18px rgba(0,0,0,.4);
+    --shadow-lg:0 24px 55px rgba(0,0,0,.6);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:.3s;}
+  h1,h2,h3,.disp{font-family:'Bebas Neue',sans-serif;letter-spacing:.02em;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1220px;margin:0 auto;padding:0 24px;}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.9rem 1.8rem;border-radius:4px;font-weight:700;font-size:.88rem;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;border:none;transition:.25s;min-height:44px;}
+  .btn-primary{background:var(--gold);color:var(--ink);}
+  .btn-primary:hover{background:var(--gold-bright);transform:translateY(-2px);}
+  .btn-ghost{background:transparent;color:var(--text);border:1.5px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
+  .btn-dark{background:var(--ink);color:#fff;}
+  [data-theme="dark"] .btn-dark{background:var(--gold);color:var(--ink);}
+
+  header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 24px;max-width:1220px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:.7rem;font-family:'Bebas Neue';font-size:1.7rem;letter-spacing:.05em;}
+  .logo-mark{width:38px;height:38px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;color:var(--ink);font-size:1.05rem;font-family:'Inter';font-weight:800;}
+  .nav-links{display:flex;align-items:center;gap:2.1rem;}
+  .nav-item{position:relative;}
+  .nav-item>a{font-weight:600;font-size:.85rem;letter-spacing:.03em;text-transform:uppercase;display:flex;align-items:center;gap:.35rem;}
+  .nav-item>a .caret{font-size:.6rem;color:var(--text-soft);transition:.2s;}
+  .nav-item:hover>a .caret{transform:rotate(180deg);}
+  .nav-dropdown{display:none;position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%);min-width:260px;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:.6rem;box-shadow:var(--shadow-lg);}
+  .nav-item:hover .nav-dropdown,.nav-item:focus-within .nav-dropdown{display:block;}
+  .nav-dropdown a{display:flex;justify-content:space-between;padding:.7rem .8rem;border-radius:4px;font-size:.86rem;font-weight:500;text-transform:none;letter-spacing:0;}
+  .nav-dropdown a:hover{background:var(--bg-2);color:var(--gold);}
+  .nav-dropdown a span.p{color:var(--text-soft);font-size:.78rem;}
+  .nav-actions{display:flex;align-items:center;gap:.9rem;}
+  .theme-toggle{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:1.05rem;}
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;}
+  .hamburger span{width:24px;height:2px;background:var(--text);border-radius:2px;}
+  .mobile-panel{display:none;}
+
+  .hero{padding:5rem 0 4rem;position:relative;background:var(--ink);color:#fff;overflow:hidden;}
+  .hero::after{content:"";position:absolute;right:-10%;top:-20%;width:60%;height:140%;background:radial-gradient(circle,rgba(201,162,75,.18),transparent 65%);}
+  .hero-inner{position:relative;z-index:1;max-width:700px;}
+  .badge{display:inline-flex;align-items:center;gap:.5rem;border:1px solid rgba(228,195,109,.4);color:var(--gold-bright);font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;padding:.5rem 1.1rem;border-radius:100px;margin-bottom:1.5rem;}
+  .hero h1{font-size:clamp(2.8rem,6vw,4.8rem);line-height:1;margin-bottom:1.3rem;}
+  .hero h1 span{color:var(--gold);}
+  .hero p{font-size:1.08rem;color:#C9C4B6;max-width:460px;margin-bottom:2.2rem;}
+  .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2.2rem;}
+  .hero-info{display:flex;gap:2.2rem;flex-wrap:wrap;color:#C9C4B6;font-size:.85rem;}
+  .hero-info b{color:var(--gold-bright);display:block;font-family:'Bebas Neue';font-size:1.4rem;letter-spacing:.02em;}
+
+  .section{padding:5.4rem 0;}
+  .section-head{max-width:640px;margin:0 auto 3rem;text-align:center;}
+  .badge-dark{display:inline-flex;background:var(--bg-2);color:var(--text-soft);border:none;margin:0 auto 1rem;}
+  .section-head h2{font-size:clamp(2.1rem,4vw,3.2rem);margin-bottom:.9rem;}
+  .section-head p{color:var(--text-soft);font-size:1.03rem;}
+
+  /* GALLERY - view types w/ hover zoom */
+  .gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+  .gallery-item{position:relative;aspect-ratio:3/4;border-radius:10px;overflow:hidden;cursor:pointer;background:linear-gradient(135deg,#2B2620,#4A4032);}
+  .gallery-item:nth-child(2){background:linear-gradient(135deg,#3A2F26,#5C4A35);}
+  .gallery-item:nth-child(3){background:linear-gradient(135deg,#26241F,#463F30);}
+  .gallery-item:nth-child(4){background:linear-gradient(135deg,#332B22,#544731);}
+  .gallery-item .g-overlay{
+    position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.75),transparent 55%);
+    display:flex;align-items:flex-end;padding:1.2rem;opacity:0;transition:opacity .4s;
+  }
+  .gallery-item .g-overlay span{color:#fff;font-weight:700;font-size:.92rem;transform:translateY(10px);transition:transform .4s;}
+  .gallery-item:hover .g-overlay{opacity:1;}
+  .gallery-item:hover .g-overlay span{transform:translateY(0);}
+  .gallery-item:hover{transform:scale(1.03);box-shadow:var(--shadow-lg);}
+  .gallery-item{transition:transform .4s cubic-bezier(.2,.8,.2,1),box-shadow .4s;}
+
+  /* TEAM */
+  .team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;}
+  .team-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:transform .3s,box-shadow .3s;}
+  .team-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);}
+  .team-photo{height:220px;background:linear-gradient(135deg,var(--gold),#8A6B2E);}
+  .team-body{padding:1.2rem 1.3rem 1.4rem;}
+  .team-body h3{font-family:'Inter';font-weight:700;font-size:1.02rem;margin-bottom:.2rem;}
+  .team-body span{font-size:.82rem;color:var(--gold);font-weight:600;}
+  .team-body p{font-size:.8rem;color:var(--text-soft);margin-top:.5rem;}
+
+  /* SERVICES + PRICING */
+  .service-list{max-width:820px;margin:0 auto;}
+  .service-row{display:flex;justify-content:space-between;align-items:center;padding:1.4rem 0;border-bottom:1px dashed var(--border);}
+  .service-row:last-child{border-bottom:none;}
+  .service-row h3{font-family:'Inter';font-weight:700;font-size:1.02rem;margin-bottom:.3rem;}
+  .service-row p{font-size:.84rem;color:var(--text-soft);}
+  .service-row .price{font-family:'Bebas Neue';font-size:1.5rem;color:var(--gold);letter-spacing:.02em;white-space:nowrap;margin-left:1.5rem;}
+
+  /* BOOKING TABS */
+  .booking-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;box-shadow:var(--shadow);max-width:760px;margin:0 auto;}
+  .booking-tabs{display:flex;gap:.6rem;margin-bottom:1.6rem;flex-wrap:wrap;}
+  .booking-tab{padding:.6rem 1.2rem;border-radius:100px;border:1.5px solid var(--border);font-size:.85rem;font-weight:600;cursor:pointer;transition:.2s;}
+  .booking-tab.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+  [data-theme="dark"] .booking-tab.active{background:var(--gold);color:var(--ink);border-color:var(--gold);}
+  .booking-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:1.6rem;}
+  .booking-field label{display:block;font-size:.78rem;color:var(--text-soft);margin-bottom:.5rem;font-weight:600;text-transform:uppercase;letter-spacing:.03em;}
+  .booking-field select,.booking-field input{width:100%;padding:.8rem 1rem;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-family:'Inter';font-size:.9rem;}
+
+  .stats-band{background:var(--ink);color:#fff;border-radius:8px;padding:3rem 2.5rem;}
+  [data-theme="dark"] .stats-band{background:var(--card);border:1px solid var(--border);}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);text-align:center;}
+  .stats-grid div strong{font-family:'Bebas Neue';font-size:2.4rem;display:block;color:var(--gold);letter-spacing:.02em;}
+  .stats-grid div span{font-size:.83rem;color:#C9C4B6;}
+  [data-theme="dark"] .stats-grid div span{color:var(--text-soft);}
+
+  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;}
+  .testi-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.8rem;}
+  .testi-stars{color:var(--gold);margin-bottom:1rem;font-size:1rem;letter-spacing:2px;}
+  .testi-card p{font-size:.93rem;margin-bottom:1.2rem;}
+  .testi-who strong{font-size:.87rem;display:block;}
+  .testi-who span{font-size:.76rem;color:var(--text-soft);}
+
+  .cta-band{background:var(--ink);border-radius:8px;padding:3.6rem 2.5rem;text-align:center;color:#fff;position:relative;overflow:hidden;}
+  .cta-band::after{content:"";position:absolute;left:-10%;bottom:-30%;width:50%;height:120%;background:radial-gradient(circle,rgba(201,162,75,.18),transparent 65%);}
+  .cta-band h2{font-size:clamp(2rem,4vw,2.8rem);margin-bottom:.9rem;position:relative;}
+  .cta-band p{color:#C9C4B6;max-width:460px;margin:0 auto 1.8rem;position:relative;}
+  .cta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;position:relative;}
+
+  footer{background:var(--bg-2);color:var(--text-soft);padding:4rem 0 2rem;margin-top:5rem;border-top:1px solid var(--border);}
+  .footer-grid{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:2.5rem;margin-bottom:3rem;}
+  .footer-brand .logo{margin-bottom:1rem;}
+  .footer-brand p{font-size:.87rem;max-width:280px;}
+  .footer-col h4{color:var(--text);font-size:.85rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:1rem;}
+  .footer-col a{display:block;font-size:.84rem;padding:.4rem 0;}
+  .footer-col a:hover{color:var(--gold);}
+  .footer-bottom{border-top:1px solid var(--border);padding-top:1.6rem;text-align:center;font-size:.8rem;}
+
+  @media(max-width:980px){
+    .gallery-grid{grid-template-columns:repeat(2,1fr);}
+    .team-grid{grid-template-columns:repeat(2,1fr);}
+    .stats-grid{grid-template-columns:repeat(2,1fr);gap:1.8rem;}
+    .testi-grid{grid-template-columns:repeat(2,1fr);}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+    .booking-grid{grid-template-columns:1fr;}
+  }
+  @media(max-width:768px){
+    .nav-links{display:none;}
+    .hamburger{display:flex;}
+    .mobile-panel.open{display:block;background:var(--bg);border-top:1px solid var(--border);padding:1rem 24px 1.6rem;}
+    .mobile-panel a{display:block;padding:.8rem 0;font-weight:600;border-bottom:1px solid var(--border);}
+    .mobile-sub{padding-left:1rem;display:none;}
+    .mobile-sub.open{display:block;}
+    .mobile-sub a{border-bottom:none;padding:.6rem 0;font-weight:500;color:var(--text-soft);}
+    .mobile-caret{float:right;transition:transform .2s;}
+    .mobile-caret.open{transform:rotate(180deg);}
+    .nav-actions .btn-primary{padding:.7rem 1.1rem;font-size:.76rem;}
+    .hero{padding:3rem 0;}
+    .hero-actions .btn{width:100%;justify-content:center;}
+    .hero-actions{flex-direction:column;}
+    .section{padding:3.2rem 0;}
+    .gallery-grid{grid-template-columns:1fr 1fr;gap:.7rem;}
+    .team-grid{grid-template-columns:1fr 1fr;gap:1rem;}
+    .stats-grid{grid-template-columns:1fr 1fr;}
+    .testi-grid{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr;gap:2rem;}
+    .service-row{flex-direction:column;align-items:flex-start;gap:.4rem;}
+    .service-row .price{margin-left:0;}
+    .booking-card{padding:1.5rem;}
+    .stats-band,.cta-band{padding:2.4rem 1.5rem;}
+  }
+  @media(max-width:480px){
+    .gallery-grid,.team-grid{grid-template-columns:1fr 1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="#" class="logo"><span class="logo-mark">G</span>Glowbar</a>
+    <div class="nav-links">
+      <div class="nav-item">
+        <a href="#services">Layanan <span class="caret">▾</span></a>
+        <div class="nav-dropdown">
+          <a href="#services">Haircut & Styling <span class="p">dari Rp65rb</span></a>
+          <a href="#services">Shave & Beard Trim <span class="p">dari Rp45rb</span></a>
+          <a href="#services">Hair Coloring <span class="p">dari Rp180rb</span></a>
+          <a href="#services">Hair Spa & Treatment <span class="p">dari Rp120rb</span></a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="#gallery">Portfolio</a></div>
+      <div class="nav-item"><a href="#team">Tim Kami</a></div>
+      <div class="nav-item"><a href="#booking">Booking</a></div>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Ganti tema">🌙</button>
+      <a href="#booking" class="btn btn-primary">Booking Sekarang</a>
+      <button class="hamburger" onclick="toggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-panel" id="mobilePanel">
+    <a href="javascript:void(0)" onclick="toggleSub(this)">Layanan <span class="mobile-caret">▾</span></a>
+    <div class="mobile-sub">
+      <a href="#services">Haircut & Styling</a>
+      <a href="#services">Shave & Beard Trim</a>
+      <a href="#services">Hair Coloring</a>
+      <a href="#services">Hair Spa & Treatment</a>
+    </div>
+    <a href="#gallery">Portfolio</a>
+    <a href="#team">Tim Kami</a>
+    <a href="#booking">Booking</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-inner">
+    <span class="badge">✂️ Salon & Barbershop Premium</span>
+    <h1>Tampil <span>Rapi</span>.<br>Rasa <span>Percaya Diri</span>.</h1>
+    <p>Barber & stylist berpengalaman, produk premium, suasana nyaman. Booking online, tanpa antre panjang.</p>
+    <div class="hero-actions">
+      <a href="#booking" class="btn btn-primary">Booking Sekarang</a>
+      <a href="#gallery" class="btn btn-ghost" style="color:#fff;border-color:rgba(255,255,255,.3);">Lihat Portfolio</a>
+    </div>
+    <div class="hero-info">
+      <div><b>12rb+</b>Pelanggan puas</div>
+      <div><b>18</b>Barber & stylist</div>
+      <div><b>4.9/5</b>Rating Google</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="gallery">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-dark">Portfolio</span>
+      <h2>Hasil kerja kami</h2>
+      <p>Sebagian dari ratusan transformasi yang sudah kami kerjakan.</p>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item"><div class="g-overlay"><span>Fade & Taper</span></div></div>
+      <div class="gallery-item"><div class="g-overlay"><span>Classic Pompadour</span></div></div>
+      <div class="gallery-item"><div class="g-overlay"><span>Beard Sculpting</span></div></div>
+      <div class="gallery-item"><div class="g-overlay"><span>Color & Highlights</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="team" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-dark">Tim Kami</span>
+      <h2>Kenalan sama barber & stylist</h2>
+      <p>Semua tim tersertifikasi dengan jam terbang tinggi.</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-photo"></div>
+        <div class="team-body"><h3>Kevin Pratama</h3><span>Master Barber</span><p>Spesialis fade & tekstur rambut pria</p></div>
+      </div>
+      <div class="team-card">
+        <div class="team-photo"></div>
+        <div class="team-body"><h3>Dinda Larasati</h3><span>Senior Hairstylist</span><p>Spesialis coloring & treatment</p></div>
+      </div>
+      <div class="team-card">
+        <div class="team-photo"></div>
+        <div class="team-body"><h3>Bagas Nugroho</h3><span>Barber</span><p>Spesialis beard sculpting</p></div>
+      </div>
+      <div class="team-card">
+        <div class="team-photo"></div>
+        <div class="team-body"><h3>Sarah Amelia</h3><span>Hairstylist</span><p>Spesialis styling & up-do</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="services">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-dark">Harga Layanan</span>
+      <h2>Daftar layanan & harga</h2>
+    </div>
+    <div class="service-list">
+      <div class="service-row"><div><h3>Haircut & Styling</h3><p>Konsultasi gaya + cuci + potong + styling</p></div><span class="price">Rp65rb</span></div>
+      <div class="service-row"><div><h3>Shave & Beard Trim</h3><p>Cukur bersih dengan hot towel</p></div><span class="price">Rp45rb</span></div>
+      <div class="service-row"><div><h3>Hair Coloring</h3><p>Full color atau highlight, semi/permanent</p></div><span class="price">Rp180rb</span></div>
+      <div class="service-row"><div><h3>Hair Spa & Treatment</h3><p>Perawatan kulit kepala & nutrisi rambut</p></div><span class="price">Rp120rb</span></div>
+      <div class="service-row"><div><h3>Paket Groom Lengkap</h3><p>Haircut + shave + hair spa</p></div><span class="price">Rp210rb</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="booking" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-dark">Booking</span>
+      <h2>Reservasi jadwalmu</h2>
+    </div>
+    <div class="booking-card">
+      <div class="booking-tabs">
+        <div class="booking-tab active" onclick="selectTab(this)">Haircut & Styling</div>
+        <div class="booking-tab" onclick="selectTab(this)">Shave & Beard</div>
+        <div class="booking-tab" onclick="selectTab(this)">Coloring</div>
+        <div class="booking-tab" onclick="selectTab(this)">Hair Spa</div>
+      </div>
+      <div class="booking-grid">
+        <div class="booking-field">
+          <label for="bkStylist">Pilih Barber/Stylist</label>
+          <select id="bkStylist" name="stylist"><option>Siapa saja tersedia</option><option>Kevin Pratama</option><option>Dinda Larasati</option><option>Bagas Nugroho</option><option>Sarah Amelia</option></select>
+        </div>
+        <div class="booking-field">
+          <label for="bkDatetime">Tanggal & Jam</label>
+          <input type="datetime-local" id="bkDatetime" name="datetime">
+        </div>
+      </div>
+      <a href="#" class="btn btn-dark" style="width:100%;justify-content:center;">Konfirmasi Booking</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="stats-band">
+      <div class="stats-grid">
+        <div><strong>12rb+</strong><span>Pelanggan puas</span></div>
+        <div><strong>18</strong><span>Barber & stylist</span></div>
+        <div><strong>4.9/5</strong><span>Rating Google</span></div>
+        <div><strong>7</strong><span>Cabang aktif</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-dark">Testimoni</span>
+      <h2>Kata pelanggan kami</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Fade-nya rapi banget, tim ramah, tempatnya juga nyaman. Langganan di sini."</p>
+        <div class="testi-who"><strong>Yusuf Hakim</strong><span>Pelanggan tetap</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Booking online gampang, gak perlu nunggu lama pas datang. Recommended!"</p>
+        <div class="testi-who"><strong>Prita Handayani</strong><span>Pelanggan coloring</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Hair spa-nya bikin rambut jadi lembut, kulit kepala juga lebih sehat."</p>
+        <div class="testi-who"><strong>Galih Saputra</strong><span>Pelanggan hair spa</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Siap tampil lebih rapi?</h2>
+      <p>Booking sekarang dan dapatkan diskon 15% untuk kunjungan pertamamu.</p>
+      <div class="cta-actions">
+        <a href="#booking" class="btn btn-primary">Booking Sekarang</a>
+        <a href="#" class="btn btn-ghost" style="color:#fff;border-color:rgba(255,255,255,.3);">Hubungi Kami →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo"><span class="logo-mark">G</span>Glowbar</a>
+        <p>Salon & barbershop premium untuk kamu yang peduli penampilan tanpa ribet antre.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Layanan</h4>
+        <a href="#services">Haircut & Styling</a>
+        <a href="#services">Hair Coloring</a>
+        <a href="#services">Hair Spa</a>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <a href="#">Tentang Kami</a>
+        <a href="#team">Tim Kami</a>
+        <a href="#">Karir</a>
+      </div>
+      <div class="footer-col">
+        <h4>Bantuan</h4>
+        <a href="#booking">Booking</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat & Ketentuan</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 Glowbar Salon & Barbershop.</div>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme(){
+    const html=document.documentElement;
+    const next=html.getAttribute('data-theme')==='dark'?'light':'dark';
+    html.setAttribute('data-theme',next);
+    localStorage.setItem('glowbar-theme',next);
+    document.querySelector('.theme-toggle').textContent=next==='dark'?'☀️':'🌙';
+  }
+  (function(){ if(localStorage.getItem('glowbar-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); } })();
+  window.addEventListener('DOMContentLoaded',()=>{
+    document.querySelector('.theme-toggle').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';
+  });
+
+  function toggleMobile(){ document.getElementById('mobilePanel').classList.toggle('open'); }
+  function toggleSub(el){
+    el.nextElementSibling.classList.toggle('open');
+    el.querySelector('.mobile-caret').classList.toggle('open');
+  }
+  function selectTab(el){
+    document.querySelectorAll('.booking-tab').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');
+  }
+</script>
+
+</body>
+</html>
