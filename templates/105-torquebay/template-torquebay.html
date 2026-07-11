@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TorqueBay — Bengkel Mobil & Motor, Booking Servis Online</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --orange:#FF5A1F;
+    --orange-dark:#E0480F;
+    --steel:#2B3138;
+    --steel-2:#3A424C;
+    --bg:#F5F4F2;
+    --bg-2:#EBEAE6;
+    --card:#FFFFFF;
+    --text:#1D2126;
+    --text-soft:#666D77;
+    --border:#E1DFDA;
+    --shadow:0 4px 18px rgba(29,33,38,.07);
+    --shadow-lg:0 24px 55px rgba(29,33,38,.16);
+  }
+  [data-theme="dark"]{
+    --orange:#FF7A45;
+    --orange-dark:#FF9568;
+    --steel:#F0F1F3;
+    --bg:#14171B;
+    --bg-2:#1B1F24;
+    --card:#20242A;
+    --text:#EDEEF0;
+    --text-soft:#9198A3;
+    --border:#2C3138;
+    --shadow:0 4px 18px rgba(0,0,0,.4);
+    --shadow-lg:0 24px 55px rgba(0,0,0,.6);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:.3s;}
+  h1,h2,h3,.disp{font-family:'Barlow Condensed',sans-serif;letter-spacing:.01em;text-transform:uppercase;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1220px;margin:0 auto;padding:0 24px;}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.7rem;border-radius:8px;font-weight:700;font-size:.92rem;cursor:pointer;border:none;transition:.25s;min-height:44px;}
+  .btn:hover{filter:brightness(1.05);}
+  .btn:active{transform:scale(.96);}
+  .btn-primary{background:var(--orange);color:#fff;box-shadow:0 10px 24px rgba(255,90,31,.35);}
+  .btn-primary:hover{background:var(--orange-dark);transform:translateY(-2px);}
+  .btn-ghost{background:var(--card);color:var(--text);border:1.5px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--orange);color:var(--orange);transform:translateY(-2px);}
+  .btn-steel{background:var(--steel);color:#fff;}
+  [data-theme="dark"] .btn-steel{background:var(--card);border:1.5px solid var(--border);color:var(--text);}
+  .btn-steel:hover{transform:translateY(-2px);}
+
+  header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 24px;max-width:1220px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:.6rem;font-family:'Barlow Condensed';font-weight:800;font-size:1.6rem;}
+  .logo-mark{width:38px;height:38px;border-radius:8px;background:var(--orange);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;font-family:'Inter';font-weight:800;text-transform:none;}
+  .nav-links{display:flex;align-items:center;gap:2.1rem;}
+  .nav-item{position:relative;}
+  .nav-item>a{font-weight:700;font-size:.85rem;letter-spacing:.03em;text-transform:uppercase;display:flex;align-items:center;gap:.35rem;font-family:'Inter';}
+  .nav-item>a .caret{font-size:.6rem;color:var(--text-soft);transition:.2s;}
+  .nav-item:hover>a .caret{transform:rotate(180deg);}
+  /* single-column list dropdown, left-aligned, no icons — varied from grid style */
+  .nav-dropdown{
+    display:block;position:absolute;top:calc(100% + 12px);left:0;
+    min-width:260px;background:var(--card);border:1px solid var(--border);
+    border-radius:10px;padding:.4rem;box-shadow:var(--shadow-lg);
+    opacity:0;visibility:hidden;pointer-events:none;
+    transform:translateY(4px);
+    transition:opacity .16s ease,transform .16s ease,visibility 0s linear .16s;
+  }
+  .nav-item:focus-within .nav-dropdown{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition:opacity .16s ease,transform .16s ease;}
+  .nav-dropdown.open{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition:opacity .16s ease,transform .16s ease;}
+  .nav-dropdown a{display:flex;justify-content:space-between;align-items:center;padding:.75rem .9rem;border-radius:7px;font-size:.87rem;font-weight:600;text-transform:none;letter-spacing:0;font-family:'Inter';border-bottom:1px solid var(--border);}
+  .nav-dropdown a:last-child{border-bottom:none;}
+  .nav-dropdown a:hover{background:var(--bg-2);color:var(--orange-dark);}
+  .nav-dropdown a .tag{font-size:.7rem;color:var(--text-soft);font-weight:500;}
+  .nav-actions{display:flex;align-items:center;gap:.9rem;}
+  .theme-toggle{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:1.05rem;}
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;}
+  .hamburger span{width:24px;height:2px;background:var(--text);border-radius:2px;}
+  .mobile-panel{display:none;}
+
+  .hero{padding:4.5rem 0 3.5rem;background:var(--steel);color:#fff;position:relative;overflow:hidden;}
+  [data-theme="dark"] .hero{background:var(--bg-2);}
+  .hero::after{content:"";position:absolute;right:-8%;top:-30%;width:55%;height:150%;background:radial-gradient(circle,rgba(255,90,31,.16),transparent 65%);}
+  .hero-grid{display:grid;grid-template-columns:1fr .95fr;gap:3rem;align-items:center;position:relative;z-index:1;}
+  .badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,90,31,.15);color:var(--orange);font-weight:700;font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;padding:.5rem 1.1rem;border-radius:100px;margin-bottom:1.4rem;font-family:'Inter';}
+  .hero h1{font-size:clamp(2.6rem,5vw,4rem);line-height:1.02;margin-bottom:1.3rem;}
+  .hero h1 span{color:var(--orange);}
+  .hero p{font-family:'Inter';font-size:1.05rem;color:#B9BEC6;max-width:460px;margin-bottom:2rem;text-transform:none;}
+  [data-theme="dark"] .hero p{color:var(--text-soft);}
+  .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.8rem;}
+  .hero-info{display:flex;gap:2rem;flex-wrap:wrap;font-family:'Inter';font-size:.85rem;color:#B9BEC6;}
+  [data-theme="dark"] .hero-info{color:var(--text-soft);}
+  .hero-info b{color:var(--orange);display:block;font-family:'Barlow Condensed';font-size:1.4rem;text-transform:none;}
+
+  /* Booking widget */
+  .book-card{background:var(--card);border-radius:18px;padding:1.8rem;box-shadow:var(--shadow-lg);}
+  .book-head{font-family:'Inter';font-weight:700;font-size:1rem;margin-bottom:1.3rem;text-transform:none;color:var(--text);}
+  .book-row{margin-bottom:1.1rem;}
+  .book-row label{display:block;font-family:'Inter';font-size:.78rem;color:var(--text-soft);margin-bottom:.5rem;font-weight:600;text-transform:uppercase;letter-spacing:.03em;}
+  .book-tabs{display:flex;gap:.5rem;}
+  .book-tab{flex:1;text-align:center;padding:.7rem .5rem;border-radius:8px;border:1.5px solid var(--border);cursor:pointer;transition:.2s;font-family:'Inter';font-size:.85rem;font-weight:600;}
+  .book-tab.active{border-color:var(--orange);background:var(--bg-2);color:var(--orange-dark);}
+  .book-select{width:100%;padding:.8rem 1rem;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-family:'Inter';font-size:.9rem;}
+
+  .section{padding:5.4rem 0;}
+  .section-head{max-width:600px;margin:0 auto 3rem;text-align:center;}
+  .badge-dark{display:inline-flex;background:var(--bg-2);color:var(--text-soft);margin:0 auto 1rem;}
+  .section-head h2{font-size:clamp(2rem,3.8vw,2.8rem);margin-bottom:.9rem;}
+  .section-head p{font-family:'Inter';color:var(--text-soft);font-size:1.03rem;text-transform:none;}
+
+  /* SERVICES - view types w/ hover */
+  .service-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;}
+  .service-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.8rem 1.5rem;cursor:pointer;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s;}
+  .service-card:hover{transform:translateY(-10px);box-shadow:var(--shadow-lg);border-color:var(--orange);}
+  .service-icon{width:50px;height:50px;border-radius:10px;background:var(--bg-2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.1rem;transition:.35s;}
+  .service-card:hover .service-icon{background:var(--orange);transform:scale(1.1);}
+  .service-card h3{font-family:'Inter';font-size:1.02rem;font-weight:700;margin-bottom:.5rem;text-transform:none;}
+  .service-card p{font-family:'Inter';font-size:.84rem;color:var(--text-soft);text-transform:none;}
+
+  /* BAY STATUS BOARD */
+  .bay-board{display:grid;grid-template-columns:repeat(6,1fr);gap:1rem;}
+  .bay{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.1rem .8rem;text-align:center;}
+  .bay .num{font-family:'Barlow Condensed';font-size:1.6rem;color:var(--text-soft);}
+  .bay-dot{width:12px;height:12px;border-radius:50%;margin:.5rem auto;}
+  .bay.free .bay-dot{background:#1E9E4C;}
+  .bay.busy .bay-dot{background:var(--orange);}
+  .bay .status{font-family:'Inter';font-size:.72rem;color:var(--text-soft);text-transform:none;font-weight:600;}
+
+  /* HOW IT WORKS */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;}
+  .step{text-align:center;}
+  .step-num{width:56px;height:56px;border-radius:50%;background:var(--steel);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed';font-size:1.5rem;margin:0 auto 1.2rem;}
+  [data-theme="dark"] .step-num{background:var(--orange);color:var(--ink,#14171B);}
+  .step h3{font-family:'Inter';font-size:1.05rem;margin-bottom:.5rem;text-transform:none;}
+  .step p{font-family:'Inter';color:var(--text-soft);font-size:.88rem;text-transform:none;}
+
+  /* MECHANIC TEAM */
+  .team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;}
+  .team-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:.3s;}
+  .team-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);}
+  .team-photo{height:180px;background:linear-gradient(135deg,var(--steel),var(--steel-2));}
+  .team-body{padding:1.1rem 1.2rem 1.3rem;}
+  .team-body h3{font-family:'Inter';font-weight:700;font-size:.98rem;margin-bottom:.2rem;text-transform:none;}
+  .team-body span{font-family:'Inter';font-size:.8rem;color:var(--orange-dark);font-weight:600;}
+
+  .stats-band{background:var(--steel);color:#fff;border-radius:16px;padding:3rem 2.5rem;}
+  [data-theme="dark"] .stats-band{background:var(--card);border:1px solid var(--border);}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);text-align:center;}
+  .stats-grid div strong{font-family:'Barlow Condensed';font-size:2.3rem;display:block;color:var(--orange);}
+  .stats-grid div span{font-family:'Inter';font-size:.83rem;color:#B9BEC6;text-transform:none;}
+  [data-theme="dark"] .stats-grid div span{color:var(--text-soft);}
+
+  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;}
+  .testi-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.8rem;}
+  .testi-stars{color:var(--orange);margin-bottom:1rem;font-size:1rem;letter-spacing:2px;}
+  .testi-card p{font-family:'Inter';font-size:.92rem;margin-bottom:1.2rem;text-transform:none;}
+  .testi-who strong{font-family:'Inter';font-size:.87rem;display:block;text-transform:none;}
+  .testi-who span{font-family:'Inter';font-size:.76rem;color:var(--text-soft);text-transform:none;}
+
+  .cta-band{background:var(--orange);border-radius:16px;padding:3.5rem 2.5rem;text-align:center;color:#fff;}
+  .cta-band h2{font-size:clamp(2rem,3.8vw,2.6rem);margin-bottom:.9rem;}
+  .cta-band p{font-family:'Inter';color:rgba(255,255,255,.92);max-width:460px;margin:0 auto 1.8rem;text-transform:none;}
+  .cta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+
+  footer{background:var(--steel);color:#B9BEC6;padding:4rem 0 2rem;margin-top:5rem;}
+  [data-theme="dark"] footer{background:var(--card);border-top:1px solid var(--border);}
+  .footer-grid{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:2.5rem;margin-bottom:3rem;}
+  .footer-brand .logo{color:#fff;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-brand .logo{color:var(--text);}
+  .footer-brand p{font-family:'Inter';font-size:.86rem;max-width:280px;text-transform:none;}
+  .footer-col h4{color:#fff;font-family:'Inter';font-size:.85rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-col h4{color:var(--text);}
+  .footer-col a{display:block;font-family:'Inter';font-size:.84rem;padding:.4rem 0;color:#9BA1AA;text-transform:none;}
+  .footer-col a:hover{color:var(--orange);}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1.6rem;text-align:center;font-family:'Inter';font-size:.8rem;text-transform:none;}
+
+  @media(max-width:980px){
+    .hero-grid{grid-template-columns:1fr;}
+    .service-grid{grid-template-columns:repeat(2,1fr);}
+    .bay-board{grid-template-columns:repeat(3,1fr);}
+    .team-grid{grid-template-columns:repeat(2,1fr);}
+    .steps{grid-template-columns:1fr;gap:2.5rem;}
+    .stats-grid{grid-template-columns:repeat(2,1fr);gap:1.8rem;}
+    .testi-grid{grid-template-columns:repeat(2,1fr);}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media(max-width:768px){
+    .nav-links{display:none;}
+    .hamburger{display:flex;}
+    .mobile-panel.open{display:block;background:var(--bg);border-top:1px solid var(--border);padding:1rem 24px 1.6rem;}
+    .mobile-panel a{display:block;padding:.8rem 0;font-weight:600;border-bottom:1px solid var(--border);font-family:'Inter';}
+    .mobile-sub{padding-left:1rem;display:none;}
+    .mobile-sub.open{display:block;}
+    .mobile-sub a{border-bottom:none;padding:.6rem 0;font-weight:500;color:var(--text-soft);}
+    .mobile-caret{float:right;transition:transform .2s;}
+    .mobile-caret.open{transform:rotate(180deg);}
+    .nav-actions{gap:.5rem;}
+    .nav-actions .btn-primary{padding:.6rem .9rem;font-size:.74rem;white-space:nowrap;}
+    .theme-toggle{width:34px;height:34px;font-size:.9rem;}
+    .hero{padding:2.8rem 0;}
+    .hero-actions .btn{width:100%;justify-content:center;}
+    .hero-actions{flex-direction:column;}
+    .section{padding:3.4rem 0;}
+    .service-grid{grid-template-columns:1fr 1fr;gap:1rem;}
+    .bay-board{grid-template-columns:repeat(3,1fr);gap:.6rem;}
+    .team-grid{grid-template-columns:1fr 1fr;gap:1rem;}
+    .stats-grid{grid-template-columns:1fr 1fr;}
+    .testi-grid{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr;gap:2rem;}
+    .stats-band,.cta-band{padding:2.4rem 1.5rem;}
+  }
+  @media(max-width:480px){
+    .service-grid{grid-template-columns:1fr;}
+    .bay-board{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="#" class="logo"><span class="logo-mark">TB</span>TorqueBay</a>
+    <div class="nav-links">
+      <div class="nav-item">
+        <a href="#services">Layanan <span class="caret">▾</span></a>
+        <div class="nav-dropdown">
+          <a href="#services">Servis Berkala <span class="tag">rutin</span></a>
+          <a href="#services">Ganti Oli & Filter <span class="tag">cepat</span></a>
+          <a href="#services">Servis AC Mobil <span class="tag">populer</span></a>
+          <a href="#services">Body Repair & Cat <span class="tag">estimasi</span></a>
+          <a href="#services">Motor & Matic <span class="tag">semua tipe</span></a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="#bay">Status Bengkel</a></div>
+      <div class="nav-item"><a href="#team">Mekanik</a></div>
+      <div class="nav-item"><a href="#booking">Booking</a></div>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Ganti tema">🌙</button>
+      <a href="#booking" class="btn btn-primary">Booking Servis</a>
+      <button class="hamburger" onclick="toggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-panel" id="mobilePanel">
+    <a href="javascript:void(0)" onclick="toggleSub(this)">Layanan <span class="mobile-caret">▾</span></a>
+    <div class="mobile-sub">
+      <a href="#services">Servis Berkala</a>
+      <a href="#services">Ganti Oli & Filter</a>
+      <a href="#services">Servis AC Mobil</a>
+      <a href="#services">Body Repair & Cat</a>
+    </div>
+    <a href="#bay">Status Bengkel</a>
+    <a href="#team">Mekanik</a>
+    <a href="#booking">Booking</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="badge">🔧 Bengkel resmi & bersertifikat</span>
+      <h1>Mobil <span>Sehat</span>,<br>Perjalanan <span>Tenang</span></h1>
+      <p>Servis mobil & motor tanpa antre. Booking online, mekanik bersertifikat, spare part original.</p>
+      <div class="hero-actions">
+        <a href="#booking" class="btn btn-primary">Booking Servis</a>
+        <a href="#services" class="btn btn-ghost">Lihat Layanan</a>
+      </div>
+      <div class="hero-info">
+        <div><b>24rb+</b>Kendaraan diservis</div>
+        <div><b>18</b>Mekanik bersertifikat</div>
+        <div><b>4.8/5</b>Rating pelanggan</div>
+      </div>
+    </div>
+
+    <div class="book-card">
+      <div class="book-head">Booking Servis Cepat</div>
+      <div class="book-row">
+        <span class="book-row-label" style="display:block;font-family:'Inter';font-size:.78rem;color:var(--text-soft);margin-bottom:.5rem;font-weight:600;text-transform:uppercase;letter-spacing:.03em;">Jenis Kendaraan</span>
+        <div class="book-tabs">
+          <div class="book-tab active" onclick="selectBookTab(this)">Mobil</div>
+          <div class="book-tab" onclick="selectBookTab(this)">Motor</div>
+        </div>
+      </div>
+      <div class="book-row">
+        <label for="svcSelect">Jenis Servis</label>
+        <select id="svcSelect" class="book-select">
+          <option>Servis Berkala</option>
+          <option>Ganti Oli & Filter</option>
+          <option>Servis AC</option>
+          <option>Body Repair & Cat</option>
+        </select>
+      </div>
+      <div class="book-row">
+        <label for="dateInput">Tanggal Servis</label>
+        <input type="date" id="dateInput" class="book-select">
+      </div>
+      <a href="#" class="btn btn-primary" style="width:100%;justify-content:center;">Cek Slot Tersedia →</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="services">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-dark">Layanan Bengkel</span>
+      <h2>Semua kebutuhan servis di satu tempat</h2>
+      <p>Dari servis rutin sampai body repair, kami tangani semua.</p>
+    </div>
+    <div class="service-grid">
+      <div class="service-card">
+        <div class="service-icon">🔧</div>
+        <h3>Servis Berkala</h3>
+        <p>Cek menyeluruh sesuai jadwal pabrikan</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🛢️</div>
+        <h3>Ganti Oli & Filter</h3>
+        <p>Oli original, proses 30 menit</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">❄️</div>
+        <h3>Servis AC Mobil</h3>
+        <p>Cuci evaporator & isi ulang freon</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🎨</div>
+        <h3>Body Repair & Cat</h3>
+        <p>Perbaikan body & pengecatan presisi</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="bay" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-dark">Real-time</span>
+      <h2>Status bay bengkel hari ini</h2>
+      <p>Cek ketersediaan bay servis sebelum datang.</p>
+    </div>
+    <div class="bay-board">
+      <div class="bay free"><div class="num">01</div><div class="bay-dot"></div><div class="status">Kosong</div></div>
+      <div class="bay busy"><div class="num">02</div><div class="bay-dot"></div><div class="status">Terisi</div></div>
+      <div class="bay busy"><div class="num">03</div><div class="bay-dot"></div><div class="status">Terisi</div></div>
+      <div class="bay free"><div class="num">04</div><div class="bay-dot"></div><div class="status">Kosong</div></div>
+      <div class="bay free"><div class="num">05</div><div class="bay-dot"></div><div class="status">Kosong</div></div>
+      <div class="bay busy"><div class="num">06</div><div class="bay-dot"></div><div class="status">Terisi</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-dark">Cara Kerja</span>
+      <h2>Booking servis 3 langkah</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Pilih layanan & jadwal</h3>
+        <p>Isi jenis kendaraan, layanan, dan tanggal yang kamu mau.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Konfirmasi slot bay</h3>
+        <p>Kami konfirmasi ketersediaan bay & estimasi waktu servis.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Datang & servis</h3>
+        <p>Langsung ke bay yang sudah ditentukan, tanpa antre.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="team" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-dark">Tim Mekanik</span>
+      <h2>Mekanik bersertifikat kami</h2>
+    </div>
+    <div class="team-grid">
+      <div class="team-card"><div class="team-photo"></div><div class="team-body"><h3>Agus Setiawan</h3><span>Kepala Mekanik</span></div></div>
+      <div class="team-card"><div class="team-photo"></div><div class="team-body"><h3>Dedi Kurniawan</h3><span>Spesialis Mesin</span></div></div>
+      <div class="team-card"><div class="team-photo"></div><div class="team-body"><h3>Rian Hidayat</h3><span>Spesialis AC & Elektrikal</span></div></div>
+      <div class="team-card"><div class="team-photo"></div><div class="team-body"><h3>Fajar Nugraha</h3><span>Spesialis Body & Cat</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="stats-band">
+      <div class="stats-grid">
+        <div><strong>24rb+</strong><span>Kendaraan diservis</span></div>
+        <div><strong>18</strong><span>Mekanik bersertifikat</span></div>
+        <div><strong>4.8/5</strong><span>Rating pelanggan</span></div>
+        <div><strong>6</strong><span>Cabang bengkel</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-dark">Testimoni</span>
+      <h2>Kata pelanggan kami</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Booking online-nya bener-bener gak perlu antre. Mekaniknya juga jujur soal kondisi mobil."</p>
+        <div class="testi-who"><strong>Hendra Wijaya</strong><span>Pelanggan tetap</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Servis AC-nya tuntas, dingin lagi kayak baru. Harganya juga transparan dari awal."</p>
+        <div class="testi-who"><strong>Melisa Putri</strong><span>Pelanggan servis AC</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Body repair rapi, warnanya nyambung sempurna sama cat asli. Recommended!"</p>
+        <div class="testi-who"><strong>Bayu Prasetyo</strong><span>Pelanggan body repair</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="booking">
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Servis mobilmu tanpa antre</h2>
+      <p>Booking sekarang, dapatkan slot bay yang sesuai jadwalmu.</p>
+      <div class="cta-actions">
+        <a href="#" class="btn btn-steel">Booking Sekarang</a>
+        <a href="#" class="btn btn-ghost" style="background:transparent;border-color:rgba(255,255,255,.5);color:#fff;">Hubungi Bengkel →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo"><span class="logo-mark">TB</span>TorqueBay</a>
+        <p>Bengkel mobil & motor dengan booking online, mekanik bersertifikat, dan spare part original.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Layanan</h4>
+        <a href="#services">Servis Berkala</a>
+        <a href="#services">Ganti Oli</a>
+        <a href="#services">Body Repair</a>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <a href="#">Tentang Kami</a>
+        <a href="#team">Tim Mekanik</a>
+        <a href="#">Karir</a>
+      </div>
+      <div class="footer-col">
+        <h4>Bantuan</h4>
+        <a href="#booking">Booking</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat & Ketentuan</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 TorqueBay. Bengkel resmi & bersertifikat.</div>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme(){
+    const html=document.documentElement;
+    const next=html.getAttribute('data-theme')==='dark'?'light':'dark';
+    html.setAttribute('data-theme',next);
+    localStorage.setItem('torquebay-theme',next);
+    document.querySelector('.theme-toggle').textContent=next==='dark'?'☀️':'🌙';
+  }
+  (function(){ if(localStorage.getItem('torquebay-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); } })();
+  window.addEventListener('DOMContentLoaded',()=>{
+    document.querySelector('.theme-toggle').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';
+  });
+
+  function toggleMobile(){ document.getElementById('mobilePanel').classList.toggle('open'); }
+  function toggleSub(el){
+    el.nextElementSibling.classList.toggle('open');
+    el.querySelector('.mobile-caret').classList.toggle('open');
+  }
+  function selectBookTab(el){
+    document.querySelectorAll('.book-tab').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  document.querySelectorAll('.nav-item').forEach(item=>{
+    const dd=item.querySelector('.nav-dropdown');
+    if(!dd) return;
+    let closeTimer;
+    item.addEventListener('mouseenter',()=>{ clearTimeout(closeTimer); dd.classList.add('open'); });
+    item.addEventListener('mouseleave',()=>{ closeTimer=setTimeout(()=>dd.classList.remove('open'),400); });
+  });
+</script>
+
+</body>
+</html>
