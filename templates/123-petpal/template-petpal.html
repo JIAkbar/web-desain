@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Groomly — Pet Grooming & Perawatan Hewan Kesayangan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#FF6FA5;
+    --pink-dark:#E8548C;
+    --lavender:#9B7EE8;
+    --cream:#FFF9F5;
+    --cream-3:#FCEAF1;
+    --card:#FFFFFF;
+    --text:#2A1F28;
+    --text-soft2:#756577;
+    --border:#F4DEE8;
+    --shadow:0 4px 18px rgba(42,31,40,.07);
+    --shadow-lg:0 24px 55px rgba(42,31,40,.17);
+  }
+  [data-theme="dark"]{
+    --pink:#FF8FBB;
+    --pink-dark:#FFA9CC;
+    --lavender:#B49BFF;
+    --cream:#180F16;
+    --cream-3:#20141C;
+    --card:#251621;
+    --text:#F5E9F1;
+    --text-soft2:#A88F9E;
+    --border:#38222F;
+    --shadow:0 4px 18px rgba(0,0,0,.4);
+    --shadow-lg:0 24px 55px rgba(0,0,0,.6);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--text);line-height:1.6;transition:.3s;}
+  h1,h2,h3,.disp{font-family:'Fredoka',sans-serif;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.7rem;border-radius:100px;font-weight:700;font-size:.95rem;cursor:pointer;border:none;transition:.25s;min-height:44px;}
+  .btn:hover{filter:brightness(1.04);}
+  .btn:active{transform:scale(.96);}
+  .btn-primary{background:var(--pink);color:#fff;box-shadow:0 10px 24px rgba(255,111,165,.32);}
+  .btn-primary:hover{background:var(--pink-dark);transform:translateY(-2px);}
+  .btn-ghost{background:var(--card);color:var(--text);border:1.5px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--pink);color:var(--pink-dark);transform:translateY(-2px);}
+  .btn-white{background:#fff;color:var(--pink-dark);}
+  .btn-white:hover{transform:translateY(-2px);}
+  .btn-outline-light{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.4);}
+  .btn-outline-light:hover{border-color:#fff;background:rgba(255,255,255,.12);transform:translateY(-2px);}
+
+  header{position:sticky;top:0;z-index:100;background:var(--cream);border-bottom:1px solid var(--border);}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 24px;max-width:1200px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:.6rem;font-family:'Fredoka';font-weight:700;font-size:1.35rem;}
+  .logo-mark{width:37px;height:37px;border-radius:12px;background:linear-gradient(135deg,var(--pink),var(--lavender));display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;}
+  .nav-links{display:flex;align-items:center;gap:2.1rem;}
+  .nav-item{position:relative;}
+  .nav-item>a{font-weight:600;font-size:.93rem;display:flex;align-items:center;gap:.3rem;}
+  .nav-item>a .caret{font-size:.6rem;color:var(--text-soft2);transition:.2s;}
+  .nav-item:hover>a .caret{transform:rotate(180deg);}
+  /* price-tag list dropdown - varied pattern */
+  .nav-dropdown{
+    display:block;position:absolute;top:calc(100% + 14px);left:50%;
+    min-width:270px;background:var(--card);border:1px solid var(--border);
+    border-radius:14px;padding:.5rem;box-shadow:var(--shadow-lg);
+    opacity:0;visibility:hidden;pointer-events:none;
+    transform:translateX(-50%) translateY(6px);
+    transition:opacity .17s ease,transform .17s ease,visibility 0s linear .17s;
+  }
+  .nav-item:focus-within .nav-dropdown{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0);transition:opacity .17s ease,transform .17s ease;}
+  .nav-dropdown.open{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0);transition:opacity .17s ease,transform .17s ease;}
+  .nav-dropdown a{display:flex;justify-content:space-between;align-items:center;padding:.65rem .8rem;border-radius:10px;font-size:.86rem;font-weight:600;}
+  .nav-dropdown a:hover{background:var(--cream-3);}
+  .nav-dropdown a .price{font-size:.78rem;color:var(--pink-dark);font-weight:700;}
+  .nav-actions{display:flex;align-items:center;gap:.9rem;}
+  .theme-toggle{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:1.05rem;}
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;}
+  .hamburger span{width:24px;height:2px;background:var(--text);border-radius:2px;}
+  .mobile-panel{display:none;}
+
+  .hero{padding:4.5rem 0 3.5rem;}
+  .hero-grid{display:grid;grid-template-columns:1fr .9fr;gap:3rem;align-items:center;}
+  .badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--cream-3);color:var(--pink-dark);font-weight:700;font-size:.8rem;padding:.5rem 1rem;border-radius:100px;margin-bottom:1.3rem;}
+  .hero h1{font-size:clamp(2.2rem,4.2vw,3.3rem);font-weight:700;line-height:1.15;margin-bottom:1.2rem;}
+  .hero h1 span{color:var(--pink);}
+  .hero p{font-size:1.05rem;color:var(--text-soft2);max-width:470px;margin-bottom:2rem;}
+  .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.8rem;}
+  .hero-badges{display:flex;gap:1.8rem;color:var(--text-soft2);font-size:.85rem;flex-wrap:wrap;}
+  .hero-badges b{color:var(--text);display:block;font-family:'Fredoka';font-size:1.2rem;}
+
+  /* PACKAGE BUILDER */
+  .pkg-card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:1.8rem;box-shadow:var(--shadow-lg);}
+  .pkg-head{font-family:'Fredoka';font-weight:700;font-size:1rem;margin-bottom:1.3rem;}
+  .pkg-item{display:flex;align-items:center;gap:.8rem;padding:.7rem 0;border-bottom:1px solid var(--border);cursor:pointer;}
+  .pkg-item:last-of-type{border-bottom:none;}
+  .pkg-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#fff;flex-shrink:0;transition:.2s;}
+  .pkg-check.checked{background:var(--pink);border-color:var(--pink);}
+  .pkg-item-label{flex:1;font-size:.9rem;font-weight:600;}
+  .pkg-item-price{font-size:.85rem;color:var(--text-soft2);font-weight:600;}
+  .pkg-total{background:var(--cream-3);border-radius:12px;padding:1rem 1.2rem;display:flex;justify-content:space-between;align-items:center;margin:1.1rem 0;}
+  .pkg-total span{font-size:.8rem;color:var(--text-soft2);display:block;}
+  .pkg-total strong{font-family:'Fredoka';font-size:1.3rem;color:var(--pink-dark);}
+
+  .section{padding:5.4rem 0;}
+  .section-head{max-width:600px;margin:0 auto 3rem;text-align:center;}
+  .badge-center{margin:0 auto 1rem;width:fit-content;}
+  .section-head h2{font-size:clamp(1.8rem,3.4vw,2.5rem);font-weight:700;margin-bottom:.9rem;}
+  .section-head p{color:var(--text-soft2);font-size:1.03rem;}
+
+  /* SERVICES - view types w/ hover (bounce-scale pattern) */
+  .service-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;}
+  .service-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:1.9rem 1.5rem;text-align:center;cursor:pointer;transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s;}
+  .service-card:hover{transform:translateY(-6px) scale(1.04);box-shadow:var(--shadow-lg);}
+  .service-icon{width:60px;height:60px;border-radius:50%;background:var(--cream-3);display:flex;align-items:center;justify-content:center;font-size:1.7rem;margin:0 auto 1.1rem;}
+  .service-card h3{font-size:1.02rem;font-weight:700;margin-bottom:.5rem;}
+  .service-card p{font-size:.84rem;color:var(--text-soft2);}
+
+  /* GALLERY */
+  .gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;}
+  .gallery-item{aspect-ratio:1;border-radius:16px;position:relative;overflow:hidden;cursor:pointer;transition:transform .35s cubic-bezier(.2,.8,.2,1);}
+  .gallery-item:hover{transform:scale(1.05);}
+  .gallery-item.g1{background:linear-gradient(135deg,var(--pink),#FFB199);}
+  .gallery-item.g2{background:linear-gradient(135deg,var(--lavender),#C8B8FF);}
+  .gallery-item.g3{background:linear-gradient(135deg,#FFC94D,var(--pink));}
+  .gallery-item.g4{background:linear-gradient(135deg,#5CC9C0,var(--lavender));}
+  .gallery-overlay{position:absolute;inset:0;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.85rem;opacity:0;transition:opacity .3s;}
+  .gallery-item:hover .gallery-overlay{opacity:1;}
+
+  .stats-band{background:var(--pink);color:#fff;border-radius:24px;padding:3.2rem 2.5rem;}
+  [data-theme="dark"] .stats-band{background:var(--card);border:1px solid var(--border);color:var(--text);}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);text-align:center;}
+  .stats-grid div strong{font-family:'Fredoka';font-size:2.1rem;display:block;}
+  .stats-grid div span{font-size:.85rem;opacity:.88;}
+
+  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;}
+  .testi-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.8rem;transition:.3s;}
+  .testi-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+  .testi-stars{color:#F5A524;margin-bottom:1rem;font-size:1rem;letter-spacing:2px;}
+  .testi-card p{font-size:.93rem;margin-bottom:1.2rem;}
+  .testi-who strong{font-size:.87rem;display:block;}
+  .testi-who span{font-size:.76rem;color:var(--text-soft2);}
+
+  .cta-band{background:linear-gradient(135deg,var(--pink),var(--lavender));border-radius:24px;padding:3.5rem 2.5rem;text-align:center;color:#fff;}
+  .cta-band h2{font-size:clamp(1.7rem,3.4vw,2.3rem);margin-bottom:.9rem;}
+  .cta-band p{color:rgba(255,255,255,.92);max-width:460px;margin:0 auto 1.8rem;}
+  .cta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+
+  footer{background:#241620;color:#A88F9E;padding:4rem 0 2rem;margin-top:5rem;}
+  [data-theme="dark"] footer{background:var(--card);border-top:1px solid var(--border);color:var(--text-soft2);}
+  .footer-grid{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:2.5rem;margin-bottom:3rem;}
+  .footer-brand .logo{color:#fff;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-brand .logo{color:var(--text);}
+  .footer-brand p{font-size:.86rem;max-width:280px;}
+  .footer-col h4{color:#fff;font-size:.88rem;margin-bottom:1rem;}
+  [data-theme="dark"] .footer-col h4{color:var(--text);}
+  .footer-col a{display:block;font-size:.84rem;padding:.4rem 0;color:#8F7A87;}
+  .footer-col a:hover{color:#fff;}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1.6rem;text-align:center;font-size:.8rem;}
+
+  @media(max-width:980px){
+    .hero-grid{grid-template-columns:1fr;}
+    .service-grid{grid-template-columns:repeat(2,1fr);}
+    .gallery-grid{grid-template-columns:repeat(2,1fr);}
+    .stats-grid{grid-template-columns:repeat(2,1fr);gap:1.8rem;}
+    .testi-grid{grid-template-columns:repeat(2,1fr);}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media(max-width:768px){
+    .nav-links{display:none;}
+    .hamburger{display:flex;}
+    .mobile-panel.open{display:block;background:var(--cream);border-top:1px solid var(--border);padding:1rem 24px 1.6rem;}
+    .mobile-panel a{display:block;padding:.8rem 0;font-weight:600;border-bottom:1px solid var(--border);}
+    .mobile-sub{padding-left:1rem;display:none;}
+    .mobile-sub.open{display:block;}
+    .mobile-sub a{border-bottom:none;padding:.6rem 0;font-weight:500;color:var(--text-soft2);}
+    .mobile-caret{float:right;transition:transform .2s;}
+    .mobile-caret.open{transform:rotate(180deg);}
+    nav{padding:1rem 16px;}
+    .logo{font-size:1.2rem;gap:.5rem;}
+    .logo-mark{width:32px;height:32px;font-size:1rem;}
+    .nav-actions{gap:.4rem;}
+    .nav-actions .btn-primary{padding:.55rem .75rem;font-size:.68rem;white-space:nowrap;}
+    .theme-toggle{width:34px;height:34px;font-size:.9rem;}
+    .hero{padding:2.6rem 0;}
+    .hero-actions .btn{width:100%;justify-content:center;}
+    .hero-actions{flex-direction:column;}
+    .section{padding:3.2rem 0;}
+    .service-grid{grid-template-columns:1fr 1fr;gap:1rem;}
+    .gallery-grid{grid-template-columns:1fr 1fr;gap:.7rem;}
+    .stats-grid{grid-template-columns:1fr 1fr;}
+    .testi-grid{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr;gap:2rem;}
+    .stats-band,.cta-band{padding:2.4rem 1.5rem;border-radius:20px;}
+  }
+  @media(max-width:480px){
+    .service-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="#" class="logo"><span class="logo-mark">🐩</span>Groomly</a>
+    <div class="nav-links">
+      <div class="nav-item">
+        <a href="#services">Layanan <span class="caret">▾</span></a>
+        <div class="nav-dropdown">
+          <a href="#services">Mandi & Blow Dry <span class="price">Rp65rb</span></a>
+          <a href="#services">Potong & Styling <span class="price">Rp95rb</span></a>
+          <a href="#services">Perawatan Kuku <span class="price">Rp35rb</span></a>
+          <a href="#services">Pet Boarding <span class="price">Rp120rb</span></a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="#gallery">Hasil Grooming</a></div>
+      <div class="nav-item"><a href="#booking">Booking</a></div>
+      <div class="nav-item"><a href="#">Jadi Mitra Groomer</a></div>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Ganti tema">🌙</button>
+      <a href="#booking" class="btn btn-primary">Booking Sekarang</a>
+      <button class="hamburger" onclick="toggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-panel" id="mobilePanel">
+    <a href="javascript:void(0)" onclick="toggleSub(this)">Layanan <span class="mobile-caret">▾</span></a>
+    <div class="mobile-sub">
+      <a href="#services">Mandi & Blow Dry</a>
+      <a href="#services">Potong & Styling</a>
+      <a href="#services">Perawatan Kuku</a>
+    </div>
+    <a href="#gallery">Hasil Grooming</a>
+    <a href="#booking">Booking</a>
+    <a href="#">Jadi Mitra Groomer</a>
+  </div>
+</header>
+
+<section class="hero" id="booking">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="badge">🐾 Groomer bersertifikat & penyayang hewan</span>
+      <h1>Bikin sahabat berbulumu tampil <span>makin menggemaskan</span></h1>
+      <p>Dari mandi rutin sampai styling lengkap — rakit paket groomingmu sendiri dan lihat estimasi harganya langsung.</p>
+      <div class="hero-actions">
+        <a href="#booking" class="btn btn-primary">Booking Sekarang</a>
+        <a href="#services" class="btn btn-ghost">Lihat Layanan</a>
+      </div>
+      <div class="hero-badges">
+        <div><b>15rb+</b>Hewan digroom</div>
+        <div><b>25</b>Groomer bersertifikat</div>
+        <div><b>4.9/5</b>Rating pemilik hewan</div>
+      </div>
+    </div>
+
+    <div class="pkg-card">
+      <div class="pkg-head">Rakit Paket Groomingmu</div>
+      <div class="pkg-item" onclick="togglePkg(this,65000)">
+        <div class="pkg-check checked">✓</div>
+        <div class="pkg-item-label">Mandi & Blow Dry</div>
+        <div class="pkg-item-price">Rp65rb</div>
+      </div>
+      <div class="pkg-item" onclick="togglePkg(this,95000)">
+        <div class="pkg-check">✓</div>
+        <div class="pkg-item-label">Potong & Styling</div>
+        <div class="pkg-item-price">Rp95rb</div>
+      </div>
+      <div class="pkg-item" onclick="togglePkg(this,35000)">
+        <div class="pkg-check">✓</div>
+        <div class="pkg-item-label">Perawatan Kuku</div>
+        <div class="pkg-item-price">Rp35rb</div>
+      </div>
+      <div class="pkg-item" onclick="togglePkg(this,25000)">
+        <div class="pkg-check">✓</div>
+        <div class="pkg-item-label">Pembersihan Telinga</div>
+        <div class="pkg-item-price">Rp25rb</div>
+      </div>
+      <div class="pkg-total">
+        <span>Total estimasi</span>
+        <strong id="pkgTotal">Rp65.000</strong>
+      </div>
+      <a href="#" class="btn btn-primary" style="width:100%;justify-content:center;">Booking Paket Ini</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="services" style="background:var(--cream-3);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Layanan Kami</span>
+      <h2>Perawatan lengkap untuk hewan kesayanganmu</h2>
+    </div>
+    <div class="service-grid">
+      <div class="service-card">
+        <div class="service-icon">🛁</div>
+        <h3>Mandi & Blow Dry</h3>
+        <p>Shampoo khusus sesuai jenis bulu</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">✂️</div>
+        <h3>Potong & Styling</h3>
+        <p>Gaya potong sesuai ras & preferensi</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">💅</div>
+        <h3>Perawatan Kuku</h3>
+        <p>Potong kuku aman dan nyaman</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🏨</div>
+        <h3>Pet Boarding</h3>
+        <p>Penitipan harian dengan pengawasan penuh</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="gallery">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Hasil Grooming</span>
+      <h2>Transformasi sahabat berbulu kami</h2>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item g1"><div class="gallery-overlay">Poodle Mix</div></div>
+      <div class="gallery-item g2"><div class="gallery-overlay">Persia</div></div>
+      <div class="gallery-item g3"><div class="gallery-overlay">Golden Retriever</div></div>
+      <div class="gallery-item g4"><div class="gallery-overlay">Anggora</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--cream-3);">
+  <div class="wrap">
+    <div class="stats-band">
+      <div class="stats-grid">
+        <div><strong>15rb+</strong><span>Hewan digroom</span></div>
+        <div><strong>25</strong><span>Groomer bersertifikat</span></div>
+        <div><strong>4.9/5</strong><span>Rating pemilik hewan</span></div>
+        <div><strong>8</strong><span>Cabang kota besar</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Testimoni</span>
+      <h2>Kata pemilik hewan kami</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Anjing saya yang biasanya takut mandi jadi tenang banget sama groomer di sini."</p>
+        <div class="testi-who"><strong>Lala Kurniawati</strong><span>Pemilik golden retriever</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Hasil potongnya rapi dan sesuai request, kucing saya juga jadi lebih adem."</p>
+        <div class="testi-who"><strong>Hendra Wijaya</strong><span>Pemilik kucing persia</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Fitur rakit paketnya membantu banget buat estimasi budget sebelum booking."</p>
+        <div class="testi-who"><strong>Anisa Rahma</strong><span>Pemilik poodle</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--cream-3);">
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Manjakan sahabat berbulumu hari ini</h2>
+      <p>Booking sekarang, dapatkan diskon 15% untuk kunjungan pertamamu.</p>
+      <div class="cta-actions">
+        <a href="#booking" class="btn btn-white">Booking Sekarang</a>
+        <a href="#" class="btn btn-outline-light">Jadi Mitra Groomer →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo"><span class="logo-mark">🐩</span>Groomly</a>
+        <p>Layanan grooming dan perawatan hewan dengan groomer bersertifikat dan penuh kasih sayang.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Layanan</h4>
+        <a href="#services">Mandi & Blow Dry</a>
+        <a href="#services">Potong & Styling</a>
+        <a href="#services">Pet Boarding</a>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <a href="#">Tentang Kami</a>
+        <a href="#">Jadi Mitra Groomer</a>
+        <a href="#">Karir</a>
+      </div>
+      <div class="footer-col">
+        <h4>Bantuan</h4>
+        <a href="#booking">Booking</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat & Ketentuan</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 Groomly. Sahabat berbulumu, makin menggemaskan.</div>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme(){
+    const html=document.documentElement;
+    const next=html.getAttribute('data-theme')==='dark'?'light':'dark';
+    html.setAttribute('data-theme',next);
+    localStorage.setItem('groomly-theme',next);
+    document.querySelector('.theme-toggle').textContent=next==='dark'?'☀️':'🌙';
+  }
+  (function(){ if(localStorage.getItem('groomly-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); } })();
+  window.addEventListener('DOMContentLoaded',()=>{
+    document.querySelector('.theme-toggle').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';
+  });
+
+  function toggleMobile(){ document.getElementById('mobilePanel').classList.toggle('open'); }
+  function toggleSub(el){
+    el.nextElementSibling.classList.toggle('open');
+    el.querySelector('.mobile-caret').classList.toggle('open');
+  }
+
+  let pkgTotal=65000;
+  function togglePkg(el,price){
+    const check=el.querySelector('.pkg-check');
+    const isChecked=check.classList.contains('checked');
+    if(isChecked){
+      check.classList.remove('checked');
+      check.textContent='';
+      pkgTotal-=price;
+    }else{
+      check.classList.add('checked');
+      check.textContent='✓';
+      pkgTotal+=price;
+    }
+    document.getElementById('pkgTotal').textContent='Rp'+pkgTotal.toLocaleString('id-ID');
+  }
+
+  document.querySelectorAll('.nav-item').forEach(item=>{
+    const dd=item.querySelector('.nav-dropdown');
+    if(!dd) return;
+    let closeTimer;
+    item.addEventListener('mouseenter',()=>{ clearTimeout(closeTimer); dd.classList.add('open'); });
+    item.addEventListener('mouseleave',()=>{ closeTimer=setTimeout(()=>dd.classList.remove('open'),400); });
+  });
+</script>
+
+</body>
+</html>

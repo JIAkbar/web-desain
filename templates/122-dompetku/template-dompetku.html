@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dompetku — Atur Keuangan Pribadi, Capai Tujuan Finansialmu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --indigo:#5B4FE8;
+    --indigo-dark:#4A3FD1;
+    --coral:#FF6F59;
+    --green:#22B07D;
+    --bg:#F7F7FD;
+    --bg-2:#EDECFA;
+    --card:#FFFFFF;
+    --text:#171531;
+    --text-soft:#615C7E;
+    --border:#E3E1F5;
+    --shadow:0 4px 18px rgba(23,21,49,.07);
+    --shadow-lg:0 24px 55px rgba(23,21,49,.17);
+  }
+  [data-theme="dark"]{
+    --indigo:#8B7FFF;
+    --indigo-dark:#A79DFF;
+    --coral:#FF8F7E;
+    --green:#4DD69C;
+    --bg:#0C0A1A;
+    --bg-2:#131024;
+    --card:#191530;
+    --text:#EBE9FA;
+    --text-soft:#9691B5;
+    --border:#282344;
+    --shadow:0 4px 18px rgba(0,0,0,.4);
+    --shadow-lg:0 24px 55px rgba(0,0,0,.6);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:.3s;}
+  h1,h2,h3,.disp{font-family:'Albert Sans',sans-serif;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.7rem;border-radius:12px;font-weight:700;font-size:.95rem;cursor:pointer;border:none;transition:.25s;min-height:44px;}
+  .btn:hover{filter:brightness(1.04);}
+  .btn:active{transform:scale(.96);}
+  .btn-primary{background:var(--indigo);color:#fff;box-shadow:0 10px 24px rgba(91,79,232,.32);}
+  .btn-primary:hover{background:var(--indigo-dark);transform:translateY(-2px);}
+  .btn-ghost{background:var(--card);color:var(--text);border:1.5px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--indigo);color:var(--indigo-dark);transform:translateY(-2px);}
+  .btn-white{background:#fff;color:var(--indigo-dark);}
+  .btn-white:hover{transform:translateY(-2px);}
+  .btn-outline-light{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.35);}
+  .btn-outline-light:hover{border-color:#fff;background:rgba(255,255,255,.1);transform:translateY(-2px);}
+
+  header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 24px;max-width:1200px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:.6rem;font-family:'Albert Sans';font-weight:800;font-size:1.35rem;}
+  .logo-mark{width:37px;height:37px;border-radius:10px;background:var(--indigo);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.05rem;}
+  .nav-links{display:flex;align-items:center;gap:2.1rem;}
+  .nav-item{position:relative;}
+  .nav-item>a{font-weight:600;font-size:.93rem;display:flex;align-items:center;gap:.3rem;}
+  .nav-item>a .caret{font-size:.6rem;color:var(--text-soft);transition:.2s;}
+  .nav-item:hover>a .caret{transform:rotate(180deg);}
+  /* mini-progress-badge list dropdown - varied pattern */
+  .nav-dropdown{
+    display:block;position:absolute;top:calc(100% + 14px);left:50%;
+    min-width:290px;background:var(--card);border:1px solid var(--border);
+    border-radius:14px;padding:.5rem;box-shadow:var(--shadow-lg);
+    opacity:0;visibility:hidden;pointer-events:none;
+    transform:translateX(-50%) translateY(6px);
+    transition:opacity .17s ease,transform .17s ease,visibility 0s linear .17s;
+  }
+  .nav-item:focus-within .nav-dropdown{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0);transition:opacity .17s ease,transform .17s ease;}
+  .nav-dropdown.open{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0);transition:opacity .17s ease,transform .17s ease;}
+  .nav-dropdown a{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.65rem .7rem;border-radius:10px;font-size:.86rem;font-weight:600;}
+  .nav-dropdown a:hover{background:var(--bg-2);}
+  .dd-badge{font-size:.68rem;font-weight:700;padding:.2rem .5rem;border-radius:100px;background:var(--bg-2);color:var(--indigo-dark);}
+  .nav-actions{display:flex;align-items:center;gap:.9rem;}
+  .theme-toggle{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:1.05rem;}
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;}
+  .hamburger span{width:24px;height:2px;background:var(--text);border-radius:2px;}
+  .mobile-panel{display:none;}
+
+  .hero{padding:4.5rem 0 3.5rem;}
+  .hero-grid{display:grid;grid-template-columns:1fr .95fr;gap:3rem;align-items:center;}
+  .badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--bg-2);color:var(--indigo-dark);font-weight:700;font-size:.8rem;padding:.5rem 1rem;border-radius:100px;margin-bottom:1.3rem;}
+  .hero h1{font-size:clamp(2.2rem,4.2vw,3.3rem);font-weight:800;line-height:1.15;margin-bottom:1.2rem;letter-spacing:-.01em;}
+  .hero h1 span{color:var(--indigo);}
+  .hero p{font-size:1.05rem;color:var(--text-soft);max-width:470px;margin-bottom:2rem;}
+  .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.8rem;}
+  .hero-badges{display:flex;gap:1.8rem;color:var(--text-soft);font-size:.85rem;flex-wrap:wrap;}
+  .hero-badges b{color:var(--text);display:block;font-family:'Albert Sans';font-size:1.2rem;}
+
+  /* BUDGET ALLOCATOR */
+  .budget-card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:1.8rem;box-shadow:var(--shadow-lg);}
+  .budget-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.4rem;}
+  .budget-head h4{font-family:'Albert Sans';font-size:1rem;}
+  .budget-total{font-size:.78rem;font-weight:700;padding:.3rem .7rem;border-radius:100px;background:var(--bg-2);color:var(--green);}
+  .budget-total.over{color:var(--coral);}
+  .budget-row{margin-bottom:1.1rem;}
+  .budget-row-top{display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.4rem;}
+  .budget-row-top span:first-child{font-weight:600;}
+  .budget-row-top span:last-child{color:var(--text-soft);}
+  .budget-row input[type=range]{width:100%;}
+  .budget-row.r1 input{accent-color:var(--indigo);}
+  .budget-row.r2 input{accent-color:var(--coral);}
+  .budget-row.r3 input{accent-color:#F5A524;}
+  .budget-row.r4 input{accent-color:var(--green);}
+
+  .section{padding:5.4rem 0;}
+  .section-head{max-width:600px;margin:0 auto 3rem;text-align:center;}
+  .badge-center{margin:0 auto 1rem;width:fit-content;}
+  .section-head h2{font-size:clamp(1.8rem,3.4vw,2.5rem);font-weight:800;margin-bottom:.9rem;letter-spacing:-.01em;}
+  .section-head p{color:var(--text-soft);font-size:1.03rem;}
+
+  /* FEATURES - view types w/ hover */
+  .feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;}
+  .feat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.9rem 1.5rem;cursor:pointer;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s;}
+  .feat-card:hover{transform:translateY(-10px);box-shadow:var(--shadow-lg);border-color:var(--indigo);}
+  .feat-icon{width:50px;height:50px;border-radius:12px;background:var(--bg-2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.1rem;transition:.35s;}
+  .feat-card:hover .feat-icon{background:var(--indigo);transform:scale(1.1);}
+  .feat-card h3{font-size:1rem;font-weight:700;margin-bottom:.5rem;}
+  .feat-card p{font-size:.84rem;color:var(--text-soft);}
+
+  /* SAVINGS GOALS */
+  .goal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;}
+  .goal-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:1.6rem;transition:.3s;}
+  .goal-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+  .goal-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+  .goal-top .ic{font-size:1.6rem;}
+  .goal-top span{font-size:.75rem;font-weight:700;color:var(--green);background:var(--bg-2);padding:.25rem .6rem;border-radius:100px;}
+  .goal-card h3{font-size:1rem;margin-bottom:.6rem;}
+  .goal-bar{height:8px;background:var(--bg-2);border-radius:8px;overflow:hidden;margin-bottom:.5rem;}
+  .goal-fill{height:100%;background:var(--indigo);border-radius:8px;}
+  .goal-amt{display:flex;justify-content:space-between;font-size:.8rem;color:var(--text-soft);}
+
+  .stats-band{background:var(--indigo);color:#fff;border-radius:24px;padding:3.2rem 2.5rem;}
+  [data-theme="dark"] .stats-band{background:var(--card);border:1px solid var(--border);color:var(--text);}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);text-align:center;}
+  .stats-grid div strong{font-family:'Albert Sans';font-size:2.1rem;display:block;color:var(--coral);}
+  .stats-grid div span{font-size:.85rem;color:#D4D0F5;}
+  [data-theme="dark"] .stats-grid div span{color:var(--text-soft);}
+
+  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;}
+  .testi-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.8rem;transition:.3s;}
+  .testi-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+  .testi-stars{color:#F5A524;margin-bottom:1rem;font-size:1rem;letter-spacing:2px;}
+  .testi-card p{font-size:.93rem;margin-bottom:1.2rem;}
+  .testi-who strong{font-size:.87rem;display:block;}
+  .testi-who span{font-size:.76rem;color:var(--text-soft);}
+
+  .cta-band{background:linear-gradient(135deg,var(--indigo),#7E6EF5);border-radius:24px;padding:3.5rem 2.5rem;text-align:center;color:#fff;}
+  .cta-band h2{font-size:clamp(1.7rem,3.4vw,2.3rem);margin-bottom:.9rem;}
+  .cta-band p{color:rgba(255,255,255,.92);max-width:460px;margin:0 auto 1.8rem;}
+  .cta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+
+  footer{background:var(--bg-2);color:var(--text-soft);padding:4rem 0 2rem;margin-top:5rem;border-top:1px solid var(--border);}
+  .footer-grid{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:2.5rem;margin-bottom:3rem;}
+  .footer-brand .logo{margin-bottom:1rem;}
+  .footer-brand p{font-size:.86rem;max-width:280px;}
+  .footer-col h4{color:var(--text);font-size:.88rem;margin-bottom:1rem;}
+  .footer-col a{display:block;font-size:.84rem;padding:.4rem 0;}
+  .footer-col a:hover{color:var(--indigo);}
+  .footer-bottom{border-top:1px solid var(--border);padding-top:1.6rem;text-align:center;font-size:.8rem;}
+
+  @media(max-width:980px){
+    .hero-grid{grid-template-columns:1fr;}
+    .feat-grid{grid-template-columns:repeat(2,1fr);}
+    .goal-grid{grid-template-columns:repeat(2,1fr);}
+    .stats-grid{grid-template-columns:repeat(2,1fr);gap:1.8rem;}
+    .testi-grid{grid-template-columns:repeat(2,1fr);}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media(max-width:768px){
+    .nav-links{display:none;}
+    .hamburger{display:flex;}
+    .mobile-panel.open{display:block;background:var(--bg);border-top:1px solid var(--border);padding:1rem 24px 1.6rem;}
+    .mobile-panel a{display:block;padding:.8rem 0;font-weight:600;border-bottom:1px solid var(--border);}
+    .mobile-sub{padding-left:1rem;display:none;}
+    .mobile-sub.open{display:block;}
+    .mobile-sub a{border-bottom:none;padding:.6rem 0;font-weight:500;color:var(--text-soft);}
+    .mobile-caret{float:right;transition:transform .2s;}
+    .mobile-caret.open{transform:rotate(180deg);}
+    nav{padding:1rem 16px;}
+    .logo{font-size:1.2rem;gap:.5rem;}
+    .logo-mark{width:32px;height:32px;font-size:1rem;}
+    .nav-actions{gap:.4rem;}
+    .nav-actions .btn-primary{padding:.55rem .75rem;font-size:.68rem;white-space:nowrap;}
+    .theme-toggle{width:34px;height:34px;font-size:.9rem;}
+    .hero{padding:2.6rem 0;}
+    .hero-actions .btn{width:100%;justify-content:center;}
+    .hero-actions{flex-direction:column;}
+    .section{padding:3.2rem 0;}
+    .feat-grid{grid-template-columns:1fr 1fr;gap:1rem;}
+    .goal-grid{grid-template-columns:1fr;}
+    .stats-grid{grid-template-columns:1fr 1fr;}
+    .testi-grid{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr;gap:2rem;}
+    .stats-band,.cta-band{padding:2.4rem 1.5rem;border-radius:20px;}
+  }
+  @media(max-width:480px){
+    .feat-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="#" class="logo"><span class="logo-mark">D</span>Dompetku</a>
+    <div class="nav-links">
+      <div class="nav-item">
+        <a href="#features">Fitur <span class="caret">▾</span></a>
+        <div class="nav-dropdown">
+          <a href="#features">Budget Planner <span class="dd-badge">Populer</span></a>
+          <a href="#goals">Target Tabungan <span class="dd-badge">Baru</span></a>
+          <a href="#features">Tracking Pengeluaran <span class="dd-badge">Otomatis</span></a>
+          <a href="#features">Laporan Bulanan <span class="dd-badge">Gratis</span></a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="#goals">Target</a></div>
+      <div class="nav-item"><a href="#">Harga</a></div>
+      <div class="nav-item"><a href="#">Blog</a></div>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Ganti tema">🌙</button>
+      <a href="#" class="btn btn-primary">Coba Gratis</a>
+      <button class="hamburger" onclick="toggleMobile()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-panel" id="mobilePanel">
+    <a href="javascript:void(0)" onclick="toggleSub(this)">Fitur <span class="mobile-caret">▾</span></a>
+    <div class="mobile-sub">
+      <a href="#features">Budget Planner</a>
+      <a href="#goals">Target Tabungan</a>
+      <a href="#features">Tracking Pengeluaran</a>
+    </div>
+    <a href="#goals">Target</a>
+    <a href="#">Harga</a>
+    <a href="#">Blog</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="badge">💰 Kelola uang tanpa pusing</span>
+      <h1>Atur budget, capai <span>tujuan finansial</span> lebih cepat</h1>
+      <p>Alokasikan penghasilanmu per kategori, pantau pengeluaran otomatis, dan capai target tabungan tanpa drama.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn btn-primary">Coba Gratis</a>
+        <a href="#features" class="btn btn-ghost">Lihat Fitur</a>
+      </div>
+      <div class="hero-badges">
+        <div><b>820rb+</b>Pengguna aktif</div>
+        <div><b>Rp2,1T+</b>Dana terkelola</div>
+        <div><b>4.8/5</b>Rating pengguna</div>
+      </div>
+    </div>
+
+    <div class="budget-card">
+      <div class="budget-head">
+        <h4>Alokasi Budget Bulanan</h4>
+        <span class="budget-total" id="budgetTotal">100%</span>
+      </div>
+      <div class="budget-row r1">
+        <div class="budget-row-top"><span>🍔 Makanan</span><span id="valMakanan">35%</span></div>
+        <input type="range" id="rangeMakanan" min="0" max="100" value="35" oninput="updateBudget()">
+      </div>
+      <div class="budget-row r2">
+        <div class="budget-row-top"><span>🚗 Transport</span><span id="valTransport">20%</span></div>
+        <input type="range" id="rangeTransport" min="0" max="100" value="20" oninput="updateBudget()">
+      </div>
+      <div class="budget-row r3">
+        <div class="budget-row-top"><span>🎬 Hiburan</span><span id="valHiburan">15%</span></div>
+        <input type="range" id="rangeHiburan" min="0" max="100" value="15" oninput="updateBudget()">
+      </div>
+      <div class="budget-row r4">
+        <div class="budget-row-top"><span>💰 Tabungan</span><span id="valTabungan">30%</span></div>
+        <input type="range" id="rangeTabungan" min="0" max="100" value="30" oninput="updateBudget()">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="features" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Fitur Utama</span>
+      <h2>Semua yang kamu butuh untuk kelola uang</h2>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <h3>Budget Planner</h3>
+        <p>Alokasikan penghasilan per kategori dengan mudah.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔄</div>
+        <h3>Tracking Otomatis</h3>
+        <p>Hubungkan rekening, transaksi tercatat otomatis.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🎯</div>
+        <h3>Target Tabungan</h3>
+        <p>Set tujuan finansial dan pantau progresnya.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📈</div>
+        <h3>Laporan Bulanan</h3>
+        <p>Insight pengeluaran dengan grafik yang mudah dipahami.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="goals">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Target Tabungan</span>
+      <h2>Wujudkan impian finansialmu</h2>
+    </div>
+    <div class="goal-grid">
+      <div class="goal-card">
+        <div class="goal-top"><span class="ic">✈️</span><span>68%</span></div>
+        <h3>Liburan ke Jepang</h3>
+        <div class="goal-bar"><div class="goal-fill" style="width:68%;"></div></div>
+        <div class="goal-amt"><span>Rp13,6jt</span><span>dari Rp20jt</span></div>
+      </div>
+      <div class="goal-card">
+        <div class="goal-top"><span class="ic">🏠</span><span>32%</span></div>
+        <h3>DP Rumah Pertama</h3>
+        <div class="goal-bar"><div class="goal-fill" style="width:32%;"></div></div>
+        <div class="goal-amt"><span>Rp48jt</span><span>dari Rp150jt</span></div>
+      </div>
+      <div class="goal-card">
+        <div class="goal-top"><span class="ic">🚨</span><span>85%</span></div>
+        <h3>Dana Darurat</h3>
+        <div class="goal-bar"><div class="goal-fill" style="width:85%;"></div></div>
+        <div class="goal-amt"><span>Rp25,5jt</span><span>dari Rp30jt</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="stats-band">
+      <div class="stats-grid">
+        <div><strong>820rb+</strong><span>Pengguna aktif</span></div>
+        <div><strong>Rp2,1T+</strong><span>Dana terkelola</span></div>
+        <div><strong>4.8/5</strong><span>Rating pengguna</span></div>
+        <div><strong>32%</strong><span>Rata-rata hemat lebih banyak</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="badge badge-center">Testimoni</span>
+      <h2>Kata pengguna kami</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Akhirnya bisa lihat ke mana aja uang saya pergi. Budget planner-nya bener-bener membantu."</p>
+        <div class="testi-who"><strong>Putri Wulandari</strong><span>Pengguna sejak 2024</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Target tabungan liburan saya tercapai lebih cepat dari perkiraan berkat fitur ini."</p>
+        <div class="testi-who"><strong>Rian Hidayat</strong><span>Pengguna sejak 2023</span></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p>"Tracking otomatisnya akurat, jadi gak perlu input manual satu-satu lagi."</p>
+        <div class="testi-who"><strong>Novi Anggraini</strong><span>Pengguna sejak 2024</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bg-2);">
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Mulai atur keuanganmu hari ini</h2>
+      <p>Gratis untuk mulai, tanpa perlu kartu kredit. Setup kurang dari 5 menit.</p>
+      <div class="cta-actions">
+        <a href="#" class="btn btn-white">Coba Gratis Sekarang</a>
+        <a href="#" class="btn btn-outline-light">Download Aplikasi →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo"><span class="logo-mark">D</span>Dompetku</a>
+        <p>Aplikasi personal finance yang bikin kelola budget dan capai target tabungan jadi lebih mudah.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Fitur</h4>
+        <a href="#features">Budget Planner</a>
+        <a href="#goals">Target Tabungan</a>
+        <a href="#features">Tracking Otomatis</a>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <a href="#">Tentang Kami</a>
+        <a href="#">Blog</a>
+        <a href="#">Karir</a>
+      </div>
+      <div class="footer-col">
+        <h4>Bantuan</h4>
+        <a href="#">Pusat Bantuan</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat & Ketentuan</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 Dompetku. Atur uang, capai impian.</div>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme(){
+    const html=document.documentElement;
+    const next=html.getAttribute('data-theme')==='dark'?'light':'dark';
+    html.setAttribute('data-theme',next);
+    localStorage.setItem('dompetku-theme',next);
+    document.querySelector('.theme-toggle').textContent=next==='dark'?'☀️':'🌙';
+  }
+  (function(){ if(localStorage.getItem('dompetku-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); } })();
+  window.addEventListener('DOMContentLoaded',()=>{
+    document.querySelector('.theme-toggle').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';
+  });
+
+  function toggleMobile(){ document.getElementById('mobilePanel').classList.toggle('open'); }
+  function toggleSub(el){
+    el.nextElementSibling.classList.toggle('open');
+    el.querySelector('.mobile-caret').classList.toggle('open');
+  }
+
+  function updateBudget(){
+    const m=parseInt(document.getElementById('rangeMakanan').value);
+    const t=parseInt(document.getElementById('rangeTransport').value);
+    const h=parseInt(document.getElementById('rangeHiburan').value);
+    const s=parseInt(document.getElementById('rangeTabungan').value);
+    document.getElementById('valMakanan').textContent=m+'%';
+    document.getElementById('valTransport').textContent=t+'%';
+    document.getElementById('valHiburan').textContent=h+'%';
+    document.getElementById('valTabungan').textContent=s+'%';
+    const total=m+t+h+s;
+    const totalEl=document.getElementById('budgetTotal');
+    totalEl.textContent=total+'%';
+    totalEl.classList.toggle('over',total>100);
+  }
+
+  document.querySelectorAll('.nav-item').forEach(item=>{
+    const dd=item.querySelector('.nav-dropdown');
+    if(!dd) return;
+    let closeTimer;
+    item.addEventListener('mouseenter',()=>{ clearTimeout(closeTimer); dd.classList.add('open'); });
+    item.addEventListener('mouseleave',()=>{ closeTimer=setTimeout(()=>dd.classList.remove('open'),400); });
+  });
+</script>
+
+</body>
+</html>
