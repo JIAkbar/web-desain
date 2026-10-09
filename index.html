@@ -464,7 +464,7 @@ section { padding: 120px 0; }
 ═══════════════════════════════ */
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
   background: var(--border);
   border: 1px solid var(--border);
@@ -472,22 +472,23 @@ section { padding: 120px 0; }
 .project-card {
   background: var(--bg);
   overflow: hidden;
+  display: flex; flex-direction: column;
   transition: background .25s var(--ease);
 }
 .project-card:hover { background: var(--surface); }
 .project-thumb {
-  height: 180px;
-  display: flex; align-items: center; justify-content: center;
+  display: block; aspect-ratio: 16 / 10;
   position: relative; overflow: hidden;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
 }
-.project-thumb-label {
-  font-family: var(--font-display);
-  font-size: 96px; font-weight: 900;
-  color: var(--border-2);
-  line-height: 1;
+.project-thumb img {
+  width: 100%; height: 100%; display: block;
+  object-fit: cover; object-position: top center;
+  transition: transform .4s var(--ease);
 }
+.project-card:hover .project-thumb img { transform: scale(1.03); }
+@media (prefers-reduced-motion: reduce) { .project-card:hover .project-thumb img { transform: none; } }
 .project-thumb .project-badge {
   position: absolute; top: 16px; right: 16px;
   font-size: 10px; font-weight: 700;
@@ -498,17 +499,22 @@ section { padding: 120px 0; }
   font-family: var(--mono);
   border: 1px solid var(--border-2);
   color: var(--ink-2);
+  background: var(--bg);
   display: flex; align-items: center; gap: 6px;
 }
 .project-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; }
 .badge-live::before { background: var(--ink); }
 .badge-dev::before  { background: transparent; border: 1.5px solid var(--ink-3); }
 .badge-soon::before { background: transparent; border: 1.5px solid var(--ink-4); }
-.project-body { padding: 26px; }
+.project-body { padding: 26px; flex: 1; display: flex; flex-direction: column; }
 .project-title { font-size: 19px; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: -.01em; }
 .project-desc { font-size: 14px; color: var(--ink-3); line-height: 1.6; margin-bottom: 18px; }
 .project-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 22px; }
-.project-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 18px; border-top: 1px solid var(--border); }
+.project-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 18px; border-top: 1px solid var(--border); }
+.project-footer .project-link { min-height: 44px; }
+.projects-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; margin-top: 28px; font-size: 15px; color: var(--ink-3); }
+@media (max-width: 1024px) { .projects-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px)  { .projects-grid { grid-template-columns: 1fr; } }
 .project-link {
   font-size: 12px; font-weight: 700; color: var(--ink);
   text-transform: uppercase; letter-spacing: .04em;
@@ -517,7 +523,7 @@ section { padding: 120px 0; }
 }
 .project-link:hover { gap: 8px; }
 .project-stat {
-  font-size: 11px; color: var(--ink-4);
+  font-size: 11px; color: var(--ink-4); white-space: nowrap;
   font-family: var(--mono); text-transform: uppercase; letter-spacing: .04em;
 }
 
@@ -975,78 +981,160 @@ footer {
     <div class="projects-grid">
 
       <!-- JARANAN -->
-      <div class="project-card reveal">
-        <div class="project-thumb">
-          <div class="project-thumb-label">01</div>
-          <span class="project-badge badge-dev">In Progress</span>
-        </div>
+      <article class="project-card reveal">
+        <a class="project-thumb" href="https://naskahku.vercel.app/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+          <img src="img/proyek/jaranan.webp" alt="" width="960" height="600" loading="lazy" decoding="async">
+          <span class="project-badge badge-live">Live</span>
+        </a>
         <div class="project-body">
           <h3 class="project-title id">JARANAN — Repositori Naskah Kuno</h3>
           <h3 class="project-title en">JARANAN — Ancient Manuscript Repository</h3>
-          <p class="project-desc id">Sistem digitalisasi dan repositori naskah kuno untuk Dispussipda Kota Malang. Memungkinkan pencarian, pengelolaan, dan preservasi koleksi naskah bersejarah secara digital.</p>
-          <p class="project-desc en">A digitization and repository system for ancient manuscripts at Dispussipda Malang. Enables search, management, and digital preservation of historical manuscript collections.</p>
+          <p class="project-desc id">Sistem digitalisasi dan repositori naskah kuno untuk Dispussipda Kota Malang: pencarian, pengelolaan, dan preservasi koleksi naskah secara digital.</p>
+          <p class="project-desc en">A digitization and repository system for ancient manuscripts at Dispussipda Malang: search, management, and digital preservation.</p>
           <div class="project-tags">
             <span class="tag">HTML/CSS/JS</span>
+            <span class="tag">React</span>
+            <span class="tag">Supabase</span>
+            <span class="tag">Vercel</span>
+          </div>
+          <div class="project-footer">
+            <a href="https://naskahku.vercel.app/" target="_blank" rel="noopener" class="project-link id">Lihat situs JARANAN ↗</a>
+            <a href="https://naskahku.vercel.app/" target="_blank" rel="noopener" class="project-link en">Visit JARANAN ↗</a>
+            <span class="project-stat">Live</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 10 Jari Komputer -->
+      <article class="project-card reveal reveal-delay-1">
+        <a class="project-thumb" href="https://10jari.pages.dev/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+          <img src="img/proyek/10jari.webp" alt="" width="960" height="600" loading="lazy" decoding="async">
+          <span class="project-badge badge-live">Live</span>
+        </a>
+        <div class="project-body">
+          <h3 class="project-title id">10 Jari Komputer — Servis Laptop</h3>
+          <h3 class="project-title en">10 Jari Komputer — Laptop Repair</h3>
+          <p class="project-desc id">Situs jasa servis laptop, komputer, dan printer di Malang, dengan hero 3D buatan sendiri dan tombol langsung ke WhatsApp.</p>
+          <p class="project-desc en">A laptop, computer, and printer repair site in Malang, with a custom 3D hero and a direct WhatsApp button.</p>
+          <div class="project-tags">
+            <span class="tag">React</span>
+            <span class="tag">Three.js</span>
+            <span class="tag">Tailwind</span>
+            <span class="tag">Cloudflare</span>
+          </div>
+          <div class="project-footer">
+            <a href="https://10jari.pages.dev/" target="_blank" rel="noopener" class="project-link id">Lihat situs 10 Jari Komputer ↗</a>
+            <a href="https://10jari.pages.dev/" target="_blank" rel="noopener" class="project-link en">Visit 10 Jari Komputer ↗</a>
+            <span class="project-stat">Live</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- d'Goorenginsss -->
+      <article class="project-card reveal reveal-delay-2">
+        <a class="project-thumb" href="https://dgoorenginsss.pages.dev/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+          <img src="img/proyek/dgoorenginsss.webp" alt="" width="960" height="600" loading="lazy" decoding="async">
+          <span class="project-badge badge-soon">Demo</span>
+        </a>
+        <div class="project-body">
+          <h3 class="project-title id">d'Goorenginsss — Gorengan &amp; Es Teh</h3>
+          <h3 class="project-title en">d'Goorenginsss — Fritters &amp; Iced Tea</h3>
+          <p class="project-desc id">Situs warung gorengan dengan menu, lokasi, dan pesan lewat WhatsApp, plus panel admin untuk pemilik.</p>
+          <p class="project-desc en">A fritter stall site with menu, location, and WhatsApp ordering, plus an admin panel for the owner.</p>
+          <div class="project-tags">
+            <span class="tag">React</span>
+            <span class="tag">Cloudflare Pages</span>
+            <span class="tag">UMKM</span>
+          </div>
+          <div class="project-footer">
+            <a href="https://dgoorenginsss.pages.dev/" target="_blank" rel="noopener" class="project-link id">Lihat situs d'Goorenginsss ↗</a>
+            <a href="https://dgoorenginsss.pages.dev/" target="_blank" rel="noopener" class="project-link en">Visit d'Goorenginsss ↗</a>
+            <span class="project-stat">Demo</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- DIGILAB -->
+      <article class="project-card reveal">
+        <a class="project-thumb" href="https://digilab-ku.vercel.app/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+          <img src="img/proyek/digilab.webp" alt="" width="960" height="600" loading="lazy" decoding="async">
+          <span class="project-badge badge-live">Live</span>
+        </a>
+        <div class="project-body">
+          <h3 class="project-title id">DIGILAB — Repositori Karya Ilmiah</h3>
+          <h3 class="project-title en">DIGILAB — Academic Repository</h3>
+          <p class="project-desc id">Repositori karya ilmiah Fakultas Vokasi UM: pencarian karya, portal mahasiswa, dan panel admin.</p>
+          <p class="project-desc en">An academic works repository for the Vocational Faculty of UM: search, student portal, and admin panel.</p>
+          <div class="project-tags">
+            <span class="tag">React</span>
             <span class="tag">Supabase</span>
             <span class="tag">Vercel</span>
             <span class="tag">Institusi</span>
           </div>
           <div class="project-footer">
-            <span class="project-link id">Lihat Detail →</span>
-            <span class="project-link en">View Detail →</span>
-            <span class="project-stat">Stage 2 / 7</span>
+            <a href="https://digilab-ku.vercel.app/" target="_blank" rel="noopener" class="project-link id">Lihat situs DIGILAB ↗</a>
+            <a href="https://digilab-ku.vercel.app/" target="_blank" rel="noopener" class="project-link en">Visit DIGILAB ↗</a>
+            <span class="project-stat">Live</span>
           </div>
         </div>
-      </div>
+      </article>
 
       <!-- Template Library -->
-      <div class="project-card reveal reveal-delay-1">
-        <div class="project-thumb">
-          <div class="project-thumb-label">02</div>
+      <article class="project-card reveal reveal-delay-1">
+        <a class="project-thumb" href="gallery.html" tabindex="-1" aria-hidden="true">
+          <img src="img/proyek/templates.webp" alt="" width="960" height="600" loading="lazy" decoding="async">
           <span class="project-badge badge-live">Live</span>
-        </div>
+        </a>
         <div class="project-body">
           <h3 class="project-title id">Template Library — 125 Template HTML</h3>
           <h3 class="project-title en">Template Library — 125 HTML Templates</h3>
-          <p class="project-desc id">Koleksi 125 template HTML siap pakai untuk berbagai kebutuhan — instansi, startup, e-commerce, perpustakaan, SaaS, dan banyak lagi. Dibangun dengan HTML/CSS murni.</p>
-          <p class="project-desc en">A collection of 125 ready-to-use HTML templates for various needs — government, startups, e-commerce, libraries, SaaS, and more. Built with pure HTML/CSS.</p>
+          <p class="project-desc id">Koleksi 125 template HTML siap pakai: instansi, startup, e-commerce, perpustakaan, SaaS, dan lainnya. Dibangun dengan HTML/CSS murni.</p>
+          <p class="project-desc en">A collection of 125 ready-to-use HTML templates: government, startups, e-commerce, libraries, SaaS, and more. Built with pure HTML/CSS.</p>
           <div class="project-tags">
             <span class="tag">HTML</span>
             <span class="tag">CSS</span>
             <span class="tag">Vanilla JS</span>
-            <span class="tag">125 templates</span>
           </div>
           <div class="project-footer">
-            <a href="gallery.html" class="project-link id">Lihat Gallery →</a>
-            <a href="gallery.html" class="project-link en">View Gallery →</a>
+            <a href="gallery.html" class="project-link id">Buka Template Library →</a>
+            <a href="gallery.html" class="project-link en">Open Template Library →</a>
+            <span class="project-stat">125 template</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Race Timer -->
+      <article class="project-card reveal reveal-delay-2">
+        <a class="project-thumb" href="https://race-timer.pages.dev/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+          <img src="img/proyek/racetimer.webp" alt="" width="960" height="600" loading="lazy" decoding="async">
+          <span class="project-badge badge-live">Live</span>
+        </a>
+        <div class="project-body">
+          <h3 class="project-title id">Race Timer — Undian Balapan Bebek</h3>
+          <h3 class="project-title en">Race Timer — Duck Race Draw</h3>
+          <p class="project-desc id">Aplikasi undian pemenang berbentuk balapan bebek: atur lama balapan, jumlah peserta, dan suara, lalu tekan mulai.</p>
+          <p class="project-desc en">A winner draw shaped like a duck race: set race length, participants, and sound, then press start.</p>
+          <div class="project-tags">
+            <span class="tag">HTML/CSS/JS</span>
+            <span class="tag">Animasi</span>
+            <span class="tag">Cloudflare</span>
+          </div>
+          <div class="project-footer">
+            <a href="https://race-timer.pages.dev/" target="_blank" rel="noopener" class="project-link id">Lihat situs Race Timer ↗</a>
+            <a href="https://race-timer.pages.dev/" target="_blank" rel="noopener" class="project-link en">Visit Race Timer ↗</a>
             <span class="project-stat">Live</span>
           </div>
         </div>
-      </div>
-
-      <!-- Placeholder -->
-      <div class="project-card reveal reveal-delay-2">
-        <div class="project-thumb">
-          <div class="project-thumb-label">03</div>
-          <span class="project-badge badge-soon">Coming Soon</span>
-        </div>
-        <div class="project-body">
-          <h3 class="project-title id">Proyek Selanjutnya</h3>
-          <h3 class="project-title en">Next Project</h3>
-          <p class="project-desc id">Punya ide proyek yang ingin diwujudkan? Hubungi saya dan kita diskusikan bersama — mulai dari concept, wireframe, hingga launch.</p>
-          <p class="project-desc en">Have a project idea you want to bring to life? Contact me and let's discuss — from concept, wireframe, all the way to launch.</p>
-          <div class="project-tags">
-            <span class="tag">Your Project</span>
-            <span class="tag">Idea → Reality</span>
-          </div>
-          <div class="project-footer">
-            <a href="#contact" class="project-link id">Diskusikan →</a>
-            <a href="#contact" class="project-link en">Let's Talk →</a>
-          </div>
-        </div>
-      </div>
+      </article>
 
     </div>
+
+    <p class="projects-cta reveal">
+      <span class="id">Punya ide proyek yang ingin diwujudkan?</span>
+      <span class="en">Have a project idea you want to build?</span>
+      <a href="#contact" class="project-link id">Diskusikan proyek Anda →</a>
+      <a href="#contact" class="project-link en">Discuss your project →</a>
+    </p>
   </div>
 </section>
 

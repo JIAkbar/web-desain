@@ -235,6 +235,37 @@
     }
     .sidebar-item.active .sidebar-count { background: var(--accent-dim); color: var(--accent); }
 
+    .sidebar-all { display: flex; gap: 6px; align-items: stretch; }
+    .sidebar-collapse {
+      width: 36px; flex-shrink: 0;
+      border: 1px solid var(--border); border-radius: var(--r-sm);
+      background: var(--bg3); color: var(--text2);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: border-color 0.15s, color 0.15s;
+    }
+    .sidebar-collapse:hover { border-color: var(--accent); color: var(--accent); }
+    .sidebar-collapse svg { width: 16px; height: 16px; transition: transform 0.2s; }
+    @media (min-width: 901px) {
+      .sidebar { transition: width 0.2s, min-width 0.2s, background 0.25s; }
+      .layout.sb-collapsed .sidebar { width: 56px; min-width: 56px; overflow-x: hidden; }
+      .sb-collapsed .sidebar-all { flex-direction: column-reverse; padding: 0 8px 12px; }
+      .sb-collapsed .sidebar-collapse { width: 100%; height: 36px; }
+      .sb-collapsed .sidebar-collapse svg { transform: rotate(180deg); }
+      .sb-collapsed .sidebar-all-btn { justify-content: center; padding: 6px 0; }
+      .sb-collapsed .sidebar-all-btn > span:first-child,
+      .sb-collapsed .sidebar-label,
+      .sb-collapsed .sidebar-count { display: none; }
+      .sb-collapsed .sidebar-all-count { padding: 2px 6px; font-size: 11px; }
+      .sb-collapsed .sidebar-section { border-top: 1px solid var(--border); padding: 4px 0; }
+      .sb-collapsed .sidebar-item { justify-content: center; padding: 10px 0; }
+      .sb-collapsed .sidebar-item-label { font-size: 0; gap: 0; }
+      .sb-collapsed .sidebar-item-label svg { width: 16px; height: 16px; opacity: 0.8; }
+    }
+    @media (max-width: 900px) { .sidebar-collapse { display: none; } }
+    @media (prefers-reduced-motion: reduce) {
+      .sidebar, .sidebar-collapse svg { transition: none; }
+    }
+
     /* ===== MAIN ===== */
     .main { flex: 1; padding: 32px 36px 60px; min-width: 0; }
     .main-header { margin-bottom: 24px; }
@@ -322,7 +353,7 @@
     .card-body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 7px; flex: 1; }
     .card-num { font-size: 11px; color: var(--accent); font-weight: 700; font-family: var(--font); font-variant-numeric: tabular-nums; letter-spacing: 0.05em; }
     .card-title { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.4; }
-    .card-tags { display: flex; flex-wrap: wrap; gap: 4px; flex: 1; }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 4px; flex: 1; align-content: flex-start; align-items: flex-start; }
     .tag {
       font-size: 11px; padding: 3px 10px; border-radius: var(--rpill);
       background: #1F2937; color: #D1D5DB;
@@ -429,6 +460,9 @@
       <button class="sidebar-all-btn active" id="btnAll" data-cat="all">
         <span>Semua Template</span>
         <span class="sidebar-all-count">125</span>
+      </button>
+      <button class="sidebar-collapse" id="sidebarCollapse" aria-label="Lipat sidebar" aria-expanded="true" title="Lipat sidebar (Ctrl+B)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
     </div>
 
@@ -1128,6 +1162,36 @@ hamburger.addEventListener('click', () => {
   sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
 });
 overlay.addEventListener('click', closeSidebar);
+
+/* ============================================================
+   SIDEBAR LIPAT (laptop/desktop)
+   ============================================================ */
+const layoutEl    = document.querySelector('.layout');
+const collapseBtn = document.getElementById('sidebarCollapse');
+
+// Saat terlipat hanya ikon yang tampil, jadi nama kategori dipindah ke tooltip.
+document.querySelectorAll('.sidebar-item').forEach(b => {
+  const label = b.querySelector('.sidebar-item-label');
+  if (label && !b.title) b.title = label.textContent.trim();
+});
+document.getElementById('btnAll').title = 'Semua Template';
+
+function setCollapsed(on) {
+  layoutEl.classList.toggle('sb-collapsed', on);
+  collapseBtn.setAttribute('aria-expanded', String(!on));
+  const t = on ? 'Buka sidebar (Ctrl+B)' : 'Lipat sidebar (Ctrl+B)';
+  collapseBtn.title = t;
+  collapseBtn.setAttribute('aria-label', t.replace(' (Ctrl+B)', ''));
+  try { localStorage.setItem('jia-tpl-sidebar', on ? 'collapsed' : 'open'); } catch(e) {}
+}
+collapseBtn.addEventListener('click', () => setCollapsed(!layoutEl.classList.contains('sb-collapsed')));
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b' && !e.target.closest('input, textarea') && window.innerWidth > 900) {
+    e.preventDefault();
+    setCollapsed(!layoutEl.classList.contains('sb-collapsed'));
+  }
+});
+try { if (localStorage.getItem('jia-tpl-sidebar') === 'collapsed') setCollapsed(true); } catch(e) {}
 
 /* ============================================================
    FOOTER YEAR
