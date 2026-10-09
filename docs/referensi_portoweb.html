@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Referensi Sumber — Portoweb</title>
+<style>
+:root {
+  --canvas: #f5f5f7;
+  --surface-card: #ffffff;
+  --surface-recessed: #f5f5f7;
+  --sidebar-bg: #f6f6f8;
+  --titlebar-bg: #ececee;
+  --pathbar-bg: #ececee;
+  --hairline: #e2e2e5;
+  --hairline-strong: #d2d2d7;
+  --ink: #1d1d1f;
+  --ink-muted: #474747;
+  --ink-subtle: #707070;
+  --accent: #0071e3;
+  --accent-hover: #0066cc;
+  --accent-soft: #e8f2fe;
+  --selection-bg: #0a7cff;
+  --selection-text: #ffffff;
+  --traffic-red: #ff5f57;
+  --traffic-yellow: #febc2e;
+  --traffic-green: #28c840;
+  --font-display: 'SF Pro Display', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-text: 'SF Pro Text', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 14px;
+  --radius-pill: 999px;
+  --mark-bg: #ffe58a;
+  --window-shadow: 0 30px 70px -20px rgba(0,0,0,0.35), 0 2px 10px rgba(0,0,0,0.12);
+  --ease-lazy: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+html[data-theme="dark"] {
+  --canvas: #1e1e1e;
+  --surface-card: #262628;
+  --surface-recessed: #2c2c2e;
+  --sidebar-bg: #252527;
+  --titlebar-bg: #323234;
+  --pathbar-bg: #2a2a2c;
+  --hairline: #3a3a3c;
+  --hairline-strong: #48484a;
+  --ink: #f5f5f7;
+  --ink-muted: #c7c7cc;
+  --ink-subtle: #98989d;
+  --accent: #409cff;
+  --accent-hover: #64b1ff;
+  --accent-soft: #16283d;
+  --selection-bg: #0a7cff;
+  --selection-text: #ffffff;
+  --mark-bg: #7a5b00;
+  --window-shadow: 0 30px 70px -20px rgba(0,0,0,0.6), 0 2px 10px rgba(0,0,0,0.3);
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font-text);
+  color: var(--ink);
+  line-height: 1.55;
+  background:
+    radial-gradient(circle at 15% 10%, #a7c7f2 0%, transparent 45%),
+    radial-gradient(circle at 85% 15%, #f2c7e0 0%, transparent 45%),
+    radial-gradient(circle at 50% 90%, #bfe3c9 0%, transparent 50%),
+    linear-gradient(160deg, #dfe7f3 0%, #eef1f6 100%);
+  min-height: 100vh;
+  padding: 26px;
+  transition: background 0.4s var(--ease-lazy);
+}
+html[data-theme="dark"] body {
+  background:
+    radial-gradient(circle at 15% 10%, #1c3252 0%, transparent 45%),
+    radial-gradient(circle at 85% 15%, #3a1f30 0%, transparent 45%),
+    radial-gradient(circle at 50% 90%, #16301f 0%, transparent 50%),
+    linear-gradient(160deg, #101012 0%, #0a0a0b 100%);
+}
+
+@keyframes window-in {
+  from { opacity: 0; transform: scale(0.96) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.macwindow {
+  max-width: 1560px;
+  margin: 0 auto;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--window-shadow);
+  border: 1px solid rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 52px);
+  background: var(--surface-card);
+  animation: window-in 0.55s var(--ease-spring) both;
+  transition: background 0.4s var(--ease-lazy), border-color 0.4s var(--ease-lazy);
+}
+
+.titlebar {
+  height: 44px;
+  flex-shrink: 0;
+  background: var(--titlebar-bg);
+  border-bottom: 1px solid var(--hairline);
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  gap: 14px;
+  -webkit-app-region: drag;
+  transition: background 0.4s var(--ease-lazy), border-color 0.4s var(--ease-lazy);
+}
+.traffic-lights { display: flex; gap: 8px; }
+.traffic-light { width: 12px; height: 12px; border-radius: 50%; display: inline-block; transition: transform 0.25s var(--ease-spring), filter 0.25s ease; }
+.traffic-light.red { background: var(--traffic-red); }
+.traffic-light.yellow { background: var(--traffic-yellow); }
+.traffic-light.green { background: var(--traffic-green); }
+.traffic-lights:hover .traffic-light { transform: scale(1.15); filter: brightness(1.1); }
+.titlebar-title {
+  flex: 1;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-muted);
+  margin-right: 76px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.4s var(--ease-lazy);
+}
+.titlebar-nav {
+  display: flex;
+  gap: 6px;
+  margin-right: 8px;
+}
+.titlebar-nav a {
+  font-family: var(--font-display);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink-muted);
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--hairline-strong);
+  background: var(--surface-card);
+  transition: color 0.2s ease, border-color 0.2s ease;
+  white-space: nowrap;
+}
+.titlebar-nav a:hover { color: var(--accent); border-color: var(--accent); }
+#theme-toggle {
+  border: 1px solid var(--hairline-strong);
+  background: var(--surface-card);
+  color: var(--ink);
+  border-radius: var(--radius-pill);
+  width: 28px; height: 28px;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.25s ease, transform 0.4s var(--ease-spring), background 0.4s var(--ease-lazy);
+}
+#theme-toggle:hover { border-color: var(--accent); transform: scale(1.08) rotate(-12deg); }
+#theme-toggle:active { transform: scale(0.92); }
+
+.window-body { flex: 1; display: flex; min-height: 0; }
+
+.sidebar {
+  width: 300px;
+  flex-shrink: 0;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--hairline);
+  padding: 14px 10px;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  transition: background 0.4s var(--ease-lazy), border-color 0.4s var(--ease-lazy);
+}
+.toolbar-search-wrap { padding: 4px 6px 12px; }
+#search {
+  width: 100%;
+  padding: 6px 10px 6px 28px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--hairline-strong);
+  background: var(--surface-card);
+  color: var(--ink);
+  font-size: 13px;
+  font-family: var(--font-text);
+  background-image: none;
+  position: relative;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.4s var(--ease-lazy);
+}
+.search-field { position: relative; }
+.search-field::before {
+  content: "🔍";
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  opacity: 0.55;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+#search:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.controls { display: flex; gap: 0; margin: 10px 6px 6px; border: 1px solid var(--hairline-strong); border-radius: var(--radius-md); overflow: hidden; transition: border-color 0.4s var(--ease-lazy); }
+.controls button {
+  flex: 1;
+  padding: 5px 6px;
+  border: none;
+  border-right: 1px solid var(--hairline-strong);
+  background: var(--surface-card);
+  color: var(--ink-muted);
+  cursor: pointer;
+  font-size: 11px;
+  font-family: var(--font-text);
+  transition: background 0.2s var(--ease-lazy), color 0.2s var(--ease-lazy);
+}
+.controls button:last-child { border-right: none; }
+.controls button:hover { background: var(--accent-soft); color: var(--accent); }
+.controls button:active { transform: scale(0.97); }
+
+.sidebar-group { margin-bottom: 14px; }
+.sidebar-group-label {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--ink-subtle);
+  padding: 4px 10px 4px;
+  transition: color 0.4s var(--ease-lazy);
+}
+.sidebar ul { list-style: none; padding: 0; margin: 0; }
+.sidebar li { margin-bottom: 1px; }
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 10px;
+  border-radius: var(--radius-md);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 13px;
+  transition: background 0.25s var(--ease-lazy), color 0.25s var(--ease-lazy), transform 0.25s var(--ease-spring);
+}
+.nav-icon { font-size: 13px; flex-shrink: 0; transition: transform 0.3s var(--ease-spring); }
+.nav-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nav-link:hover { background: var(--surface-recessed); transform: translateX(2px); }
+.nav-link:hover .nav-icon { transform: scale(1.15); }
+.nav-link.active { background: var(--selection-bg); color: var(--selection-text); }
+.nav-link.archive { opacity: 0.55; font-style: italic; }
+.nav-link.archive.active { opacity: 1; }
+
+.content-scroll { flex: 1; overflow-y: auto; background: var(--surface-card); scroll-behavior: smooth; transition: background 0.4s var(--ease-lazy); }
+.main { padding: 30px 46px 60px; max-width: 1160px; }
+.intro { margin-bottom: 26px; }
+.intro blockquote { font-size: 13.5px; }
+h1 { font-family: var(--font-display); font-size: 26px; font-weight: 600; letter-spacing: -0.4px; }
+h2 { font-family: var(--font-display); font-size: 19px; font-weight: 600; margin: 0; display: inline; letter-spacing: -0.2px; }
+h3 { font-family: var(--font-display); font-size: 15px; font-weight: 600; margin-top: 20px; }
+section { margin-bottom: 20px; padding-bottom: 8px; border-bottom: 1px solid var(--hairline); scroll-margin-top: 16px; transition: border-color 0.4s var(--ease-lazy); }
+
+.section-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 6px 0;
+  margin: 0;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+.chevron {
+  color: var(--accent);
+  font-size: 12px;
+  display: inline-block;
+  transition: transform 0.35s var(--ease-spring);
+  transform: rotate(-90deg);
+  flex-shrink: 0;
+}
+.section-toggle.is-open > .section-summary .chevron { transform: rotate(0deg); }
+.section-summary:hover h2 { color: var(--accent); }
+h2 { transition: color 0.2s ease; }
+
+.section-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s var(--ease-lazy);
+}
+.section-toggle.is-open > .section-panel { grid-template-rows: 1fr; }
+.section-panel-inner { overflow: hidden; min-height: 0; }
+.section-body {
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.35s var(--ease-lazy) 0.05s, transform 0.35s var(--ease-lazy) 0.05s;
+}
+.section-toggle.is-open .section-body { opacity: 1; transform: translateY(0); }
+
+.archive-section { background: var(--surface-recessed); border-radius: var(--radius-lg); padding: 8px 16px; opacity: 0.85; transition: background 0.4s var(--ease-lazy); }
+.archive-section h2 { font-style: italic; color: var(--ink-subtle); }
+table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 12.5px; background: var(--surface-card); border-radius: var(--radius-md); overflow: hidden; transition: background 0.4s var(--ease-lazy); }
+th, td { border: 1px solid var(--hairline); padding: 8px 10px; text-align: left; vertical-align: top; transition: background 0.15s ease, border-color 0.4s var(--ease-lazy), color 0.4s var(--ease-lazy); }
+th { background: var(--surface-recessed); color: var(--accent); cursor: pointer; user-select: none; font-family: var(--font-display); font-weight: 600; }
+th:hover { color: var(--accent-hover); }
+th .sort-arrow { opacity: 0.5; font-size: 10px; margin-left: 4px; display: inline-block; transition: transform 0.3s var(--ease-spring), opacity 0.2s ease; }
+th:hover .sort-arrow { opacity: 0.9; }
+th[data-dir="asc"] .sort-arrow { transform: rotate(0deg); opacity: 1; }
+th[data-dir="desc"] .sort-arrow { transform: rotate(180deg); opacity: 1; }
+tr:nth-child(even) td { background: var(--surface-recessed); }
+tr.row-hidden { display: none; }
+tbody tr td { transition: background 0.15s ease; }
+tbody tr:hover td { background: var(--accent-soft); }
+code { background: var(--accent-soft); color: var(--ink); padding: 1px 6px; border-radius: 5px; font-size: 0.9em; font-family: ui-monospace, SF Mono, Menlo, monospace; transition: background 0.4s var(--ease-lazy); }
+blockquote { border-left: 3px solid var(--accent); margin: 12px 0; padding: 6px 14px; background: var(--surface-recessed); color: var(--ink-muted); border-radius: 0 var(--radius-md) var(--radius-md) 0; transition: background 0.4s var(--ease-lazy); }
+a { color: var(--accent); transition: color 0.2s ease; }
+@keyframes mark-in {
+  from { background-color: transparent; }
+  to { background-color: var(--mark-bg); }
+}
+mark { background: var(--mark-bg); color: var(--ink); border-radius: 3px; padding: 0 2px; animation: mark-in 0.4s var(--ease-lazy); }
+hr { border: none; border-top: 1px solid var(--hairline); margin: 24px 0; }
+.table-filters { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 4px; }
+.table-filters button {
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--hairline-strong);
+  background: var(--surface-card);
+  color: var(--ink-muted);
+  font-size: 12px;
+  cursor: pointer;
+  font-family: var(--font-text);
+  transition: background 0.25s var(--ease-lazy), color 0.25s var(--ease-lazy), border-color 0.25s var(--ease-lazy), transform 0.2s var(--ease-spring);
+}
+.table-filters button:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+.table-filters button:active { transform: scale(0.95); }
+.table-filters button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.table-wrap { overflow-x: auto; }
+
+.pathbar {
+  flex-shrink: 0;
+  height: 26px;
+  background: var(--pathbar-bg);
+  border-top: 1px solid var(--hairline);
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  font-size: 11.5px;
+  color: var(--ink-subtle);
+  gap: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: background 0.4s var(--ease-lazy), border-color 0.4s var(--ease-lazy);
+}
+.pathbar-crumb { color: var(--ink-subtle); }
+.pathbar-crumb.current { color: var(--ink); font-weight: 500; transition: opacity 0.2s ease; }
+.pathbar-crumb.current.fading { opacity: 0; }
+.pathbar-sep { opacity: 0.5; }
+</style>
+</head>
+<body>
+<div class="macwindow">
+  <div class="titlebar">
+    <div class="traffic-lights">
+      <span class="traffic-light red"></span>
+      <span class="traffic-light yellow"></span>
+      <span class="traffic-light green"></span>
+    </div>
+    <div class="titlebar-title">Referensi Sumber — Portoweb</div>
+    <div class="titlebar-nav"></div>
+    <button id="theme-toggle" title="Ganti tema terang/gelap">🌙</button>
+  </div>
+  <div class="window-body">
+    <nav class="sidebar">
+      <div class="toolbar-search-wrap">
+        <div class="search-field">
+          <input type="text" id="search" placeholder="Cari...">
+        </div>
+        <div class="controls">
+          <button id="expand-all">Buka semua</button>
+          <button id="collapse-all">Tutup semua</button>
+        </div>
+      </div>
+      
+<div class="sidebar-group">
+<div class="sidebar-group-label">Isi</div>
+<ul>
+<li><a href="#ringkasan" class="nav-link"><span class="nav-icon">📄</span><span class="nav-label">Ringkasan</span></a></li>
+<li><a href="#peta-halaman-sumber" class="nav-link"><span class="nav-icon">📄</span><span class="nav-label">Peta halaman → sumber</span></a></li>
+<li><a href="#google-fonts" class="nav-link"><span class="nav-icon">📄</span><span class="nav-label">Google Fonts</span></a></li>
+<li><a href="#keputusan-tidak-diambil-ganti-sumber-jahit" class="nav-link"><span class="nav-icon">📄</span><span class="nav-label">Keputusan &quot;tidak diambil&quot; / ganti sumber / jahit</span></a></li>
+<li><a href="#riwayat" class="nav-link"><span class="nav-icon">📄</span><span class="nav-label">Riwayat</span></a></li>
+</ul>
+</div>
+
+    </nav>
+    <div class="content-scroll" id="content-scroll">
+      <main class="main">
+        <div class="intro"><h1>Referensi Sumber — Portoweb</h1>
+<p>Dibuat: 2026-08-23 · sesi: lucid-elbakyan-abb009 (Portoweb — portofolio web) · aturan: <code>~/.claude/CLAUDE.md</code> section "Papan Pekerjaan, Referensi Sumber, Kejujuran Inventaris" · alasan &amp; cara kerja: <code>kemampuan-workflow.md</code> §WF-206<br />
+Bangun HTML (tiap berkas ini berubah): <code>python "C:\1-Johan\10. Pengembangan\AI Skill\00 - Dokumentasi\build_html.py" --proyek "docs\referensi_portoweb.md"</code></p>
+</div>
+        
+<section id="ringkasan" data-title="Ringkasan">
+<div class="section-toggle is-open">
+<button type="button" class="section-summary"><span class="chevron">▾</span><h2>Ringkasan</h2></button>
+<div class="section-panel"><div class="section-panel-inner">
+<div class="section-body">
+
+<p>Proyek ini <strong>tidak punya sumber data luar</strong> (tidak ada API, tidak ada dataset unduhan, tidak ada scrape situs). Setiap template (<code>templates/&lt;n&gt;-&lt;slug&gt;/template-&lt;slug&gt;.html</code>) adalah halaman statis single-file (HTML/CSS/vanilla JS) dengan konten dummy/fiktif buatan sendiri — bukan diambil dari perusahaan/produk nyata. Diperiksa: <code>grep -rliE "refero|unsplash|picsum|placeholder\.com|cdn\.jsdelivr|unpkg|fontawesome"</code> di seluruh <code>templates/*.html</code> dan <code>*.html</code> root → 0 hasil. <code>grep -rhoE 'src="https?://[^"]*"'</code> (gambar eksternal) → 0 hasil (semua ikon inline SVG/emoji, tidak ada <code>&lt;img&gt;</code> remote). Satu-satunya sumber luar terverifikasi: Google Fonts (CSS + font file), dipakai di 66 dari ~125 file template.</p>
+<table>
+<thead>
+<tr>
+<th>Sumber</th>
+<th>Jenis</th>
+<th>Akses</th>
+<th>Diambil / tersedia</th>
+<th>Berkas lokal</th>
+<th>Dipakai untuk</th>
+<th>Diverifikasi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Google Fonts</td>
+<td>dokumen (CSS+font, via <code>&lt;link&gt;</code>)</td>
+<td>bebas, tanpa auth, tanpa kunci</td>
+<td>seluruh famili yang dipanggil per-template (lihat inventaris)</td>
+<td>tidak ada — dimuat live via <code>&lt;link&gt;</code>, tidak diunduh ke repo</td>
+<td>typografi tiap template (<code>&lt;link href="https://fonts.googleapis.com/css2?family=..."&gt;</code> di <code>&lt;head&gt;</code>)</td>
+<td>2026-08-23, <code>grep</code> atas <code>templates/**/*.html</code></td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div></div>
+</div>
+</section>
+
+<section id="peta-halaman-sumber" data-title="Peta halaman → sumber">
+<div class="section-toggle is-open">
+<button type="button" class="section-summary"><span class="chevron">▾</span><h2>Peta halaman → sumber</h2></button>
+<div class="section-panel"><div class="section-panel-inner">
+<div class="section-body">
+
+<p>Tidak berlaku untuk proyek ini — tidak ada halaman yang membaca berkas data (<code>.json</code>/<code>.csv</code>/API) dari sumber luar. Setiap template/halaman hanya membaca dirinya sendiri (HTML/CSS/JS inline, satu file). <code>gallery.html</code> dan <code>index.html</code> membaca array JS statis yang ditulis langsung di file itu sendiri (daftar template, kategori, jumlah) — bukan sumber luar, jadi tidak dipetakan di sini.</p>
+<table>
+<thead>
+<tr>
+<th>Halaman / fitur</th>
+<th>Berkas data yang dibaca</th>
+<th>Sumber asal</th>
+<th>Jahitan?</th>
+<th>Diverifikasi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>N/A</td>
+<td>tidak ada</td>
+<td>tidak ada</td>
+<td>tidak</td>
+<td>2026-08-23</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div></div>
+</div>
+</section>
+
+<section id="google-fonts" data-title="Google Fonts">
+<div class="section-toggle is-open">
+<button type="button" class="section-summary"><span class="chevron">▾</span><h2>Google Fonts</h2></button>
+<div class="section-panel"><div class="section-panel-inner">
+<div class="section-body">
+
+<ul>
+<li><strong>URL / endpoint:</strong> <code>https://fonts.googleapis.com/css2?family=&lt;Nama+Font&gt;:...&amp;display=swap</code>, plus <code>&lt;link rel="preconnect" href="https://fonts.gstatic.com"&gt;</code> untuk file font aktual</li>
+<li><strong>Jenis:</strong> dokumen (layanan CSS/font hosting publik Google, bukan API data)</li>
+<li><strong>Akses &amp; batasan:</strong> bebas, tanpa API key, tanpa rate-limit yang pernah ditemui selama build 125 template</li>
+<li><strong>Berkas lokal:</strong> tidak ada — selalu live-load dari CDN Google, tidak pernah di-vendor/self-host</li>
+<li><strong>Dipakai untuk:</strong> typografi (heading/body font) tiap template individual, dipilih beda-beda per template supaya tiap kategori bisnis punya identitas visual sendiri</li>
+<li><strong>Bukti di kode:</strong> <code>&lt;link href="https://fonts.googleapis.com/css2?family=..."&gt;</code> di <code>&lt;head&gt;</code> tiap <code>templates/&lt;n&gt;-&lt;slug&gt;/template-&lt;slug&gt;.html</code> yang pakai Google Fonts (66 dari ~125 file, verifikasi <code>grep -rl "fonts.googleapis" templates</code>)</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Tersedia (inventaris lengkap)</th>
+<th>Diambil?</th>
+<th>Alasan / bukti</th>
+<th>Keputusan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Famili font Google Fonts yang dipanggil per-template (Sora, Inter, Fraunces, Cormorant Garamond, DM Sans, Barlow, Bebas Neue, JetBrains Mono, dll — daftar lengkap unik ada di riwayat sesi, ~40 famili berbeda dipakai lintas 125 template)</td>
+<td>✅ diambil (live-load)</td>
+<td>dipilih manual per-template sesuai vibe kategori bisnis (mis. serif editorial utk wedding/Bridalku, mono utk fintech/Nirawa)</td>
+<td>Johan — implisit lewat instruksi "buat template" tiap batch, tidak per-font eksplisit</td>
+</tr>
+<tr>
+<td>Font sistem/lokal (fallback <code>sans-serif</code>, <code>serif</code> di tiap <code>font-family</code> CSS)</td>
+<td>✅ diambil</td>
+<td>fallback standar CSS, bukan sumber luar</td>
+<td>tidak perlu keputusan</td>
+</tr>
+<tr>
+<td>Gambar/foto stok (Unsplash dll)</td>
+<td>❌ tidak diambil</td>
+<td>semua template pakai ikon SVG inline/emoji, tidak ada foto produk nyata — mockup murni</td>
+<td>terbukti tidak dipakai (grep 0 hasil), bukan keputusan skip</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Tidak ada baris ❌ yang butuh keputusan Johan — semua "tidak diambil" di atas terbukti dari grep (0 hasil), bukan dilewatkan begitu saja.</p>
+</blockquote>
+
+</div>
+</div></div>
+</div>
+</section>
+
+<section id="keputusan-tidak-diambil-ganti-sumber-jahit" data-title="Keputusan &quot;tidak diambil&quot; / ganti sumber / jahit">
+<div class="section-toggle is-open">
+<button type="button" class="section-summary"><span class="chevron">▾</span><h2>Keputusan &quot;tidak diambil&quot; / ganti sumber / jahit</h2></button>
+<div class="section-panel"><div class="section-panel-inner">
+<div class="section-body">
+
+<p>Tidak berlaku — belum pernah ada penggantian sumber, jahitan data, atau ruas yang sengaja dilewatkan di proyek ini. Proyek murni template statis, tidak ada angka/data sensitif yang berasal dari sumber luar.</p>
+
+</div>
+</div></div>
+</div>
+</section>
+
+<section id="riwayat" data-title="Riwayat">
+<div class="section-toggle is-open">
+<button type="button" class="section-summary"><span class="chevron">▾</span><h2>Riwayat</h2></button>
+<div class="section-panel"><div class="section-panel-inner">
+<div class="section-body">
+
+<ul>
+<li>2026-08-23 — dibuat (perintah lintas-sesi dari sesi "AI Skill", instruksi Johan 2026-08-23); sumber: 1 (Google Fonts); halaman dipetakan: 0 (tidak ada halaman berbasis data luar); yang belum diputuskan: 0.</li>
+</ul>
+</div>
+</div></div>
+</div>
+</section>
+
+      </main>
+    </div>
+  </div>
+  <div class="pathbar" id="pathbar">
+    <span class="pathbar-crumb">📁 lucid-elbakyan-abb009</span><span class="pathbar-sep">▸</span><span class="pathbar-crumb">docs</span>
+    <span class="pathbar-sep">▸</span>
+    <span class="pathbar-crumb current" id="pathbar-current">Referensi Sumber — Portoweb</span>
+  </div>
+</div>
+<script>
+const root = document.documentElement;
+const themeBtn = document.getElementById('theme-toggle');
+function applyTheme(t) {
+  if (t === 'dark') { root.setAttribute('data-theme', 'dark'); themeBtn.textContent = '☀️'; }
+  else { root.removeAttribute('data-theme'); themeBtn.textContent = '🌙'; }
+}
+applyTheme(localStorage.getItem('aicc-theme') || 'light');
+themeBtn.addEventListener('click', () => {
+  const isDark = root.getAttribute('data-theme') === 'dark';
+  const next = isDark ? 'light' : 'dark';
+  applyTheme(next);
+  localStorage.setItem('aicc-theme', next);
+});
+
+const links = document.querySelectorAll('.nav-link');
+const sections = document.querySelectorAll('main section');
+const scrollContainer = document.getElementById('content-scroll');
+const pathbarCurrent = document.getElementById('pathbar-current');
+
+let lastPathTitle = null;
+function updateActiveSection() {
+  let current = null;
+  const scrollTop = scrollContainer.scrollTop;
+  sections.forEach(sec => {
+    if (scrollTop >= sec.offsetTop - scrollContainer.offsetTop - 80) current = sec;
+  });
+  if (!current) current = sections[0];
+  links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + current.id));
+  if (current && current.dataset.title !== lastPathTitle) {
+    lastPathTitle = current.dataset.title;
+    pathbarCurrent.classList.add('fading');
+    setTimeout(() => {
+      pathbarCurrent.textContent = current.dataset.title;
+      pathbarCurrent.classList.remove('fading');
+    }, 150);
+  }
+}
+scrollContainer.addEventListener('scroll', updateActiveSection);
+updateActiveSection();
+
+function bindToggle(toggle) {
+  const btn = toggle.querySelector('.section-summary');
+  if (btn.dataset.bound) return;
+  btn.dataset.bound = '1';
+  btn.addEventListener('click', () => toggle.classList.toggle('is-open'));
+}
+document.querySelectorAll('.section-toggle').forEach(bindToggle);
+
+document.getElementById('expand-all').onclick = () => {
+  document.querySelectorAll('main .section-toggle').forEach(t => t.classList.add('is-open'));
+};
+document.getElementById('collapse-all').onclick = () => {
+  document.querySelectorAll('main .section-toggle').forEach(t => t.classList.remove('is-open'));
+};
+
+const searchBox = document.getElementById('search');
+let originalHTML = null;
+
+function clearHighlights() {
+  if (originalHTML) {
+    document.querySelector('main').innerHTML = originalHTML;
+    enhanceTables();
+    document.querySelectorAll('.section-toggle').forEach(bindToggle);
+  }
+}
+
+function highlight(root, regex) {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+  const nodes = [];
+  let n;
+  while (n = walker.nextNode()) {
+    if (n.parentElement.tagName !== 'SCRIPT' && n.parentElement.tagName !== 'STYLE') nodes.push(n);
+  }
+  nodes.forEach(node => {
+    const text = node.nodeValue;
+    if (!regex.test(text)) return;
+    regex.lastIndex = 0;
+    const frag = document.createDocumentFragment();
+    let lastIdx = 0;
+    let m;
+    while (m = regex.exec(text)) {
+      frag.appendChild(document.createTextNode(text.slice(lastIdx, m.index)));
+      const mark = document.createElement('mark');
+      mark.textContent = m[0];
+      frag.appendChild(mark);
+      lastIdx = m.index + m[0].length;
+    }
+    frag.appendChild(document.createTextNode(text.slice(lastIdx)));
+    node.parentNode.replaceChild(frag, node);
+  });
+}
+
+searchBox.addEventListener('input', () => {
+  const main = document.querySelector('main');
+  if (originalHTML === null) originalHTML = main.innerHTML;
+  const q = searchBox.value.trim();
+  clearHighlights();
+  if (!q) return;
+  const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp(escaped, 'gi');
+  document.querySelectorAll('main .section-toggle').forEach(d => {
+    const text = d.textContent.toLowerCase();
+    if (text.includes(q.toLowerCase())) {
+      d.classList.add('is-open');
+      highlight(d, regex);
+    }
+  });
+});
+
+function enhanceTables() {
+  document.querySelectorAll('main table').forEach(table => {
+    if (table.dataset.enhanced) return;
+    table.dataset.enhanced = '1';
+    const headerRow = table.querySelector('thead tr') || table.querySelector('tr');
+    if (!headerRow) return;
+    const headers = Array.from(headerRow.children);
+    const headerTexts = headers.map(h => h.textContent.trim());
+
+    const wrap = document.createElement('div');
+    wrap.className = 'table-wrap';
+    table.parentNode.insertBefore(wrap, table);
+    wrap.appendChild(table);
+
+    headers.forEach((th, idx) => {
+      const arrow = document.createElement('span');
+      arrow.className = 'sort-arrow';
+      arrow.textContent = '⇅';
+      th.appendChild(arrow);
+      th.addEventListener('click', () => {
+        const tbody = table.querySelector('tbody') || table;
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const dir = th.dataset.dir === 'asc' ? 'desc' : 'asc';
+        headers.forEach(h => h.dataset.dir = '');
+        th.dataset.dir = dir;
+        rows.sort((a, b) => {
+          const av = (a.children[idx] || {}).textContent || '';
+          const bv = (b.children[idx] || {}).textContent || '';
+          return dir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+        });
+        rows.forEach(r => tbody.appendChild(r));
+      });
+    });
+
+    const coworkIdx = headerTexts.findIndex(t => t.startsWith('Cowork'));
+    const bahayaIdx = headerTexts.findIndex(t => t.startsWith('Bahaya'));
+    if (coworkIdx === -1 && bahayaIdx === -1) return;
+
+    const tbody = table.querySelector('tbody');
+    if (!tbody) return;
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+
+    const toolbar = document.createElement('div');
+    toolbar.className = 'table-filters';
+    const filters = [
+      { label: 'Semua', test: () => true },
+      { label: '✅ Cowork Ya', test: r => coworkIdx > -1 && r.children[coworkIdx].textContent.includes('✅') },
+      { label: '⚠️ Cowork Sebagian', test: r => coworkIdx > -1 && r.children[coworkIdx].textContent.includes('⚠️') },
+      { label: '🚫 Bahaya', test: r => bahayaIdx > -1 && (r.children[bahayaIdx].textContent.includes('🚫') || r.children[bahayaIdx].textContent.includes('⚠️')) },
+    ];
+    filters.forEach((f, i) => {
+      const btn = document.createElement('button');
+      btn.textContent = f.label;
+      if (i === 0) btn.classList.add('active');
+      btn.addEventListener('click', () => {
+        toolbar.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        rows.forEach(r => {
+          r.classList.toggle('row-hidden', !f.test(r));
+        });
+      });
+      toolbar.appendChild(btn);
+    });
+    wrap.parentNode.insertBefore(toolbar, wrap);
+  });
+}
+enhanceTables();
+</script>
+</body>
+</html>

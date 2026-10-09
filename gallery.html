@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="dark">
+<html lang="id" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -314,13 +314,13 @@
     .card-num-badge {
       position: absolute; top: 10px; left: 10px; z-index: 3;
       background: rgba(0,0,0,0.6); color: #fff;
-      font-size: 10px; font-weight: 700; font-family: monospace;
+      font-size: 10px; font-weight: 700; font-family: var(--font); font-variant-numeric: tabular-nums;
       padding: 2px 8px; border-radius: var(--rpill);
       backdrop-filter: blur(4px);
     }
 
     .card-body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 7px; flex: 1; }
-    .card-num { font-size: 11px; color: var(--accent); font-weight: 700; font-family: monospace; letter-spacing: 0.05em; }
+    .card-num { font-size: 11px; color: var(--accent); font-weight: 700; font-family: var(--font); font-variant-numeric: tabular-nums; letter-spacing: 0.05em; }
     .card-title { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.4; }
     .card-tags { display: flex; flex-wrap: wrap; gap: 4px; flex: 1; }
     .tag {
@@ -410,7 +410,7 @@
     </div>
 
     <div class="nav-spacer"></div>
-    <span class="nav-count" id="countDisplay">65 Templates</span>
+    <span class="nav-count" id="countDisplay">125 Templates</span>
     <button class="theme-toggle" id="themeToggle" title="Toggle tema">&#9728;&#65039;</button>
     <button class="hamburger" id="hamburger" aria-label="Buka sidebar">
       <span></span><span></span><span></span>
@@ -682,7 +682,7 @@
     </div>
 
     <div class="result-bar">
-      <p class="result-count" id="resultCount">Menampilkan <strong>65</strong> dari 65 template</p>
+      <p class="result-count" id="resultCount">Menampilkan <strong>125</strong> dari 125 template</p>
       <div class="grid-switcher">
         <button class="grid-btn" data-cols="3" title="3 kolom">
           <svg width="14" height="14" viewBox="0 0 12 12" fill="currentColor"><rect x="0" y="0" width="3" height="3"/><rect x="4.5" y="0" width="3" height="3"/><rect x="9" y="0" width="3" height="3"/><rect x="0" y="4.5" width="3" height="3"/><rect x="4.5" y="4.5" width="3" height="3"/><rect x="9" y="4.5" width="3" height="3"/><rect x="0" y="9" width="3" height="3"/><rect x="4.5" y="9" width="3" height="3"/><rect x="9" y="9" width="3" height="3"/></svg>
@@ -1103,17 +1103,16 @@ const themeToggle = document.getElementById('themeToggle');
 function setTheme(theme) {
   html.dataset.theme = theme;
   themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
-  try { localStorage.setItem('jia-tpl-theme', theme); } catch(e) {}
+  try { localStorage.setItem('pf_theme', theme); } catch(e) {}
 }
 
 themeToggle.addEventListener('click', () => {
   setTheme(html.dataset.theme === 'dark' ? 'light' : 'dark');
 });
 
-try {
-  const saved = localStorage.getItem('jia-tpl-theme');
-  if (saved) setTheme(saved);
-} catch(e) {}
+let savedTheme = 'light';
+try { savedTheme = localStorage.getItem('pf_theme') || 'light'; } catch(e) {}
+setTheme(savedTheme);
 
 /* ============================================================
    MOBILE SIDEBAR
