@@ -36,10 +36,27 @@ Tidak berlaku untuk proyek ini — tidak ada halaman yang membaca berkas data (`
 
 > Tidak ada baris ❌ yang butuh keputusan Johan — semua "tidak diambil" di atas terbukti dari grep (0 hasil), bukan dilewatkan begitu saja.
 
+## Polaris web components (Shopify) — pilot antrean #23
+
+- **URL:** `https://cdn.shopify.com/shopifycloud/polaris-2.0.js` (dipin ke 2.0; `polaris-2.js` ikut berubah). Dicek 26 Okt 2026 oleh sesi AI Skill: 200, 919.721 byte, `text/javascript`.
+- **Dokumentasi:** https://shopify.dev/docs/api/app-home/web-components — 50 komponen dalam 7 kelompok (Actions 6, Feedback 5, Forms 17, Layout 10, Media 4, Overlay 2, Tipografi 6).
+- **Akses & batas:** bebas, tanpa kunci. Dokumentasi resmi meminta `app-bridge.js` + meta `shopify-api-key`. Uji 26 Okt 2026 (sesi ini): tanpa keduanya komponen tetap tergambar dan konsol kosong.
+- **Atribut:** paket tipe `@shopify/polaris-types@2.0.0` (`npm pack`, `dist/custom-elements.json` + `dist/polaris.d.ts`), diekstrak di folder sementara, tidak disalin ke repo. Komponen tambahan di paket itu yang bukan bagian dari 50: `s-press-button`, `s-scroll-box` (tidak dipakai).
+- **Lisensi:** TIDAK disebut di dokumentasi web components; `package.json` paket tipe juga tanpa ruas `license`. Katalog AI Skill mencatat "boleh disalin: tidak tahu". Halaman hanya memuat skrip dari CDN Shopify, tidak menyalin kodenya. **Keputusan Johan diperlukan sebelum push/tayang**; sampai itu halaman bertanda `noindex` dan tidak dipush.
+- **Berkas lokal:** `design-systems/polaris/index.html` (landing pilot); gambar memakai `thumbnails/*.png` repo sendiri.
+- **Fon:** komponen memakai `ShopifyInter` (nol polos); halaman memakai Fraunces (Google Fonts) untuk judul dan Inter/Segoe UI untuk isi.
+
+| Tersedia (inventaris) | Diambil? | Alasan / bukti | Keputusan |
+|---|---|---|---|
+| 50 komponen web components | ✅ semua | dihitung skrip di halaman: 50/50 terdaftar dan terpakai | Johan, "kerjakan #23" (26 Okt 2026) |
+| `app-bridge.js` + meta `shopify-api-key` | ❌ | tidak dibutuhkan untuk menggambar di halaman lepas (uji 26 Okt 2026) | sesi ini, dengan bukti uji; bisa dibalik Johan |
+| Paket React lama `Shopify/polaris` (MIT, diarsipkan) | ❌ | cadangan, tidak dibutuhkan karena web components jalan | sesi ini |
+
 ## Keputusan "tidak diambil" / ganti sumber / jahit
 
 Tidak berlaku — belum pernah ada penggantian sumber, jahitan data, atau ruas yang sengaja dilewatkan di proyek ini. Proyek murni template statis, tidak ada angka/data sensitif yang berasal dari sumber luar.
 
 ## Riwayat
 
+- 2026-10-26 — tambah sumber Polaris web components (pilot #23); lisensi belum diputuskan Johan.
 - 2026-08-23 — dibuat (perintah lintas-sesi dari sesi "AI Skill", instruksi Johan 2026-08-23); sumber: 1 (Google Fonts); halaman dipetakan: 0 (tidak ada halaman berbasis data luar); yang belum diputuskan: 0.

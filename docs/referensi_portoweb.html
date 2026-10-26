@@ -360,6 +360,26 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 24px 0; }
 .pathbar-crumb.current { color: var(--ink); font-weight: 500; transition: opacity 0.2s ease; }
 .pathbar-crumb.current.fading { opacity: 0; }
 .pathbar-sep { opacity: 0.5; }
+/* #99 layar sempit (telepon): jendela penuh layar, daftar isi jadi laci yang dibuka tombol Isi, tabel digulir di wadahnya */
+#isi-toggle { display: none; align-items: center; gap: 4px; flex-shrink: 0; height: 28px; padding: 0 10px; border-radius: var(--radius-pill); border: 1px solid var(--hairline-strong); background: var(--surface-card); color: var(--ink); font: 500 12px var(--font-text); cursor: pointer; }
+#isi-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (max-width: 860px) {
+  body { padding: 0; }
+  .macwindow { border-radius: 0; border: 0; box-shadow: none; height: 100dvh; max-width: none; }
+  .traffic-lights { display: none; }
+  .titlebar { gap: 8px; padding: 0 10px; }
+  .titlebar-title { margin-right: 0; text-align: left; min-width: 0; }
+  .titlebar-nav { flex-shrink: 0; margin-right: 0; }
+  .titlebar-nav a { font-size: 11px; padding: 3px 7px; }
+  #isi-toggle { display: inline-flex; }
+  .window-body { position: relative; }
+  .sidebar { position: absolute; inset: 0; width: auto; z-index: 5; border-right: 0; transform: translateX(-100%); visibility: hidden; transition: transform 0.25s ease, visibility 0s linear 0.25s; }
+  .macwindow.isi-buka .sidebar { transform: none; visibility: visible; transition: transform 0.25s ease; }
+  .main { padding: 18px 16px 40px; }
+  .main pre { overflow-x: auto; max-width: 100%; }
+  .main :not(pre) > code { overflow-wrap: anywhere; }
+}
+@media (max-width: 860px) and (prefers-reduced-motion: reduce) { .sidebar, .macwindow.isi-buka .sidebar { transition: none; } }
 </style>
 </head>
 <body>
@@ -372,10 +392,11 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 24px 0; }
     </div>
     <div class="titlebar-title">Referensi Sumber — Portoweb</div>
     <div class="titlebar-nav"></div>
+    <button id="isi-toggle" aria-expanded="false" aria-controls="sidebar-isi" title="Daftar isi">☰ Isi</button>
     <button id="theme-toggle" title="Ganti tema terang/gelap">🌙</button>
   </div>
   <div class="window-body">
-    <nav class="sidebar">
+    <nav class="sidebar" id="sidebar-isi" aria-label="Daftar isi">
       <div class="toolbar-search-wrap">
         <div class="search-field">
           <input type="text" id="search" placeholder="Cari...">
@@ -392,6 +413,7 @@ hr { border: none; border-top: 1px solid var(--hairline); margin: 24px 0; }
 <li><a href="#ringkasan" class="nav-link"><span class="nav-icon">📄</span><span class="nav-label">Ringkasan</span></a></li>
 <li><a href="#peta-halaman-sumber" class="nav-link"><span class="nav-icon">📄</span><span class="nav-label">Peta halaman → sumber</span></a></li>
 <li><a href="#google-fonts" class="nav-link"><span class="nav-icon">📄</span><span class="nav-label">Google Fonts</span></a></li>
+<li><a href="#polaris-web-components-shopify-pilot-antrean-23" class="nav-link"><span class="nav-icon">📄</span><span class="nav-label">Polaris web components (Shopify) — pilot antrean #23</span></a></li>
 <li><a href="#keputusan-tidak-diambil-ganti-sumber-jahit" class="nav-link"><span class="nav-icon">📄</span><span class="nav-label">Keputusan &quot;tidak diambil&quot; / ganti sumber / jahit</span></a></li>
 <li><a href="#riwayat" class="nav-link"><span class="nav-icon">📄</span><span class="nav-label">Riwayat</span></a></li>
 </ul>
@@ -528,6 +550,57 @@ Bangun HTML (tiap berkas ini berubah): <code>python "C:\1-Johan\10. Pengembangan
 </div>
 </section>
 
+<section id="polaris-web-components-shopify-pilot-antrean-23" data-title="Polaris web components (Shopify) — pilot antrean #23">
+<div class="section-toggle is-open">
+<button type="button" class="section-summary"><span class="chevron">▾</span><h2>Polaris web components (Shopify) — pilot antrean #23</h2></button>
+<div class="section-panel"><div class="section-panel-inner">
+<div class="section-body">
+
+<ul>
+<li><strong>URL:</strong> <code>https://cdn.shopify.com/shopifycloud/polaris-2.0.js</code> (dipin ke 2.0; <code>polaris-2.js</code> ikut berubah). Dicek 26 Okt 2026 oleh sesi AI Skill: 200, 919.721 byte, <code>text/javascript</code>.</li>
+<li><strong>Dokumentasi:</strong> https://shopify.dev/docs/api/app-home/web-components — 50 komponen dalam 7 kelompok (Actions 6, Feedback 5, Forms 17, Layout 10, Media 4, Overlay 2, Tipografi 6).</li>
+<li><strong>Akses &amp; batas:</strong> bebas, tanpa kunci. Dokumentasi resmi meminta <code>app-bridge.js</code> + meta <code>shopify-api-key</code>. Uji 26 Okt 2026 (sesi ini): tanpa keduanya komponen tetap tergambar dan konsol kosong.</li>
+<li><strong>Atribut:</strong> paket tipe <code>@shopify/polaris-types@2.0.0</code> (<code>npm pack</code>, <code>dist/custom-elements.json</code> + <code>dist/polaris.d.ts</code>), diekstrak di folder sementara, tidak disalin ke repo. Komponen tambahan di paket itu yang bukan bagian dari 50: <code>s-press-button</code>, <code>s-scroll-box</code> (tidak dipakai).</li>
+<li><strong>Lisensi:</strong> TIDAK disebut di dokumentasi web components; <code>package.json</code> paket tipe juga tanpa ruas <code>license</code>. Katalog AI Skill mencatat "boleh disalin: tidak tahu". Halaman hanya memuat skrip dari CDN Shopify, tidak menyalin kodenya. <strong>Keputusan Johan diperlukan sebelum push/tayang</strong>; sampai itu halaman bertanda <code>noindex</code> dan tidak dipush.</li>
+<li><strong>Berkas lokal:</strong> <code>design-systems/polaris/index.html</code> (landing pilot); gambar memakai <code>thumbnails/*.png</code> repo sendiri.</li>
+<li><strong>Fon:</strong> komponen memakai <code>ShopifyInter</code> (nol polos); halaman memakai Fraunces (Google Fonts) untuk judul dan Inter/Segoe UI untuk isi.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Tersedia (inventaris)</th>
+<th>Diambil?</th>
+<th>Alasan / bukti</th>
+<th>Keputusan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>50 komponen web components</td>
+<td>✅ semua</td>
+<td>dihitung skrip di halaman: 50/50 terdaftar dan terpakai</td>
+<td>Johan, "kerjakan #23" (26 Okt 2026)</td>
+</tr>
+<tr>
+<td><code>app-bridge.js</code> + meta <code>shopify-api-key</code></td>
+<td>❌</td>
+<td>tidak dibutuhkan untuk menggambar di halaman lepas (uji 26 Okt 2026)</td>
+<td>sesi ini, dengan bukti uji; bisa dibalik Johan</td>
+</tr>
+<tr>
+<td>Paket React lama <code>Shopify/polaris</code> (MIT, diarsipkan)</td>
+<td>❌</td>
+<td>cadangan, tidak dibutuhkan karena web components jalan</td>
+<td>sesi ini</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div></div>
+</div>
+</section>
+
 <section id="keputusan-tidak-diambil-ganti-sumber-jahit" data-title="Keputusan &quot;tidak diambil&quot; / ganti sumber / jahit">
 <div class="section-toggle is-open">
 <button type="button" class="section-summary"><span class="chevron">▾</span><h2>Keputusan &quot;tidak diambil&quot; / ganti sumber / jahit</h2></button>
@@ -548,6 +621,7 @@ Bangun HTML (tiap berkas ini berubah): <code>python "C:\1-Johan\10. Pengembangan
 <div class="section-body">
 
 <ul>
+<li>2026-10-26 — tambah sumber Polaris web components (pilot #23); lisensi belum diputuskan Johan.</li>
 <li>2026-08-23 — dibuat (perintah lintas-sesi dari sesi "AI Skill", instruksi Johan 2026-08-23); sumber: 1 (Google Fonts); halaman dipetakan: 0 (tidak ada halaman berbasis data luar); yang belum diputuskan: 0.</li>
 </ul>
 </div>
@@ -559,7 +633,7 @@ Bangun HTML (tiap berkas ini berubah): <code>python "C:\1-Johan\10. Pengembangan
     </div>
   </div>
   <div class="pathbar" id="pathbar">
-    <span class="pathbar-crumb">📁 lucid-elbakyan-abb009</span><span class="pathbar-sep">▸</span><span class="pathbar-crumb">docs</span>
+    <span class="pathbar-crumb">📁 baca-hemat-ffa433</span><span class="pathbar-sep">▸</span><span class="pathbar-crumb">docs</span>
     <span class="pathbar-sep">▸</span>
     <span class="pathbar-crumb current" id="pathbar-current">Referensi Sumber — Portoweb</span>
   </div>
@@ -741,6 +815,12 @@ function enhanceTables() {
   });
 }
 enhanceTables();
+// #99 laci daftar isi di layar sempit: tombol Isi membuka/menutup, memilih bagian menutupnya lagi
+const jendela = document.querySelector('.macwindow'), isiBtn = document.getElementById('isi-toggle');
+function aturIsi(buka) { jendela.classList.toggle('isi-buka', buka); isiBtn.setAttribute('aria-expanded', String(buka)); }
+isiBtn.addEventListener('click', () => aturIsi(!jendela.classList.contains('isi-buka')));
+document.querySelectorAll('.sidebar .nav-link').forEach(a => a.addEventListener('click', () => aturIsi(false)));
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && jendela.classList.contains('isi-buka')) { aturIsi(false); isiBtn.focus(); } });
 </script>
 </body>
 </html>
