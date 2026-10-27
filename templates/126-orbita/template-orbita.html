@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orbita — Rumah Pintar yang Paham Kebiasaanmu</title>
+<meta name="description" content="Orbita: aplikasi rumah pintar untuk lampu, suhu, tirai dan keamanan dalam satu genggaman. Template landing page Material Design 3 + three.js.">
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400..800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0..1,0&icon_names=add,bedtime,bolt,check,close,dark_mode,devices,eco,light_mode,lightbulb,lock,movie,restart_alt,shield,thermostat,wb_sunny&display=block" rel="stylesheet">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<style>
+  /* ===== M3 colour tokens (seed indigo + amber tertiary) ===== */
+  :root{
+    --md-sys-color-primary:#4F5B92;--md-sys-color-on-primary:#FFFFFF;
+    --md-sys-color-primary-container:#DDE1FF;--md-sys-color-on-primary-container:#07164B;
+    --md-sys-color-secondary:#5A5D72;--md-sys-color-on-secondary:#FFFFFF;
+    --md-sys-color-secondary-container:#DFE1F9;--md-sys-color-on-secondary-container:#171B2C;
+    --md-sys-color-tertiary:#7C5800;--md-sys-color-on-tertiary:#FFFFFF;
+    --md-sys-color-tertiary-container:#FFDEA6;--md-sys-color-on-tertiary-container:#271900;
+    --md-sys-color-error:#BA1A1A;--md-sys-color-on-error:#FFFFFF;
+    --md-sys-color-error-container:#FFDAD6;--md-sys-color-on-error-container:#410002;
+    --md-sys-color-background:#FBF8FF;--md-sys-color-on-background:#1B1B21;
+    --md-sys-color-surface:#FBF8FF;--md-sys-color-on-surface:#1B1B21;
+    --md-sys-color-surface-variant:#E2E1EC;--md-sys-color-on-surface-variant:#45464F;
+    --md-sys-color-surface-container-lowest:#FFFFFF;--md-sys-color-surface-container-low:#F5F2FA;
+    --md-sys-color-surface-container:#EFEDF4;--md-sys-color-surface-container-high:#E9E7EF;
+    --md-sys-color-surface-container-highest:#E4E1E9;
+    --md-sys-color-outline:#767680;--md-sys-color-outline-variant:#C6C5D0;
+    --md-sys-color-inverse-surface:#303036;--md-sys-color-inverse-on-surface:#F2EFF7;
+    --md-sys-color-inverse-primary:#B8C4FF;--md-sys-color-shadow:#000000;--md-sys-color-scrim:#000000;
+    --accent-path:#FF7A3D;
+    --md-ref-typeface-brand:'Roboto Flex','Roboto',system-ui,sans-serif;
+    --md-ref-typeface-plain:'Roboto',system-ui,sans-serif;
+    --md-icon-font:'Material Symbols Rounded';
+    --shape-xl:28px;--shape-l:20px;--shape-m:12px;
+    color-scheme:light;
+  }
+  :root.dark{
+    --md-sys-color-primary:#B8C4FF;--md-sys-color-on-primary:#1F2D61;
+    --md-sys-color-primary-container:#374379;--md-sys-color-on-primary-container:#DDE1FF;
+    --md-sys-color-secondary:#C3C5DD;--md-sys-color-on-secondary:#2C2F42;
+    --md-sys-color-secondary-container:#42455A;--md-sys-color-on-secondary-container:#DFE1F9;
+    --md-sys-color-tertiary:#F5BE48;--md-sys-color-on-tertiary:#412D00;
+    --md-sys-color-tertiary-container:#5E4200;--md-sys-color-on-tertiary-container:#FFDEA6;
+    --md-sys-color-error:#FFB4AB;--md-sys-color-on-error:#690005;
+    --md-sys-color-error-container:#93000A;--md-sys-color-on-error-container:#FFDAD6;
+    --md-sys-color-background:#131318;--md-sys-color-on-background:#E4E1E9;
+    --md-sys-color-surface:#131318;--md-sys-color-on-surface:#E4E1E9;
+    --md-sys-color-surface-variant:#45464F;--md-sys-color-on-surface-variant:#C6C5D0;
+    --md-sys-color-surface-container-lowest:#0E0E13;--md-sys-color-surface-container-low:#1B1B21;
+    --md-sys-color-surface-container:#1F1F25;--md-sys-color-surface-container-high:#2A2930;
+    --md-sys-color-surface-container-highest:#35343A;
+    --md-sys-color-outline:#90909A;--md-sys-color-outline-variant:#45464F;
+    --md-sys-color-inverse-surface:#E4E1E9;--md-sys-color-inverse-on-surface:#303036;
+    --md-sys-color-inverse-primary:#4F5B92;
+    --accent-path:#FF8F5A;
+    color-scheme:dark;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+  body{margin:0;font-family:var(--md-ref-typeface-plain);font-size:16px;line-height:1.55;
+    background:var(--md-sys-color-surface);color:var(--md-sys-color-on-surface);
+    transition:background-color .35s,color .35s;overflow-x:hidden;}
+  code,kbd,pre,samp{font-family:inherit;}
+  h1,h2,h3,h4{font-family:var(--md-ref-typeface-brand);margin:0;letter-spacing:-.01em;}
+  p{margin:0;}
+  a{color:var(--md-sys-color-primary);}
+  .num{font-variant-numeric:tabular-nums;}
+  :focus-visible{outline:3px solid var(--md-sys-color-primary);outline-offset:3px;border-radius:6px;}
+  .wrap{width:min(1200px,100% - 32px);margin-inline:auto;}
+  .skip{position:absolute;left:-999px;top:8px;z-index:100;background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);padding:10px 16px;border-radius:99px;}
+  .skip:focus{left:16px;}
+  md-icon{font-variation-settings:'FILL' 1;}
+
+  /* ===== top app bar ===== */
+  .appbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--md-sys-color-surface) 82%,transparent);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:background-color .3s,box-shadow .3s;}
+  .appbar.scrolled{background:color-mix(in srgb,var(--md-sys-color-surface-container) 92%,transparent);box-shadow:0 1px 0 var(--md-sys-color-outline-variant);}
+  .appbar .wrap{display:flex;align-items:center;gap:8px;height:64px;}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--md-sys-color-on-surface);font-family:var(--md-ref-typeface-brand);font-weight:700;font-size:21px;letter-spacing:-.02em;margin-right:auto;}
+  .brand svg{width:32px;height:32px;}
+  .navlinks{display:flex;gap:2px;margin-right:8px;}
+  .navlinks a{position:relative;text-decoration:none;color:var(--md-sys-color-on-surface-variant);font-weight:500;font-size:14px;padding:10px 14px;border-radius:99px;}
+  .navlinks a:hover{color:var(--md-sys-color-on-surface);}
+  .navlinks md-ripple{border-radius:99px;}
+  @media (max-width:900px){.navlinks{display:none;}}
+  @media (max-width:420px){.appbar .cta-top{display:none;}}
+
+  /* ===== hero ===== */
+  .hero{padding:40px 0 72px;position:relative;}
+  .hero .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:40px;align-items:center;}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 8px;border-radius:99px;background:var(--md-sys-color-tertiary-container);color:var(--md-sys-color-on-tertiary-container);font-size:13px;font-weight:500;}
+  .eyebrow b{background:var(--md-sys-color-tertiary);color:var(--md-sys-color-on-tertiary);border-radius:99px;padding:2px 8px;font-size:11px;letter-spacing:.04em;}
+  .hero h1{font-size:clamp(40px,5.6vw,72px);line-height:1.02;font-weight:750;margin:20px 0 18px;font-variation-settings:'opsz' 144;}
+  .hero h1 em{font-style:normal;color:var(--md-sys-color-primary);}
+  .hero .lead{font-size:clamp(16px,1.4vw,19px);color:var(--md-sys-color-on-surface-variant);max-width:520px;}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin:30px 0 34px;}
+  .hero-proof{display:flex;gap:28px;flex-wrap:wrap;}
+  .hero-proof div{display:flex;flex-direction:column;}
+  .hero-proof strong{font-family:var(--md-ref-typeface-brand);font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;}
+  .hero-proof span{font-size:13px;color:var(--md-sys-color-on-surface-variant);}
+  @media (max-width:900px){.hero .wrap{grid-template-columns:1fr;gap:28px;}.hero{padding-top:20px;}}
+
+  /* ===== stages (3D canvas hosts) ===== */
+  .stage{position:relative;border-radius:var(--shape-xl);overflow:hidden;
+    background:radial-gradient(120% 90% at 50% 10%,var(--md-sys-color-primary-container) 0%,var(--md-sys-color-surface-container-low) 60%,var(--md-sys-color-surface-container) 100%);
+    isolation:isolate;}
+  .stage canvas.snap{pointer-events:none;}
+  .stage canvas{position:absolute;inset:0;width:100%!important;height:100%!important;display:block;touch-action:pan-y;}
+  .stage .fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;padding:24px;}
+  .stage .fallback svg{width:100%;height:100%;max-height:100%;}
+  .no-webgl .stage .fallback{display:flex;}
+  .stage-hero{aspect-ratio:1.08/1;min-height:340px;}
+  @media (max-width:900px){.stage-hero{aspect-ratio:auto;height:min(92vw,460px);}}
+  .float-card{position:absolute;z-index:2;left:16px;bottom:16px;width:min(300px,calc(100% - 32px));
+    background:color-mix(in srgb,var(--md-sys-color-surface-container-lowest) 86%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-radius:var(--shape-l);padding:14px 16px 10px;--md-elevation-level:2;}
+  .float-card .row{display:flex;align-items:center;gap:12px;}
+  .float-card .t{font-weight:500;font-size:15px;}
+  .float-card .s{font-size:12px;color:var(--md-sys-color-on-surface-variant);}
+  .float-card md-slider{width:100%;margin-top:2px;}
+  .ico-bubble{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none;background:var(--md-sys-color-tertiary-container);color:var(--md-sys-color-on-tertiary-container);transition:.3s;}
+  .ico-bubble.off{background:var(--md-sys-color-surface-container-highest);color:var(--md-sys-color-on-surface-variant);}
+  .stage-badge{position:absolute;z-index:2;top:14px;right:14px;display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:99px;font-size:12px;font-weight:500;
+    background:color-mix(in srgb,var(--md-sys-color-surface-container-lowest) 80%,transparent);backdrop-filter:blur(10px);color:var(--md-sys-color-on-surface);}
+  .live-dot{width:8px;height:8px;border-radius:50%;background:#2fbf71;box-shadow:0 0 0 0 rgba(47,191,113,.6);animation:pulse 2s infinite;}
+  @keyframes pulse{70%{box-shadow:0 0 0 8px rgba(47,191,113,0);}100%{box-shadow:0 0 0 0 rgba(47,191,113,0);}}
+
+  /* ===== sections ===== */
+  section{scroll-margin-top:72px;}
+  .sec{padding:88px 0;}
+  .sec-head{max-width:720px;margin-bottom:40px;}
+  .sec-head .kicker{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--md-sys-color-primary);}
+  .sec-head h2{font-size:clamp(30px,3.6vw,46px);line-height:1.1;margin:10px 0 14px;font-weight:700;}
+  .sec-head p{color:var(--md-sys-color-on-surface-variant);font-size:17px;}
+  .center{text-align:center;margin-inline:auto;}
+  @media (max-width:600px){.sec{padding:64px 0;}}
+
+  .card{position:relative;border-radius:var(--shape-xl);background:var(--md-sys-color-surface-container-low);padding:26px;--md-elevation-level:0;transition:transform .3s,background-color .3s;}
+  .card:hover{--md-elevation-level:2;}
+  .card.filled{background:var(--md-sys-color-surface-container-highest);}
+  .feat-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;}
+  .feat-grid .card{grid-column:span 3;display:flex;flex-direction:column;gap:12px;}
+  .feat-grid .card.wide,.feat-grid .card.half{grid-column:span 6;}
+  .feat-grid h3{font-size:20px;font-weight:650;}
+  .feat-grid p{color:var(--md-sys-color-on-surface-variant);font-size:15px;}
+  .feat-ico{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);}
+  .feat-ico.t{background:var(--md-sys-color-tertiary-container);color:var(--md-sys-color-on-tertiary-container);}
+  .feat-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:16px;background:var(--md-sys-color-surface-container-lowest);font-size:14px;}
+  .energy{display:flex;align-items:baseline;gap:8px;font-family:var(--md-ref-typeface-brand);}
+  .energy strong{font-size:40px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1;}
+  .energy span{color:var(--md-sys-color-on-surface-variant);font-size:14px;}
+  md-linear-progress{width:100%;--md-linear-progress-track-shape:99px;--md-linear-progress-track-height:8px;--md-linear-progress-active-indicator-height:8px;}
+  .bars{display:flex;align-items:flex-end;gap:6px;height:84px;margin-top:auto;}
+  .bars i{flex:1;border-radius:8px 8px 4px 4px;background:var(--md-sys-color-primary);opacity:.85;transform-origin:bottom;transition:height .6s cubic-bezier(.2,0,0,1);}
+  .bars i:nth-child(n+5){background:var(--md-sys-color-tertiary);}
+  .chips-wrap{display:flex;flex-wrap:wrap;gap:8px;}
+  @media (max-width:1000px){.feat-grid .card{grid-column:span 6;}.feat-grid .card.wide,.feat-grid .card.half{grid-column:span 12;}}
+  @media (max-width:640px){.feat-grid .card,.feat-grid .card.wide,.feat-grid .card.half{grid-column:span 12;}}
+
+  /* ===== scroll story ===== */
+  .story{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.85fr);gap:48px;}
+  .story-stick{position:sticky;top:84px;height:calc(100vh - 108px);max-height:760px;}
+  .story-stick .stage{height:100%;}
+  .story-hud{position:absolute;z-index:2;left:16px;right:16px;top:16px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;pointer-events:none;}
+  .story-hud .pill{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:99px;font-size:13px;font-weight:600;
+    background:color-mix(in srgb,var(--md-sys-color-surface-container-lowest) 84%,transparent);backdrop-filter:blur(10px);}
+  .story-hud .pill .c{color:var(--accent-path);font-variant-numeric:tabular-nums;}
+  .story-dots{position:absolute;z-index:2;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:8px;}
+  .story-dots i{width:8px;height:8px;border-radius:99px;background:var(--md-sys-color-outline-variant);transition:.35s;}
+  .story-dots i.on{width:28px;background:var(--accent-path);}
+  .steps{padding:12vh 0 22vh;}
+  .step{min-height:78vh;display:flex;flex-direction:column;justify-content:center;opacity:.28;transition:opacity .45s;}
+  .step.on{opacity:1;}
+  .step .no{font-family:var(--md-ref-typeface-brand);font-weight:700;color:var(--accent-path);font-size:15px;letter-spacing:.06em;font-variant-numeric:tabular-nums;}
+  .step h3{font-size:clamp(28px,3vw,40px);line-height:1.1;margin:10px 0 14px;font-weight:700;}
+  .step p{color:var(--md-sys-color-on-surface-variant);font-size:17px;max-width:440px;}
+  .step .chips-wrap{margin-top:18px;}
+  @media (max-width:900px){
+    .story{grid-template-columns:1fr;gap:0;}
+    .story-stick{top:64px;height:calc(100svh - 64px);max-height:none;z-index:1;margin:0 -16px;}
+    .story-stick .stage{border-radius:0;}
+    .steps{margin-top:calc(-100svh + 64px);padding:0 0 6svh;position:relative;z-index:2;pointer-events:none;}
+    .step .inner{pointer-events:auto;}
+    .story-dots{bottom:auto;top:62px;left:auto;right:16px;transform:none;}
+    .step{min-height:80svh;justify-content:flex-end;padding-bottom:3svh;opacity:1;}
+    .step .inner{background:color-mix(in srgb,var(--md-sys-color-surface-container-lowest) 92%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+      border-radius:var(--shape-l);padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.12);}
+    .step h3{font-size:26px;}
+    .step p{font-size:15px;}
+  }
+
+  /* ===== control studio ===== */
+  .studio{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(320px,1fr);gap:20px;align-items:stretch;}
+  .stage-demo{min-height:560px;}
+  .panel{border-radius:var(--shape-xl);background:var(--md-sys-color-surface-container);padding:22px;display:flex;flex-direction:column;gap:18px;position:relative;}
+  .panel h3{font-size:22px;font-weight:650;}
+  .panel .label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--md-sys-color-on-surface-variant);margin-bottom:8px;}
+  .ctrl{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:16px;background:var(--md-sys-color-surface-container-lowest);}
+  .ctrl .l{display:flex;align-items:center;gap:12px;min-width:0;}
+  .ctrl .l b{font-weight:500;display:block;}
+  .ctrl .l small{color:var(--md-sys-color-on-surface-variant);font-size:12px;font-variant-numeric:tabular-nums;}
+  .slider-block{padding:10px 14px 4px;border-radius:16px;background:var(--md-sys-color-surface-container-lowest);}
+  .slider-block .top{display:flex;justify-content:space-between;font-size:14px;font-weight:500;}
+  .slider-block .top span{color:var(--md-sys-color-on-surface-variant);font-variant-numeric:tabular-nums;}
+  .slider-block md-slider{width:calc(100% + 16px);margin-inline:-8px;}
+  .kelvin md-slider{--md-slider-inactive-track-color:transparent;}
+  .kelvin .grad{height:6px;border-radius:99px;margin:0 2px 2px;background:linear-gradient(90deg,#ffb46b,#ffe2c0,#fff6ee,#dbe6ff);}
+  .stage-demo .hud{position:absolute;z-index:2;left:16px;bottom:16px;right:16px;display:flex;justify-content:space-between;align-items:flex-end;gap:12px;pointer-events:none;}
+  .stage-demo .hud .pill{pointer-events:none;display:flex;flex-direction:column;padding:10px 16px;border-radius:18px;background:color-mix(in srgb,var(--md-sys-color-surface-container-lowest) 84%,transparent);backdrop-filter:blur(10px);font-size:13px;}
+  .stage-demo .hud .pill b{font-family:var(--md-ref-typeface-brand);font-size:18px;font-variant-numeric:tabular-nums;}
+  .stage-demo md-fab{pointer-events:auto;}
+  .hint{font-size:12px;color:var(--md-sys-color-on-surface-variant);}
+  @media (max-width:1000px){.studio{grid-template-columns:1fr;}.stage-demo{min-height:0;height:min(100vw,460px);}}
+
+  /* ===== stats / testimonials ===== */
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:28px;}
+  .stat{border-radius:var(--shape-xl);padding:24px;background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);}
+  .stat:nth-child(2){background:var(--md-sys-color-tertiary-container);color:var(--md-sys-color-on-tertiary-container);}
+  .stat:nth-child(3){background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);}
+  .stat:nth-child(4){background:var(--md-sys-color-surface-container-highest);color:var(--md-sys-color-on-surface);}
+  .stat strong{display:block;font-family:var(--md-ref-typeface-brand);font-size:clamp(32px,3.6vw,48px);font-weight:750;line-height:1.05;font-variant-numeric:tabular-nums;}
+  .stat span{font-size:14px;opacity:.85;}
+  .testi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;}
+  .testi .card{display:flex;flex-direction:column;gap:16px;}
+  .testi blockquote{margin:0;font-size:16px;line-height:1.6;}
+  .who{display:flex;align-items:center;gap:12px;margin-top:auto;}
+  .ava{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:15px;background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);}
+  .who small{display:block;color:var(--md-sys-color-on-surface-variant);font-size:13px;}
+  .stars{color:var(--md-sys-color-tertiary);letter-spacing:2px;font-size:15px;}
+  @media (max-width:900px){.stats{grid-template-columns:repeat(2,minmax(0,1fr));}.testi{grid-template-columns:1fr;}}
+
+  /* ===== pricing ===== */
+  .price-tabs{max-width:360px;margin:0 auto 28px;border-radius:16px;overflow:hidden;--md-primary-tab-container-color:transparent;}
+  .plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch;}
+  .plan{display:flex;flex-direction:column;gap:14px;}
+  .plan.best{background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);--md-elevation-level:3;}
+  .plan.best md-list{--md-list-container-color:transparent;--md-list-item-label-text-color:var(--md-sys-color-on-primary-container);}
+  .plan h3{font-size:20px;}
+  .plan .price{font-family:var(--md-ref-typeface-brand);font-size:40px;font-weight:750;font-variant-numeric:tabular-nums;line-height:1;}
+  .plan .price small{font-size:14px;font-weight:500;opacity:.75;}
+  .plan .desc{font-size:14px;opacity:.85;}
+  .plan md-list{background:transparent;--md-list-container-color:transparent;padding:0;}
+  .plan md-list-item{--md-list-item-one-line-container-height:40px;--md-list-item-leading-space:0;--md-list-item-top-space:4px;--md-list-item-bottom-space:4px;}
+  .plan md-list-item md-icon{color:var(--md-sys-color-primary);font-size:20px;}
+  .plan .btn{margin-top:auto;}
+  .plan md-filled-button,.plan md-outlined-button{width:100%;}
+  .tag{align-self:flex-start;font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;background:var(--md-sys-color-tertiary);color:var(--md-sys-color-on-tertiary);}
+  @media (max-width:900px){.plans{grid-template-columns:1fr;}}
+
+  /* ===== FAQ ===== */
+  .faq{max-width:820px;margin-inline:auto;display:flex;flex-direction:column;gap:10px;}
+  .faq details{border-radius:var(--shape-l);background:var(--md-sys-color-surface-container-low);overflow:hidden;transition:background-color .3s;}
+  .faq details[open]{background:var(--md-sys-color-surface-container-high);}
+  .faq summary{position:relative;list-style:none;cursor:pointer;padding:20px 56px 20px 22px;font-weight:500;font-size:17px;}
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary::after{content:"";position:absolute;right:24px;top:50%;width:10px;height:10px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-70%) rotate(45deg);transition:transform .3s;}
+  .faq details[open] summary::after{transform:translateY(-30%) rotate(-135deg);}
+  .faq .ans{padding:0 22px 20px;color:var(--md-sys-color-on-surface-variant);}
+
+  /* ===== CTA ===== */
+  .cta{border-radius:36px;padding:clamp(28px,5vw,64px);background:var(--md-sys-color-inverse-surface);color:var(--md-sys-color-inverse-on-surface);display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:32px;align-items:center;position:relative;overflow:hidden;}
+  .cta h2{font-size:clamp(30px,3.8vw,48px);line-height:1.08;font-weight:750;}
+  .cta p{opacity:.8;margin-top:14px;}
+  .cta-form{display:flex;flex-direction:column;gap:14px;background:var(--md-sys-color-surface);color:var(--md-sys-color-on-surface);padding:22px;border-radius:var(--shape-l);position:relative;z-index:1;}
+  .cta-form md-outlined-text-field{width:100%;}
+  .cta-orb{position:absolute;right:-120px;top:-120px;width:360px;height:360px;border-radius:50%;border:2px dashed color-mix(in srgb,var(--md-sys-color-inverse-primary) 50%,transparent);}
+  .cta-orb::after{content:"";position:absolute;width:18px;height:18px;border-radius:50%;background:var(--accent-path);left:40px;top:60px;}
+  @media (max-width:900px){.cta{grid-template-columns:1fr;}}
+
+  /* ===== footer ===== */
+  footer{padding:56px 0 36px;margin-top:88px;background:var(--md-sys-color-surface-container-low);}
+  .foot{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:28px;}
+  .foot h4{font-size:14px;margin-bottom:12px;}
+  .foot ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;}
+  .foot a{color:var(--md-sys-color-on-surface-variant);text-decoration:none;font-size:14px;}
+  .foot a:hover{color:var(--md-sys-color-primary);}
+  .foot p{color:var(--md-sys-color-on-surface-variant);font-size:14px;margin-top:12px;max-width:300px;}
+  .foot-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:40px;padding-top:20px;border-top:1px solid var(--md-sys-color-outline-variant);font-size:13px;color:var(--md-sys-color-on-surface-variant);}
+  .built{display:inline-flex;align-items:center;gap:8px;}
+  .built i{width:8px;height:8px;border-radius:50%;background:var(--accent-path);}
+  @media (max-width:800px){.foot{grid-template-columns:1fr 1fr;}.foot>div:first-child{grid-column:1/-1;}}
+
+  /* ===== dialog + snackbar ===== */
+  md-dialog{max-width:min(520px,calc(100vw - 32px));}
+  .dlg-form{display:flex;flex-direction:column;gap:16px;padding-top:4px;}
+  .dlg-form md-outlined-text-field,.dlg-form md-outlined-select{width:100%;}
+  .check-row{display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;}
+  .snackbar{position:fixed;left:50%;bottom:24px;z-index:200;transform:translate(-50%,calc(100% + 40px));visibility:hidden;display:flex;align-items:center;gap:12px;
+    max-width:calc(100vw - 32px);padding:14px 16px 14px 18px;border-radius:12px;background:var(--md-sys-color-inverse-surface);color:var(--md-sys-color-inverse-on-surface);
+    box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .4s cubic-bezier(.2,0,0,1),visibility .4s;font-size:14px;}
+  .snackbar.show{transform:translate(-50%,0);visibility:visible;}
+  .snackbar md-icon{color:var(--md-sys-color-inverse-primary);}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.2,0,0,1),transform .7s cubic-bezier(.2,0,0,1);}
+  .reveal.in{opacity:1;transform:none;}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .reveal{opacity:1;transform:none;transition:none;}
+    .live-dot{animation:none;}
+    *{transition-duration:.01ms!important;}
+  }
+  :not(:defined){visibility:hidden;}
+  md-icon:not(:defined){visibility:hidden;}
+</style>
+</head>
+<body>
+<a class="skip" href="#utama">Lewati ke konten</a>
+
+<!-- inline SVG fallback (cloned into each stage when WebGL is not available) -->
+<template id="fallbackArt">
+  <svg viewBox="0 0 480 360" role="presentation" aria-hidden="true">
+    <defs><radialGradient id="glw" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFD48A" stop-opacity=".9"/><stop offset="1" stop-color="#FFD48A" stop-opacity="0"/></radialGradient></defs>
+    <polygon points="40,210 240,95 440,210 240,325" fill="#3A3F5C"/>
+    <polygon points="40,200 240,85 440,200 240,315" fill="#E6CFAE"/>
+    <polygon points="40,200 240,85 240,15 40,130" fill="#F1ECE4"/>
+    <polygon points="240,85 440,200 440,130 240,15" fill="#E4DDD2"/>
+    <polygon points="110,140 165,108 165,70 110,102" fill="#BFE3FF"/>
+    <polygon points="300,92 360,126 360,88 300,54" fill="#BFE3FF"/>
+    <line x1="173" y1="124" x2="373" y2="239" stroke="#C9B392" stroke-width="3"/>
+    <polygon points="120,205 190,165 240,195 170,235" fill="#4F5B92"/>
+    <polygon points="280,215 340,180 380,205 320,240" fill="#F5BE48"/>
+    <circle class="fb-glow" cx="150" cy="175" r="70" fill="url(#glw)"/>
+    <path d="M90 230 Q200 280 260 250 T400 230" stroke="#FF7A3D" stroke-width="4" fill="none" stroke-dasharray="2 10" stroke-linecap="round"/>
+    <circle cx="260" cy="250" r="10" fill="#fff" stroke="#1B1B21" stroke-width="2"/>
+  </svg>
+</template>
+
+<header class="appbar" id="appbar">
+  <div class="wrap">
+    <a class="brand" href="#" aria-label="Orbita, beranda">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="10" fill="var(--md-sys-color-primary)"/><path d="M9 17.5 16 11l7 6.5V24a1 1 0 0 1-1 1H10a1 1 0 0 1-1-1z" fill="var(--md-sys-color-on-primary)"/><ellipse cx="16" cy="17" rx="12" ry="5" fill="none" stroke="var(--md-sys-color-tertiary-container)" stroke-width="1.6" transform="rotate(-18 16 17)"/><circle cx="26.5" cy="12.6" r="2.2" fill="#FF7A3D"/></svg>
+      Orbita
+    </a>
+    <nav class="navlinks" aria-label="Navigasi utama">
+      <a href="#fitur"><md-ripple></md-ripple>Fitur</a>
+      <a href="#cerita"><md-ripple></md-ripple>Sehari bersama Orbi</a>
+      <a href="#kendali"><md-ripple></md-ripple>Coba kendali</a>
+      <a href="#harga"><md-ripple></md-ripple>Harga</a>
+      <a href="#faq"><md-ripple></md-ripple>FAQ</a>
+    </nav>
+    <md-icon-button id="themeBtn" aria-label="Ganti tema terang/gelap"><md-icon id="themeIcon">dark_mode</md-icon></md-icon-button>
+    <md-filled-tonal-button class="cta-top" data-open-dialog>Coba gratis</md-filled-tonal-button>
+  </div>
+</header>
+
+<main id="utama">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="reveal">
+        <span class="eyebrow"><b>BARU</b> Orbita 3.0 dengan Orbi, asisten rumah</span>
+        <h1>Rumah yang paham <em>kapan</em> harus terang.</h1>
+        <p class="lead">Lampu, suhu, tirai, dan kunci pintu bekerja sama mengikuti ritme harimu. Atur sekali, lalu biarkan Orbita yang mengingat.</p>
+        <div class="hero-actions">
+          <md-filled-button data-open-dialog><md-icon slot="icon">bolt</md-icon>Coba gratis 30 hari</md-filled-button>
+          <md-outlined-button href="#kendali">Main dengan demo 3D</md-outlined-button>
+        </div>
+        <div class="hero-proof">
+          <div><strong>120 rb+</strong><span>rumah terhubung</span></div>
+          <div><strong>38%</strong><span>rata-rata hemat listrik</span></div>
+          <div><strong>4,9</strong><span>rating aplikasi</span></div>
+        </div>
+      </div>
+      <div class="stage stage-hero reveal" data-stage="hero" role="img" aria-label="Diorama 3D rumah tiga ruangan: ruang tamu, kamar tidur, dan dapur, dengan robot kecil Orbi berjalan di antara ruangan">
+        <div class="fallback"></div>
+        <div class="stage-badge"><span class="live-dot"></span>Simulasi langsung</div>
+        <div class="float-card">
+          <md-elevation></md-elevation>
+          <div class="row">
+            <div class="ico-bubble" id="heroBubble"><md-icon>lightbulb</md-icon></div>
+            <div style="flex:1;min-width:0"><div class="t">Lampu ruang tamu</div><div class="s num" id="heroLampTxt">Menyala · 80%</div></div>
+            <md-switch id="heroSwitch" selected icons aria-label="Lampu ruang tamu"></md-switch>
+          </div>
+          <md-slider id="heroSlider" min="0" max="100" value="80" aria-label="Kecerahan lampu ruang tamu"></md-slider>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="sec" id="fitur" style="padding-top:40px">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="kicker">Kenapa Orbita</div>
+        <h2>Satu aplikasi. Semua perangkat. Tanpa ribet.</h2>
+        <p>Orbita membaca kebiasaanmu, bukan sebaliknya. Bekerja dengan lebih dari 1.500 perangkat dan tetap jalan walau internet putus.</p>
+      </div>
+      <div class="feat-grid">
+        <article class="card wide reveal">
+          <md-elevation></md-elevation>
+          <div class="feat-ico"><md-icon>lightbulb</md-icon></div>
+          <h3>Otomasi yang terasa alami</h3>
+          <p>Buat rutinitas dengan bahasa sehari-hari. Orbita menyalakan teras saat kamu 200 meter dari rumah dan meredupkan lampu menjelang tidur.</p>
+          <div class="feat-row"><span id="routineTxt">Sapa saat pulang: aktif</span><md-switch id="routineSwitch" selected aria-label="Rutinitas sapa saat pulang"></md-switch></div>
+          <div class="feat-row"><span>Redup otomatis pukul 22.00</span><md-switch selected aria-label="Rutinitas redup otomatis"></md-switch></div>
+        </article>
+        <article class="card reveal">
+          <md-elevation></md-elevation>
+          <div class="feat-ico t"><md-icon>eco</md-icon></div>
+          <h3>Hemat energi</h3>
+          <div class="energy"><strong class="num" id="kwh">212</strong><span>kWh bulan ini</span></div>
+          <md-linear-progress id="kwhBar" value="0.62" aria-label="Pemakaian listrik terhadap target"></md-linear-progress>
+          <p>62% dari target bulanan. Turun 38% dibanding sebelum Orbita.</p>
+        </article>
+        <article class="card reveal">
+          <md-elevation></md-elevation>
+          <div class="feat-ico"><md-icon>shield</md-icon></div>
+          <h3>Privat sejak awal</h3>
+          <p>Data diproses di hub lokal. Kamu yang memutuskan apa yang dikirim ke cloud.</p>
+          <md-chip-set class="chips-wrap" aria-label="Fitur privasi">
+            <md-assist-chip label="Enkripsi ujung-ke-ujung"><md-icon slot="icon">lock</md-icon></md-assist-chip>
+            <md-assist-chip label="Mode luring"></md-assist-chip>
+          </md-chip-set>
+        </article>
+        <article class="card filled half reveal">
+          <md-elevation></md-elevation>
+          <div class="feat-ico t"><md-icon>thermostat</md-icon></div>
+          <h3>Grafik pemakaian minggu ini</h3>
+          <md-tabs id="usageTabs" aria-label="Pilih jenis pemakaian">
+            <md-primary-tab>Listrik</md-primary-tab><md-primary-tab>Pendingin</md-primary-tab><md-primary-tab>Lampu</md-primary-tab>
+          </md-tabs>
+          <div class="bars" id="bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </article>
+        <article class="card half reveal">
+          <md-elevation></md-elevation>
+          <div class="feat-ico"><md-icon>devices</md-icon></div>
+          <h3>Pasang dalam 5 menit</h3>
+          <p>Pindai kode di perangkat, pilih ruangan, selesai. Orbita langsung mengenali lampu, AC, tirai, kunci pintu, dan sensor gerak.</p>
+          <md-chip-set class="chips-wrap" aria-label="Kategori perangkat">
+            <md-filter-chip label="Lampu" selected></md-filter-chip><md-filter-chip label="AC" selected></md-filter-chip>
+            <md-filter-chip label="Tirai"></md-filter-chip><md-filter-chip label="Kunci pintu"></md-filter-chip><md-filter-chip label="CCTV"></md-filter-chip>
+          </md-chip-set>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCROLL STORY -->
+  <section class="sec" id="cerita" style="padding-bottom:0">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="kicker">Sehari bersama Orbi</div>
+        <h2>Gulir pelan-pelan. Ikuti Orbi keliling rumah.</h2>
+        <p>Setiap ruangan punya ceritanya sendiri. Garis oranye adalah jalur rutinitas yang Orbita jalankan untukmu.</p>
+      </div>
+      <div class="story">
+        <div class="story-stick">
+          <div class="stage" data-stage="story" role="img" aria-label="Tampilan isometrik rumah, robot Orbi berjalan mengikuti garis oranye sesuai posisi gulir">
+            <div class="fallback"></div>
+            <div class="story-hud"><span class="pill"><span class="c" id="storyNo">01</span><span id="storyRoom">Ruang tamu · 17.30</span></span></div>
+            <div class="story-dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
+          </div>
+        </div>
+        <div class="steps">
+          <article class="step on" data-step="0"><div class="inner">
+            <div class="no">01 · RUANG TAMU · 17.30</div>
+            <h3>Pulang kerja, lampu sudah hangat.</h3>
+            <p>Begitu ponselmu terdeteksi di gerbang, ruang tamu menyala 2.700 K dan AC turun ke 25 °C. Tanpa menyentuh apa pun.</p>
+            <md-chip-set class="chips-wrap"><md-assist-chip label="Geofencing"></md-assist-chip><md-assist-chip label="Lampu hangat"></md-assist-chip></md-chip-set>
+          </div></article>
+          <article class="step" data-step="1"><div class="inner">
+            <div class="no">02 · KAMAR · 22.15</div>
+            <h3>Mode tidur meredup perlahan.</h3>
+            <p>Tirai menutup, lampu tidur turun ke 15% dalam 20 menit, dan semua lampu lain padam. Tubuhmu tahu ini waktunya istirahat.</p>
+            <md-chip-set class="chips-wrap"><md-assist-chip label="Ritme sirkadian"></md-assist-chip><md-assist-chip label="Tirai otomatis"></md-assist-chip></md-chip-set>
+          </div></article>
+          <article class="step" data-step="2"><div class="inner">
+            <div class="no">03 · DAPUR · 06.00</div>
+            <h3>Pagi yang terang, kopi yang siap.</h3>
+            <p>Lampu dapur menyala putih segar 5.000 K, mesin kopi mulai memanaskan air, dan Orbi membacakan cuaca hari ini.</p>
+            <md-chip-set class="chips-wrap"><md-assist-chip label="Colokan pintar"></md-assist-chip><md-assist-chip label="Ringkasan pagi"></md-assist-chip></md-chip-set>
+          </div></article>
+          <article class="step" data-step="3"><div class="inner">
+            <div class="no">04 · SELURUH RUMAH</div>
+            <h3>Semua ruangan, satu genggaman.</h3>
+            <p>Lihat status seluruh rumah dalam satu layar. Saat kamu pergi, satu ketukan mematikan semuanya dan mengunci pintu.</p>
+            <md-chip-set class="chips-wrap"><md-assist-chip label="Mode pergi"></md-assist-chip><md-assist-chip label="Kunci pintu"></md-assist-chip></md-chip-set>
+          </div></article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTROL STUDIO -->
+  <section class="sec" id="kendali">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="kicker">Coba kendali</div>
+        <h2>Komponen Material 3 ini benar-benar mengendalikan rumah 3D.</h2>
+        <p>Pilih ruangan, nyalakan lampu, atur kecerahan dan suhu warna. Kamu juga bisa mengetuk lampu langsung di dalam diorama.</p>
+      </div>
+      <div class="studio">
+        <div class="stage stage-demo reveal" data-stage="demo" role="img" aria-label="Diorama 3D interaktif yang berubah mengikuti kontrol di panel samping">
+          <div class="fallback"></div>
+          <div class="hud">
+            <div class="pill"><span id="hudRoom">Ruang tamu</span><b id="hudVal" class="num">Menyala · 80% · 3.000 K</b></div>
+            <md-fab id="resetCam" size="small" aria-label="Tampilkan seluruh rumah"><md-icon slot="icon">restart_alt</md-icon></md-fab>
+          </div>
+        </div>
+        <div class="panel reveal" aria-label="Panel kendali rumah">
+          <div>
+            <div class="label">Ruangan</div>
+            <md-chip-set id="roomChips" aria-label="Pilih ruangan">
+              <md-filter-chip label="Semua" data-room="all"></md-filter-chip>
+              <md-filter-chip label="Ruang tamu" data-room="living" selected></md-filter-chip>
+              <md-filter-chip label="Kamar" data-room="bedroom"></md-filter-chip>
+              <md-filter-chip label="Dapur" data-room="kitchen"></md-filter-chip>
+            </md-chip-set>
+          </div>
+          <div class="ctrl">
+            <div class="l"><div class="ico-bubble" id="lampBubble"><md-icon>lightbulb</md-icon></div><div><b>Lampu</b><small id="lampState">Menyala</small></div></div>
+            <md-switch id="lampSwitch" selected icons aria-label="Lampu ruangan terpilih"></md-switch>
+          </div>
+          <div class="slider-block">
+            <div class="top"><label for="brightSlider">Kecerahan</label><span id="brightVal">80%</span></div>
+            <md-slider id="brightSlider" min="0" max="100" value="80" labeled aria-label="Kecerahan"></md-slider>
+          </div>
+          <div class="slider-block kelvin">
+            <div class="top"><label for="kelvinSlider">Suhu warna</label><span id="kelvinVal">3.000 K</span></div>
+            <md-slider id="kelvinSlider" min="2200" max="6500" step="100" value="3000" aria-label="Suhu warna dalam Kelvin"></md-slider>
+            <div class="grad" aria-hidden="true"></div>
+          </div>
+          <div class="slider-block">
+            <div class="top"><label for="curtainSlider">Tirai ruang tamu</label><span id="curtainVal">Terbuka 80%</span></div>
+            <md-slider id="curtainSlider" min="0" max="100" value="20" aria-label="Tutup tirai"></md-slider>
+          </div>
+          <div class="ctrl">
+            <div class="l"><div class="ico-bubble off" id="nightBubble"><md-icon>bedtime</md-icon></div><div><b>Mode malam</b><small>Langit &amp; cahaya luar</small></div></div>
+            <md-switch id="nightSwitch" aria-label="Mode malam"></md-switch>
+          </div>
+          <div>
+            <div class="label">Skenario cepat</div>
+            <md-chip-set aria-label="Skenario cepat">
+              <md-assist-chip label="Pagi" data-preset="pagi"><md-icon slot="icon">wb_sunny</md-icon></md-assist-chip>
+              <md-assist-chip label="Nonton film" data-preset="film"><md-icon slot="icon">movie</md-icon></md-assist-chip>
+              <md-assist-chip label="Tidur" data-preset="tidur"><md-icon slot="icon">bedtime</md-icon></md-assist-chip>
+            </md-chip-set>
+          </div>
+          <div class="hint">Tip: ketuk bola lampu di dalam diorama untuk menyalakan/mematikannya.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS + TESTIMONIALS -->
+  <section class="sec" style="padding-top:24px">
+    <div class="wrap">
+      <div class="stats">
+        <div class="stat reveal"><strong data-count="120" data-suffix=" rb+">0</strong><span>rumah terhubung di 34 kota</span></div>
+        <div class="stat reveal"><strong data-count="38" data-suffix="%">0</strong><span>rata-rata hemat tagihan listrik</span></div>
+        <div class="stat reveal"><strong data-count="1500" data-suffix="+">0</strong><span>perangkat kompatibel</span></div>
+        <div class="stat reveal"><strong data-count="49" data-dec="1">0</strong><span>rating rata-rata dari 18 rb ulasan</span></div>
+      </div>
+      <div class="testi">
+        <article class="card reveal"><md-elevation></md-elevation><div class="stars" aria-label="5 dari 5 bintang">★★★★★</div>
+          <blockquote>“Tagihan listrik turun hampir Rp300 ribu sebulan. Yang paling terasa justru lampu teras yang sudah menyala tiap aku pulang malam.”</blockquote>
+          <div class="who"><span class="ava" aria-hidden="true">DA</span><div><b>Dimas Aryo</b><small>Tangerang Selatan</small></div></div></article>
+        <article class="card reveal"><md-elevation></md-elevation><div class="stars" aria-label="5 dari 5 bintang">★★★★★</div>
+          <blockquote>“Orang tuaku tinggal di Solo. Dengan mode keluarga aku bisa cek pintu sudah dikunci atau belum, tanpa telepon tengah malam.”</blockquote>
+          <div class="who"><span class="ava" aria-hidden="true" style="background:var(--md-sys-color-tertiary);color:var(--md-sys-color-on-tertiary)">RN</span><div><b>Rara Nindita</b><small>Jakarta</small></div></div></article>
+        <article class="card reveal"><md-elevation></md-elevation><div class="stars" aria-label="5 dari 5 bintang">★★★★★</div>
+          <blockquote>“Saya pasang 14 perangkat dari 4 merek berbeda, semuanya muncul di satu aplikasi. Mode tidur jadi ritual favorit anak-anak.”</blockquote>
+          <div class="who"><span class="ava" aria-hidden="true" style="background:var(--md-sys-color-secondary);color:var(--md-sys-color-on-secondary)">HS</span><div><b>Hendra Saputra</b><small>Bandung</small></div></div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="sec" id="harga">
+    <div class="wrap">
+      <div class="sec-head center reveal">
+        <div class="kicker">Harga</div>
+        <h2>Mulai gratis, tumbuh bersama rumahmu.</h2>
+        <p>Semua paket termasuk aplikasi Android &amp; iOS, kontrol suara, dan pembaruan rutin.</p>
+      </div>
+      <md-tabs class="price-tabs" id="priceTabs" aria-label="Periode tagihan">
+        <md-primary-tab>Bulanan</md-primary-tab>
+        <md-primary-tab>Tahunan · hemat 20%</md-primary-tab>
+      </md-tabs>
+      <div class="plans">
+        <article class="card plan reveal"><md-elevation></md-elevation>
+          <h3>Rumah</h3><div class="price num" data-m="0" data-y="0">Rp0</div><div class="desc">Untuk mencoba hingga 10 perangkat.</div>
+          <md-list>
+            <md-list-item><md-icon slot="start">check</md-icon>10 perangkat</md-list-item>
+            <md-list-item><md-icon slot="start">check</md-icon>3 rutinitas</md-list-item>
+            <md-list-item><md-icon slot="start">check</md-icon>Kontrol suara</md-list-item>
+          </md-list>
+          <div class="btn"><md-outlined-button data-open-dialog>Mulai gratis</md-outlined-button></div></article>
+        <article class="card plan best reveal"><md-elevation></md-elevation>
+          <span class="tag">Paling populer</span>
+          <h3>Plus</h3><div class="price num" data-m="49000" data-y="39000">Rp49.000<small> /bln</small></div><div class="desc">Untuk rumah yang ingin serba otomatis.</div>
+          <md-list>
+            <md-list-item><md-icon slot="start">check</md-icon>Perangkat tanpa batas</md-list-item>
+            <md-list-item><md-icon slot="start">check</md-icon>Rutinitas &amp; skenario tanpa batas</md-list-item>
+            <md-list-item><md-icon slot="start">check</md-icon>Laporan energi mingguan</md-list-item>
+            <md-list-item><md-icon slot="start">check</md-icon>Rekaman CCTV 7 hari</md-list-item>
+          </md-list>
+          <div class="btn"><md-filled-button data-open-dialog>Coba 30 hari gratis</md-filled-button></div></article>
+        <article class="card plan reveal"><md-elevation></md-elevation>
+          <h3>Keluarga</h3><div class="price num" data-m="89000" data-y="71000">Rp89.000<small> /bln</small></div><div class="desc">Hingga 3 rumah dan 6 anggota keluarga.</div>
+          <md-list>
+            <md-list-item><md-icon slot="start">check</md-icon>Semua fitur Plus</md-list-item>
+            <md-list-item><md-icon slot="start">check</md-icon>3 lokasi rumah</md-list-item>
+            <md-list-item><md-icon slot="start">check</md-icon>Rekaman CCTV 30 hari</md-list-item>
+            <md-list-item><md-icon slot="start">check</md-icon>Dukungan prioritas</md-list-item>
+          </md-list>
+          <div class="btn"><md-outlined-button data-open-dialog>Pilih Keluarga</md-outlined-button></div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec" id="faq" style="padding-top:24px">
+    <div class="wrap">
+      <div class="sec-head center reveal"><div class="kicker">FAQ</div><h2>Pertanyaan yang sering muncul</h2></div>
+      <div class="faq">
+        <details class="reveal" open><summary><md-ripple></md-ripple>Perlu hub khusus untuk memakai Orbita?</summary><div class="ans">Tidak wajib. Orbita bisa langsung terhubung ke perangkat Wi-Fi. Hub Orbita (opsional, Rp399.000) menambah dukungan Zigbee, Thread, dan mode luring.</div></details>
+        <details class="reveal"><summary><md-ripple></md-ripple>Apakah tetap berjalan saat internet mati?</summary><div class="ans">Ya, dengan hub Orbita semua rutinitas lokal tetap berjalan. Notifikasi ke ponsel akan dikirim begitu koneksi kembali.</div></details>
+        <details class="reveal"><summary><md-ripple></md-ripple>Merek perangkat apa saja yang didukung?</summary><div class="ans">Lebih dari 1.500 perangkat dari berbagai merek lampu, colokan, AC, tirai, kunci pintu, dan kamera yang memakai standar Matter, Zigbee, atau Wi-Fi.</div></details>
+        <details class="reveal"><summary><md-ripple></md-ripple>Bagaimana data saya dilindungi?</summary><div class="ans">Data sensor diproses di rumahmu. Yang dikirim ke cloud hanya yang kamu izinkan, dienkripsi, dan disimpan di pusat data di Indonesia.</div></details>
+        <details class="reveal"><summary><md-ripple></md-ripple>Bisa berhenti berlangganan kapan saja?</summary><div class="ans">Bisa. Tidak ada kontrak. Paket kembali ke versi gratis dan perangkatmu tetap bisa dikendalikan.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="sec" style="padding-bottom:0">
+    <div class="wrap">
+      <div class="cta reveal">
+        <div class="cta-orb" aria-hidden="true"></div>
+        <div>
+          <h2>Biarkan rumahmu ikut berpikir.</h2>
+          <p>Daftar sekarang, dapatkan 30 hari Orbita Plus dan panduan pemasangan gratis dari tim kami.</p>
+        </div>
+        <form class="cta-form" id="ctaForm" novalidate>
+          <md-outlined-text-field id="ctaEmail" label="Email" type="email" required error-text="Masukkan email yang valid" autocomplete="email"></md-outlined-text-field>
+          <md-filled-button type="submit">Kirim undangan</md-filled-button>
+          <small class="hint">Kami tidak akan mengirim spam. Bisa berhenti kapan saja.</small>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="brand" href="#" aria-label="Orbita, beranda"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="10" fill="var(--md-sys-color-primary)"/><path d="M9 17.5 16 11l7 6.5V24a1 1 0 0 1-1 1H10a1 1 0 0 1-1-1z" fill="var(--md-sys-color-on-primary)"/><circle cx="26.5" cy="12.6" r="2.2" fill="#FF7A3D"/></svg>Orbita</a>
+        <p>Aplikasi rumah pintar untuk keluarga Indonesia. Dibuat dengan sepenuh hati di Yogyakarta.</p>
+      </div>
+      <div><h4>Produk</h4><ul><li><a href="#fitur">Fitur</a></li><li><a href="#kendali">Demo</a></li><li><a href="#harga">Harga</a></li></ul></div>
+      <div><h4>Bantuan</h4><ul><li><a href="#faq">FAQ</a></li><li><a href="#">Panduan pasang</a></li><li><a href="#">Status layanan</a></li></ul></div>
+      <div><h4>Perusahaan</h4><ul><li><a href="#">Tentang</a></li><li><a href="#">Karier</a></li><li><a href="#">Privasi</a></li></ul></div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Orbita. Merek fiktif untuk keperluan template.</span>
+      <span class="built"><i></i>Dibangun dengan Material Design 3 (@material/web) + three.js</span>
+    </div>
+  </div>
+</footer>
+
+<md-dialog id="signupDialog" aria-label="Daftar Orbita">
+  <div slot="headline">Coba Orbita Plus gratis</div>
+  <form slot="content" id="signupForm" method="dialog" class="dlg-form" novalidate>
+    <p style="color:var(--md-sys-color-on-surface-variant);font-size:14px">30 hari penuh, tanpa kartu kredit.</p>
+    <md-outlined-text-field id="fName" label="Nama lengkap" required error-text="Nama wajib diisi" autocomplete="name"></md-outlined-text-field>
+    <md-outlined-text-field id="fEmail" label="Email" type="email" required error-text="Email belum valid" autocomplete="email"></md-outlined-text-field>
+    <md-outlined-select id="fHome" label="Tipe hunian" required error-text="Pilih tipe hunian">
+      <md-select-option value="rumah"><div slot="headline">Rumah tapak</div></md-select-option>
+      <md-select-option value="apartemen"><div slot="headline">Apartemen</div></md-select-option>
+      <md-select-option value="kos"><div slot="headline">Kos / kontrakan</div></md-select-option>
+    </md-outlined-select>
+    <label class="check-row"><md-checkbox id="fNews" checked touch-target="wrapper"></md-checkbox>Kirimi saya tips rumah pintar</label>
+  </form>
+  <div slot="actions">
+    <md-text-button form="signupForm" value="cancel" type="button" id="dlgCancel">Batal</md-text-button>
+    <md-filled-button form="signupForm" type="submit" id="dlgSubmit">Daftar</md-filled-button>
+  </div>
+</md-dialog>
+
+<div class="snackbar" id="snack" role="status" aria-live="polite"><md-icon>check</md-icon><span id="snackTxt">Berhasil</span></div>
+
+<script type="module">
+import 'https://cdn.jsdelivr.net/npm/@material/web@2.2.0/all.js/+esm';
+
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const reduceMQ = matchMedia('(prefers-reduced-motion: reduce)');
+let reduced = reduceMQ.matches;
+const fmt = n => Math.round(n).toLocaleString('id-ID');
+
+/* ---------- shared smart-home state ---------- */
+const ROOMS = ['living', 'bedroom', 'kitchen'];
+const ROOM_NAME = { living: 'Ruang tamu', bedroom: 'Kamar', kitchen: 'Dapur', all: 'Seluruh rumah' };
+const state = {
+  living:  { on: true,  b: 80, k: 3000 },
+  bedroom: { on: false, b: 40, k: 2700 },
+  kitchen: { on: true,  b: 90, k: 4500 },
+  night: false, curtain: 20, film: false, room: 'living'
+};
+const listeners = [];
+const changed = () => listeners.forEach(f => f());
+
+/* ---------- theme ---------- */
+const root = document.documentElement;
+function setTheme(dark, syncNight = true) {
+  root.classList.toggle('dark', dark);
+  $('#themeIcon').textContent = dark ? 'light_mode' : 'dark_mode';
+  try { localStorage.setItem('orbita-theme', dark ? 'dark' : 'light'); } catch (e) {}
+  if (syncNight) { state.night = dark; changed(); }
+}
+let savedTheme = null;
+try { savedTheme = localStorage.getItem('orbita-theme'); } catch (e) {}
+setTheme(savedTheme ? savedTheme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches);
+$('#themeBtn').addEventListener('click', () => setTheme(!root.classList.contains('dark')));
+
+/* ---------- app bar ---------- */
+const appbar = $('#appbar');
+addEventListener('scroll', () => appbar.classList.toggle('scrolled', scrollY > 8), { passive: true });
+
+/* ---------- controls <-> state ---------- */
+const lampSwitch = $('#lampSwitch'), brightSlider = $('#brightSlider'), kelvinSlider = $('#kelvinSlider');
+const curtainSlider = $('#curtainSlider'), nightSwitch = $('#nightSwitch');
+const heroSwitch = $('#heroSwitch'), heroSlider = $('#heroSlider');
+const targetRooms = () => state.room === 'all' ? ROOMS : [state.room];
+const refRoom = () => state[state.room === 'all' ? 'living' : state.room];
+
+function syncUI() {
+  const r = refRoom();
+  lampSwitch.selected = state.room === 'all' ? ROOMS.some(k => state[k].on) : r.on;
+  brightSlider.value = r.b; kelvinSlider.value = r.k;
+  curtainSlider.value = state.curtain; nightSwitch.selected = state.night;
+  $('#lampState').textContent = lampSwitch.selected ? 'Menyala' : 'Padam';
+  $('#lampBubble').classList.toggle('off', !lampSwitch.selected);
+  $('#nightBubble').classList.toggle('off', !state.night);
+  $('#brightVal').textContent = r.b + '%';
+  $('#kelvinVal').textContent = fmt(r.k) + ' K';
+  $('#curtainVal').textContent = state.curtain >= 98 ? 'Tertutup' : 'Terbuka ' + (100 - state.curtain) + '%';
+  $('#hudRoom').textContent = ROOM_NAME[state.room];
+  $('#hudVal').textContent = state.room === 'all'
+    ? ROOMS.filter(k => state[k].on).length + ' dari 3 lampu menyala'
+    : (r.on ? 'Menyala · ' + r.b + '% · ' + fmt(r.k) + ' K' : 'Padam');
+  heroSwitch.selected = state.living.on; heroSlider.value = state.living.b;
+  $('#heroLampTxt').textContent = state.living.on ? 'Menyala · ' + state.living.b + '%' : 'Padam';
+  $('#heroBubble').classList.toggle('off', !state.living.on);
+  $$('#roomChips md-filter-chip').forEach(c => c.selected = c.dataset.room === state.room);
+}
+listeners.push(syncUI);
+
+lampSwitch.addEventListener('change', () => { targetRooms().forEach(k => state[k].on = lampSwitch.selected); state.film = false; changed(); });
+brightSlider.addEventListener('input', () => { targetRooms().forEach(k => { state[k].b = brightSlider.value; if (brightSlider.value > 0) state[k].on = true; }); changed(); });
+kelvinSlider.addEventListener('input', () => { targetRooms().forEach(k => state[k].k = kelvinSlider.value); changed(); });
+curtainSlider.addEventListener('input', () => { state.curtain = curtainSlider.value; changed(); });
+nightSwitch.addEventListener('change', () => { state.night = nightSwitch.selected; changed(); });
+heroSwitch.addEventListener('change', () => { state.living.on = heroSwitch.selected; changed(); });
+heroSlider.addEventListener('input', () => { state.living.b = heroSlider.value; state.living.on = heroSlider.value > 0; changed(); });
+$$('#roomChips md-filter-chip').forEach(chip => chip.addEventListener('click', () => {
+  setTimeout(() => { state.room = chip.dataset.room; changed(); }, 0);
+}));
+$('#resetCam').addEventListener('click', () => { state.room = 'all'; changed(); });
+const PRESETS = {
+  pagi:  () => { ROOMS.forEach(k => Object.assign(state[k], { on: true, b: 70, k: 5200 })); Object.assign(state, { night: false, curtain: 0, film: false }); },
+  film:  () => { Object.assign(state.living, { on: true, b: 18, k: 2400 }); state.bedroom.on = false; state.kitchen.on = false; Object.assign(state, { night: true, curtain: 100, film: true, room: 'living' }); },
+  tidur: () => { state.living.on = false; state.kitchen.on = false; Object.assign(state.bedroom, { on: true, b: 12, k: 2200 }); Object.assign(state, { night: true, curtain: 100, film: false, room: 'bedroom' }); }
+};
+$$('[data-preset]').forEach(c => c.addEventListener('click', () => { PRESETS[c.dataset.preset](); changed(); snack('Skenario “' + c.label + '” dijalankan'); }));
+
+/* ---------- small feature widgets ---------- */
+$('#routineSwitch').addEventListener('change', e => $('#routineTxt').textContent = 'Sapa saat pulang: ' + (e.target.selected ? 'aktif' : 'nonaktif'));
+const USAGE = [[52, 64, 48, 70, 88, 76, 60], [30, 42, 55, 61, 72, 80, 66], [70, 58, 62, 50, 44, 38, 34]];
+const bars = $$('#bars i');
+const setBars = i => bars.forEach((b, j) => b.style.height = USAGE[i][j] + '%');
+setBars(0);
+$('#usageTabs').addEventListener('change', e => setBars(e.target.activeTabIndex));
+$('#priceTabs').addEventListener('change', e => {
+  const yearly = e.target.activeTabIndex === 1;
+  $$('.plan .price').forEach(p => {
+    const v = +p.dataset[yearly ? 'y' : 'm'];
+    p.innerHTML = 'Rp' + fmt(v) + (v ? '<small> /bln</small>' : '');
+  });
+});
+
+/* ---------- dialog + forms ---------- */
+const dlg = $('#signupDialog');
+$$('[data-open-dialog]').forEach(b => b.addEventListener('click', () => dlg.show()));
+$('#dlgCancel').addEventListener('click', () => dlg.close('cancel'));
+$('#signupForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const fields = [$('#fName'), $('#fEmail'), $('#fHome')];
+  const ok = fields.map(f => f.reportValidity()).every(Boolean);
+  if (!ok) return;
+  dlg.close('ok');
+  snack('Terima kasih, ' + $('#fName').value.split(' ')[0] + '! Cek email untuk aktivasi.');
+  e.target.reset();
+});
+$('#ctaForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const f = $('#ctaEmail');
+  if (!f.reportValidity()) return;
+  snack('Undangan dikirim ke ' + f.value);
+  f.value = '';
+});
+let snackT;
+function snack(t) {
+  $('#snackTxt').textContent = t; $('#snack').classList.add('show');
+  clearTimeout(snackT); snackT = setTimeout(() => $('#snack').classList.remove('show'), 3200);
+}
+
+/* ---------- reveal + counters ---------- */
+const revIO = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  e.target.classList.add('in'); revIO.unobserve(e.target);
+  $$('[data-count]', e.target).forEach(countUp);
+}), { threshold: 0.12 });
+$$('.reveal').forEach(el => revIO.observe(el));
+function countUp(el) {
+  const end = +el.dataset.count, dec = +(el.dataset.dec || 0), suf = el.dataset.suffix || '';
+  const show = v => el.textContent = (dec ? (v / 10).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : fmt(v)) + suf;
+  if (reduced) return show(end);
+  const t0 = performance.now();
+  const step = t => { const p = Math.min(1, (t - t0) / 1400); show(end * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+
+/* ---------- story steps (scroll progress) ---------- */
+const steps = $$('.step');
+const STORY_LABEL = ['Ruang tamu · 17.30', 'Kamar · 22.15', 'Dapur · 06.00', 'Seluruh rumah'];
+let storyP = 0, storyStep = 0;
+function updateStory() {
+  const vc = innerHeight * (innerWidth <= 900 ? 0.7 : 0.55);
+  const cs = steps.map(s => { const r = (s.querySelector('.inner') || s).getBoundingClientRect(); return r.top + r.height / 2; });
+  let p;
+  if (vc <= cs[0]) p = 0;
+  else if (vc >= cs[cs.length - 1]) p = cs.length - 1;
+  else { let i = 0; while (vc > cs[i + 1]) i++; p = i + (vc - cs[i]) / (cs[i + 1] - cs[i]); }
+  storyP = p;
+  const s = Math.round(p);
+  if (s !== storyStep) {
+    storyStep = s;
+    steps.forEach((el, i) => el.classList.toggle('on', i === s));
+    $('#storyNo').textContent = '0' + (s + 1);
+    $('#storyRoom').textContent = STORY_LABEL[s];
+    $$('.story-dots i').forEach((d, i) => d.classList.toggle('on', i === s));
+  }
+}
+addEventListener('scroll', updateStory, { passive: true });
+updateStory();
+syncUI();
+
+/* ================= THREE.JS ================= */
+const stages = $$('[data-stage]');
+function webglOK() {
+  try { const c = document.createElement('canvas'); return !!(window.WebGL2RenderingContext && c.getContext('webgl2')) || !!c.getContext('webgl'); }
+  catch (e) { return false; }
+}
+function useFallback() {
+  document.body.classList.add('no-webgl');
+  stages.forEach(s => s.querySelector('.fallback').appendChild($('#fallbackArt').content.cloneNode(true)));
+  const upd = () => $$('.fb-glow').forEach(g => g.setAttribute('opacity', state.living.on ? state.living.b / 100 : 0));
+  listeners.push(upd); upd();
+}
+if (!webglOK()) useFallback();
+else import('three').then(m => import('three/addons/geometries/RoundedBoxGeometry.js').then(a => initScene(m, a.RoundedBoxGeometry)))
+  .catch(err => { console.warn('3D tidak tersedia:', err); useFallback(); });
+
+function initScene(THREE, RoundedBoxGeometry) {
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' }); }
+  catch (e) { useFallback(); return; }
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
+  const canvas = renderer.domElement;
+  canvas.setAttribute('aria-hidden', 'true');
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 200);
+  const disposables = [];
+  const G = g => (disposables.push(g), g);
+  const matCache = {};
+  const M = (color, extra = {}) => {
+    const key = color + JSON.stringify(extra);
+    if (!matCache[key]) matCache[key] = G(new THREE.MeshStandardMaterial({ color, roughness: 0.78, metalness: 0, flatShading: true, ...extra }));
+    return matCache[key];
+  };
+  const box = (w, h, d, r = 0.04) => G(new RoundedBoxGeometry(w, h, d, 2, r));
+  function mesh(geo, mat, x = 0, y = 0, z = 0, parent = scene, shadow = true) {
+    const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z);
+    m.castShadow = shadow; m.receiveShadow = true; parent.add(m); return m;
+  }
+
+  /* lights */
+  const hemi = new THREE.HemisphereLight(0xdfe6ff, 0x6b5b4a, 1.4); scene.add(hemi);
+  const sun = new THREE.DirectionalLight(0xfff1dc, 2.4);
+  sun.position.set(6, 12, 8); sun.castShadow = true;
+  sun.shadow.mapSize.set(1024, 1024);
+  Object.assign(sun.shadow.camera, { left: -10, right: 10, top: 10, bottom: -10, near: 1, far: 40 });
+  sun.shadow.bias = -0.0008; sun.shadow.normalBias = 0.02;
+  scene.add(sun);
+
+  /* house shell */
+  const W = 14.2, D = 5.4;
+  mesh(box(W + 0.3, 0.5, D + 0.3, 0.12), M('#3A3F5C'), 0, -0.25, 0);
+  const floorCol = { living: '#E6CFAE', bedroom: '#D9CBE8', kitchen: '#E9E4DA' };
+  const X = { living: -4.6, bedroom: 0, kitchen: 4.6 };
+  ROOMS.forEach(k => mesh(box(4.56, 0.06, D - 0.02, 0.02), M(floorCol[k]), X[k], 0.03, 0, scene, false));
+  const wallM = M('#F1ECE4'), wallM2 = M('#E4DDD2');
+  mesh(box(W, 2.6, 0.18, 0.03), wallM, 0, 1.3, -D / 2 + 0.09);
+  mesh(box(0.18, 2.6, D, 0.03), wallM2, -W / 2 + 0.09, 1.3, 0);
+  [-2.3, 2.3].forEach(x => mesh(box(0.14, 2.6, 3.0, 0.03), wallM2, x, 1.3, -D / 2 + 1.5));
+  // skirting accent
+  mesh(box(W, 0.12, 0.2, 0.02), M('#C9B392'), 0, 0.1, -D / 2 + 0.12, scene, false);
+
+  /* windows (glow planes) */
+  const skyMats = [];
+  function windowAt(x) {
+    const frame = mesh(box(1.8, 1.3, 0.08, 0.02), M('#FFFFFF'), x, 1.6, -D / 2 + 0.2);
+    const sky = new THREE.MeshBasicMaterial({ color: 0xbfe3ff }); G(sky); skyMats.push(sky);
+    const pane = new THREE.Mesh(G(new THREE.PlaneGeometry(1.6, 1.1)), sky);
+    pane.position.set(x, 1.6, -D / 2 + 0.245); scene.add(pane);
+    mesh(box(0.05, 1.1, 0.04, 0.01), M('#FFFFFF'), x, 1.6, -D / 2 + 0.26, scene, false);
+    return frame;
+  }
+  windowAt(-4.0); windowAt(0.9); windowAt(4.0);
+  // curtains (living)
+  const curtainM = M('#8F9BD6');
+  const curL = mesh(box(0.9, 1.4, 0.06, 0.02), curtainM, -4.0 - 0.45, 1.6, -D / 2 + 0.32);
+  const curR = mesh(box(0.9, 1.4, 0.06, 0.02), curtainM, -4.0 + 0.45, 1.6, -D / 2 + 0.32);
+  mesh(box(2.2, 0.05, 0.05, 0.01), M('#3A3F5C'), -4.0, 2.33, -D / 2 + 0.32, scene, false);
+
+  /* light pools (additive radial glow on floor) */
+  const gc = document.createElement('canvas'); gc.width = gc.height = 128;
+  const gx = gc.getContext('2d'); const grd = gx.createRadialGradient(64, 64, 0, 64, 64, 64);
+  grd.addColorStop(0, 'rgba(255,255,255,1)'); grd.addColorStop(0.4, 'rgba(255,255,255,.45)'); grd.addColorStop(1, 'rgba(255,255,255,0)');
+  gx.fillStyle = grd; gx.fillRect(0, 0, 128, 128);
+  const glowTex = G(new THREE.CanvasTexture(gc)); glowTex.colorSpace = THREE.SRGBColorSpace;
+  const poolGeo = G(new THREE.PlaneGeometry(1, 1));
+
+  const lamps = {};
+  function makeLamp(room, lx, ly, lz, bulbMesh, poolPos, poolSize) {
+    const light = new THREE.PointLight(0xffc98a, 0, 7.5, 1.6);
+    light.position.set(lx, ly, lz); scene.add(light);
+    const pm = new THREE.MeshBasicMaterial({ map: glowTex, color: 0xffc98a, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
+    G(pm);
+    const pool = new THREE.Mesh(poolGeo, pm); pool.rotation.x = -Math.PI / 2; pool.scale.setScalar(poolSize);
+    pool.position.set(poolPos[0], 0.075, poolPos[1]); pool.renderOrder = 2; scene.add(pool);
+    bulbMesh.userData.room = room;
+    lamps[room] = { light, pool, bulb: bulbMesh, cur: { i: 0, c: new THREE.Color(0xffc98a) } };
+  }
+  function bulbMat() { return G(new THREE.MeshStandardMaterial({ color: 0xfff4e0, emissive: 0xffc98a, emissiveIntensity: 0, roughness: 0.4 })); }
+
+  /* ---- living room ---- */
+  const LX = X.living;
+  mesh(G(new THREE.CylinderGeometry(1.35, 1.35, 0.03, 28)), M('#C8CDEE'), LX + 0.1, 0.07, 0.1, scene, false);
+  const sofaM = M('#4F5B92'), sofaM2 = M('#5D69A3');
+  mesh(box(2.5, 0.42, 0.95, 0.1), sofaM, LX, 0.3, -1.55);
+  mesh(box(2.5, 0.62, 0.26, 0.1), sofaM, LX, 0.72, -1.95);
+  [-1.2, 1.2].forEach(dx => mesh(box(0.26, 0.6, 0.95, 0.1), sofaM, LX + dx, 0.45, -1.55));
+  [-0.55, 0.55].forEach(dx => mesh(box(1.05, 0.16, 0.8, 0.07), sofaM2, LX + dx, 0.58, -1.48));
+  mesh(box(0.42, 0.42, 0.14, 0.07), M('#F5BE48'), LX - 0.75, 0.82, -1.72).rotation.z = 0.2;
+  mesh(G(new THREE.CylinderGeometry(0.55, 0.55, 0.07, 24)), M('#FFFFFF'), LX + 0.1, 0.44, 0.0);
+  mesh(G(new THREE.CylinderGeometry(0.06, 0.12, 0.4, 10)), M('#3A3F5C'), LX + 0.1, 0.22, 0.0);
+  // Orbita hub on table
+  const hub = mesh(G(new THREE.CylinderGeometry(0.13, 0.15, 0.07, 20)), M('#2B2F45'), LX + 0.1, 0.51, 0.0);
+  const ringM = new THREE.MeshBasicMaterial({ color: 0xff7a3d, transparent: true, opacity: 0.8, side: THREE.DoubleSide, depthWrite: false }); G(ringM);
+  const hubRing = new THREE.Mesh(G(new THREE.RingGeometry(0.16, 0.19, 32)), ringM);
+  hubRing.rotation.x = -Math.PI / 2; hubRing.position.set(LX + 0.1, 0.49, 0.0); scene.add(hubRing);
+  // floor lamp
+  const FLX = LX - 1.9, FLZ = -1.85;
+  mesh(G(new THREE.CylinderGeometry(0.22, 0.24, 0.05, 20)), M('#2B2F45'), FLX, 0.09, FLZ);
+  mesh(G(new THREE.CylinderGeometry(0.025, 0.025, 1.6, 8)), M('#2B2F45'), FLX, 0.9, FLZ);
+  const shadeM = G(new THREE.MeshStandardMaterial({ color: 0xfff3dc, emissive: 0xffc98a, emissiveIntensity: 0, side: THREE.DoubleSide, roughness: 0.9, flatShading: true }));
+  mesh(G(new THREE.CylinderGeometry(0.14, 0.34, 0.38, 14, 1, true)), shadeM, FLX, 1.78, FLZ);
+  const lb = mesh(G(new THREE.SphereGeometry(0.1, 12, 8)), bulbMat(), FLX, 1.68, FLZ, scene, false);
+  lb.userData.shade = shadeM;
+  makeLamp('living', FLX + 0.4, 1.55, FLZ + 0.5, lb, [LX - 0.9, -0.6], 4.2);
+  // TV on left wall
+  mesh(box(0.08, 0.86, 1.5, 0.02), M('#1B1B21'), -W / 2 + 0.22, 1.35, 0.4);
+  const tvM = new THREE.MeshBasicMaterial({ color: 0x0d0f18 }); G(tvM);
+  const tv = new THREE.Mesh(G(new THREE.PlaneGeometry(1.4, 0.76)), tvM);
+  tv.rotation.y = Math.PI / 2; tv.position.set(-W / 2 + 0.27, 1.35, 0.4); scene.add(tv);
+  const tvLight = new THREE.PointLight(0x7aa2ff, 0, 4, 2); tvLight.position.set(-W / 2 + 0.9, 1.3, 0.4); scene.add(tvLight);
+  mesh(box(0.45, 0.4, 1.6, 0.04), M('#E4DDD2'), -W / 2 + 0.42, 0.24, 0.4);
+  // plant
+  function plant(x, z, s = 1) {
+    mesh(G(new THREE.CylinderGeometry(0.2 * s, 0.15 * s, 0.36 * s, 10)), M('#D46A4C'), x, 0.2 * s + 0.06, z);
+    const leaves = new THREE.Group(); leaves.position.set(x, 0.42 * s + 0.06, z); scene.add(leaves);
+    const lg = G(new THREE.IcosahedronGeometry(0.28 * s, 0));
+    [[0, 0.25, 0, 1], [0.15, 0.5, 0.05, 0.8], [-0.12, 0.62, -0.06, 0.7]].forEach(([a, b, c, sc]) => {
+      const l = mesh(lg, M('#5F9E6E'), a * s, b * s, c * s, leaves); l.scale.setScalar(sc);
+    });
+    return leaves;
+  }
+  const plants = [plant(LX + 1.85, -2.0), plant(5.7 + 0.8, 1.9, 0.8)];
+
+  /* ---- bedroom ---- */
+  const BX = X.bedroom;
+  mesh(box(1.9, 0.82, 0.12, 0.04), M('#6B5A4E'), BX + 0.3, 0.55, -2.4);
+  mesh(box(1.85, 0.3, 2.05, 0.06), M('#6B5A4E'), BX + 0.3, 0.2, -1.35);
+  mesh(box(1.75, 0.22, 1.95, 0.08), M('#FFFFFF'), BX + 0.3, 0.45, -1.35);
+  mesh(box(1.8, 0.1, 1.25, 0.05), M('#F5BE48'), BX + 0.3, 0.58, -0.95);
+  [-0.38, 0.38].forEach(dx => mesh(box(0.65, 0.14, 0.38, 0.07), M('#F3F0FA'), BX + 0.3 + dx, 0.62, -2.05));
+  mesh(box(0.5, 0.5, 0.45, 0.04), M('#8A7563'), BX - 1.2, 0.3, -2.05);
+  mesh(G(new THREE.CylinderGeometry(0.08, 0.1, 0.14, 12)), M('#2B2F45'), BX - 1.2, 0.62, -2.05);
+  const bb = mesh(G(new THREE.SphereGeometry(0.17, 14, 10)), bulbMat(), BX - 1.2, 0.84, -2.05, scene, false);
+  makeLamp('bedroom', BX - 1.1, 1.05, -1.7, bb, [BX - 0.6, -1.4], 3.4);
+  mesh(box(0.62, 1.95, 1.3, 0.04), M('#E9E2F5'), BX + 1.88, 1.0, -0.15);
+  mesh(box(0.02, 1.7, 0.02, 0.005), M('#B9AFCF'), BX + 1.56, 1.0, -0.15, scene, false);
+  mesh(G(new THREE.CylinderGeometry(0.75, 0.75, 0.03, 24)), M('#F2C9B8'), BX + 0.2, 0.07, 0.6, scene, false);
+
+  /* ---- kitchen ---- */
+  const KX = X.kitchen;
+  mesh(box(3.3, 0.9, 0.62, 0.03), M('#FFFFFF'), KX - 0.4, 0.5, -2.18);
+  mesh(box(3.36, 0.07, 0.68, 0.02), M('#3B3F57'), KX - 0.4, 0.98, -2.16);
+  mesh(box(0.85, 2.05, 0.75, 0.05), M('#DDE1FF'), KX + 1.82, 1.08, -2.08);
+  mesh(box(0.03, 0.9, 0.03, 0.01), M('#4F5B92'), KX + 1.45, 1.3, -1.7, scene, false);
+  mesh(box(0.34, 0.4, 0.3, 0.04), M('#2B2F45'), KX - 1.5, 1.21, -2.2); // coffee machine
+  const coffeeLed = mesh(G(new THREE.SphereGeometry(0.03, 8, 6)), G(new THREE.MeshBasicMaterial({ color: 0x2fbf71 })), KX - 1.5, 1.3, -2.04, scene, false);
+  mesh(box(1.9, 0.86, 0.85, 0.04), M('#4F5B92'), KX - 0.2, 0.47, -0.35);
+  mesh(box(2.0, 0.07, 0.95, 0.02), M('#FFFFFF'), KX - 0.2, 0.93, -0.35);
+  [-0.85, -0.2, 0.45].forEach(dx => {
+    mesh(G(new THREE.CylinderGeometry(0.17, 0.17, 0.07, 14)), M('#F5BE48'), KX + dx, 0.66, 0.38);
+    mesh(G(new THREE.CylinderGeometry(0.03, 0.03, 0.6, 6)), M('#2B2F45'), KX + dx, 0.34, 0.38);
+  });
+  const pendMat = bulbMat();
+  let kb;
+  [-0.6, 0.2].forEach((dx, i) => {
+    mesh(G(new THREE.CylinderGeometry(0.008, 0.008, 0.9, 4)), M('#2B2F45'), KX + dx, 2.35, -0.35, scene, false);
+    mesh(G(new THREE.ConeGeometry(0.22, 0.24, 14, 1, true)), M('#2B2F45', { side: THREE.DoubleSide }), KX + dx, 1.86, -0.35);
+    const b = mesh(G(new THREE.SphereGeometry(0.08, 10, 8)), pendMat, KX + dx, 1.76, -0.35, scene, false);
+    b.userData.room = 'kitchen'; if (!i) kb = b;
+  });
+  makeLamp('kitchen', KX - 0.2, 1.6, -0.2, kb, [KX - 0.2, -0.3], 3.8);
+  scene.traverse(o => { if (o.isMesh && o.material === pendMat) o.userData.room = 'kitchen'; });
+
+  /* ---- Orbi path + character ---- */
+  const pathPts = [[-6.2, 1.7], [-4.7, 1.3], [-3.2, 1.75], [-1.6, 1.55], [-0.5, 1.1], [1.0, 1.55], [2.8, 1.8], [3.9, 1.25], [5.2, 1.5], [6.3, 0.6]]
+    .map(([x, z]) => new THREE.Vector3(x, 0.09, z));
+  const curve = new THREE.CatmullRomCurve3(pathPts, false, 'catmullrom', 0.5);
+  const tubeGeo = G(new THREE.TubeGeometry(curve, 240, 0.035, 6, false));
+  const pathM = new THREE.MeshBasicMaterial({ color: 0xff7a3d, transparent: true, opacity: 0.35 }); G(pathM);
+  const pathM2 = new THREE.MeshBasicMaterial({ color: 0xff7a3d }); G(pathM2);
+  scene.add(new THREE.Mesh(tubeGeo, pathM));
+  const tubeGeo2 = G(tubeGeo.clone());
+  const tubeDone = new THREE.Mesh(tubeGeo2, pathM2); tubeDone.position.y = 0.004; tubeDone.scale.set(1, 1.02, 1); scene.add(tubeDone);
+  const tubeIdx = tubeGeo.index.count;
+  // stop markers
+  const stopU = [0.1, 0.43, 0.74, 1.0];
+  const stopRingM = new THREE.MeshBasicMaterial({ color: 0xff7a3d, transparent: true, opacity: 0.9, side: THREE.DoubleSide, depthWrite: false }); G(stopRingM);
+  const stopRings = stopU.map(u => {
+    const p = curve.getPointAt(u);
+    const r = new THREE.Mesh(G(new THREE.RingGeometry(0.2, 0.26, 32)), stopRingM);
+    r.rotation.x = -Math.PI / 2; r.position.set(p.x, 0.1, p.z); scene.add(r); return r;
+  });
+  const orbi = new THREE.Group(); scene.add(orbi);
+  const white = M('#FFFFFF', { roughness: 0.35, flatShading: false });
+  const bodyM = mesh(G(new THREE.CapsuleGeometry(0.17, 0.2, 4, 12)), white, 0, 0.32, 0, orbi);
+  const head = new THREE.Group(); head.position.y = 0.68; orbi.add(head);
+  mesh(G(new THREE.SphereGeometry(0.2, 18, 12)), white, 0, 0, 0, head);
+  mesh(G(new THREE.SphereGeometry(0.15, 18, 12, 0, Math.PI * 2, 0, Math.PI / 2)), M('#1B1B21', { flatShading: false, roughness: 0.2 }), 0, 0, 0.09, head, false).rotation.x = Math.PI / 2;
+  const eyeM = new THREE.MeshBasicMaterial({ color: 0x7fe7ff }); G(eyeM);
+  [-0.055, 0.055].forEach(dx => { const e = new THREE.Mesh(G(new THREE.SphereGeometry(0.025, 8, 6)), eyeM); e.position.set(dx, 0.015, 0.235); e.scale.set(1, 1.5, 0.5); head.add(e); });
+  mesh(G(new THREE.CylinderGeometry(0.01, 0.01, 0.16, 4)), M('#2B2F45'), 0, 0.26, 0, head, false);
+  mesh(G(new THREE.SphereGeometry(0.04, 8, 6)), G(new THREE.MeshBasicMaterial({ color: 0xff7a3d })), 0, 0.35, 0, head, false);
+  orbi.scale.setScalar(1.6);
+  let orbiU = 0.1, orbiYaw = 0;
+
+  /* ---- views ---- */
+  const VIEWS = {
+    all:     { c: [0, 0.6, 0], w: 16.2, h: 10.2 },
+    living:  { c: [X.living, 0.8, -0.3], w: 7.2, h: 6.0 },
+    bedroom: { c: [X.bedroom, 0.8, -0.3], w: 7.2, h: 6.0 },
+    kitchen: { c: [X.kitchen, 0.8, -0.3], w: 7.2, h: 6.0 }
+  };
+  const cam = { c: new THREE.Vector3(0, 0.6, 0), size: 11, az: 0.6 };
+  const EL = Math.atan(1 / Math.SQRT2); // true isometric elevation (35.26°)
+  let aspect = 1;
+
+  /* ---- canvas host management ---- */
+  const ratios = new Map(stages.map(s => [s, 0]));
+  let host = null, running = false, dirty = true;
+  const io = new IntersectionObserver(es => {
+    es.forEach(e => ratios.set(e.target, e.isIntersecting ? e.intersectionRatio : 0));
+    pickHost();
+  }, { threshold: [0, 0.05, 0.15, 0.3, 0.5, 0.7, 0.9, 1] });
+  stages.forEach(s => io.observe(s));
+  const ro = new ResizeObserver(() => resize());
+  function pickHost() {
+    let best = null, br = 0;
+    ratios.forEach((r, s) => { if (r > br) { br = r; best = s; } });
+    if (best && best !== host) {
+      if (host) ro.unobserve(host);
+      if (host) snapshot(host);
+      host = best; host.insertBefore(canvas, host.firstChild); ro.observe(host); resize();
+      const sn = host.querySelector('canvas.snap'); if (sn) sn.style.visibility = 'hidden';
+      if (reduced) snapCamera();
+    }
+    updateRunning();
+  }
+  // a 2D copy of the last frame stays in stages that no longer host the WebGL canvas
+  function snapshot(st) {
+    let sn = st.querySelector('canvas.snap');
+    if (!sn) { sn = document.createElement('canvas'); sn.className = 'snap'; sn.setAttribute('aria-hidden', 'true'); st.insertBefore(sn, st.firstChild); }
+    renderer.render(scene, camera);
+    sn.width = canvas.width; sn.height = canvas.height;
+    const c2 = sn.getContext('2d'); c2.clearRect(0, 0, sn.width, sn.height); c2.drawImage(canvas, 0, 0);
+    sn.style.visibility = 'visible';
+  }
+  function primeSnapshots() {
+    stages.forEach(st => {
+      if (st === host || !st.clientWidth) return;
+      const keep = host; host = st; st.insertBefore(canvas, st.firstChild); resize(); snapCamera(true); applyLighting(1);
+      placeCamera(); snapshot(st);
+      host = keep; if (keep) { keep.insertBefore(canvas, keep.firstChild); resize(); }
+    });
+    if (host) { snapCamera(true); applyLighting(1); }
+  }
+  function resize() {
+    if (!host) return;
+    const w = host.clientWidth, h = host.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(w, h, false); aspect = w / h; dirty = true;
+  }
+  function updateRunning() {
+    const want = !!host && ratios.get(host) > 0 && !document.hidden;
+    if (want && !running) { running = true; last = performance.now(); renderer.setAnimationLoop(tick); }
+    else if (!want && running) { running = false; renderer.setAnimationLoop(null); }
+  }
+  document.addEventListener('visibilitychange', updateRunning);
+  reduceMQ.addEventListener('change', e => { reduced = e.matches; dirty = true; });
+  listeners.push(() => { dirty = true; });
+
+  /* ---- effective lighting (story overrides user state while story is on screen) ---- */
+  const SC = [
+    { living: [1, 85, 2700], bedroom: [0, 0, 2700], kitchen: [0, 0, 4000], night: 0.35, curtain: 0 },
+    { living: [0, 0, 2700], bedroom: [1, 22, 2200], kitchen: [0, 0, 4000], night: 1, curtain: 100 },
+    { living: [0, 0, 2700], bedroom: [0, 0, 2700], kitchen: [1, 95, 5200], night: 0.15, curtain: 0 },
+    { living: [1, 70, 3200], bedroom: [1, 45, 2700], kitchen: [1, 70, 4200], night: 0.85, curtain: 40 }
+  ];
+  const mode = () => host ? host.dataset.stage : 'hero';
+  function targets() {
+    if (mode() === 'story') {
+      const s = SC[storyStep];
+      return { rooms: Object.fromEntries(ROOMS.map(k => [k, { on: !!s[k][0], b: s[k][1], k: s[k][2] }])), night: s.night, curtain: s.curtain, film: false };
+    }
+    return { rooms: state, night: state.night ? 1 : 0, curtain: state.curtain, film: state.film };
+  }
+  function kelvinRGB(k, out) {
+    const t = k / 100; let r, g, b;
+    if (t <= 66) { r = 255; g = 99.47 * Math.log(t) - 161.12; b = t <= 19 ? 0 : 138.52 * Math.log(t - 10) - 305.04; }
+    else { r = 329.7 * Math.pow(t - 60, -0.1332); g = 288.12 * Math.pow(t - 60, -0.0755); b = 255; }
+    const c = v => Math.min(255, Math.max(0, v)) / 255;
+    return out.setRGB(c(r), c(g), c(b), THREE.SRGBColorSpace);
+  }
+  const tmpC = new THREE.Color(), dayHemi = new THREE.Color(0xdfe6ff), nightHemi = new THREE.Color(0x4a5694);
+  const daySun = new THREE.Color(0xfff1dc), nightSun = new THREE.Color(0x8ea2ff);
+  const daySky = new THREE.Color(0xbfe3ff), nightSky = new THREE.Color(0x1c2554), duskSky = new THREE.Color(0xffb38a);
+  let nightCur = state.night ? 1 : 0, curtainCur = state.curtain, tvCur = 0;
+
+  function applyLighting(k) {
+    const T = targets();
+    nightCur += (T.night - nightCur) * k;
+    curtainCur += (T.curtain - curtainCur) * k;
+    tvCur += ((T.film ? 1 : 0) - tvCur) * k;
+    const n = nightCur;
+    hemi.intensity = THREE.MathUtils.lerp(1.45, 0.32, n);
+    hemi.color.copy(dayHemi).lerp(nightHemi, n);
+    sun.intensity = THREE.MathUtils.lerp(2.5, 0.35, n);
+    sun.color.copy(daySun).lerp(nightSun, n);
+    const sky = n < 0.5 ? tmpC.copy(daySky).lerp(duskSky, n * 2) : tmpC.copy(duskSky).lerp(nightSky, (n - 0.5) * 2);
+    skyMats.forEach(m => m.color.copy(sky));
+    const cw = 0.18 + 0.82 * (curtainCur / 100);
+    curL.scale.x = curR.scale.x = cw;
+    curL.position.x = -4.0 - 0.9 + 0.45 * cw; curR.position.x = -4.0 + 0.9 - 0.45 * cw;
+    tvM.color.setRGB(0.05 + 0.35 * tvCur, 0.06 + 0.45 * tvCur, 0.09 + 0.85 * tvCur);
+    tvLight.intensity = 3.5 * tvCur;
+    const boost = THREE.MathUtils.lerp(1, 1.6, n);
+    ROOMS.forEach(r => {
+      const L = lamps[r], s = T.rooms[r];
+      const ti = s.on ? s.b / 100 : 0;
+      L.cur.i += (ti - L.cur.i) * k;
+      kelvinRGB(+s.k, tmpC); L.cur.c.lerp(tmpC, k);
+      L.light.color.copy(L.cur.c); L.light.intensity = 9 * L.cur.i * boost;
+      L.pool.material.color.copy(L.cur.c); L.pool.material.opacity = Math.min(1, 0.75 * L.cur.i * (0.55 + 0.45 * n));
+      L.bulb.material.emissive.copy(L.cur.c); L.bulb.material.emissiveIntensity = 0.15 + 3.2 * L.cur.i;
+      if (L.bulb.userData.shade) { L.bulb.userData.shade.emissive.copy(L.cur.c); L.bulb.userData.shade.emissiveIntensity = 0.9 * L.cur.i; }
+    });
+    coffeeLed.visible = (T.rooms.kitchen.on);
+  }
+
+  /* ---- camera ---- */
+  function camTarget(t) {
+    const m = mode();
+    if (m === 'story') {
+      const p = curve.getPointAt(THREE.MathUtils.clamp(orbiU, 0, 1));
+      const last = storyP > 2.5;
+      const v = last ? VIEWS.all : { c: [p.x + 0.2, 0.8, p.z - 0.9], w: 7.6, h: 6.4 };
+      return { c: v.c, size: Math.max(v.h, v.w / aspect), az: 0.62 + (reduced ? 0 : Math.sin(t * 0.00025) * 0.04) };
+    }
+    const v = m === 'demo' ? VIEWS[state.room] : VIEWS.all;
+    return { c: v.c, size: Math.max(v.h, v.w / aspect), az: 0.6 + (reduced ? 0 : Math.sin(t * 0.0003) * 0.09) };
+  }
+  function orbiTarget(t) {
+    const m = mode();
+    if (m === 'story') {
+      const i = Math.floor(storyP), f = storyP - i;
+      const a = stopU[Math.min(i, 3)], b = stopU[Math.min(i + 1, 3)];
+      const e = THREE.MathUtils.smoothstep(f, 0.18, 0.82);
+      return a + (b - a) * e;
+    }
+    if (m === 'demo') return state.room === 'all' ? 0.58 : stopU[ROOMS.indexOf(state.room)];
+    if (reduced) return 0.1;
+    const ph = (t * 0.000035) % 2; return 0.04 + 0.92 * (ph < 1 ? ph : 2 - ph);
+  }
+  function snapCamera(place) {
+    const T = camTarget(performance.now());
+    cam.c.set(...T.c); cam.size = T.size; cam.az = T.az; orbiU = orbiTarget(0);
+    const p = curve.getPointAt(THREE.MathUtils.clamp(orbiU, 0, 1)); orbi.position.set(p.x, 0.07, p.z); prevP.copy(p);
+    if (place) placeCamera();
+    dirty = true;
+  }
+  const v3 = new THREE.Vector3(), prevP = new THREE.Vector3();
+  function placeCamera() {
+    const half = cam.size / 2;
+    // on phones the story stage is full-screen with text cards at the bottom: lift the scene into the top part
+    const off = (mode() === 'story' && innerWidth <= 900) ? cam.size * 0.08 : 0;
+    camera.left = -half * aspect; camera.right = half * aspect; camera.top = half - off; camera.bottom = -half - off;
+    camera.updateProjectionMatrix();
+    v3.set(Math.sin(cam.az) * Math.cos(EL), Math.sin(EL), Math.cos(cam.az) * Math.cos(EL)).multiplyScalar(40).add(cam.c);
+    camera.position.copy(v3); camera.lookAt(cam.c);
+  }
+
+  /* ---- loop ---- */
+  let last = performance.now(), prevKey = '';
+  function tick(t) {
+    const dt = Math.min(0.05, (t - last) / 1000); last = t;
+    const m = mode();
+    const k = reduced ? 1 : 1 - Math.exp(-dt * 5);
+    const key = m + state.room + storyStep + Math.round(storyP * 40) + aspect.toFixed(3);
+    if (reduced && !dirty && key === prevKey) return;
+    prevKey = key;
+    applyLighting(k);
+    const T = camTarget(t);
+    cam.c.lerp(v3.set(...T.c), k); cam.size += (T.size - cam.size) * k; cam.az += (T.az - cam.az) * k;
+    placeCamera();
+    // Orbi
+    const ou = orbiTarget(t);
+    orbiU += (ou - orbiU) * (m === 'story' ? Math.min(1, k * 1.8) : (m === 'hero' ? 1 : k * 0.6));
+    const u = THREE.MathUtils.clamp(orbiU, 0, 1);
+    const p = curve.getPointAt(u);
+    const moving = p.distanceTo(prevP) > 0.0008;
+    if (moving) { const d = v3.subVectors(p, prevP); orbiYaw = Math.atan2(d.x, d.z); }
+    prevP.copy(p);
+    orbi.position.set(p.x, 0.07, p.z);
+    let yawT = moving ? orbiYaw : 0.6;
+    let dy = yawT - orbi.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy));
+    orbi.rotation.y += dy * (reduced ? 1 : Math.min(1, dt * 8));
+    const ts = t * 0.001;
+    bodyM.position.y = 0.32 + (reduced ? 0 : (moving ? Math.abs(Math.sin(ts * 14)) * 0.05 : Math.sin(ts * 2) * 0.015));
+    head.rotation.z = reduced ? 0 : (moving ? Math.sin(ts * 7) * 0.08 : 0);
+    tubeDone.geometry.setDrawRange(0, Math.floor(tubeIdx * u / 3) * 3);
+    tubeDone.visible = m !== 'hero';
+    stopRings.forEach((r, i) => { const near = Math.abs(stopU[i] - u) < 0.03; r.scale.setScalar(near && !reduced ? 1 + Math.sin(ts * 4) * 0.15 : 1); });
+    if (!reduced) {
+      hubRing.scale.setScalar(1 + (ts * 0.6 % 1) * 1.8); ringM.opacity = 0.8 * (1 - (ts * 0.6 % 1));
+      plants.forEach((pl, i) => pl.rotation.z = Math.sin(ts * 0.9 + i) * 0.03);
+    }
+    renderer.render(scene, camera);
+    dirty = false;
+  }
+
+  /* ---- click lamps inside the diorama ---- */
+  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+  const clickables = [];
+  scene.traverse(o => { if (o.isMesh && o.userData.room) clickables.push(o); });
+  function pick(ev) {
+    const r = canvas.getBoundingClientRect();
+    ndc.set(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    ray.params.Mesh = {};
+    // enlarge hit area: test against spheres around bulbs
+    let best = null, bd = 0.45;
+    clickables.forEach(o => { const wp = o.getWorldPosition(new THREE.Vector3()); const d = ray.ray.distanceToPoint(wp); if (d < bd) { bd = d; best = o; } });
+    return best;
+  }
+  canvas.addEventListener('pointermove', e => { if (mode() !== 'story') canvas.style.cursor = pick(e) ? 'pointer' : ''; });
+  canvas.addEventListener('click', e => {
+    if (mode() === 'story') return;
+    const o = pick(e); if (!o) return;
+    const r = o.userData.room;
+    state[r].on = !state[r].on; if (state[r].on && state[r].b < 5) state[r].b = 60;
+    if (mode() === 'demo') state.room = r;
+    changed(); snack(ROOM_NAME[r] + ': lampu ' + (state[r].on ? 'dinyalakan' : 'dipadamkan'));
+  });
+
+  window.__orbita = { renderer, scene, state, lamps, changed, info: () => renderer.info };
+  pickHost(); snapCamera(); primeSnapshots();
+}
+</script>
+</body>
+</html>

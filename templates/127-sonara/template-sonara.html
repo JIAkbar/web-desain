@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="id" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sonara One — Headphone Nirkabel dengan Peredam Bising Adaptif</title>
+<meta name="description" content="Sonara One: headphone nirkabel over-ear dengan ANC adaptif, baterai 60 jam, dan multipoint. Template landing page Bootstrap 5.3 + three.js.">
+<meta name="color-scheme" content="dark light">
+<script>
+  // set theme before paint
+  (function () {
+    var t = null; try { t = localStorage.getItem('sonara-theme'); } catch (e) {}
+    if (!t) t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-bs-theme', t);
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<style>
+  :root{
+    --sn-accent:#FF6A3D; --sn-accent-rgb:255,106,61; --sn-accent-ink:#1a0d08;
+    --bs-body-font-family:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --bs-font-sans-serif:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --bs-font-monospace:'Manrope',system-ui,sans-serif;
+    --bs-primary:#E5532A; --bs-primary-rgb:229,83,42;
+    --bs-link-color:#D9481F; --bs-link-color-rgb:217,72,31; --bs-link-hover-color:#B83A16; --bs-link-hover-color-rgb:184,58,22;
+    --bs-focus-ring-color:rgba(var(--sn-accent-rgb),.35);
+  }
+  [data-bs-theme=light]{
+    --bs-body-bg:#F5F3EF; --bs-body-bg-rgb:245,243,239; --bs-body-color:#16171B;
+    --bs-secondary-bg:#EAE7E1; --bs-tertiary-bg:#EFECE7; --bs-border-color:#DEDAD2;
+    --sn-stage-1:#FFFFFF; --sn-stage-2:#ECE8E1; --sn-card:#FFFFFF; --sn-glass:rgba(255,255,255,.72);
+    --sn-muted:#5E6068;
+  }
+  [data-bs-theme=dark]{
+    --bs-body-bg:#0B0C10; --bs-body-bg-rgb:11,12,16; --bs-body-color:#ECEDEF;
+    --bs-secondary-bg:#16181E; --bs-tertiary-bg:#121419; --bs-border-color:#262932;
+    --bs-link-color:#FF8A63; --bs-link-color-rgb:255,138,99; --bs-link-hover-color:#FFA785;
+    --sn-stage-1:#1B1D24; --sn-stage-2:#0B0C10; --sn-card:#14161C; --sn-glass:rgba(20,22,28,.72);
+    --sn-muted:#A3A6AF;
+  }
+  code,kbd,pre,samp{font-family:inherit;}
+  html{scroll-behavior:smooth;}
+  body{overflow-x:hidden;letter-spacing:-.005em;}
+  .num{font-variant-numeric:tabular-nums;}
+  .text-muted-2{color:var(--sn-muted)!important;}
+  .display-hero{font-size:clamp(2.6rem,5.4vw,5rem);font-weight:800;line-height:1;letter-spacing:-.035em;}
+  .h-sec{font-size:clamp(2rem,3.6vw,3.2rem);font-weight:800;letter-spacing:-.03em;line-height:1.05;}
+  .kicker{font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--sn-accent);}
+  .grad-text{background:linear-gradient(90deg,var(--sn-accent),#FFB36B);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  :focus-visible{outline:3px solid rgba(var(--sn-accent-rgb),.8);outline-offset:2px;}
+  section{scroll-margin-top:72px;}
+
+  /* Bootstrap theming through its own CSS variable API */
+  .btn-sonara{--bs-btn-color:#fff;--bs-btn-bg:#E5532A;--bs-btn-border-color:#E5532A;--bs-btn-hover-color:#fff;--bs-btn-hover-bg:#CC4520;--bs-btn-hover-border-color:#CC4520;
+    --bs-btn-active-bg:#B83A16;--bs-btn-active-border-color:#B83A16;--bs-btn-focus-shadow-rgb:var(--sn-accent-rgb);--bs-btn-disabled-bg:#E5532A;--bs-btn-disabled-border-color:#E5532A;
+    --bs-btn-font-weight:700;--bs-btn-padding-x:1.4rem;--bs-btn-padding-y:.7rem;--bs-btn-border-radius:999px;}
+  .btn-ghost{--bs-btn-color:var(--bs-body-color);--bs-btn-border-color:var(--bs-border-color);--bs-btn-hover-bg:var(--bs-secondary-bg);--bs-btn-hover-color:var(--bs-body-color);--bs-btn-hover-border-color:var(--bs-border-color);
+    --bs-btn-active-bg:var(--bs-secondary-bg);--bs-btn-active-color:var(--bs-body-color);--bs-btn-font-weight:600;--bs-btn-padding-x:1.3rem;--bs-btn-padding-y:.7rem;--bs-btn-border-radius:999px;}
+  .form-check-input:checked{background-color:#E5532A;border-color:#E5532A;}
+  .form-check-input:focus,.form-control:focus,.form-select:focus{border-color:rgba(var(--sn-accent-rgb),.6);box-shadow:0 0 0 .25rem rgba(var(--sn-accent-rgb),.22);}
+  .form-switch .form-check-input:focus:not(:checked){--bs-form-switch-bg:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23ff8a63'/%3e%3c/svg%3e");}
+  .form-range::-webkit-slider-thumb{background:#E5532A;}
+  .form-range::-moz-range-thumb{background:#E5532A;}
+  .form-range:focus::-webkit-slider-thumb{box-shadow:0 0 0 1px var(--bs-body-bg),0 0 0 .25rem rgba(var(--sn-accent-rgb),.3);}
+  .accordion{--bs-accordion-active-bg:rgba(var(--sn-accent-rgb),.09);--bs-accordion-active-color:var(--bs-body-color);--bs-accordion-btn-focus-box-shadow:0 0 0 .25rem rgba(var(--sn-accent-rgb),.22);--bs-accordion-bg:transparent;--bs-accordion-border-color:var(--bs-border-color);}
+  .nav-pills{--bs-nav-pills-link-active-bg:#E5532A;--bs-nav-pills-border-radius:999px;--bs-nav-link-color:var(--bs-body-color);--bs-nav-link-hover-color:var(--sn-accent);}
+  .nav-underline{--bs-nav-link-color:var(--sn-muted);--bs-nav-link-hover-color:var(--bs-body-color);--bs-nav-underline-link-active-color:var(--bs-body-color);}
+  .nav-underline .nav-link.active{border-bottom-color:var(--sn-accent);}
+  .badge-accent{background:rgba(var(--sn-accent-rgb),.14);color:var(--sn-accent);border:1px solid rgba(var(--sn-accent-rgb),.35);}
+  .progress{--bs-progress-bar-bg:#E5532A;--bs-progress-height:.5rem;--bs-progress-border-radius:99px;}
+  .card{--bs-card-bg:var(--sn-card);--bs-card-border-color:var(--bs-border-color);--bs-card-border-radius:1.25rem;}
+
+  /* navbar */
+  .navbar.sn-nav{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(var(--bs-body-bg-rgb),.62);border-bottom:1px solid transparent;transition:background .3s,border-color .3s;}
+  .navbar.sn-nav.scrolled{background:rgba(var(--bs-body-bg-rgb),.86);border-bottom-color:var(--bs-border-color);}
+  .navbar-brand{font-weight:800;letter-spacing:-.03em;display:flex;align-items:center;gap:.55rem;}
+  .navbar .nav-link{font-weight:600;font-size:.94rem;}
+  .theme-btn{width:42px;height:42px;padding:0;display:grid;place-items:center;border-radius:50%;}
+  @media (max-width:991.98px){.navbar-collapse{padding:.75rem 0 1rem;}}
+
+  /* ===== story: sticky full-bleed 3D stage + overlay steps ===== */
+  .story{position:relative;}
+  .stage{position:sticky;top:0;height:100vh;height:100svh;width:100%;overflow:hidden;z-index:0;
+    background:radial-gradient(60% 60% at 68% 48%,var(--sn-stage-1) 0%,var(--sn-stage-2) 72%);}
+  .stage canvas{display:block;width:100%!important;height:100%!important;touch-action:pan-y;}
+  .stage .fallback{position:absolute;inset:0;display:none;}
+  .no-webgl .stage .fallback{display:block;}
+  .no-webgl .stage canvas{display:none;}
+  .fallback svg{position:absolute;right:4%;top:50%;transform:translateY(-50%);width:min(46vw,560px);height:auto;}
+  @media (max-width:991.98px){.fallback svg{right:50%;top:34%;transform:translate(50%,-50%);width:min(78vw,420px);}}
+  .stage-glow{position:absolute;left:68%;top:52%;width:46vmin;height:46vmin;transform:translate(-50%,-50%);border-radius:50%;
+    background:radial-gradient(circle,rgba(var(--sn-accent-rgb),.22),transparent 65%);filter:blur(10px);pointer-events:none;transition:background .6s;}
+  @media (max-width:991.98px){.stage{background:radial-gradient(80% 50% at 50% 34%,var(--sn-stage-1) 0%,var(--sn-stage-2) 75%);}.stage-glow{left:50%;top:34%;width:70vmin;height:70vmin;}}
+  .stage-hud{position:absolute;right:24px;bottom:24px;display:flex;gap:6px;z-index:2;}
+  .stage-hud i{width:8px;height:8px;border-radius:99px;background:var(--bs-border-color);transition:.35s;}
+  .stage-hud i.on{width:26px;background:var(--sn-accent);}
+  .stage-label{position:absolute;right:24px;top:84px;z-index:2;font-size:.8rem;font-weight:700;letter-spacing:.08em;color:var(--sn-muted);font-variant-numeric:tabular-nums;}
+  .stage-label b{color:var(--sn-accent);}
+  @media (max-width:991.98px){.stage-hud{right:50%;transform:translateX(50%);bottom:auto;top:calc(64svh - 10px);}.stage-label{top:76px;right:16px;}}
+
+  .steps{position:relative;z-index:1;margin-top:-100vh;margin-top:-100svh;pointer-events:none;}
+  .step{min-height:100vh;min-height:100svh;display:flex;align-items:center;}
+  .step .panel{pointer-events:auto;max-width:470px;}
+  .step:not(.hero-step) .panel{opacity:.25;transform:translateY(16px);transition:opacity .5s,transform .5s;}
+  .step.on .panel{opacity:1;transform:none;}
+  .step .no{font-weight:800;color:var(--sn-accent);font-variant-numeric:tabular-nums;letter-spacing:.06em;font-size:.85rem;}
+  .step h2{font-size:clamp(2rem,3.4vw,3rem);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin:.6rem 0 1rem;}
+  .step p{color:var(--sn-muted);font-size:1.06rem;}
+  .glass{background:var(--sn-glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--bs-border-color);border-radius:1.25rem;}
+  .hero-step .panel{max-width:560px;}
+  .hero-meta{display:flex;gap:1.6rem;flex-wrap:wrap;margin-top:2rem;}
+  .hero-meta div{display:flex;flex-direction:column;}
+  .hero-meta strong{font-size:1.5rem;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em;}
+  .hero-meta span{font-size:.82rem;color:var(--sn-muted);}
+  @media (max-width:991.98px){
+    .step{align-items:flex-end;padding-bottom:4svh;min-height:88svh;}
+    .step.hero-step{min-height:122svh;}
+    .hero-step .panel{background:var(--sn-glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--bs-border-color);border-radius:1.25rem;}
+    .step .panel{max-width:none;width:100%;padding:1.25rem!important;}
+    .step:not(.hero-step) .panel{opacity:1;transform:none;}
+    .step .panel.glass-m{background:var(--sn-glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--bs-border-color);border-radius:1.25rem;}
+    .step h2{font-size:1.7rem;}
+    .step p{font-size:.97rem;}
+    .hero-step .display-hero{font-size:2.5rem;}
+    .hero-meta{gap:1.1rem;margin-top:1.2rem;}
+    .hero-meta strong{font-size:1.2rem;}
+    .config .card-body{padding:1.1rem!important;}
+    .price-tag{font-size:1.3rem;}
+    .swatches .btn{width:40px;height:40px;}
+    .swatches .btn span{width:27px;height:27px;}
+  }
+
+  /* swatches (Bootstrap btn-check) */
+  .swatches{display:flex;gap:.55rem;flex-wrap:wrap;}
+  .swatches .btn{width:44px;height:44px;padding:0;border-radius:50%;border:2px solid var(--bs-border-color);display:grid;place-items:center;--bs-btn-active-border-color:var(--sn-accent);}
+  .swatches .btn span{width:30px;height:30px;border-radius:50%;box-shadow:inset 0 -6px 10px rgba(0,0,0,.25),inset 0 4px 8px rgba(255,255,255,.25);}
+  .swatches .btn-check:checked + .btn{border-color:var(--sn-accent);box-shadow:0 0 0 3px rgba(var(--sn-accent-rgb),.25);}
+  .swatches .btn-check:focus-visible + .btn{outline:3px solid rgba(var(--sn-accent-rgb),.8);outline-offset:2px;}
+  .seg .btn{--bs-btn-padding-y:.45rem;--bs-btn-font-weight:600;--bs-btn-font-size:.9rem;}
+  .seg .btn-check:checked + .btn{background:var(--bs-body-color);color:var(--bs-body-bg);border-color:var(--bs-body-color);}
+  .config .row-ctl{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.6rem 1rem;padding:.8rem 0;border-top:1px solid var(--bs-border-color);}
+  .config .lbl{font-weight:700;font-size:.92rem;}
+  .config small{color:var(--sn-muted);}
+  .price-tag{font-size:1.6rem;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em;}
+  .price-tag s{font-size:1rem;color:var(--sn-muted);font-weight:600;margin-left:.4rem;}
+
+  /* sections after story */
+  .band{position:relative;z-index:2;background:var(--bs-body-bg);}
+  .stat{padding:1.6rem;border-radius:1.25rem;background:var(--bs-tertiary-bg);border:1px solid var(--bs-border-color);height:100%;}
+  .stat strong{display:block;font-size:clamp(2rem,3.6vw,3rem);font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1;}
+  .stat span{color:var(--sn-muted);font-size:.92rem;}
+  .feat-ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:rgba(var(--sn-accent-rgb),.12);color:var(--sn-accent);}
+  .quote{font-size:clamp(1.25rem,2.2vw,1.8rem);font-weight:700;letter-spacing:-.02em;line-height:1.3;}
+  .carousel-indicators [data-bs-target]{background-color:var(--sn-accent);width:24px;height:4px;border-radius:9px;}
+  .carousel-indicators{position:static;margin:1.6rem 0 0;}
+  .testi-wrap{border-radius:1.5rem;padding:clamp(1.5rem,4vw,3.5rem);background:linear-gradient(135deg,rgba(var(--sn-accent-rgb),.12),transparent 60%),var(--bs-tertiary-bg);border:1px solid var(--bs-border-color);}
+  .ava{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:var(--sn-accent);color:#fff;}
+  .spec-table{--bs-table-bg:transparent;margin:0;}
+  .spec-table th{font-weight:600;color:var(--sn-muted);width:42%;}
+  .spec-table td{font-weight:600;font-variant-numeric:tabular-nums;}
+  .plan{height:100%;transition:transform .3s,box-shadow .3s;}
+  .plan:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(0,0,0,.12);}
+  .plan.best{border-color:rgba(var(--sn-accent-rgb),.6);box-shadow:0 0 0 1px rgba(var(--sn-accent-rgb),.4),0 24px 50px rgba(var(--sn-accent-rgb),.12);}
+  .plan .price{font-size:2.2rem;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums;}
+  .plan ul li{padding:.35rem 0;display:flex;gap:.55rem;}
+  .plan ul svg{flex:none;margin-top:.2rem;color:var(--sn-accent);}
+  .cta-box{border-radius:2rem;padding:clamp(1.75rem,5vw,4.5rem);position:relative;overflow:hidden;color:#fff;
+    background:radial-gradient(70% 120% at 100% 0%,#FF8A55 0%,#E5532A 35%,#7A1F0B 100%);}
+  .cta-box .waves{position:absolute;right:-60px;bottom:-80px;width:min(460px,80%);opacity:.35;pointer-events:none;}
+  .cta-box .btn-light{--bs-btn-font-weight:700;--bs-btn-padding-x:1.5rem;--bs-btn-padding-y:.75rem;--bs-btn-border-radius:999px;}
+  footer{border-top:1px solid var(--bs-border-color);}
+  footer a{color:var(--sn-muted);text-decoration:none;}
+  footer a:hover{color:var(--sn-accent);}
+  .built-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--sn-accent);margin-right:.45rem;}
+  .toast-container{z-index:1090;}
+
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease;}
+  .reveal.in{opacity:1;transform:none;}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .reveal{opacity:1;transform:none;transition:none;}
+    .step .panel{transition:none!important;}
+  }
+</style>
+</head>
+<body>
+<a class="visually-hidden-focusable position-absolute top-0 start-0 m-2 btn btn-sonara" style="z-index:2000" href="#utama">Lewati ke konten</a>
+
+<nav class="navbar navbar-expand-lg fixed-top sn-nav" aria-label="Navigasi utama">
+  <div class="container">
+    <a class="navbar-brand" href="#" aria-label="Sonara, beranda">
+      <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#E5532A"/><path d="M9 19v-3a7 7 0 0 1 14 0v3" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><rect x="7" y="17" width="4.4" height="7" rx="2" fill="#fff"/><rect x="20.6" y="17" width="4.4" height="7" rx="2" fill="#fff"/></svg>
+      Sonara
+    </a>
+    <div class="d-flex align-items-center gap-2 order-lg-last">
+      <button class="btn btn-ghost theme-btn" id="themeBtn" type="button" aria-label="Ganti tema terang/gelap">
+        <svg id="icoSun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg id="icoMoon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z"/></svg>
+      </button>
+      <button class="btn btn-sonara btn-sm d-none d-sm-inline-block" style="--bs-btn-padding-y:.5rem" data-bs-toggle="modal" data-bs-target="#preorderModal">Pre-order</button>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Buka menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav mx-lg-auto">
+        <li class="nav-item"><a class="nav-link" href="#fitur">Fitur</a></li>
+        <li class="nav-item"><a class="nav-link" href="#warna">Konfigurasi</a></li>
+        <li class="nav-item"><a class="nav-link" href="#spesifikasi">Spesifikasi</a></li>
+        <li class="nav-item"><a class="nav-link" href="#harga">Harga</a></li>
+        <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main id="utama">
+  <!-- ===== STORY: hero + features + configurator, synced to the 3D camera path ===== -->
+  <div class="story" id="story">
+    <div class="stage" id="stage" role="img" aria-label="Model 3D headphone Sonara One yang berputar dan berganti sudut kamera mengikuti posisi gulir">
+      <div class="stage-glow" aria-hidden="true"></div>
+      <div class="fallback" aria-hidden="true">
+        <svg viewBox="0 0 400 400">
+          <defs><linearGradient id="fbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3d47"/><stop offset="1" stop-color="#16171b"/></linearGradient></defs>
+          <path d="M92 230 V170 a108 108 0 0 1 216 0 V230" fill="none" stroke="#2a2c33" stroke-width="22" stroke-linecap="round"/>
+          <path d="M92 228 V172 a108 108 0 0 1 216 0 V228" fill="none" stroke="#c9ccd2" stroke-width="4" opacity=".5"/>
+          <rect class="fb-cup" x="50" y="200" width="88" height="130" rx="44" fill="url(#fbg)"/>
+          <rect class="fb-cup" x="262" y="200" width="88" height="130" rx="44" fill="url(#fbg)"/>
+          <circle cx="94" cy="265" r="22" fill="none" stroke="#c9ccd2" stroke-width="3" opacity=".6"/>
+          <circle cx="306" cy="265" r="22" fill="none" stroke="#c9ccd2" stroke-width="3" opacity=".6"/>
+        </svg>
+      </div>
+      <div class="stage-label" aria-hidden="true"><b id="stageNo">01</b> / 06 · <span id="stageName">Sonara One</span></div>
+      <div class="stage-hud" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+
+    <div class="steps container">
+      <!-- 0 hero -->
+      <section class="step hero-step on" data-step="0" aria-labelledby="heroTitle">
+        <div class="panel p-0 hero-panel">
+          <span class="badge rounded-pill badge-accent px-3 py-2 mb-3">Pre-order dibuka · kirim mulai 12 Des</span>
+          <h1 class="display-hero" id="heroTitle">Dunia ramai.<br><span class="grad-text">Kamu tenang.</span></h1>
+          <p class="lead mt-3 mb-4 text-muted-2" style="max-width:470px">Sonara One adalah headphone over-ear dengan peredam bising adaptif, baterai 60 jam, dan suara yang terasa seperti duduk di studio.</p>
+          <div class="d-flex flex-wrap gap-2 align-items-center">
+            <button class="btn btn-sonara" data-bs-toggle="modal" data-bs-target="#preorderModal">Pre-order Rp2.499.000</button>
+            <a class="btn btn-ghost" href="#fitur">Jelajahi fitur</a>
+          </div>
+          <div class="d-flex align-items-center gap-3 mt-4">
+            <div class="swatches" role="group" aria-label="Pilih warna (cepat)" id="heroSwatches"></div>
+          </div>
+          <div class="hero-meta">
+            <div><strong>60 jam</strong><span>baterai, ANC aktif</span></div>
+            <div><strong>−42 dB</strong><span>peredam bising</span></div>
+            <div><strong>248 g</strong><span>ringan seharian</span></div>
+          </div>
+        </div>
+      </section>
+      <!-- 1 ANC -->
+      <section class="step" data-step="1" id="fitur" aria-labelledby="s1">
+        <div class="panel glass-m p-0">
+          <div class="no">02 · PEREDAM BISING ADAPTIF</div>
+          <h2 id="s1">Bising KRL, hilang dalam 0,2 detik.</h2>
+          <p>Delapan mikrofon membaca suara sekitar 48.000 kali per detik dan membatalkannya sebelum sampai ke telingamu. Coba nyalakan dan matikan.</p>
+          <div class="form-check form-switch mt-3 fs-5">
+            <input class="form-check-input" type="checkbox" role="switch" id="ancSwitch" checked>
+            <label class="form-check-label fs-6 fw-semibold" for="ancSwitch">ANC <span id="ancTxt">aktif</span></label>
+          </div>
+        </div>
+      </section>
+      <!-- 2 cushion -->
+      <section class="step" data-step="2" aria-labelledby="s2">
+        <div class="panel glass-m p-0">
+          <div class="no">03 · BANTALAN MEMORY FOAM</div>
+          <h2 id="s2">Empuk 8 jam, tidak panas.</h2>
+          <p>Busa memori berlapis kain rajut bernapas. Lepas-pasang magnetik, jadi gampang dicuci atau diganti.</p>
+          <div class="d-flex gap-2 flex-wrap mt-3"><span class="badge rounded-pill text-bg-secondary px-3 py-2">Magnetik</span><span class="badge rounded-pill text-bg-secondary px-3 py-2">Kain rajut</span><span class="badge rounded-pill text-bg-secondary px-3 py-2">Bebas BPA</span></div>
+        </div>
+      </section>
+      <!-- 3 battery -->
+      <section class="step" data-step="3" aria-labelledby="s3">
+        <div class="panel glass-m p-0">
+          <div class="no">04 · BATERAI 60 JAM</div>
+          <h2 id="s3">Isi 10 menit, dengar 5 jam.</h2>
+          <p>Satu kali isi cukup untuk perjalanan Jakarta–Surabaya pulang-pergi, dua kali. Port USB-C dengan pengisian cepat.</p>
+          <div class="d-flex justify-content-between small fw-semibold mt-3"><span>Daya tersisa</span><span class="num" id="battTxt">0%</span></div>
+          <div class="progress mt-1" role="progressbar" aria-label="Simulasi baterai" aria-valuemin="0" aria-valuemax="100" id="battBar"><div class="progress-bar" style="width:0%"></div></div>
+        </div>
+      </section>
+      <!-- 4 multipoint -->
+      <section class="step" data-step="4" aria-labelledby="s4">
+        <div class="panel glass-m p-0">
+          <div class="no">05 · MULTIPOINT</div>
+          <h2 id="s4">Laptop ke ponsel, tanpa putus.</h2>
+          <p>Terhubung ke dua perangkat sekaligus. Rapat di laptop selesai, telepon masuk di ponsel langsung tersambung. Bluetooth 5.4 dengan latensi 40 ms.</p>
+        </div>
+      </section>
+      <!-- 5 configurator -->
+      <section class="step" data-step="5" id="warna" aria-labelledby="s5">
+        <div class="panel w-100">
+          <div class="card config glass shadow-lg">
+            <div class="card-body p-4">
+              <div class="no">06 · KONFIGURASI</div>
+              <h2 id="s5" class="mb-1" style="font-size:clamp(1.7rem,2.6vw,2.3rem)">Buat versi milikmu.</h2>
+              <p class="mb-3 d-none d-lg-block" style="font-size:.95rem">Setiap kontrol Bootstrap di bawah ini mengubah model 3D secara langsung. Geser ke samping di atas model untuk memutarnya.</p>
+              <div class="row-ctl">
+                <div><div class="lbl">Warna</div><small id="colorName">Obsidian</small></div>
+                <div class="swatches" role="group" aria-label="Pilih warna" id="mainSwatches"></div>
+              </div>
+              <div class="row-ctl">
+                <div class="lbl">Finishing</div>
+                <div class="btn-group seg" role="group" aria-label="Pilih finishing">
+                  <input type="radio" class="btn-check" name="finish" id="finMatte" value="matte" checked autocomplete="off"><label class="btn btn-outline-secondary" for="finMatte">Matte</label>
+                  <input type="radio" class="btn-check" name="finish" id="finGloss" value="gloss" autocomplete="off"><label class="btn btn-outline-secondary" for="finGloss">Glossy</label>
+                </div>
+              </div>
+              <div class="row-ctl d-block">
+                <div class="d-flex justify-content-between"><label class="lbl" for="explode">Lihat bagian dalam</label><small class="num" id="explodeTxt">0%</small></div>
+                <input type="range" class="form-range mt-2" min="0" max="100" value="0" id="explode">
+              </div>
+              <div class="row-ctl">
+                <div class="d-flex flex-column"><div class="price-tag">Rp2.499.000<s>Rp2.999.000</s></div><small>Harga pre-order, termasuk case</small></div>
+                <button class="btn btn-sonara" data-bs-toggle="modal" data-bs-target="#preorderModal">Pesan</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ===== STATS ===== -->
+  <section class="band py-5">
+    <div class="container py-lg-4">
+      <div class="row g-3">
+        <div class="col-6 col-lg-3 reveal"><div class="stat"><strong data-count="60">0</strong><span>jam baterai dengan ANC</span></div></div>
+        <div class="col-6 col-lg-3 reveal"><div class="stat"><strong data-count="42" data-prefix="−" data-suffix=" dB">0</strong><span>redaman bising maksimum</span></div></div>
+        <div class="col-6 col-lg-3 reveal"><div class="stat"><strong data-count="40" data-suffix=" mm">0</strong><span>driver berlapis karbon</span></div></div>
+        <div class="col-6 col-lg-3 reveal"><div class="stat"><strong data-count="12" data-suffix=" rb+">0</strong><span>pemesan dalam 7 hari pertama</span></div></div>
+      </div>
+
+      <div class="row g-4 mt-5 align-items-stretch">
+        <div class="col-lg-4 reveal">
+          <div class="card h-100 p-2"><div class="card-body">
+            <div class="feat-ico mb-3"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 12h2M7 8v8M11 5v14M15 8v8M19 11v2"/></svg></div>
+            <h3 class="h5 fw-bold">Suara spasial</h3><p class="text-muted-2 mb-0">Pelacakan kepala membuat film dan konser terasa mengelilingimu, bukan hanya di dalam kepala.</p>
+          </div></div>
+        </div>
+        <div class="col-lg-4 reveal">
+          <div class="card h-100 p-2"><div class="card-body">
+            <div class="feat-ico mb-3"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 3a4 4 0 0 0-4 4v4a4 4 0 0 0 8 0V7a4 4 0 0 0-4-4zM5 11a7 7 0 0 0 14 0M12 18v3"/></svg></div>
+            <h3 class="h5 fw-bold">Telepon jernih</h3><p class="text-muted-2 mb-0">Mikrofon beamforming memisahkan suaramu dari klakson dan angin. Lawan bicara cuma mendengar kamu.</p>
+          </div></div>
+        </div>
+        <div class="col-lg-4 reveal">
+          <div class="card h-100 p-2"><div class="card-body">
+            <div class="feat-ico mb-3"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16v10H4zM8 7V5h8v2"/></svg></div>
+            <h3 class="h5 fw-bold">Lipat ke saku tas</h3><p class="text-muted-2 mb-0">Engsel baja tahan karat melipat Sonara One ke dalam case setebal 4 cm. Siap masuk kabin.</p>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIALS (carousel) ===== -->
+  <section class="band pb-5">
+    <div class="container">
+      <div class="testi-wrap reveal">
+        <div class="kicker mb-3">Kata mereka yang sudah mencoba</div>
+        <div id="testiCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6500" aria-label="Testimoni">
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <p class="quote mb-4">“Saya pakai di commuter line tiap pagi. Pertama kali nyalakan ANC, rasanya seperti seseorang menekan tombol mute pada kota.”</p>
+              <div class="d-flex align-items-center gap-3"><span class="ava" aria-hidden="true">AP</span><div><div class="fw-bold">Anindya Putri</div><div class="small text-muted-2">Desainer produk, Jakarta</div></div></div>
+            </div>
+            <div class="carousel-item">
+              <p class="quote mb-4">“Bass-nya padat tapi tidak menutupi vokal. Untuk mixing kasar di perjalanan, ini headphone nirkabel pertama yang saya percaya.”</p>
+              <div class="d-flex align-items-center gap-3"><span class="ava" aria-hidden="true" style="background:#3c7a64">RW</span><div><div class="fw-bold">Raka Wiratama</div><div class="small text-muted-2">Produser musik, Yogyakarta</div></div></div>
+            </div>
+            <div class="carousel-item">
+              <p class="quote mb-4">“Penerbangan 14 jam ke Amsterdam, baterai masih 70% saat mendarat. Bantalannya juga tidak bikin telinga pegal.”</p>
+              <div class="d-flex align-items-center gap-3"><span class="ava" aria-hidden="true" style="background:#5a5f8f">ML</span><div><div class="fw-bold">Maya Lestari</div><div class="small text-muted-2">Peneliti, Bandung</div></div></div>
+            </div>
+          </div>
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div class="carousel-indicators justify-content-start">
+              <button type="button" data-bs-target="#testiCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Testimoni 1"></button>
+              <button type="button" data-bs-target="#testiCarousel" data-bs-slide-to="1" aria-label="Testimoni 2"></button>
+              <button type="button" data-bs-target="#testiCarousel" data-bs-slide-to="2" aria-label="Testimoni 3"></button>
+            </div>
+            <div class="d-flex gap-2 mt-4">
+              <button class="btn btn-ghost theme-btn" type="button" data-bs-target="#testiCarousel" data-bs-slide="prev" aria-label="Sebelumnya">‹</button>
+              <button class="btn btn-ghost theme-btn" type="button" data-bs-target="#testiCarousel" data-bs-slide="next" aria-label="Berikutnya">›</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SPECS (tabs) ===== -->
+  <section class="band py-5" id="spesifikasi">
+    <div class="container py-lg-4">
+      <div class="row g-4 g-lg-5">
+        <div class="col-lg-4 reveal">
+          <div class="kicker">Spesifikasi</div>
+          <h2 class="h-sec mt-2">Detail yang kami pikirkan berulang kali.</h2>
+          <p class="text-muted-2 mt-3">Diuji 200 jam di lab akustik kami di Bandung dan di jalanan paling bising di Jakarta.</p>
+          <div class="d-flex gap-2 flex-wrap mt-3">
+            <button class="btn btn-ghost btn-sm" type="button" data-bs-toggle="tooltip" data-bs-title="Bluetooth 5.4, AAC, SBC dan LC3">Codec</button>
+            <button class="btn btn-ghost btn-sm" type="button" data-bs-toggle="tooltip" data-bs-title="Tahan cipratan air dan keringat">IPX4</button>
+          </div>
+        </div>
+        <div class="col-lg-8 reveal">
+          <ul class="nav nav-underline mb-3 flex-nowrap overflow-auto" id="specTabs" role="tablist" style="scrollbar-width:none">
+            <li class="nav-item" role="presentation"><button class="nav-link active text-nowrap" data-bs-toggle="tab" data-bs-target="#sp-audio" type="button" role="tab" aria-controls="sp-audio" aria-selected="true">Audio</button></li>
+            <li class="nav-item" role="presentation"><button class="nav-link text-nowrap" data-bs-toggle="tab" data-bs-target="#sp-batt" type="button" role="tab" aria-controls="sp-batt" aria-selected="false">Baterai</button></li>
+            <li class="nav-item" role="presentation"><button class="nav-link text-nowrap" data-bs-toggle="tab" data-bs-target="#sp-conn" type="button" role="tab" aria-controls="sp-conn" aria-selected="false">Konektivitas</button></li>
+            <li class="nav-item" role="presentation"><button class="nav-link text-nowrap" data-bs-toggle="tab" data-bs-target="#sp-box" type="button" role="tab" aria-controls="sp-box" aria-selected="false">Isi kotak</button></li>
+          </ul>
+          <div class="tab-content card p-2 p-md-3">
+            <div class="tab-pane fade show active" id="sp-audio" role="tabpanel" tabindex="0">
+              <table class="table spec-table"><tbody>
+                <tr><th scope="row">Driver</th><td>40 mm, diafragma berlapis karbon</td></tr>
+                <tr><th scope="row">Respons frekuensi</th><td>4 Hz – 40.000 Hz</td></tr>
+                <tr><th scope="row">Peredam bising</th><td>Hybrid adaptif, hingga −42 dB</td></tr>
+                <tr><th scope="row">Mikrofon</th><td>8 mikrofon, 4 untuk panggilan</td></tr>
+                <tr><th scope="row">Mode</th><td>ANC, Transparansi, Percakapan</td></tr>
+              </tbody></table>
+            </div>
+            <div class="tab-pane fade" id="sp-batt" role="tabpanel" tabindex="0">
+              <table class="table spec-table"><tbody>
+                <tr><th scope="row">Daya tahan (ANC aktif)</th><td>60 jam</td></tr>
+                <tr><th scope="row">Daya tahan (ANC mati)</th><td>80 jam</td></tr>
+                <tr><th scope="row">Pengisian cepat</th><td>10 menit = 5 jam</td></tr>
+                <tr><th scope="row">Pengisian penuh</th><td>95 menit via USB-C</td></tr>
+              </tbody></table>
+            </div>
+            <div class="tab-pane fade" id="sp-conn" role="tabpanel" tabindex="0">
+              <table class="table spec-table"><tbody>
+                <tr><th scope="row">Bluetooth</th><td>5.4, multipoint 2 perangkat</td></tr>
+                <tr><th scope="row">Codec</th><td>LC3, AAC, SBC</td></tr>
+                <tr><th scope="row">Latensi mode game</th><td>40 ms</td></tr>
+                <tr><th scope="row">Kabel</th><td>Audio USB-C lossless 24-bit/96 kHz</td></tr>
+              </tbody></table>
+            </div>
+            <div class="tab-pane fade" id="sp-box" role="tabpanel" tabindex="0">
+              <table class="table spec-table"><tbody>
+                <tr><th scope="row">Headphone</th><td>Sonara One</td></tr>
+                <tr><th scope="row">Case</th><td>Case keras lipat, kain daur ulang</td></tr>
+                <tr><th scope="row">Kabel</th><td>USB-C ke USB-C, 1,2 m</td></tr>
+                <tr><th scope="row">Garansi</th><td>2 tahun resmi</td></tr>
+              </tbody></table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRICING ===== -->
+  <section class="band py-5" id="harga">
+    <div class="container py-lg-4">
+      <div class="text-center mx-auto mb-5 reveal" style="max-width:640px">
+        <div class="kicker">Harga pre-order</div>
+        <h2 class="h-sec mt-2">Pilih paket yang pas.</h2>
+        <p class="text-muted-2 mt-3">Cicilan 0% hingga 12 bulan. Pembatalan gratis sebelum barang dikirim.</p>
+      </div>
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-6 col-lg-4 reveal">
+          <div class="card plan"><div class="card-body p-4 d-flex flex-column">
+            <h3 class="h5 fw-bold">Sonara One</h3><p class="text-muted-2 small">Headphone + case + kabel.</p>
+            <div class="price">Rp2.499.000</div><div class="small text-muted-2 mb-3"><s>Rp2.999.000</s> · hemat Rp500.000</div>
+            <ul class="list-unstyled small mb-4">
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Garansi 2 tahun</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Gratis ongkir seluruh Indonesia</li>
+            </ul>
+            <button class="btn btn-ghost mt-auto" data-bs-toggle="modal" data-bs-target="#preorderModal" data-plan="One">Pilih paket</button>
+          </div></div>
+        </div>
+        <div class="col-md-6 col-lg-4 reveal">
+          <div class="card plan best"><div class="card-body p-4 d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-center"><h3 class="h5 fw-bold mb-0">One + Bantalan Ekstra</h3><span class="badge rounded-pill badge-accent">Terlaris</span></div>
+            <p class="text-muted-2 small mt-2">Tambahan bantalan kulit vegan & stand meja.</p>
+            <div class="price">Rp2.749.000</div><div class="small text-muted-2 mb-3"><s>Rp3.399.000</s> · hemat Rp650.000</div>
+            <ul class="list-unstyled small mb-4">
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Semua isi paket One</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Bantalan kulit vegan</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Stand aluminium</li>
+            </ul>
+            <button class="btn btn-sonara mt-auto" data-bs-toggle="modal" data-bs-target="#preorderModal" data-plan="Bundle">Pilih paket</button>
+          </div></div>
+        </div>
+        <div class="col-md-6 col-lg-4 reveal">
+          <div class="card plan"><div class="card-body p-4 d-flex flex-column">
+            <h3 class="h5 fw-bold">Paket Berdua</h3><p class="text-muted-2 small">Dua Sonara One, warna bebas.</p>
+            <div class="price">Rp4.699.000</div><div class="small text-muted-2 mb-3"><s>Rp5.998.000</s> · hemat Rp1.299.000</div>
+            <ul class="list-unstyled small mb-4">
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>2 unit + 2 case</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Bungkus kado gratis</li>
+            </ul>
+            <button class="btn btn-ghost mt-auto" data-bs-toggle="modal" data-bs-target="#preorderModal" data-plan="Duo">Pilih paket</button>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="band py-5" id="faq">
+    <div class="container py-lg-4" style="max-width:860px">
+      <div class="text-center mb-4 reveal"><div class="kicker">FAQ</div><h2 class="h-sec mt-2">Masih ragu?</h2></div>
+      <div class="accordion reveal" id="faqAcc">
+        <div class="accordion-item">
+          <h3 class="accordion-header"><button class="accordion-button fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#q1" aria-expanded="true" aria-controls="q1">Kapan pre-order dikirim?</button></h3>
+          <div id="q1" class="accordion-collapse collapse show" data-bs-parent="#faqAcc"><div class="accordion-body text-muted-2">Gelombang pertama dikirim mulai 12 Desember 2026 sesuai urutan pemesanan. Kamu akan menerima nomor resi lewat email dan WhatsApp.</div></div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header"><button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#q2" aria-expanded="false" aria-controls="q2">Bisa dibatalkan dan uang kembali?</button></h3>
+          <div id="q2" class="accordion-collapse collapse" data-bs-parent="#faqAcc"><div class="accordion-body text-muted-2">Bisa, gratis, kapan saja sebelum barang dikirim. Dana kembali ke metode pembayaran awal dalam 3 hari kerja.</div></div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header"><button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#q3" aria-expanded="false" aria-controls="q3">Apakah cocok untuk pemakai kacamata?</button></h3>
+          <div id="q3" class="accordion-collapse collapse" data-bs-parent="#faqAcc"><div class="accordion-body text-muted-2">Ya. Bantalan memory foam menyesuaikan dengan gagang kacamata sehingga segel akustik tetap rapat tanpa menekan.</div></div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header"><button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#q4" aria-expanded="false" aria-controls="q4">Di mana servis resminya?</button></h3>
+          <div id="q4" class="accordion-collapse collapse" data-bs-parent="#faqAcc"><div class="accordion-body text-muted-2">Ada 18 pusat servis di 12 kota, plus layanan jemput-antar gratis selama masa garansi 2 tahun.</div></div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header"><button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#q5" aria-expanded="false" aria-controls="q5">Apakah ada aplikasi pendamping?</button></h3>
+          <div id="q5" class="accordion-collapse collapse" data-bs-parent="#faqAcc"><div class="accordion-body text-muted-2">Aplikasi Sonara (Android & iOS) untuk equalizer 10 band, mode ANC, pembaruan firmware, dan fitur cari headphone.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section class="band pb-5">
+    <div class="container">
+      <div class="cta-box reveal">
+        <svg class="waves" viewBox="0 0 200 200" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="1.5"><circle cx="100" cy="100" r="30"/><circle cx="100" cy="100" r="55"/><circle cx="100" cy="100" r="80"/><circle cx="100" cy="100" r="99"/></g></svg>
+        <div class="row align-items-center g-4 position-relative">
+          <div class="col-lg-7">
+            <h2 class="h-sec">Stok gelombang pertama tinggal <span class="num" id="stockLeft">1.240</span> unit.</h2>
+            <p class="mt-3 mb-0 opacity-75 fs-5">Pesan sekarang, bayar penuh atau DP Rp250.000. Batal gratis kapan saja.</p>
+          </div>
+          <div class="col-lg-5 text-lg-end d-flex flex-wrap gap-2 justify-content-lg-end">
+            <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#preorderModal">Pre-order sekarang</button>
+            <button class="btn btn-outline-light rounded-pill px-4 fw-semibold" id="notifyBtn" type="button">Ingatkan saya</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="band py-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <a class="navbar-brand fs-5 text-body" href="#" aria-label="Sonara, beranda"><svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#E5532A"/><path d="M9 19v-3a7 7 0 0 1 14 0v3" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><rect x="7" y="17" width="4.4" height="7" rx="2" fill="#fff"/><rect x="20.6" y="17" width="4.4" height="7" rx="2" fill="#fff"/></svg>Sonara</a>
+        <p class="text-muted-2 small mt-3" style="max-width:320px">Audio yang dirancang di Bandung untuk telinga yang sibuk. Merek fiktif untuk keperluan template.</p>
+      </div>
+      <div class="col-6 col-lg-2"><h4 class="h6 fw-bold">Produk</h4><ul class="list-unstyled small d-grid gap-2"><li><a href="#fitur">Fitur</a></li><li><a href="#spesifikasi">Spesifikasi</a></li><li><a href="#harga">Harga</a></li></ul></div>
+      <div class="col-6 col-lg-2"><h4 class="h6 fw-bold">Bantuan</h4><ul class="list-unstyled small d-grid gap-2"><li><a href="#faq">FAQ</a></li><li><a href="#">Garansi</a></li><li><a href="#">Pusat servis</a></li></ul></div>
+      <div class="col-lg-4">
+        <h4 class="h6 fw-bold">Kabar rilis</h4>
+        <form class="needs-validation" id="newsForm" novalidate>
+          <div class="input-group">
+            <label class="visually-hidden" for="newsEmail">Email</label>
+            <input type="email" class="form-control" id="newsEmail" placeholder="email@kamu.id" required>
+            <button class="btn btn-sonara" style="--bs-btn-padding-y:.375rem;--bs-btn-border-radius:0 .375rem .375rem 0" type="submit">Daftar</button>
+            <div class="invalid-feedback">Masukkan email yang valid.</div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="d-flex flex-wrap justify-content-between gap-2 mt-5 pt-4 border-top small text-muted-2">
+      <span>© 2026 Sonara Audio. Semua hak dilindungi.</span>
+      <span><span class="built-dot"></span>Dibangun dengan Bootstrap 5.3 + three.js</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== Pre-order modal ===== -->
+<div class="modal fade" id="preorderModal" tabindex="-1" aria-labelledby="preorderTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content" style="border-radius:1.25rem">
+      <div class="modal-header border-0 pb-0">
+        <h2 class="modal-title fs-4 fw-bold" id="preorderTitle">Pre-order Sonara One</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+      </div>
+      <form class="needs-validation" id="preForm" novalidate>
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-12"><label class="form-label fw-semibold" for="pName">Nama lengkap</label><input class="form-control" id="pName" required autocomplete="name"><div class="invalid-feedback">Nama wajib diisi.</div></div>
+            <div class="col-sm-6"><label class="form-label fw-semibold" for="pEmail">Email</label><input type="email" class="form-control" id="pEmail" required autocomplete="email"><div class="invalid-feedback">Email belum valid.</div></div>
+            <div class="col-sm-6"><label class="form-label fw-semibold" for="pPhone">No. WhatsApp</label><input type="tel" class="form-control" id="pPhone" required pattern="[0-9+ ]{9,16}" placeholder="0812 3456 7890" autocomplete="tel"><div class="invalid-feedback">Nomor 9–16 digit.</div></div>
+            <div class="col-sm-7"><label class="form-label fw-semibold" for="pColor">Warna</label><select class="form-select" id="pColor"></select></div>
+            <div class="col-sm-5"><label class="form-label fw-semibold" for="pQty">Jumlah</label>
+              <div class="input-group"><button class="btn btn-outline-secondary" type="button" id="qMinus" aria-label="Kurangi">−</button><input class="form-control text-center num" id="pQty" value="1" inputmode="numeric" aria-label="Jumlah unit" readonly><button class="btn btn-outline-secondary" type="button" id="qPlus" aria-label="Tambah">+</button></div>
+            </div>
+            <div class="col-12"><span class="form-label fw-semibold d-block">Pembayaran</span>
+              <div class="form-check"><input class="form-check-input" type="radio" name="pay" id="payFull" checked><label class="form-check-label" for="payFull">Bayar penuh (bonus bantalan ekstra)</label></div>
+              <div class="form-check"><input class="form-check-input" type="radio" name="pay" id="payDp"><label class="form-check-label" for="payDp">DP Rp250.000, lunasi saat dikirim</label></div>
+            </div>
+            <div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox" id="pAgree" required><label class="form-check-label small" for="pAgree">Saya setuju dengan syarat pre-order</label><div class="invalid-feedback">Centang untuk melanjutkan.</div></div></div>
+          </div>
+          <div class="alert alert-secondary d-flex justify-content-between align-items-center mt-3 mb-0 py-2"><span class="small">Total</span><strong class="num" id="pTotal">Rp2.499.000</strong></div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-ghost" data-bs-dismiss="modal">Nanti dulu</button>
+          <button type="submit" class="btn btn-sonara" id="pSubmit"><span class="spinner-border spinner-border-sm me-2 d-none" aria-hidden="true"></span><span>Konfirmasi pesanan</span></button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="liveToast" class="toast align-items-center border-0" role="status" aria-live="polite" aria-atomic="true">
+    <div class="d-flex"><div class="toast-body fw-semibold" id="toastBody">Tersimpan</div><button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Tutup"></button></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script type="module">
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const reduceMQ = matchMedia('(prefers-reduced-motion: reduce)');
+let reduced = reduceMQ.matches;
+const rupiah = n => 'Rp' + Math.round(n).toLocaleString('id-ID');
+
+/* ---------- product state ---------- */
+const COLORS = [
+  { id: 'obsidian', name: 'Obsidian', shell: '#1d1f25', cushion: '#2b2c31', band: '#24262c', ui: '#24262c' },
+  { id: 'pasir',    name: 'Pasir',    shell: '#d8c6a7', cushion: '#bba98d', band: '#cdb996', ui: '#d8c6a7' },
+  { id: 'sage',     name: 'Sage',     shell: '#8da591', cushion: '#6f8573', band: '#7f9884', ui: '#8da591' },
+  { id: 'koral',    name: 'Koral',    shell: '#e0654a', cushion: '#b5513d', band: '#cf5c43', ui: '#e0654a' }
+];
+const state = { color: 0, gloss: false, explode: 0, anc: true };
+const listeners = [];
+const changed = () => listeners.forEach(f => f());
+
+/* ---------- swatches (Bootstrap btn-check radio groups, two synced groups) ---------- */
+function buildSwatches(el, name) {
+  el.innerHTML = COLORS.map((c, i) => `
+    <input type="radio" class="btn-check" name="${name}" id="${name}-${c.id}" value="${i}" autocomplete="off" ${i === state.color ? 'checked' : ''}>
+    <label class="btn" for="${name}-${c.id}" data-bs-toggle="tooltip" data-bs-title="${c.name}"><span style="background:${c.ui}"></span><span class="visually-hidden">${c.name}</span></label>`).join('');
+  el.addEventListener('change', e => { state.color = +e.target.value; changed(); });
+}
+buildSwatches($('#heroSwatches'), 'colorHero');
+buildSwatches($('#mainSwatches'), 'colorMain');
+$('#pColor').innerHTML = COLORS.map((c, i) => `<option value="${i}">${c.name}</option>`).join('');
+$('#pColor').addEventListener('change', e => { state.color = +e.target.value; changed(); });
+listeners.push(() => {
+  $$(`input[name=colorHero], input[name=colorMain]`).forEach(r => r.checked = +r.value === state.color);
+  $('#colorName').textContent = COLORS[state.color].name;
+  $('#pColor').value = state.color;
+});
+$$('input[name=finish]').forEach(r => r.addEventListener('change', () => { state.gloss = $('#finGloss').checked; changed(); }));
+$('#explode').addEventListener('input', e => { state.explode = e.target.value / 100; $('#explodeTxt').textContent = e.target.value + '%'; changed(); });
+$('#ancSwitch').addEventListener('change', e => {
+  state.anc = e.target.checked; $('#ancTxt').textContent = state.anc ? 'aktif' : 'mati'; changed();
+  toast(state.anc ? 'Peredam bising aktif. Sunyi.' : 'ANC mati. Bising kota kembali terdengar.');
+});
+
+/* ---------- Bootstrap JS components ---------- */
+const bs = window.bootstrap;
+$$('[data-bs-toggle="tooltip"]').forEach(el => new bs.Tooltip(el, { trigger: 'hover focus' }));
+const toastEl = $('#liveToast'), toastInst = bs.Toast.getOrCreateInstance(toastEl, { delay: 3200 });
+function toast(msg) {
+  $('#toastBody').textContent = msg;
+  toastEl.classList.toggle('text-bg-dark', document.documentElement.dataset.bsTheme === 'light');
+  toastEl.classList.toggle('text-bg-light', document.documentElement.dataset.bsTheme !== 'light');
+  toastInst.show();
+}
+$('#notifyBtn').addEventListener('click', () => toast('Siap! Kami kabari 24 jam sebelum stok habis.'));
+
+// navbar: solid on scroll, close mobile menu after tapping a link
+const nav = $('.sn-nav');
+addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 10), { passive: true });
+$$('#navMenu .nav-link').forEach(a => a.addEventListener('click', () => bs.Collapse.getInstance($('#navMenu'))?.hide()));
+
+// theme (data-bs-theme)
+const root = document.documentElement;
+function paintThemeIcon() { const d = root.dataset.bsTheme === 'dark'; $('#icoSun').style.display = d ? '' : 'none'; $('#icoMoon').style.display = d ? 'none' : ''; }
+paintThemeIcon();
+$('#themeBtn').addEventListener('click', () => {
+  const t = root.dataset.bsTheme === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-bs-theme', t); paintThemeIcon();
+  try { localStorage.setItem('sonara-theme', t); } catch (e) {}
+  changed();
+});
+
+// pre-order form
+const PLAN_PRICE = { One: 2499000, Bundle: 2749000, Duo: 4699000 };
+let plan = 'One';
+const qty = $('#pQty');
+const updTotal = () => { $('#pTotal').textContent = rupiah(PLAN_PRICE[plan] * +qty.value); };
+$('#preorderModal').addEventListener('show.bs.modal', e => { plan = e.relatedTarget?.dataset.plan || 'One'; $('#preorderTitle').textContent = 'Pre-order ' + (plan === 'One' ? 'Sonara One' : plan === 'Bundle' ? 'One + Bantalan Ekstra' : 'Paket Berdua'); updTotal(); });
+$('#qMinus').addEventListener('click', () => { qty.value = Math.max(1, +qty.value - 1); updTotal(); });
+$('#qPlus').addEventListener('click', () => { qty.value = Math.min(5, +qty.value + 1); updTotal(); });
+$('#preForm').addEventListener('submit', e => {
+  e.preventDefault(); const f = e.target;
+  if (!f.checkValidity()) { f.classList.add('was-validated'); return; }
+  const btn = $('#pSubmit'); btn.disabled = true; btn.querySelector('.spinner-border').classList.remove('d-none');
+  setTimeout(() => {
+    btn.disabled = false; btn.querySelector('.spinner-border').classList.add('d-none');
+    bs.Modal.getInstance($('#preorderModal')).hide();
+    toast('Pre-order diterima! Konfirmasi dikirim ke ' + $('#pEmail').value + '.');
+    const s = $('#stockLeft'); s.textContent = Math.max(0, parseInt(s.textContent.replace(/\D/g, '')) - +qty.value).toLocaleString('id-ID');
+    f.reset(); f.classList.remove('was-validated'); qty.value = 1; $('#pColor').value = state.color;
+  }, 900);
+});
+$('#newsForm').addEventListener('submit', e => {
+  e.preventDefault(); const f = e.target;
+  if (!f.checkValidity()) { f.classList.add('was-validated'); return; }
+  toast('Terima kasih! Kabar rilis akan dikirim ke ' + $('#newsEmail').value); f.reset(); f.classList.remove('was-validated');
+});
+
+// reveal + counters
+const revIO = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return; e.target.classList.add('in'); revIO.unobserve(e.target);
+  $$('[data-count]', e.target).forEach(el => {
+    const end = +el.dataset.count, pre = el.dataset.prefix || '', suf = el.dataset.suffix || '';
+    const show = v => el.textContent = pre + Math.round(v).toLocaleString('id-ID') + suf;
+    if (reduced) return show(end);
+    const t0 = performance.now();
+    const st = t => { const p = Math.min(1, (t - t0) / 1300); show(end * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(st); };
+    requestAnimationFrame(st);
+  });
+}), { threshold: 0.15 });
+$$('.reveal').forEach(el => revIO.observe(el));
+
+/* ---------- scroll story progress ---------- */
+const steps = $$('.step');
+const STEP_NAME = ['Sonara One', 'Peredam bising', 'Bantalan', 'Baterai', 'Multipoint', 'Konfigurasi'];
+const N = steps.length;
+let storyP = 0, storyStep = 0;
+function updateStory() {
+  const mob = innerWidth < 992;
+  const vc = innerHeight * (mob ? 0.72 : 0.5);
+  const cs = steps.map(s => { const r = (s.querySelector('.panel') || s).getBoundingClientRect(); return r.top + r.height / 2; });
+  let p;
+  if (vc <= cs[0]) p = 0; else if (vc >= cs[N - 1]) p = N - 1;
+  else { let i = 0; while (vc > cs[i + 1]) i++; p = i + (vc - cs[i]) / (cs[i + 1] - cs[i]); }
+  storyP = p;
+  const s = Math.round(p);
+  if (s !== storyStep) {
+    storyStep = s;
+    steps.forEach((el, i) => el.classList.toggle('on', i === s));
+    $('#stageNo').textContent = '0' + (s + 1); $('#stageName').textContent = STEP_NAME[s];
+    $$('.stage-hud i').forEach((d, i) => d.classList.toggle('on', i === s));
+  }
+}
+addEventListener('scroll', updateStory, { passive: true });
+addEventListener('resize', updateStory);
+updateStory(); changed();
+
+/* ================= THREE.JS ================= */
+const stage = $('#stage');
+function webglOK() { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; } }
+function useFallback() {
+  document.body.classList.add('no-webgl');
+  const upd = () => $$('.fb-cup').forEach(c => c.setAttribute('fill', COLORS[state.color].shell));
+  listeners.push(upd); upd();
+}
+if (!webglOK()) useFallback();
+else Promise.all([import('three'), import('three/addons/environments/RoomEnvironment.js'), import('three/addons/geometries/RoundedBoxGeometry.js')])
+  .then(([THREE, env, rb]) => init(THREE, env.RoomEnvironment, rb.RoundedBoxGeometry))
+  .catch(err => { console.warn('3D tidak tersedia:', err); useFallback(); });
+
+function init(THREE, RoomEnvironment, RoundedBoxGeometry) {
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' }); }
+  catch (e) { useFallback(); return; }
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.0;
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  const canvas = renderer.domElement; canvas.setAttribute('aria-hidden', 'true');
+  stage.prepend(canvas);
+
+  const scene = new THREE.Scene();
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const envRT = pmrem.fromScene(new RoomEnvironment(), 0.04);
+  scene.environment = envRT.texture; pmrem.dispose();
+  const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
+
+  const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(3, 6, 4); key.castShadow = true;
+  key.shadow.mapSize.set(1024, 1024); key.shadow.radius = 6; key.shadow.bias = -0.0004;
+  Object.assign(key.shadow.camera, { left: -4, right: 4, top: 4, bottom: -4, near: 1, far: 20 });
+  scene.add(key);
+  const rim = new THREE.DirectionalLight(0xffb48a, 1.6); rim.position.set(-4, 2, -4); scene.add(rim);
+
+  const disposables = [];
+  const G = x => (disposables.push(x), x);
+
+  /* ---- materials ---- */
+  const shellM = G(new THREE.MeshPhysicalMaterial({ color: COLORS[0].shell, roughness: 0.48, metalness: 0.05, clearcoat: 0.2, clearcoatRoughness: 0.4 }));
+  const bandM = G(new THREE.MeshPhysicalMaterial({ color: COLORS[0].band, roughness: 0.55, metalness: 0.05, clearcoat: 0.15 }));
+  const cushionM = G(new THREE.MeshPhysicalMaterial({ color: COLORS[0].cushion, roughness: 0.92, sheen: 1, sheenRoughness: 0.6, sheenColor: new THREE.Color(0x777777) }));
+  const fabricM = G(new THREE.MeshStandardMaterial({ color: 0x15161a, roughness: 1 }));
+  const metalM = G(new THREE.MeshStandardMaterial({ color: 0xd4d7dd, metalness: 1, roughness: 0.22 }));
+  const darkM = G(new THREE.MeshStandardMaterial({ color: 0x0d0e11, roughness: 0.5, metalness: 0.2 }));
+  const ledM = G(new THREE.MeshBasicMaterial({ color: 0xff6a3d }));
+
+  /* ---- headphone model ---- */
+  const product = new THREE.Group(); scene.add(product);
+  const parts = { cups: [], cushions: [], plates: [], band: null };
+  // headband: tube along a squashed half ellipse
+  const arc = new THREE.Curve();
+  arc.getPoint = (t, out = new THREE.Vector3()) => { const a = Math.PI * (1 - t); return out.set(Math.cos(a) * 1.02, 0.9 + Math.sin(a) * 1.0, 0); };
+  const band = new THREE.Group(); product.add(band); parts.band = band;
+  const bandMesh = new THREE.Mesh(G(new THREE.TubeGeometry(arc, 80, 0.085, 20, false)), bandM); bandMesh.scale.z = 1.6; bandMesh.castShadow = true; band.add(bandMesh);
+  const padArc = new THREE.Curve();
+  padArc.getPoint = (t, out = new THREE.Vector3()) => { const a = Math.PI * (0.18 + 0.64 * (1 - t)); return out.set(Math.cos(a) * 0.93, 0.9 + Math.sin(a) * 0.9, 0); };
+  const pad = new THREE.Mesh(G(new THREE.TubeGeometry(padArc, 60, 0.07, 14, false)), cushionM); pad.scale.z = 1.9; band.add(pad);
+  // cups
+  const prof = [[0, -0.27], [0.36, -0.27], [0.47, -0.24], [0.53, -0.16], [0.55, -0.04], [0.55, 0.08], [0.52, 0.17], [0.44, 0.22], [0.3, 0.25], [0, 0.26]].map(([x, y]) => new THREE.Vector2(x, y));
+  const cupGeo = G(new THREE.LatheGeometry(prof, 56));
+  const cushGeo = G(new THREE.TorusGeometry(0.37, 0.13, 20, 56));
+  const meshGeo = G(new THREE.CircleGeometry(0.36, 40));
+  const ringGeo = G(new THREE.TorusGeometry(0.33, 0.014, 10, 64));
+  const plateGeo = G(new THREE.CylinderGeometry(0.31, 0.31, 0.02, 48));
+  const yokeGeo = G(new THREE.TorusGeometry(0.62, 0.032, 12, 48, Math.PI));
+  const rodGeo = G(new THREE.CylinderGeometry(0.03, 0.03, 0.42, 12));
+  [-1, 1].forEach(side => {
+    const cupG = new THREE.Group(); cupG.position.set(side * 1.0, -0.12, 0); product.add(cupG);
+    // yoke + slider (metal)
+    const yoke = new THREE.Mesh(yokeGeo, metalM); yoke.rotation.y = Math.PI / 2; yoke.position.y = 0; yoke.scale.set(1, 1.12, 1); cupG.add(yoke);
+    const rod = new THREE.Mesh(rodGeo, metalM); rod.position.set(0, 0.82, 0); cupG.add(rod);
+    const shellG = new THREE.Group(); cupG.add(shellG);
+    const cup = new THREE.Mesh(cupGeo, shellM); cup.rotation.z = -side * Math.PI / 2; cup.scale.set(1.18, 1, 1); cup.castShadow = true; shellG.add(cup);
+    // outer plate + ring + LED
+    const plate = new THREE.Group(); plate.position.x = side * 0.27; shellG.add(plate); parts.plates.push(plate);
+    const pl = new THREE.Mesh(plateGeo, shellM); pl.rotation.z = Math.PI / 2; pl.scale.set(1.18, 1, 1); plate.add(pl);
+    const rg = new THREE.Mesh(ringGeo, metalM); rg.rotation.y = Math.PI / 2; rg.scale.y = 1.18; rg.position.x = side * 0.012; plate.add(rg);
+    if (side > 0) { const led = new THREE.Mesh(G(new THREE.SphereGeometry(0.018, 10, 8)), ledM); led.position.set(0.015, -0.2, 0.32); plate.add(led); parts.led = led;
+      const port = new THREE.Mesh(G(new RoundedBoxGeometry(0.06, 0.035, 0.12, 2, 0.015)), darkM); port.position.set(0, -0.53, 0.12); shellG.add(port); parts.port = port;
+      [0.16, 0.26].forEach(z => { const b = new THREE.Mesh(G(new RoundedBoxGeometry(0.05, 0.03, 0.07, 2, 0.012)), darkM); b.position.set(0, -0.535, -z + 0.05); shellG.add(b); }); }
+    parts.cups.push(shellG);
+    // cushion (inner side)
+    const cg = new THREE.Group(); cg.position.x = -side * 0.33; cupG.add(cg); parts.cushions.push(cg);
+    const cu = new THREE.Mesh(cushGeo, cushionM); cu.rotation.y = Math.PI / 2; cu.scale.set(1, 1.18, 1.25); cu.castShadow = true; cg.add(cu);
+    const inner = new THREE.Mesh(meshGeo, fabricM); inner.rotation.y = side * Math.PI / 2 * -1; inner.position.x = side * 0.02; inner.scale.set(1, 1.18, 1); cg.add(inner);
+  });
+  product.position.y = 0.05;
+
+  // ground shadow catcher
+  const ground = new THREE.Mesh(G(new THREE.PlaneGeometry(12, 12)), G(new THREE.ShadowMaterial({ opacity: 0.22 })));
+  ground.rotation.x = -Math.PI / 2; ground.position.y = -0.85; ground.receiveShadow = true; scene.add(ground);
+
+  /* ---- ANC: incoming noise rings around left cup ---- */
+  const noiseRings = [];
+  const nrGeo = G(new THREE.TorusGeometry(1, 0.008, 6, 96));
+  for (let i = 0; i < 4; i++) {
+    const m = G(new THREE.MeshBasicMaterial({ color: 0xff6a3d, transparent: true, opacity: 0, depthWrite: false }));
+    const r = new THREE.Mesh(nrGeo, m); r.rotation.y = Math.PI / 2; r.position.set(-1.32, -0.12, 0); product.add(r); noiseRings.push(r);
+  }
+  /* ---- battery ring on right cup ---- */
+  const battCurve = new THREE.Curve();
+  battCurve.getPoint = (t, out = new THREE.Vector3()) => { const a = Math.PI / 2 - t * Math.PI * 2; return out.set(0, Math.sin(a) * 0.43 * 1.18, Math.cos(a) * 0.43); };
+  const battGeo = G(new THREE.TubeGeometry(battCurve, 120, 0.018, 8, false));
+  const battM = G(new THREE.MeshBasicMaterial({ color: 0x4ade80, transparent: true, opacity: 0 }));
+  const batt = new THREE.Mesh(battGeo, battM); batt.position.set(1.3, -0.12, 0); product.add(batt);
+  const battIdx = battGeo.index.count;
+  /* ---- multipoint: phone + laptop and orange signal paths ---- */
+  const devices = new THREE.Group(); scene.add(devices);
+  const scr = document.createElement('canvas'); scr.width = 256; scr.height = 512;
+  function drawScreen() {
+    const x = scr.getContext('2d'); const g = x.createLinearGradient(0, 0, 0, 512);
+    g.addColorStop(0, '#2b1a14'); g.addColorStop(1, '#0d0e12'); x.fillStyle = g; x.fillRect(0, 0, 256, 512);
+    x.fillStyle = '#ff6a3d'; x.beginPath(); x.arc(128, 190, 58, 0, Math.PI * 2); x.fill();
+    x.fillStyle = '#fff'; x.font = '700 26px Manrope, sans-serif'; x.textAlign = 'center'; x.fillText('Sonara One', 128, 300);
+    x.font = '500 18px Manrope, sans-serif'; x.fillStyle = '#c7c9cf'; x.fillText('Terhubung · 92%', 128, 332);
+    x.fillStyle = 'rgba(255,255,255,.15)'; for (let i = 0; i < 18; i++) { const h = 10 + Math.abs(Math.sin(i * 1.7)) * 46; x.fillRect(34 + i * 10.5, 420 - h / 2, 6, h); }
+    screenTex.needsUpdate = true;
+  }
+  const screenTex = G(new THREE.CanvasTexture(scr)); screenTex.colorSpace = THREE.SRGBColorSpace;
+  drawScreen(); document.fonts?.ready.then(drawScreen);
+  const phone = new THREE.Group(); phone.position.set(-2.0, -0.3, 1.4); phone.rotation.set(-0.12, 0.45, 0.05); devices.add(phone);
+  phone.add(new THREE.Mesh(G(new RoundedBoxGeometry(0.62, 1.26, 0.07, 4, 0.07)), darkM));
+  const scrMesh = new THREE.Mesh(G(new THREE.PlaneGeometry(0.56, 1.18)), G(new THREE.MeshBasicMaterial({ map: screenTex, toneMapped: false })));
+  scrMesh.position.z = 0.037; phone.add(scrMesh);
+  const laptop = new THREE.Group(); laptop.position.set(2.0, -0.82, -1.3); laptop.rotation.y = -0.5; devices.add(laptop);
+  laptop.add(Object.assign(new THREE.Mesh(G(new RoundedBoxGeometry(1.6, 0.05, 1.05, 2, 0.02)), metalM), {}));
+  const lid = new THREE.Group(); lid.position.set(0, 0.02, -0.52); lid.rotation.x = -0.32; laptop.add(lid);
+  const lidM = new THREE.Mesh(G(new RoundedBoxGeometry(1.6, 1.02, 0.035, 2, 0.015)), metalM); lidM.position.y = 0.51; lid.add(lidM);
+  const lscr = new THREE.Mesh(G(new THREE.PlaneGeometry(1.48, 0.9)), G(new THREE.MeshBasicMaterial({ color: 0x1d2433, toneMapped: false }))); lscr.position.set(0, 0.51, 0.02); lid.add(lscr);
+  const sigCurves = [
+    new THREE.CatmullRomCurve3([new THREE.Vector3(-1.95, 0.38, 1.4), new THREE.Vector3(-2.05, 1.0, 1.1), new THREE.Vector3(-1.75, 0.55, 0.5), new THREE.Vector3(-1.3, 0.0, 0.1)]),
+    new THREE.CatmullRomCurve3([new THREE.Vector3(1.85, 0.25, -1.65), new THREE.Vector3(2.15, 0.95, -1.0), new THREE.Vector3(1.8, 0.5, -0.3), new THREE.Vector3(1.3, 0.0, 0.1)])
+  ];
+  const sig = sigCurves.map(c => {
+    const geo = G(new THREE.TubeGeometry(c, 100, 0.012, 6, false));
+    const line = new THREE.Mesh(geo, G(new THREE.MeshBasicMaterial({ color: 0xff6a3d, transparent: true, opacity: 0.85, toneMapped: false, depthTest: false })));
+    const dot = new THREE.Mesh(G(new THREE.SphereGeometry(0.045, 14, 10)), G(new THREE.MeshBasicMaterial({ color: 0xffd2bf, toneMapped: false, depthTest: false })));
+    line.renderOrder = 10; dot.renderOrder = 11; scene.add(line, dot); return { c, geo, line, dot, idx: geo.index.count };
+  });
+
+  /* ---- camera keyframes along a path (one per story step) ---- */
+  const K = [
+    { p: [2.9, 1.3, 5.6],   t: [0, 0.35, 0],    ry: -0.45 }, // hero 3/4
+    { p: [-0.7, 1.1, 6.6],  t: [-0.3, 0.15, 0], ry: 1.05 },  // ANC – outer side of left cup
+    { p: [2.0, 0.0, 6.0],   t: [-0.1, 0.1, 0],  ry: -0.7 },  // cushion – left cup's inner side, cushions slide out
+    { p: [1.1, -1.3, 6.3],  t: [0.3, 0.0, 0],   ry: -1.05 }, // battery – outer side + bottom of right cup
+    { p: [0, 1.7, 8.4],     t: [0, 0.1, 0],     ry: 0 },     // multipoint – pulled back
+    { p: [0.6, 1.2, 8.4],   t: [0, 0.45, 0],    ry: -0.35 }   // configurator
+  ];
+  const camPath = new THREE.CatmullRomCurve3(K.map(k => new THREE.Vector3(...k.p)), false, 'centripetal');
+  const tgtPath = new THREE.CatmullRomCurve3(K.map(k => new THREE.Vector3(...k.t)), false, 'centripetal');
+
+  /* ---- render loop control ---- */
+  let visible = true, running = false, last = performance.now(), aspect = 1;
+  let dirty = true, prevKey = '';
+  let dragY = 0, dragV = 0, dragging = false, lx = 0;
+  const io = new IntersectionObserver(es => { visible = es[0].isIntersecting; updateRunning(); }, { threshold: 0 });
+  io.observe(stage);
+  function updateRunning() {
+    const want = visible && !document.hidden;
+    if (want && !running) { running = true; last = performance.now(); renderer.setAnimationLoop(tick); }
+    else if (!want && running) { running = false; renderer.setAnimationLoop(null); }
+  }
+  document.addEventListener('visibilitychange', updateRunning);
+  reduceMQ.addEventListener('change', e => reduced = e.matches);
+  function resize() {
+    const w = stage.clientWidth, h = stage.clientHeight; if (!w || !h) return;
+    renderer.setSize(w, h, false); aspect = w / h; camera.aspect = aspect;
+    // desktop: model sits in the right part of the full-bleed stage; phone: in the upper part above the text card
+    if (w >= 992) camera.setViewOffset(w, h, -w * 0.18, 0, w, h);
+    else camera.setViewOffset(w, h, 0, h * 0.2, w, h);
+    camera.updateProjectionMatrix(); dirty = true;
+  }
+  new ResizeObserver(resize).observe(stage); resize();
+
+  /* ---- user drag to rotate (horizontal only; vertical scroll stays native) ---- */
+  canvas.addEventListener('pointerdown', e => { dragging = true; lx = e.clientX; });
+  addEventListener('pointerup', () => dragging = false);
+  addEventListener('pointercancel', () => dragging = false);
+  canvas.addEventListener('pointermove', e => { if (!dragging) return; const dx = e.clientX - lx; lx = e.clientX; dragV = dx * 0.008; dragY += dragV; dirty = true; });
+
+  /* ---- colour / finish targets ---- */
+  const cur = { shell: new THREE.Color(COLORS[0].shell), band: new THREE.Color(COLORS[0].band), cushion: new THREE.Color(COLORS[0].cushion), rough: 0.48, cc: 0.2, explode: 0, anc: 1, sig: 0, batt: 0, dev: 0 };
+  const tShell = new THREE.Color(), tBand = new THREE.Color(), tCush = new THREE.Color();
+  listeners.push(() => { dirty = true; });
+
+  const vA = new THREE.Vector3(), vB = new THREE.Vector3();
+  const ease = f => THREE.MathUtils.smoothstep(f, 0.15, 0.85);
+  // 1 while the story sits on step i (with a plateau), fading out towards the neighbours
+  const vis = i => THREE.MathUtils.clamp(1 - (Math.abs(storyP - i) - 0.3) * 2.2, 0, 1);
+  function tick(t) {
+    const dt = Math.min(0.05, (t - last) / 1000); last = t;
+    const key = storyP.toFixed(3) + state.color + state.gloss + state.explode + state.anc + aspect.toFixed(3) + dragY.toFixed(3);
+    // with reduced motion: render only when something changed
+    if (reduced && !dirty && key === prevKey) return;
+    prevKey = key;
+    const k = reduced ? 1 : 1 - Math.exp(-dt * 6);
+    const ts = t * 0.001;
+    // eased progress: holds on each step, travels between them
+    const i = Math.min(N - 2, Math.floor(storyP)), f = storyP - i;
+    const pe = reduced ? Math.round(storyP) : i + ease(f);
+    const u = pe / (N - 1);
+    camPath.getPoint(u, vA); tgtPath.getPoint(u, vB);
+    const far = aspect < 1 ? 1 + (1 - aspect) * (storyP < 0.5 || storyP > 4.5 ? 2.1 : 1.25) : 1;
+    vA.sub(vB).multiplyScalar(far).add(vB);
+    camera.position.lerp(vA, reduced ? 1 : Math.min(1, k * 1.6)); camera.lookAt(vB);
+    // product rotation from keyframes + drag + idle float
+    const ka = K[Math.floor(pe)], kb = K[Math.min(N - 1, Math.floor(pe) + 1)], kf = pe - Math.floor(pe);
+    const ry = THREE.MathUtils.lerp(ka.ry, kb.ry, kf) + dragY + (reduced ? 0 : Math.sin(ts * 0.5) * 0.06);
+    if (!dragging) { dragV *= 0.92; if (!reduced) dragY += dragV; }
+    product.rotation.y += (ry - product.rotation.y) * (reduced ? 1 : k);
+    product.position.y = 0.05 + (reduced ? 0 : Math.sin(ts * 1.1) * 0.03);
+    // colours + finish
+    const C = COLORS[state.color];
+    tShell.set(C.shell); tBand.set(C.band); tCush.set(C.cushion);
+    cur.shell.lerp(tShell, k); cur.band.lerp(tBand, k); cur.cushion.lerp(tCush, k);
+    shellM.color.copy(cur.shell); bandM.color.copy(cur.band); cushionM.color.copy(cur.cushion);
+    cur.rough += ((state.gloss ? 0.14 : 0.5) - cur.rough) * k; cur.cc += ((state.gloss ? 1 : 0.15) - cur.cc) * k;
+    shellM.roughness = cur.rough; shellM.clearcoat = cur.cc; shellM.clearcoatRoughness = state.gloss ? 0.05 : 0.4;
+    bandM.roughness = cur.rough + 0.05; bandM.clearcoat = cur.cc * 0.8;
+    // exploded view: slider, plus a little on the cushion step
+    const ex = Math.max(state.explode, storyStep === 2 ? 0.35 : 0);
+    cur.explode += (ex - cur.explode) * k;
+    parts.cushions.forEach((c, j) => c.position.x = (j ? -1 : 1) * (0.33 + cur.explode * 0.55));
+    parts.plates.forEach((p, j) => p.position.x = (j ? 1 : -1) * (0.27 + cur.explode * 0.45));
+    parts.band.position.y = cur.explode * 0.35;
+    // ANC noise rings (visible on step 1)
+    const ancVis = vis(1);
+    noiseRings.forEach((r, j) => {
+      const ph = reduced ? j / 4 : (ts * 0.35 + j / 4) % 1;
+      const rad = 1.9 - ph * 1.6; // travels inward toward the cup
+      const stop = state.anc ? 0.95 : 0.2;
+      r.scale.setScalar(Math.max(rad, stop));
+      const a = rad < stop ? 0 : Math.sin(ph * Math.PI);
+      r.material.opacity = a * ancVis * (state.anc ? 0.9 : 0.55);
+      r.material.color.set(state.anc ? 0xff6a3d : 0x9aa0aa);
+    });
+    // battery ring (step 3)
+    const bVis = vis(3);
+    cur.batt += (bVis - cur.batt) * k;
+    battM.opacity = Math.min(1, cur.batt * 1.4); batt.visible = cur.batt > 0.02;
+    battGeo.setDrawRange(0, Math.floor(battIdx * Math.min(1, cur.batt) / 3) * 3);
+    const pct = Math.round(Math.min(1, cur.batt) * 100);
+    if (battTxt.textContent !== pct + '%') { battTxt.textContent = pct + '%'; battBar.style.width = pct + '%'; battBarWrap.setAttribute('aria-valuenow', pct); }
+    // multipoint devices + signal paths (step 4): drawn progressively, a dot travels along each path
+    const dVis = vis(4);
+    cur.dev += (dVis - cur.dev) * k;
+    devices.visible = cur.dev > 0.01; devices.scale.setScalar(0.6 + 0.4 * cur.dev);
+    sig.forEach((s, j) => {
+      s.line.visible = s.dot.visible = cur.dev > 0.02;
+      s.geo.setDrawRange(0, Math.floor(s.idx * Math.min(1, cur.dev) / 3) * 3);
+      const tt = reduced ? 0.6 : (ts * 0.45 + j * 0.5) % 1;
+      s.c.getPointAt(tt * Math.min(1, cur.dev), s.dot.position);
+    });
+    parts.led.material.color.setHex(state.anc ? 0xff6a3d : 0x4ade80);
+    renderer.render(scene, camera);
+    dirty = false;
+  }
+  const battTxt = $('#battTxt'), battBarWrap = $('#battBar'), battBar = battBarWrap.firstElementChild;
+
+  addEventListener('pagehide', () => { renderer.setAnimationLoop(null); disposables.forEach(d => d.dispose && d.dispose()); envRT.dispose(); renderer.dispose(); });
+  window.__sonara = { renderer, state, changed, info: () => renderer.info };
+  updateRunning();
+}
+</script>
+</body>
+</html>
