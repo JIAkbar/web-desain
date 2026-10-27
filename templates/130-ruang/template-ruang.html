@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="id" class="sl-theme-light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ruang Studio — Arsitektur & Interior Tropis Modern</title>
+<meta name="description" content="Ruang Studio merancang rumah tropis modern yang sejuk, hemat energi, dan dibangun dengan material lokal. Jelajahi konsep rumah 3D interaktif kami.">
+<meta name="theme-color" content="#f5f0e8">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script>
+  (function(){var t;try{t=localStorage.getItem('ruang-theme')}catch(e){}
+  if(t!=='light'&&t!=='dark'){t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}
+  var h=document.documentElement;h.classList.remove('sl-theme-light','sl-theme-dark');h.classList.add('sl-theme-'+t);})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/light.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/dark.css">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/shoelace-autoloader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<style>
+  /* ---------- Shoelace token overrides (brand: terakota) ---------- */
+  :root{
+    --sl-font-sans:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --sl-font-serif:'Fraunces',Georgia,'Times New Roman',serif;
+    --sl-font-mono:var(--sl-font-sans);
+    --sl-color-primary-50:#fdf4ef;--sl-color-primary-100:#fbe5d9;--sl-color-primary-200:#f5c8b0;
+    --sl-color-primary-300:#eba27f;--sl-color-primary-400:#df7d52;--sl-color-primary-500:#c9643a;
+    --sl-color-primary-600:#ad4f2b;--sl-color-primary-700:#8c3f24;--sl-color-primary-800:#6f3421;
+    --sl-color-primary-900:#5a2c1d;--sl-color-primary-950:#33160d;
+    --sl-border-radius-medium:10px;--sl-border-radius-large:16px;
+    --sl-focus-ring-color:var(--sl-color-primary-500);
+
+    --bg:#f5f0e8;--bg-2:#ece4d6;--surface:#fffdf9;--surface-2:#f8f3ea;
+    --ink:#1f1c18;--muted:#675e54;--line:#e0d6c6;--accent:#ad4f2b;--accent-soft:#f5e1d4;
+    --green:#2f5a45;--green-soft:#dfe9df;
+    --shadow:0 1px 2px rgba(40,30,20,.06),0 10px 30px -12px rgba(40,30,20,.18);
+    --shadow-lg:0 30px 80px -30px rgba(40,30,20,.35);
+    --radius:22px;
+    color-scheme:light;
+  }
+  :root.sl-theme-dark{
+    --sl-color-primary-50:#33160d;--sl-color-primary-100:#5a2c1d;--sl-color-primary-200:#6f3421;
+    --sl-color-primary-300:#8c3f24;--sl-color-primary-400:#ad4f2b;--sl-color-primary-500:#c9643a;
+    --sl-color-primary-600:#df7d52;--sl-color-primary-700:#eba27f;--sl-color-primary-800:#f5c8b0;
+    --sl-color-primary-900:#fbe5d9;--sl-color-primary-950:#fdf4ef;
+    --bg:#13110f;--bg-2:#1b1815;--surface:#211e1a;--surface-2:#1a1714;
+    --ink:#f2ece3;--muted:#ab9f92;--line:#332d27;--accent:#eba27f;--accent-soft:#3a251b;
+    --green:#9cc7ad;--green-soft:#1f2c25;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -12px rgba(0,0,0,.6);
+    --shadow-lg:0 30px 80px -30px rgba(0,0,0,.8);
+    color-scheme:dark;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  body{margin:0;font-family:var(--sl-font-sans);background:var(--bg);color:var(--ink);line-height:1.6;font-size:16px;overflow-x:clip;transition:background-color .35s,color .35s;-webkit-font-smoothing:antialiased}
+  code,kbd,pre,samp{font-family:inherit}
+  img,svg,canvas{display:block;max-width:100%}
+  a{color:inherit}
+  h1,h2,h3,h4{margin:0;line-height:1.12;font-weight:600}
+  p{margin:0}
+  .serif{font-family:var(--sl-font-serif);font-weight:500;letter-spacing:-.02em}
+  .num{font-variant-numeric:tabular-nums}
+  .wrap{width:min(1240px,100% - 40px);margin-inline:auto}
+  :focus-visible{outline:2px solid var(--sl-color-primary-500);outline-offset:3px;border-radius:6px}
+  .skip{position:absolute;left:-999px;top:8px;z-index:100;background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px}
+  .skip:focus{left:12px}
+  sl-button,sl-range,sl-switch,sl-tab-group,sl-radio-group,sl-carousel,sl-card,sl-details,sl-color-picker,sl-rating,sl-badge,sl-avatar,sl-icon-button{max-width:100%}
+  :not(:defined){visibility:hidden}
+
+  /* ---------- Nav ---------- */
+  .nav{position:sticky;top:0;z-index:40;backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);background:color-mix(in srgb,var(--bg) 78%,transparent);border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+  .nav .wrap{display:flex;align-items:center;gap:20px;height:68px}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:700;letter-spacing:-.01em;font-size:1.06rem}
+  .brand svg{width:30px;height:30px}
+  .brand small{display:block;font-weight:500;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);line-height:1}
+  .nav-links{display:flex;gap:4px;margin-left:auto}
+  .nav-links a{text-decoration:none;font-size:.92rem;font-weight:500;color:var(--muted);padding:8px 12px;border-radius:999px;transition:color .2s,background .2s}
+  .nav-links a:hover{color:var(--ink);background:var(--bg-2)}
+  .nav-actions{display:flex;align-items:center;gap:6px}
+  .nav-actions sl-icon-button{font-size:1.2rem}
+  .only-mobile{display:none}
+  @media (max-width:900px){.nav-links{display:none}.nav-actions{margin-left:auto}.only-mobile{display:inline-flex}.hide-sm{display:none}}
+  .drawer-links{display:flex;flex-direction:column;gap:4px}
+  .drawer-links a{text-decoration:none;padding:12px 10px;border-radius:10px;font-weight:600}
+  .drawer-links a:hover{background:var(--bg-2)}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:clamp(28px,5vw,64px) 0 40px}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,4vw,56px);align-items:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:.78rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+  .eyebrow::before{content:"";width:26px;height:1.5px;background:currentColor}
+  .hero h1{font-family:var(--sl-font-serif);font-weight:500;font-size:clamp(2.5rem,5.6vw,4.9rem);letter-spacing:-.035em;line-height:1.02;margin:18px 0 20px}
+  .hero h1 em{font-style:italic;color:var(--accent)}
+  .lead{font-size:clamp(1rem,1.3vw,1.14rem);color:var(--muted);max-width:34em}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 34px}
+  .mini-stats{display:flex;gap:28px;flex-wrap:wrap;padding-top:22px;border-top:1px solid var(--line)}
+  .mini-stats b{display:block;font-size:1.6rem;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .mini-stats span{font-size:.82rem;color:var(--muted)}
+  .stage{position:relative;border-radius:28px;overflow:hidden;background:linear-gradient(160deg,#f3cf9f,#bcd9e6);box-shadow:var(--shadow-lg);isolation:isolate}
+  .stage canvas{width:100%;height:100%;opacity:0;transition:opacity .8s ease}
+  .stage.ready canvas{opacity:1}
+  .hero .stage{height:clamp(440px,74vh,700px)}
+  .stage .fallback{position:absolute;inset:0;display:none}
+  .stage.no-webgl .fallback{display:block}
+  .stage.no-webgl canvas{display:none}
+  .stage-badge{position:absolute;top:16px;left:16px;z-index:2;display:flex;gap:8px;flex-wrap:wrap}
+  .glass{background:color-mix(in srgb,#fffdf9 72%,transparent);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border:1px solid rgba(255,255,255,.55);color:#1f1c18}
+  .sl-theme-dark .glass{background:color-mix(in srgb,#1b1815 70%,transparent);border-color:rgba(255,255,255,.12);color:#f2ece3}
+  .chip{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;font-size:.8rem;font-weight:600;font-variant-numeric:tabular-nums}
+  .chip .dot{width:8px;height:8px;border-radius:50%;background:#e9a03f;box-shadow:0 0 0 4px rgba(233,160,63,.25)}
+  .stage-panel{position:absolute;left:16px;right:16px;bottom:16px;z-index:2;border-radius:18px;padding:14px 18px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 22px;align-items:center}
+  .stage-panel sl-range::part(form-control-label){font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.75;color:inherit}
+  .stage-panel sl-switch::part(label){color:inherit;font-weight:600}
+  .stage-panel sl-switch{align-self:end;padding-bottom:4px}
+  .stage-panel sl-range{--track-height:5px}
+  .stage-hint{position:absolute;right:16px;top:16px;z-index:2;font-size:.74rem}
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:minmax(0,1fr)}
+    .hero .stage{height:min(560px,68vh);min-height:420px}
+  }
+  @media (max-width:520px){.stage-panel{grid-template-columns:minmax(0,1fr)}.stage-hint{display:none}}
+
+  /* ---------- Sections ---------- */
+  section{scroll-margin-top:76px}
+  .sec{padding:clamp(72px,10vw,130px) 0}
+  .sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 48px;align-items:end;margin-bottom:clamp(36px,5vw,60px)}
+  .sec-head h2{font-family:var(--sl-font-serif);font-weight:500;font-size:clamp(2rem,4.2vw,3.4rem);letter-spacing:-.03em;margin-top:14px}
+  .sec-head p{color:var(--muted);max-width:32em}
+  @media (max-width:820px){.sec-head{grid-template-columns:minmax(0,1fr)}}
+
+  /* features */
+  .features{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:18px}
+  .feat{grid-column:span 3}
+  .feat sl-card,.calc sl-card{width:100%;height:100%}
+  sl-card::part(base){background:var(--surface);border-color:var(--line);border-radius:var(--radius);box-shadow:var(--shadow);height:100%}
+  sl-card::part(body){padding:26px}
+  .feat .ico{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);font-size:1.35rem;margin-bottom:22px}
+  .feat h3{font-size:1.14rem;margin-bottom:8px}
+  .feat p{font-size:.93rem;color:var(--muted)}
+  .feat .meta{margin-top:18px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:.8rem;color:var(--muted)}
+  .calc{grid-column:span 12}
+  .calc-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px 48px;align-items:center}
+  .calc h3{font-family:var(--sl-font-serif);font-weight:500;font-size:clamp(1.5rem,2.4vw,2rem);letter-spacing:-.02em;margin:8px 0 10px}
+  .calc .controls{display:grid;gap:22px;margin-top:22px}
+  .calc-out{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  .out{background:var(--surface-2);border:1px solid var(--line);border-radius:18px;padding:18px}
+  .out span{font-size:.8rem;color:var(--muted);display:block}
+  .out b{display:block;font-size:clamp(1.25rem,2.2vw,1.7rem);letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:4px}
+  .out.big{grid-column:span 2;background:var(--green);color:#f4efe6;border-color:transparent}
+  .sl-theme-dark .out.big{color:#13110f}
+  .out.big span{color:inherit;opacity:.8}
+  @media (max-width:1020px){.feat{grid-column:span 6}}
+  @media (max-width:820px){.calc-grid{grid-template-columns:minmax(0,1fr)}}
+  @media (max-width:560px){.feat{grid-column:span 12}.calc-out{grid-template-columns:minmax(0,1fr)}.out.big{grid-column:span 1}}
+
+  /* configurator */
+  .cfg{background:var(--bg-2)}
+  .cfg-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:22px;align-items:stretch}
+  .cfg .stage{height:clamp(460px,72vh,680px)}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;display:flex;flex-direction:column;gap:20px;min-width:0}
+  .panel h3{font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:10px}
+  .panel sl-tab-group{--indicator-color:var(--accent)}
+  .panel sl-tab-panel::part(base){padding:14px 2px 0;font-size:.9rem;color:var(--muted)}
+  .panel sl-tab-panel b{color:var(--ink)}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .panel sl-radio-group::part(form-control-input){flex-wrap:wrap}
+  .panel sl-radio-button::part(button){padding-inline:12px}
+  .swatches{display:flex;gap:8px;align-items:center}
+  .readout{display:flex;gap:8px;flex-wrap:wrap}
+  .panel .foot{margin-top:auto;display:flex;gap:10px;flex-wrap:wrap}
+  @media (max-width:960px){.cfg-grid{grid-template-columns:minmax(0,1fr)}.cfg .stage{height:min(520px,62vh);min-height:380px}}
+
+  /* story */
+  .story{position:relative;height:520vh;background:var(--bg)}
+  .story-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+  .story-stage canvas{position:absolute;inset:0;width:100%;height:100%}
+  .story-fallback{position:absolute;inset:0;display:none;place-items:center;padding:24px}
+  .story.no-webgl .story-fallback{display:grid}
+  .story.no-webgl canvas{display:none}
+  .story-fallback svg{width:min(900px,100%);height:auto}
+  .story-fallback .node{fill:var(--surface);stroke:var(--line);stroke-width:2;transition:fill .4s}
+  .story-fallback .node.on{fill:var(--accent)}
+  .story-ui{position:absolute;inset:0;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;padding:96px 0 34px}
+  .story-ui .wrap{position:relative;height:100%;display:flex;flex-direction:column;justify-content:space-between}
+  .story-head{max-width:440px}
+  .story-head h2{font-family:var(--sl-font-serif);font-weight:500;font-size:clamp(1.8rem,3.4vw,2.9rem);letter-spacing:-.03em;margin-top:12px}
+  .steps{position:relative;max-width:420px;min-height:230px}
+  .step{position:absolute;left:0;right:0;bottom:0;opacity:0;transform:translateY(18px);transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+  .step.on{opacity:1;transform:none;pointer-events:auto}
+  .step-card{border-radius:20px;padding:22px 22px 20px}
+  .step .n{font-family:var(--sl-font-serif);font-size:2.6rem;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+  .sl-theme-dark .step .n{color:#eba27f}
+  .step h3{font-size:1.3rem;margin:10px 0 8px}
+  .step p{font-size:.93rem;opacity:.82}
+  .step .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+  .story-progress{display:flex;align-items:center;gap:14px;margin-top:18px;font-size:.8rem;font-weight:600;font-variant-numeric:tabular-nums;color:var(--muted)}
+  .bar{flex:0 0 160px;height:4px;border-radius:4px;background:var(--line);overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:4px}
+  @media (max-width:760px){
+    .story-ui{padding:84px 0 18px}
+    .story-head h2{font-size:1.6rem}
+    .story-head p{display:none}
+    .steps{max-width:none;min-height:210px}
+    .step-card{padding:18px}
+    .step .n{font-size:2rem}
+    .step h3{font-size:1.12rem}
+    .step p{font-size:.88rem}
+  }
+
+  /* projects */
+  .proj sl-carousel{--aspect-ratio:auto;--slide-gap:18px;--scroll-hint:0px}
+  .proj sl-carousel::part(scroll-container){border-radius:var(--radius)}
+  .slide{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column}
+  .slide .art{aspect-ratio:16/10;position:relative;overflow:hidden}
+  .slide .art svg{position:absolute;inset:auto 0 0 0;width:100%;height:auto}
+  .slide .info{padding:20px 22px 22px;display:grid;gap:8px}
+  .slide .info .row{font-size:.82rem;color:var(--muted)}
+  .slide h3{font-size:1.25rem}
+  .slide p{font-size:.92rem;color:var(--muted)}
+
+  /* stats & testimonials */
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:clamp(48px,7vw,80px)}
+  .stat{padding:30px 22px;border-left:1px solid var(--line)}
+  .stat:first-child{border-left:0}
+  .stat b{display:block;font-family:var(--sl-font-serif);font-weight:500;font-size:clamp(2.2rem,4.4vw,3.6rem);letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+  .stat span{display:block;margin-top:10px;font-size:.9rem;color:var(--muted)}
+  @media (max-width:760px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat:nth-child(3){border-left:0}.stat:nth-child(n+3){border-top:1px solid var(--line)}}
+  .testi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+  .testi blockquote{margin:0;font-size:1rem;line-height:1.65}
+  .testi figure{margin:0;display:flex;flex-direction:column;gap:18px;height:100%}
+  .testi figcaption{display:flex;align-items:center;gap:12px;margin-top:auto;font-size:.88rem}
+  .testi figcaption b{display:block}
+  .testi figcaption span{color:var(--muted);font-size:.8rem}
+  .testi sl-rating{--symbol-size:1rem;--symbol-color-active:#e2a33c}
+  .testi sl-avatar{--size:42px}
+  @media (max-width:960px){.testi{grid-template-columns:minmax(0,1fr)}}
+
+  /* pricing */
+  .price-toggle{display:flex;justify-content:center;margin-bottom:32px}
+  .prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:stretch}
+  .plan sl-card{width:100%;height:100%}
+  .plan sl-card::part(body){display:flex;flex-direction:column;gap:18px;height:100%}
+  .plan.hot sl-card::part(base){border:2px solid var(--accent);box-shadow:var(--shadow-lg)}
+  .plan h3{font-size:1.2rem}
+  .plan .desc{font-size:.9rem;color:var(--muted)}
+  .price{font-variant-numeric:tabular-nums;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+  .price b{font-family:var(--sl-font-serif);font-weight:500;font-size:clamp(2rem,3.2vw,2.6rem);letter-spacing:-.03em;line-height:1}
+  .price span{color:var(--muted);font-size:.88rem}
+  .plan ul{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:.92rem}
+  .plan li{display:flex;gap:10px;align-items:flex-start}
+  .plan li sl-icon{color:var(--green);flex:0 0 auto;margin-top:4px}
+  .plan sl-button{margin-top:auto}
+  @media (max-width:960px){.prices{grid-template-columns:minmax(0,1fr)}}
+
+  /* faq */
+  .faq-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:32px 64px}
+  .faq-list{display:grid;gap:12px}
+  .faq-list sl-details::part(base){background:var(--surface);border-color:var(--line);border-radius:16px}
+  .faq-list sl-details::part(summary){font-weight:600}
+  .faq-list sl-details::part(content){color:var(--muted);font-size:.95rem}
+  @media (max-width:860px){.faq-grid{grid-template-columns:minmax(0,1fr)}}
+
+  /* cta */
+  .cta{border-radius:32px;padding:clamp(36px,6vw,80px);background:radial-gradient(120% 140% at 100% 0%,#d98a5f 0%,#ad4f2b 40%,#3b2418 100%);color:#fbf4ec;position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:32px;align-items:center}
+  .cta h2{font-family:var(--sl-font-serif);font-weight:500;font-size:clamp(2rem,4.4vw,3.6rem);letter-spacing:-.03em}
+  .cta p{opacity:.86;margin-top:14px;max-width:30em}
+  .cta-side{display:grid;gap:12px;justify-items:start}
+  .cta-side .chip{background:rgba(255,255,255,.14);color:#fff}
+  .cta svg.lines{position:absolute;right:-40px;bottom:-60px;width:420px;opacity:.18;pointer-events:none}
+  @media (max-width:820px){.cta{grid-template-columns:minmax(0,1fr)}}
+
+  /* dialog form */
+  .form{display:grid;gap:16px}
+  .form .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+  @media (max-width:520px){.form .two{grid-template-columns:minmax(0,1fr)}}
+  .form .actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+  sl-dialog::part(panel){border-radius:22px}
+  sl-dialog::part(title){font-family:var(--sl-font-serif);font-size:1.5rem;font-weight:500}
+
+  /* footer */
+  footer{padding:72px 0 36px;border-top:1px solid var(--line);margin-top:clamp(72px,10vw,120px)}
+  .foot-grid{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));gap:32px}
+  .foot-grid h4{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+  .foot-grid a{display:block;text-decoration:none;padding:4px 0;font-size:.93rem}
+  .foot-grid a:hover{color:var(--accent)}
+  .foot-grid p{color:var(--muted);font-size:.92rem;max-width:26em;margin-top:14px}
+  .foot-bottom{margin-top:48px;padding-top:22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.84rem;color:var(--muted)}
+  .built{display:inline-flex;align-items:center;gap:8px}
+  .built i{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block}
+  @media (max-width:820px){.foot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.foot-grid>div:first-child{grid-column:span 2}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Lewati ke konten</a>
+
+<!-- shared SVG symbols -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo" viewBox="0 0 32 32"><rect x="1" y="1" width="30" height="30" rx="9" fill="currentColor"/><path d="M8 22V13.5L16 8l8 5.5V22" fill="none" stroke="var(--bg)" stroke-width="2.2" stroke-linejoin="round"/><path d="M6 22h20" stroke="var(--bg)" stroke-width="2.2" stroke-linecap="round"/><rect x="13" y="15" width="6" height="7" rx="1" fill="var(--bg)"/></symbol>
+  </defs>
+</svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Ruang Studio, ke atas">
+      <svg style="color:var(--accent)"><use href="#logo"/></svg>
+      <span>Ruang Studio<small>Arsitektur · Interior</small></span>
+    </a>
+    <nav class="nav-links" aria-label="Navigasi utama">
+      <a href="#prinsip">Prinsip</a><a href="#konfigurator">Konfigurator</a><a href="#proses">Proses</a><a href="#proyek">Proyek</a><a href="#paket">Paket</a><a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-actions">
+      <sl-tooltip content="Ganti tema terang/gelap"><sl-icon-button id="themeBtn" name="moon" label="Ganti tema"></sl-icon-button></sl-tooltip>
+      <sl-button class="hide-sm" variant="primary" size="small" pill data-open-consult>Konsultasi gratis</sl-button>
+      <sl-icon-button class="only-mobile" name="list" label="Buka menu" id="menuBtn"></sl-icon-button>
+    </div>
+  </div>
+</header>
+
+<sl-drawer id="menu" label="Ruang Studio" placement="end" style="--size:min(320px,86vw)">
+  <nav class="drawer-links" aria-label="Navigasi seluler">
+    <a href="#prinsip">Prinsip desain</a><a href="#konfigurator">Konfigurator 3D</a><a href="#proses">Proses kerja</a><a href="#proyek">Proyek</a><a href="#paket">Paket & harga</a><a href="#faq">FAQ</a>
+  </nav>
+  <sl-button slot="footer" variant="primary" pill style="width:100%" data-open-consult>Konsultasi gratis</sl-button>
+</sl-drawer>
+
+<main id="main">
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div>
+        <sl-badge variant="primary" pill>Arsitektur tropis modern · Bali — Jakarta</sl-badge>
+        <h1>Rumah yang <em>bernapas</em> bersama iklim tropis.</h1>
+        <p class="lead">Ruang Studio merancang hunian yang sejuk tanpa banyak AC: overstek lebar, ventilasi silang, dan material lokal yang menua dengan indah. Geser waktu di samping untuk melihat bagaimana cahaya bergerak sepanjang hari.</p>
+        <div class="hero-cta">
+          <sl-button variant="primary" size="large" pill data-open-consult>Jadwalkan konsultasi<sl-icon slot="suffix" name="arrow-right"></sl-icon></sl-button>
+          <sl-button size="large" pill href="#konfigurator" outline>Coba konfigurator 3D</sl-button>
+        </div>
+        <div class="mini-stats">
+          <div><b class="num">120+</b><span>rumah selesai dibangun</span></div>
+          <div><b class="num">38%</b><span>rata-rata hemat listrik</span></div>
+          <div><b class="num">4,9</b><span>rating dari 86 klien</span></div>
+        </div>
+      </div>
+      <div class="stage" id="heroStage">
+        <canvas id="heroCanvas" role="img" aria-label="Model 3D rumah tropis modern dua lantai dengan kolam, pohon kelapa, dan cahaya matahari yang dapat diatur"></canvas>
+        <div class="fallback" aria-hidden="true"></div>
+        <div class="stage-badge"><span class="chip glass"><span class="dot"></span><span id="heroClock">16:30 · Sore</span></span></div>
+        <span class="stage-hint chip glass">Model: Rumah Teras Kayu</span>
+        <div class="stage-panel glass">
+          <sl-range id="heroTime" min="5" max="20" step="0.25" value="16.5" label="Waktu hari"></sl-range>
+          <sl-switch id="heroLights" checked size="medium">Lampu</sl-switch>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="sec" id="prinsip">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Prinsip desain</span><h2>Sejuk alami, bukan sekadar terlihat tropis.</h2></div>
+        <p>Setiap keputusan desain diuji terhadap arah matahari, angin, dan hujan di lokasimu. Hasilnya rumah yang nyaman dihuni, hemat dirawat, dan tahan puluhan tahun.</p>
+      </div>
+      <div class="features">
+        <div class="feat"><sl-card><div class="ico"><sl-icon name="wind"></sl-icon></div><h3>Ventilasi silang</h3><p>Bukaan berhadapan dan void tangga mengalirkan udara panas ke atas. Ruang terasa 3–4 °C lebih sejuk.</p><div class="meta"><span>Simulasi CFD</span><sl-badge variant="success" pill>Terukur</sl-badge></div></sl-card></div>
+        <div class="feat"><sl-card><div class="ico"><sl-icon name="brightness-high"></sl-icon></div><h3>Overstek lebar</h3><p>Atap menjorok 1,2–2 m menahan sinar siang dan tampias hujan tanpa menggelapkan interior.</p><div class="meta"><span>Studi bayangan</span><sl-badge variant="neutral" pill>Per jam</sl-badge></div></sl-card></div>
+        <div class="feat"><sl-card><div class="ico"><sl-icon name="tree"></sl-icon></div><h3>Material lokal</h3><p>Kayu jati daur ulang, batu andesit, dan bata ekspos dari pemasok dalam radius 150 km.</p><div class="meta"><span>Jejak karbon rendah</span><sl-badge variant="primary" pill>Lokal</sl-badge></div></sl-card></div>
+        <div class="feat"><sl-card><div class="ico"><sl-icon name="lightning-charge"></sl-icon></div><h3>Siap tenaga surya</h3><p>Atap datar dengan orientasi panel optimal dan jalur kabel tersembunyi sejak tahap desain.</p><div class="meta"><span>Hingga 6 kWp</span><sl-badge variant="warning" pill>Opsional</sl-badge></div></sl-card></div>
+
+        <div class="calc"><sl-card>
+          <div class="calc-grid">
+            <div>
+              <span class="eyebrow">Kalkulator cepat</span>
+              <h3>Berapa biaya desain dan penghematanmu?</h3>
+              <p style="color:var(--muted)">Estimasi kasar untuk rumah tinggal. Angka final ditentukan setelah survei lahan.</p>
+              <div class="controls">
+                <sl-range id="calcArea" label="Luas bangunan" min="60" max="500" step="10" value="180" help-text="Geser untuk mengubah luas (m²)"></sl-range>
+                <sl-radio-group id="calcPlan" label="Paket" value="lengkap">
+                  <sl-radio-button value="konsep">Konsep</sl-radio-button>
+                  <sl-radio-button value="lengkap">Desain lengkap</sl-radio-button>
+                  <sl-radio-button value="bangun">Desain &amp; bangun</sl-radio-button>
+                </sl-radio-group>
+              </div>
+            </div>
+            <div class="calc-out" aria-live="polite">
+              <div class="out"><span>Luas bangunan</span><b id="outArea">180 m²</b></div>
+              <div class="out"><span>Durasi desain</span><b id="outTime">8 minggu</b></div>
+              <div class="out big"><span>Estimasi biaya</span><b id="outCost">Rp 31.500.000</b></div>
+              <div class="out" style="grid-column:1/-1"><span>Potensi hemat listrik per tahun</span><b id="outSave">Rp 3.240.000</b></div>
+            </div>
+          </div>
+        </sl-card></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONFIGURATOR -->
+  <section class="sec cfg" id="konfigurator">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Konfigurator 3D</span><h2>Bongkar rumahnya, lantai demi lantai.</h2></div>
+        <p>Semua kontrol di panel ini adalah komponen Shoelace asli yang langsung menggerakkan adegan three.js: pilih lantai, ganti fasad, atur jam, dan nyalakan lampu interior.</p>
+      </div>
+      <div class="cfg-grid">
+        <div class="stage" id="cfgStage">
+          <canvas id="cfgCanvas" role="img" aria-label="Konfigurator 3D rumah: tampilan eksterior, lantai 1, lantai 2, dan tampak atas yang dapat dipilih"></canvas>
+          <div class="fallback" aria-hidden="true"></div>
+          <div class="stage-badge"><span class="chip glass" id="cfgViewChip">Eksterior</span><span class="chip glass num" id="cfgClock">16:30</span></div>
+        </div>
+        <div class="panel">
+          <div>
+            <h3>Tampilan</h3>
+            <sl-tab-group id="cfgTabs">
+              <sl-tab slot="nav" panel="eksterior">Eksterior</sl-tab>
+              <sl-tab slot="nav" panel="lantai1">Lantai 1</sl-tab>
+              <sl-tab slot="nav" panel="lantai2">Lantai 2</sl-tab>
+              <sl-tab slot="nav" panel="atas">Tampak atas</sl-tab>
+              <sl-tab-panel name="eksterior"><b>Rumah Teras Kayu</b> · 236 m² di lahan 420 m². Volume atas menjorok 1,5 m menaungi teras kolam.</sl-tab-panel>
+              <sl-tab-panel name="lantai1"><b>Lantai 1 · 112 m²</b> — ruang keluarga terbuka, dapur dengan pulau, ruang makan menghadap kolam.</sl-tab-panel>
+              <sl-tab-panel name="lantai2"><b>Lantai 2 · 98 m²</b> — kamar utama, ruang kerja, dan balkon dengan kisi kayu sebagai kulit kedua.</sl-tab-panel>
+              <sl-tab-panel name="atas"><b>Tapak</b> — orientasi timur-barat, kolam di sisi angin datang, atap hijau di sayap kiri.</sl-tab-panel>
+            </sl-tab-group>
+          </div>
+          <div>
+            <h3><label for="cfgTime">Jam &amp; cahaya</label></h3>
+            <sl-range id="cfgTime" min="5" max="20" step="0.25" value="16.5"></sl-range>
+          </div>
+          <div class="row">
+            <sl-switch id="cfgLights" checked>Lampu interior</sl-switch>
+            <sl-switch id="cfgPool" checked>Lampu kolam</sl-switch>
+          </div>
+          <div>
+            <sl-radio-group id="cfgFacade" label="Material fasad lantai 2" value="jati" size="small">
+              <sl-radio-button value="jati">Kayu jati</sl-radio-button>
+              <sl-radio-button value="beton">Beton</sl-radio-button>
+              <sl-radio-button value="andesit">Andesit</sl-radio-button>
+              <sl-radio-button value="kapur">Kapur</sl-radio-button>
+            </sl-radio-group>
+          </div>
+          <div class="row">
+            <div><h3 style="margin:0">Warna kusen</h3><span style="font-size:.84rem;color:var(--muted)" id="frameName">Arang</span></div>
+            <sl-color-picker id="cfgFrame" label="Warna kusen" value="#2b2622" swatches="#2b2622; #f4efe6; #6e4a31; #2f5a45; #ad4f2b; #4a5560" no-format-toggle size="medium" hoist></sl-color-picker>
+          </div>
+          <div class="readout">
+            <sl-tag size="small" pill id="tagEnergy">Beban AC: rendah</sl-tag>
+            <sl-tag size="small" pill variant="primary" id="tagCost">Fasad: +Rp 0/m²</sl-tag>
+          </div>
+          <div class="foot">
+            <sl-button variant="primary" pill id="saveConcept"><sl-icon slot="prefix" name="calendar-check"></sl-icon>Simpan konsep</sl-button>
+            <sl-button pill id="resetConcept">Atur ulang</sl-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORY (scroll-driven isometric) -->
+  <section class="story" id="proses" aria-label="Proses kerja Ruang Studio">
+    <div class="story-stage">
+      <canvas id="storyCanvas" role="img" aria-label="Peta isometrik proses kerja: seorang arsitek berjalan dari survei lahan hingga serah terima kunci mengikuti jalur oranye saat halaman digulir"></canvas>
+      <div class="story-fallback" aria-hidden="true">
+        <svg viewBox="0 0 900 360" id="storySvg">
+          <path d="M80 250 L250 130 L450 250 L650 130 L820 250" fill="none" stroke="var(--accent)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="14 12"/>
+          <g><circle class="node on" cx="80" cy="250" r="34"/><circle class="node" cx="250" cy="130" r="34"/><circle class="node" cx="450" cy="250" r="34"/><circle class="node" cx="650" cy="130" r="34"/><circle class="node" cx="820" cy="250" r="34"/></g>
+        </svg>
+      </div>
+      <div class="story-ui">
+        <div class="wrap">
+          <div class="story-head">
+            <span class="eyebrow">Proses kerja</span>
+            <h2>Dari sebidang lahan sampai kunci di tangan.</h2>
+            <p style="color:var(--muted);margin-top:10px">Gulir untuk mengikuti perjalanan proyekmu bersama kami.</p>
+          </div>
+          <div>
+            <ol class="steps" style="list-style:none;margin:0;padding:0">
+              <li class="step on" data-step="0"><div class="step-card glass"><div class="n">01</div><h3>Survei &amp; mendengar</h3><p>Kami datang ke lahan, mengukur kontur, arah angin, dan matahari, lalu mendengarkan cerita keluargamu.</p><div class="tags"><sl-tag size="small" pill>1 minggu</sl-tag><sl-tag size="small" pill>Gratis</sl-tag></div></div></li>
+              <li class="step" data-step="1"><div class="step-card glass"><div class="n">02</div><h3>Konsep &amp; sketsa</h3><p>Tiga alternatif tata massa dengan studi bayangan. Kamu memilih arah, kami menajamkan.</p><div class="tags"><sl-tag size="small" pill>2–3 minggu</sl-tag><sl-tag size="small" pill>3 opsi</sl-tag></div></div></li>
+              <li class="step" data-step="2"><div class="step-card glass"><div class="n">03</div><h3>Desain 3D &amp; RAB</h3><p>Model 3D lengkap, gambar kerja, dan rencana anggaran biaya yang transparan per item.</p><div class="tags"><sl-tag size="small" pill>4–6 minggu</sl-tag><sl-tag size="small" pill>Revisi 3×</sl-tag></div></div></li>
+              <li class="step" data-step="3"><div class="step-card glass"><div class="n">04</div><h3>Konstruksi terpantau</h3><p>Pengawas kami hadir dua kali seminggu. Laporan foto dan progres anggaran masuk ke ponselmu.</p><div class="tags"><sl-tag size="small" pill>6–10 bulan</sl-tag><sl-tag size="small" pill>Laporan mingguan</sl-tag></div></div></li>
+              <li class="step" data-step="4"><div class="step-card glass"><div class="n">05</div><h3>Serah terima kunci</h3><p>Rumah siap huni, lengkap dengan buku perawatan material dan garansi struktur 10 tahun.</p><div class="tags"><sl-tag size="small" pill variant="success">Garansi 10 tahun</sl-tag></div></div></li>
+            </ol>
+            <div class="story-progress"><span class="bar"><i id="storyBar"></i></span><span id="storyCount">Langkah 1 dari 5</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="sec proj" id="proyek">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Proyek pilihan</span><h2>Rumah yang sudah dihuni dan dicintai.</h2></div>
+        <p>Dari lereng Lembang hingga pesisir Lombok, setiap proyek menjawab iklim mikro yang berbeda.</p>
+      </div>
+      <sl-carousel id="projCarousel" navigation pagination loop slides-per-page="2" slides-per-move="1" aria-label="Galeri proyek">
+        <sl-carousel-item><article class="slide"><div class="art" style="background:linear-gradient(160deg,#f3c79c,#e8a57a 55%,#c9643a)"><svg viewBox="0 0 400 200" aria-hidden="true"><path d="M0 170h400v30H0z" fill="#5f8550"/><path d="M90 170V96h150v74z" fill="#f4efe6"/><path d="M70 96h200v-12H70z" fill="#2b2622"/><path d="M150 84V40h170v44z" fill="#8c5a33"/><path d="M130 40h210V28H130z" fill="#f4efe6"/><path d="M110 112h50v40h-50z" fill="#ffd8a0" opacity=".85"/><path d="M175 50h12v30h-12zm20 0h12v30h-12zm20 0h12v30h-12zm20 0h12v30h-12zm20 0h12v30h-12z" fill="#6e4a31"/><path d="M40 170c6-40 10-70 4-100" stroke="#6e4a31" stroke-width="5" fill="none"/><path d="M44 70c-20-6-34 4-40 14M44 70c18-8 32-2 40 10M44 70c-4-18 6-28 16-32M44 70c-12-14-26-14-34-10" stroke="#3f6b3a" stroke-width="7" fill="none" stroke-linecap="round"/></svg></div><div class="info"><div class="row"><sl-badge variant="primary" pill>Rumah tinggal</sl-badge><span class="num">Ubud, Bali · 2025</span></div><h3>Rumah Teras Kayu</h3><p>236 m² · Volume atas menjorok di atas kolam, kisi jati sebagai peneduh barat.</p></div></article></sl-carousel-item>
+        <sl-carousel-item><article class="slide"><div class="art" style="background:linear-gradient(160deg,#cfe0e6,#9fc2cf 55%,#5b7f8f)"><svg viewBox="0 0 400 200" aria-hidden="true"><path d="M0 160 400 120v80H0z" fill="#4d6e4a"/><path d="M60 160V100l90-40 90 40v52z" fill="#ece6dc"/><path d="M45 104l105-50 105 50" stroke="#2b2622" stroke-width="10" fill="none"/><path d="M100 115h40v40h-40zm60 0h40v34h-40z" fill="#ffe2b0" opacity=".8"/><path d="M250 150v-46h100v38z" fill="#55575a"/><path d="M240 104h120v-10H240z" fill="#2b2622"/></svg></div><div class="info"><div class="row"><sl-badge variant="neutral" pill>Villa</sl-badge><span class="num">Lembang · 2024</span></div><h3>Villa Lereng Kabut</h3><p>310 m² · Atap pelana curam untuk hujan deras, perapian batu andesit.</p></div></article></sl-carousel-item>
+        <sl-carousel-item><article class="slide"><div class="art" style="background:linear-gradient(160deg,#e9e1c8,#cdbf92 55%,#8a8a55)"><svg viewBox="0 0 400 200" aria-hidden="true"><path d="M0 168h400v32H0z" fill="#6c8a4c"/><path d="M70 168v-60h260v60z" fill="#b5653d"/><path d="M50 108h300l-30-30H80z" fill="#3a3631"/><path d="M95 120h30v48H95zm60 0h90v30h-90zm110 0h40v48h-40z" fill="#ffdca6" opacity=".8"/><circle cx="345" cy="60" r="22" fill="#fff3d6" opacity=".9"/></svg></div><div class="info"><div class="row"><sl-badge variant="success" pill>Renovasi</sl-badge><span class="num">Yogyakarta · 2024</span></div><h3>Rumah Kebun Bata</h3><p>180 m² · Bata ekspos lokal, atap joglo modern, halaman dalam untuk sirkulasi udara.</p></div></article></sl-carousel-item>
+        <sl-carousel-item><article class="slide"><div class="art" style="background:linear-gradient(160deg,#d9e6d3,#a9c49a 55%,#56784b)"><svg viewBox="0 0 400 200" aria-hidden="true"><path d="M0 170h400v30H0z" fill="#3f5f3a"/><path d="M80 170V80h240v90z" fill="#f4efe6"/><path d="M60 80h280V66H60z" fill="#2f5a45"/><g fill="#c9a36b"><path d="M96 92h8v78h-8zm20 0h8v78h-8zm20 0h8v78h-8zm20 0h8v78h-8zm20 0h8v78h-8zm20 0h8v78h-8zm20 0h8v78h-8zm20 0h8v78h-8zm20 0h8v78h-8zm20 0h8v78h-8zm20 0h8v78h-8z"/></g><path d="M60 66h280l-20-16H80z" fill="#6f9a5a"/></svg></div><div class="info"><div class="row"><sl-badge variant="warning" pill>Kantor</sl-badge><span class="num">Tangerang Selatan · 2023</span></div><h3>Kantor Bambu Hijau</h3><p>540 m² · Fasad bambu laminasi, atap hijau, dan pendinginan pasif untuk 60 karyawan.</p></div></article></sl-carousel-item>
+        <sl-carousel-item><article class="slide"><div class="art" style="background:linear-gradient(160deg,#cde7ee,#8fcad8 55%,#3e8ea3)"><svg viewBox="0 0 400 200" aria-hidden="true"><path d="M0 150c60-10 120 10 200 0s140-10 200 0v50H0z" fill="#e9d7b3"/><path d="M0 175c60-8 140 8 200 0s140-8 200 0v25H0z" fill="#3e8ea3" opacity=".7"/><path d="M110 150V96h180v54z" fill="#f7f2ea"/><path d="M90 96h220v-12H90z" fill="#6e4a31"/><path d="M130 108h60v34h-60zm80 0h60v34h-60z" fill="#ffe3b4" opacity=".75"/></svg></div><div class="info"><div class="row"><sl-badge variant="primary" pill>Rumah liburan</sl-badge><span class="num">Lombok · 2025</span></div><h3>Rumah Pesisir Angin</h3><p>150 m² · Panggung setinggi 1,2 m untuk angin laut dan antisipasi rob.</p></div></article></sl-carousel-item>
+      </sl-carousel>
+    </div>
+  </section>
+
+  <!-- STATS + TESTIMONIALS -->
+  <section class="sec" id="testimoni" style="padding-top:0">
+    <div class="wrap">
+      <div class="stats" id="stats">
+        <div class="stat"><b data-count="124" data-suffix="">0</b><span>rumah &amp; villa selesai</span></div>
+        <div class="stat"><b data-count="38" data-suffix="%">0</b><span>rata-rata hemat listrik</span></div>
+        <div class="stat"><b data-count="14" data-suffix="">0</b><span>kota di Indonesia</span></div>
+        <div class="stat"><b data-count="11" data-suffix=" th">0</b><span>pengalaman tim</span></div>
+      </div>
+      <div class="testi">
+        <sl-card><figure><sl-rating readonly value="5" label="Rating 5 dari 5"></sl-rating><blockquote>“Tagihan listrik kami turun hampir setengah. Siang hari kami jarang menyalakan AC karena angin benar-benar mengalir dari kolam ke tangga.”</blockquote><figcaption><sl-avatar initials="DA" label="Dewi Anggraini"></sl-avatar><div><b>Dewi Anggraini</b><span>Rumah Teras Kayu, Ubud</span></div></figcaption></figure></sl-card>
+        <sl-card><figure><sl-rating readonly value="5" label="Rating 5 dari 5"></sl-rating><blockquote>“RAB-nya rinci sampai jumlah engsel. Tidak ada biaya kejutan, dan laporan mingguannya membuat kami tenang walau tinggal di Jakarta.”</blockquote><figcaption><sl-avatar initials="RH" label="Raka Hutapea"></sl-avatar><div><b>Raka Hutapea</b><span>Villa Lereng Kabut, Lembang</span></div></figcaption></figure></sl-card>
+        <sl-card><figure><sl-rating readonly value="4.5" precision="0.5" label="Rating 4,5 dari 5"></sl-rating><blockquote>“Rumah lama orang tua kami jadi terang tanpa kehilangan karakternya. Bata lama dipakai lagi untuk dinding taman.”</blockquote><figcaption><sl-avatar initials="SN" label="Sekar Nirmala"></sl-avatar><div><b>Sekar Nirmala</b><span>Rumah Kebun Bata, Yogyakarta</span></div></figcaption></figure></sl-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="sec" id="paket" style="background:var(--bg-2)">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Paket &amp; harga</span><h2>Transparan per meter persegi.</h2></div>
+        <p>Harga desain dihitung dari luas bangunan. Tidak ada biaya tersembunyi, survei pertama selalu gratis.</p>
+      </div>
+      <div class="price-toggle">
+        <sl-radio-group id="priceType" value="rumah" label="Jenis proyek">
+          <sl-radio-button value="rumah">Rumah tinggal</sl-radio-button>
+          <sl-radio-button value="komersial">Villa &amp; komersial</sl-radio-button>
+        </sl-radio-group>
+      </div>
+      <div class="prices">
+        <div class="plan"><sl-card>
+          <div><h3>Konsep</h3><p class="desc">Untuk kamu yang ingin arah desain yang jelas sebelum melangkah.</p></div>
+          <div class="price"><b data-price="85000">Rp 85.000</b><span>/ m²</span></div>
+          <ul><li><sl-icon name="check2"></sl-icon>Survei lahan &amp; brief</li><li><sl-icon name="check2"></sl-icon>3 alternatif tata massa</li><li><sl-icon name="check2"></sl-icon>Model 3D konsep &amp; studi bayangan</li></ul>
+          <sl-button pill data-open-consult data-plan="Konsep">Pilih Konsep</sl-button>
+        </sl-card></div>
+        <div class="plan hot"><sl-card>
+          <div class="row"><h3>Desain lengkap</h3><sl-badge variant="primary" pill>Paling dipilih</sl-badge></div>
+          <p class="desc">Semua yang dibutuhkan kontraktor untuk membangun persis seperti rancangan.</p>
+          <div class="price"><b data-price="175000">Rp 175.000</b><span>/ m²</span></div>
+          <ul><li><sl-icon name="check2"></sl-icon>Semua isi paket Konsep</li><li><sl-icon name="check2"></sl-icon>Gambar kerja arsitektur, struktur, MEP</li><li><sl-icon name="check2"></sl-icon>RAB rinci &amp; bantuan tender</li><li><sl-icon name="check2"></sl-icon>Desain interior ruang utama</li></ul>
+          <sl-button variant="primary" pill data-open-consult data-plan="Desain lengkap">Pilih Desain lengkap</sl-button>
+        </sl-card></div>
+        <div class="plan"><sl-card>
+          <div><h3>Desain &amp; bangun</h3><p class="desc">Satu tim dari sketsa pertama hingga serah terima kunci.</p></div>
+          <div class="price"><span>mulai</span><b data-price="6800000" data-short>Rp 6,8 jt</b><span>/ m²</span></div>
+          <ul><li><sl-icon name="check2"></sl-icon>Desain lengkap gratis</li><li><sl-icon name="check2"></sl-icon>Kontrak harga tetap</li><li><sl-icon name="check2"></sl-icon>Pengawasan &amp; laporan mingguan</li><li><sl-icon name="check2"></sl-icon>Garansi struktur 10 tahun</li></ul>
+          <sl-button pill data-open-consult data-plan="Desain & bangun">Pilih Desain &amp; bangun</sl-button>
+        </sl-card></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec" id="faq">
+    <div class="wrap faq-grid">
+      <div><span class="eyebrow">FAQ</span><h2 class="serif" style="font-size:clamp(2rem,4vw,3.2rem);margin-top:14px">Pertanyaan yang sering muncul.</h2><p style="color:var(--muted);margin-top:14px">Belum terjawab? Tim kami membalas di WhatsApp setiap hari kerja pukul 09.00–18.00 WIB.</p></div>
+      <div class="faq-list" id="faqList">
+        <sl-details summary="Apakah Ruang Studio menerima proyek di luar Bali dan Jakarta?" open>Ya. Kami sudah mengerjakan proyek di 14 kota. Untuk lokasi di luar Jawa–Bali, biaya perjalanan survei dihitung sesuai tiket aktual tanpa markup.</sl-details>
+        <sl-details summary="Berapa lama proses desain hingga gambar kerja selesai?">Rata-rata 8–12 minggu untuk rumah 150–300 m², termasuk tiga kali putaran revisi. Jadwal detail kami kirim setelah survei pertama.</sl-details>
+        <sl-details summary="Bisakah saya memakai kontraktor sendiri?">Tentu. Paket Desain lengkap menyertakan dokumen tender dan dua kali kunjungan pengawasan berkala agar hasil sesuai gambar.</sl-details>
+        <sl-details summary="Apakah desain tropis cocok untuk lahan sempit di kota?">Sangat cocok. Void, roster, dan taman vertikal bekerja baik di lahan 6 × 15 m. Banyak proyek kami berada di kompleks perumahan.</sl-details>
+        <sl-details summary="Bagaimana sistem pembayarannya?">Bertahap per tahap kerja: 30% di awal, 40% saat desain 3D disetujui, dan 30% saat gambar kerja diserahkan. Untuk Desain &amp; bangun mengikuti termin progres konstruksi.</sl-details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="wrap" id="kontak" aria-label="Ajakan konsultasi">
+    <div class="cta">
+      <svg class="lines" viewBox="0 0 400 400" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="2"><path d="M40 360V180L200 70l160 110v180"/><path d="M90 360V210l110-76 110 76v150"/><path d="M140 360V240l60-42 60 42v120"/></g></svg>
+      <div>
+        <h2>Ceritakan rumah impianmu. Survei pertama gratis.</h2>
+        <p>Isi formulir singkat, kami hubungi dalam 1×24 jam untuk menjadwalkan kunjungan lahan atau panggilan video.</p>
+      </div>
+      <div class="cta-side">
+        <sl-button size="large" pill data-open-consult>Jadwalkan konsultasi<sl-icon slot="suffix" name="arrow-right"></sl-icon></sl-button>
+        <span class="chip"><sl-icon name="geo-alt"></sl-icon>Studio: Denpasar &amp; Jakarta Selatan</span>
+        <span class="chip"><sl-icon name="chat-quote"></sl-icon>Respons rata-rata 3 jam</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<sl-dialog id="consult" label="Jadwalkan konsultasi" style="--width:min(560px,94vw)">
+  <form class="form" id="consultForm" novalidate>
+    <div class="two">
+      <sl-input name="nama" label="Nama lengkap" required autocomplete="name" placeholder="Contoh: Ayu Pratiwi"></sl-input>
+      <sl-input name="wa" type="tel" label="No. WhatsApp" required autocomplete="tel" placeholder="08xx xxxx xxxx" pattern="[0-9+ \-]{9,16}"></sl-input>
+    </div>
+    <sl-input name="email" type="email" label="Email" required autocomplete="email" placeholder="nama@email.com"></sl-input>
+    <div class="two">
+      <sl-select name="jenis" label="Jenis proyek" value="baru" hoist>
+        <sl-option value="baru">Rumah baru</sl-option><sl-option value="renovasi">Renovasi</sl-option><sl-option value="interior">Interior saja</sl-option><sl-option value="villa">Villa / komersial</sl-option>
+      </sl-select>
+      <sl-select name="paket" id="formPlan" label="Paket" value="lengkap" hoist>
+        <sl-option value="konsep">Konsep</sl-option><sl-option value="lengkap">Desain lengkap</sl-option><sl-option value="bangun">Desain &amp; bangun</sl-option>
+      </sl-select>
+    </div>
+    <sl-input name="luas" type="number" label="Perkiraan luas bangunan (m²)" min="30" max="5000" value="180"></sl-input>
+    <sl-textarea name="cerita" label="Ceritakan rencanamu" rows="3" resize="auto" placeholder="Jumlah penghuni, kebiasaan, lokasi lahan…"></sl-textarea>
+    <sl-checkbox name="setuju" required>Saya setuju dihubungi melalui WhatsApp atau email.</sl-checkbox>
+    <div class="actions">
+      <sl-button type="button" pill id="consultCancel">Batal</sl-button>
+      <sl-button type="submit" variant="primary" pill>Kirim permintaan</sl-button>
+    </div>
+  </form>
+</sl-dialog>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="#top"><svg style="color:var(--accent)"><use href="#logo"/></svg><span>Ruang Studio<small>Arsitektur · Interior</small></span></a>
+        <p>Studio arsitektur dan interior untuk rumah tropis modern yang sejuk, hemat energi, dan berumur panjang.</p>
+      </div>
+      <div><h4>Studio</h4><a href="#prinsip">Prinsip desain</a><a href="#proses">Proses kerja</a><a href="#proyek">Proyek</a></div>
+      <div><h4>Layanan</h4><a href="#paket">Paket &amp; harga</a><a href="#konfigurator">Konfigurator 3D</a><a href="#faq">FAQ</a></div>
+      <div><h4>Kontak</h4><a href="#kontak">Jl. Tukad Badung No. 18, Denpasar</a><a href="#kontak">halo@ruangstudio.example</a><a href="#kontak">+62 812 0000 1188</a></div>
+    </div>
+    <div class="foot-bottom">
+      <span class="num">© 2026 Ruang Studio. Merek fiktif untuk template.</span>
+      <span class="built"><i></i>Dibangun dengan Shoelace + three.js</span>
+    </div>
+  </div>
+</footer>
+
+<template id="houseFallback">
+  <svg viewBox="0 0 600 500" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" role="img" aria-label="Ilustrasi rumah tropis (WebGL tidak tersedia)">
+    <defs><linearGradient id="fbSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3cf9f"/><stop offset="1" stop-color="#bcd9e6"/></linearGradient></defs>
+    <rect width="600" height="500" fill="url(#fbSky)"/><circle cx="470" cy="110" r="44" fill="#fff3d6"/>
+    <ellipse cx="300" cy="420" rx="270" ry="60" fill="#93b37b"/><path d="M30 420a270 60 0 0 0 540 0v24a270 60 0 0 1-540 0z" fill="#b08660"/>
+    <rect x="150" y="300" width="250" height="100" fill="#f1ece3"/><rect x="160" y="312" width="230" height="78" fill="#a8cfe0" opacity=".7"/>
+    <rect x="215" y="215" width="250" height="90" fill="#9a6a43"/><rect x="190" y="200" width="300" height="16" fill="#efebe4"/>
+    <g fill="#6e4a31"><rect x="330" y="226" width="7" height="76"/><rect x="345" y="226" width="7" height="76"/><rect x="360" y="226" width="7" height="76"/><rect x="375" y="226" width="7" height="76"/><rect x="390" y="226" width="7" height="76"/><rect x="405" y="226" width="7" height="76"/><rect x="420" y="226" width="7" height="76"/><rect x="435" y="226" width="7" height="76"/></g>
+    <rect x="180" y="410" width="200" height="16" rx="4" fill="#5dbfd0"/>
+    <path d="M90 420c6-80 4-140-6-190" stroke="#8c6a4f" stroke-width="9" fill="none"/><path d="M84 230c-40-10-60 10-70 30M84 230c36-14 60-2 74 20M84 230c-6-34 10-52 30-58M84 230c-22-26-48-26-62-16" stroke="#5d8c4c" stroke-width="12" fill="none" stroke-linecap="round"/>
+  </svg>
+</template>
+
+<script type="module">
+/* ================= UI wiring (Shoelace) ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const rmq = matchMedia('(prefers-reduced-motion: reduce)');
+const fmtRp = n => 'Rp ' + Math.round(n).toLocaleString('id-ID');
+const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+export const bus = new EventTarget();
+window.__ruang = { bus };
+
+// theme
+const root = document.documentElement;
+const themeBtn = $('#themeBtn');
+function syncThemeIcon(){ const dark = root.classList.contains('sl-theme-dark'); themeBtn.name = dark ? 'sun' : 'moon'; $('meta[name="theme-color"]').content = dark ? '#13110f' : '#f5f0e8'; }
+syncThemeIcon();
+themeBtn.addEventListener('click', () => {
+  const dark = !root.classList.contains('sl-theme-dark');
+  root.classList.toggle('sl-theme-dark', dark); root.classList.toggle('sl-theme-light', !dark);
+  try { localStorage.setItem('ruang-theme', dark ? 'dark' : 'light'); } catch (e) {}
+  syncThemeIcon(); bus.dispatchEvent(new Event('theme'));
+});
+
+// drawer
+const drawer = $('#menu');
+$('#menuBtn').addEventListener('click', () => drawer.show());
+$$('.drawer-links a').forEach(a => a.addEventListener('click', () => drawer.hide()));
+
+// toast helper
+function toast(message, variant = 'primary', icon = 'info-circle') {
+  const a = Object.assign(document.createElement('sl-alert'), { variant, closable: true, duration: 4500 });
+  a.innerHTML = `<sl-icon slot="icon" name="${icon}"></sl-icon>${escapeHtml(message)}`;
+  document.body.append(a);
+  customElements.whenDefined('sl-alert').then(() => requestAnimationFrame(() => a.toast()));
+}
+
+// dialog
+const dlg = $('#consult');
+const planMap = { 'Konsep': 'konsep', 'Desain lengkap': 'lengkap', 'Desain & bangun': 'bangun' };
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-open-consult]');
+  if (!t) return;
+  if (t.dataset.plan && planMap[t.dataset.plan]) $('#formPlan').value = planMap[t.dataset.plan];
+  drawer.hide?.(); dlg.show();
+});
+$('#consultCancel').addEventListener('click', () => dlg.hide());
+const form = $('#consultForm');
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  await Promise.all(['sl-input','sl-checkbox','sl-select','sl-textarea'].map(t => customElements.whenDefined(t)));
+  const fields = $$('sl-input, sl-checkbox, sl-select, sl-textarea', form);
+  const bad = fields.find(f => typeof f.reportValidity === 'function' && !f.checkValidity());
+  if (bad) { bad.reportValidity(); return; }
+  const nama = (form.querySelector('[name="nama"]').value || '').trim().split(' ')[0];
+  dlg.hide(); form.reset();
+  toast(`Terima kasih, ${nama}! Tim Ruang Studio akan menghubungimu dalam 1×24 jam.`, 'success', 'check2-circle');
+});
+
+// FAQ: only one open
+const faq = $('#faqList');
+faq.addEventListener('sl-show', e => { $$('sl-details', faq).forEach(d => { if (d !== e.target) d.open = false; }); });
+
+// carousel responsiveness
+const car = $('#projCarousel');
+const mqCar = matchMedia('(max-width: 760px)');
+function setCar(){ car.setAttribute('slides-per-page', mqCar.matches ? '1' : '2'); }
+setCar(); mqCar.addEventListener('change', setCar);
+if (!rmq.matches) { car.setAttribute('autoplay', ''); car.setAttribute('autoplay-interval', '5000'); }
+
+// calculator
+const rates = { konsep: 85000, lengkap: 175000, bangun: 6800000 };
+const weeks = { konsep: 3, lengkap: 8, bangun: 38 };
+function calc(){
+  const area = Number($('#calcArea').value) || 180;
+  const plan = $('#calcPlan').value || 'lengkap';
+  $('#outArea').textContent = area.toLocaleString('id-ID') + ' m²';
+  const w = Math.round(weeks[plan] * (0.7 + area / 600));
+  $('#outTime').textContent = plan === 'bangun' ? Math.round(w / 4.3) + ' bulan' : w + ' minggu';
+  $('#outCost').textContent = fmtRp(area * rates[plan]);
+  $('#outSave').textContent = fmtRp(area * 47 * 0.38 * 1444 / 10) ;
+}
+$('#calcArea').addEventListener('sl-input', calc);
+$('#calcPlan').addEventListener('sl-change', calc);
+customElements.whenDefined('sl-range').then(() => { $('#calcArea').tooltipFormatter = v => v + ' m²'; calc(); });
+
+// pricing toggle
+$('#priceType').addEventListener('sl-change', e => {
+  const k = e.target.value === 'komersial' ? 1.25 : 1;
+  $$('[data-price]').forEach(b => {
+    const v = Number(b.dataset.price) * k;
+    b.textContent = b.hasAttribute('data-short') ? 'Rp ' + (v / 1e6).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' jt' : fmtRp(Math.round(v / 1000) * 1000);
+  });
+});
+
+// stats counter
+const statIO = new IntersectionObserver(es => {
+  es.forEach(en => {
+    if (!en.isIntersecting) return;
+    statIO.unobserve(en.target);
+    $$('[data-count]', en.target).forEach(el => {
+      const end = Number(el.dataset.count), suf = el.dataset.suffix || '';
+      if (rmq.matches) { el.textContent = end + suf; return; }
+      const t0 = performance.now(), dur = 1400;
+      const step = now => { const p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = Math.round(end * e) + suf; if (p < 1) requestAnimationFrame(step); };
+      requestAnimationFrame(step);
+    });
+  });
+}, { threshold: .3 });
+statIO.observe($('#stats'));
+
+/* ---- scene state, shared by hero + configurator ---- */
+const state = { time: 16.5, lights: true, pool: true, facade: 'jati', frame: '#2b2622', view: 'eksterior' };
+const DEFAULTS = { ...state };
+const fmtTime = t => { let h = Math.floor(t), m = Math.round((t - h) * 60); if (m === 60) { h++; m = 0; } return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0'); };
+const phase = t => t < 6 ? 'Subuh' : t < 9.5 ? 'Pagi' : t < 15 ? 'Siang' : t < 17.6 ? 'Sore' : t < 18.8 ? 'Senja' : 'Malam';
+const facadeInfo = { jati: { cost: 0, label: 'Kayu jati' }, beton: { cost: -45000, label: 'Beton' }, andesit: { cost: 120000, label: 'Andesit' }, kapur: { cost: -60000, label: 'Kapur' } };
+const frameNames = { '#2b2622': 'Arang', '#f4efe6': 'Gading', '#6e4a31': 'Cokelat sono', '#2f5a45': 'Hijau daun', '#ad4f2b': 'Terakota', '#4a5560': 'Batu abu' };
+
+function emit(){ bus.dispatchEvent(new CustomEvent('state', { detail: state })); updateReadouts(); }
+function updateReadouts(){
+  $('#heroClock').textContent = fmtTime(state.time) + ' · ' + phase(state.time);
+  $('#cfgClock').textContent = fmtTime(state.time) + ' · ' + phase(state.time);
+  const f = facadeInfo[state.facade];
+  $('#tagCost').textContent = 'Fasad ' + f.label + ': ' + (f.cost >= 0 ? '+' : '−') + fmtRp(Math.abs(f.cost)).replace('Rp ', 'Rp ') + '/m²';
+  const load = state.facade === 'jati' || state.facade === 'kapur' ? 'rendah' : state.facade === 'beton' ? 'sedang' : 'rendah';
+  $('#tagEnergy').textContent = 'Beban AC: ' + load;
+  $('#frameName').textContent = frameNames[state.frame.toLowerCase()] || state.frame.toUpperCase();
+}
+const ranges = [$('#heroTime'), $('#cfgTime')];
+const lightSw = [$('#heroLights'), $('#cfgLights')];
+customElements.whenDefined('sl-range').then(() => ranges.forEach(r => r.tooltipFormatter = v => fmtTime(v)));
+ranges.forEach(r => r.addEventListener('sl-input', () => { state.time = Number(r.value); ranges.forEach(o => { if (o !== r) o.value = state.time; }); emit(); }));
+lightSw.forEach(s => s.addEventListener('sl-change', () => { state.lights = s.checked; lightSw.forEach(o => { if (o !== s) o.checked = s.checked; }); emit(); }));
+$('#cfgPool').addEventListener('sl-change', e => { state.pool = e.target.checked; emit(); });
+$('#cfgFacade').addEventListener('sl-change', e => { state.facade = e.target.value; emit(); });
+const picker = $('#cfgFrame');
+const onPick = () => { const v = picker.getFormattedValue ? picker.getFormattedValue('hex') : picker.value; if (v) { state.frame = v; emit(); } };
+picker.addEventListener('sl-input', onPick); picker.addEventListener('sl-change', onPick);
+const viewNames = { eksterior: 'Eksterior', lantai1: 'Lantai 1', lantai2: 'Lantai 2', atas: 'Tampak atas' };
+$('#cfgTabs').addEventListener('sl-tab-show', e => { state.view = e.detail.name; $('#cfgViewChip').textContent = viewNames[state.view]; bus.dispatchEvent(new CustomEvent('view', { detail: state.view })); });
+$('#saveConcept').addEventListener('click', () => toast(`Konsep tersimpan: fasad ${facadeInfo[state.facade].label.toLowerCase()}, kusen ${$('#frameName').textContent.toLowerCase()}, pukul ${fmtTime(state.time)}.`, 'success', 'check2-circle'));
+$('#resetConcept').addEventListener('click', () => {
+  Object.assign(state, DEFAULTS);
+  ranges.forEach(r => r.value = state.time); lightSw.forEach(s => s.checked = true); $('#cfgPool').checked = true;
+  $('#cfgFacade').value = 'jati'; picker.value = DEFAULTS.frame; $('#cfgTabs').show('eksterior');
+  emit(); toast('Konfigurator dikembalikan ke pengaturan awal.', 'neutral', 'arrow-counterclockwise');
+});
+updateReadouts();
+
+/* ================= 3D ================= */
+function webglOK(){ try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch (e) { return false; } }
+function showFallbacks(){
+  const tpl = $('#houseFallback');
+  ['#heroStage', '#cfgStage'].forEach(s => { const st = $(s); st.classList.add('no-webgl'); const fb = st.querySelector('.fallback'); if (!fb.firstChild) fb.append(tpl.content.cloneNode(true)); });
+  $('#proses').classList.add('no-webgl');
+}
+let THREE, OrbitControls;
+try {
+  if (!webglOK()) throw new Error('no-webgl');
+  THREE = await import('three');
+  ({ OrbitControls } = await import('three/addons/controls/OrbitControls.js'));
+} catch (err) { showFallbacks(); }
+
+if (THREE) {
+  const gsap = window.gsap;
+  if (gsap && window.ScrollTrigger) gsap.registerPlugin(window.ScrollTrigger);
+  const DPR = () => Math.min(window.devicePixelRatio || 1, 2);
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+  const coarse = matchMedia('(pointer: coarse)').matches;
+
+  /* --- render loop that pauses offscreen / hidden tab, renders on demand in reduced motion --- */
+  const frames = window.__ruang.frames = {};
+  function createLoop(el, frame, continuous = () => !rmq.matches){
+    let visible = false, raf = 0, last = 0, pending = true, aliveUntil = 0;
+    const L = {
+      request(){ pending = true; kick(); },
+      keepAlive(ms){ aliveUntil = Math.max(aliveUntil, performance.now() + ms); kick(); },
+    };
+    function run(){ return visible && !document.hidden; }
+    function tick(now){
+      raf = 0; if (!run()) { last = 0; return; }
+      const dt = last ? Math.min((now - last) / 1000, 0.05) : 0.016; last = now;
+      pending = false;
+      frames[el.id] = (frames[el.id] || 0) + 1;
+      frame(dt, now / 1000);
+      if (continuous() || pending || now < aliveUntil) raf = requestAnimationFrame(tick); else last = 0;
+    }
+    function kick(){ if (!raf && run()) raf = requestAnimationFrame(tick); }
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) { pending = true; kick(); } }, { rootMargin: '80px' }).observe(el);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) { pending = true; kick(); } });
+    rmq.addEventListener('change', () => L.request());
+    return L;
+  }
+
+  function makeRenderer(canvas){
+    const r = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+    r.setPixelRatio(DPR());
+    r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+    r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.0;
+    r.outputColorSpace = THREE.SRGBColorSpace;
+    return r;
+  }
+  function watchSize(el, renderer, onSize){
+    const apply = () => { const w = Math.max(1, el.clientWidth), h = Math.max(1, el.clientHeight); renderer.setPixelRatio(DPR()); renderer.setSize(w, h, false); onSize(w, h); };
+    new ResizeObserver(apply).observe(el); apply();
+  }
+
+  /* --- materials & geometry helpers --- */
+  const std = (c, rough = .85, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0, flatShading: !!o.flat, ...o.extra });
+  function box(parent, w, h, d, mat, x, y, z, o = {}){
+    const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+    m.position.set(x, y, z); m.castShadow = o.cast !== false; m.receiveShadow = o.receive !== false;
+    if (o.ry) m.rotation.y = o.ry; if (o.rx) m.rotation.x = o.rx; if (o.rz) m.rotation.z = o.rz;
+    parent.add(m); return m;
+  }
+  function rng(seed){ return () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+
+  const FACADES = { jati: ['#a0703f', .72], beton: ['#a7a59f', .95], andesit: ['#56585b', .9], kapur: ['#ece5d8', .95] };
+
+  function buildHouse(){
+    const root = new THREE.Group();
+    const M = {
+      plaster: std('#f1ece3', .92), terrace: std('#ddd5c7', .95), slab: std('#f4f0e8', .9),
+      wood: std('#bf9064', .75), darkwood: std('#6e4a31', .7), frame: std('#2b2622', .55),
+      facade: std(FACADES.jati[0], FACADES.jati[1]), grass: std('#93b37b', 1), earth: std('#b08660', 1), earthDark: std('#8e6a4b', 1),
+      leaf: std('#5d8c4c', .9, { flat: true }), leaf2: std('#7aa45e', .9, { flat: true }), trunk: std('#8c6a4f', .95, { flat: true }),
+      stone: std('#5b5a57', .95), coping: std('#e9e3d7', .9),
+      water: new THREE.MeshStandardMaterial({ color: '#5dbfd0', roughness: .08, metalness: .1, emissive: '#2aa3bd', emissiveIntensity: 0 }),
+      glass: new THREE.MeshStandardMaterial({ color: '#b7d8e6', roughness: .05, metalness: .25, transparent: true, opacity: .32, emissive: '#ffb15e', emissiveIntensity: 0, depthWrite: false }),
+      fabric: std('#e8dcc8', 1), accent: std('#c9643a', 1), white: std('#f7f4ee', .8), rug: std('#d8c3a5', 1), dark: std('#3a3631', .8),
+      lamp: new THREE.MeshStandardMaterial({ color: '#fff1d6', emissive: '#ffc979', emissiveIntensity: 0 }),
+      solar: new THREE.MeshStandardMaterial({ color: '#2a3a52', roughness: .3, metalness: .5 }),
+    };
+    // plinth (floating diorama)
+    const plinth = new THREE.Mesh(new THREE.CylinderGeometry(19, 17.6, 1.6, 72, 1), [M.earth, M.grass, M.earthDark]);
+    plinth.position.y = -0.8; plinth.receiveShadow = true; root.add(plinth);
+    // terrace + pool
+    box(root, 18, .14, 15.5, M.terrace, 0, .07, 2.75, { cast: false });
+    box(root, 10.4, .1, 3.8, M.coping, -1, .17, 7.9);
+    const water = box(root, 10, .04, 3.4, M.water, -1, .23, 7.9, { cast: false });
+    box(root, 4, .1, 3.4, M.wood, 6.6, .19, 7.9);
+    [5.6, 7.4].forEach(x => { box(root, .7, .22, 1.8, M.white, x, .35, 8.2); box(root, .7, .4, .4, M.white, x, .56, 7.5, { rx: -.5 }); });
+    // ground floor
+    box(root, 14.4, .3, 8.4, M.slab, 0, .29, 0);
+    box(root, 14, 3, .25, M.plaster, 0, 1.94, -3.9);
+    box(root, .25, 3, 8, M.plaster, -6.9, 1.94, 0);
+    box(root, .25, 3, 4, M.plaster, 6.9, 1.94, -2);
+    box(root, .06, 3, 4, M.glass, 6.9, 1.94, 2, { cast: false });
+    box(root, 13.6, 3, .06, M.glass, 0, 1.94, 3.95, { cast: false });
+    for (let x = -6.8; x <= 6.81; x += 1.7) box(root, .08, 3, .12, M.frame, x, 1.94, 3.98);
+    box(root, 14, .12, .16, M.frame, 0, 3.38, 3.98);
+    box(root, .9, 3.6, 6.4, M.stone, -7.5, 1.8, .6); // andesite feature wall
+    box(root, .24, 3.2, .24, M.frame, 8.2, 2.0, 4.3); // cantilever column
+    // ground interior
+    box(root, 13.4, .04, 7.4, M.wood, 0, .46, 0, { cast: false });
+    box(root, 4.2, .02, 3, M.rug, -3.6, .49, 1.2, { cast: false });
+    box(root, 3.4, .45, .9, M.fabric, -3.6, .72, -.2); box(root, 3.4, .55, .25, M.fabric, -3.6, 1.15, -.62); box(root, .9, .45, 1.9, M.fabric, -5.7, .72, 1.1);
+    box(root, .6, .4, .16, M.accent, -2.6, 1.08, -.42); box(root, .6, .4, .16, M.accent, -4.4, 1.08, -.42);
+    box(root, 1.4, .08, .8, M.darkwood, -3.4, .9, 1.4); box(root, 1.1, .36, .5, M.dark, -3.4, .66, 1.4);
+    box(root, 2.4, .08, 1.0, M.darkwood, 2.2, 1.22, 1.2); box(root, .1, .72, .8, M.dark, 1.2, .84, 1.2); box(root, .1, .72, .8, M.dark, 3.2, .84, 1.2);
+    [[1.5, .45], [2.9, .45], [1.5, 1.95], [2.9, 1.95]].forEach(([x, z]) => { box(root, .5, .08, .5, M.fabric, x, .95, z); box(root, .5, .55, .08, M.fabric, x, 1.25, z < 1.2 ? z - .22 : z + .22); });
+    box(root, 4.5, .95, .6, M.white, 4.2, .94, -3.45); box(root, 4.5, .7, .4, M.darkwood, 4.2, 2.6, -3.55);
+    box(root, 2.4, .95, .9, M.stone, 4.4, .94, -1.8);
+    for (let i = 0; i < 12; i++) box(root, 1.1, .28 * (i + 1), .27, M.darkwood, -.6, .46 + .14 * (i + 1), -.5 - i * .27);
+    box(root, 1.6, 1.0, .04, M.accent, -3.6, 2.25, -3.74);
+    const lampsGF = [[-3.4, 2.95, 1.4], [2.2, 2.75, 1.2], [4.4, 2.75, -1.8]].map(p => { const s = new THREE.Mesh(new THREE.SphereGeometry(.22, 12, 8), M.lamp); s.position.set(...p); root.add(s); return s; });
+    // plants indoor
+    [[-6.2, 3.2], [6.2, 3.2]].forEach(([x, z]) => { const p = new THREE.Mesh(new THREE.CylinderGeometry(.3, .24, .6, 8), M.white); p.position.set(x, .78, z); p.castShadow = true; root.add(p); const l = new THREE.Mesh(new THREE.IcosahedronGeometry(.6, 0), M.leaf2); l.position.set(x, 1.5, z); l.castShadow = true; root.add(l); });
+
+    // upper floor (liftable)
+    const upper = new THREE.Group(); root.add(upper);
+    box(upper, 12.4, .36, 8.6, M.slab, 2.3, 3.62, .3);
+    box(upper, 12.2, 2.8, .25, M.facade, 2.3, 5.2, -3.9);
+    box(upper, .25, 2.8, 8.4, M.facade, -3.8, 5.2, .3);
+    box(upper, .25, 2.8, 8.4, M.facade, 8.4, 5.2, .3);
+    box(upper, 12, 2.8, .06, M.glass, 2.3, 5.2, 4.45, { cast: false });
+    const louvGeo = new THREE.BoxGeometry(.1, 2.8, .24);
+    const louvX = []; for (let x = 1.1; x <= 8.3; x += .32) louvX.push(x);
+    const louvers = new THREE.InstancedMesh(louvGeo, M.facade, louvX.length);
+    const mtx = new THREE.Matrix4(); louvX.forEach((x, i) => { mtx.makeTranslation(x, 5.2, 4.68); louvers.setMatrixAt(i, mtx); });
+    louvers.castShadow = true; louvers.receiveShadow = true; upper.add(louvers);
+    box(upper, 4.6, 1.0, .05, M.glass, -1.4, 4.3, 4.62, { cast: false });
+    box(upper, 3.6, .25, 8.8, M.slab, -5.5, 3.57, .1); // canopy over left wing
+    box(upper, 3.2, .14, 8.2, M.grass, -5.5, 3.76, .1); // green roof
+    for (let i = 0; i < 7; i++) { const b = new THREE.Mesh(new THREE.IcosahedronGeometry(.32 + (i % 3) * .08, 0), i % 2 ? M.leaf : M.leaf2); b.position.set(-6.4 + (i % 2) * 1.6, 3.95, -3 + i * 1.0); b.castShadow = true; upper.add(b); }
+    // upper interior
+    box(upper, 11.8, .04, 8, M.wood, 2.3, 3.82, .3, { cast: false });
+    box(upper, .15, 2.8, 4, M.plaster, 3.0, 5.2, -1.8);
+    box(upper, 2.1, .45, 2.3, M.white, 5.8, 4.05, .2); box(upper, 2.1, .16, 1.6, M.fabric, 5.8, 4.34, .55); box(upper, .7, .15, .4, M.white, 5.3, 4.36, -.6); box(upper, .7, .15, .4, M.white, 6.3, 4.36, -.6); box(upper, 2.5, 1.1, .12, M.darkwood, 5.8, 4.4, -.95);
+    box(upper, 1.8, .06, .7, M.darkwood, -1.6, 4.55, -3.2); box(upper, .5, .5, .5, M.accent, -1.6, 4.1, -2.5);
+    box(upper, .4, 2.0, 1.8, M.darkwood, -3.4, 4.8, -1.4);
+    box(upper, 1.6, .5, .75, M.white, 1.4, 4.08, -2.9);
+    box(upper, 1.3, .4, .9, M.fabric, -1.6, 4.05, 3.2);
+    const lampsUp = [[5.8, 6.2, .6], [-1.2, 6.2, -1.0]].map(p => { const s = new THREE.Mesh(new THREE.SphereGeometry(.2, 12, 8), M.lamp); s.position.set(...p); upper.add(s); return s; });
+
+    // roof (liftable)
+    const roof = new THREE.Group(); root.add(roof);
+    box(roof, 14.6, .32, 10.6, M.slab, 2.3, 6.78, .4);
+    box(roof, 14.7, .1, 10.7, M.frame, 2.3, 6.58, .4, { cast: false });
+    for (let i = 0; i < 3; i++) for (let j = 0; j < 2; j++) box(roof, 1.6, .08, 1.0, M.solar, 4 + i * 1.8, 7.06, -2 + j * 1.3, { rx: -.18 });
+
+    // site: palms, shrubs, path, back wall, bollards
+    function palm(x, z, h, lean, rot){
+      const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = rot; root.add(g);
+      const curve = new THREE.QuadraticBezierCurve3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(lean * .2, h * .55, 0), new THREE.Vector3(lean, h, 0));
+      const trunk = new THREE.Mesh(new THREE.TubeGeometry(curve, 8, .2, 6), M.trunk); trunk.castShadow = true; g.add(trunk);
+      const top = new THREE.Group(); top.position.set(lean, h, 0); g.add(top);
+      const lg = new THREE.ConeGeometry(.5, 3.6, 4, 1); lg.translate(0, 1.8, 0);
+      for (let k = 0; k < 8; k++) { const piv = new THREE.Group(); piv.rotation.y = k * Math.PI / 4 + .2; const leaf = new THREE.Mesh(lg, k % 2 ? M.leaf : M.leaf2); leaf.scale.set(1, 1, .22); leaf.rotation.z = -(1.25 + (k % 3) * .18); leaf.castShadow = true; piv.add(leaf); top.add(piv); }
+      for (let k = 0; k < 3; k++) { const c = new THREE.Mesh(new THREE.IcosahedronGeometry(.2, 0), M.darkwood); c.position.set(Math.cos(k * 2.1) * .3, -.25, Math.sin(k * 2.1) * .3); top.add(c); }
+      return g;
+    }
+    const palms = [palm(-12.5, 6.5, 8.5, 1.6, .3), palm(-14, -3.5, 7.2, -1.2, 1.2), palm(12.8, 8.2, 7.8, 1.4, 2.4), palm(12, -7, 9, -1.0, -.6)];
+    const r = rng(7);
+    for (let i = 0; i < 26; i++) {
+      const a = r() * Math.PI * 2, d = 14.5 + r() * 3.6, x = Math.cos(a) * d, z = Math.sin(a) * d;
+      if (z > 9 && Math.abs(x - 7.5) < 2.5) continue;
+      const s = new THREE.Mesh(new THREE.IcosahedronGeometry(.5 + r() * .9, 0), r() > .5 ? M.leaf : M.leaf2);
+      s.position.set(x, .35, z); s.rotation.set(r(), r(), r()); s.castShadow = true; s.receiveShadow = true; root.add(s);
+    }
+    for (let i = 0; i < 5; i++) box(root, 1.5, .1, .8, M.terrace, 7.5, .05, 11.4 + i * 1.3);
+    box(root, 26, 1.3, .45, M.coping, 0, .65, -10);
+    const bollards = [];
+    for (let i = 0; i < 4; i++) { box(root, .18, .7, .18, M.frame, 9, .35, 11 + i * 1.6); const l = new THREE.Mesh(new THREE.BoxGeometry(.2, .14, .2), M.lamp); l.position.set(9, .72, 11 + i * 1.6); root.add(l); bollards.push(l); }
+
+    // interior lights
+    const pls = [];
+    [[-3.4, 2.7, 1.4], [3.0, 2.6, .2], [5.8, 5.9, .8]].forEach((p, i) => { const L = new THREE.PointLight('#ffc27a', 0, 11, 2); L.position.set(...p); (i === 2 ? upper : root).add(L); pls.push(L); });
+    const poolLight = new THREE.PointLight('#7fe3f2', 0, 9, 2); poolLight.position.set(-1, .6, 7.9); root.add(poolLight);
+
+    root.traverse(o => { if (o.isMesh && o.material !== M.glass) { if (o.castShadow === undefined) o.castShadow = true; } });
+    return { root, M, upper, roof, pls, poolLight, lamps: [...lampsGF, ...lampsUp], bollards, palms, water };
+  }
+
+  const SKY = [[5, '#1b2036'], [5.9, '#6b5a7e'], [6.6, '#eaa27c'], [7.6, '#f2cf9f'], [9.5, '#bcdbea'], [12, '#a6d1ea'], [15.5, '#b9d7e5'], [17, '#f0c08a'], [17.9, '#e8916a'], [18.6, '#7a5a82'], [19.3, '#2a2b4a'], [20, '#151a2c']];
+  const skyCols = SKY.map(([t, c]) => [t, new THREE.Color(c)]);
+  function skyAt(t, out){
+    if (t <= skyCols[0][0]) return out.copy(skyCols[0][1]);
+    for (let i = 1; i < skyCols.length; i++) if (t <= skyCols[i][0]) { const [t0, c0] = skyCols[i - 1], [t1, c1] = skyCols[i]; return out.copy(c0).lerp(c1, (t - t0) / (t1 - t0)); }
+    return out.copy(skyCols[skyCols.length - 1][1]);
+  }
+  const warmLow = new THREE.Color('#ffae6b'), warmHigh = new THREE.Color('#fff4e2'), moonCol = new THREE.Color('#8ea6dc');
+  const moonDir = new THREE.Vector3(-.45, .8, .5).normalize();
+
+  function createHouseView(canvas, stageEl, opts){
+    const renderer = makeRenderer(canvas);
+    const scene = new THREE.Scene();
+    const H = buildHouse(); scene.add(H.root);
+    const hemi = new THREE.HemisphereLight('#bcdbea', '#b59a7a', .9); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff4e2', 3); sun.castShadow = true;
+    sun.shadow.mapSize.set(opts.hero ? 1536 : 2048, opts.hero ? 1536 : 2048);
+    Object.assign(sun.shadow.camera, { left: -22, right: 22, top: 22, bottom: -22, near: 1, far: 90 });
+    sun.shadow.bias = -.0004; sun.shadow.normalBias = .03;
+    scene.add(sun, sun.target);
+    const camera = new THREE.PerspectiveCamera(30, 1, .5, 300);
+    const target = new THREE.Vector3(1, 2.4, 1);
+    const heroTarget = new THREE.Vector3(1, -1.2, 1.5);
+    const sky = new THREE.Color(); scene.fog = new THREE.Fog('#bcdbea', 60, 140);
+    let aspect = 1;
+
+    function apply(s){
+      skyAt(s.time, sky); scene.background = sky; scene.fog.color.copy(sky);
+      const ph = Math.PI * (s.time - 6.1) / 12.4, el = Math.sin(ph);
+      const day = smooth(-.06, .28, el), night = 1 - day;
+      const sd = new THREE.Vector3(Math.cos(ph) * .9, Math.max(el, .05) * 1.0 + .05, .55).normalize();
+      const dir = moonDir.clone().lerp(sd, day).normalize();
+      sun.position.copy(dir).multiplyScalar(45); sun.target.position.set(0, 0, 0);
+      sun.color.copy(moonCol).lerp(warmLow.clone().lerp(warmHigh, smooth(.05, .6, el)), day);
+      sun.intensity = .35 + 2.9 * day;
+      hemi.color.copy(sky); hemi.intensity = .28 + .8 * day;
+      hemi.groundColor.set('#b59a7a').multiplyScalar(.4 + .6 * day);
+      renderer.toneMappingExposure = .9 + .2 * day;
+      const on = s.lights ? 1 : 0;
+      H.pls.forEach(L => L.intensity = on * (4 + 26 * night));
+      H.lamps.forEach(m => m.material.emissiveIntensity = on * (.6 + 2.4 * night));
+      H.M.glass.emissiveIntensity = on * (.04 + .5 * night);
+      H.M.glass.opacity = .3 + .25 * night * on;
+      const pool = s.pool ? 1 : 0;
+      H.poolLight.intensity = pool * night * 14; H.M.water.emissiveIntensity = pool * (.05 + .9 * night);
+      H.bollards.forEach(b => b.material.emissiveIntensity = pool * (.3 + 2 * night));
+      const [fc, fr] = FACADES[s.facade] || FACADES.jati; H.M.facade.color.set(fc); H.M.facade.roughness = fr;
+      try { H.M.frame.color.set(s.frame); } catch (e) {}
+      loop.request();
+    }
+
+    // camera behaviour
+    let mode = opts.hero ? 'hero' : 'cfg';
+    const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+    let controls = null;
+    const PRESETS = {
+      eksterior: { pos: [27, 15, 30], tgt: [1, 2.4, 1], up: 0, rf: 0 },
+      lantai1: { pos: [10, 25, 23], tgt: [0, .5, 1], up: 1, rf: 1 },
+      lantai2: { pos: [-15, 24, 21], tgt: [2, 3.8, .5], up: 0, rf: 1 },
+      atas: { pos: [.01, 52, 9], tgt: [0, 0, 1.5], up: 0, rf: 0 },
+    };
+    const distScale = () => aspect < .75 ? 1.55 : aspect < 1.05 ? 1.25 : 1;
+    function presetPos(p){ const v = new THREE.Vector3(...p.pos).sub(new THREE.Vector3(...p.tgt)).multiplyScalar(distScale()).add(new THREE.Vector3(...p.tgt)); return v; }
+
+    if (!opts.hero) {
+      camera.position.copy(presetPos(PRESETS.eksterior)); target.set(...PRESETS.eksterior.tgt);
+      if (!coarse) {
+        controls = new OrbitControls(camera, canvas);
+        controls.enableDamping = true; controls.dampingFactor = .08; controls.enableZoom = false; controls.enablePan = false;
+        controls.minPolarAngle = .05; controls.maxPolarAngle = 1.38; controls.rotateSpeed = .6;
+        controls.target.copy(target); controls.addEventListener('change', () => loop.request());
+        controls.addEventListener('start', () => loop.keepAlive(1500));
+        controls.addEventListener('end', () => loop.keepAlive(1200));
+      }
+    } else {
+      stageEl.addEventListener('pointermove', e => { const r = stageEl.getBoundingClientRect(); pointer.tx = ((e.clientX - r.left) / r.width - .5) * 2; pointer.ty = ((e.clientY - r.top) / r.height - .5) * 2; loop.request(); });
+      stageEl.addEventListener('pointerleave', () => { pointer.tx = 0; pointer.ty = 0; loop.request(); });
+    }
+
+    function lift(group, up, dur){
+      const y = up ? 15 : 0;
+      if (!up) group.visible = true;
+      if (gsap && dur > 0) gsap.to(group.position, { y, duration: dur, ease: up ? 'power3.in' : 'power3.out', onUpdate: () => loop.request(), onComplete: () => { if (up) group.visible = false; loop.request(); } });
+      else { group.position.y = y; group.visible = !up; loop.request(); }
+    }
+    function setView(name){
+      const p = PRESETS[name] || PRESETS.eksterior; const dur = rmq.matches ? 0 : 1.5;
+      const pos = presetPos(p), tgt = new THREE.Vector3(...p.tgt);
+      const t = controls ? controls.target : target;
+      if (gsap && dur > 0) {
+        gsap.to(camera.position, { x: pos.x, y: pos.y, z: pos.z, duration: dur, ease: 'power3.inOut', onUpdate: () => loop.request() });
+        gsap.to(t, { x: tgt.x, y: tgt.y, z: tgt.z, duration: dur, ease: 'power3.inOut' });
+        loop.keepAlive(dur * 1000 + 300);
+      } else { camera.position.copy(pos); t.copy(tgt); loop.request(); }
+      lift(H.upper, !!p.up, dur * .8); lift(H.roof, !!p.rf, dur * .8);
+    }
+
+    const loop = createLoop(canvas, (dt, t) => {
+      if (mode === 'hero') {
+        const k = 1 - Math.exp(-dt * 3);
+        pointer.x += (pointer.tx - pointer.x) * k; pointer.y += (pointer.ty - pointer.y) * k;
+        if (Math.abs(pointer.tx - pointer.x) > .002 || Math.abs(pointer.ty - pointer.y) > .002) loop.request();
+        const sway = rmq.matches ? 0 : Math.sin(t * .12) * .35;
+        const a = .72 + sway + pointer.x * .18;
+        const R = 50 * distScale(), Hh = 19 + pointer.y * -3;
+        camera.position.set(heroTarget.x + Math.sin(a) * R, Hh * distScale(), heroTarget.z + Math.cos(a) * R);
+        camera.lookAt(heroTarget);
+        if (!rmq.matches) H.palms.forEach((p, i) => { p.rotation.z = Math.sin(t * .9 + i) * .012; });
+      } else {
+        if (controls) { if (controls.update()) loop.request(); } else camera.lookAt(target);
+      }
+      renderer.render(scene, camera);
+      if (!stageEl.classList.contains('ready')) stageEl.classList.add('ready');
+    }, opts.hero ? () => !rmq.matches : () => false);
+
+    watchSize(stageEl, renderer, (w, h) => {
+      aspect = w / h; camera.aspect = aspect; camera.fov = aspect < .8 ? 36 : 30; camera.updateProjectionMatrix();
+      if (!opts.hero && !controls) { camera.position.copy(presetPos(PRESETS[state.view] || PRESETS.eksterior)); }
+      loop.request();
+    });
+    apply(state);
+    return { apply, setView, loop };
+  }
+
+  let heroV, cfgV;
+  try {
+    heroV = createHouseView($('#heroCanvas'), $('#heroStage'), { hero: true });
+    cfgV = createHouseView($('#cfgCanvas'), $('#cfgStage'), { hero: false });
+  } catch (e) { console.warn('WebGL init gagal', e); showFallbacks(); }
+  if (heroV && cfgV) {
+    bus.addEventListener('state', e => { heroV.apply(e.detail); cfgV.apply(e.detail); });
+    bus.addEventListener('view', e => cfgV.setView(e.detail));
+  }
+
+  /* ================= Isometric scroll story ================= */
+  function createStory(){
+    const section = $('#proses'), stage = $('.story-stage', section), canvas = $('#storyCanvas');
+    const renderer = makeRenderer(canvas);
+    const scene = new THREE.Scene();
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -100, 200);
+    const camDir = new THREE.Vector3(1, 1.1, 1).normalize();
+    const camTarget = new THREE.Vector3();
+    const hemi = new THREE.HemisphereLight('#fff7ec', '#c9b79f', 1.3); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff1dc', 2.6); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+    Object.assign(sun.shadow.camera, { left: -18, right: 18, top: 18, bottom: -18, near: 1, far: 80 }); sun.shadow.bias = -.0005; sun.shadow.normalBias = .03;
+    scene.add(sun, sun.target);
+
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(140, 80), std('#efe7da', 1)); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+    let gridRef = new THREE.GridHelper(140, 70, '#d9ccb8', '#e3d8c7'); gridRef.position.y = .01; scene.add(gridRef);
+
+    const CLAY = new THREE.Color('#f1ebe1');
+    const ACC = '#c9643a';
+    const stations = [];
+    const SP = [[-16, 4], [-6, -4], [3, 4], [12, -4], [21, 4]];
+    function stationMat(c){ const m = std(c, .85); m.userData.target = new THREE.Color(c); m.color.copy(CLAY); return m; }
+    function sbox(g, mats, w, h, d, c, x, y, z, o){ const m = stationMat(c); mats.push(m); return box(g, w, h, d, m, x, y, z, o); }
+    function smesh(g, mats, geo, c, x, y, z){ const m = stationMat(c); mats.push(m); const me = new THREE.Mesh(geo, m); me.position.set(x, y, z); me.castShadow = true; me.receiveShadow = true; g.add(me); return me; }
+    SP.forEach(([x, z], i) => {
+      const g = new THREE.Group(); g.position.set(x, 0, z); scene.add(g);
+      const mats = [];
+      const pad = smesh(g, mats, new THREE.CylinderGeometry(3, 3.1, .24, 40), '#f3d3bd', 0, .12, 0);
+      const inner = new THREE.Group(); g.add(inner); inner.position.y = .24;
+      if (i === 0) { // survey
+        sbox(inner, mats, 3.2, .12, 3.2, '#93b37b', 0, .06, 0);
+        for (let k = 0; k < 3; k++) { const a = k * 2.1; sbox(inner, mats, .07, 1.6, .07, '#6e4a31', Math.cos(a) * .35, .8, Math.sin(a) * .35, { rx: Math.sin(a) * .25, rz: -Math.cos(a) * .25 }); }
+        sbox(inner, mats, .4, .3, .3, '#e3b23c', 0, 1.7, 0);
+        [[1.2, 1.1], [-1.1, -1.2]].forEach(([fx, fz]) => { sbox(inner, mats, .05, 1.4, .05, '#3a3631', fx, .8, fz); sbox(inner, mats, .5, .3, .03, ACC, fx + .27, 1.32, fz); });
+        smesh(inner, mats, new THREE.ConeGeometry(.6, 1.4, 6), '#5d8c4c', -1.1, 1.2, 1.0); sbox(inner, mats, .15, .5, .15, '#8c6a4f', -1.1, .35, 1.0);
+      } else if (i === 1) { // sketch
+        sbox(inner, mats, 2.2, .08, 1.4, '#bf9064', 0, 1.05, 0, { rx: -.28 });
+        sbox(inner, mats, 1.6, .02, 1.0, '#ffffff', 0, 1.11, .02, { rx: -.28 });
+        sbox(inner, mats, .1, 1.0, 1.0, '#3a3631', -.9, .5, 0); sbox(inner, mats, .1, 1.0, 1.0, '#3a3631', .9, .5, 0);
+        smesh(inner, mats, new THREE.CylinderGeometry(.3, .3, .7, 12), ACC, 0, .35, 1.3);
+        sbox(inner, mats, .05, .9, .05, '#3a3631', .95, 1.5, -.5); smesh(inner, mats, new THREE.ConeGeometry(.25, .3, 10), '#e3b23c', .95, 1.95, -.3);
+        sbox(inner, mats, .4, .03, .3, ACC, -.4, 1.14, .1, { rx: -.28, ry: .3 });
+      } else if (i === 2) { // 3D model
+        sbox(inner, mats, 2.6, .1, 1.6, '#6e4a31', 0, .9, 0); sbox(inner, mats, .1, .85, 1.4, '#3a3631', -1.15, .43, 0); sbox(inner, mats, .1, .85, 1.4, '#3a3631', 1.15, .43, 0);
+        sbox(inner, mats, .9, .4, .6, '#f4efe6', -.4, 1.15, .2); sbox(inner, mats, .8, .35, .55, '#a0703f', -.2, 1.53, .15); sbox(inner, mats, 1.1, .05, .8, '#ffffff', -.25, 1.73, .15);
+        sbox(inner, mats, 1.1, .7, .06, '#2a3a52', .6, 1.45, -.55); sbox(inner, mats, .1, .3, .1, '#3a3631', .6, 1.05, -.55);
+      } else if (i === 3) { // construction
+        sbox(inner, mats, 3.2, .2, 2.6, '#c9c3b8', 0, .1, 0);
+        [[-1.3, -1], [1.3, -1], [-1.3, 1], [1.3, 1]].forEach(([cx, cz]) => sbox(inner, mats, .2, 2.0, .2, '#a7a59f', cx, 1.2, cz));
+        sbox(inner, mats, 2.8, .18, .2, '#a7a59f', 0, 2.2, -1); sbox(inner, mats, 2.8, .18, .2, '#a7a59f', 0, 2.2, 1);
+        for (let b = 0; b < 4; b++) sbox(inner, mats, 2.4 - b * .4, .22, .25, '#b5653d', -.1, .32 + b * .23, -1);
+        sbox(inner, mats, .3, 4.6, .3, '#e3b23c', 1.9, 2.3, 1.1); sbox(inner, mats, 3.6, .22, .22, '#e3b23c', .7, 4.5, 1.1); sbox(inner, mats, .03, 1.6, .03, '#3a3631', -.6, 3.7, 1.1);
+        sbox(inner, mats, .4, .3, .4, '#3a3631', -.6, 2.8, 1.1);
+      } else { // handover
+        sbox(inner, mats, 2.8, 1.6, 2.2, '#f4efe6', 0, .8, 0); sbox(inner, mats, 1.8, .9, 1.6, '#a0703f', .3, 2.05, -.1); sbox(inner, mats, 3.4, .14, 2.8, '#ffffff', .15, 2.56, 0);
+        sbox(inner, mats, .55, 1.0, .05, '#6e4a31', -.6, .5, 1.12); sbox(inner, mats, .9, .55, .05, '#ffd8a0', .6, 1.0, 1.12);
+        const key = new THREE.Group(); key.position.set(0, 3.6, 0); inner.add(key);
+        smesh(key, mats, new THREE.TorusGeometry(.32, .09, 8, 20), '#e3b23c', 0, 0, 0); sbox(key, mats, .9, .12, .12, '#e3b23c', .7, 0, 0); sbox(key, mats, .12, .25, .1, '#e3b23c', .95, -.15, 0);
+        g.userData.key = key;
+      }
+      stations.push({ g, mats, inner, pad, lit: 0 });
+    });
+
+    // path (rounded manhattan route)
+    const pts = [[-16, 4], [-11, 4], [-11, -4], [-6, -4], [-1, -4], [-1, 4], [3, 4], [7.5, 4], [7.5, -4], [12, -4], [16.5, -4], [16.5, 4], [21, 4]].map(([x, z]) => new THREE.Vector3(x, .3, z));
+    const path = new THREE.CurvePath(); const rad = 1.4;
+    let cur = pts[0].clone();
+    for (let i = 1; i < pts.length - 1; i++) {
+      const p = pts[i], dIn = p.clone().sub(pts[i - 1]).normalize(), dOut = pts[i + 1].clone().sub(p).normalize();
+      if (dIn.dot(dOut) > .999) continue;
+      const a = p.clone().addScaledVector(dIn, -rad), b = p.clone().addScaledVector(dOut, rad);
+      path.add(new THREE.LineCurve3(cur.clone(), a)); path.add(new THREE.QuadraticBezierCurve3(a, p.clone(), b)); cur = b;
+    }
+    path.add(new THREE.LineCurve3(cur, pts[pts.length - 1].clone()));
+    const TS = 700, RS = 6;
+    const baseTube = new THREE.Mesh(new THREE.TubeGeometry(path, TS, .12, RS, false), std('#d8cbb7', .9)); baseTube.receiveShadow = true; scene.add(baseTube);
+    const progMat = new THREE.MeshStandardMaterial({ color: '#e8743f', emissive: '#e8743f', emissiveIntensity: .35, roughness: .5 });
+    const progTube = new THREE.Mesh(new THREE.TubeGeometry(path, TS, .2, RS, false), progMat); progTube.geometry.setDrawRange(0, 0); scene.add(progTube);
+    pts.forEach(p => { const d = new THREE.Mesh(new THREE.CylinderGeometry(.34, .34, .08, 16), std('#e8743f', .6)); d.position.set(p.x, .05, p.z); scene.add(d); });
+
+    // station params on the curve
+    const samples = 1200, stationU = SP.map(([x, z]) => { let best = 0, bd = 1e9; for (let s = 0; s <= samples; s++) { const q = path.getPointAt(s / samples); const d = (q.x - x) ** 2 + (q.z - z) ** 2; if (d < bd) { bd = d; best = s / samples; } } return best; });
+    stationU[0] = 0; stationU[stationU.length - 1] = 1;
+
+    // character
+    const chr = new THREE.Group(); scene.add(chr);
+    const skin = std('#c99a76', .8), shirt = std('#c9643a', .9), pants = std('#2f4a3a', .9), hair = std('#2a211b', .9), helmet = std('#e3b23c', .6);
+    const body = new THREE.Mesh(new THREE.CapsuleGeometry(.32, .55, 4, 10), shirt); body.position.y = 1.25; body.castShadow = true; chr.add(body);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(.3, 16, 12), skin); head.position.y = 1.98; head.castShadow = true; chr.add(head);
+    const cap = new THREE.Mesh(new THREE.SphereGeometry(.32, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), hair); cap.position.y = 2.02; chr.add(cap);
+    const hat = new THREE.Mesh(new THREE.SphereGeometry(.36, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), helmet); hat.position.y = 2.06; hat.scale.setScalar(.001); chr.add(hat);
+    const tube = new THREE.Mesh(new THREE.BoxGeometry(.5, .3, .1), std('#f4efe6', .9)); tube.position.set(.0, 1.3, -.36); chr.add(tube);
+    function limb(mat, w, h, x, y){ const piv = new THREE.Group(); piv.position.set(x, y, 0); const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, w), mat); m.position.y = -h / 2; m.castShadow = true; piv.add(m); chr.add(piv); return piv; }
+    const legL = limb(pants, .2, .8, -.15, .85), legR = limb(pants, .2, .8, .15, .85), armL = limb(shirt, .15, .65, -.42, 1.55), armR = limb(shirt, .15, .65, .42, 1.55);
+
+    let targetU = 0, shownU = 0, walkPhase = 0, step = 0, lastPos = new THREE.Vector3(), halfW = 10, halfH = 10, aspect = 1;
+    const bar = $('#storyBar'), count = $('#storyCount'), steps = $$('.step', section);
+    function mapProgress(p){
+      const n = SP.length - 1, u = clamp(p, 0, 1) * n, i = Math.min(n - 1, Math.floor(u)), f = u - i;
+      const w = smooth(.22, .82, f);
+      return { u: stationU[i] + (stationU[i + 1] - stationU[i]) * w, step: w < .5 ? i : i + 1 };
+    }
+    function setProgress(p){
+      const m = mapProgress(p); targetU = m.u;
+      if (m.step !== step) { step = m.step; steps.forEach((s, k) => s.classList.toggle('on', k === step)); count.textContent = `Langkah ${step + 1} dari ${SP.length}`; }
+      bar.style.width = (clamp(p, 0, 1) * 100).toFixed(1) + '%';
+      loop.request();
+    }
+    function themeColors(){
+      const dark = root.classList.contains('sl-theme-dark');
+      scene.background = new THREE.Color(dark ? '#16130f' : '#f5f0e8');
+      ground.material.color.set(dark ? '#1f1b17' : '#efe7da');
+      scene.remove(gridRef); gridRef.geometry.dispose(); gridRef.material.dispose();
+      gridRef = new THREE.GridHelper(140, 70, dark ? '#2e2822' : '#ddd0bc', dark ? '#27221d' : '#e6dccb'); gridRef.position.y = .01; scene.add(gridRef);
+      CLAY.set(dark ? '#d9d0c3' : '#f1ebe1');
+      hemi.intensity = dark ? .75 : 1.3; sun.intensity = dark ? 1.9 : 2.6;
+      loop.request();
+    }
+    const loop = createLoop(canvas, (dt, t) => {
+      const k = rmq.matches ? 1 : 1 - Math.exp(-dt * 5);
+      shownU += (targetU - shownU) * k;
+      if (Math.abs(targetU - shownU) > 1e-4) loop.request(); else shownU = targetU;
+      const pos = path.getPointAt(clamp(shownU, 0, 1)), tan = path.getTangentAt(clamp(shownU, 0, .9999));
+      const moved = pos.distanceTo(lastPos); lastPos.copy(pos);
+      walkPhase += moved * 3.2;
+      const moving = clamp(moved * 25, 0, 1);
+      chr.position.set(pos.x, 0, pos.z);
+      if (moved > 1e-4) chr.rotation.y = Math.atan2(tan.x, tan.z);
+      const sw = Math.sin(walkPhase) * .7 * moving;
+      legL.rotation.x = sw; legR.rotation.x = -sw; armL.rotation.x = -sw * .8; armR.rotation.x = sw * .8;
+      chr.position.y = Math.abs(Math.sin(walkPhase)) * .08 * moving;
+      const hs = step >= 3 ? 1 : .001; hat.scale.setScalar(hat.scale.x + (hs - hat.scale.x) * (rmq.matches ? 1 : .12)); if (Math.abs(hs - hat.scale.x) > .01) loop.request();
+      progTube.geometry.setDrawRange(0, Math.floor(shownU * TS) * RS * 6);
+      // stations light up when reached
+      stations.forEach((s, i) => {
+        const goal = shownU >= stationU[i] - .004 ? 1 : 0;
+        const prev = s.lit; s.lit += (goal - s.lit) * (rmq.matches ? 1 : Math.min(1, dt * 4));
+        if (Math.abs(goal - s.lit) > .002) loop.request(); else s.lit = goal;
+        if (prev !== s.lit || s.lit === 0) s.mats.forEach(m => m.color.copy(CLAY).lerp(m.userData.target, s.lit));
+        const sc = .82 + .18 * s.lit; s.inner.scale.setScalar(sc);
+        if (s.g.userData.key) { s.g.userData.key.rotation.y = shownU * 14; s.g.userData.key.position.y = 3.6 + s.lit * .3; }
+      });
+      // camera follow (char offset to the right on desktop, upward on mobile)
+      const desired = new THREE.Vector3(pos.x, 0, pos.z);
+      const right = new THREE.Vector3(1, 0, -1).normalize();
+      if (aspect >= .9) desired.addScaledVector(right, -halfW * .32);
+      else { const upW = new THREE.Vector3(0, 1, 0).applyQuaternion(cam.quaternion); upW.y = 0; desired.addScaledVector(upW.normalize(), -halfH * .55); }
+      if (camTarget.lengthSq() === 0) camTarget.copy(desired);
+      camTarget.lerp(desired, rmq.matches ? 1 : 1 - Math.exp(-dt * 3.5));
+      if (camTarget.distanceTo(desired) > .01) loop.request();
+      cam.position.copy(camTarget).addScaledVector(camDir, 60); cam.lookAt(camTarget);
+      sun.position.copy(camTarget).add(new THREE.Vector3(14, 26, 8)); sun.target.position.copy(camTarget);
+      renderer.render(scene, cam);
+    }, () => false);
+    watchSize(stage, renderer, (w, h) => {
+      aspect = w / h; halfH = aspect < .9 ? 9.5 : 8.2; halfW = halfH * aspect;
+      Object.assign(cam, { left: -halfW, right: halfW, top: halfH, bottom: -halfH }); cam.updateProjectionMatrix(); loop.request();
+    });
+    themeColors(); bus.addEventListener('theme', themeColors);
+    return { setProgress, loop, renderer, scene, cam };
+  }
+
+  let story = null;
+  try { story = createStory(); } catch (e) { console.warn('Story WebGL gagal', e); $('#proses').classList.add('no-webgl'); }
+  // scroll driver: GSAP ScrollTrigger when available, else own mapping
+  const sec = $('#proses');
+  const svgNodes = $$('#storySvg .node');
+  function onProg(p){
+    if (story) story.setProgress(p);
+    else { const n = Math.round(clamp(p, 0, 1) * 4); $$('.step', sec).forEach((s, k) => s.classList.toggle('on', k === n)); svgNodes.forEach((c, k) => c.classList.toggle('on', k <= n)); $('#storyBar').style.width = (p * 100) + '%'; $('#storyCount').textContent = `Langkah ${n + 1} dari 5`; }
+  }
+  if (gsap && window.ScrollTrigger) {
+    window.ScrollTrigger.create({ trigger: sec, start: 'top top', end: 'bottom bottom', onUpdate: self => onProg(self.progress) });
+    window.ScrollTrigger.refresh();
+  } else {
+    const upd = () => { const r = sec.getBoundingClientRect(); onProg(clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1)); };
+    addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd();
+  }
+  window.__ruang.views = { heroV, cfgV, story };
+} else {
+  // fallback without three: still sync the story text on scroll
+  const sec = $('#proses'), nodes = $$('#storySvg .node');
+  const upd = () => { const r = sec.getBoundingClientRect(); const p = Math.max(0, Math.min(1, -r.top / Math.max(1, r.height - innerHeight))); const n = Math.round(p * 4); $$('.step', sec).forEach((s, k) => s.classList.toggle('on', k === n)); nodes.forEach((c, k) => c.classList.toggle('on', k <= n)); $('#storyBar').style.width = (p * 100) + '%'; $('#storyCount').textContent = `Langkah ${n + 1} dari 5`; };
+  addEventListener('scroll', upd, { passive: true }); upd();
+}
+</script>
+</body>
+</html>
