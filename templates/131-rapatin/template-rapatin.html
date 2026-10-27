@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rapatin — Rapat Hybrid yang Terasa Satu Ruangan</title>
+<meta name="description" content="Rapatin menyatukan tim di kantor dan di rumah dalam satu ruang rapat 3D: jadwal otomatis, papan bersama, teks langsung, dan rangkuman AI.">
+<meta name="theme-color" content="#f5f6fb">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script>
+  (function(){var t;try{t=localStorage.getItem('rapatin-theme')}catch(e){}
+  if(t!=='light'&&t!=='dark'){t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}
+  document.documentElement.setAttribute('data-theme',t);})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script type="module">
+  // Fluent UI Web Components v3 (Fluent 2) + design tokens, straight from the CDN
+  import { setTheme } from 'https://cdn.jsdelivr.net/npm/@fluentui/web-components@3.1.3/dist/web-components-all.min.js';
+  import { createLightTheme, createDarkTheme } from 'https://cdn.jsdelivr.net/npm/@fluentui/tokens@1.0.0-alpha.24/lib/index.js';
+  const brand = { 10:'#05081c',20:'#0c1336',30:'#111c52',40:'#16256c',50:'#1b2e86',60:'#2238a0',70:'#2b44b6',80:'#3a54c8',90:'#4d66d2',100:'#6079da',110:'#738ce1',120:'#879ee7',130:'#9cb1ed',140:'#b2c4f2',150:'#c9d6f7',160:'#e0e8fb' };
+  const font = "'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
+  const fonts = { fontFamilyBase: font, fontFamilyMonospace: font, fontFamilyNumeric: font };
+  const themes = { light: { ...createLightTheme(brand), ...fonts }, dark: { ...createDarkTheme(brand), ...fonts, colorBrandForeground1: brand[120], colorBrandForegroundLink: brand[120] } };
+  window.__applyFluentTheme = t => setTheme(themes[t] || themes.light);
+  window.__applyFluentTheme(document.documentElement.getAttribute('data-theme'));
+  window.dispatchEvent(new Event('fluent-ready'));
+</script>
+<style>
+  :root{
+    --font:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --bg:var(--colorNeutralBackground2,#f5f6fb);
+    --bg-2:var(--colorNeutralBackground3,#eef0f7);
+    --surface:var(--colorNeutralBackground1,#ffffff);
+    --ink:var(--colorNeutralForeground1,#1b1d29);
+    --ink-2:var(--colorNeutralForeground2,#3d4152);
+    --muted:var(--colorNeutralForeground3,#5f6475);
+    --line:var(--colorNeutralStroke2,#e2e5ee);
+    --brand:var(--colorBrandBackground,#2b44b6);
+    --brand-fg:var(--colorBrandForeground1,#2b44b6);
+    --orange:#e8743f;
+    --page-bg:#f5f6fb;
+    --stage-a:#e9edfb;--stage-b:#d7def8;--stage-c:#f6efe9;
+    --shadow:0 1px 2px rgba(20,24,48,.06),0 12px 32px -14px rgba(20,24,48,.22);
+    --shadow-lg:0 40px 90px -40px rgba(20,30,90,.45);
+    --r:20px;
+    color-scheme:light;
+  }
+  [data-theme="dark"]{
+    --page-bg:#0e1018;
+    --bg:#0e1018;--bg-2:#141722;--surface:#1a1d29;
+    --ink:#eef0f8;--ink-2:#c9cddc;--muted:#9aa0b4;--line:#2a2e3d;--brand-fg:#879ee7;
+    --stage-a:#121633;--stage-b:#1b2357;--stage-c:#231a2a;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 32px -14px rgba(0,0,0,.7);
+    --shadow-lg:0 40px 90px -40px rgba(0,0,0,.9);
+    color-scheme:dark;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  body{margin:0;font-family:var(--font);background:var(--page-bg);color:var(--ink);line-height:1.6;font-size:16px;overflow-x:clip;-webkit-font-smoothing:antialiased;transition:background-color .3s,color .3s}
+  code,kbd,pre,samp{font-family:inherit}
+  img,svg,canvas{display:block;max-width:100%}
+  a{color:inherit}
+  h1,h2,h3,h4{margin:0;line-height:1.1;letter-spacing:-.025em}
+  p{margin:0}
+  .num{font-variant-numeric:tabular-nums}
+  .wrap{width:min(1240px,100% - 40px);margin-inline:auto}
+  :focus-visible{outline:2px solid var(--brand-fg);outline-offset:3px;border-radius:6px}
+  .skip{position:absolute;left:-999px;top:8px;z-index:100;background:var(--ink);color:var(--page-bg);padding:8px 14px;border-radius:8px}
+  .skip:focus{left:12px}
+  :not(:defined){visibility:hidden}
+  fluent-button,fluent-slider,fluent-tablist{max-width:100%}
+  .ico{width:20px;height:20px;flex:0 0 auto}
+
+  /* nav */
+  .nav{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--page-bg) 82%,transparent);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+  .nav .wrap{display:flex;align-items:center;gap:18px;height:66px}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;font-size:1.12rem;letter-spacing:-.02em}
+  .brand svg{width:30px;height:30px}
+  .nav-links{display:flex;gap:2px;margin-left:auto}
+  .nav-links a{text-decoration:none;color:var(--muted);font-weight:500;font-size:.92rem;padding:8px 12px;border-radius:8px}
+  .nav-links a:hover{color:var(--ink);background:var(--bg-2)}
+  .nav-actions{display:flex;gap:8px;align-items:center}
+  .only-mobile{display:none!important}
+  @media (max-width:920px){.nav-links{display:none}.nav-actions{margin-left:auto}.only-mobile{display:inline-flex!important}.hide-sm{display:none!important}}
+  .drawer-links{display:flex;flex-direction:column;gap:2px}
+  .drawer-links a{text-decoration:none;padding:12px 8px;border-radius:8px;font-weight:600}
+  .drawer-links a:hover{background:var(--bg-2)}
+
+  /* hero */
+  .hero{padding:clamp(28px,5vw,60px) 0 30px;position:relative}
+  .hero::before{content:"";position:absolute;inset:-66px 0 auto;height:720px;background:radial-gradient(60% 60% at 80% 20%,color-mix(in srgb,var(--brand) 16%,transparent),transparent 70%),radial-gradient(40% 50% at 10% 10%,rgba(232,116,63,.12),transparent 70%);pointer-events:none;z-index:-1}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,4vw,56px);align-items:center}
+  .hero h1{font-size:clamp(2.5rem,5.4vw,4.6rem);font-weight:800;letter-spacing:-.045em;line-height:1.02;margin:18px 0 20px}
+  .grad{background:linear-gradient(100deg,var(--brand-fg) 10%,#8a63d2 55%,var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{font-size:clamp(1rem,1.3vw,1.14rem);color:var(--muted);max-width:33em}
+  .hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin:28px 0 30px}
+  .trust{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:.86rem;color:var(--muted)}
+  .stack{display:flex}
+  .stack fluent-avatar{margin-left:-8px;box-shadow:0 0 0 2px var(--page-bg);border-radius:50%}
+  .stack fluent-avatar:first-child{margin-left:0}
+
+  .window{position:relative;border-radius:22px;overflow:hidden;background:linear-gradient(150deg,var(--stage-a),var(--stage-b) 55%,var(--stage-c));box-shadow:var(--shadow-lg);border:1px solid color-mix(in srgb,var(--line) 80%,transparent);isolation:isolate;transition:filter .6s}
+  .window .bar{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;align-items:center;gap:12px;padding:12px 16px;font-size:.82rem;font-weight:600;color:var(--ink-2);background:color-mix(in srgb,var(--surface) 55%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent)}
+  .dots{display:flex;gap:6px}.dots i{width:10px;height:10px;border-radius:50%;background:#ff6b5f}.dots i:nth-child(2){background:#f8bd3a}.dots i:nth-child(3){background:#35c75a}
+  .bar .t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .live{display:inline-flex;align-items:center;gap:6px;color:#d6453d;font-weight:700;font-variant-numeric:tabular-nums}
+  .live::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+  .window canvas{width:100%;height:100%;opacity:0;transition:opacity .8s}
+  .window.ready canvas{opacity:1}
+  .hero .window{height:clamp(440px,72vh,660px)}
+  .fallback{position:absolute;inset:0;display:none}
+  .no-webgl .fallback{display:block}.no-webgl canvas{display:none}
+  .toolbar{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);z-index:3;display:flex;align-items:center;gap:6px;padding:8px;border-radius:16px;background:color-mix(in srgb,var(--surface) 78%,transparent);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border:1px solid color-mix(in srgb,var(--line) 70%,transparent);box-shadow:var(--shadow);max-width:calc(100% - 24px)}
+  .toolbar .sep{width:1px;height:24px;background:var(--line);margin:0 4px}
+  .toolbar fluent-field{padding:0 6px}
+  .toolbar label{font-size:.82rem;font-weight:600;white-space:nowrap}
+  .caption{position:absolute;left:50%;bottom:84px;transform:translateX(-50%);z-index:3;max-width:min(560px,calc(100% - 32px));width:max-content;padding:8px 14px;border-radius:10px;background:rgba(10,12,24,.72);color:#fff;font-size:.86rem;line-height:1.45;opacity:0;transition:opacity .4s}
+  .caption.on{opacity:1}
+  .caption b{color:#ffcfae}
+  @media (max-width:960px){.hero-grid{grid-template-columns:minmax(0,1fr)}.hero .window{height:min(560px,66vh);min-height:430px}}
+  @media (max-width:520px){.toolbar .hide-xs{display:none}}
+
+  /* sections */
+  section{scroll-margin-top:74px}
+  .sec{padding:clamp(72px,10vw,128px) 0}
+  .kicker{display:inline-flex;align-items:center;gap:8px;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--brand-fg)}
+  .sec-head{max-width:760px;margin-bottom:clamp(34px,5vw,56px)}
+  .sec-head.center{text-align:center;margin-inline:auto}
+  .sec-head h2{font-size:clamp(2rem,4.2vw,3.3rem);font-weight:800;letter-spacing:-.04em;margin-top:12px}
+  .sec-head p{color:var(--muted);margin-top:14px;font-size:1.05rem}
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:26px;min-width:0}
+  .bento{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px}
+  .bento .card{display:flex;flex-direction:column;gap:12px}
+  .b-3{grid-column:span 3}.b-2{grid-column:span 2}.b-4{grid-column:span 4}
+  .card h3{font-size:1.2rem;font-weight:700}
+  .card p{color:var(--muted);font-size:.94rem}
+  .icon-tile{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--brand) 12%,transparent);color:var(--brand-fg)}
+  .demo-box{margin-top:auto;border-radius:14px;background:var(--bg-2);padding:16px;display:grid;gap:12px;font-size:.9rem}
+  .demo-box .row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .summary{min-height:84px;color:var(--ink-2);font-size:.9rem}
+  .summary li{margin:2px 0}
+  .summary ul{margin:6px 0 0;padding-left:18px}
+  .wait-list{display:grid;gap:8px}
+  .wait-list div{display:flex;align-items:center;gap:10px;font-size:.88rem}
+  .wait-list span{flex:1}
+  @media (max-width:960px){.b-3,.b-2,.b-4{grid-column:span 3}}
+  @media (max-width:640px){.bento{grid-template-columns:minmax(0,1fr)}.b-3,.b-2,.b-4{grid-column:span 1}}
+
+  /* studio (DS drives 3D) */
+  .studio{background:var(--bg-2)}
+  .studio-grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:20px}
+  .studio .window{height:clamp(460px,70vh,640px)}
+  .panel{display:flex;flex-direction:column;gap:20px}
+  .panel h3{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:8px}
+  .panel .row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .people{display:flex;flex-wrap:wrap;gap:6px;min-height:32px}
+  .people fluent-avatar{transition:transform .3s}
+  .slider-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .panel fluent-slider{width:100%}
+  .panel .foot{margin-top:auto;display:flex;gap:10px;flex-wrap:wrap}
+  @media (max-width:980px){.studio-grid{grid-template-columns:minmax(0,1fr)}.studio .window{height:min(520px,62vh);min-height:400px}}
+
+  /* story */
+  .story{position:relative;height:520vh}
+  .story-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+  .story-stage canvas{position:absolute;inset:0;width:100%;height:100%}
+  .story-fallback{position:absolute;inset:0;display:none;place-items:center;padding:24px}
+  .story.no-webgl .story-fallback{display:grid}.story.no-webgl canvas{display:none}
+  .story-fallback svg{width:min(900px,100%);height:auto}
+  .story-fallback .node{fill:var(--surface);stroke:var(--line);stroke-width:2;transition:fill .4s}
+  .story-fallback .node.on{fill:var(--orange)}
+  .story-ui{position:absolute;inset:0;pointer-events:none;padding:92px 0 30px}
+  .story-ui .wrap{height:100%;display:flex;flex-direction:column;justify-content:space-between}
+  .story-head{max-width:460px}
+  .story-head h2{font-size:clamp(1.8rem,3.4vw,2.8rem);font-weight:800;letter-spacing:-.04em;margin-top:10px}
+  .steps{position:relative;max-width:420px;min-height:230px;list-style:none;margin:0;padding:0}
+  .step{position:absolute;left:0;right:0;bottom:0;opacity:0;transform:translateY(18px);transition:opacity .45s,transform .45s}
+  .step.on{opacity:1;transform:none}
+  .step-card{background:color-mix(in srgb,var(--surface) 90%,transparent);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow)}
+  .step .n{display:inline-flex;align-items:center;gap:10px;font-size:.8rem;font-weight:700;color:var(--orange);letter-spacing:.06em;font-variant-numeric:tabular-nums}
+  .step h3{font-size:1.32rem;margin:10px 0 8px;font-weight:800}
+  .step p{font-size:.93rem;color:var(--muted)}
+  .step .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+  .story-progress{display:flex;align-items:center;gap:14px;margin-top:16px;font-size:.8rem;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+  .story-progress fluent-progress-bar{flex:0 0 160px}
+  @media (max-width:760px){.story-ui{padding:80px 0 16px}.story-head h2{font-size:1.55rem}.story-head p{display:none}.steps{max-width:none;min-height:205px}.step-card{padding:18px}.step h3{font-size:1.12rem}.step p{font-size:.88rem}}
+
+  /* stats & testimonials */
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:clamp(40px,6vw,64px)}
+  .stat{padding:24px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line)}
+  .stat b{display:block;font-size:clamp(2rem,4vw,3.1rem);font-weight:800;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+  .stat span{display:block;margin-top:10px;color:var(--muted);font-size:.9rem}
+  @media (max-width:820px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .testi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .testi figure{margin:0;display:flex;flex-direction:column;gap:16px;height:100%}
+  .testi blockquote{margin:0;font-size:1rem;color:var(--ink-2)}
+  .testi figcaption{margin-top:auto;display:flex;align-items:center;gap:12px;font-size:.88rem}
+  .testi figcaption b{display:block}.testi figcaption span{color:var(--muted);font-size:.8rem}
+  @media (max-width:960px){.testi{grid-template-columns:minmax(0,1fr)}}
+  .logos{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:center;margin-top:44px;color:var(--muted);font-weight:700;letter-spacing:-.01em;opacity:.8}
+
+  /* pricing */
+  .bill{display:flex;justify-content:center;align-items:center;gap:12px;margin-bottom:30px;flex-wrap:wrap}
+  .seg{display:inline-flex;padding:4px;border-radius:12px;background:var(--bg-2);border:1px solid var(--line);gap:4px}
+  .prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .plan{display:flex;flex-direction:column;gap:18px}
+  .plan.hot{border:2px solid var(--brand-fg);box-shadow:var(--shadow-lg);position:relative}
+  .plan .price{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+  .plan .price b{font-size:clamp(2rem,3.4vw,2.7rem);font-weight:800;letter-spacing:-.04em;line-height:1}
+  .plan .price span{color:var(--muted);font-size:.88rem}
+  .plan ul{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:.93rem}
+  .plan li{display:flex;gap:10px;align-items:flex-start}
+  .plan li svg{color:#2f9e6e;margin-top:3px;width:18px;height:18px;flex:0 0 auto}
+  .plan fluent-button{margin-top:auto;width:100%}
+  .plan .old{text-decoration:line-through;color:var(--muted);font-size:.9rem;min-height:1.4em;font-variant-numeric:tabular-nums}
+  @media (max-width:960px){.prices{grid-template-columns:minmax(0,1fr)}}
+
+  /* faq */
+  .faq-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:30px 60px}
+  .faq-grid fluent-accordion{display:block;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:6px 10px}
+  .faq-grid fluent-accordion-item{border-bottom:1px solid var(--line)}
+  .faq-grid fluent-accordion-item:last-child{border-bottom:0}
+  .faq-grid fluent-accordion-item [slot="heading"]{font-weight:600;font-size:1rem;padding:6px 0}
+  .faq-a{color:var(--muted);font-size:.95rem;padding:0 0 16px 4px}
+  @media (max-width:860px){.faq-grid{grid-template-columns:minmax(0,1fr)}}
+
+  /* cta */
+  .cta{border-radius:30px;padding:clamp(34px,6vw,76px);background:radial-gradient(90% 120% at 100% 0%,#8a63d2 0%,#2b44b6 45%,#0f1640 100%);color:#fff;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:30px;align-items:center;position:relative;overflow:hidden}
+  .cta h2{font-size:clamp(2rem,4.2vw,3.3rem);font-weight:800;letter-spacing:-.04em}
+  .cta p{opacity:.85;margin-top:14px;max-width:30em}
+  .cta-form{display:grid;gap:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:18px;padding:20px}
+  .cta-form label{font-size:.85rem;font-weight:600}
+  .cta-form small{opacity:.75}
+  @media (max-width:860px){.cta{grid-template-columns:minmax(0,1fr)}}
+
+  /* dialog form */
+  .form{display:grid;gap:14px}
+  .form .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+  .form fluent-text-input,.form fluent-dropdown,.form fluent-textarea{width:100%}
+  @media (max-width:520px){.form .two{grid-template-columns:minmax(0,1fr)}}
+  fluent-dialog-body{max-width:100%}
+
+  /* toast */
+  .toasts{position:fixed;top:78px;right:16px;left:16px;z-index:200;display:grid;justify-items:end;gap:8px;pointer-events:none}
+  .toasts fluent-message-bar{pointer-events:auto;max-width:440px;box-shadow:var(--shadow-lg);animation:tin .3s ease}
+  @keyframes tin{from{opacity:0;transform:translateY(-8px)}}
+  @media (prefers-reduced-motion: reduce){.toasts fluent-message-bar{animation:none}}
+
+  footer{padding:70px 0 34px;border-top:1px solid var(--line);margin-top:clamp(72px,10vw,120px)}
+  .foot-grid{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));gap:30px}
+  .foot-grid h4{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+  .foot-grid a{display:block;text-decoration:none;padding:4px 0;font-size:.93rem}
+  .foot-grid a:hover{color:var(--brand-fg)}
+  .foot-grid p{color:var(--muted);font-size:.92rem;margin-top:12px;max-width:26em}
+  .foot-bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.84rem;color:var(--muted)}
+  .built{display:inline-flex;align-items:center;gap:8px}.built i{width:6px;height:6px;border-radius:50%;background:var(--orange)}
+  @media (max-width:820px){.foot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.foot-grid>div:first-child{grid-column:span 2}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Lewati ke konten</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="logo" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#2b44b6"/><circle cx="16" cy="16" r="6.5" fill="none" stroke="#fff" stroke-width="2.4"/><circle cx="16" cy="6.8" r="2.4" fill="#e8743f"/><circle cx="24" cy="21" r="2.4" fill="#fff"/><circle cx="8" cy="21" r="2.4" fill="#fff"/></symbol>
+  <symbol id="i-check" viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 20 20"><path d="M15.5 12.6A6.5 6.5 0 0 1 7.4 4.5a6.5 6.5 0 1 0 8.1 8.1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3.4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.3 4.3l1.4 1.4M14.3 14.3l1.4 1.4M4.3 15.7l1.4-1.4M14.3 5.7l1.4-1.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 20 20"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 20 20"><rect x="7" y="2.5" width="6" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4.5 9.5a5.5 5.5 0 0 0 11 0M10 15v2.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  <symbol id="i-cam" viewBox="0 0 20 20"><rect x="2.5" y="5" width="11" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M13.5 9l4-2.5v7l-4-2.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+  <symbol id="i-share" viewBox="0 0 20 20"><rect x="2.5" y="3.5" width="15" height="10.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 11V6.5M7.8 8.6 10 6.4l2.2 2.2M7 17h6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 20 20"><path d="M7 10V4.5a1.2 1.2 0 0 1 2.4 0V9M9.4 9V3.5a1.2 1.2 0 0 1 2.4 0V9M11.8 9V4.5a1.2 1.2 0 0 1 2.4 0v6.5c0 3.6-2.4 6-5.4 6-2.2 0-3.5-1-4.6-2.8L2.8 11a1.2 1.2 0 0 1 2-1.3L7 12.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 20 20"><rect x="3" y="4" width="14" height="13" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3 8h14M7 2.5v3M13 2.5v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 20 20"><path d="M10 2.5l1.8 4.7 4.7 1.8-4.7 1.8L10 15.5l-1.8-4.7L3.5 9l4.7-1.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cc" viewBox="0 0 20 20"><rect x="2.5" y="4" width="15" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8.6 8.4a2 2 0 1 0 0 3.2M13.6 8.4a2 2 0 1 0 0 3.2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="i-door" viewBox="0 0 20 20"><path d="M4 17.5h12M6 17.5V3.5h8v14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="11.5" cy="10.5" r="1" fill="currentColor"/></symbol>
+  <symbol id="i-board" viewBox="0 0 20 20"><rect x="2.5" y="3" width="15" height="10.5" rx="1.8" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6.5 17l3.5-3.5 3.5 3.5M5.5 9.5l3-3 2.5 2.5 3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-close" viewBox="0 0 20 20"><path d="M5 5l10 10M15 5 5 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+</defs></svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Rapatin, ke atas"><svg><use href="#logo"/></svg>Rapatin</a>
+    <nav class="nav-links" aria-label="Navigasi utama">
+      <a href="#fitur">Fitur</a><a href="#studio">Ruang 3D</a><a href="#alur">Alur kerja</a><a href="#harga">Harga</a><a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-actions">
+      <fluent-button id="themeBtn" appearance="subtle" icon-only aria-label="Ganti tema terang/gelap"><svg class="ico" aria-hidden="true"><use href="#i-moon"/></svg></fluent-button>
+      <fluent-tooltip anchor="themeBtn">Ganti tema</fluent-tooltip>
+      <fluent-button class="hide-sm" appearance="subtle" data-open-signup>Masuk</fluent-button>
+      <fluent-button class="hide-sm" appearance="primary" data-open-signup>Coba gratis</fluent-button>
+      <fluent-button class="only-mobile" id="menuBtn" appearance="subtle" icon-only aria-label="Buka menu"><svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg></fluent-button>
+    </div>
+  </div>
+</header>
+
+<fluent-drawer id="menu" type="modal" position="end" size="small" aria-labelledby="menuTitle">
+  <fluent-drawer-body>
+    <span slot="title" id="menuTitle">Rapatin</span>
+    <fluent-button slot="close" appearance="transparent" icon-only aria-label="Tutup menu" id="menuClose"><svg class="ico" aria-hidden="true"><use href="#i-close"/></svg></fluent-button>
+    <nav class="drawer-links" aria-label="Navigasi seluler"><a href="#fitur">Fitur</a><a href="#studio">Ruang 3D</a><a href="#alur">Alur kerja</a><a href="#harga">Harga</a><a href="#faq">FAQ</a></nav>
+    <fluent-button slot="footer" appearance="primary" data-open-signup>Coba gratis</fluent-button>
+  </fluent-drawer-body>
+</fluent-drawer>
+
+<main id="main">
+  <section class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div>
+        <fluent-badge appearance="tint" color="brand" shape="circular">Baru · Ruang rapat 3D untuk tim hybrid</fluent-badge>
+        <h1>Rapat hybrid yang terasa <span class="grad">satu ruangan.</span></h1>
+        <p class="lead">Rapatin menempatkan rekan di kantor dan di rumah di satu meja yang sama. Jadwal otomatis, papan bersama, teks langsung berbahasa Indonesia, dan rangkuman AI yang siap dibagikan begitu rapat selesai.</p>
+        <div class="hero-cta">
+          <fluent-button appearance="primary" size="large" data-open-signup>Mulai gratis untuk tim</fluent-button>
+          <fluent-button appearance="outline" size="large" id="toStudio">Coba ruang 3D</fluent-button>
+        </div>
+        <div class="trust">
+          <div class="stack" aria-hidden="true"><fluent-avatar name="Sari Wulandari" color="colorful" size="32"></fluent-avatar><fluent-avatar name="Bima Prakoso" color="colorful" size="32"></fluent-avatar><fluent-avatar name="Lala Kusuma" color="colorful" size="32"></fluent-avatar><fluent-avatar name="Yoga Saputra" color="colorful" size="32"></fluent-avatar></div>
+          <span><b class="num">3.200+</b> tim di Indonesia rapat lebih singkat</span>
+          <fluent-rating-display value="4.8" count="1240" size="small"></fluent-rating-display>
+        </div>
+      </div>
+      <div class="window" id="heroStage">
+        <div class="bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t">Sinkronisasi mingguan · Tim Produk</span><span class="live num" id="heroTimer">12:40</span></div>
+        <canvas id="heroCanvas" role="img" aria-label="Adegan 3D ruang rapat: avatar peserta duduk mengelilingi meja bundar dengan jendela video dan dokumen yang melayang"></canvas>
+        <div class="fallback" aria-hidden="true"></div>
+        <div class="caption" id="heroCaption" aria-live="polite"><b>Sari:</b> Oke, kita mulai dari hasil uji pengguna minggu lalu.</div>
+        <div class="toolbar" role="toolbar" aria-label="Kontrol rapat">
+          <fluent-toggle-button id="tbMic" appearance="subtle" icon-only pressed aria-label="Mikrofon"><svg class="ico" aria-hidden="true"><use href="#i-mic"/></svg></fluent-toggle-button>
+          <fluent-toggle-button id="tbCam" appearance="subtle" icon-only pressed aria-label="Kamera" class="hide-xs"><svg class="ico" aria-hidden="true"><use href="#i-cam"/></svg></fluent-toggle-button>
+          <fluent-toggle-button id="tbCC" appearance="subtle" icon-only aria-label="Teks langsung"><svg class="ico" aria-hidden="true"><use href="#i-cc"/></svg></fluent-toggle-button>
+          <span class="sep" aria-hidden="true"></span>
+          <fluent-field label-position="after"><label slot="label" for="heroFocus">Mode fokus</label><fluent-switch slot="input" id="heroFocus"></fluent-switch></fluent-field>
+          <span class="sep hide-xs" aria-hidden="true"></span>
+          <fluent-button appearance="primary" class="hide-xs" id="tbLeave" style="--colorBrandBackground:#c4314b;--colorBrandBackgroundHover:#a52a40;--colorBrandBackgroundPressed:#8a2335">Keluar</fluent-button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="sec" id="fitur">
+    <div class="wrap">
+      <div class="sec-head"><span class="kicker">Fitur</span><h2>Semua yang membuat rapat lebih pendek dan lebih jelas.</h2><p>Dirancang untuk cara kerja tim Indonesia: separuh di kantor, separuh di jalan, semua butuh keputusan yang tercatat.</p></div>
+      <div class="bento">
+        <article class="card b-3">
+          <div class="icon-tile"><svg class="ico"><use href="#i-spark"/></svg></div>
+          <h3>Rangkuman AI dalam 30 detik</h3>
+          <p>Keputusan, tugas, dan penanggung jawab diambil otomatis dari percakapan, lalu dikirim ke kanal tim.</p>
+          <div class="demo-box">
+            <div class="row"><fluent-text weight="semibold">Rapat: Sinkronisasi mingguan</fluent-text><fluent-button appearance="primary" size="small" id="sumBtn">Buat rangkuman</fluent-button></div>
+            <div class="summary" id="summary" aria-live="polite"><span style="color:var(--muted)">Tekan tombol untuk melihat contoh rangkuman.</span></div>
+          </div>
+        </article>
+        <article class="card b-3">
+          <div class="icon-tile"><svg class="ico"><use href="#i-cc"/></svg></div>
+          <h3>Teks langsung berbahasa Indonesia</h3>
+          <p>Mengenali logat dan campuran istilah teknis. Aktifkan teks langsung dan lihat hasilnya di ruang rapat di atas.</p>
+          <div class="demo-box">
+            <div class="row"><fluent-field label-position="after"><label slot="label" for="ccSwitch">Tampilkan teks langsung</label><fluent-switch slot="input" id="ccSwitch"></fluent-switch></fluent-field><fluent-badge appearance="tint" color="success" shape="circular">Akurasi 96%</fluent-badge></div>
+            <fluent-text size="200" style="color:var(--muted)">Mendukung 4 bahasa: Indonesia, Inggris, Jawa, Sunda.</fluent-text>
+          </div>
+        </article>
+        <article class="card b-2">
+          <div class="icon-tile"><svg class="ico"><use href="#i-cal"/></svg></div>
+          <h3>Jadwal yang menyesuaikan diri</h3>
+          <p>Rapatin mencari slot kosong semua peserta lintas zona waktu WIB, WITA, dan WIT.</p>
+          <div class="demo-box"><div class="row"><span>Slot terbaik</span><fluent-badge appearance="filled" color="brand" shape="circular" class="num">Kam, 10.00 WIB</fluent-badge></div></div>
+        </article>
+        <article class="card b-2">
+          <div class="icon-tile"><svg class="ico"><use href="#i-door"/></svg></div>
+          <h3>Ruang tunggu cerdas</h3>
+          <p>Tamu eksternal menunggu dengan aman. Host menerima satu per satu atau sekaligus.</p>
+          <div class="demo-box wait-list">
+            <div><fluent-avatar name="Andi Rahman" size="24" color="colorful"></fluent-avatar><span>Andi (Klien)</span><fluent-button size="small" appearance="outline" class="admit">Terima</fluent-button></div>
+            <div><fluent-avatar name="Putri Maharani" size="24" color="colorful"></fluent-avatar><span>Putri (Vendor)</span><fluent-button size="small" appearance="outline" class="admit">Terima</fluent-button></div>
+          </div>
+        </article>
+        <article class="card b-2">
+          <div class="icon-tile"><svg class="ico"><use href="#i-board"/></svg></div>
+          <h3>Papan bersama tanpa batas</h3>
+          <p>Sticky note, diagram, dan voting langsung di dalam rapat. Tersimpan otomatis.</p>
+          <div class="demo-box"><div class="row"><span>Voting fitur Q3</span><span class="num" id="voteNum">62%</span></div><fluent-progress-bar id="voteBar" value="62" max="100" aria-label="Hasil voting"></fluent-progress-bar><fluent-button size="small" appearance="subtle" id="voteBtn">Beri suara</fluent-button></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- STUDIO -->
+  <section class="sec studio" id="studio">
+    <div class="wrap">
+      <div class="sec-head"><span class="kicker">Ruang 3D interaktif</span><h2>Atur ruang rapatmu, lihat langsung hasilnya.</h2><p>Setiap kontrol di panel kanan adalah komponen Fluent UI asli yang menggerakkan adegan three.js: ubah tata letak, tambah peserta, nyalakan mode fokus.</p></div>
+      <div class="studio-grid">
+        <div class="window" id="studioStage">
+          <div class="bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="t" id="studioTitle">Meja bundar · 6 peserta</span><fluent-counter-badge id="handBadge" count="0" color="important" size="small" aria-label="Tangan terangkat"></fluent-counter-badge></div>
+          <canvas id="studioCanvas" role="img" aria-label="Ruang rapat 3D yang dapat diatur: tata letak, jumlah peserta, dan mode fokus"></canvas>
+          <div class="fallback" aria-hidden="true"></div>
+          <div class="caption" id="studioCaption" aria-live="polite"><b>Bima:</b> Saya bagikan layar papan roadmap, ya.</div>
+        </div>
+        <div class="card panel">
+          <div>
+            <h3>Tata letak</h3>
+            <fluent-tablist id="layoutTabs" appearance="subtle" activeid="tab-bundar">
+              <fluent-tab id="tab-bundar">Meja bundar</fluent-tab>
+              <fluent-tab id="tab-presentasi">Presentasi</fluent-tab>
+              <fluent-tab id="tab-workshop">Workshop</fluent-tab>
+            </fluent-tablist>
+          </div>
+          <div>
+            <div class="slider-head"><h3 style="margin:0"><label for="peopleSlider">Jumlah peserta</label></h3><fluent-badge appearance="filled" color="brand" shape="circular" class="num" id="peopleCount">6</fluent-badge></div>
+            <fluent-slider id="peopleSlider" min="2" max="12" step="1" value="6" aria-label="Jumlah peserta"></fluent-slider>
+            <div class="people" id="people" aria-hidden="true"></div>
+          </div>
+          <div class="row">
+            <fluent-field label-position="after"><label slot="label" for="studioFocus">Mode fokus</label><fluent-switch slot="input" id="studioFocus"></fluent-switch></fluent-field>
+            <fluent-field label-position="after"><label slot="label" for="studioCC">Teks langsung</label><fluent-switch slot="input" id="studioCC" checked></fluent-switch></fluent-field>
+          </div>
+          <fluent-divider></fluent-divider>
+          <div class="foot">
+            <fluent-button appearance="primary" id="raiseBtn"><svg slot="start" class="ico" aria-hidden="true"><use href="#i-hand"/></svg>Angkat tangan</fluent-button>
+            <fluent-button appearance="outline" id="shareBtn"><svg slot="start" class="ico" aria-hidden="true"><use href="#i-share"/></svg>Bagikan layar</fluent-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section class="story" id="alur" aria-label="Alur kerja Rapatin">
+    <div class="story-stage">
+      <canvas id="storyCanvas" role="img" aria-label="Peta isometrik kantor: seorang karyawan berjalan dari meja ke meja mengikuti garis oranye, menggambarkan alur rapat dari penjadwalan sampai tindak lanjut"></canvas>
+      <div class="story-fallback" aria-hidden="true"><svg viewBox="0 0 900 360" id="storySvg"><path d="M80 250 L250 130 L450 250 L650 130 L820 250" fill="none" stroke="var(--orange)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="14 12"/><g><circle class="node on" cx="80" cy="250" r="34"/><circle class="node" cx="250" cy="130" r="34"/><circle class="node" cx="450" cy="250" r="34"/><circle class="node" cx="650" cy="130" r="34"/><circle class="node" cx="820" cy="250" r="34"/></g></svg></div>
+      <div class="story-ui">
+        <div class="wrap">
+          <div class="story-head"><span class="kicker">Alur kerja</span><h2>Satu rapat, dari undangan sampai tugas selesai.</h2><p style="color:var(--muted);margin-top:10px">Gulir dan ikuti Dimas berpindah meja.</p></div>
+          <div>
+            <ol class="steps">
+              <li class="step on" data-step="0"><div class="step-card"><span class="n">01 · JADWALKAN</span><h3>Undangan dalam 10 detik</h3><p>Ketik “rapat produk Kamis”. Rapatin memilih slot yang cocok untuk semua dan menyiapkan agenda.</p><div class="tags"><fluent-badge appearance="tint" shape="circular">Kalender</fluent-badge><fluent-badge appearance="tint" shape="circular">Agenda otomatis</fluent-badge></div></div></li>
+              <li class="step" data-step="1"><div class="step-card"><span class="n">02 · GABUNG</span><h3>Masuk dari mana saja</h3><p>Dari laptop, ponsel, atau layar ruang rapat. Satu tautan, tanpa instal, kualitas tetap jernih di sinyal 4G.</p><div class="tags"><fluent-badge appearance="tint" shape="circular">Web &amp; seluler</fluent-badge><fluent-badge appearance="tint" shape="circular">Hemat kuota</fluent-badge></div></div></li>
+              <li class="step" data-step="2"><div class="step-card"><span class="n">03 · KOLABORASI</span><h3>Papan bersama yang hidup</h3><p>Sticky note, voting, dan diagram ditulis bersama. Peserta di kantor dan di rumah setara.</p><div class="tags"><fluent-badge appearance="tint" shape="circular">Papan tanpa batas</fluent-badge></div></div></li>
+              <li class="step" data-step="3"><div class="step-card"><span class="n">04 · RANGKUM</span><h3>Rangkuman AI otomatis</h3><p>Begitu rapat ditutup, keputusan dan tugas sudah terkirim ke semua peserta beserta tenggatnya.</p><div class="tags"><fluent-badge appearance="tint" color="brand" shape="circular">AI</fluent-badge><fluent-badge appearance="tint" shape="circular">30 detik</fluent-badge></div></div></li>
+              <li class="step" data-step="4"><div class="step-card"><span class="n">05 · TINDAK LANJUT</span><h3>Tugas beres, tanpa rapat susulan</h3><p>Tugas tersinkron ke papan kanban tim. Pengingat datang sebelum tenggat, bukan sesudahnya.</p><div class="tags"><fluent-badge appearance="tint" color="success" shape="circular">Tersinkron</fluent-badge></div></div></li>
+            </ol>
+            <div class="story-progress"><fluent-progress-bar id="storyBar" value="0" max="100" aria-label="Kemajuan alur"></fluent-progress-bar><span id="storyCount">Langkah 1 dari 5</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS + TESTIMONIALS -->
+  <section class="sec" id="testimoni">
+    <div class="wrap">
+      <div class="stats" id="stats">
+        <div class="stat"><b data-count="3200" data-suffix="+">0</b><span>tim aktif setiap minggu</span></div>
+        <div class="stat"><b data-count="27" data-suffix="%">0</b><span>rapat lebih singkat rata-rata</span></div>
+        <div class="stat"><b data-count="41" data-suffix=" jt">0</b><span>menit rapat dirangkum AI</span></div>
+        <div class="stat"><b data-count="99" data-suffix=",9%">0</b><span>waktu aktif layanan</span></div>
+      </div>
+      <div class="testi">
+        <article class="card"><figure><fluent-rating-display value="5" size="small"></fluent-rating-display><blockquote>“Rapat Senin kami dulu 90 menit. Sekarang 45, dan semua orang tahu tugasnya sebelum keluar ruangan.”</blockquote><figcaption><fluent-avatar name="Nadia Siregar" color="colorful"></fluent-avatar><div><b>Nadia Siregar</b><span>Head of Product, startup logistik · Jakarta</span></div></figcaption></figure></article>
+        <article class="card"><figure><fluent-rating-display value="5" size="small"></fluent-rating-display><blockquote>“Tim gudang kami gabung dari ponsel dengan sinyal pas-pasan. Teks langsungnya menyelamatkan banyak salah paham.”</blockquote><figcaption><fluent-avatar name="Gede Wirawan" color="colorful"></fluent-avatar><div><b>Gede Wirawan</b><span>Operasional, distributor FMCG · Denpasar</span></div></figcaption></figure></article>
+        <article class="card"><figure><fluent-rating-display value="4.5" size="small"></fluent-rating-display><blockquote>“Rangkuman AI-nya rapi dan berbahasa Indonesia yang wajar. Notulen manual sudah kami tinggalkan.”</blockquote><figcaption><fluent-avatar name="Rina Hapsari" color="colorful"></fluent-avatar><div><b>Rina Hapsari</b><span>Sekretaris korporat, firma hukum · Surabaya</span></div></figcaption></figure></article>
+      </div>
+      <div class="logos" aria-label="Contoh jenis pelanggan">
+        <span>Kopi Senja Group</span><span>Arunika Logistik</span><span>Pustaka Kita</span><span>Nusa Fintech</span><span>Sekolah Cendekia</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="sec" id="harga" style="background:var(--bg-2)">
+    <div class="wrap">
+      <div class="sec-head center"><span class="kicker">Harga</span><h2>Mulai gratis. Bayar saat tim tumbuh.</h2><p>Harga per pengguna aktif. Batalkan kapan saja, tanpa kontrak.</p></div>
+      <div class="bill">
+        <div class="seg" role="group" aria-label="Periode tagihan">
+          <fluent-toggle-button id="billMonthly" appearance="subtle" pressed>Bulanan</fluent-toggle-button>
+          <fluent-toggle-button id="billYearly" appearance="subtle">Tahunan</fluent-toggle-button>
+        </div>
+        <fluent-badge appearance="tint" color="success" shape="circular">Hemat 20% tahunan</fluent-badge>
+      </div>
+      <div class="prices">
+        <article class="card plan">
+          <div><h3>Gratis</h3><p>Untuk tim kecil yang baru mulai.</p></div>
+          <div class="old"></div>
+          <div class="price"><b>Rp 0</b><span>/ pengguna / bulan</span></div>
+          <ul><li><svg><use href="#i-check"/></svg>Rapat hingga 40 menit, 10 peserta</li><li><svg><use href="#i-check"/></svg>Papan bersama dasar</li><li><svg><use href="#i-check"/></svg>Teks langsung 3 rapat/bulan</li></ul>
+          <fluent-button appearance="outline" data-open-signup data-plan="gratis">Mulai gratis</fluent-button>
+        </article>
+        <article class="card plan hot">
+          <div class="row" style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3>Tim</h3><fluent-badge appearance="filled" color="brand" shape="circular">Paling populer</fluent-badge></div>
+          <p style="margin-top:-8px">Untuk tim hybrid yang rapat setiap hari.</p>
+          <div class="old" data-old="59000"></div>
+          <div class="price"><b data-m="59000" data-y="47000">Rp 59.000</b><span>/ pengguna / bulan</span></div>
+          <ul><li><svg><use href="#i-check"/></svg>Rapat tanpa batas, 100 peserta</li><li><svg><use href="#i-check"/></svg>Ruang 3D &amp; mode fokus</li><li><svg><use href="#i-check"/></svg>Rangkuman AI tanpa batas</li><li><svg><use href="#i-check"/></svg>Integrasi kalender &amp; kanban</li></ul>
+          <fluent-button appearance="primary" data-open-signup data-plan="tim">Coba 14 hari gratis</fluent-button>
+        </article>
+        <article class="card plan">
+          <div><h3>Bisnis</h3><p>Untuk organisasi dengan kebutuhan keamanan.</p></div>
+          <div class="old" data-old="99000"></div>
+          <div class="price"><b data-m="99000" data-y="79000">Rp 99.000</b><span>/ pengguna / bulan</span></div>
+          <ul><li><svg><use href="#i-check"/></svg>Semua fitur Tim</li><li><svg><use href="#i-check"/></svg>SSO, audit log, data di Indonesia</li><li><svg><use href="#i-check"/></svg>Ruang rapat fisik terhubung</li><li><svg><use href="#i-check"/></svg>Dukungan prioritas 24/7</li></ul>
+          <fluent-button appearance="outline" data-open-signup data-plan="bisnis">Hubungi penjualan</fluent-button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec" id="faq">
+    <div class="wrap faq-grid">
+      <div><span class="kicker">FAQ</span><h2 style="font-size:clamp(2rem,4vw,3.1rem);font-weight:800;letter-spacing:-.04em;margin-top:12px">Pertanyaan umum</h2><p style="color:var(--muted);margin-top:12px">Tim dukungan kami siap di obrolan langsung, Senin–Sabtu 08.00–21.00 WIB.</p></div>
+      <fluent-accordion expand-mode="single">
+        <fluent-accordion-item expanded><span slot="heading">Apakah peserta harus menginstal aplikasi?</span><div class="faq-a">Tidak. Peserta cukup membuka tautan di peramban modern. Aplikasi desktop dan seluler tersedia untuk fitur tambahan seperti notifikasi.</div></fluent-accordion-item>
+        <fluent-accordion-item><span slot="heading">Di mana data rapat kami disimpan?</span><div class="faq-a">Paket Bisnis menyimpan rekaman, transkrip, dan rangkuman di pusat data di Indonesia, sesuai UU Pelindungan Data Pribadi.</div></fluent-accordion-item>
+        <fluent-accordion-item><span slot="heading">Seberapa akurat teks langsung bahasa Indonesia?</span><div class="faq-a">Rata-rata 96% untuk rapat kerja umum. Kamu bisa menambahkan kamus istilah tim agar nama produk dan singkatan dikenali.</div></fluent-accordion-item>
+        <fluent-accordion-item><span slot="heading">Apakah ruang 3D berat untuk laptop kantor?</span><div class="faq-a">Ruang 3D otomatis menyesuaikan kualitas grafis dan berhenti merender saat tidak terlihat. Mode 2D klasik selalu tersedia.</div></fluent-accordion-item>
+        <fluent-accordion-item><span slot="heading">Bisakah saya pindah paket di tengah bulan?</span><div class="faq-a">Bisa. Selisih biaya dihitung prorata per hari dan langsung terlihat di tagihan berikutnya.</div></fluent-accordion-item>
+      </fluent-accordion>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="wrap" aria-label="Ajakan mendaftar">
+    <div class="cta">
+      <div><h2>Rapat berikutnya, coba di Rapatin.</h2><p>Gratis selamanya untuk tim hingga 10 orang. Tidak perlu kartu kredit.</p></div>
+      <form class="cta-form" id="ctaForm" novalidate>
+        <fluent-field label-position="above"><label slot="label" for="ctaEmail">Email kerja</label><fluent-text-input slot="input" id="ctaEmail" type="email" name="email" required placeholder="nama@perusahaan.co.id" autocomplete="email" style="width:100%"></fluent-text-input></fluent-field>
+        <fluent-button appearance="primary" type="submit">Buat ruang tim</fluent-button>
+        <small>Dengan mendaftar, kamu menyetujui Ketentuan &amp; Kebijakan Privasi.</small>
+      </form>
+    </div>
+  </section>
+</main>
+
+<fluent-dialog id="signup" aria-labelledby="signupTitle">
+  <fluent-dialog-body>
+    <h2 slot="title" id="signupTitle" style="font-size:1.35rem">Buat akun Rapatin</h2>
+    <fluent-button slot="close" appearance="transparent" icon-only aria-label="Tutup" id="signupClose"><svg class="ico" aria-hidden="true"><use href="#i-close"/></svg></fluent-button>
+    <form class="form" id="signupForm" novalidate>
+      <fluent-text size="300" style="color:var(--muted)">Paket terpilih: <b id="planName">Tim · uji coba 14 hari</b></fluent-text>
+      <div class="two">
+        <fluent-field label-position="above"><label slot="label" for="suName">Nama lengkap</label><fluent-text-input slot="input" id="suName" name="nama" required autocomplete="name" placeholder="Dimas Ardiansyah"></fluent-text-input></fluent-field>
+        <fluent-field label-position="above"><label slot="label" for="suCompany">Perusahaan</label><fluent-text-input slot="input" id="suCompany" name="perusahaan" autocomplete="organization" placeholder="PT Contoh Maju"></fluent-text-input></fluent-field>
+      </div>
+      <fluent-field label-position="above"><label slot="label" for="suEmail">Email kerja</label><fluent-text-input slot="input" id="suEmail" name="email" type="email" required autocomplete="email" placeholder="dimas@perusahaan.co.id"></fluent-text-input></fluent-field>
+      <fluent-field label-position="above"><label slot="label" for="suSize">Ukuran tim</label>
+        <fluent-dropdown slot="input" id="suSize" name="ukuran" placeholder="Pilih ukuran tim">
+          <fluent-listbox><fluent-option value="1-10">1–10 orang</fluent-option><fluent-option value="11-50" selected>11–50 orang</fluent-option><fluent-option value="51-200">51–200 orang</fluent-option><fluent-option value="200+">Lebih dari 200</fluent-option></fluent-listbox>
+        </fluent-dropdown>
+      </fluent-field>
+      <fluent-field label-position="after"><label slot="label" for="suAgree">Saya setuju dengan Ketentuan Layanan</label><fluent-checkbox slot="input" id="suAgree" name="setuju" required></fluent-checkbox></fluent-field>
+      <p id="suError" role="alert" style="color:#c4314b;font-size:.88rem;min-height:1.2em"></p>
+    </form>
+    <fluent-button slot="action" appearance="secondary" id="signupCancel">Batal</fluent-button>
+    <fluent-button slot="action" appearance="primary" id="signupSubmit">Buat akun</fluent-button>
+  </fluent-dialog-body>
+</fluent-dialog>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div><a class="brand" href="#top"><svg><use href="#logo"/></svg>Rapatin</a><p>Platform rapat hybrid dan kolaborasi tim buatan Indonesia. Lebih sedikit rapat, lebih banyak keputusan.</p></div>
+      <div><h4>Produk</h4><a href="#fitur">Fitur</a><a href="#studio">Ruang 3D</a><a href="#harga">Harga</a></div>
+      <div><h4>Sumber daya</h4><a href="#alur">Alur kerja</a><a href="#faq">FAQ</a><a href="#testimoni">Cerita pelanggan</a></div>
+      <div><h4>Perusahaan</h4><a href="#top">Tentang kami</a><a href="#top">Karier</a><a href="#top">halo@rapatin.example</a></div>
+    </div>
+    <div class="foot-bottom"><span class="num">© 2026 Rapatin. Merek fiktif untuk template.</span><span class="built"><i></i>Dibangun dengan Fluent UI Web Components + three.js</span></div>
+  </div>
+</footer>
+
+<template id="roomFallback">
+  <svg viewBox="0 0 600 460" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" role="img" aria-label="Ilustrasi ruang rapat (WebGL tidak tersedia)">
+    <ellipse cx="300" cy="330" rx="230" ry="70" fill="#2b44b6" opacity=".12"/>
+    <ellipse cx="300" cy="300" rx="150" ry="46" fill="#ffffff" opacity=".85" stroke="#9cb1ed" stroke-width="3"/>
+    <g><circle cx="170" cy="270" r="18" fill="#f1c7a5"/><rect x="150" y="290" width="40" height="44" rx="18" fill="#4f6bed"/><circle cx="430" cy="270" r="18" fill="#d9a47f"/><rect x="410" y="290" width="40" height="44" rx="18" fill="#e8743f"/><circle cx="300" cy="230" r="18" fill="#b67b55"/><rect x="280" y="250" width="40" height="40" rx="18" fill="#3fb68b"/></g>
+    <g fill="#fff" stroke="#c9d6f7" stroke-width="2"><rect x="90" y="80" width="140" height="90" rx="12"/><rect x="370" y="70" width="150" height="96" rx="12"/><rect x="240" y="40" width="120" height="76" rx="12"/></g>
+    <circle cx="160" cy="125" r="22" fill="#8a63d2"/><rect x="390" y="92" width="100" height="8" rx="4" fill="#c9d6f7"/><rect x="390" y="110" width="80" height="8" rx="4" fill="#c9d6f7"/><rect x="390" y="128" width="90" height="8" rx="4" fill="#c9d6f7"/>
+  </svg>
+</template>
+
+<script type="module">
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const rmq = matchMedia('(prefers-reduced-motion: reduce)');
+const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmtRp = n => 'Rp ' + Math.round(n).toLocaleString('id-ID');
+const bus = new EventTarget();
+window.__rapatin = { bus };
+const htmlEl = document.documentElement;
+
+/* ---------- theme ---------- */
+const themeBtn = $('#themeBtn');
+function syncTheme(){ const dark = htmlEl.dataset.theme === 'dark'; themeBtn.querySelector('use').setAttribute('href', dark ? '#i-sun' : '#i-moon'); $('meta[name="theme-color"]').content = dark ? '#0e1018' : '#f5f6fb'; }
+syncTheme();
+themeBtn.addEventListener('click', () => {
+  const t = htmlEl.dataset.theme === 'dark' ? 'light' : 'dark';
+  htmlEl.dataset.theme = t; try { localStorage.setItem('rapatin-theme', t); } catch (e) {}
+  window.__applyFluentTheme?.(t); syncTheme(); bus.dispatchEvent(new Event('theme'));
+});
+
+/* ---------- drawer ---------- */
+const drawer = $('#menu');
+$('#menuBtn').addEventListener('click', () => drawer.show());
+$('#menuClose').addEventListener('click', () => drawer.hide());
+$$('.drawer-links a').forEach(a => a.addEventListener('click', () => drawer.hide()));
+
+/* ---------- toast (fluent-message-bar) ---------- */
+function toast(text, intent = 'success'){
+  const m = document.createElement('fluent-message-bar');
+  m.setAttribute('intent', intent); m.setAttribute('shape', 'rounded');
+  m.innerHTML = `${escapeHtml(text)}<fluent-button slot="dismiss" appearance="transparent" icon-only aria-label="Tutup notifikasi"><svg class="ico" aria-hidden="true"><use href="#i-close"/></svg></fluent-button>`;
+  m.querySelector('[slot="dismiss"]').addEventListener('click', () => m.remove());
+  $('#toasts').append(m); setTimeout(() => m.remove(), 4800);
+}
+
+/* ---------- dialog ---------- */
+const dlg = $('#signup');
+const planLabels = { gratis: 'Gratis', tim: 'Tim · uji coba 14 hari', bisnis: 'Bisnis · demo dengan tim penjualan' };
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-open-signup]'); if (!t) return;
+  $('#planName').textContent = planLabels[t.dataset.plan] || planLabels.tim;
+  drawer.hide?.(); $('#suError').textContent = ''; dlg.show();
+});
+$('#signupCancel').addEventListener('click', () => dlg.hide());
+$('#signupClose').addEventListener('click', () => dlg.hide());
+const emailOk = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+function submitSignup(){
+  const name = $('#suName').value.trim(), email = $('#suEmail').value.trim(), agree = $('#suAgree').checked;
+  const err = !name ? 'Nama lengkap wajib diisi.' : !emailOk(email) ? 'Masukkan email kerja yang valid.' : !agree ? 'Centang persetujuan Ketentuan Layanan.' : '';
+  $('#suError').textContent = err;
+  if (err) { (!name ? $('#suName') : !emailOk(email) ? $('#suEmail') : $('#suAgree')).focus(); return; }
+  dlg.hide(); $('#signupForm').reset?.(); ['#suName', '#suCompany', '#suEmail'].forEach(s => $(s).value = ''); $('#suAgree').checked = false;
+  toast(`Selamat datang, ${name.split(' ')[0]}! Ruang tim kamu sedang disiapkan. Cek email ${email}.`);
+}
+$('#signupSubmit').addEventListener('click', submitSignup);
+$('#signupForm').addEventListener('submit', e => { e.preventDefault(); submitSignup(); });
+$('#ctaForm').addEventListener('submit', e => {
+  e.preventDefault(); const v = $('#ctaEmail').value.trim();
+  if (!emailOk(v)) { toast('Email belum valid. Contoh: nama@perusahaan.co.id', 'warning'); $('#ctaEmail').focus(); return; }
+  $('#suEmail').value = v; $('#planName').textContent = planLabels.tim; dlg.show();
+});
+
+/* ---------- features ---------- */
+$('#sumBtn').addEventListener('click', () => {
+  const box = $('#summary'); box.innerHTML = '<fluent-spinner size="tiny" aria-label="Membuat rangkuman"></fluent-spinner>';
+  setTimeout(() => { box.innerHTML = '<b>Keputusan:</b> rilis fitur ekspor PDF dipercepat ke 12 Juni.<ul><li>Sari — siapkan uji pengguna (Jum)</li><li>Bima — perbaiki bug sinkronisasi (Sen)</li><li>Lala — draf pengumuman rilis (Rab)</li></ul>'; }, rmq.matches ? 50 : 1100);
+});
+$$('.admit').forEach(b => b.addEventListener('click', () => { const row = b.closest('div'); const who = row.querySelector('span').textContent; row.remove(); toast(`${who} sudah masuk ke rapat.`, 'info'); }));
+let votes = 62; $('#voteBtn').addEventListener('click', e => { votes = Math.min(100, votes + 3); $('#voteBar').value = votes; $('#voteNum').textContent = votes + '%'; e.currentTarget.disabled = true; e.currentTarget.textContent = 'Terima kasih!'; });
+$('#toStudio').addEventListener('click', () => $('#studio').scrollIntoView({ behavior: rmq.matches ? 'auto' : 'smooth' }));
+$('#tbLeave').addEventListener('click', () => toast('Ini hanya pratinjau. Rapat sungguhan menunggu setelah kamu mendaftar.', 'info'));
+
+/* ---------- pricing toggle ---------- */
+const bm = $('#billMonthly'), by = $('#billYearly');
+function setBilling(yearly){
+  bm.pressed = !yearly; by.pressed = yearly;
+  $$('[data-m]').forEach(b => b.textContent = fmtRp(yearly ? b.dataset.y : b.dataset.m));
+  $$('.old[data-old]').forEach(o => o.textContent = yearly ? fmtRp(o.dataset.old) : '');
+}
+bm.addEventListener('click', () => setBilling(false)); by.addEventListener('click', () => setBilling(true));
+
+/* ---------- stats ---------- */
+const statIO = new IntersectionObserver(es => es.forEach(en => {
+  if (!en.isIntersecting) return; statIO.unobserve(en.target);
+  $$('[data-count]', en.target).forEach(el => {
+    const end = +el.dataset.count, suf = el.dataset.suffix || '';
+    const show = v => el.textContent = Math.round(v).toLocaleString('id-ID') + suf;
+    if (rmq.matches) return show(end);
+    const t0 = performance.now(); const st = now => { const p = Math.min(1, (now - t0) / 1400); show(end * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(st); }; requestAnimationFrame(st);
+  });
+}), { threshold: .3 });
+statIO.observe($('#stats'));
+
+/* ---------- shared scene state ---------- */
+const NAMES = ['Sari Wulandari', 'Bima Prakoso', 'Lala Kusuma', 'Yoga Saputra', 'Nadia Siregar', 'Gede Wirawan', 'Rina Hapsari', 'Andi Rahman', 'Putri Maharani', 'Fajar Nugroho', 'Maya Lestari', 'Dimas Ardiansyah'];
+const state = { focus: false, people: 6, layout: 'bundar', cc: true, hand: -1, share: false };
+const layoutNames = { bundar: 'Meja bundar', presentasi: 'Presentasi', workshop: 'Workshop' };
+const emit = () => { bus.dispatchEvent(new CustomEvent('state', { detail: state })); syncUI(); };
+function syncUI(){
+  $('#studioTitle').textContent = `${layoutNames[state.layout]} · ${state.people} peserta`;
+  $('#peopleCount').textContent = state.people;
+  const ppl = $('#people'); const cur = ppl.children.length;
+  for (let i = cur; i < state.people; i++) { const a = document.createElement('fluent-avatar'); a.setAttribute('name', NAMES[i]); a.setAttribute('color', 'colorful'); a.setAttribute('size', '28'); ppl.append(a); }
+  while (ppl.children.length > state.people) ppl.lastElementChild.remove();
+  $('#studioCaption').classList.toggle('on', state.cc);
+  $('#heroCaption').classList.toggle('on', heroCC);
+}
+let heroCC = false;
+const focusSw = [$('#heroFocus'), $('#studioFocus')];
+focusSw.forEach(s => s.addEventListener('change', () => { state.focus = s.checked; focusSw.forEach(o => { if (o !== s) o.checked = s.checked; }); emit(); }));
+const slider = $('#peopleSlider');
+const onSlide = () => { const n = Math.round(+slider.value || 6); if (n !== state.people) { state.people = n; if (state.hand >= n) state.hand = -1; emit(); } };
+slider.addEventListener('change', onSlide); slider.addEventListener('input', onSlide);
+$('#layoutTabs').addEventListener('change', e => { const id = (e.currentTarget.activeid || '').replace('tab-', ''); if (layoutNames[id] && id !== state.layout) { state.layout = id; emit(); } });
+$('#studioCC').addEventListener('change', e => { state.cc = e.currentTarget.checked; emit(); });
+const ccHero = () => { heroCC = $('#tbCC').pressed || $('#ccSwitch').checked; syncUI(); };
+$('#tbCC').addEventListener('click', () => setTimeout(ccHero)); $('#ccSwitch').addEventListener('change', () => { $('#tbCC').pressed = $('#ccSwitch').checked; ccHero(); });
+let handTimer = 0, hands = 0;
+$('#raiseBtn').addEventListener('click', () => {
+  state.hand = (state.hand + 1 + Math.floor(Math.random() * (state.people - 1))) % state.people; hands++;
+  $('#handBadge').setAttribute('count', String(hands)); emit();
+  toast(`${NAMES[state.hand].split(' ')[0]} mengangkat tangan.`, 'info');
+  clearTimeout(handTimer); handTimer = setTimeout(() => { state.hand = -1; emit(); }, 4000);
+});
+$('#shareBtn').addEventListener('click', e => { state.share = !state.share; e.currentTarget.lastChild.textContent = state.share ? 'Hentikan berbagi' : 'Bagikan layar'; emit(); });
+const lines = [['Sari', 'Oke, kita mulai dari hasil uji pengguna minggu lalu.'], ['Bima', 'Tujuh dari sepuluh peserta selesai tanpa bantuan.'], ['Lala', 'Berarti ekspor PDF bisa masuk rilis Juni, ya?'], ['Yoga', 'Setuju. Saya catat sebagai keputusan.']];
+let li = 0;
+setInterval(() => { if (document.hidden) return; li = (li + 1) % lines.length; const h = `<b>${lines[li][0]}:</b> ${lines[li][1]}`; $('#heroCaption').innerHTML = h; $('#studioCaption').innerHTML = h; }, 3800);
+let secs = 12 * 60 + 40; setInterval(() => { if (document.hidden || rmq.matches) return; secs++; $('#heroTimer').textContent = String(Math.floor(secs / 60)).padStart(2, '0') + ':' + String(secs % 60).padStart(2, '0'); }, 1000);
+customElements.whenDefined('fluent-avatar').then(syncUI);
+syncUI();
+
+/* ================= 3D ================= */
+function webglOK(){ try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch (e) { return false; } }
+function showFallbacks(){ const tpl = $('#roomFallback'); ['#heroStage', '#studioStage'].forEach(s => { const st = $(s); st.classList.add('no-webgl'); const fb = st.querySelector('.fallback'); if (!fb.firstChild) fb.append(tpl.content.cloneNode(true)); }); $('#alur').classList.add('no-webgl'); }
+let THREE, RoundedBoxGeometry;
+try { if (!webglOK()) throw new Error('no-webgl'); THREE = await import('three'); ({ RoundedBoxGeometry } = await import('three/addons/geometries/RoundedBoxGeometry.js')); } catch (e) { showFallbacks(); }
+
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+const storySec = $('#alur'), svgNodes = $$('#storySvg .node');
+function textProgress(p){ const n = Math.round(clamp(p, 0, 1) * 4); $$('.step', storySec).forEach((s, k) => s.classList.toggle('on', k === n)); svgNodes.forEach((c, k) => c.classList.toggle('on', k <= n)); $('#storyBar').value = Math.round(p * 100); $('#storyCount').textContent = `Langkah ${n + 1} dari 5`; }
+
+if (THREE) {
+  const gsap = window.gsap;
+  if (gsap && window.ScrollTrigger) gsap.registerPlugin(window.ScrollTrigger);
+  const DPR = () => Math.min(window.devicePixelRatio || 1, 2);
+  const frames = window.__rapatin.frames = {};
+  function createLoop(el, frame, continuous){
+    let visible = false, raf = 0, last = 0, pending = true;
+    const L = { request(){ pending = true; kick(); } };
+    const run = () => visible && !document.hidden;
+    function tick(now){
+      if (!run()) { raf = 0; last = 0; return; }
+      raf = -1;
+      const dt = last ? Math.min((now - last) / 1000, .05) : .016; last = now; pending = false;
+      frames[el.id] = (frames[el.id] || 0) + 1;
+      frame(dt, now / 1000);
+      if (continuous() || pending) raf = requestAnimationFrame(tick); else { raf = 0; last = 0; }
+    }
+    function kick(){ if (!raf && run()) raf = requestAnimationFrame(tick); }
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) L.request(); }, { rootMargin: '80px' }).observe(el);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) L.request(); });
+    rmq.addEventListener('change', () => L.request());
+    return L;
+  }
+  function makeRenderer(canvas, alpha){
+    const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: !!alpha, powerPreference: 'high-performance' });
+    r.setPixelRatio(DPR()); r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+    r.toneMapping = THREE.ACESFilmicToneMapping; r.outputColorSpace = THREE.SRGBColorSpace; if (alpha) r.setClearColor(0x000000, 0);
+    return r;
+  }
+  function watchSize(el, renderer, onSize){ const apply = () => { const w = Math.max(1, el.clientWidth), h = Math.max(1, el.clientHeight); renderer.setPixelRatio(DPR()); renderer.setSize(w, h, false); onSize(w, h); }; new ResizeObserver(apply).observe(el); apply(); }
+  const std = (c, rough = .7, extra = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0, ...extra });
+  function box(parent, w, h, d, mat, x, y, z, o = {}){ const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y, z); m.castShadow = o.cast !== false; m.receiveShadow = true; if (o.rx) m.rotation.x = o.rx; if (o.ry) m.rotation.y = o.ry; if (o.rz) m.rotation.z = o.rz; parent.add(m); return m; }
+
+  const AV_COLORS = ['#4f6bed', '#e8743f', '#3fb68b', '#c64fa8', '#e2b33c', '#5aa9e6', '#8a63d2', '#d9534f', '#2bb3a8', '#f08bb0', '#7d8f3a', '#4a5568'];
+  const SKIN = ['#f1c7a5', '#d9a47f', '#b67b55', '#8d5a3b', '#e6b591', '#c98e66'];
+
+  /* ---- screen textures for floating panels ---- */
+  const PANEL_KINDS = ['board', 'video', 'doc', 'video', 'agenda', 'video'];
+  function roundRect(x, X, Y, W, H, R){ x.beginPath(); x.moveTo(X + R, Y); x.arcTo(X + W, Y, X + W, Y + H, R); x.arcTo(X + W, Y + H, X, Y + H, R); x.arcTo(X, Y + H, X, Y, R); x.arcTo(X, Y, X + W, Y, R); x.closePath(); }
+  function drawPanel(cv, kind, idx, dark){
+    const x = cv.getContext('2d'), W = cv.width, H = cv.height;
+    const bg = dark ? '#1a1d29' : '#ffffff', fg = dark ? '#eef0f8' : '#1b1d29', mu = dark ? '#3a3f55' : '#e3e7f3', sub = dark ? '#9aa0b4' : '#6b7085';
+    x.clearRect(0, 0, W, H); roundRect(x, 0, 0, W, H, 28); x.fillStyle = bg; x.fill();
+    x.fillStyle = mu; roundRect(x, 0, 0, W, 44, 0); x.globalAlpha = .55; x.fillRect(0, 0, W, 44); x.globalAlpha = 1;
+    ['#ff6b5f', '#f8bd3a', '#35c75a'].forEach((c, i) => { x.fillStyle = c; x.beginPath(); x.arc(28 + i * 22, 22, 7, 0, 7); x.fill(); });
+    x.font = '600 20px Inter, sans-serif'; x.fillStyle = sub; x.textBaseline = 'middle';
+    const F = "Inter, system-ui, sans-serif";
+    if (kind === 'video') {
+      const names = ['Sari', 'Bima', 'Lala', 'Yoga'], n = names[idx % 4], c = AV_COLORS[(idx * 3) % AV_COLORS.length];
+      const g = x.createLinearGradient(0, 44, W, H); g.addColorStop(0, c); g.addColorStop(1, dark ? '#0e1018' : '#1b2e86');
+      x.fillStyle = g; x.fillRect(0, 44, W, H - 44);
+      x.fillStyle = 'rgba(255,255,255,.92)'; x.beginPath(); x.arc(W / 2, H / 2 + 14, 62, 0, 7); x.fill();
+      x.fillStyle = c; x.font = `700 54px ${F}`; x.textAlign = 'center'; x.fillText(n[0], W / 2, H / 2 + 16);
+      x.textAlign = 'left'; x.fillStyle = 'rgba(0,0,0,.35)'; roundRect(x, 18, H - 56, 150, 38, 12); x.fill();
+      x.fillStyle = '#fff'; x.font = `600 22px ${F}`; x.fillText(n, 34, H - 37);
+      x.fillStyle = '#7CF29B'; for (let k = 0; k < 5; k++) { const h = [10, 22, 16, 26, 12][k]; x.fillRect(110 + k * 9, H - 37 - h / 2, 5, h); }
+      x.fillStyle = 'rgba(255,255,255,.85)'; x.font = `600 18px ${F}`; x.fillText(n === 'Sari' ? 'Jakarta' : n === 'Bima' ? 'Bandung' : n === 'Lala' ? 'Yogyakarta' : 'Makassar', W - 130, 22);
+    } else if (kind === 'doc') {
+      x.fillStyle = sub; x.fillText('Catatan rapat', 100, 22);
+      x.fillStyle = fg; x.font = `700 30px ${F}`; x.fillText('Keputusan hari ini', 32, 88);
+      const ws = [.85, .7, .78, .5, .66, .74]; ws.forEach((w, i) => { x.fillStyle = i === 2 ? 'rgba(232,116,63,.35)' : mu; roundRect(x, 32, 128 + i * 30, (W - 64) * w, 14, 7); x.fill(); });
+    } else if (kind === 'agenda') {
+      x.fillStyle = sub; x.fillText('Agenda · 30 menit', 100, 22);
+      ['Hasil uji pengguna', 'Prioritas rilis Juni', 'Risiko & blocker', 'Tindak lanjut'].forEach((t, i) => {
+        const y = 92 + i * 52, done = i < 2;
+        x.strokeStyle = done ? '#3fb68b' : sub; x.lineWidth = 3; roundRect(x, 32, y - 14, 28, 28, 8); x.stroke();
+        if (done) { x.fillStyle = '#3fb68b'; roundRect(x, 32, y - 14, 28, 28, 8); x.fill(); x.strokeStyle = '#fff'; x.beginPath(); x.moveTo(39, y); x.lineTo(45, y + 6); x.lineTo(54, y - 6); x.stroke(); }
+        x.fillStyle = done ? sub : fg; x.font = `600 24px ${F}`; x.fillText(t, 76, y + 1);
+      });
+    } else { // board
+      x.fillStyle = sub; x.fillText('Papan · Roadmap Q3', 100, 22);
+      const notes = [['#ffd86b', 'Ekspor PDF'], ['#9fe3c1', 'Mode luring'], ['#b9c8ff', 'SSO'], ['#ffb59a', 'Tema gelap'], ['#f5b8e1', 'Integrasi'], ['#ffd86b', 'Notifikasi']];
+      notes.forEach(([c, t], i) => { const cx = 30 + (i % 3) * ((W - 60) / 3), cy = 70 + Math.floor(i / 3) * 120; x.save(); x.translate(cx + 70, cy + 50); x.rotate(((i * 37) % 7 - 3) * .012); x.fillStyle = c; roundRect(x, -68, -46, 136, 96, 10); x.fill(); x.fillStyle = '#2b2b33'; x.font = `600 20px ${F}`; x.textAlign = 'center'; x.fillText(t, 0, 0); x.restore(); });
+      x.textAlign = 'left';
+    }
+  }
+
+  function createRoom(canvas, stageEl, opts){
+    const renderer = makeRenderer(canvas, true);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(34, 1, .5, 200);
+    const hemi = new THREE.HemisphereLight('#ffffff', '#b4bde0', 1.6); scene.add(hemi);
+    const key = new THREE.DirectionalLight('#ffffff', 2.2); key.position.set(6, 14, 8); key.castShadow = true; key.shadow.mapSize.set(1024, 1024);
+    Object.assign(key.shadow.camera, { left: -12, right: 12, top: 12, bottom: -12, near: 1, far: 50 }); key.shadow.bias = -.0005; key.shadow.normalBias = .02;
+    scene.add(key);
+    const spot = new THREE.SpotLight('#ffffff', 0, 30, .45, .6, 1.2); spot.position.set(0, 12, 2); spot.target.position.set(0, 0, -1); scene.add(spot, spot.target);
+    // floor shadow catcher + rings
+    const floor = new THREE.Mesh(new THREE.CircleGeometry(16, 64), new THREE.ShadowMaterial({ opacity: .16 })); floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+    const ringMat = new THREE.MeshBasicMaterial({ color: '#6079da', transparent: true, opacity: .35 });
+    const ring1 = new THREE.Mesh(new THREE.RingGeometry(6.2, 6.28, 96), ringMat); ring1.rotation.x = -Math.PI / 2; ring1.position.y = .01; scene.add(ring1);
+    const ring2 = new THREE.Mesh(new THREE.RingGeometry(9.2, 9.25, 96), ringMat.clone()); ring2.material.opacity = .2; ring2.rotation.x = -Math.PI / 2; ring2.position.y = .01; scene.add(ring2);
+    // table
+    const table = new THREE.Group(); scene.add(table);
+    const glassMat = new THREE.MeshPhysicalMaterial({ color: '#e9edff', roughness: .12, metalness: 0, clearcoat: 1, clearcoatRoughness: .1, transparent: true, opacity: .72 });
+    const top = new THREE.Mesh(new THREE.CylinderGeometry(2.9, 2.9, .16, 72), glassMat); top.position.y = 1.5; top.castShadow = true; top.receiveShadow = true; table.add(top);
+    const edge = new THREE.Mesh(new THREE.TorusGeometry(2.9, .05, 8, 96), new THREE.MeshStandardMaterial({ color: '#6079da', emissive: '#6079da', emissiveIntensity: .8 })); edge.rotation.x = Math.PI / 2; edge.position.y = 1.5; table.add(edge);
+    const ped = new THREE.Mesh(new THREE.CylinderGeometry(.35, .9, 1.45, 32), std('#d3d9ee', .4)); ped.position.y = .72; ped.castShadow = true; table.add(ped);
+    const holo = new THREE.Group(); holo.position.y = 1.62; table.add(holo);
+    const holoMat = new THREE.MeshBasicMaterial({ color: '#879ee7', transparent: true, opacity: .55, side: THREE.DoubleSide });
+    const hr1 = new THREE.Mesh(new THREE.RingGeometry(.7, .78, 48), holoMat); hr1.rotation.x = -Math.PI / 2; holo.add(hr1);
+    const hr2 = new THREE.Mesh(new THREE.TorusGeometry(.5, .025, 8, 48), new THREE.MeshBasicMaterial({ color: '#e8743f' })); hr2.position.y = .55; holo.add(hr2);
+    const cone = new THREE.Mesh(new THREE.ConeGeometry(.75, 1.1, 32, 1, true), new THREE.MeshBasicMaterial({ color: '#9cb1ed', transparent: true, opacity: .12, side: THREE.DoubleSide, depthWrite: false })); cone.position.y = .55; cone.rotation.x = Math.PI; holo.add(cone);
+    // workshop mini tables
+    const miniTables = [-5.2, 0, 5.2].map((x, i) => { const g = new THREE.Group(); const t = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, .1, 40), glassMat); t.position.y = 1.2; t.castShadow = true; g.add(t); const p = new THREE.Mesh(new THREE.CylinderGeometry(.15, .4, 1.15, 16), std('#d3d9ee', .4)); p.position.y = .58; g.add(p); g.position.set(x, 0, i === 1 ? -1.2 : 1.2); g.scale.setScalar(.001); scene.add(g); return g; });
+
+    // avatars
+    const avatars = [];
+    const chairMat = std('#2b2f45', .6), chairMat2 = std('#3a4060', .5);
+    for (let i = 0; i < 12; i++) {
+      const g = new THREE.Group(); scene.add(g);
+      const chair = new THREE.Group(); g.add(chair);
+      box(chair, .9, .12, .9, chairMat, 0, .75, 0); box(chair, .9, 1.0, .12, chairMat2, 0, 1.3, .45); box(chair, .12, .7, .12, chairMat, 0, .38, 0);
+      const fig = new THREE.Group(); g.add(fig);
+      const bodyMat = std(AV_COLORS[i], .55);
+      const body = new THREE.Mesh(new THREE.CapsuleGeometry(.34, .55, 4, 12), bodyMat); body.position.set(0, 1.45, .08); body.castShadow = true; fig.add(body);
+      const head = new THREE.Mesh(new THREE.SphereGeometry(.3, 20, 14), std(SKIN[i % SKIN.length], .6)); head.position.set(0, 2.15, .02); head.castShadow = true; fig.add(head);
+      const hair = new THREE.Mesh(new THREE.SphereGeometry(.315, 20, 10, 0, Math.PI * 2, 0, Math.PI * .5), std(['#1f1a17', '#3b2a20', '#111', '#5a3b28'][i % 4], .8)); hair.position.copy(head.position).add(new THREE.Vector3(0, .03, .03)); hair.rotation.x = -.35; fig.add(hair);
+      const armP = new THREE.Group(); armP.position.set(.42, 1.75, .05); fig.add(armP);
+      const arm = new THREE.Mesh(new THREE.CapsuleGeometry(.09, .5, 4, 8), bodyMat); arm.position.y = -.32; arm.castShadow = true; armP.add(arm);
+      armP.rotation.x = -.9;
+      const armP2 = new THREE.Group(); armP2.position.set(-.42, 1.75, .05); fig.add(armP2);
+      const arm2 = arm.clone(); armP2.add(arm2); armP2.rotation.x = -.9;
+      const speak = new THREE.Mesh(new THREE.TorusGeometry(.62, .04, 8, 40), new THREE.MeshBasicMaterial({ color: '#3fb68b', transparent: true, opacity: 0 })); speak.rotation.x = Math.PI / 2; speak.position.y = .06; g.add(speak);
+      const handBadge = new THREE.Mesh(new THREE.IcosahedronGeometry(.16, 1), new THREE.MeshBasicMaterial({ color: '#f8bd3a' })); handBadge.position.set(.45, 3.0, 0); handBadge.scale.setScalar(.001); g.add(handBadge);
+      g.scale.setScalar(.001);
+      avatars.push({ g, armP, speak, handBadge, pos: new THREE.Vector3(), yaw: 0, s: 0, tp: new THREE.Vector3(), tyaw: 0, ts: 0, arm: 0 });
+    }
+
+    // floating panels
+    const panels = [];
+    const dark = () => htmlEl.dataset.theme === 'dark';
+    const frameMat = new THREE.MeshPhysicalMaterial({ color: '#ffffff', roughness: .1, metalness: 0, clearcoat: 1, transparent: true, opacity: .45 });
+    PANEL_KINDS.forEach((kind, j) => {
+      const cv = document.createElement('canvas'); cv.width = 512; cv.height = 320; drawPanel(cv, kind, j, dark());
+      const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
+      const g = new THREE.Group(); scene.add(g);
+      const fr = new THREE.Mesh(new RoundedBoxGeometry(2.72, 1.76, .08, 3, .12), frameMat); fr.castShadow = true; g.add(fr);
+      const scrMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, toneMapped: false });
+      const scr = new THREE.Mesh(new THREE.PlaneGeometry(2.56, 1.6), scrMat); scr.position.z = .05; g.add(scr);
+      const back = new THREE.Mesh(new THREE.PlaneGeometry(2.56, 1.6), new THREE.MeshBasicMaterial({ color: '#c9d6f7', transparent: true, opacity: .5 })); back.rotation.y = Math.PI; back.position.z = -.05; g.add(back);
+      panels.push({ g, cv, tex, kind, scrMat, frame: fr, pos: new THREE.Vector3(0, 3, 0), tp: new THREE.Vector3(), s: 1, ts: 1, op: 1, top: 1, face: null, phase: j * 1.3 });
+    });
+    function redrawPanels(){ panels.forEach((p, j) => { drawPanel(p.cv, p.kind, j, dark()); p.tex.needsUpdate = true; }); ringMat.color.set(dark() ? '#879ee7' : '#6079da'); loop.request(); }
+    document.fonts?.ready.then(redrawPanels);
+    bus.addEventListener('theme', redrawPanels);
+
+    // layout targets
+    let orbit = 0, focus = 0, aspect = 1, speaker = 0, speakT = 0;
+    const tableScale = { v: 1, t: 1 };
+    function layoutTargets(s, time){
+      const n = s.people;
+      avatars.forEach((a, i) => { a.ts = i < n ? 1 : 0; });
+      if (s.layout === 'bundar') {
+        tableScale.t = 1; miniTables.forEach(m => m.userData.t = 0);
+        for (let i = 0; i < n; i++) { const ang = i / n * Math.PI * 2 + Math.PI / 2 + .3; const r = 4.1; avatars[i].tp.set(Math.cos(ang) * r, 0, Math.sin(ang) * r); avatars[i].tyaw = Math.atan2(avatars[i].tp.x, avatars[i].tp.z); }
+      } else if (s.layout === 'presentasi') {
+        tableScale.t = .001; miniTables.forEach(m => m.userData.t = 0);
+        const perRow = n > 8 ? 6 : Math.min(n, 5);
+        for (let i = 0; i < n; i++) { const row = Math.floor(i / perRow), inRow = Math.min(perRow, n - row * perRow), k = i % perRow; avatars[i].tp.set((k - (inRow - 1) / 2) * 1.55, 0, 1.2 + row * 2.0); avatars[i].tyaw = 0; }
+      } else {
+        tableScale.t = .001; miniTables.forEach(m => m.userData.t = 1);
+        for (let i = 0; i < n; i++) { const c = i % 3, slot = Math.floor(i / 3); const m = miniTables[c].position; const ang = slot / 4 * Math.PI * 2 + Math.PI / 2 + .4; avatars[i].tp.set(m.x + Math.cos(ang) * 1.9, 0, m.z + Math.sin(ang) * 1.9); avatars[i].tyaw = Math.atan2(avatars[i].tp.x - m.x, avatars[i].tp.z - m.z); }
+      }
+      panels.forEach((p, j) => {
+        const main = j === 0;
+        if (s.layout === 'bundar') {
+          const share = s.share && main;
+          if (share) { p.tp.set(0, 4.4, -1.2); p.ts = 1.7; p.face = 'cam'; }
+          else { const ang = orbit + j / panels.length * Math.PI * 2; p.tp.set(Math.cos(ang) * 7.4, 3.7 + Math.sin(time * .8 + p.phase) * .25 + (j % 2) * .6, Math.sin(ang) * 7.4 - .6); p.ts = 1; p.face = 'cam'; }
+        } else if (s.layout === 'presentasi') {
+          if (main) { p.tp.set(0, 3.6, -4.2); p.ts = 2.5; p.face = 'z'; }
+          else { const k = j - 1; p.tp.set((k - 2) * 2.5, 6.9 + Math.sin(time * .8 + p.phase) * .1, -5.2); p.ts = .78; p.face = 'z'; }
+        } else {
+          const col = j % 3, row = Math.floor(j / 3); p.tp.set((col - 1) * 3.3, 4.6 + row * 2.2, -5.6 + Math.abs(col - 1) * .7); p.ts = 1.08; p.face = 'z';
+          p.tyaw = (1 - col) * .25;
+        }
+        p.top = s.focus && !main && !(s.layout === 'bundar' && !s.share) ? .18 : s.focus && !main ? .22 : 1;
+        if (s.focus && main) p.ts *= 1.08;
+      });
+    }
+
+    const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+    stageEl.addEventListener('pointermove', e => { const r = stageEl.getBoundingClientRect(); pointer.tx = ((e.clientX - r.left) / r.width - .5) * 2; pointer.ty = ((e.clientY - r.top) / r.height - .5) * 2; });
+    stageEl.addEventListener('pointerleave', () => { pointer.tx = 0; pointer.ty = 0; });
+    const camLook = new THREE.Vector3(0, 2.2, 0), tmp = new THREE.Vector3();
+    let first = true;
+    const loop = createLoop(canvas, (dt, t) => {
+      const RM = rmq.matches, k = RM || first ? 1 : 1 - Math.exp(-dt * 4);
+      if (!RM) { orbit += dt * .12; speakT += dt; if (speakT > 3.2) { speakT = 0; speaker = (speaker + 1) % Math.max(1, state.people); } }
+      layoutTargets(state, RM ? 0 : t);
+      // camera with pointer parallax
+      pointer.x += (pointer.tx - pointer.x) * (RM ? 1 : .06); pointer.y += (pointer.ty - pointer.y) * (RM ? 1 : .06);
+      const far = aspect < .75 ? 1.6 : aspect < 1.05 ? 1.25 : 1;
+      const lay = state.layout;
+      const baseY = lay === 'presentasi' ? 7.5 : lay === 'workshop' ? 9 : 8.5, baseZ = lay === 'presentasi' ? 14.5 : 15.5;
+      camera.position.set(pointer.x * 2.2 * (RM ? 0 : 1), (baseY - pointer.y * 1.2 * (RM ? 0 : 1)) * (far > 1 ? 1.1 : 1), baseZ * far);
+      camLook.set(0, lay === 'presentasi' ? 3 : 2.6, lay === 'presentasi' ? -1 : 0);
+      camera.lookAt(camLook);
+      // table
+      tableScale.v += (tableScale.t - tableScale.v) * k; table.scale.setScalar(Math.max(.001, tableScale.v));
+      miniTables.forEach(m => { const s = m.scale.x + ((m.userData.t || 0) * 1 + .001 - m.scale.x) * k; m.scale.setScalar(Math.max(.001, s)); });
+      if (!RM) { hr2.rotation.x = t * .9; hr2.rotation.y = t * .6; hr1.rotation.z = t * .4; }
+      // avatars
+      avatars.forEach((a, i) => {
+        if (first) { a.pos.copy(a.tp); a.yaw = a.tyaw; }
+        a.pos.lerp(a.tp, k); a.s += (a.ts - a.s) * (RM ? 1 : 1 - Math.exp(-dt * 6));
+        let dy = a.tyaw - a.yaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); a.yaw += dy * k;
+        a.g.position.copy(a.pos); a.g.rotation.y = a.yaw + Math.PI; a.g.scale.setScalar(Math.max(.001, a.s));
+        a.g.visible = a.s > .01;
+        const raised = state.hand === i ? 1 : 0; a.arm += (raised - a.arm) * (RM ? 1 : .12);
+        a.armP.rotation.x = -.9 + a.arm * -2.0; a.armP.rotation.z = a.arm * .25;
+        a.handBadge.scale.setScalar(Math.max(.001, a.arm)); if (!RM) a.handBadge.position.y = 3.0 + Math.sin(t * 4) * .06 * a.arm;
+        const sp = i === speaker && i < state.people ? 1 : 0;
+        a.speak.material.opacity += ((sp ? (RM ? .8 : .55 + Math.sin(t * 6) * .3) : 0) - a.speak.material.opacity) * .2;
+        a.g.children[1].position.y = RM ? 0 : Math.sin(t * 1.4 + i) * .015;
+      });
+      // panels
+      panels.forEach((p, j) => {
+        if (first) p.pos.copy(p.tp);
+        p.pos.lerp(p.tp, k); p.s += (p.ts - p.s) * k; p.op += (p.top - p.op) * k;
+        p.g.position.copy(p.pos); p.g.scale.setScalar(p.s);
+        if (p.face === 'cam') { tmp.set(camera.position.x, p.pos.y, camera.position.z); p.g.lookAt(tmp); }
+        else { const ty = p.tyaw || 0; p.g.rotation.set(0, p.g.rotation.y + (ty - p.g.rotation.y) * k, 0); p.g.rotation.x = 0; p.g.rotation.z = 0; }
+        p.scrMat.opacity = p.op; p.frame.material.opacity = .45 * p.op;
+      });
+      // focus
+      focus += ((state.focus ? 1 : 0) - focus) * (RM ? 1 : 1 - Math.exp(-dt * 3));
+      hemi.intensity = 1.6 - 1.15 * focus; key.intensity = 2.2 - 1.5 * focus; spot.intensity = 60 * focus;
+      edge.material.emissiveIntensity = .8 + 1.6 * focus;
+      stageEl.style.filter = focus > .01 ? `saturate(${1 - .35 * focus}) brightness(${1 - .25 * focus})` : '';
+      renderer.render(scene, camera);
+      first = false;
+      if (!stageEl.classList.contains('ready')) stageEl.classList.add('ready');
+    }, () => !rmq.matches);
+    watchSize(stageEl, renderer, (w, h) => { aspect = w / h; camera.aspect = aspect; camera.fov = aspect < .8 ? 40 : 34; camera.updateProjectionMatrix(); loop.request(); });
+    bus.addEventListener('state', () => loop.request());
+    return { loop, renderer, scene, camera };
+  }
+
+  let heroV, studioV;
+  try { heroV = createRoom($('#heroCanvas'), $('#heroStage'), { hero: true }); studioV = createRoom($('#studioCanvas'), $('#studioStage'), {}); }
+  catch (e) { console.warn('WebGL gagal', e); showFallbacks(); }
+
+  /* ================= isometric scroll story ================= */
+  function createStory(){
+    const section = storySec, stage = $('.story-stage', section), canvas = $('#storyCanvas');
+    const renderer = makeRenderer(canvas, false);
+    const scene = new THREE.Scene();
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -100, 200);
+    const camDir = new THREE.Vector3(1, 1.1, 1).normalize(), camTarget = new THREE.Vector3();
+    const hemi = new THREE.HemisphereLight('#ffffff', '#c3c9e0', 1.4); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#ffffff', 2.4); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+    Object.assign(sun.shadow.camera, { left: -18, right: 18, top: 18, bottom: -18, near: 1, far: 80 }); sun.shadow.bias = -.0005; sun.shadow.normalBias = .03;
+    scene.add(sun, sun.target);
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(140, 80), std('#eef1f8', 1)); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+    let gridRef = new THREE.GridHelper(140, 70, '#d9deec', '#e3e7f2'); gridRef.position.y = .01; scene.add(gridRef);
+    const CLAY = new THREE.Color('#f3f4f9');
+    const SP = [[-16, 4], [-6, -4], [3, 4], [12, -4], [21, 4]];
+    const stations = [];
+    const sm = c => { const m = std(c, .75); m.userData.target = new THREE.Color(c); m.color.copy(CLAY); return m; };
+    SP.forEach(([x, z], i) => {
+      const g = new THREE.Group(); g.position.set(x, 0, z); scene.add(g); const mats = [];
+      const B = (w, h, d, c, px, py, pz, o) => { const m = sm(c); mats.push(m); return box(inner, w, h, d, m, px, py, pz, o); };
+      const Mx = (geo, c, px, py, pz) => { const m = sm(c); mats.push(m); const me = new THREE.Mesh(geo, m); me.position.set(px, py, pz); me.castShadow = true; me.receiveShadow = true; inner.add(me); return me; };
+      const pad = new THREE.Mesh(new THREE.BoxGeometry(5.4, .2, 5.4), sm('#dfe5fb')); mats.push(pad.material); pad.position.y = .1; pad.receiveShadow = true; g.add(pad);
+      const inner = new THREE.Group(); inner.position.y = .2; g.add(inner);
+      // common desk
+      const desk = (dx, dz, ry = 0) => { B(2.6, .1, 1.3, '#f4f4f6', dx, 1.0, dz); B(.08, .95, 1.2, '#3a3f55', dx - 1.2, .5, dz); B(.08, .95, 1.2, '#3a3f55', dx + 1.2, .5, dz); B(.7, .1, .7, '#2b44b6', dx, .6, dz + 1.1); B(.7, .7, .1, '#2b44b6', dx, 1.0, dz + 1.45); };
+      if (i === 0) { desk(0, 0); B(1.3, .8, .06, '#1b1d29', 0, 1.55, -.4); B(1.2, .7, .02, '#e0e8fb', 0, 1.55, -.36); for (let r = 0; r < 3; r++) for (let c = 0; c < 4; c++) B(.22, .14, .02, (r * 4 + c) % 5 === 1 ? '#e8743f' : '#879ee7', -.4 + c * .27, 1.73 - r * .2, -.34); Mx(new THREE.CylinderGeometry(.12, .1, .26, 12), '#e8743f', .9, 1.18, .2); }
+      else if (i === 1) { B(2.4, .5, 1.1, '#8a63d2', 0, .3, .2); B(2.4, .7, .3, '#8a63d2', 0, .75, -.25); B(.9, .05, .6, '#3a3f55', .1, .6, .55); B(.9, .55, .04, '#3a3f55', .1, .88, .27, { rx: -.25 });
+        [[-1, 2.6], [.1, 3.1], [1.2, 2.6]].forEach(([px, py], k) => { B(.95, .6, .04, ['#4f6bed', '#3fb68b', '#e8743f'][k], px, py, -.4); }); }
+      else if (i === 2) { B(3.4, 2.0, .1, '#ffffff', 0, 2.1, -.6); B(.1, 1.2, .1, '#3a3f55', -1.4, .6, -.6); B(.1, 1.2, .1, '#3a3f55', 1.4, .6, -.6);
+        [['#ffd86b', -1.1, 2.6], ['#9fe3c1', -.4, 2.5], ['#b9c8ff', .3, 2.65], ['#ffb59a', 1.0, 2.5], ['#f5b8e1', -.8, 1.75], ['#ffd86b', .1, 1.8], ['#9fe3c1', .9, 1.7]].forEach(([c, px, py]) => B(.5, .45, .04, c, px, py, -.53));
+        B(.7, .1, .7, '#2b44b6', -.6, .6, 1.2); B(.7, .1, .7, '#e8743f', .8, .6, 1.4); }
+      else if (i === 3) { desk(0, 0); for (let k = 0; k < 4; k++) B(.8, .06, 1.0, k % 2 ? '#ffffff' : '#e0e8fb', -.6, 1.1 + k * .07, -.1, { ry: k * .08 }); B(1.1, .7, .05, '#1b1d29', .55, 1.45, -.4); const sp = Mx(new THREE.OctahedronGeometry(.32, 0), '#e8743f', 0, 2.5, 0); g.userData.spin = sp; }
+      else { B(3.6, 2.2, .1, '#f4f4f6', 0, 1.6, -.8); ['#879ee7', '#e2b33c', '#3fb68b'].forEach((c, col) => { B(1.05, .1, .05, c, -1.15 + col * 1.15, 2.55, -.73); for (let r = 0; r < 3 - col % 2; r++) B(.9, .32, .04, '#ffffff', -1.15 + col * 1.15, 2.15 - r * .42, -.72); });
+        B(.22, .9, .22, '#3fb68b', .5, 3.4, -.7, { rz: .7 }); B(.22, .5, .22, '#3fb68b', .05, 3.25, -.7, { rz: -.7 }); B(.1, .5, .1, '#3a3f55', -1.6, .25, -.8); B(.1, .5, .1, '#3a3f55', 1.6, .25, -.8); }
+      stations.push({ g, mats, inner, lit: 0 });
+    });
+    // path
+    const pts = [[-16, 4], [-11, 4], [-11, -4], [-6, -4], [-1, -4], [-1, 4], [3, 4], [7.5, 4], [7.5, -4], [12, -4], [16.5, -4], [16.5, 4], [21, 4]].map(([x, z]) => new THREE.Vector3(x, .3, z + 2.2));
+    pts.forEach(p => p.z = p.z); // route runs in front of desks
+    const path = new THREE.CurvePath(); const rad = 1.3; let cur = pts[0].clone();
+    for (let i = 1; i < pts.length - 1; i++) { const p = pts[i], dIn = p.clone().sub(pts[i - 1]).normalize(), dOut = pts[i + 1].clone().sub(p).normalize(); if (dIn.dot(dOut) > .999) continue; const a = p.clone().addScaledVector(dIn, -rad), b = p.clone().addScaledVector(dOut, rad); path.add(new THREE.LineCurve3(cur.clone(), a)); path.add(new THREE.QuadraticBezierCurve3(a, p.clone(), b)); cur = b; }
+    path.add(new THREE.LineCurve3(cur, pts[pts.length - 1].clone()));
+    const TS = 700, RS = 6;
+    scene.add(new THREE.Mesh(new THREE.TubeGeometry(path, TS, .1, RS, false), std('#cfd5e6', .9)));
+    const prog = new THREE.Mesh(new THREE.TubeGeometry(path, TS, .17, RS, false), new THREE.MeshStandardMaterial({ color: '#e8743f', emissive: '#e8743f', emissiveIntensity: .45, roughness: .5 })); prog.geometry.setDrawRange(0, 0); scene.add(prog);
+    pts.forEach(p => { const d = new THREE.Mesh(new THREE.CylinderGeometry(.3, .3, .08, 16), std('#e8743f', .6)); d.position.set(p.x, .05, p.z); scene.add(d); });
+    const samples = 1200, stationU = SP.map(([x, z]) => { let best = 0, bd = 1e9; for (let s = 0; s <= samples; s++) { const q = path.getPointAt(s / samples); const d = (q.x - x) ** 2 + (q.z - (z + 2.2)) ** 2; if (d < bd) { bd = d; best = s / samples; } } return best; });
+    stationU[0] = 0; stationU[4] = 1;
+    // character with headset
+    const chr = new THREE.Group(); scene.add(chr);
+    const shirt = std('#2b44b6', .8), pants = std('#2b2f45', .8), skin = std('#c99a76', .7);
+    const body = new THREE.Mesh(new THREE.CapsuleGeometry(.32, .55, 4, 10), shirt); body.position.y = 1.25; body.castShadow = true; chr.add(body);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(.3, 16, 12), skin); head.position.y = 1.98; head.castShadow = true; chr.add(head);
+    const hair = new THREE.Mesh(new THREE.SphereGeometry(.32, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), std('#1f1a17', .9)); hair.position.y = 2.02; chr.add(hair);
+    const set = new THREE.Mesh(new THREE.TorusGeometry(.34, .04, 6, 20, Math.PI), std('#e8743f', .5)); set.position.y = 2.0; set.rotation.y = Math.PI / 2; chr.add(set);
+    const mic = new THREE.Mesh(new THREE.BoxGeometry(.05, .05, .3), std('#e8743f', .5)); mic.position.set(.3, 1.85, .14); chr.add(mic);
+    const laptop = new THREE.Mesh(new THREE.BoxGeometry(.5, .04, .35), std('#9aa0b4', .4)); laptop.position.set(-.38, 1.2, .1); laptop.rotation.z = .2; chr.add(laptop);
+    const limb = (mat, w, h, px, py) => { const piv = new THREE.Group(); piv.position.set(px, py, 0); const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, w), mat); m.position.y = -h / 2; m.castShadow = true; piv.add(m); chr.add(piv); return piv; };
+    const legL = limb(pants, .2, .8, -.15, .85), legR = limb(pants, .2, .8, .15, .85), armL = limb(shirt, .15, .65, -.42, 1.55), armR = limb(shirt, .15, .65, .42, 1.55);
+
+    let targetU = 0, shownU = 0, walk = 0, step = 0, halfW = 10, halfH = 10, aspect = 1; const lastPos = new THREE.Vector3();
+    const steps = $$('.step', section);
+    function setProgress(p){
+      const n = 4, u = clamp(p, 0, 1) * n, i = Math.min(n - 1, Math.floor(u)), f = u - i, w = smooth(.22, .82, f);
+      targetU = stationU[i] + (stationU[i + 1] - stationU[i]) * w; const s = w < .5 ? i : i + 1;
+      if (s !== step) { step = s; steps.forEach((el, k) => el.classList.toggle('on', k === s)); $('#storyCount').textContent = `Langkah ${s + 1} dari 5`; }
+      $('#storyBar').value = Math.round(clamp(p, 0, 1) * 100); loop.request();
+    }
+    function themeColors(){
+      const d = htmlEl.dataset.theme === 'dark';
+      scene.background = new THREE.Color(d ? '#0e1018' : '#f5f6fb'); ground.material.color.set(d ? '#141722' : '#eef1f8');
+      scene.remove(gridRef); gridRef.geometry.dispose(); gridRef.material.dispose(); gridRef = new THREE.GridHelper(140, 70, d ? '#232838' : '#d9deec', d ? '#1c2030' : '#e3e7f2'); gridRef.position.y = .01; scene.add(gridRef);
+      CLAY.set(d ? '#cfd4e4' : '#f3f4f9'); hemi.intensity = d ? .8 : 1.4; sun.intensity = d ? 1.8 : 2.4;
+      stations.forEach(s => s.mats.forEach(m => m.color.copy(CLAY).lerp(m.userData.target, s.lit)));
+      loop.request();
+    }
+    const loop = createLoop(canvas, dt => {
+      const RM = rmq.matches;
+      shownU += (targetU - shownU) * (RM ? 1 : 1 - Math.exp(-dt * 5)); if (Math.abs(targetU - shownU) > 1e-4) loop.request(); else shownU = targetU;
+      const u = clamp(shownU, 0, 1), pos = path.getPointAt(u), tan = path.getTangentAt(Math.min(u, .9999));
+      const moved = pos.distanceTo(lastPos); lastPos.copy(pos); walk += moved * 3.2; const mv = clamp(moved * 25, 0, 1);
+      chr.position.set(pos.x, Math.abs(Math.sin(walk)) * .08 * mv, pos.z); if (moved > 1e-4) chr.rotation.y = Math.atan2(tan.x, tan.z);
+      const sw = Math.sin(walk) * .7 * mv; legL.rotation.x = sw; legR.rotation.x = -sw; armL.rotation.x = -sw * .8; armR.rotation.x = sw * .8;
+      prog.geometry.setDrawRange(0, Math.floor(u * TS) * RS * 6);
+      stations.forEach((s, i) => {
+        const goal = u >= stationU[i] - .004 ? 1 : 0, prev = s.lit; s.lit += (goal - s.lit) * (RM ? 1 : Math.min(1, dt * 4));
+        if (Math.abs(goal - s.lit) > .002) loop.request(); else s.lit = goal;
+        if (prev !== s.lit) s.mats.forEach(m => m.color.copy(CLAY).lerp(m.userData.target, s.lit));
+        s.inner.scale.setScalar(.82 + .18 * s.lit);
+        if (s.g.userData.spin) { s.g.userData.spin.rotation.y = u * 20; s.g.userData.spin.position.y = 2.5 + s.lit * .4; }
+      });
+      const desired = new THREE.Vector3(pos.x, 0, pos.z);
+      if (aspect >= .9) desired.addScaledVector(new THREE.Vector3(1, 0, -1).normalize(), -halfW * .32);
+      else { const up = new THREE.Vector3(0, 1, 0).applyQuaternion(cam.quaternion); up.y = 0; desired.addScaledVector(up.normalize(), -halfH * .55); }
+      if (camTarget.lengthSq() === 0) camTarget.copy(desired);
+      camTarget.lerp(desired, RM ? 1 : 1 - Math.exp(-dt * 3.5)); if (camTarget.distanceTo(desired) > .01) loop.request();
+      cam.position.copy(camTarget).addScaledVector(camDir, 60); cam.lookAt(camTarget);
+      sun.position.copy(camTarget).add(new THREE.Vector3(14, 26, 8)); sun.target.position.copy(camTarget);
+      renderer.render(scene, cam);
+    }, () => false);
+    watchSize(stage, renderer, (w, h) => { aspect = w / h; halfH = aspect < .9 ? 9.5 : 8.2; halfW = halfH * aspect; Object.assign(cam, { left: -halfW, right: halfW, top: halfH, bottom: -halfH }); cam.updateProjectionMatrix(); loop.request(); });
+    themeColors(); bus.addEventListener('theme', themeColors);
+    return { setProgress, loop };
+  }
+  let story = null;
+  try { story = createStory(); } catch (e) { console.warn('Story WebGL gagal', e); storySec.classList.add('no-webgl'); }
+  const onProg = p => story ? story.setProgress(p) : textProgress(p);
+  if (gsap && window.ScrollTrigger) { window.ScrollTrigger.create({ trigger: storySec, start: 'top top', end: 'bottom bottom', onUpdate: s => onProg(s.progress) }); }
+  else { const upd = () => { const r = storySec.getBoundingClientRect(); onProg(clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1)); }; addEventListener('scroll', upd, { passive: true }); upd(); }
+  window.__rapatin.views = { heroV, studioV, story };
+} else {
+  const upd = () => { const r = storySec.getBoundingClientRect(); textProgress(clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1)); };
+  addEventListener('scroll', upd, { passive: true }); upd();
+}
+</script>
+</body>
+</html>
