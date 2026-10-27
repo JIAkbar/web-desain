@@ -43,7 +43,7 @@ Tidak berlaku untuk proyek ini — tidak ada halaman yang membaca berkas data (`
 - **Akses & batas:** bebas, tanpa kunci. Dokumentasi resmi meminta `app-bridge.js` + meta `shopify-api-key`. Uji 26 Okt 2026 (sesi ini): tanpa keduanya komponen tetap tergambar dan konsol kosong.
 - **Atribut:** paket tipe `@shopify/polaris-types@2.0.0` (`npm pack`, `dist/custom-elements.json` + `dist/polaris.d.ts`), diekstrak di folder sementara, tidak disalin ke repo. Komponen tambahan di paket itu yang bukan bagian dari 50: `s-press-button`, `s-scroll-box` (tidak dipakai).
 - **Lisensi:** TIDAK disebut di dokumentasi web components; `package.json` paket tipe juga tanpa ruas `license`. Katalog AI Skill mencatat "boleh disalin: tidak tahu". Halaman hanya memuat skrip dari CDN Shopify, tidak menyalin kodenya. **Keputusan Johan diperlukan sebelum push/tayang**; sampai itu halaman bertanda `noindex` dan tidak dipush.
-- **Berkas lokal:** `design-systems/polaris/index.html` (landing pilot); gambar memakai `thumbnails/*.png` repo sendiri.
+- **Berkas lokal:** TIDAK di repo ini. Landing pilot dipindah ke `AI Skill/04 - Referensi/Referensi Design Systems/landing/polaris/` (keputusan Johan 26 Okt 2026: "AI Skill, lokal saja"); `design-systems/` dibuang dari riwayat cabang 28 Okt 2026 (antrean #25). Bukti tangkapan versi 1 tetap di `docs/bukti-23/`.
 - **Fon:** komponen memakai `ShopifyInter` (nol polos); halaman memakai Fraunces (Google Fonts) untuk judul dan Inter/Segoe UI untuk isi.
 
 | Tersedia (inventaris) | Diambil? | Alasan / bukti | Keputusan |
@@ -58,5 +58,6 @@ Tidak berlaku — belum pernah ada penggantian sumber, jahitan data, atau ruas y
 
 ## Riwayat
 
+- 2026-10-28 — landing Polaris keluar dari repo, pindah ke AI Skill (#25).
 - 2026-10-26 — tambah sumber Polaris web components (pilot #23); lisensi belum diputuskan Johan.
 - 2026-08-23 — dibuat (perintah lintas-sesi dari sesi "AI Skill", instruksi Johan 2026-08-23); sumber: 1 (Google Fonts); halaman dipetakan: 0 (tidak ada halaman berbasis data luar); yang belum diputuskan: 0.
