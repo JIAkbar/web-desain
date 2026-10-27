@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nalar — Asisten AI untuk UMKM Indonesia</title>
+<meta name="description" content="Nalar: asisten AI yang membalas chat pelanggan, mencatat stok, dan menyusun laporan keuangan UMKM. Template landing page dengan Tailwind CSS v4, pola shadcn/ui, dan three.js.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
+<script>
+  (function(){try{var t=localStorage.getItem('nalar-theme');if(t==='light')document.documentElement.classList.remove('dark');}catch(e){}})();
+</script>
+<!-- Tailwind CSS v4 browser build (MIT) -->
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.13/dist/index.global.js"></script>
+<style type="text/tailwindcss">
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ===== Token gaya shadcn/ui (tema zinc + aksen violet) ===== */
+:root{
+  --radius:0.75rem;
+  --background:oklch(1 0 0);
+  --foreground:oklch(0.141 0.005 285.823);
+  --card:oklch(1 0 0);
+  --card-foreground:oklch(0.141 0.005 285.823);
+  --popover:oklch(1 0 0);
+  --popover-foreground:oklch(0.141 0.005 285.823);
+  --primary:oklch(0.541 0.281 293.009);
+  --primary-foreground:oklch(0.969 0.016 293.756);
+  --secondary:oklch(0.967 0.001 286.375);
+  --secondary-foreground:oklch(0.21 0.006 285.885);
+  --muted:oklch(0.967 0.001 286.375);
+  --muted-foreground:oklch(0.552 0.016 285.938);
+  --accent:oklch(0.967 0.001 286.375);
+  --accent-foreground:oklch(0.21 0.006 285.885);
+  --destructive:oklch(0.577 0.245 27.325);
+  --success:oklch(0.627 0.17 149.214);
+  --border:oklch(0.92 0.004 286.32);
+  --input:oklch(0.92 0.004 286.32);
+  --ring:oklch(0.702 0.183 293.541);
+  --glow:oklch(0.541 0.281 293.009 / 0.18);
+}
+.dark{
+  --background:oklch(0.141 0.005 285.823);
+  --foreground:oklch(0.985 0 0);
+  --card:oklch(0.181 0.006 285.885);
+  --card-foreground:oklch(0.985 0 0);
+  --popover:oklch(0.21 0.006 285.885);
+  --popover-foreground:oklch(0.985 0 0);
+  --primary:oklch(0.606 0.25 292.717);
+  --primary-foreground:oklch(0.969 0.016 293.756);
+  --secondary:oklch(0.274 0.006 286.033);
+  --secondary-foreground:oklch(0.985 0 0);
+  --muted:oklch(0.274 0.006 286.033);
+  --muted-foreground:oklch(0.705 0.015 286.067);
+  --accent:oklch(0.274 0.006 286.033);
+  --accent-foreground:oklch(0.985 0 0);
+  --destructive:oklch(0.704 0.191 22.216);
+  --success:oklch(0.723 0.219 149.579);
+  --border:oklch(1 0 0 / 10%);
+  --input:oklch(1 0 0 / 15%);
+  --ring:oklch(0.541 0.281 293.009);
+  --glow:oklch(0.606 0.25 292.717 / 0.28);
+}
+@theme inline{
+  --color-background:var(--background);
+  --color-foreground:var(--foreground);
+  --color-card:var(--card);
+  --color-card-foreground:var(--card-foreground);
+  --color-popover:var(--popover);
+  --color-popover-foreground:var(--popover-foreground);
+  --color-primary:var(--primary);
+  --color-primary-foreground:var(--primary-foreground);
+  --color-secondary:var(--secondary);
+  --color-secondary-foreground:var(--secondary-foreground);
+  --color-muted:var(--muted);
+  --color-muted-foreground:var(--muted-foreground);
+  --color-accent:var(--accent);
+  --color-accent-foreground:var(--accent-foreground);
+  --color-destructive:var(--destructive);
+  --color-success:var(--success);
+  --color-border:var(--border);
+  --color-input:var(--input);
+  --color-ring:var(--ring);
+  --radius-sm:calc(var(--radius) - 4px);
+  --radius-md:calc(var(--radius) - 2px);
+  --radius-lg:var(--radius);
+  --radius-xl:calc(var(--radius) + 4px);
+  /* Tanpa font monospace: angka nol tidak pernah bergaris/bertitik */
+  --font-sans:'Geist',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'Geist',ui-sans-serif,system-ui,sans-serif;
+}
+@layer base{
+  *{ @apply border-border outline-ring/50; }
+  html{ font-family:var(--font-sans); scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+  @media (prefers-reduced-motion:reduce){ html{ scroll-behavior:auto; } }
+  body{ @apply bg-background text-foreground antialiased; overflow-x:hidden; font-feature-settings:"liga" 1,"calt" 1; }
+  code,kbd,pre,samp{ font-family:inherit; }
+  section[id]{ scroll-margin-top:4rem; }
+  :focus-visible{ outline:2px solid var(--ring); outline-offset:2px; }
+}
+@layer components{
+  /* Pola komponen shadcn/ui */
+  .btn{ @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 shrink-0 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 h-9 px-4 py-2 cursor-pointer select-none; }
+  .btn-default{ @apply bg-primary text-primary-foreground shadow-xs hover:bg-primary/90; }
+  .btn-outline{ @apply border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50; }
+  .btn-secondary{ @apply bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80; }
+  .btn-ghost{ @apply hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50; }
+  .btn-lg{ @apply h-10 rounded-md px-6; }
+  .btn-sm{ @apply h-8 rounded-md gap-1.5 px-3; }
+  .btn-icon{ @apply size-9 px-0; }
+  .badge{ @apply inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 gap-1 transition-colors; }
+  .badge-default{ @apply border-transparent bg-primary text-primary-foreground; }
+  .badge-secondary{ @apply border-transparent bg-secondary text-secondary-foreground; }
+  .badge-outline{ @apply text-foreground; }
+  .card{ @apply bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm; }
+  .card-header{ @apply grid auto-rows-min items-start gap-1.5 px-6; }
+  .card-title{ @apply leading-none font-semibold; }
+  .card-desc{ @apply text-muted-foreground text-sm; }
+  .card-content{ @apply px-6; }
+  .card-footer{ @apply flex items-center px-6; }
+  .input{ @apply placeholder:text-muted-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 aria-invalid:border-destructive; }
+  .textarea{ @apply placeholder:text-muted-foreground dark:bg-input/30 border-input w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs outline-none md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] resize-none; }
+  .label{ @apply flex items-center gap-2 text-sm leading-none font-medium select-none; }
+  .tabs-list{ @apply bg-muted text-muted-foreground inline-flex h-9 w-fit items-center justify-center rounded-lg p-[3px]; }
+  .tabs-trigger{ @apply inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-3 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] text-foreground/70 dark:text-muted-foreground cursor-pointer focus-visible:ring-[3px] focus-visible:ring-ring/50 outline-none
+    data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm dark:data-[state=active]:bg-input/30 dark:data-[state=active]:border-input dark:data-[state=active]:text-foreground; }
+  .switch{ @apply inline-flex h-[1.15rem] w-8 shrink-0 items-center rounded-full border border-transparent shadow-xs transition-all outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 cursor-pointer
+    data-[state=checked]:bg-primary data-[state=unchecked]:bg-input dark:data-[state=unchecked]:bg-input/80; }
+  .switch-thumb{ @apply bg-background pointer-events-none block size-4 rounded-full ring-0 transition-transform
+    data-[state=checked]:translate-x-[calc(100%-2px)] data-[state=unchecked]:translate-x-0 dark:data-[state=unchecked]:bg-foreground dark:data-[state=checked]:bg-primary-foreground; }
+  .select{ @apply border-input dark:bg-input/30 h-9 w-full rounded-md border bg-transparent pl-3 pr-9 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] appearance-none cursor-pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right .65rem center; }
+  .select option{ background:var(--popover); color:var(--popover-foreground); }
+  .sep{ @apply bg-border shrink-0 h-px w-full; }
+  .kbd{ @apply bg-muted text-muted-foreground pointer-events-none inline-flex h-5 w-fit min-w-5 items-center justify-center gap-1 rounded-sm px-1 text-xs font-medium select-none; }
+  .eyebrow{ @apply text-sm font-medium text-primary; }
+  .h2{ @apply text-3xl md:text-5xl font-semibold tracking-tight text-balance; }
+  .lead{ @apply text-muted-foreground text-base md:text-lg text-pretty; }
+  .tnum{ font-variant-numeric:tabular-nums; }
+  .range{ @apply w-full cursor-pointer appearance-none bg-transparent h-5; }
+}
+/* slider ala shadcn */
+.range::-webkit-slider-runnable-track{height:6px;border-radius:999px;background:linear-gradient(to right,var(--primary) var(--p,50%),var(--muted) var(--p,50%))}
+.range::-moz-range-track{height:6px;border-radius:999px;background:var(--muted)}
+.range::-moz-range-progress{height:6px;border-radius:999px;background:var(--primary)}
+.range::-webkit-slider-thumb{-webkit-appearance:none;margin-top:-5px;width:16px;height:16px;border-radius:50%;background:var(--background);border:1px solid var(--primary);box-shadow:0 1px 2px rgb(0 0 0 / .1)}
+.range::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--background);border:1px solid var(--primary)}
+.range:focus-visible{outline:none}
+.range:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px color-mix(in oklch,var(--ring) 50%,transparent)}
+/* dialog */
+dialog.dlg{ margin:auto; padding:0; border:0; background:transparent; max-width:calc(100% - 2rem); width:32rem; color:inherit; }
+dialog.dlg::backdrop{ background:rgb(0 0 0 / .55); backdrop-filter:blur(2px); }
+dialog.dlg[open] .dlg-panel{ animation:dlgIn .18s ease-out; }
+@keyframes dlgIn{ from{ opacity:0; transform:translateY(6px) scale(.98);} to{ opacity:1; transform:none; } }
+/* toast */
+.toast-in{ animation:toastIn .25s cubic-bezier(.2,.8,.2,1); }
+@keyframes toastIn{ from{ opacity:0; transform:translateY(12px) scale(.98);} to{ opacity:1; transform:none; } }
+/* accordion */
+.acc-panel{ display:grid; grid-template-rows:0fr; transition:grid-template-rows .25s ease; }
+.acc-panel>div{ overflow:hidden; }
+[data-state=open] > .acc-panel{ grid-template-rows:1fr; }
+[data-state=open] .acc-chev{ transform:rotate(180deg); }
+/* latar */
+.grid-bg{ background-image:linear-gradient(to right,var(--border) 1px,transparent 1px),linear-gradient(to bottom,var(--border) 1px,transparent 1px); background-size:56px 56px; -webkit-mask-image:radial-gradient(ellipse 60% 55% at 50% 40%,#000 30%,transparent 75%); mask-image:radial-gradient(ellipse 60% 55% at 50% 40%,#000 30%,transparent 75%); }
+.glow{ background:radial-gradient(closest-side,var(--glow),transparent); }
+.caret::after{ content:""; display:inline-block; width:2px; height:1em; vertical-align:-.15em; margin-left:2px; background:var(--primary); animation:blink 1s steps(1) infinite; }
+@keyframes blink{ 50%{ opacity:0; } }
+@media (prefers-reduced-motion:reduce){ .caret::after{ animation:none; } .toast-in,dialog.dlg[open] .dlg-panel{ animation:none; } .acc-panel{ transition:none; } }
+.fallback{ display:none; }
+.no-webgl .fallback{ display:block; }
+.no-webgl canvas.gl{ display:none; }
+.story{ height:520vh; }
+@media (max-width:1023px){ .story{ height:460vh; } }
+.story-sticky{ height:calc(100vh - 4rem); height:calc(100svh - 4rem); }
+.iso-label{ position:absolute; left:0; top:0; white-space:nowrap; transition:opacity .25s; will-change:transform; }
+</style>
+<style>
+  /* CSS penting di luar Tailwind: kanvas tidak boleh memengaruhi ukuran induknya */
+  canvas.gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+</head>
+<body class="min-h-svh">
+<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100] btn btn-default">Lewati ke konten utama</a>
+
+<!-- ============ NAV ============ -->
+<header class="sticky top-0 z-50 w-full border-b bg-background/75 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+  <div class="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6">
+    <a href="#top" class="flex items-center gap-2 font-semibold tracking-tight" aria-label="Nalar, ke atas">
+      <svg viewBox="0 0 32 32" class="size-7" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs><circle cx="16" cy="16" r="13" fill="url(#lg)"/><path d="M10 21V11l12 10V11" fill="none" stroke="#0b0b10" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="text-lg">Nalar</span>
+    </a>
+    <nav class="ml-6 hidden items-center gap-1 text-sm lg:flex" aria-label="Navigasi utama">
+      <a class="btn btn-ghost btn-sm text-muted-foreground hover:text-foreground" href="#fitur">Fitur</a>
+      <a class="btn btn-ghost btn-sm text-muted-foreground hover:text-foreground" href="#sehari">Sehari bersama Nalar</a>
+      <a class="btn btn-ghost btn-sm text-muted-foreground hover:text-foreground" href="#studio">Studio</a>
+      <a class="btn btn-ghost btn-sm text-muted-foreground hover:text-foreground" href="#harga">Harga</a>
+      <a class="btn btn-ghost btn-sm text-muted-foreground hover:text-foreground" href="#faq">FAQ</a>
+    </nav>
+    <div class="ml-auto flex items-center gap-2">
+      <button type="button" id="themeBtn" class="btn btn-ghost btn-icon" aria-label="Ganti tema terang/gelap">
+        <svg class="size-[18px] hidden dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="size-[18px] dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+      <a href="#mulai" class="btn btn-ghost hidden sm:inline-flex">Masuk</a>
+      <a href="#mulai" class="btn btn-default hidden sm:inline-flex">Coba gratis</a>
+      <button type="button" id="menuBtn" class="btn btn-outline btn-icon lg:hidden" aria-expanded="false" aria-controls="mobileMenu" aria-label="Buka menu">
+        <svg class="size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="mobileMenu" class="hidden border-t bg-background lg:hidden">
+    <nav class="mx-auto grid max-w-7xl gap-1 p-4 text-sm" aria-label="Navigasi seluler">
+      <a class="btn btn-ghost justify-start" href="#fitur">Fitur</a>
+      <a class="btn btn-ghost justify-start" href="#sehari">Sehari bersama Nalar</a>
+      <a class="btn btn-ghost justify-start" href="#studio">Studio</a>
+      <a class="btn btn-ghost justify-start" href="#harga">Harga</a>
+      <a class="btn btn-ghost justify-start" href="#faq">FAQ</a>
+      <a class="btn btn-default mt-2" href="#mulai">Coba gratis</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<!-- ============ HERO ============ -->
+<section id="top" class="relative isolate overflow-hidden" aria-labelledby="hero-title">
+  <div class="grid-bg pointer-events-none absolute inset-0 -z-10 opacity-60" aria-hidden="true"></div>
+  <div class="glow pointer-events-none absolute left-1/2 top-[-10%] -z-10 h-[720px] w-[1100px] max-w-none -translate-x-1/2" aria-hidden="true"></div>
+  <div class="mx-auto grid max-w-7xl items-center gap-8 px-4 pb-16 pt-12 sm:px-6 lg:grid-cols-12 lg:gap-6 lg:pb-24 lg:pt-20">
+    <div class="lg:col-span-6 relative z-10">
+      <a href="#fitur" class="badge badge-outline gap-2 rounded-full bg-background/60 px-3 py-1 backdrop-blur hover:bg-accent">
+        <span class="badge badge-default rounded-full px-1.5 py-0 text-[11px]">Baru</span>
+        Nalar 2.0 kini paham bahasa Jawa &amp; Sunda
+        <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <h1 id="hero-title" class="mt-6 text-[2.6rem] leading-[1.05] font-semibold tracking-tight text-balance sm:text-6xl lg:text-7xl">
+        Asisten AI yang paham cara <span class="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-300 bg-clip-text text-transparent">UMKM bekerja.</span>
+      </h1>
+      <p class="lead mt-6 max-w-xl">Nalar membalas chat pelanggan, mencatat stok, dan menyusun laporan keuangan dari obrolan WhatsApp Anda — dalam bahasa yang biasa Anda pakai sehari-hari.</p>
+
+      <!-- Prompt card: mengendalikan bola partikel -->
+      <form id="promptForm" class="card mt-8 gap-3 py-3 shadow-lg shadow-black/5 dark:shadow-black/30" novalidate>
+        <div class="flex flex-wrap items-center justify-between gap-2 px-3">
+          <div class="tabs-list" role="tablist" aria-label="Mode asisten" data-tabs="mode">
+            <button type="button" role="tab" class="tabs-trigger" data-value="tanya" data-state="active" aria-selected="true">Tanya</button>
+            <button type="button" role="tab" class="tabs-trigger" data-value="tulis" data-state="inactive" aria-selected="false" tabindex="-1">Tulis</button>
+            <button type="button" role="tab" class="tabs-trigger" data-value="hitung" data-state="inactive" aria-selected="false" tabindex="-1">Hitung</button>
+          </div>
+          <span class="text-muted-foreground hidden items-center gap-1 text-xs sm:flex"><kbd class="kbd">Enter</kbd> untuk kirim</span>
+        </div>
+        <div class="px-3">
+          <label for="prompt" class="sr-only">Tulis pertanyaan untuk Nalar</label>
+          <textarea id="prompt" rows="2" class="textarea border-0 bg-transparent px-1 text-base shadow-none focus-visible:ring-0 dark:bg-transparent" placeholder="Tanya apa saja… misalnya: produk apa yang paling laku minggu ini?"></textarea>
+        </div>
+        <div id="answer" class="mx-3 hidden rounded-lg bg-muted/60 p-3 text-sm leading-relaxed" aria-live="polite"></div>
+        <div class="flex flex-wrap items-center gap-2 px-3">
+          <div class="flex min-w-0 flex-1 flex-wrap gap-1.5" id="chips">
+            <button type="button" class="badge badge-secondary cursor-pointer rounded-full px-2.5 py-1 hover:bg-secondary/70" data-chip="Produk apa yang paling laku minggu ini?">Produk terlaris</button>
+            <button type="button" class="badge badge-secondary cursor-pointer rounded-full px-2.5 py-1 hover:bg-secondary/70" data-chip="Tuliskan caption promo Lebaran untuk kopi susu gula aren.">Caption promo</button>
+            <button type="button" class="badge badge-secondary cursor-pointer rounded-full px-2.5 py-1 hover:bg-secondary/70" data-chip="Hitung margin kalau harga jual Rp 18.000 dan modal Rp 11.500.">Hitung margin</button>
+          </div>
+          <button type="submit" id="sendBtn" class="btn btn-default btn-sm ml-auto">
+            Kirim
+            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </form>
+      <div class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+        <span class="flex items-center gap-2"><svg class="size-4 text-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Gratis 14 hari</span>
+        <span class="flex items-center gap-2"><svg class="size-4 text-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Terhubung ke WhatsApp Business</span>
+      </div>
+    </div>
+    <div class="relative lg:col-span-6">
+      <div class="relative mx-auto aspect-square w-full max-w-[640px]">
+        <canvas id="heroOrb" class="gl absolute inset-0 h-full w-full touch-pan-y" role="img" aria-label="Bola partikel 3D Nalar yang berdenyut saat Anda mengetik dan berubah warna sesuai mode asisten. Gerakkan kursor untuk berinteraksi."></canvas>
+        <svg class="fallback absolute inset-0 h-full w-full" viewBox="0 0 400 400" role="img" aria-label="Ilustrasi bola cahaya Nalar">
+          <defs><radialGradient id="fo" cx="45%" cy="40%"><stop offset="0" stop-color="#c4b5fd"/><stop offset=".55" stop-color="#7c3aed" stop-opacity=".7"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient></defs>
+          <circle cx="200" cy="200" r="170" fill="url(#fo)"/><circle cx="200" cy="200" r="120" fill="none" stroke="#22d3ee" stroke-opacity=".5" stroke-dasharray="2 6"/>
+        </svg>
+        <div class="pointer-events-none absolute bottom-[8%] left-1/2 -translate-x-1/2">
+          <span id="orbStatus" class="badge badge-outline rounded-full bg-background/70 px-3 py-1 backdrop-blur"><span class="size-2 rounded-full bg-success"></span><span id="orbStatusText">Siap membantu</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- strip pelanggan fiktif -->
+  <div class="border-y bg-muted/30">
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-10 gap-y-3 px-4 py-6 text-sm text-muted-foreground sm:px-6">
+      <span class="w-full text-center text-xs uppercase tracking-wider sm:w-auto">Dipakai 12.000+ UMKM</span>
+      <span class="font-semibold">Warung Bu Sri</span><span class="font-semibold italic">Kopi Senja Kita</span><span class="font-semibold tracking-widest">BATIK LARAS</span><span class="font-semibold">Toko Tani Makmur</span><span class="font-semibold">Roti Oma Lina</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FITUR (bento) ============ -->
+<section id="fitur" class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-28" aria-labelledby="fitur-title">
+  <div class="max-w-2xl">
+    <p class="eyebrow">Fitur</p>
+    <h2 id="fitur-title" class="h2 mt-2">Satu asisten, semua urusan toko.</h2>
+    <p class="lead mt-4">Bukan chatbot kaku. Nalar belajar dari katalog, harga, dan gaya bicara toko Anda.</p>
+  </div>
+  <div class="mt-12 grid gap-4 md:grid-cols-6">
+    <!-- Chat -->
+    <article class="card md:col-span-4">
+      <div class="card-header"><h3 class="card-title">Balas chat pelanggan 24 jam</h3><p class="card-desc">Nalar menjawab pertanyaan harga, stok, dan ongkir — lalu mencatat pesanan.</p></div>
+      <div class="card-content">
+        <div class="flex flex-col gap-2 rounded-lg border bg-muted/30 p-4 text-sm" id="chatDemo" aria-live="polite">
+          <div class="max-w-[80%] self-start rounded-2xl rounded-bl-sm bg-secondary px-3 py-2">Kak, kopi susu literan masih ada? Kirim ke Bekasi berapa?</div>
+          <div class="max-w-[85%] self-end rounded-2xl rounded-br-sm bg-primary px-3 py-2 text-primary-foreground">Masih ada, Kak 😊 Stok tinggal 14 botol. Harga Rp 85.000/liter, ongkir ke Bekasi Rp 12.000. Mau dipesan berapa?</div>
+        </div>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <button type="button" class="btn btn-outline btn-sm" data-reply="Ambil 2 ya kak, bayar transfer">Pelanggan: “Ambil 2”</button>
+          <button type="button" class="btn btn-outline btn-sm" data-reply="Ada diskon kalau beli 5?">Pelanggan: “Diskon?”</button>
+        </div>
+      </div>
+    </article>
+    <!-- Bahasa -->
+    <article class="card md:col-span-2">
+      <div class="card-header"><h3 class="card-title">Fasih bahasa daerah</h3><p class="card-desc">Sapa pelanggan dengan bahasa mereka.</p></div>
+      <div class="card-content flex flex-1 flex-col gap-4">
+        <div class="tabs-list w-full" role="tablist" aria-label="Bahasa" data-tabs="lang">
+          <button type="button" role="tab" class="tabs-trigger" data-value="id" data-state="active" aria-selected="true">Indonesia</button>
+          <button type="button" role="tab" class="tabs-trigger" data-value="jv" data-state="inactive" aria-selected="false" tabindex="-1">Jawa</button>
+          <button type="button" role="tab" class="tabs-trigger" data-value="su" data-state="inactive" aria-selected="false" tabindex="-1">Sunda</button>
+        </div>
+        <p id="langOut" class="rounded-lg border bg-muted/30 p-4 text-lg leading-snug" aria-live="polite">“Selamat pagi, Kak! Pesanan rotinya sudah siap diambil.”</p>
+      </div>
+    </article>
+    <!-- Laporan -->
+    <article class="card md:col-span-3">
+      <div class="card-header">
+        <div class="flex items-start justify-between gap-3"><div><h3 class="card-title">Laporan keuangan otomatis</h3><p class="card-desc mt-1.5">Dari nota dan chat, jadi laba-rugi.</p></div>
+          <div class="tabs-list" role="tablist" aria-label="Periode laporan" data-tabs="period">
+            <button type="button" role="tab" class="tabs-trigger" data-value="minggu" data-state="active" aria-selected="true">Minggu</button>
+            <button type="button" role="tab" class="tabs-trigger" data-value="bulan" data-state="inactive" aria-selected="false" tabindex="-1">Bulan</button>
+          </div></div>
+      </div>
+      <div class="card-content">
+        <div class="flex items-end justify-between"><div><p class="text-sm text-muted-foreground">Omzet</p><p class="tnum text-3xl font-semibold tracking-tight" id="omzet">Rp 12,4 jt</p></div><span class="badge badge-secondary tnum" id="omzetDelta">+18,2%</span></div>
+        <svg viewBox="0 0 300 90" class="mt-4 h-24 w-full" aria-hidden="true" preserveAspectRatio="none">
+          <defs><linearGradient id="ga" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--primary)" stop-opacity=".35"/><stop offset="1" stop-color="var(--primary)" stop-opacity="0"/></linearGradient></defs>
+          <path id="areaPath" fill="url(#ga)"/><path id="linePath" fill="none" stroke="var(--primary)" stroke-width="2" vector-effect="non-scaling-stroke"/>
+        </svg>
+      </div>
+    </article>
+    <!-- Stok -->
+    <article class="card md:col-span-3">
+      <div class="card-header"><h3 class="card-title">Stok pintar</h3><p class="card-desc">Nalar mengingatkan sebelum barang habis.</p></div>
+      <div class="card-content grid gap-4 text-sm">
+        <div><div class="mb-1.5 flex justify-between"><span>Gula aren cair</span><span class="tnum text-muted-foreground">8 / 40 L</span></div><div class="h-2 rounded-full bg-muted"><div class="h-2 w-[20%] rounded-full bg-destructive"></div></div></div>
+        <div><div class="mb-1.5 flex justify-between"><span>Biji kopi robusta</span><span class="tnum text-muted-foreground">22 / 30 kg</span></div><div class="h-2 rounded-full bg-muted"><div class="h-2 w-[73%] rounded-full bg-primary"></div></div></div>
+        <div><div class="mb-1.5 flex justify-between"><span>Cup 16 oz</span><span class="tnum text-muted-foreground">640 / 1.000</span></div><div class="h-2 rounded-full bg-muted"><div class="h-2 w-[64%] rounded-full bg-primary"></div></div></div>
+        <div class="flex items-center justify-between rounded-lg border p-3">
+          <span class="flex items-center gap-2"><svg class="size-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>Pesan ulang otomatis ke pemasok</span>
+          <button type="button" role="switch" class="switch" data-state="checked" aria-checked="true" aria-label="Pesan ulang otomatis ke pemasok" id="restockSw"><span class="switch-thumb" data-state="checked"></span></button>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============ SEHARI BERSAMA NALAR (scroll-driven isometrik) ============ -->
+<section id="sehari" class="story relative border-y" aria-labelledby="sehari-title">
+  <div class="story-sticky sticky top-16 overflow-hidden">
+    <canvas id="isoCanvas" class="gl absolute inset-0 h-full w-full" role="img" aria-label="Diorama isometrik 3D: bola cahaya Nalar berpindah dari ponsel, rak stok, meja kasir, mobil pengantar, hingga grafik laporan seiring Anda menggulir."></canvas>
+    <svg class="fallback absolute inset-0 h-full w-full" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Ilustrasi isometrik alur kerja harian Nalar">
+      <g fill="currentColor" opacity=".12"><path d="M200 420l90-50 90 50-90 50z"/><path d="M420 330l90-50 90 50-90 50z"/><path d="M640 420l90-50 90 50-90 50z"/><path d="M860 330l90-50 90 50-90 50z"/></g>
+      <path d="M290 420 L510 330 L730 420 L950 330" fill="none" stroke="#8b5cf6" stroke-width="4" stroke-dasharray="10 8"/>
+    </svg>
+    <div id="isoLabels" class="pointer-events-none absolute inset-0" aria-hidden="true"></div>
+    <div class="absolute inset-x-4 bottom-4 z-10 sm:inset-x-6 lg:inset-x-auto lg:bottom-auto lg:left-[max(1.5rem,calc((100vw-80rem)/2+1.5rem))] lg:top-1/2 lg:w-[400px] lg:-translate-y-1/2">
+      <div class="card gap-4 bg-card/85 py-5 backdrop-blur-md">
+        <div class="px-5">
+          <p class="eyebrow" id="sehari-title">Sehari bersama Nalar</p>
+          <p class="tnum mt-3 text-sm text-muted-foreground" id="isoTime">07.00 · Langkah 1 dari 5</p>
+          <h2 class="mt-1 text-2xl font-semibold tracking-tight lg:text-3xl" id="isoTitle">Pesanan masuk lewat WhatsApp</h2>
+          <p class="mt-2 min-h-[4.5em] text-sm text-muted-foreground lg:text-base" id="isoText"></p>
+        </div>
+        <ol class="hidden gap-1 px-3 lg:grid" id="isoSteps">
+          <li class="flex items-center gap-3 rounded-md px-2 py-1.5 text-sm" data-step="0"><span class="tnum grid size-6 place-items-center rounded-full border text-xs">1</span>Pesanan masuk</li>
+          <li class="flex items-center gap-3 rounded-md px-2 py-1.5 text-sm" data-step="1"><span class="tnum grid size-6 place-items-center rounded-full border text-xs">2</span>Cek stok</li>
+          <li class="flex items-center gap-3 rounded-md px-2 py-1.5 text-sm" data-step="2"><span class="tnum grid size-6 place-items-center rounded-full border text-xs">3</span>Kirim invoice</li>
+          <li class="flex items-center gap-3 rounded-md px-2 py-1.5 text-sm" data-step="3"><span class="tnum grid size-6 place-items-center rounded-full border text-xs">4</span>Atur pengiriman</li>
+          <li class="flex items-center gap-3 rounded-md px-2 py-1.5 text-sm" data-step="4"><span class="tnum grid size-6 place-items-center rounded-full border text-xs">5</span>Laporan harian</li>
+        </ol>
+        <div class="px-5"><div class="h-1.5 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label="Progres cerita" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="isoBarWrap"><div id="isoBar" class="h-full w-0 rounded-full bg-primary"></div></div></div>
+      </div>
+    </div>
+    <p class="absolute bottom-5 right-6 hidden items-center gap-2 text-xs text-muted-foreground lg:flex" aria-hidden="true"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>Gulir untuk mengikuti</p>
+  </div>
+</section>
+
+<!-- ============ STUDIO: komponen mengendalikan 3D ============ -->
+<section id="studio" class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-28" aria-labelledby="studio-title">
+  <div class="grid gap-6 lg:grid-cols-12 lg:items-end">
+    <div class="lg:col-span-7"><p class="eyebrow">Studio Nalar</p><h2 id="studio-title" class="h2 mt-2">Atur kepribadian asisten Anda.</h2></div>
+    <p class="lead lg:col-span-5">Setiap kontrol di panel ini terhubung langsung ke inti Nalar. Ubah bentuk, energi, dan palet — lalu lihat responsnya.</p>
+  </div>
+  <div class="mt-10 grid overflow-hidden rounded-xl border bg-card shadow-sm lg:grid-cols-12">
+    <div class="relative min-h-[420px] border-b lg:col-span-7 lg:min-h-[600px] lg:border-b-0 lg:border-r">
+      <div class="grid-bg pointer-events-none absolute inset-0 opacity-50" aria-hidden="true"></div>
+      <canvas id="studioOrb" class="gl absolute inset-0 h-full w-full touch-pan-y" role="img" aria-label="Inti partikel 3D Studio Nalar yang bentuk, warna, dan energinya diatur oleh panel kontrol di sebelahnya."></canvas>
+      <svg class="fallback absolute inset-0 h-full w-full" viewBox="0 0 400 400" role="img" aria-label="Ilustrasi inti partikel"><circle cx="200" cy="200" r="130" fill="url(#fo)"/></svg>
+      <div class="absolute left-4 top-4 flex flex-wrap gap-2">
+        <span class="badge badge-outline bg-background/70 backdrop-blur tnum" id="stBadge1">Bentuk: Bola</span>
+        <span class="badge badge-outline bg-background/70 backdrop-blur tnum" id="stBadge2">Energi 40%</span>
+      </div>
+    </div>
+    <div class="flex flex-col gap-6 p-6 lg:col-span-5">
+      <div class="grid gap-3">
+        <span class="label" id="shapeLbl">Bentuk inti</span>
+        <div class="tabs-list w-full" role="tablist" aria-labelledby="shapeLbl" data-tabs="shape">
+          <button type="button" role="tab" class="tabs-trigger" data-value="bola" data-state="active" aria-selected="true">Bola</button>
+          <button type="button" role="tab" class="tabs-trigger" data-value="gumpal" data-state="inactive" aria-selected="false" tabindex="-1">Gumpal</button>
+          <button type="button" role="tab" class="tabs-trigger" data-value="kubus" data-state="inactive" aria-selected="false" tabindex="-1">Kubus</button>
+        </div>
+      </div>
+      <div class="grid gap-3">
+        <div class="flex justify-between"><label class="label" for="energy">Energi</label><span class="tnum text-sm text-muted-foreground" id="energyVal">40%</span></div>
+        <input id="energy" type="range" min="0" max="100" value="40" class="range">
+      </div>
+      <div class="grid gap-3">
+        <div class="flex justify-between"><label class="label" for="density">Kepadatan partikel</label><span class="tnum text-sm text-muted-foreground" id="densityVal">80%</span></div>
+        <input id="density" type="range" min="15" max="100" value="80" class="range">
+      </div>
+      <div class="grid gap-3">
+        <label class="label" for="palette">Palet warna</label>
+        <select id="palette" class="select">
+          <option value="ungu">Ungu nebula</option>
+          <option value="senja">Senja Kuta</option>
+          <option value="hutan">Hutan tropis</option>
+          <option value="mono">Monokrom</option>
+        </select>
+      </div>
+      <div class="sep"></div>
+      <div class="grid gap-4">
+        <div class="flex items-center justify-between gap-4">
+          <div><p class="label" id="swFollowL">Ikuti kursor</p><p class="mt-1 text-sm text-muted-foreground">Permukaan menggembung ke arah penunjuk.</p></div>
+          <button type="button" role="switch" class="switch" data-state="checked" aria-checked="true" aria-labelledby="swFollowL" id="swFollow"><span class="switch-thumb" data-state="checked"></span></button>
+        </div>
+        <div class="flex items-center justify-between gap-4">
+          <div><p class="label" id="swRingL">Cincin orbit</p><p class="mt-1 text-sm text-muted-foreground">Tampilkan partikel yang mengitari inti.</p></div>
+          <button type="button" role="switch" class="switch" data-state="checked" aria-checked="true" aria-labelledby="swRingL" id="swRing"><span class="switch-thumb" data-state="checked"></span></button>
+        </div>
+      </div>
+      <div class="mt-auto flex flex-wrap gap-2">
+        <button type="button" class="btn btn-default" id="pulseBtn">
+          <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Kirim denyut</button>
+        <button type="button" class="btn btn-outline" id="randomBtn">Acak</button>
+        <button type="button" class="btn btn-ghost" id="resetBtn">Atur ulang</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATISTIK & TESTIMONI ============ -->
+<section class="border-y bg-muted/30" aria-labelledby="hasil-title">
+  <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-28">
+    <div class="max-w-2xl"><p class="eyebrow">Hasil nyata</p><h2 id="hasil-title" class="h2 mt-2">Lebih sedikit balas chat, lebih banyak berjualan.</h2></div>
+    <dl class="mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div class="card gap-2 px-6"><dt class="text-sm text-muted-foreground">Chat dijawab otomatis</dt><dd class="tnum text-4xl font-semibold tracking-tight" data-count="83" data-suffix="%">0%</dd></div>
+      <div class="card gap-2 px-6"><dt class="text-sm text-muted-foreground">Waktu hemat per minggu</dt><dd class="tnum text-4xl font-semibold tracking-tight" data-count="11" data-suffix=" jam">0</dd></div>
+      <div class="card gap-2 px-6"><dt class="text-sm text-muted-foreground">Kenaikan omzet rata-rata</dt><dd class="tnum text-4xl font-semibold tracking-tight" data-count="24" data-suffix="%">0%</dd></div>
+      <div class="card gap-2 px-6"><dt class="text-sm text-muted-foreground">UMKM aktif</dt><dd class="tnum text-4xl font-semibold tracking-tight" data-count="12400" data-suffix="+">0</dd></div>
+    </dl>
+    <div class="mt-6 grid gap-4 md:grid-cols-3">
+      <figure class="card">
+        <blockquote class="card-content text-pretty leading-relaxed">“Dulu saya balas chat sampai jam 11 malam. Sekarang Nalar yang jawab soal harga dan ongkir, saya tinggal kemas pesanan.”</blockquote>
+        <figcaption class="card-footer gap-3"><span class="grid size-10 place-items-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 text-sm font-semibold text-white" aria-hidden="true">SW</span><div><p class="text-sm font-medium">Sri Wahyuni</p><p class="text-sm text-muted-foreground">Warung Bu Sri, Klaten</p></div></figcaption>
+      </figure>
+      <figure class="card">
+        <blockquote class="card-content text-pretty leading-relaxed">“Laporan laba-rugi bulanan jadi otomatis dari nota yang saya foto. Pengajuan KUR ke bank jauh lebih cepat.”</blockquote>
+        <figcaption class="card-footer gap-3"><span class="grid size-10 place-items-center rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 text-sm font-semibold text-white" aria-hidden="true">AR</span><div><p class="text-sm font-medium">Andi Rahman</p><p class="text-sm text-muted-foreground">Kopi Senja Kita, Makassar</p></div></figcaption>
+      </figure>
+      <figure class="card">
+        <blockquote class="card-content text-pretty leading-relaxed">“Pelanggan dari Bandung senang dibalas pakai bahasa Sunda. Rasanya seperti ngobrol sama penjualnya langsung.”</blockquote>
+        <figcaption class="card-footer gap-3"><span class="grid size-10 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 text-sm font-semibold text-white" aria-hidden="true">LN</span><div><p class="text-sm font-medium">Laras Nurhaliza</p><p class="text-sm text-muted-foreground">Batik Laras, Garut</p></div></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HARGA ============ -->
+<section id="harga" class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-28" aria-labelledby="harga-title">
+  <div class="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+    <div class="max-w-2xl"><p class="eyebrow">Harga</p><h2 id="harga-title" class="h2 mt-2">Harga jujur, tanpa biaya tersembunyi.</h2></div>
+    <div class="flex items-center gap-3 rounded-lg border bg-card px-4 py-2.5 shadow-xs">
+      <span class="text-sm font-medium" id="billM">Bulanan</span>
+      <button type="button" role="switch" class="switch" data-state="unchecked" aria-checked="false" aria-label="Tagihan tahunan" id="billSw"><span class="switch-thumb" data-state="unchecked"></span></button>
+      <span class="text-sm text-muted-foreground" id="billY">Tahunan</span>
+      <span class="badge badge-default">Hemat 2 bulan</span>
+    </div>
+  </div>
+  <div class="mt-12 grid gap-4 lg:grid-cols-3">
+    <div class="card">
+      <div class="card-header"><h3 class="card-title text-lg">Warung</h3><p class="card-desc">Untuk usaha yang baru mulai online.</p></div>
+      <div class="card-content"><p class="tnum text-4xl font-semibold tracking-tight">Gratis</p><p class="mt-1 text-sm text-muted-foreground">300 pesan AI per bulan</p></div>
+      <div class="card-content"><ul class="grid gap-2.5 text-sm">
+        <li class="flex gap-2"><svg class="mt-0.5 size-4 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Balas chat WhatsApp</li>
+        <li class="flex gap-2"><svg class="mt-0.5 size-4 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Katalog hingga 50 produk</li>
+        <li class="flex gap-2"><svg class="mt-0.5 size-4 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Laporan mingguan</li></ul></div>
+      <div class="card-footer mt-auto"><a href="#mulai" class="btn btn-outline w-full">Mulai gratis</a></div>
+    </div>
+    <div class="card relative border-primary/60 shadow-lg shadow-primary/10 ring-1 ring-primary/30">
+      <span class="badge badge-default absolute -top-2.5 right-6">Paling populer</span>
+      <div class="card-header"><h3 class="card-title text-lg">Toko</h3><p class="card-desc">Untuk UMKM dengan pesanan harian rutin.</p></div>
+      <div class="card-content"><p class="tnum text-4xl font-semibold tracking-tight"><span data-m="Rp 149.000" data-y="Rp 124.000">Rp 149.000</span><span class="text-base font-normal text-muted-foreground">/bln</span></p><p class="mt-1 text-sm text-muted-foreground" data-m="ditagih bulanan" data-y="ditagih Rp 1.490.000 per tahun">ditagih bulanan</p></div>
+      <div class="card-content"><ul class="grid gap-2.5 text-sm">
+        <li class="flex gap-2"><svg class="mt-0.5 size-4 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>5.000 pesan AI per bulan</li>
+        <li class="flex gap-2"><svg class="mt-0.5 size-4 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Stok pintar &amp; pesan ulang otomatis</li>
+        <li class="flex gap-2"><svg class="mt-0.5 size-4 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Laporan laba-rugi bulanan</li>
+        <li class="flex gap-2"><svg class="mt-0.5 size-4 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Bahasa Jawa &amp; Sunda</li></ul></div>
+      <div class="card-footer mt-auto"><a href="#mulai" class="btn btn-default w-full">Coba 14 hari gratis</a></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><h3 class="card-title text-lg">Usaha</h3><p class="card-desc">Untuk beberapa cabang dan tim admin.</p></div>
+      <div class="card-content"><p class="tnum text-4xl font-semibold tracking-tight"><span data-m="Rp 449.000" data-y="Rp 374.000">Rp 449.000</span><span class="text-base font-normal text-muted-foreground">/bln</span></p><p class="mt-1 text-sm text-muted-foreground" data-m="ditagih bulanan" data-y="ditagih Rp 4.490.000 per tahun">ditagih bulanan</p></div>
+      <div class="card-content"><ul class="grid gap-2.5 text-sm">
+        <li class="flex gap-2"><svg class="mt-0.5 size-4 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Pesan AI tanpa batas</li>
+        <li class="flex gap-2"><svg class="mt-0.5 size-4 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Hingga 5 cabang &amp; 10 admin</li>
+        <li class="flex gap-2"><svg class="mt-0.5 size-4 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Integrasi marketplace &amp; kasir</li></ul></div>
+      <div class="card-footer mt-auto"><button type="button" class="btn btn-outline w-full" data-open-dialog>Hubungi tim penjualan</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq" class="border-t" aria-labelledby="faq-title">
+  <div class="mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-12 lg:py-28">
+    <div class="lg:col-span-4"><p class="eyebrow">FAQ</p><h2 id="faq-title" class="h2 mt-2">Pertanyaan umum</h2><p class="lead mt-4">Belum terjawab? <button type="button" class="font-medium text-foreground underline underline-offset-4" data-open-dialog>Ngobrol dengan tim kami</button>.</p></div>
+    <div class="lg:col-span-8" id="faqList">
+      <div class="border-b" data-state="open"><h3><button type="button" class="acc-trigger flex w-full items-center justify-between gap-4 py-4 text-left text-sm font-medium hover:underline md:text-base" aria-expanded="true">Apakah Nalar bisa salah menjawab harga?<svg class="acc-chev size-4 shrink-0 text-muted-foreground transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></h3><div class="acc-panel" role="region"><div><p class="pb-4 text-sm text-muted-foreground md:text-base">Nalar hanya menjawab dari katalog dan daftar harga yang Anda setujui. Jika ada pertanyaan di luar data, Nalar meneruskannya ke Anda dan tidak menebak.</p></div></div></div>
+      <div class="border-b" data-state="closed"><h3><button type="button" class="acc-trigger flex w-full items-center justify-between gap-4 py-4 text-left text-sm font-medium hover:underline md:text-base" aria-expanded="false">Apakah nomor WhatsApp saya tetap sama?<svg class="acc-chev size-4 shrink-0 text-muted-foreground transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></h3><div class="acc-panel" role="region"><div><p class="pb-4 text-sm text-muted-foreground md:text-base">Ya. Nalar terhubung lewat WhatsApp Business resmi. Pelanggan tetap chat ke nomor yang sama, dan Anda bisa mengambil alih percakapan kapan saja.</p></div></div></div>
+      <div class="border-b" data-state="closed"><h3><button type="button" class="acc-trigger flex w-full items-center justify-between gap-4 py-4 text-left text-sm font-medium hover:underline md:text-base" aria-expanded="false">Bagaimana keamanan data pelanggan saya?<svg class="acc-chev size-4 shrink-0 text-muted-foreground transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></h3><div class="acc-panel" role="region"><div><p class="pb-4 text-sm text-muted-foreground md:text-base">Data disimpan terenkripsi di server di Indonesia dan tidak dipakai untuk melatih model lain. Anda bisa mengekspor atau menghapus data kapan saja.</p></div></div></div>
+      <div class="border-b" data-state="closed"><h3><button type="button" class="acc-trigger flex w-full items-center justify-between gap-4 py-4 text-left text-sm font-medium hover:underline md:text-base" aria-expanded="false">Perlu keahlian teknis untuk memasang?<svg class="acc-chev size-4 shrink-0 text-muted-foreground transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></h3><div class="acc-panel" role="region"><div><p class="pb-4 text-sm text-muted-foreground md:text-base">Tidak. Cukup pindai kode QR, unggah foto daftar harga atau katalog, dan Nalar siap dalam sekitar 10 menit. Tim kami juga membantu lewat video call.</p></div></div></div>
+      <div class="border-b" data-state="closed"><h3><button type="button" class="acc-trigger flex w-full items-center justify-between gap-4 py-4 text-left text-sm font-medium hover:underline md:text-base" aria-expanded="false">Bisa bayar pakai QRIS atau transfer?<svg class="acc-chev size-4 shrink-0 text-muted-foreground transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></h3><div class="acc-panel" role="region"><div><p class="pb-4 text-sm text-muted-foreground md:text-base">Bisa. Kami menerima QRIS, transfer bank, dan dompet digital. Faktur pajak tersedia untuk paket Toko dan Usaha.</p></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section id="mulai" class="relative isolate overflow-hidden border-t" aria-labelledby="mulai-title">
+  <div class="glow pointer-events-none absolute -bottom-1/2 left-1/2 -z-10 h-[700px] w-[1000px] max-w-none -translate-x-1/2" aria-hidden="true"></div>
+  <div class="mx-auto grid max-w-7xl items-center gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:py-28">
+    <div>
+      <h2 id="mulai-title" class="text-4xl font-semibold tracking-tight text-balance md:text-6xl">Biar Nalar yang balas chat. Anda urus jualan.</h2>
+      <p class="lead mt-5 max-w-lg">Daftar dalam 2 menit. Tidak perlu kartu kredit, dan Anda bisa berhenti kapan saja.</p>
+      <div class="mt-8 flex flex-wrap gap-3"><button type="button" class="btn btn-outline btn-lg" data-open-dialog>
+        <svg class="size-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Tonton demo 2 menit</button></div>
+    </div>
+    <form id="signupForm" class="card" novalidate>
+      <div class="card-header"><h3 class="card-title text-lg">Mulai uji coba gratis</h3><p class="card-desc">Kami kirim tautan aktivasi ke WhatsApp Anda.</p></div>
+      <div class="card-content grid gap-4">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="grid gap-2"><label class="label" for="fNama">Nama</label><input id="fNama" name="nama" class="input" placeholder="Dewi Lestari" autocomplete="name" required></div>
+          <div class="grid gap-2"><label class="label" for="fUsaha">Nama usaha</label><input id="fUsaha" name="usaha" class="input" placeholder="Roti Oma Lina" autocomplete="organization"></div>
+        </div>
+        <div class="grid gap-2"><label class="label" for="fWa">Nomor WhatsApp</label><input id="fWa" name="wa" class="input tnum" type="tel" inputmode="tel" placeholder="0812 3456 7890" autocomplete="tel" required><p class="hidden text-sm text-destructive" id="fWaErr">Masukkan nomor WhatsApp yang valid (10–13 digit).</p></div>
+        <div class="grid gap-2"><label class="label" for="fJenis">Jenis usaha</label>
+          <select id="fJenis" class="select"><option>Makanan &amp; minuman</option><option>Fesyen &amp; kerajinan</option><option>Toko kelontong</option><option>Jasa</option><option>Lainnya</option></select></div>
+      </div>
+      <div class="card-footer"><button type="submit" class="btn btn-default w-full">Kirim tautan aktivasi</button></div>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer class="border-t bg-muted/30">
+  <div class="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-4">
+    <div class="md:col-span-2">
+      <a href="#top" class="flex items-center gap-2 font-semibold"><svg viewBox="0 0 32 32" class="size-6" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="url(#lg)"/><path d="M10 21V11l12 10V11" fill="none" stroke="#0b0b10" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Nalar</a>
+      <p class="mt-3 max-w-sm text-sm text-muted-foreground">Asisten AI untuk UMKM Indonesia. Merek fiktif untuk template portofolio.</p>
+    </div>
+    <nav aria-label="Produk"><p class="text-sm font-medium">Produk</p><ul class="mt-3 grid gap-2 text-sm text-muted-foreground"><li><a class="hover:text-foreground" href="#fitur">Fitur</a></li><li><a class="hover:text-foreground" href="#studio">Studio</a></li><li><a class="hover:text-foreground" href="#harga">Harga</a></li></ul></nav>
+    <nav aria-label="Bantuan"><p class="text-sm font-medium">Bantuan</p><ul class="mt-3 grid gap-2 text-sm text-muted-foreground"><li><a class="hover:text-foreground" href="#faq">FAQ</a></li><li><a class="hover:text-foreground" href="#mulai">Daftar</a></li><li><button type="button" class="hover:text-foreground" data-open-dialog>Hubungi kami</button></li></ul></nav>
+  </div>
+  <div class="border-t"><div class="mx-auto flex max-w-7xl flex-wrap justify-between gap-3 px-4 py-6 text-xs text-muted-foreground sm:px-6">
+    <span>© 2026 Nalar. Semua hak dilindungi.</span>
+    <span>Dibangun dengan Tailwind CSS + pola shadcn/ui + three.js</span>
+  </div></div>
+</footer>
+
+<!-- Dialog -->
+<dialog class="dlg" id="demoDlg" aria-labelledby="dlgTitle">
+  <div class="dlg-panel grid gap-4 rounded-lg border bg-background p-6 shadow-lg">
+    <div class="flex flex-col gap-2 text-left"><h2 id="dlgTitle" class="text-lg leading-none font-semibold">Jadwalkan demo bersama tim Nalar</h2><p class="text-sm text-muted-foreground">Kami tunjukkan Nalar dengan katalog toko Anda sendiri, lewat video call 20 menit.</p></div>
+    <form method="dialog" id="dlgForm" class="grid gap-4">
+      <div class="grid gap-2"><label class="label" for="dEmail">Email</label><input id="dEmail" type="email" class="input" placeholder="anda@usaha.id" autocomplete="email"></div>
+      <div class="grid gap-2"><label class="label" for="dSlot">Waktu</label><select id="dSlot" class="select"><option>Besok, 10.00 WIB</option><option>Besok, 15.00 WIB</option><option>Lusa, 09.00 WIB</option></select></div>
+      <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end"><button type="button" class="btn btn-outline" data-close-dialog>Batal</button><button type="submit" class="btn btn-default" value="ok">Jadwalkan</button></div>
+    </form>
+    <button type="button" class="absolute right-4 top-4 rounded-xs opacity-70 transition-opacity hover:opacity-100" data-close-dialog aria-label="Tutup"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+  </div>
+</dialog>
+
+<!-- Toaster -->
+<ol id="toaster" class="pointer-events-none fixed bottom-4 right-4 z-[90] flex w-[calc(100%-2rem)] max-w-sm flex-col gap-2" aria-live="polite"></ol>
+
+<script type="module">
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const root = document.documentElement;
+const isDark = () => root.classList.contains('dark');
+const $ = s => document.querySelector(s);
+function hasWebGL(){ try{ const c=document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2')||c.getContext('webgl'))); }catch(e){ return false; } }
+const GL = hasWebGL(); if(!GL) root.classList.add('no-webgl');
+
+/* ---------- Panggung dasar: DPR ≤ 2, berhenti saat tak terlihat / tab tersembunyi ---------- */
+class Stage{
+  constructor(canvas){
+    this.canvas=canvas;
+    this.renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'});
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+    this.renderer.setClearColor(0x000000,0);
+    this.scene=new THREE.Scene(); this.clock=new THREE.Clock(false);
+    this.time=0; this.speed=1; this.inView=false; this.running=false; this.dirty=true; this._tick=this.tick.bind(this);
+    new IntersectionObserver(es=>{ this.inView=es[es.length-1].isIntersecting; this.kick(); },{rootMargin:'120px'}).observe(canvas);
+    new ResizeObserver(()=>{ this.resize(); this.invalidate(); }).observe(canvas.parentElement);
+    document.addEventListener('visibilitychange',()=>this.kick());
+  }
+  size(){ const r=this.canvas.parentElement.getBoundingClientRect(); return [Math.max(1,Math.round(r.width)),Math.max(1,Math.round(r.height))]; }
+  invalidate(){ this.dirty=true; this.kick(); }
+  kick(){ if(this.running||!this.inView||document.hidden) return; this.running=true; this.clock.start(); requestAnimationFrame(this._tick); }
+  tick(){
+    if(!this.inView||document.hidden){ this.running=false; this.clock.stop(); return; }
+    const dt=Math.min(this.clock.getDelta(),0.05);
+    if(!reduced) this.time+=dt*this.speed;
+    const busy=this.update(dt);
+    if(!reduced||busy||this.dirty){ this.renderer.render(this.scene,this.camera); this.dirty=false; }
+    if(!reduced||busy) requestAnimationFrame(this._tick); else { this.running=false; this.clock.stop(); }
+  }
+}
+
+/* ---------- Bola partikel Nalar ---------- */
+const NOISE=`
+vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
+vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+float snoise(vec3 v){
+  const vec2 C=vec2(1.0/6.0,1.0/3.0); const vec4 D=vec4(0.0,0.5,1.0,2.0);
+  vec3 i=floor(v+dot(v,C.yyy)); vec3 x0=v-i+dot(i,C.xxx);
+  vec3 g=step(x0.yzx,x0.xyz); vec3 l=1.0-g; vec3 i1=min(g.xyz,l.zxy); vec3 i2=max(g.xyz,l.zxy);
+  vec3 x1=x0-i1+C.xxx; vec3 x2=x0-i2+C.yyy; vec3 x3=x0-D.yyy;
+  i=mod289(i);
+  vec4 p=permute(permute(permute(i.z+vec4(0.0,i1.z,i2.z,1.0))+i.y+vec4(0.0,i1.y,i2.y,1.0))+i.x+vec4(0.0,i1.x,i2.x,1.0));
+  float n_=0.142857142857; vec3 ns=n_*D.wyz-D.xzx;
+  vec4 j=p-49.0*floor(p*ns.z*ns.z); vec4 x_=floor(j*ns.z); vec4 y_=floor(j-7.0*x_);
+  vec4 x=x_*ns.x+ns.yyyy; vec4 y=y_*ns.x+ns.yyyy; vec4 h=1.0-abs(x)-abs(y);
+  vec4 b0=vec4(x.xy,y.xy); vec4 b1=vec4(x.zw,y.zw);
+  vec4 s0=floor(b0)*2.0+1.0; vec4 s1=floor(b1)*2.0+1.0; vec4 sh=-step(h,vec4(0.0));
+  vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy; vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+  vec3 p0=vec3(a0.xy,h.x); vec3 p1=vec3(a0.zw,h.y); vec3 p2=vec3(a1.xy,h.z); vec3 p3=vec3(a1.zw,h.w);
+  vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3))); p0*=norm.x; p1*=norm.y; p2*=norm.z; p3*=norm.w;
+  vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0); m=m*m;
+  return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
+}`;
+const ORB_VS=NOISE+`
+uniform float uTime,uAmp,uFreq,uCube,uPulse,uSwirl,uSize,uPR,uPtrStr,uScale;
+uniform vec3 uPtr;
+attribute float aRnd;
+varying float vN; varying float vR; varying float vFront; varying float vP;
+void main(){
+  vec3 p=position;
+  float ang=uSwirl*p.y*2.4;
+  float cs=cos(ang), sn=sin(ang); p.xz=mat2(cs,-sn,sn,cs)*p.xz;
+  vec3 c=p/max(max(abs(p.x),abs(p.y)),abs(p.z))*0.82; p=normalize(mix(p,c,uCube))*mix(1.0,length(c),uCube);
+  float n=snoise(p*uFreq+vec3(0.0,uTime*0.22,uTime*0.17));
+  float n2=snoise(p*uFreq*2.3-vec3(uTime*0.3));
+  float pd=distance(normalize(position),uPtr);
+  float bulge=exp(-pd*pd*7.0)*uPtrStr;
+  float wave=uPulse*(0.5+0.5*sin(uTime*9.0-length(position.xy)*6.0+aRnd*3.0));
+  float d=1.0+n*uAmp+n2*uAmp*0.25+bulge*0.32+wave*0.14;
+  p*=d*uScale;
+  vN=n; vR=aRnd; vP=bulge+wave;
+  vec4 mv=modelViewMatrix*vec4(p,1.0);
+  vec3 nrm=normalize(normalMatrix*position);
+  vFront=smoothstep(-0.6,0.6,nrm.z);
+  gl_PointSize=uSize*uPR*(0.55+aRnd*0.9)*(1.0+wave*0.5+bulge*0.6)*(4.0/-mv.z);
+  gl_Position=projectionMatrix*mv;
+}`;
+const ORB_FS=`
+uniform vec3 uC1,uC2,uC3; uniform float uLight;
+varying float vN; varying float vR; varying float vFront; varying float vP;
+void main(){
+  vec2 q=gl_PointCoord-0.5; float d=length(q); if(d>0.5) discard;
+  float core=smoothstep(0.5,0.0,d);
+  vec3 col=mix(uC1,uC2,smoothstep(-0.45,0.55,vN)); col=mix(col,uC3,step(0.86,vR)*0.85);
+  col+=vP*0.35;
+  float a=core*mix(0.22,1.0,vFront)*mix(0.9,1.0,vR);
+  if(uLight>0.5){ a=min(1.0,a*1.25); }
+  gl_FragColor=vec4(col,a);
+}`;
+const PALETTES={
+  ungu:['#8b5cf6','#22d3ee','#f0abfc'], senja:['#f43f5e','#f59e0b','#fde68a'], hutan:['#10b981','#3b82f6','#a7f3d0'], mono:['#a1a1aa','#fafafa','#8b5cf6'],
+  tanya:['#8b5cf6','#22d3ee','#f0abfc'], tulis:['#ec4899','#f59e0b','#fde68a'], hitung:['#10b981','#38bdf8','#a7f3d0']
+};
+const PALETTES_L={ ungu:['#6d28d9','#0891b2','#c026d3'], senja:['#e11d48','#d97706','#ea580c'], hutan:['#059669','#2563eb','#0d9488'], mono:['#3f3f46','#71717a','#7c3aed'],
+  tanya:['#6d28d9','#0891b2','#c026d3'], tulis:['#db2777','#d97706','#ea580c'], hitung:['#059669','#0284c7','#0d9488'] };
+function glowTexture(){ const c=document.createElement('canvas'); c.width=c.height=128; const g=c.getContext('2d'); const r=g.createRadialGradient(64,64,0,64,64,64); r.addColorStop(0,'rgba(255,255,255,1)'); r.addColorStop(0.25,'rgba(255,255,255,.45)'); r.addColorStop(1,'rgba(255,255,255,0)'); g.fillStyle=r; g.fillRect(0,0,128,128); const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t; }
+const GLOW_TEX = GL ? glowTexture() : null;
+
+class Orb extends Stage{
+  constructor(canvas,{count=16000,palette='ungu',follow=true}={}){
+    super(canvas);
+    this.camera=new THREE.PerspectiveCamera(36,1,0.1,50); this.camera.position.set(0,0,4.3);
+    this.group=new THREE.Group(); this.scene.add(this.group);
+    const mobile=matchMedia('(max-width:640px)').matches; this.max=mobile?Math.round(count*0.55):count;
+    const pos=new Float32Array(this.max*3), rnd=new Float32Array(this.max); const ga=Math.PI*(3-Math.sqrt(5));
+    // urutan acak agar drawRange tetap merata
+    const idx=[...Array(this.max).keys()]; for(let i=idx.length-1;i>0;i--){ const j=(Math.random()*(i+1))|0; [idx[i],idx[j]]=[idx[j],idx[i]]; }
+    for(let k=0;k<this.max;k++){ const i=idx[k]; const y=1-(i/(this.max-1))*2, r=Math.sqrt(1-y*y), th=ga*i; pos.set([Math.cos(th)*r,y,Math.sin(th)*r],k*3); rnd[k]=Math.random(); }
+    const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(pos,3)); g.setAttribute('aRnd',new THREE.BufferAttribute(rnd,1));
+    this.geo=g;
+    this.U={uTime:{value:0},uAmp:{value:0.14},uFreq:{value:1.3},uCube:{value:0},uPulse:{value:0},uSwirl:{value:0},uSize:{value:2.6},uPR:{value:this.renderer.getPixelRatio()},uPtrStr:{value:0},uScale:{value:1},uPtr:{value:new THREE.Vector3(0,0,1)},
+      uC1:{value:new THREE.Color()},uC2:{value:new THREE.Color()},uC3:{value:new THREE.Color()},uLight:{value:0}};
+    this.mat=new THREE.ShaderMaterial({vertexShader:ORB_VS,fragmentShader:ORB_FS,uniforms:this.U,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending});
+    this.points=new THREE.Points(g,this.mat); this.group.add(this.points);
+    // inti cahaya
+    this.halo=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW_TEX,color:0x8b5cf6,transparent:true,opacity:0.55,depthWrite:false,blending:THREE.AdditiveBlending}));
+    this.halo.scale.setScalar(2.6); this.scene.add(this.halo);
+    // cincin orbit
+    this.rings=new THREE.Group(); this.scene.add(this.rings);
+    const rp=[]; for(let i=0;i<900;i++){ const a=Math.random()*Math.PI*2, r=1.55+Math.random()*0.18*(Math.random()<0.5?-1:1); rp.push(Math.cos(a)*r,(Math.random()-0.5)*0.04,Math.sin(a)*r); }
+    const rg=new THREE.BufferGeometry(); rg.setAttribute('position',new THREE.Float32BufferAttribute(rp,3));
+    this.ringMat=new THREE.PointsMaterial({size:0.018,color:0xffffff,transparent:true,opacity:0.6,depthWrite:false,blending:THREE.AdditiveBlending});
+    const r1=new THREE.Points(rg,this.ringMat); r1.rotation.x=1.15; r1.rotation.z=0.3; const r2=new THREE.Points(rg,this.ringMat); r2.rotation.x=1.9; r2.rotation.z=-0.5; r2.scale.setScalar(0.88);
+    this.rings.add(r1,r2); this.ringOn=1; this.ringT=1;
+    // target parameter (dilunakkan)
+    this.T={amp:0.14,freq:1.3,cube:0,swirl:0,scale:1}; this.cur={...this.T};
+    this.pulse=0; this.thinking=false; this.follow=follow; this.ptrStr=0; this.ptrT=0; this.ptr=new THREE.Vector3(0,0,1); this.ptrTarget=new THREE.Vector3(0,0,1);
+    this.colT=[new THREE.Color(),new THREE.Color(),new THREE.Color()]; this.palette=palette; this.setPalette(palette,true);
+    this.rot=new THREE.Vector2(); this.rotT=new THREE.Vector2();
+    // pointer
+    const ray=new THREE.Raycaster(), sph=new THREE.Sphere(new THREE.Vector3(),1), ndc=new THREE.Vector2(), hit=new THREE.Vector3();
+    const onMove=e=>{ const r=canvas.getBoundingClientRect(); ndc.set(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1);
+      this.rotT.set(-ndc.y*0.25,ndc.x*0.35);
+      ray.setFromCamera(ndc,this.camera);
+      if(ray.ray.intersectSphere(sph,hit)){ const inv=this.group.matrixWorld.clone().invert(); this.ptrTarget.copy(hit).applyMatrix4(inv).normalize(); this.ptrT=1; } else this.ptrT=0.0;
+      this.invalidate(); };
+    canvas.addEventListener('pointermove',onMove); canvas.addEventListener('pointerdown',onMove);
+    canvas.addEventListener('pointerleave',()=>{ this.ptrT=0; this.rotT.set(0,0); this.invalidate(); });
+    this.applyTheme(); this.resize();
+  }
+  setPalette(name,snap=false){ this.palette=name; const P=(isDark()?PALETTES:PALETTES_L)[name]; P.forEach((c,i)=>this.colT[i].set(c)); if(snap){ this.U.uC1.value.copy(this.colT[0]); this.U.uC2.value.copy(this.colT[1]); this.U.uC3.value.copy(this.colT[2]); } this.invalidate(); }
+  setShape(s){ Object.assign(this.T, s==='gumpal'?{amp:0.34,freq:1.6,cube:0}: s==='kubus'?{amp:0.05,freq:2.2,cube:1}:{amp:0.14,freq:1.3,cube:0}); this.shape=s; this.invalidate(); }
+  setEnergy(e){ this.energy=e; this.speed=0.4+e*1.8; this.T.ampMul=0.5+e*1.3; this.invalidate(); }
+  setDensity(f){ this.geo.setDrawRange(0,Math.max(200,Math.round(this.max*f))); this.U.uSize.value=2.2+ (1-f)*2.2; this.invalidate(); }
+  setRings(on){ this.ringT=on?1:0; this.invalidate(); }
+  bump(v=0.6){ this.pulse=Math.min(1.4,this.pulse+v); this.invalidate(); }
+  think(on){ this.thinking=on; this.T.swirl=on?1.1:0; this.T.scale=on?0.9:1; this.invalidate(); }
+  applyTheme(){ const d=isDark(); this.mat.blending=d?THREE.AdditiveBlending:THREE.NormalBlending; this.mat.needsUpdate=true; this.U.uLight.value=d?0:1;
+    this.halo.material.blending=d?THREE.AdditiveBlending:THREE.NormalBlending; this.halo.material.opacity=d?0.5:0.22; this.ringMat.blending=d?THREE.AdditiveBlending:THREE.NormalBlending; this.ringMat.color.set(d?'#ffffff':'#52525b'); this.ringMat.needsUpdate=true; this.halo.material.needsUpdate=true;
+    this.setPalette(this.palette,true); }
+  resize(){ const [w,h]=this.size(); this.renderer.setSize(w,h,false); this.camera.aspect=w/h; this.camera.position.z = w/h<1 ? 4.5/(w/h) : 4.4; this.camera.updateProjectionMatrix(); }
+  update(dt){
+    const k=reduced?1:1-Math.pow(0.02,dt), kc=reduced?1:1-Math.pow(0.05,dt);
+    const c=this.cur, T=this.T; let busy=false;
+    for(const key of ['amp','freq','cube','swirl','scale']){ const tv=key==='amp'?T.amp*(T.ampMul??1):T[key]; c[key]+=(tv-c[key])*k; if(Math.abs(tv-c[key])>1e-3) busy=true; }
+    const U=this.U; U.uTime.value=this.time; U.uAmp.value=c.amp; U.uFreq.value=c.freq; U.uCube.value=c.cube; U.uSwirl.value=c.swirl+(this.thinking&&!reduced?Math.sin(this.time*3)*0.25:0); U.uScale.value=c.scale;
+    this.pulse*=reduced?0:Math.pow(0.18,dt); if(this.thinking&&!reduced) this.pulse=Math.max(this.pulse,0.35+0.25*Math.sin(this.time*6)); U.uPulse.value=reduced?Math.min(this.pulse,0.4):this.pulse; if(this.pulse>0.01) busy=true;
+    const ps=this.follow?this.ptrT:0; this.ptrStr+=(ps-this.ptrStr)*k; U.uPtrStr.value=this.ptrStr; this.ptr.lerp(this.ptrTarget,k).normalize(); U.uPtr.value.copy(this.ptr); if(Math.abs(ps-this.ptrStr)>1e-3) busy=true;
+    [U.uC1,U.uC2,U.uC3].forEach((u,i)=>{ u.value.lerp(this.colT[i],kc); }); if(U.uC1.value.distanceTo?false:false) busy=true;
+    if(Math.abs(U.uC1.value.r-this.colT[0].r)+Math.abs(U.uC2.value.g-this.colT[1].g)>0.004) busy=true;
+    this.halo.material.color.copy(U.uC1.value);
+    this.rot.lerp(this.rotT,k); if(this.rot.distanceTo(this.rotT)>1e-3) busy=true;
+    this.group.rotation.set(this.rot.x+this.time*0.03,this.rot.y+this.time*0.12,0);
+    this.ringOn+=(this.ringT-this.ringOn)*k; this.ringMat.opacity=this.ringOn*(isDark()?0.6:0.45); this.rings.visible=this.ringOn>0.01; if(Math.abs(this.ringT-this.ringOn)>1e-3) busy=true;
+    this.rings.rotation.y=this.time*0.25; this.rings.rotation.x=this.rot.x*0.6;
+    this.halo.scale.setScalar(2.5*c.scale*(1+U.uPulse.value*0.15));
+    return busy;
+  }
+}
+
+/* ---------- Diorama isometrik "Sehari bersama Nalar" ---------- */
+class IsoDay extends Stage{
+  constructor(canvas,labelsEl){
+    super(canvas);
+    this.renderer.shadowMap.enabled=true; this.renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+    this.camera=new THREE.OrthographicCamera(-1,1,1,-1,-100,200);
+    this.camOffset=new THREE.Vector3(14,14,14);
+    this.target=new THREE.Vector3(); this.targetT=new THREE.Vector3();
+    this.progress=0; this.progressT=0;
+    const S=this.scene;
+    this.hemi=new THREE.HemisphereLight(0xffffff,0x444466,1.0); S.add(this.hemi);
+    const sun=new THREE.DirectionalLight(0xffffff,1.7); sun.position.set(-10,22,12); sun.castShadow=true; sun.shadow.mapSize.set(2048,2048);
+    Object.assign(sun.shadow.camera,{left:-22,right:22,top:16,bottom:-16,near:1,far:70}); sun.shadow.bias=-0.0004; sun.shadow.normalBias=0.02; S.add(sun); S.add(sun.target); this.sun=sun;
+    const M=c=>new THREE.MeshStandardMaterial({color:c,roughness:0.7,metalness:0.0});
+    this.m={tile:M('#27272a'),tileSide:M('#18181b'),ground:new THREE.ShadowMaterial({opacity:0.35}),dark:M('#18181b'),mid:M('#52525b'),light:M('#e4e4e7'),white:M('#fafafa'),violet:M('#8b5cf6'),cyan:M('#22d3ee'),pink:M('#f472b6'),amber:M('#fbbf24'),green:M('#34d399'),wood:M('#a16207'),screen:new THREE.MeshBasicMaterial({color:'#8b5cf6'}),leaf:M('#16a34a')};
+    const ground=new THREE.Mesh(new THREE.PlaneGeometry(200,200),this.m.ground); ground.rotation.x=-Math.PI/2; ground.position.y=-0.6; ground.receiveShadow=true; S.add(ground);
+    // ubin stasiun
+    this.T=[[-12,0,3.5],[-6,0,-1.5],[0,0,3],[6,0,-2],[12,0,2.5]].map(p=>new THREE.Vector3(...p));
+    const tileG=new RoundedBoxGeometry(5.2,0.7,5.2,3,0.28);
+    this.T.forEach(p=>{ const t=new THREE.Mesh(tileG,this.m.tile); t.position.set(p.x,-0.35,p.z); t.receiveShadow=true; t.castShadow=true; S.add(t); });
+    const add=(geo,mat,x,y,z,o={})=>{ const m=new THREE.Mesh(geo,mat); m.position.set(x,y,z); if(o.ry) m.rotation.y=o.ry; if(o.rx) m.rotation.x=o.rx; if(o.rz) m.rotation.z=o.rz; m.castShadow=o.cast!==false; m.receiveShadow=true; S.add(m); return m; };
+    const RB=(w,h,d,r=0.08)=>new RoundedBoxGeometry(w,h,d,2,r);
+    // 1. ponsel + gelembung chat
+    let p=this.T[0];
+    add(RB(1.7,3.2,0.24,0.18),this.m.dark,p.x-0.6,1.6,p.z-0.9,{ry:0.35});
+    this.phoneScreen=add(new THREE.PlaneGeometry(1.45,2.8),this.m.screen,p.x-0.6+0.13*Math.sin(0.35)*0,1.62,p.z-0.9,{ry:0.35,cast:false}); this.phoneScreen.translateZ(0.125);
+    this.bubbles=[0,1,2].map(i=>{ const b=add(RB(1.1,0.42,0.12,0.1),i%2?this.m.white:this.m.violet,p.x+0.9+(i%2)*0.4,2.5-i*0.62,p.z-0.2+i*0.15,{ry:0.35}); b.userData.base=b.position.y; return b; });
+    // 2. rak stok
+    p=this.T[1];
+    const shelf=new THREE.Group(); shelf.position.set(p.x-0.4,0,p.z-0.6); shelf.rotation.y=-0.25; S.add(shelf);
+    [[-1.3],[1.3]].forEach(([x])=>{ const s=new THREE.Mesh(RB(0.12,3,1.2,0.04),this.m.mid); s.position.set(x,1.5,0); s.castShadow=true; shelf.add(s); });
+    [0.1,1.1,2.1,2.95].forEach(y=>{ const s=new THREE.Mesh(RB(2.7,0.1,1.2,0.03),this.m.mid); s.position.set(0,y,0); s.castShadow=true; s.receiveShadow=true; shelf.add(s); });
+    this.boxes=[]; const bc=[this.m.amber,this.m.wood,this.m.pink,this.m.cyan,this.m.green,this.m.amber];
+    for(let r=0;r<3;r++) for(let c=0;c<4;c++){ const b=new THREE.Mesh(RB(0.5,0.6,0.7,0.05),bc[(r*4+c)%6]); b.position.set(-0.9+c*0.6,0.15+r*1+0.3+0.02,0); b.castShadow=true; shelf.add(b); this.boxes.push(b); }
+    // 3. meja kasir + laptop + invoice
+    p=this.T[2];
+    add(RB(3.2,0.18,1.8,0.05),this.m.wood,p.x,1.2,p.z-0.3);
+    [[-1.4,-0.7],[1.4,-0.7],[-1.4,0.1],[1.4,0.1]].forEach(([a,b])=>add(new THREE.BoxGeometry(0.12,1.1,0.12),this.m.mid,p.x+a,0.55,p.z-0.3+b+0.4));
+    add(RB(1.4,0.08,1.0,0.03),this.m.mid,p.x-0.3,1.33,p.z-0.2);
+    const lid=add(RB(1.4,0.95,0.06,0.03),this.m.mid,p.x-0.3,1.8,p.z-0.7,{rx:-0.25});
+    const lscr=add(new THREE.PlaneGeometry(1.25,0.8),this.m.screen,p.x-0.3,1.8,p.z-0.66,{rx:-0.25,cast:false});
+    this.papers=[0,1,2].map(i=>{ const s=add(new THREE.BoxGeometry(0.5,0.02,0.7),this.m.white,p.x+0.9,1.32+i*0.03,p.z-0.1); s.userData.i=i; return s; });
+    // 4. mobil boks pengantar
+    p=this.T[3];
+    const van=new THREE.Group(); van.position.set(p.x+0.2,0,p.z-0.2); van.rotation.y=0.5; S.add(van); this.van=van;
+    const vb=new THREE.Mesh(RB(2.6,1.5,1.5,0.15),this.m.white); vb.position.set(-0.3,1.0,0); vb.castShadow=true; van.add(vb);
+    const vs=new THREE.Mesh(RB(2.62,0.25,1.52,0.05),this.m.violet); vs.position.set(-0.3,1.0,0); van.add(vs);
+    const vc=new THREE.Mesh(RB(1.0,1.1,1.45,0.18),this.m.violet); vc.position.set(1.45,0.8,0); vc.castShadow=true; van.add(vc);
+    const vw=new THREE.Mesh(new THREE.BoxGeometry(0.05,0.45,1.2),this.m.dark); vw.position.set(1.96,1.05,0); van.add(vw);
+    const wg=new THREE.CylinderGeometry(0.3,0.3,0.2,16); wg.rotateX(Math.PI/2);
+    [[-1.0,0.72],[-1.0,-0.72],[1.3,0.72],[1.3,-0.72]].forEach(([a,b])=>{ const w=new THREE.Mesh(wg,this.m.dark); w.position.set(a,0.3,b); w.castShadow=true; van.add(w); });
+    // 5. grafik laporan
+    p=this.T[4];
+    this.bars=[0.6,1.0,0.8,1.5,2.2].map((h,i)=>{ const b=add(RB(0.6,1,0.6,0.06),i===4?this.m.violet:this.m.light,p.x-1.4+i*0.72,0,p.z-0.6+i*0.15); b.userData.h=h; b.scale.y=0.05; return b; });
+    const coin=new THREE.CylinderGeometry(0.32,0.32,0.08,24);
+    this.coins=[0,1,2,3].map(i=>add(coin,this.m.amber,p.x+1.4,0.05+i*0.09,p.z+1.2));
+    // tanaman
+    const pot=new THREE.CylinderGeometry(0.25,0.2,0.4,12), bush=new THREE.IcosahedronGeometry(0.42,1);
+    [[-13.8,5],[-4,-3.2],[1.9,4.6],[7.8,-3.6],[10.2,4]].forEach(([x,z])=>{ add(pot,this.m.mid,x,0.2,z); add(bush,this.m.leaf,x,0.75,z); });
+    // jalur cahaya
+    const pts=[]; for(let i=0;i<this.T.length;i++){ const a=this.T[i]; pts.push(new THREE.Vector3(a.x+1.2,0.05,a.z+1.3)); if(i<this.T.length-1){ const b=this.T[i+1]; pts.push(new THREE.Vector3((a.x+b.x)/2+0.6,0.05,(a.z+b.z)/2+1.3)); } }
+    this.path=new THREE.CatmullRomCurve3(pts,false,'centripetal');
+    this.pathMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{uP:{value:0},uC:{value:new THREE.Color('#8b5cf6')},uC2:{value:new THREE.Color('#22d3ee')},uTime:{value:0}},
+      vertexShader:`varying float vT; void main(){ vT=uv.x; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);} `,
+      fragmentShader:`uniform float uP,uTime; uniform vec3 uC,uC2; varying float vT;
+        void main(){ float done=step(vT,uP); float dash=step(0.5,fract(vT*70.0-uTime*0.8)); vec3 c=mix(uC,uC2,vT); float a=mix(0.28*dash,1.0,done); float head=smoothstep(0.015,0.0,abs(vT-uP)); gl_FragColor=vec4(c+head*0.5,max(a,head)); }`});
+    S.add(new THREE.Mesh(new THREE.TubeGeometry(this.path,300,0.08,6,false),this.pathMat));
+    // titik stasiun pada jalur
+    this.stopT=this.T.map((t,i)=>{ const sp=pts[i*2]; let best=0,bd=1e9; for(let j=0;j<=500;j++){ const q=this.path.getPointAt(j/500); const d=q.distanceToSquared(sp); if(d<bd){bd=d;best=j/500;} } return best; });
+    this.pads=this.stopT.map(u=>{ const q=this.path.getPointAt(u); const r=new THREE.Mesh(new THREE.RingGeometry(0.45,0.6,40),new THREE.MeshBasicMaterial({color:0x8b5cf6,transparent:true,side:THREE.DoubleSide,depthWrite:false})); r.rotation.x=-Math.PI/2; r.position.set(q.x,0.07,q.z); S.add(r); return r; });
+    // bola Nalar (karakter)
+    this.orb=new THREE.Group(); S.add(this.orb);
+    this.orbCore=new THREE.Mesh(new THREE.IcosahedronGeometry(0.42,3),new THREE.MeshStandardMaterial({color:'#c4b5fd',emissive:'#8b5cf6',emissiveIntensity:1.4,roughness:0.3})); this.orbCore.castShadow=true; this.orb.add(this.orbCore);
+    const halo=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW_TEX,color:0xa78bfa,transparent:true,opacity:0.9,depthWrite:false,blending:THREE.AdditiveBlending})); halo.scale.setScalar(2.2); this.orb.add(halo); this.orbHalo=halo;
+    const ringG=new THREE.TorusGeometry(0.66,0.025,8,48); this.orbRing=new THREE.Mesh(ringG,new THREE.MeshBasicMaterial({color:'#22d3ee'})); this.orbRing.rotation.x=1.2; this.orb.add(this.orbRing);
+    this.orbLight=new THREE.PointLight(0x8b5cf6,6,6,1.6); this.orb.add(this.orbLight);
+    // label HTML (badge shadcn)
+    const L=['WhatsApp · 12 pesanan baru','Stok · 3 barang menipis','Invoice · Rp 1.240.000','Kurir · 8 paket','Laporan · +18% hari ini'];
+    this.labels=L.map(t=>{ const d=document.createElement('div'); d.className='iso-label'; d.innerHTML=`<span class="badge badge-outline rounded-full bg-background/85 px-2.5 py-1 shadow-sm backdrop-blur"><span class="size-1.5 rounded-full bg-primary"></span>${t}</span>`; labelsEl.appendChild(d); return d; });
+    this.anchors=this.T.map((t,i)=>new THREE.Vector3(t.x-0.4,i===3?2.8:3.8,t.z-0.6));
+    this.applyTheme(); this.resize(); this.place(0,true);
+  }
+  applyTheme(){ const d=isDark(), m=this.m;
+    m.tile.color.set(d?'#313138':'#ffffff'); m.dark.color.set(d?'#09090b':'#27272a'); m.mid.color.set(d?'#52525b':'#d4d4d8'); m.light.color.set(d?'#a1a1aa':'#e4e4e7'); m.white.color.set(d?'#e4e4e7':'#fafafa');
+    m.ground.opacity=d?0.45:0.12; this.hemi.intensity=d?0.8:1.3; this.hemi.groundColor.set(d?'#27273a':'#a1a1b5'); this.sun.intensity=d?1.4:1.9;
+    this.invalidate(); }
+  resize(){ const [w,h]=this.size(); this.renderer.setSize(w,h,false); this.w=w; this.h=h; const asp=w/h; this.narrow=w<1024;
+    const H=this.narrow?(asp<0.8?4.4/asp:7.4):7.4; Object.assign(this.camera,{left:-H*asp,right:H*asp,top:H,bottom:-H}); this.camera.updateProjectionMatrix(); this.halfW=H*asp; this.halfH=H; this.place(this.progress,true); }
+  setProgress(p){ this.progressT=THREE.MathUtils.clamp(p,0,1); this.invalidate(); }
+  seg(p){ const n=this.stopT.length-1, s=Math.min(Math.floor(p*n),n-1), local=p*n-s, e=THREE.MathUtils.smoothstep(local,0.3,0.9); return {s,local,e,u:THREE.MathUtils.lerp(this.stopT[s],this.stopT[s+1],e),step:p>=1?n:(local<0.6?s:s+1)}; }
+  place(p,snap=false){
+    const S=this.seg(p); this.u=S.u; const q=this.path.getPointAt(S.u);
+    const hop = (S.e>0&&S.e<1) ? Math.abs(Math.sin(S.e*Math.PI*5))*0.55 : 0;
+    this.orb.position.set(q.x,1.0+hop,q.z);
+    this.pathMat.uniforms.uP.value=S.u;
+    const camDir=this.camOffset.clone().normalize(), right=new THREE.Vector3(1,0,-1).normalize(), up=new THREE.Vector3().crossVectors(right,camDir).normalize().negate();
+    this.targetT.set(q.x,0.5,q.z); if(!this.narrow) this.targetT.addScaledVector(right,-this.halfW*0.26); else this.targetT.addScaledVector(up,-this.halfH*0.3);
+    if(snap) this.target.copy(this.targetT);
+    // animasi stasiun berdasarkan progres
+    const n=this.stopT.length-1, at=i=>THREE.MathUtils.clamp(p*n-i+0.5,0,1);
+    this.bubbles.forEach((b,i)=>{ const v=THREE.MathUtils.clamp(at(0)*3-i,0,1); b.scale.setScalar(Math.max(0.001,v)); });
+    const stockLeft=1-at(1)*0.6; this.boxes.forEach((b,i)=>{ b.visible = (i/this.boxes.length) < stockLeft; });
+    this.papers.forEach(s=>{ const v=THREE.MathUtils.clamp(at(2)*3-s.userData.i,0,1); s.position.y=1.32+s.userData.i*0.03+v*1.4; s.position.x=this.T[2].x+0.9+v*2.2; s.rotation.z=v*0.8; s.visible=v<0.98; });
+    const vv=at(3); this.van.position.x=this.T[3].x+0.2+vv*0.9;
+    this.bars.forEach((b,i)=>{ const v=THREE.MathUtils.clamp(at(4)*1.6-i*0.12,0.05,1); b.scale.y=b.userData.h*v; b.position.y=b.scale.y/2; });
+    this.coins.forEach((c,i)=>{ c.visible = at(4)*4>i; });
+  }
+  update(dt){
+    const k=reduced?1:1-Math.pow(0.004,dt);
+    this.progress+=(this.progressT-this.progress)*k; const busy=Math.abs(this.progressT-this.progress)>1e-4;
+    this.place(this.progress);
+    this.target.lerp(this.targetT,k);
+    this.camera.position.copy(this.target).add(this.camOffset); this.camera.lookAt(this.target);
+    this.sun.position.set(this.target.x-10,22,this.target.z+12); this.sun.target.position.copy(this.target);
+    const t=this.time; this.pathMat.uniforms.uTime.value=t;
+    this.orbCore.position.y=reduced?0:Math.sin(t*2.4)*0.08; this.orbRing.rotation.z=t*1.5; this.orbHalo.material.opacity=0.75+(reduced?0:Math.sin(t*3)*0.15);
+    this.bubbles.forEach((b,i)=>{ b.position.y=b.userData.base+(reduced?0:Math.sin(t*1.8+i)*0.05); });
+    const st=this.seg(this.progress).step;
+    this.pads.forEach((r,i)=>{ const on=i===st, ph=(t*0.9)%1; r.scale.setScalar(on&&!reduced?1+ph*0.9:1); r.material.opacity=on?(reduced?0.9:1-ph*0.8):0.3; });
+    this.camera.updateMatrixWorld(); const v=new THREE.Vector3();
+    this.labels.forEach((el,i)=>{ v.copy(this.anchors[i]).project(this.camera); const x=(v.x*0.5+0.5)*this.w, y=(-v.y*0.5+0.5)*this.h;
+      el.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px) translate(-50%,-100%)`; el.style.opacity=(Math.abs(v.x)<1.05&&Math.abs(v.y)<1.05&&i===st)?1:0; });
+    return busy||this.target.distanceToSquared(this.targetT)>1e-5;
+  }
+}
+
+/* ================= Komponen UI (pola shadcn, JS vanilla) ================= */
+function setupTabs(list,onChange){
+  const tabs=[...list.querySelectorAll('[role=tab]')];
+  const select=(t,focus)=>{ tabs.forEach(x=>{ const on=x===t; x.dataset.state=on?'active':'inactive'; x.setAttribute('aria-selected',on); x.tabIndex=on?0:-1; }); if(focus) t.focus(); onChange&&onChange(t.dataset.value); };
+  tabs.forEach(t=>t.addEventListener('click',()=>select(t)));
+  list.addEventListener('keydown',e=>{ const i=tabs.indexOf(document.activeElement); if(i<0) return; let j=null; if(e.key==='ArrowRight') j=(i+1)%tabs.length; if(e.key==='ArrowLeft') j=(i-1+tabs.length)%tabs.length; if(e.key==='Home') j=0; if(e.key==='End') j=tabs.length-1; if(j!==null){ e.preventDefault(); select(tabs[j],true); } });
+  return v=>select(tabs.find(t=>t.dataset.value===v));
+}
+function setupSwitch(btn,onChange){
+  const set=on=>{ btn.dataset.state=on?'checked':'unchecked'; btn.setAttribute('aria-checked',on); btn.firstElementChild.dataset.state=btn.dataset.state; onChange&&onChange(on); };
+  btn.addEventListener('click',()=>set(btn.getAttribute('aria-checked')!=='true'));
+  return set;
+}
+function toast(title,desc,kind='default'){
+  const li=document.createElement('li');
+  li.className='toast-in pointer-events-auto flex items-start gap-3 rounded-lg border bg-popover p-4 text-popover-foreground shadow-lg';
+  const icon=kind==='error'?'<svg class="mt-0.5 size-4 shrink-0 text-destructive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>':'<svg class="mt-0.5 size-4 shrink-0 text-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+  li.innerHTML=`${icon}<div class="grid flex-1 gap-1"><p class="text-sm font-semibold"></p><p class="text-sm text-muted-foreground"></p></div><button type="button" class="opacity-60 hover:opacity-100" aria-label="Tutup notifikasi"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>`;
+  li.querySelector('p').textContent=title; li.querySelectorAll('p')[1].textContent=desc;
+  const rm=()=>li.remove(); li.querySelector('button').addEventListener('click',rm); $('#toaster').appendChild(li); setTimeout(rm,5000);
+}
+const fmt=n=>new Intl.NumberFormat('id-ID').format(n);
+
+function main(){
+  let hero=null, studio=null, iso=null;
+  if(GL){
+    hero=new Orb($('#heroOrb'),{count:16000});
+    studio=new Orb($('#studioOrb'),{count:20000});
+    iso=new IsoDay($('#isoCanvas'),$('#isoLabels'));
+    studio.setEnergy(0.4); studio.setDensity(0.8); hero.setEnergy(0.35);
+    window.__nalar={hero,studio,iso};
+  }
+  /* --- Hero prompt --- */
+  const statusT=$('#orbStatusText');
+  let mode='tanya';
+  setupTabs(document.querySelector('[data-tabs=mode]'),v=>{ mode=v; if(hero){ hero.setPalette(v); hero.setShape(v==='tulis'?'gumpal':v==='hitung'?'kubus':'bola'); hero.bump(0.5);} statusT.textContent={tanya:'Mode tanya',tulis:'Mode menulis',hitung:'Mode menghitung'}[v];
+    $('#prompt').placeholder={tanya:'Tanya apa saja… misalnya: produk apa yang paling laku minggu ini?',tulis:'Minta tulisan… misalnya: caption promo akhir pekan',hitung:'Minta hitungan… misalnya: margin kopi susu per cup'}[v]; });
+  const ta=$('#prompt');
+  ta.addEventListener('input',()=>{ hero&&hero.bump(0.28); statusT.textContent='Mendengarkan…'; });
+  ta.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); $('#promptForm').requestSubmit(); } });
+  document.querySelectorAll('[data-chip]').forEach(c=>c.addEventListener('click',()=>{ ta.value=c.dataset.chip; ta.dispatchEvent(new Event('input')); ta.focus(); }));
+  const ANSWERS={
+    tanya:'Minggu ini produk terlaris Anda adalah Kopi Susu Gula Aren (412 cup, naik 18%), disusul Es Teh Leci (276 cup). Stok gula aren tinggal 8 liter — cukup untuk ±2 hari. Mau saya pesankan ulang ke pemasok?',
+    tulis:'“Lebaran makin hangat bareng Kopi Susu Gula Aren! ☕ Beli 2 gratis 1 khusus 25–30 Maret. Pesan lewat WhatsApp, kami antar sampai depan rumah.” Mau versi bahasa Jawa juga?',
+    hitung:'Harga jual Rp 18.000 − modal Rp 11.500 = laba Rp 6.500 per cup. Margin Anda 36,1%. Dengan 412 cup minggu ini, laba kotor ≈ Rp 2.678.000.'
+  };
+  let streaming=false;
+  $('#promptForm').addEventListener('submit',e=>{ e.preventDefault(); if(streaming) return;
+    const q=ta.value.trim(); const box=$('#answer');
+    if(!q){ ta.setAttribute('aria-invalid','true'); statusT.textContent='Tulis pertanyaan dulu, ya'; hero&&hero.bump(0.2); ta.focus(); return; } ta.removeAttribute('aria-invalid');
+    streaming=true; box.classList.remove('hidden'); box.textContent=''; box.classList.add('caret'); statusT.textContent='Berpikir…'; hero&&hero.think(true);
+    const text=ANSWERS[mode]; let i=0;
+    const done=()=>{ box.textContent=text; box.classList.remove('caret'); hero&&hero.think(false); hero&&hero.bump(0.8); statusT.textContent='Selesai · 1,2 detik'; streaming=false; };
+    if(reduced){ setTimeout(done,300); return; }
+    setTimeout(function step(){ i+=3; box.textContent=text.slice(0,i); if(i%9===0) hero&&hero.bump(0.08); if(i<text.length) setTimeout(step,22); else done(); },650);
+  });
+
+  /* --- Fitur: chat demo --- */
+  const chat=$('#chatDemo');
+  const REPLY={'Ambil 2 ya kak, bayar transfer':'Siap, Kak! 2 liter kopi susu = Rp 170.000 + ongkir Rp 12.000 = Rp 182.000. Ini invoice dan nomor rekeningnya ya. Pesanan sudah saya catat 🙏','Ada diskon kalau beli 5?':'Ada, Kak! Beli 5 liter dapat potongan 10%, jadi Rp 382.500 saja. Mau sekalian saya buatkan pesanannya?'};
+  document.querySelectorAll('[data-reply]').forEach(b=>b.addEventListener('click',()=>{
+    const q=document.createElement('div'); q.className='max-w-[80%] self-start rounded-2xl rounded-bl-sm bg-secondary px-3 py-2'; q.textContent=b.dataset.reply; chat.appendChild(q);
+    const a=document.createElement('div'); a.className='max-w-[85%] self-end rounded-2xl rounded-br-sm bg-primary px-3 py-2 text-primary-foreground'; a.textContent='Nalar sedang mengetik…'; chat.appendChild(a);
+    while(chat.children.length>4) chat.firstElementChild.remove();
+    setTimeout(()=>{ a.textContent=REPLY[b.dataset.reply]; },reduced?0:700); }));
+  /* --- Bahasa --- */
+  const LANG={id:'“Selamat pagi, Kak! Pesanan rotinya sudah siap diambil.”',jv:'“Sugeng enjang, Mas/Mbak! Pesenan rotine sampun cumawis, saged dipundhut.”',su:'“Wilujeng énjing, Akang/Téteh! Pesenan rotina tos sayogi, mangga dicandak.”'};
+  setupTabs(document.querySelector('[data-tabs=lang]'),v=>{ $('#langOut').textContent=LANG[v]; });
+  /* --- Grafik laporan --- */
+  const SERIES={minggu:[42,51,48,60,58,72,80],bulan:[30,38,35,44,52,49,58,63,61,70,76,88]};
+  const drawChart=k=>{ const d=SERIES[k], n=d.length, W=300, H=90, mx=Math.max(...d)*1.08; const pts=d.map((v,i)=>[i/(n-1)*W,H-v/mx*H]);
+    let path=`M${pts[0][0]},${pts[0][1]}`; for(let i=1;i<n;i++){ const [x0,y0]=pts[i-1],[x1,y1]=pts[i]; const cx=(x0+x1)/2; path+=` C${cx},${y0} ${cx},${y1} ${x1},${y1}`; }
+    $('#linePath').setAttribute('d',path); $('#areaPath').setAttribute('d',path+` L${W},${H} L0,${H} Z`);
+    $('#omzet').textContent=k==='minggu'?'Rp 12,4 jt':'Rp 48,9 jt'; $('#omzetDelta').textContent=k==='minggu'?'+18,2%':'+11,6%'; };
+  setupTabs(document.querySelector('[data-tabs=period]'),drawChart); drawChart('minggu');
+  setupSwitch($('#restockSw'),on=>toast(on?'Pesan ulang otomatis aktif':'Pesan ulang otomatis nonaktif',on?'Nalar akan menghubungi pemasok saat stok di bawah 20%.':'Anda akan menerima pengingat saja.'));
+
+  /* --- Studio --- */
+  const setShapeTab=setupTabs(document.querySelector('[data-tabs=shape]'),v=>{ studio&&studio.setShape(v); $('#stBadge1').textContent='Bentuk: '+v[0].toUpperCase()+v.slice(1); });
+  const energy=$('#energy'), density=$('#density'), pal=$('#palette');
+  const paintRange=r=>r.style.setProperty('--p',((r.value-r.min)/(r.max-r.min)*100)+'%');
+  const onEnergy=()=>{ paintRange(energy); $('#energyVal').textContent=energy.value+'%'; $('#stBadge2').textContent='Energi '+energy.value+'%'; studio&&studio.setEnergy(energy.value/100); };
+  const onDensity=()=>{ paintRange(density); $('#densityVal').textContent=density.value+'%'; studio&&studio.setDensity(density.value/100); };
+  energy.addEventListener('input',onEnergy); density.addEventListener('input',onDensity); onEnergy(); onDensity();
+  pal.addEventListener('change',()=>studio&&studio.setPalette(pal.value));
+  const setFollow=setupSwitch($('#swFollow'),on=>{ if(studio){ studio.follow=on; studio.invalidate(); } });
+  const setRing=setupSwitch($('#swRing'),on=>studio&&studio.setRings(on));
+  $('#pulseBtn').addEventListener('click',()=>studio&&studio.bump(1.2));
+  $('#randomBtn').addEventListener('click',()=>{ const sh=['bola','gumpal','kubus'][Math.random()*3|0]; setShapeTab(sh); energy.value=(Math.random()*90+10)|0; density.value=(Math.random()*70+30)|0; pal.value=['ungu','senja','hutan','mono'][Math.random()*4|0]; onEnergy(); onDensity(); studio&&studio.setPalette(pal.value); studio&&studio.bump(0.8); });
+  $('#resetBtn').addEventListener('click',()=>{ setShapeTab('bola'); energy.value=40; density.value=80; pal.value='ungu'; onEnergy(); onDensity(); studio&&studio.setPalette('ungu'); setFollow(true); setRing(true); });
+
+  /* --- Cerita scroll --- */
+  const STEPS=[
+    ['07.00','Pesanan masuk lewat WhatsApp','Selagi Anda membuka toko, Nalar sudah membalas 12 chat, menjawab ongkir, dan mencatat pesanan ke daftar.'],
+    ['10.00','Cek stok sebelum kehabisan','Nalar mencocokkan pesanan dengan stok di rak. Tiga barang menipis — pemasok langsung dikabari.'],
+    ['13.00','Invoice terkirim otomatis','Setiap pesanan yang disetujui jadi invoice lengkap dengan QRIS dan nomor rekening, dikirim ke pelanggan.'],
+    ['16.00','Pengiriman diatur rapi','Nalar memilih kurir termurah per alamat, mencetak resi, dan mengabari pelanggan saat paket jalan.'],
+    ['21.00','Laporan harian siap dibaca','Omzet, laba, dan produk terlaris hari ini dirangkum singkat. Anda tinggal istirahat.']
+  ];
+  const sec=$('#sehari'), sticky=sec.firstElementChild; let last=-1;
+  const onScroll=()=>{ const r=sec.getBoundingClientRect(); const p=THREE.MathUtils.clamp(-r.top/Math.max(1,r.height-sticky.offsetHeight),0,1);
+    iso&&iso.setProgress(p);
+    const n=STEPS.length-1, s=Math.min(Math.floor(p*n),n-1), local=p*n-s, step=p>=1?n:(local<0.6?s:s+1);
+    $('#isoBar').style.width=(p*100).toFixed(1)+'%'; $('#isoBarWrap').setAttribute('aria-valuenow',Math.round(p*100));
+    if(step!==last){ last=step; const [tm,ti,tx]=STEPS[step]; $('#isoTime').textContent=`${tm} · Langkah ${step+1} dari ${STEPS.length}`; $('#isoTitle').textContent=ti; $('#isoText').textContent=tx;
+      document.querySelectorAll('#isoSteps li').forEach((li,i)=>{ li.classList.toggle('bg-accent',i===step); li.classList.toggle('text-muted-foreground',i!==step); const b=li.firstElementChild; b.classList.toggle('bg-primary',i<=step); b.classList.toggle('text-primary-foreground',i<=step); b.classList.toggle('border-transparent',i<=step); }); } };
+  addEventListener('scroll',onScroll,{passive:true}); addEventListener('resize',onScroll); onScroll();
+
+  /* --- Harga --- */
+  setupSwitch($('#billSw'),on=>{ document.querySelectorAll('#harga [data-m]').forEach(el=>el.textContent=on?el.dataset.y:el.dataset.m); $('#billM').classList.toggle('text-muted-foreground',on); $('#billY').classList.toggle('text-muted-foreground',!on); $('#billY').classList.toggle('font-medium',on); });
+
+  /* --- Statistik --- */
+  const io=new IntersectionObserver(es=>es.forEach(en=>{ if(!en.isIntersecting) return; io.unobserve(en.target); const el=en.target, to=+el.dataset.count, suf=el.dataset.suffix||'';
+    if(reduced){ el.textContent=fmt(to)+suf; return; } const t0=performance.now(); const f=t=>{ const k=Math.min((t-t0)/1300,1); el.textContent=fmt(Math.round(to*(1-Math.pow(1-k,3))))+suf; if(k<1) requestAnimationFrame(f); }; requestAnimationFrame(f); }),{threshold:0.5});
+  document.querySelectorAll('[data-count]').forEach(el=>io.observe(el));
+
+  /* --- Akordeon --- */
+  document.querySelectorAll('.acc-trigger').forEach((b,i)=>{ const item=b.closest('[data-state]'), panel=item.querySelector('.acc-panel'); const id='acc-'+i; panel.id=id; b.setAttribute('aria-controls',id); b.id=id+'-t'; panel.setAttribute('aria-labelledby',b.id);
+    b.addEventListener('click',()=>{ const open=item.dataset.state!=='open'; item.dataset.state=open?'open':'closed'; b.setAttribute('aria-expanded',open); }); });
+
+  /* --- Dialog & formulir --- */
+  const dlg=$('#demoDlg');
+  document.querySelectorAll('[data-open-dialog]').forEach(b=>b.addEventListener('click',()=>{ dlg.showModal(); }));
+  document.querySelectorAll('[data-close-dialog]').forEach(b=>b.addEventListener('click',()=>dlg.close()));
+  dlg.addEventListener('click',e=>{ if(e.target===dlg) dlg.close(); });
+  $('#dlgForm').addEventListener('submit',e=>{ const em=$('#dEmail'); if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em.value)){ e.preventDefault(); em.setAttribute('aria-invalid','true'); em.focus(); return; } em.removeAttribute('aria-invalid'); toast('Demo dijadwalkan',`${$('#dSlot').value} — undangan dikirim ke ${em.value}.`); });
+  $('#signupForm').addEventListener('submit',e=>{ e.preventDefault(); const n=$('#fNama'), wa=$('#fWa'); let ok=true;
+    if(!n.value.trim()){ n.setAttribute('aria-invalid','true'); ok=false; } else n.removeAttribute('aria-invalid');
+    const digits=wa.value.replace(/\D/g,''); if(digits.length<10||digits.length>13){ wa.setAttribute('aria-invalid','true'); $('#fWaErr').classList.remove('hidden'); ok=false; } else { wa.removeAttribute('aria-invalid'); $('#fWaErr').classList.add('hidden'); }
+    if(!ok){ toast('Periksa kembali formulir','Nama dan nomor WhatsApp wajib diisi.','error'); return; }
+    toast('Tautan aktivasi terkirim',`Cek WhatsApp ${wa.value}, ${n.value.trim().split(' ')[0]}. Selamat datang di Nalar!`); e.target.reset(); });
+
+  /* --- Navigasi & tema --- */
+  const mb=$('#menuBtn'), mm=$('#mobileMenu');
+  mb.addEventListener('click',()=>{ const o=mm.classList.toggle('hidden')===false; mb.setAttribute('aria-expanded',o); mb.setAttribute('aria-label',o?'Tutup menu':'Buka menu'); });
+  mm.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{ mm.classList.add('hidden'); mb.setAttribute('aria-expanded','false'); }));
+  $('#themeBtn').addEventListener('click',()=>{ const d=root.classList.toggle('dark'); try{ localStorage.setItem('nalar-theme',d?'dark':'light'); }catch(e){} [hero,studio,iso].forEach(s=>s&&s.applyTheme()); });
+}
+main();
+</script>
+</body>
+</html>

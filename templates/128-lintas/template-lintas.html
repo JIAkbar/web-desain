@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="id" class="cds-theme-zone-g100">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lintas — Lacak Setiap Kiriman di Seluruh Nusantara</title>
+<meta name="description" content="Lintas: platform logistik dan pelacakan kiriman real-time untuk Indonesia. Template landing page dengan IBM Carbon Design System dan three.js.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script>
+  // Carbon tabs/content-switcher memanggil focus() saat inisialisasi sehingga halaman melompat; tahan sampai halaman siap
+  (function(){var of=HTMLElement.prototype.focus,on=true,re=/^CDS-(TAB|CONTENT-SWITCHER-ITEM)$/;
+    HTMLElement.prototype.focus=function(o){ if(on){ var h=this.getRootNode&&this.getRootNode().host; if(re.test(this.tagName)||(h&&re.test(h.tagName))) return; } return of.call(this,o); };
+    var off=function(){on=false;}; addEventListener('load',function(){setTimeout(off,800);}); addEventListener('pointerdown',off,{once:true,capture:true}); addEventListener('keydown',off,{once:true,capture:true});})();
+  // Tema awal (g100 gelap / white terang) sebelum render, supaya tidak berkedip
+  (function(){try{var t=localStorage.getItem('lintas-theme');if(t==='white'){document.documentElement.classList.remove('cds-theme-zone-g100');document.documentElement.classList.add('cds-theme-zone-white');}}catch(e){}})();
+</script>
+<style>
+/* ===== Carbon theme tokens (white + g100), dari @carbon/web-components themes.css, Apache-2.0 ===== */
+.cds-theme-zone-white{--cds-ai-aura-end: rgba(255, 255, 255, 0);--cds-ai-aura-start: rgba(69, 137, 255, 0.1);--cds-ai-border-end: #d0e2ff;--cds-ai-border-start: #78a9ff;--cds-ai-border-strong: #4589ff;--cds-ai-drop-shadow: rgba(15, 98, 254, 0.32);--cds-ai-gradient-end: rgba(255, 255, 255, 0);--cds-ai-gradient-start-01: rgba(242, 244, 248, 0.5);--cds-ai-gradient-start-02: rgba(237, 245, 255, 0.5);--cds-ai-inner-shadow: rgba(69, 137, 255, 0.2);--cds-background: #ffffff;--cds-background-active: rgba(141, 141, 141, 0.5);--cds-background-brand: #0f62fe;--cds-background-hover: rgba(141, 141, 141, 0.12);--cds-background-inverse: #393939;--cds-background-inverse-hover: #474747;--cds-background-selected: rgba(141, 141, 141, 0.2);--cds-background-selected-hover: rgba(141, 141, 141, 0.32);--cds-border-disabled: #c6c6c6;--cds-border-interactive: #0f62fe;--cds-border-inverse: #161616;--cds-border-strong-01: #8d8d8d;--cds-border-strong-02: #8d8d8d;--cds-border-strong-03: #8d8d8d;--cds-border-subtle-00: #e0e0e0;--cds-border-subtle-01: #c6c6c6;--cds-border-subtle-02: #e0e0e0;--cds-border-subtle-03: #c6c6c6;--cds-border-subtle-selected-01: #c6c6c6;--cds-border-subtle-selected-02: #c6c6c6;--cds-border-subtle-selected-03: #c6c6c6;--cds-border-tile-01: #c6c6c6;--cds-border-tile-02: #a8a8a8;--cds-border-tile-03: #c6c6c6;--cds-field-01: #f4f4f4;--cds-field-02: #ffffff;--cds-field-03: #f4f4f4;--cds-field-hover-01: #e8e8e8;--cds-field-hover-02: #e8e8e8;--cds-field-hover-03: #e8e8e8;--cds-focus: #0f62fe;--cds-focus-inset: #ffffff;--cds-focus-inverse: #ffffff;--cds-highlight: #d0e2ff;--cds-icon-disabled: rgba(22, 22, 22, 0.25);--cds-icon-interactive: #0f62fe;--cds-icon-inverse: #ffffff;--cds-icon-on-color: #ffffff;--cds-icon-on-color-disabled: #8d8d8d;--cds-icon-primary: #161616;--cds-icon-secondary: #525252;--cds-interactive: #0f62fe;--cds-layer-01: #f4f4f4;--cds-layer-02: #ffffff;--cds-layer-03: #f4f4f4;--cds-layer-accent-01: #e0e0e0;--cds-layer-accent-02: #e0e0e0;--cds-layer-accent-03: #e0e0e0;--cds-layer-accent-active-01: #a8a8a8;--cds-layer-accent-active-02: #a8a8a8;--cds-layer-accent-active-03: #a8a8a8;--cds-layer-accent-hover-01: #d1d1d1;--cds-layer-accent-hover-02: #d1d1d1;--cds-layer-accent-hover-03: #d1d1d1;--cds-layer-active-01: #c6c6c6;--cds-layer-active-02: #c6c6c6;--cds-layer-active-03: #c6c6c6;--cds-layer-hover-01: #e8e8e8;--cds-layer-hover-02: #e8e8e8;--cds-layer-hover-03: #e8e8e8;--cds-layer-selected-01: #e0e0e0;--cds-layer-selected-02: #e0e0e0;--cds-layer-selected-03: #e0e0e0;--cds-layer-selected-disabled: #8d8d8d;--cds-layer-selected-hover-01: #d1d1d1;--cds-layer-selected-hover-02: #d1d1d1;--cds-layer-selected-hover-03: #d1d1d1;--cds-layer-selected-inverse: #161616;--cds-link-inverse: #78a9ff;--cds-link-inverse-active: #f4f4f4;--cds-link-inverse-hover: #a6c8ff;--cds-link-primary: #0f62fe;--cds-link-primary-hover: #0043ce;--cds-link-secondary: #0043ce;--cds-link-visited: #8a3ffc;--cds-overlay: rgba(22, 22, 22, 0.5);--cds-shadow: rgba(0, 0, 0, 0.3);--cds-skeleton-background: #e8e8e8;--cds-skeleton-element: #c6c6c6;--cds-slug-background: #525252;--cds-slug-background-hover: #6f6f6f;--cds-slug-callout-aura-end: rgba(255, 255, 255, 0);--cds-slug-callout-aura-end-hover-01: rgba(255, 255, 255, 0);--cds-slug-callout-aura-end-hover-02: rgba(255, 255, 255, 0);--cds-slug-callout-aura-end-selected: rgba(255, 255, 255, 0);--cds-slug-callout-aura-start: rgba(69, 137, 255, 0.1);--cds-slug-callout-aura-start-hover-01: rgba(255, 255, 255, 0.5);--cds-slug-callout-aura-start-hover-02: rgba(208, 226, 255, 0.5);--cds-slug-callout-aura-start-selected: rgba(237, 245, 255, 0.6);--cds-slug-callout-caret-bottom: #d0e2ff;--cds-slug-callout-caret-bottom-background: #d5e5ff;--cds-slug-callout-caret-bottom-background-actions: #dae5f8;--cds-slug-callout-caret-center: #a7c7ff;--cds-slug-callout-gradient-bottom: rgba(224, 224, 224, 0.85);--cds-slug-callout-gradient-bottom-hover: rgba(209, 209, 209, 0.55);--cds-slug-callout-gradient-bottom-selected: rgba(209, 209, 209, 0.85);--cds-slug-callout-gradient-top: rgba(244, 244, 244, 0.85);--cds-slug-callout-gradient-top-hover: rgba(224, 224, 224, 0.55);--cds-slug-callout-gradient-top-selected: rgba(224, 224, 224, 0.85);--cds-slug-callout-shadow-outer-01: rgba(0, 67, 206, 0.25);--cds-slug-callout-shadow-outer-02: rgba(0, 0, 0, 0.1);--cds-slug-gradient: #161616 linear-gradient(135deg, #a8a8a8 0%, rgba(255, 255, 255, 0) 100%);--cds-slug-gradient-hover: #161616 linear-gradient(135deg, #d1d1d1 0%, rgba(255, 255, 255, 0) 100%);--cds-slug-hollow-hover: #474747;--cds-support-caution-major: #ff832b;--cds-support-caution-minor: #f1c21b;--cds-support-caution-undefined: #8a3ffc;--cds-support-error: #da1e28;--cds-support-error-inverse: #fa4d56;--cds-support-info: #0043ce;--cds-support-info-inverse: #4589ff;--cds-support-success: #24a148;--cds-support-success-inverse: #42be65;--cds-support-warning: #f1c21b;--cds-support-warning-inverse: #f1c21b;--cds-text-disabled: rgba(22, 22, 22, 0.25);--cds-text-error: #da1e28;--cds-text-helper: #6f6f6f;--cds-text-inverse: #ffffff;--cds-text-on-color: #ffffff;--cds-text-on-color-disabled: #8d8d8d;--cds-text-placeholder: rgba(22, 22, 22, 0.4);--cds-text-primary: #161616;--cds-text-secondary: #525252;--cds-toggle-off: #8d8d8d;--cds-spacing-01: 0.125rem;--cds-spacing-02: 0.25rem;--cds-spacing-03: 0.5rem;--cds-spacing-04: 0.75rem;--cds-spacing-05: 1rem;--cds-spacing-06: 1.5rem;--cds-spacing-07: 2rem;--cds-spacing-08: 2.5rem;--cds-spacing-09: 3rem;--cds-spacing-10: 4rem;--cds-spacing-11: 5rem;--cds-spacing-12: 6rem;--cds-spacing-13: 10rem;--cds-fluid-spacing-01: 0;--cds-fluid-spacing-02: 2vw;--cds-fluid-spacing-03: 5vw;--cds-fluid-spacing-04: 10vw;--cds-caption-01-font-size: 0.75rem;--cds-caption-01-font-weight: 400;--cds-caption-01-line-height: 1.33333;--cds-caption-01-letter-spacing: 0.32px;--cds-caption-02-font-size: 0.875rem;--cds-caption-02-font-weight: 400;--cds-caption-02-line-height: 1.28572;--cds-caption-02-letter-spacing: 0.32px;--cds-label-01-font-size: 0.75rem;--cds-label-01-font-weight: 400;--cds-label-01-line-height: 1.33333;--cds-label-01-letter-spacing: 0.32px;--cds-label-02-font-size: 0.875rem;--cds-label-02-font-weight: 400;--cds-label-02-line-height: 1.28572;--cds-label-02-letter-spacing: 0.16px;--cds-helper-text-01-font-size: 0.75rem;--cds-helper-text-01-line-height: 1.33333;--cds-helper-text-01-letter-spacing: 0.32px;--cds-helper-text-02-font-size: 0.875rem;--cds-helper-text-02-font-weight: 400;--cds-helper-text-02-line-height: 1.28572;--cds-helper-text-02-letter-spacing: 0.16px;--cds-body-short-01-font-size: 0.875rem;--cds-body-short-01-font-weight: 400;--cds-body-short-01-line-height: 1.28572;--cds-body-short-01-letter-spacing: 0.16px;--cds-body-short-02-font-size: 1rem;--cds-body-short-02-font-weight: 400;--cds-body-short-02-line-height: 1.375;--cds-body-short-02-letter-spacing: 0;--cds-body-long-01-font-size: 0.875rem;--cds-body-long-01-font-weight: 400;--cds-body-long-01-line-height: 1.42857;--cds-body-long-01-letter-spacing: 0.16px;--cds-body-long-02-font-size: 1rem;--cds-body-long-02-font-weight: 400;--cds-body-long-02-line-height: 1.5;--cds-body-long-02-letter-spacing: 0;--cds-code-01-font-family: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;--cds-code-01-font-size: 0.75rem;--cds-code-01-font-weight: 400;--cds-code-01-line-height: 1.33333;--cds-code-01-letter-spacing: 0.32px;--cds-code-02-font-family: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;--cds-code-02-font-size: 0.875rem;--cds-code-02-font-weight: 400;--cds-code-02-line-height: 1.42857;--cds-code-02-letter-spacing: 0.32px;--cds-heading-01-font-size: 0.875rem;--cds-heading-01-font-weight: 600;--cds-heading-01-line-height: 1.42857;--cds-heading-01-letter-spacing: 0.16px;--cds-heading-02-font-size: 1rem;--cds-heading-02-font-weight: 600;--cds-heading-02-line-height: 1.5;--cds-heading-02-letter-spacing: 0;--cds-productive-heading-01-font-size: 0.875rem;--cds-productive-heading-01-font-weight: 600;--cds-productive-heading-01-line-height: 1.28572;--cds-productive-heading-01-letter-spacing: 0.16px;--cds-productive-heading-02-font-size: 1rem;--cds-productive-heading-02-font-weight: 600;--cds-productive-heading-02-line-height: 1.375;--cds-productive-heading-02-letter-spacing: 0;--cds-productive-heading-03-font-size: 1.25rem;--cds-productive-heading-03-font-weight: 400;--cds-productive-heading-03-line-height: 1.4;--cds-productive-heading-03-letter-spacing: 0;--cds-productive-heading-04-font-size: 1.75rem;--cds-productive-heading-04-font-weight: 400;--cds-productive-heading-04-line-height: 1.28572;--cds-productive-heading-04-letter-spacing: 0;--cds-productive-heading-05-font-size: 2rem;--cds-productive-heading-05-font-weight: 400;--cds-productive-heading-05-line-height: 1.25;--cds-productive-heading-05-letter-spacing: 0;--cds-productive-heading-06-font-size: 2.625rem;--cds-productive-heading-06-font-weight: 300;--cds-productive-heading-06-line-height: 1.199;--cds-productive-heading-06-letter-spacing: 0;--cds-productive-heading-07-font-size: 3.375rem;--cds-productive-heading-07-font-weight: 300;--cds-productive-heading-07-line-height: 1.19;--cds-productive-heading-07-letter-spacing: 0;--cds-expressive-paragraph-01-font-size: 1.5rem;--cds-expressive-paragraph-01-font-weight: 300;--cds-expressive-paragraph-01-line-height: 1.334;--cds-expressive-paragraph-01-letter-spacing: 0;--cds-expressive-heading-01-font-size: 0.875rem;--cds-expressive-heading-01-font-weight: 600;--cds-expressive-heading-01-line-height: 1.42857;--cds-expressive-heading-01-letter-spacing: 0.16px;--cds-expressive-heading-02-font-size: 1rem;--cds-expressive-heading-02-font-weight: 600;--cds-expressive-heading-02-line-height: 1.5;--cds-expressive-heading-02-letter-spacing: 0;--cds-expressive-heading-03-font-size: 1.25rem;--cds-expressive-heading-03-font-weight: 400;--cds-expressive-heading-03-line-height: 1.4;--cds-expressive-heading-03-letter-spacing: 0;--cds-expressive-heading-04-font-size: 1.75rem;--cds-expressive-heading-04-font-weight: 400;--cds-expressive-heading-04-line-height: 1.28572;--cds-expressive-heading-04-letter-spacing: 0;--cds-expressive-heading-05-font-size: 2rem;--cds-expressive-heading-05-font-weight: 400;--cds-expressive-heading-05-line-height: 1.25;--cds-expressive-heading-05-letter-spacing: 0;--cds-expressive-heading-06-font-size: 2rem;--cds-expressive-heading-06-font-weight: 600;--cds-expressive-heading-06-line-height: 1.25;--cds-expressive-heading-06-letter-spacing: 0;--cds-quotation-01-font-family: 'IBM Plex Sans', system-ui, sans-serif;--cds-quotation-01-font-size: 1.25rem;--cds-quotation-01-font-weight: 400;--cds-quotation-01-line-height: 1.3;--cds-quotation-01-letter-spacing: 0;--cds-quotation-02-font-family: 'IBM Plex Sans', system-ui, sans-serif;--cds-quotation-02-font-size: 2rem;--cds-quotation-02-font-weight: 300;--cds-quotation-02-line-height: 1.25;--cds-quotation-02-letter-spacing: 0;--cds-display-01-font-size: 2.625rem;--cds-display-01-font-weight: 300;--cds-display-01-line-height: 1.19;--cds-display-01-letter-spacing: 0;--cds-display-02-font-size: 2.625rem;--cds-display-02-font-weight: 600;--cds-display-02-line-height: 1.19;--cds-display-02-letter-spacing: 0;--cds-display-03-font-size: 2.625rem;--cds-display-03-font-weight: 300;--cds-display-03-line-height: 1.19;--cds-display-03-letter-spacing: 0;--cds-display-04-font-size: 2.625rem;--cds-display-04-font-weight: 300;--cds-display-04-line-height: 1.19;--cds-display-04-letter-spacing: 0;--cds-legal-01-font-size: 0.75rem;--cds-legal-01-font-weight: 400;--cds-legal-01-line-height: 1.33333;--cds-legal-01-letter-spacing: 0.32px;--cds-legal-02-font-size: 0.875rem;--cds-legal-02-font-weight: 400;--cds-legal-02-line-height: 1.28572;--cds-legal-02-letter-spacing: 0.16px;--cds-body-compact-01-font-size: 0.875rem;--cds-body-compact-01-font-weight: 400;--cds-body-compact-01-line-height: 1.28572;--cds-body-compact-01-letter-spacing: 0.16px;--cds-body-compact-02-font-size: 1rem;--cds-body-compact-02-font-weight: 400;--cds-body-compact-02-line-height: 1.375;--cds-body-compact-02-letter-spacing: 0;--cds-heading-compact-01-font-size: 0.875rem;--cds-heading-compact-01-font-weight: 600;--cds-heading-compact-01-line-height: 1.28572;--cds-heading-compact-01-letter-spacing: 0.16px;--cds-heading-compact-02-font-size: 1rem;--cds-heading-compact-02-font-weight: 600;--cds-heading-compact-02-line-height: 1.375;--cds-heading-compact-02-letter-spacing: 0;--cds-body-01-font-size: 0.875rem;--cds-body-01-font-weight: 400;--cds-body-01-line-height: 1.42857;--cds-body-01-letter-spacing: 0.16px;--cds-body-02-font-size: 1rem;--cds-body-02-font-weight: 400;--cds-body-02-line-height: 1.5;--cds-body-02-letter-spacing: 0;--cds-heading-03-font-size: 1.25rem;--cds-heading-03-font-weight: 400;--cds-heading-03-line-height: 1.4;--cds-heading-03-letter-spacing: 0;--cds-heading-04-font-size: 1.75rem;--cds-heading-04-font-weight: 400;--cds-heading-04-line-height: 1.28572;--cds-heading-04-letter-spacing: 0;--cds-heading-05-font-size: 2rem;--cds-heading-05-font-weight: 400;--cds-heading-05-line-height: 1.25;--cds-heading-05-letter-spacing: 0;--cds-heading-06-font-size: 2.625rem;--cds-heading-06-font-weight: 300;--cds-heading-06-line-height: 1.199;--cds-heading-06-letter-spacing: 0;--cds-heading-07-font-size: 3.375rem;--cds-heading-07-font-weight: 300;--cds-heading-07-line-height: 1.19;--cds-heading-07-letter-spacing: 0;--cds-fluid-heading-03-font-size: 1.25rem;--cds-fluid-heading-03-font-weight: 400;--cds-fluid-heading-03-line-height: 1.4;--cds-fluid-heading-03-letter-spacing: 0;--cds-fluid-heading-04-font-size: 1.75rem;--cds-fluid-heading-04-font-weight: 400;--cds-fluid-heading-04-line-height: 1.28572;--cds-fluid-heading-04-letter-spacing: 0;--cds-fluid-heading-05-font-size: 2rem;--cds-fluid-heading-05-font-weight: 400;--cds-fluid-heading-05-line-height: 1.25;--cds-fluid-heading-05-letter-spacing: 0;--cds-fluid-heading-06-font-size: 2rem;--cds-fluid-heading-06-font-weight: 600;--cds-fluid-heading-06-line-height: 1.25;--cds-fluid-heading-06-letter-spacing: 0;--cds-fluid-paragraph-01-font-size: 1.5rem;--cds-fluid-paragraph-01-font-weight: 300;--cds-fluid-paragraph-01-line-height: 1.334;--cds-fluid-paragraph-01-letter-spacing: 0;--cds-fluid-quotation-01-font-family: 'IBM Plex Sans', system-ui, sans-serif;--cds-fluid-quotation-01-font-size: 1.25rem;--cds-fluid-quotation-01-font-weight: 400;--cds-fluid-quotation-01-line-height: 1.3;--cds-fluid-quotation-01-letter-spacing: 0;--cds-fluid-quotation-02-font-family: 'IBM Plex Sans', system-ui, sans-serif;--cds-fluid-quotation-02-font-size: 2rem;--cds-fluid-quotation-02-font-weight: 300;--cds-fluid-quotation-02-line-height: 1.25;--cds-fluid-quotation-02-letter-spacing: 0;--cds-fluid-display-01-font-size: 2.625rem;--cds-fluid-display-01-font-weight: 300;--cds-fluid-display-01-line-height: 1.19;--cds-fluid-display-01-letter-spacing: 0;--cds-fluid-display-02-font-size: 2.625rem;--cds-fluid-display-02-font-weight: 600;--cds-fluid-display-02-line-height: 1.19;--cds-fluid-display-02-letter-spacing: 0;--cds-fluid-display-03-font-size: 2.625rem;--cds-fluid-display-03-font-weight: 300;--cds-fluid-display-03-line-height: 1.19;--cds-fluid-display-03-letter-spacing: 0;--cds-fluid-display-04-font-size: 2.625rem;--cds-fluid-display-04-font-weight: 300;--cds-fluid-display-04-line-height: 1.19;--cds-fluid-display-04-letter-spacing: 0;--cds-button-separator: #e0e0e0;--cds-button-primary: #0f62fe;--cds-button-secondary: #393939;--cds-button-tertiary: #0f62fe;--cds-button-danger-primary: #da1e28;--cds-button-danger-secondary: #da1e28;--cds-button-danger-active: #750e13;--cds-button-primary-active: #002d9c;--cds-button-secondary-active: #6f6f6f;--cds-button-tertiary-active: #002d9c;--cds-button-danger-hover: #b81921;--cds-button-primary-hover: #0050e6;--cds-button-secondary-hover: #474747;--cds-button-tertiary-hover: #0050e6;--cds-button-disabled: #c6c6c6;--cds-tag-background-red: #ffd7d9;--cds-tag-color-red: #750e13;--cds-tag-hover-red: #ffc2c5;--cds-tag-background-magenta: #ffd6e8;--cds-tag-color-magenta: #740937;--cds-tag-hover-magenta: #ffbdda;--cds-tag-background-purple: #e8daff;--cds-tag-color-purple: #491d8b;--cds-tag-hover-purple: #dcc7ff;--cds-tag-background-blue: #d0e2ff;--cds-tag-color-blue: #002d9c;--cds-tag-hover-blue: #b8d3ff;--cds-tag-background-cyan: #bae6ff;--cds-tag-color-cyan: #003a6d;--cds-tag-hover-cyan: #99daff;--cds-tag-background-teal: #9ef0f0;--cds-tag-color-teal: #004144;--cds-tag-hover-teal: #57e5e5;--cds-tag-background-green: #a7f0ba;--cds-tag-color-green: #044317;--cds-tag-hover-green: #74e792;--cds-tag-background-gray: #e0e0e0;--cds-tag-color-gray: #393939;--cds-tag-hover-gray: #d1d1d1;--cds-tag-background-cool-gray: #dde1e6;--cds-tag-color-cool-gray: #343a3f;--cds-tag-hover-cool-gray: #cdd3da;--cds-tag-background-warm-gray: #e5e0df;--cds-tag-color-warm-gray: #3c3838;--cds-tag-hover-warm-gray: #d8d0cf;--cds-notification-background-error: #fff1f1;--cds-notification-background-success: #defbe6;--cds-notification-background-info: #edf5ff;--cds-notification-background-warning: #fdf6dd;--cds-notification-action-hover: #ffffff;--cds-notification-action-tertiary-inverse: #ffffff;--cds-notification-action-tertiary-inverse-active: #c6c6c6;--cds-notification-action-tertiary-inverse-hover: #f4f4f4;--cds-notification-action-tertiary-inverse-text: #161616;--cds-notification-action-tertiary-inverse-text-on-color-disabled: rgba(255, 255, 255, 0.25);--cds-layer:var(--cds-layer-01, #f4f4f4);--cds-layer-active:var(--cds-layer-active-01, #c6c6c6);--cds-layer-hover:var(--cds-layer-hover-01, #e8e8e8);--cds-layer-selected:var(--cds-layer-selected-01, #e0e0e0);--cds-layer-selected-hover:var(--cds-layer-selected-hover-01, #d1d1d1);--cds-layer-accent:var(--cds-layer-accent-01, #e0e0e0);--cds-layer-accent-hover:var(--cds-layer-accent-hover-01, #d1d1d1);--cds-layer-accent-active:var(--cds-layer-accent-active-01, #a8a8a8);--cds-field:var(--cds-field-01, #f4f4f4);--cds-field-hover:var(--cds-field-hover-01, #e8e8e8);--cds-border-subtle:var(--cds-border-subtle-00, #e0e0e0);--cds-border-subtle-selected:var(--cds-border-subtle-selected-01, #c6c6c6);--cds-border-strong:var(--cds-border-strong-01, #8d8d8d);--cds-border-tile:var(--cds-border-tile-01, #c6c6c6)}
+.cds-theme-zone-g100{--cds-ai-aura-end: rgba(0, 0, 0, 0);--cds-ai-aura-start: rgba(69, 137, 255, 0.1);--cds-ai-border-end: rgba(166, 200, 255, 0.24);--cds-ai-border-start: #4589ff;--cds-ai-border-strong: #78a9ff;--cds-ai-drop-shadow: rgba(15, 98, 254, 0.32);--cds-ai-gradient-end: rgba(38, 38, 38, 0);--cds-ai-gradient-start-01: rgba(208, 226, 255, 0.2);--cds-ai-gradient-start-02: transparent;--cds-ai-inner-shadow: rgba(69, 137, 255, 0.2);--cds-background: #161616;--cds-background-active: rgba(141, 141, 141, 0.4);--cds-background-brand: #0f62fe;--cds-background-hover: rgba(141, 141, 141, 0.16);--cds-background-inverse: #f4f4f4;--cds-background-inverse-hover: #e8e8e8;--cds-background-selected: rgba(141, 141, 141, 0.24);--cds-background-selected-hover: rgba(141, 141, 141, 0.32);--cds-border-disabled: rgba(141, 141, 141, 0.5);--cds-border-interactive: #4589ff;--cds-border-inverse: #f4f4f4;--cds-border-strong-01: #6f6f6f;--cds-border-strong-02: #8d8d8d;--cds-border-strong-03: #a8a8a8;--cds-border-subtle-00: #393939;--cds-border-subtle-01: #525252;--cds-border-subtle-02: #6f6f6f;--cds-border-subtle-03: #6f6f6f;--cds-border-subtle-selected-01: #6f6f6f;--cds-border-subtle-selected-02: #8d8d8d;--cds-border-subtle-selected-03: #8d8d8d;--cds-border-tile-01: #525252;--cds-border-tile-02: #6f6f6f;--cds-border-tile-03: #8d8d8d;--cds-field-01: #262626;--cds-field-02: #393939;--cds-field-03: #525252;--cds-field-hover-01: #333333;--cds-field-hover-02: #474747;--cds-field-hover-03: #636363;--cds-focus: #ffffff;--cds-focus-inset: #161616;--cds-focus-inverse: #0f62fe;--cds-highlight: #002d9c;--cds-icon-disabled: rgba(244, 244, 244, 0.25);--cds-icon-interactive: #ffffff;--cds-icon-inverse: #161616;--cds-icon-on-color: #ffffff;--cds-icon-on-color-disabled: rgba(255, 255, 255, 0.25);--cds-icon-primary: #f4f4f4;--cds-icon-secondary: #c6c6c6;--cds-interactive: #4589ff;--cds-layer-01: #262626;--cds-layer-02: #393939;--cds-layer-03: #525252;--cds-layer-accent-01: #393939;--cds-layer-accent-02: #525252;--cds-layer-accent-03: #6f6f6f;--cds-layer-accent-active-01: #6f6f6f;--cds-layer-accent-active-02: #8d8d8d;--cds-layer-accent-active-03: #393939;--cds-layer-accent-hover-01: #474747;--cds-layer-accent-hover-02: #636363;--cds-layer-accent-hover-03: #5e5e5e;--cds-layer-active-01: #525252;--cds-layer-active-02: #6f6f6f;--cds-layer-active-03: #8d8d8d;--cds-layer-hover-01: #333333;--cds-layer-hover-02: #474747;--cds-layer-hover-03: #636363;--cds-layer-selected-01: #393939;--cds-layer-selected-02: #525252;--cds-layer-selected-03: #6f6f6f;--cds-layer-selected-disabled: #a8a8a8;--cds-layer-selected-hover-01: #474747;--cds-layer-selected-hover-02: #636363;--cds-layer-selected-hover-03: #5e5e5e;--cds-layer-selected-inverse: #f4f4f4;--cds-link-inverse: #0f62fe;--cds-link-inverse-active: #161616;--cds-link-inverse-hover: #0043ce;--cds-link-primary: #78a9ff;--cds-link-primary-hover: #a6c8ff;--cds-link-secondary: #a6c8ff;--cds-link-visited: #be95ff;--cds-overlay: rgba(0, 0, 0, 0.65);--cds-shadow: rgba(0, 0, 0, 0.8);--cds-skeleton-background: #292929;--cds-skeleton-element: #393939;--cds-slug-background: #c6c6c6;--cds-slug-background-hover: #e0e0e0;--cds-slug-callout-aura-end: rgba(0, 0, 0, 0);--cds-slug-callout-aura-end-hover-01: rgba(22, 22, 22, 0);--cds-slug-callout-aura-end-hover-02: transparent;--cds-slug-callout-aura-end-selected: rgba(22, 22, 22, 0);--cds-slug-callout-aura-start: rgba(69, 137, 255, 0.1);--cds-slug-callout-aura-start-hover-01: rgba(184, 211, 255, 0.3);--cds-slug-callout-aura-start-hover-02: transparent;--cds-slug-callout-aura-start-selected: rgba(208, 226, 255, 0.2);--cds-slug-callout-caret-bottom: #3d4655;--cds-slug-callout-caret-bottom-background: #213250;--cds-slug-callout-caret-bottom-background-actions: #192436;--cds-slug-callout-caret-center: #3f68af;--cds-slug-callout-gradient-bottom: rgba(38, 38, 38, 0.85);--cds-slug-callout-gradient-bottom-hover: rgba(71, 71, 71, 0.55);--cds-slug-callout-gradient-bottom-selected: rgba(71, 71, 71, 0.85);--cds-slug-callout-gradient-top: rgba(22, 22, 22, 0.85);--cds-slug-callout-gradient-top-hover: rgba(57, 57, 57, 0.55);--cds-slug-callout-gradient-top-selected: rgba(57, 57, 57, 0.85);--cds-slug-callout-shadow-outer-01: rgba(0, 45, 156, 0.25);--cds-slug-callout-shadow-outer-02: rgba(0, 0, 0, 0.65);--cds-slug-gradient: #8d8d8d linear-gradient(135deg, #f4f4f4 0%, rgba(255, 255, 255, 0) 100%);--cds-slug-gradient-hover: #a8a8a8 linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%);--cds-slug-hollow-hover: #b5b5b5;--cds-support-caution-major: #ff832b;--cds-support-caution-minor: #f1c21b;--cds-support-caution-undefined: #a56eff;--cds-support-error: #fa4d56;--cds-support-error-inverse: #da1e28;--cds-support-info: #4589ff;--cds-support-info-inverse: #0043ce;--cds-support-success: #42be65;--cds-support-success-inverse: #24a148;--cds-support-warning: #f1c21b;--cds-support-warning-inverse: #f1c21b;--cds-text-disabled: rgba(244, 244, 244, 0.25);--cds-text-error: #ff8389;--cds-text-helper: #a8a8a8;--cds-text-inverse: #161616;--cds-text-on-color: #ffffff;--cds-text-on-color-disabled: rgba(255, 255, 255, 0.25);--cds-text-placeholder: rgba(244, 244, 244, 0.4);--cds-text-primary: #f4f4f4;--cds-text-secondary: #c6c6c6;--cds-toggle-off: #6f6f6f;--cds-spacing-01: 0.125rem;--cds-spacing-02: 0.25rem;--cds-spacing-03: 0.5rem;--cds-spacing-04: 0.75rem;--cds-spacing-05: 1rem;--cds-spacing-06: 1.5rem;--cds-spacing-07: 2rem;--cds-spacing-08: 2.5rem;--cds-spacing-09: 3rem;--cds-spacing-10: 4rem;--cds-spacing-11: 5rem;--cds-spacing-12: 6rem;--cds-spacing-13: 10rem;--cds-fluid-spacing-01: 0;--cds-fluid-spacing-02: 2vw;--cds-fluid-spacing-03: 5vw;--cds-fluid-spacing-04: 10vw;--cds-caption-01-font-size: 0.75rem;--cds-caption-01-font-weight: 400;--cds-caption-01-line-height: 1.33333;--cds-caption-01-letter-spacing: 0.32px;--cds-caption-02-font-size: 0.875rem;--cds-caption-02-font-weight: 400;--cds-caption-02-line-height: 1.28572;--cds-caption-02-letter-spacing: 0.32px;--cds-label-01-font-size: 0.75rem;--cds-label-01-font-weight: 400;--cds-label-01-line-height: 1.33333;--cds-label-01-letter-spacing: 0.32px;--cds-label-02-font-size: 0.875rem;--cds-label-02-font-weight: 400;--cds-label-02-line-height: 1.28572;--cds-label-02-letter-spacing: 0.16px;--cds-helper-text-01-font-size: 0.75rem;--cds-helper-text-01-line-height: 1.33333;--cds-helper-text-01-letter-spacing: 0.32px;--cds-helper-text-02-font-size: 0.875rem;--cds-helper-text-02-font-weight: 400;--cds-helper-text-02-line-height: 1.28572;--cds-helper-text-02-letter-spacing: 0.16px;--cds-body-short-01-font-size: 0.875rem;--cds-body-short-01-font-weight: 400;--cds-body-short-01-line-height: 1.28572;--cds-body-short-01-letter-spacing: 0.16px;--cds-body-short-02-font-size: 1rem;--cds-body-short-02-font-weight: 400;--cds-body-short-02-line-height: 1.375;--cds-body-short-02-letter-spacing: 0;--cds-body-long-01-font-size: 0.875rem;--cds-body-long-01-font-weight: 400;--cds-body-long-01-line-height: 1.42857;--cds-body-long-01-letter-spacing: 0.16px;--cds-body-long-02-font-size: 1rem;--cds-body-long-02-font-weight: 400;--cds-body-long-02-line-height: 1.5;--cds-body-long-02-letter-spacing: 0;--cds-code-01-font-family: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;--cds-code-01-font-size: 0.75rem;--cds-code-01-font-weight: 400;--cds-code-01-line-height: 1.33333;--cds-code-01-letter-spacing: 0.32px;--cds-code-02-font-family: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;--cds-code-02-font-size: 0.875rem;--cds-code-02-font-weight: 400;--cds-code-02-line-height: 1.42857;--cds-code-02-letter-spacing: 0.32px;--cds-heading-01-font-size: 0.875rem;--cds-heading-01-font-weight: 600;--cds-heading-01-line-height: 1.42857;--cds-heading-01-letter-spacing: 0.16px;--cds-heading-02-font-size: 1rem;--cds-heading-02-font-weight: 600;--cds-heading-02-line-height: 1.5;--cds-heading-02-letter-spacing: 0;--cds-productive-heading-01-font-size: 0.875rem;--cds-productive-heading-01-font-weight: 600;--cds-productive-heading-01-line-height: 1.28572;--cds-productive-heading-01-letter-spacing: 0.16px;--cds-productive-heading-02-font-size: 1rem;--cds-productive-heading-02-font-weight: 600;--cds-productive-heading-02-line-height: 1.375;--cds-productive-heading-02-letter-spacing: 0;--cds-productive-heading-03-font-size: 1.25rem;--cds-productive-heading-03-font-weight: 400;--cds-productive-heading-03-line-height: 1.4;--cds-productive-heading-03-letter-spacing: 0;--cds-productive-heading-04-font-size: 1.75rem;--cds-productive-heading-04-font-weight: 400;--cds-productive-heading-04-line-height: 1.28572;--cds-productive-heading-04-letter-spacing: 0;--cds-productive-heading-05-font-size: 2rem;--cds-productive-heading-05-font-weight: 400;--cds-productive-heading-05-line-height: 1.25;--cds-productive-heading-05-letter-spacing: 0;--cds-productive-heading-06-font-size: 2.625rem;--cds-productive-heading-06-font-weight: 300;--cds-productive-heading-06-line-height: 1.199;--cds-productive-heading-06-letter-spacing: 0;--cds-productive-heading-07-font-size: 3.375rem;--cds-productive-heading-07-font-weight: 300;--cds-productive-heading-07-line-height: 1.19;--cds-productive-heading-07-letter-spacing: 0;--cds-expressive-paragraph-01-font-size: 1.5rem;--cds-expressive-paragraph-01-font-weight: 300;--cds-expressive-paragraph-01-line-height: 1.334;--cds-expressive-paragraph-01-letter-spacing: 0;--cds-expressive-heading-01-font-size: 0.875rem;--cds-expressive-heading-01-font-weight: 600;--cds-expressive-heading-01-line-height: 1.42857;--cds-expressive-heading-01-letter-spacing: 0.16px;--cds-expressive-heading-02-font-size: 1rem;--cds-expressive-heading-02-font-weight: 600;--cds-expressive-heading-02-line-height: 1.5;--cds-expressive-heading-02-letter-spacing: 0;--cds-expressive-heading-03-font-size: 1.25rem;--cds-expressive-heading-03-font-weight: 400;--cds-expressive-heading-03-line-height: 1.4;--cds-expressive-heading-03-letter-spacing: 0;--cds-expressive-heading-04-font-size: 1.75rem;--cds-expressive-heading-04-font-weight: 400;--cds-expressive-heading-04-line-height: 1.28572;--cds-expressive-heading-04-letter-spacing: 0;--cds-expressive-heading-05-font-size: 2rem;--cds-expressive-heading-05-font-weight: 400;--cds-expressive-heading-05-line-height: 1.25;--cds-expressive-heading-05-letter-spacing: 0;--cds-expressive-heading-06-font-size: 2rem;--cds-expressive-heading-06-font-weight: 600;--cds-expressive-heading-06-line-height: 1.25;--cds-expressive-heading-06-letter-spacing: 0;--cds-quotation-01-font-family: 'IBM Plex Sans', system-ui, sans-serif;--cds-quotation-01-font-size: 1.25rem;--cds-quotation-01-font-weight: 400;--cds-quotation-01-line-height: 1.3;--cds-quotation-01-letter-spacing: 0;--cds-quotation-02-font-family: 'IBM Plex Sans', system-ui, sans-serif;--cds-quotation-02-font-size: 2rem;--cds-quotation-02-font-weight: 300;--cds-quotation-02-line-height: 1.25;--cds-quotation-02-letter-spacing: 0;--cds-display-01-font-size: 2.625rem;--cds-display-01-font-weight: 300;--cds-display-01-line-height: 1.19;--cds-display-01-letter-spacing: 0;--cds-display-02-font-size: 2.625rem;--cds-display-02-font-weight: 600;--cds-display-02-line-height: 1.19;--cds-display-02-letter-spacing: 0;--cds-display-03-font-size: 2.625rem;--cds-display-03-font-weight: 300;--cds-display-03-line-height: 1.19;--cds-display-03-letter-spacing: 0;--cds-display-04-font-size: 2.625rem;--cds-display-04-font-weight: 300;--cds-display-04-line-height: 1.19;--cds-display-04-letter-spacing: 0;--cds-legal-01-font-size: 0.75rem;--cds-legal-01-font-weight: 400;--cds-legal-01-line-height: 1.33333;--cds-legal-01-letter-spacing: 0.32px;--cds-legal-02-font-size: 0.875rem;--cds-legal-02-font-weight: 400;--cds-legal-02-line-height: 1.28572;--cds-legal-02-letter-spacing: 0.16px;--cds-body-compact-01-font-size: 0.875rem;--cds-body-compact-01-font-weight: 400;--cds-body-compact-01-line-height: 1.28572;--cds-body-compact-01-letter-spacing: 0.16px;--cds-body-compact-02-font-size: 1rem;--cds-body-compact-02-font-weight: 400;--cds-body-compact-02-line-height: 1.375;--cds-body-compact-02-letter-spacing: 0;--cds-heading-compact-01-font-size: 0.875rem;--cds-heading-compact-01-font-weight: 600;--cds-heading-compact-01-line-height: 1.28572;--cds-heading-compact-01-letter-spacing: 0.16px;--cds-heading-compact-02-font-size: 1rem;--cds-heading-compact-02-font-weight: 600;--cds-heading-compact-02-line-height: 1.375;--cds-heading-compact-02-letter-spacing: 0;--cds-body-01-font-size: 0.875rem;--cds-body-01-font-weight: 400;--cds-body-01-line-height: 1.42857;--cds-body-01-letter-spacing: 0.16px;--cds-body-02-font-size: 1rem;--cds-body-02-font-weight: 400;--cds-body-02-line-height: 1.5;--cds-body-02-letter-spacing: 0;--cds-heading-03-font-size: 1.25rem;--cds-heading-03-font-weight: 400;--cds-heading-03-line-height: 1.4;--cds-heading-03-letter-spacing: 0;--cds-heading-04-font-size: 1.75rem;--cds-heading-04-font-weight: 400;--cds-heading-04-line-height: 1.28572;--cds-heading-04-letter-spacing: 0;--cds-heading-05-font-size: 2rem;--cds-heading-05-font-weight: 400;--cds-heading-05-line-height: 1.25;--cds-heading-05-letter-spacing: 0;--cds-heading-06-font-size: 2.625rem;--cds-heading-06-font-weight: 300;--cds-heading-06-line-height: 1.199;--cds-heading-06-letter-spacing: 0;--cds-heading-07-font-size: 3.375rem;--cds-heading-07-font-weight: 300;--cds-heading-07-line-height: 1.19;--cds-heading-07-letter-spacing: 0;--cds-fluid-heading-03-font-size: 1.25rem;--cds-fluid-heading-03-font-weight: 400;--cds-fluid-heading-03-line-height: 1.4;--cds-fluid-heading-03-letter-spacing: 0;--cds-fluid-heading-04-font-size: 1.75rem;--cds-fluid-heading-04-font-weight: 400;--cds-fluid-heading-04-line-height: 1.28572;--cds-fluid-heading-04-letter-spacing: 0;--cds-fluid-heading-05-font-size: 2rem;--cds-fluid-heading-05-font-weight: 400;--cds-fluid-heading-05-line-height: 1.25;--cds-fluid-heading-05-letter-spacing: 0;--cds-fluid-heading-06-font-size: 2rem;--cds-fluid-heading-06-font-weight: 600;--cds-fluid-heading-06-line-height: 1.25;--cds-fluid-heading-06-letter-spacing: 0;--cds-fluid-paragraph-01-font-size: 1.5rem;--cds-fluid-paragraph-01-font-weight: 300;--cds-fluid-paragraph-01-line-height: 1.334;--cds-fluid-paragraph-01-letter-spacing: 0;--cds-fluid-quotation-01-font-family: 'IBM Plex Sans', system-ui, sans-serif;--cds-fluid-quotation-01-font-size: 1.25rem;--cds-fluid-quotation-01-font-weight: 400;--cds-fluid-quotation-01-line-height: 1.3;--cds-fluid-quotation-01-letter-spacing: 0;--cds-fluid-quotation-02-font-family: 'IBM Plex Sans', system-ui, sans-serif;--cds-fluid-quotation-02-font-size: 2rem;--cds-fluid-quotation-02-font-weight: 300;--cds-fluid-quotation-02-line-height: 1.25;--cds-fluid-quotation-02-letter-spacing: 0;--cds-fluid-display-01-font-size: 2.625rem;--cds-fluid-display-01-font-weight: 300;--cds-fluid-display-01-line-height: 1.19;--cds-fluid-display-01-letter-spacing: 0;--cds-fluid-display-02-font-size: 2.625rem;--cds-fluid-display-02-font-weight: 600;--cds-fluid-display-02-line-height: 1.19;--cds-fluid-display-02-letter-spacing: 0;--cds-fluid-display-03-font-size: 2.625rem;--cds-fluid-display-03-font-weight: 300;--cds-fluid-display-03-line-height: 1.19;--cds-fluid-display-03-letter-spacing: 0;--cds-fluid-display-04-font-size: 2.625rem;--cds-fluid-display-04-font-weight: 300;--cds-fluid-display-04-line-height: 1.19;--cds-fluid-display-04-letter-spacing: 0;--cds-button-separator: #161616;--cds-button-primary: #0f62fe;--cds-button-secondary: #6f6f6f;--cds-button-tertiary: #ffffff;--cds-button-danger-primary: #da1e28;--cds-button-danger-secondary: #fa4d56;--cds-button-danger-active: #750e13;--cds-button-primary-active: #002d9c;--cds-button-secondary-active: #393939;--cds-button-tertiary-active: #c6c6c6;--cds-button-danger-hover: #b81921;--cds-button-primary-hover: #0050e6;--cds-button-secondary-hover: #5e5e5e;--cds-button-tertiary-hover: #f4f4f4;--cds-button-disabled: rgba(141, 141, 141, 0.3);--cds-tag-background-red: #a2191f;--cds-tag-color-red: #ffd7d9;--cds-tag-hover-red: #c21e25;--cds-tag-background-magenta: #9f1853;--cds-tag-color-magenta: #ffd6e8;--cds-tag-hover-magenta: #bf1d63;--cds-tag-background-purple: #6929c4;--cds-tag-color-purple: #e8daff;--cds-tag-hover-purple: #7c3dd6;--cds-tag-background-blue: #0043ce;--cds-tag-color-blue: #d0e2ff;--cds-tag-hover-blue: #0053ff;--cds-tag-background-cyan: #00539a;--cds-tag-color-cyan: #bae6ff;--cds-tag-hover-cyan: #0066bd;--cds-tag-background-teal: #005d5d;--cds-tag-color-teal: #9ef0f0;--cds-tag-hover-teal: #007070;--cds-tag-background-green: #0e6027;--cds-tag-color-green: #a7f0ba;--cds-tag-hover-green: #11742f;--cds-tag-background-gray: #525252;--cds-tag-color-gray: #e0e0e0;--cds-tag-hover-gray: #636363;--cds-tag-background-cool-gray: #4d5358;--cds-tag-color-cool-gray: #dde1e6;--cds-tag-hover-cool-gray: #5d646a;--cds-tag-background-warm-gray: #565151;--cds-tag-color-warm-gray: #e5e0df;--cds-tag-hover-warm-gray: #696363;--cds-notification-background-error: #262626;--cds-notification-background-success: #262626;--cds-notification-background-info: #262626;--cds-notification-background-warning: #262626;--cds-notification-action-hover: var(--cds-layer-hover);--cds-notification-action-tertiary-inverse: #0f62fe;--cds-notification-action-tertiary-inverse-active: #002d9c;--cds-notification-action-tertiary-inverse-hover: #0050e6;--cds-notification-action-tertiary-inverse-text: #ffffff;--cds-notification-action-tertiary-inverse-text-on-color-disabled: #8d8d8d;--cds-layer:var(--cds-layer-01, #f4f4f4);--cds-layer-active:var(--cds-layer-active-01, #c6c6c6);--cds-layer-hover:var(--cds-layer-hover-01, #e8e8e8);--cds-layer-selected:var(--cds-layer-selected-01, #e0e0e0);--cds-layer-selected-hover:var(--cds-layer-selected-hover-01, #d1d1d1);--cds-layer-accent:var(--cds-layer-accent-01, #e0e0e0);--cds-layer-accent-hover:var(--cds-layer-accent-hover-01, #d1d1d1);--cds-layer-accent-active:var(--cds-layer-accent-active-01, #a8a8a8);--cds-field:var(--cds-field-01, #f4f4f4);--cds-field-hover:var(--cds-field-hover-01, #e8e8e8);--cds-border-subtle:var(--cds-border-subtle-00, #e0e0e0);--cds-border-subtle-selected:var(--cds-border-subtle-selected-01, #c6c6c6);--cds-border-strong:var(--cds-border-strong-01, #8d8d8d);--cds-border-tile:var(--cds-border-tile-01, #c6c6c6)}
+
+/* ===== Basis halaman ===== */
+:root{
+  --lt-orange:#ff832b;
+  --lt-gutter:32px;
+  --lt-max:1584px;
+  --lt-header:48px;
+}
+@media (max-width:671px){:root{--lt-gutter:16px}}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;font-family:'IBM Plex Sans',system-ui,sans-serif}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{
+  margin:0;background:var(--cds-background);color:var(--cds-text-primary);
+  font-family:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:16px;line-height:1.5;letter-spacing:0;
+  overflow-x:hidden;transition:background-color .24s cubic-bezier(.2,0,.38,.9),color .24s;
+}
+code,kbd,pre,samp{font-family:inherit}
+.num,.tnum{font-variant-numeric:tabular-nums}
+a{color:var(--cds-link-primary)}
+h1,h2,h3,h4,p{margin:0}
+svg{display:block}
+:focus-visible{outline:2px solid var(--cds-focus);outline-offset:2px}
+.section,#fitur,#kontrol,#harga,#faq,#mulai{scroll-margin-top:var(--lt-header)}
+.skip{position:absolute;left:-9999px;top:0;z-index:9999;background:var(--cds-interactive);color:#fff;padding:12px 16px}
+.skip:focus{left:8px;top:8px}
+.wrap{max-width:var(--lt-max);margin:0 auto;padding:0 var(--lt-gutter)}
+.eyebrow{font-size:14px;line-height:1.29;letter-spacing:.16px;color:var(--cds-text-secondary);display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.eyebrow::before{content:"";width:8px;height:8px;background:var(--cds-interactive)}
+.h2{font-weight:300;font-size:clamp(2rem,1.2rem + 2.6vw,3.375rem);line-height:1.15;letter-spacing:-.01em;max-width:18ch}
+.lead{font-size:clamp(1.0625rem,1rem + .3vw,1.25rem);line-height:1.5;color:var(--cds-text-secondary);max-width:40rem}
+.section{padding:clamp(64px,9vw,128px) 0;border-top:1px solid var(--cds-border-subtle-01)}
+.sec-head{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:32px;margin-bottom:clamp(32px,5vw,64px)}
+.sec-head>.l{grid-column:1/span 7}
+.sec-head>.r{grid-column:9/span 4;align-self:end}
+@media (max-width:1055px){.sec-head{grid-template-columns:1fr;gap:16px}.sec-head>.l,.sec-head>.r{grid-column:auto}}
+.icon32{width:32px;height:32px;fill:currentColor}
+.icon20{width:20px;height:20px;fill:currentColor}
+.icon16{width:16px;height:16px;fill:currentColor}
+
+/* Carbon element hosts: hindari kilatan elemen sebelum terdaftar */
+cds-header:not(:defined),cds-side-nav:not(:defined){visibility:hidden}
+
+/* ===== Header (Carbon UI Shell) ===== */
+cds-header{position:fixed;inset:0 0 auto 0;z-index:8000}
+.hdr-actions{margin-left:auto;display:flex;align-items:center;height:100%}
+.hdr-cta{display:flex;align-items:center;padding:0 8px}
+@media (max-width:671px){.hdr-cta{display:none}}
+.brand-mark{display:inline-flex;align-items:center;gap:8px}
+.brand-mark svg{width:20px;height:20px}
+cds-side-nav{z-index:7999}
+.side-foot{padding:16px}
+
+/* ===== Hero ===== */
+.hero{position:relative;min-height:100svh;padding-top:var(--lt-header);display:flex;flex-direction:column;overflow:hidden;isolation:isolate}
+.hero-grid-bg{position:absolute;inset:0;z-index:-2;pointer-events:none;
+  background-image:linear-gradient(var(--cds-border-subtle-00,var(--cds-border-subtle-01)) 1px,transparent 1px),linear-gradient(90deg,var(--cds-border-subtle-00,var(--cds-border-subtle-01)) 1px,transparent 1px);
+  background-size:64px 64px;opacity:.35;
+  -webkit-mask-image:radial-gradient(ellipse 70% 70% at 65% 45%,#000 20%,transparent 75%);mask-image:radial-gradient(ellipse 70% 70% at 65% 45%,#000 20%,transparent 75%)}
+.hero-body{flex:1;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:32px;align-items:center;position:relative}
+.hero-copy{grid-column:1/span 6;padding:clamp(48px,7vw,96px) 0 48px;position:relative;z-index:2}
+.hero-copy h1{font-weight:300;font-size:clamp(2.5rem,1.4rem + 4.2vw,5.25rem);line-height:1.04;letter-spacing:-.02em;margin:20px 0 24px}
+.hero-copy h1 em{font-style:normal;font-weight:500;color:var(--cds-interactive)}
+.hero-copy .lead{margin-bottom:40px}
+.hero-btns{display:flex;flex-wrap:wrap;gap:1px}
+@media (max-width:671px){.hero-btns cds-button{flex:1 1 100%}}
+.hero-trust{margin-top:40px;display:flex;flex-wrap:wrap;gap:8px 24px;font-size:14px;color:var(--cds-text-secondary)}
+.hero-trust span{display:inline-flex;align-items:center;gap:6px}
+.hero-trust svg{fill:var(--cds-support-success)}
+.hero-stage{position:absolute;top:0;bottom:0;right:calc(-1 * var(--lt-gutter));width:62%;z-index:1}
+.hero-stage canvas{width:100%;height:100%;display:block;touch-action:pan-y;cursor:grab}
+.hero-stage canvas:active{cursor:grabbing}
+.route-card{position:absolute;right:var(--lt-gutter);bottom:40px;width:340px;z-index:3;
+  background:var(--cds-layer-01);border:1px solid var(--cds-border-subtle-01);
+  box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.route-card .rc-in{padding:16px}
+.rc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:12px;letter-spacing:.32px;color:var(--cds-text-secondary)}
+.live{display:inline-flex;align-items:center;gap:6px}
+.live::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--cds-support-success);box-shadow:0 0 0 0 var(--cds-support-success);animation:ping 2s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(66,190,101,.6)}80%,100%{box-shadow:0 0 0 8px rgba(66,190,101,0)}}
+@media (prefers-reduced-motion:reduce){.live::before{animation:none}}
+.rc-meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.rc-meta div{font-size:12px;color:var(--cds-text-secondary)}
+.rc-meta strong{display:block;font-size:16px;font-weight:400;color:var(--cds-text-primary);font-variant-numeric:tabular-nums}
+.kpis{width:100%;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--cds-border-subtle-01);position:relative;z-index:2;background:color-mix(in srgb,var(--cds-background) 82%,transparent);backdrop-filter:blur(6px)}
+.kpi{padding:24px var(--lt-gutter) 28px;border-right:1px solid var(--cds-border-subtle-01)}
+.kpi:last-child{border-right:0}
+.kpi b{display:block;font-weight:300;font-size:clamp(1.75rem,1.2rem + 1.6vw,2.625rem);line-height:1.15;font-variant-numeric:tabular-nums}
+.kpi span{font-size:14px;color:var(--cds-text-secondary)}
+@media (max-width:1055px){
+  .hero-body{grid-template-columns:1fr;gap:0}
+  .hero-copy{grid-column:auto;padding:48px 0 16px}
+  .hero-stage{position:relative;width:auto;right:auto;margin:0 calc(-1 * var(--lt-gutter));height:min(110vw,560px)}
+  .route-card{position:relative;right:auto;bottom:auto;width:auto;margin:-32px 0 32px}
+  .kpis{grid-template-columns:1fr 1fr}
+  .kpi:nth-child(2){border-right:0}
+  .kpi:nth-child(-n+2){border-bottom:1px solid var(--cds-border-subtle-01)}
+}
+.fallback{display:none}
+.no-webgl .fallback{display:block;position:absolute;inset:0;width:100%;height:100%}
+.no-webgl canvas.gl{display:none}
+
+/* ===== Fitur ===== */
+.feat-panels{margin-top:32px}
+.feat-panel{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:32px;align-items:start}
+.feat-panel[hidden]{display:none}
+.feat-panel .txt{grid-column:1/span 5}
+.feat-panel .viz{grid-column:7/span 6}
+.feat-panel h3{font-weight:400;font-size:clamp(1.5rem,1.2rem + 1vw,2rem);line-height:1.25;margin-bottom:16px}
+.feat-panel p{color:var(--cds-text-secondary);margin-bottom:24px}
+.checks{list-style:none;padding:0;margin:0 0 24px;display:grid;gap:12px}
+.checks li{display:flex;gap:12px;align-items:flex-start}
+.checks svg{flex:none;margin-top:2px;fill:var(--cds-interactive)}
+.viz-tile{background:var(--cds-layer-01);border:1px solid var(--cds-border-subtle-01);padding:24px}
+.track-row{display:flex;gap:1px;align-items:flex-end;flex-wrap:wrap}
+.track-row cds-text-input{flex:1 1 220px}
+.track-out{margin-top:24px}
+.track-out .tid{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.track-out .tid b{font-weight:500;font-size:18px;font-variant-numeric:tabular-nums}
+.opt-out{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--cds-border-subtle-01);margin-top:24px;border:1px solid var(--cds-border-subtle-01)}
+.opt-out div{background:var(--cds-layer-01);padding:16px}
+.opt-out span{display:block;font-size:12px;color:var(--cds-text-secondary);margin-bottom:4px}
+.opt-out b{font-weight:300;font-size:24px;font-variant-numeric:tabular-nums}
+.bars{display:flex;align-items:flex-end;gap:6px;height:120px;margin-top:24px}
+.bars i{flex:1;background:var(--cds-interactive);opacity:.85;transition:height .4s cubic-bezier(.2,0,.38,.9)}
+.bars i.alt{background:var(--cds-border-strong-01);opacity:.6}
+.doc-list{display:grid;gap:1px;background:var(--cds-border-subtle-01);border:1px solid var(--cds-border-subtle-01)}
+.doc-list>div{background:var(--cds-layer-01);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.doc-list .dn{display:flex;align-items:center;gap:12px}
+.code-tile{background:var(--cds-layer-02,var(--cds-layer-01));border-left:3px solid var(--cds-interactive);padding:20px;font-size:14px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere;margin:0}
+.code-tile .k{color:var(--cds-support-info)}
+.code-tile .s{color:var(--cds-support-success)}
+.value-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--cds-border-subtle-01);border:1px solid var(--cds-border-subtle-01);margin-top:clamp(48px,6vw,80px)}
+.value-tiles cds-clickable-tile{display:block;min-height:220px}
+.vt{display:flex;flex-direction:column;height:100%;min-height:188px;gap:12px}
+.vt svg.icon32{fill:var(--cds-interactive)}
+.vt h3{font-weight:400;font-size:20px;line-height:1.4;margin-top:auto}
+.vt p{font-size:14px;color:var(--cds-text-secondary)}
+@media (max-width:1055px){
+  .feat-panel{grid-template-columns:minmax(0,1fr)}.feat-panel .txt,.feat-panel .viz{grid-column:auto}
+  .value-tiles{grid-template-columns:1fr}
+}
+@media (max-width:671px){.opt-out{grid-template-columns:1fr}}
+
+/* ===== Cerita isometrik (scroll-driven) ===== */
+.story{position:relative;height:520vh;border-top:1px solid var(--cds-border-subtle-01)}
+.story-sticky{position:sticky;top:var(--lt-header);height:calc(100vh - var(--lt-header));height:calc(100svh - var(--lt-header));overflow:hidden}
+.story-sticky canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.story-panel{position:absolute;left:var(--lt-gutter);top:50%;transform:translateY(-50%);width:min(420px,38vw);z-index:2;
+  background:color-mix(in srgb,var(--cds-layer-01) 92%,transparent);backdrop-filter:blur(8px);border:1px solid var(--cds-border-subtle-01);padding:24px}
+.story-panel .eyebrow{margin-bottom:8px}
+.story-step-num{font-size:14px;color:var(--cds-text-secondary);font-variant-numeric:tabular-nums}
+.story-title{font-weight:300;font-size:clamp(1.75rem,1.3rem + 1.4vw,2.5rem);line-height:1.15;margin:8px 0 12px;min-height:2.3em}
+.story-text{color:var(--cds-text-secondary);min-height:6em}
+.story-panel cds-progress-indicator{margin-top:20px}
+.story-panel cds-progress-bar{margin-top:16px}
+.story-fade{transition:opacity .3s,transform .3s}
+.story-fade.out{opacity:0;transform:translateY(6px)}
+.iso-labels{position:absolute;inset:0;pointer-events:none;z-index:1}
+.iso-label{position:absolute;left:0;top:0;transform:translate(-50%,-100%);white-space:nowrap;transition:opacity .25s}
+.iso-label.dim{opacity:.55}
+.story-hint{position:absolute;right:var(--lt-gutter);bottom:20px;font-size:12px;letter-spacing:.32px;color:var(--cds-text-secondary);z-index:2;display:flex;align-items:center;gap:8px}
+@media (max-width:1055px){
+  .story{height:460vh}
+  .story-panel{top:auto;bottom:16px;transform:none;left:var(--lt-gutter);right:var(--lt-gutter);width:auto;padding:16px}
+  .story-title{font-size:1.5rem;min-height:0}
+  .story-text{font-size:14px;min-height:4.5em}
+  .story-panel cds-progress-indicator{display:none}
+  .story-hint{display:none}
+}
+
+/* ===== Menara kontrol ===== */
+.ctrl{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:0;border:1px solid var(--cds-border-subtle-01);height:min(820px,calc(100vh - 96px));min-height:680px}
+.ctrl-table{flex:1;min-height:0;overflow:auto;padding:0}
+.ctrl{grid-template-rows:minmax(0,1fr)}
+.ctrl-side{min-height:0;overflow:hidden;grid-column:1/span 5;border-right:1px solid var(--cds-border-subtle-01);background:var(--cds-layer-01);display:flex;flex-direction:column;min-width:0}
+.ctrl-sec{padding:20px;border-bottom:1px solid var(--cds-border-subtle-01)}
+.ctrl-sec:last-child{border-bottom:0}
+.ctrl-sec h3{font-size:14px;font-weight:600;letter-spacing:.16px;margin-bottom:12px}
+.ctrl-toggles{display:grid;grid-template-columns:1fr 1fr;gap:16px 24px}
+.ctrl-stage{grid-column:6/span 7;position:relative;min-height:0;overflow:hidden;background:radial-gradient(ellipse at 50% 45%,color-mix(in srgb,var(--cds-interactive) 14%,transparent),transparent 65%)}
+.ctrl-stage canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:pan-y;cursor:grab}
+.ship-card{position:absolute;left:20px;right:20px;bottom:20px;z-index:2;background:var(--cds-layer-01);border:1px solid var(--cds-border-subtle-01);padding:16px 20px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.ship-card .sc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.ship-card .sc-id{font-size:12px;color:var(--cds-text-secondary);font-variant-numeric:tabular-nums}
+.ship-card .sc-route{font-size:20px;font-weight:400}
+.ship-card cds-progress-indicator{margin:8px 0 12px}
+.ctrl-legend{position:absolute;top:16px;left:20px;z-index:2;display:flex;gap:6px;flex-wrap:wrap}
+.ctrl-notice{position:absolute;top:56px;left:20px;right:20px;z-index:3}
+.table-wrap{overflow-x:auto;max-width:100%}
+.table-wrap cds-table{min-width:100%}
+cds-table-row{cursor:pointer}
+@media (max-width:1055px){
+  .ctrl{grid-template-columns:minmax(0,1fr);height:auto;min-height:0}
+  .ctrl{grid-template-rows:auto}
+  .ctrl-side{overflow:visible;grid-column:auto;border-right:0;border-bottom:1px solid var(--cds-border-subtle-01)}
+  .ctrl-stage{grid-column:auto;min-height:560px;order:-1}
+}
+@media (max-width:671px){
+  .col-hide-sm{display:none !important}
+  .ctrl-toggles{grid-template-columns:1fr}
+  .ctrl-stage{min-height:520px}
+  .ship-card{left:12px;right:12px;bottom:12px;padding:12px 14px}
+  .ship-card cds-progress-indicator{display:none}
+}
+
+/* ===== Statistik & testimoni ===== */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--cds-border-subtle-01);margin-bottom:clamp(48px,6vw,80px)}
+.stat{padding:24px 24px 0 0}
+.stat b{display:block;font-weight:300;font-size:clamp(2.5rem,1.5rem + 3vw,4.5rem);line-height:1.05;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.stat b small{font-size:.45em;font-weight:400;margin-left:4px;color:var(--cds-text-secondary)}
+.stat span{display:block;margin-top:8px;color:var(--cds-text-secondary);font-size:14px;max-width:24ch}
+.quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--cds-border-subtle-01);border:1px solid var(--cds-border-subtle-01)}
+.quotes cds-tile{height:100%}
+.q{display:flex;flex-direction:column;gap:24px;height:100%;min-height:280px}
+.q blockquote{margin:0;font-size:20px;line-height:1.4;font-weight:300}
+.q blockquote::before{content:"\201C";display:block;font-size:48px;line-height:.8;color:var(--cds-interactive);font-weight:400}
+.q .who{margin-top:auto;display:flex;align-items:center;gap:12px}
+.q .av{width:40px;height:40px;flex:none;display:grid;place-items:center;background:var(--cds-interactive);color:#fff;font-weight:600;font-size:14px}
+.q .who b{display:block;font-weight:500;font-size:14px}
+.q .who span{font-size:12px;color:var(--cds-text-secondary)}
+@media (max-width:1055px){.stats{grid-template-columns:1fr 1fr}.stat{padding-bottom:24px}.quotes{grid-template-columns:1fr}}
+
+/* ===== Harga ===== */
+.price-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:32px}
+.price-bar cds-content-switcher{width:320px;max-width:100%}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--cds-border-subtle-01);border:1px solid var(--cds-border-subtle-01)}
+.plan{background:var(--cds-layer-01);padding:28px 24px 24px;display:flex;flex-direction:column;position:relative}
+.plan.hl{background:var(--cds-layer-02,var(--cds-layer-01));box-shadow:inset 0 3px 0 var(--cds-interactive)}
+.plan h3{font-weight:400;font-size:24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.plan .desc{color:var(--cds-text-secondary);font-size:14px;margin:8px 0 24px;min-height:3em}
+.plan .price{font-weight:300;font-size:clamp(2rem,1.5rem + 1.5vw,2.75rem);line-height:1.1;font-variant-numeric:tabular-nums}
+.plan .per{font-size:14px;color:var(--cds-text-secondary);margin:6px 0 24px;min-height:1.5em}
+.plan .checks{margin-top:24px;font-size:14px}
+.plan cds-button{margin-top:auto}
+.plan .btn-slot{margin-top:auto;padding-top:24px}
+@media (max-width:1055px){.plans{grid-template-columns:1fr}}
+
+/* ===== FAQ ===== */
+.faq-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:32px}
+.faq-grid .l{grid-column:1/span 4}
+.faq-grid .r{grid-column:5/span 8}
+@media (max-width:1055px){.faq-grid{grid-template-columns:1fr}.faq-grid .l,.faq-grid .r{grid-column:auto}}
+
+/* ===== CTA ===== */
+.cta{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:32px;align-items:start}
+.cta .l{grid-column:1/span 6}
+.cta .r{grid-column:8/span 5}
+.cta-form{background:var(--cds-layer-01);border:1px solid var(--cds-border-subtle-01);padding:24px;display:grid;gap:24px}
+.cta-form .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cta-big{font-weight:300;font-size:clamp(2.25rem,1.3rem + 3.4vw,4.5rem);line-height:1.05;letter-spacing:-.02em;margin-bottom:24px}
+.cta-points{margin-top:32px;display:grid;gap:16px}
+.cta-points div{display:flex;gap:12px;align-items:flex-start;color:var(--cds-text-secondary)}
+.cta-points svg{flex:none;fill:var(--cds-interactive)}
+@media (max-width:1055px){.cta{grid-template-columns:1fr}.cta .l,.cta .r{grid-column:auto}}
+@media (max-width:671px){.cta-form .row2{grid-template-columns:1fr}.cta-form{padding:16px}}
+
+/* ===== Footer ===== */
+footer{border-top:1px solid var(--cds-border-subtle-01);padding:64px 0 32px;background:var(--cds-layer-01)}
+.ft{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px}
+.ft h4{font-size:14px;font-weight:600;margin-bottom:16px}
+.ft ul{list-style:none;padding:0;margin:0;display:grid;gap:10px;font-size:14px}
+.ft a{color:var(--cds-text-secondary);text-decoration:none}
+.ft a:hover{color:var(--cds-text-primary);text-decoration:underline}
+.ft p{color:var(--cds-text-secondary);font-size:14px;margin-top:16px;max-width:36ch}
+.ft-bottom{margin-top:48px;padding-top:24px;border-top:1px solid var(--cds-border-subtle-01);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--cds-text-secondary)}
+.ft-bottom .built{display:inline-flex;align-items:center;gap:8px}
+@media (max-width:1055px){.ft{grid-template-columns:1fr 1fr}}
+
+/* toast */
+.toasts{position:fixed;right:16px;top:64px;z-index:9000;display:grid;gap:8px;max-width:calc(100vw - 32px)}
+.toasts cds-toast-notification{max-width:100%}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+
+<!-- IBM Carbon Design System — @carbon/web-components v2.60.0 (Apache-2.0), CDN resmi IBM -->
+<script type="module" src="https://1.www.s81c.com/common/carbon/web-components/version/v2.60.0/ui-shell.min.js"></script>
+<script type="module" src="https://1.www.s81c.com/common/carbon/web-components/version/v2.60.0/button.min.js"></script>
+<script type="module" src="https://1.www.s81c.com/common/carbon/web-components/version/v2.60.0/tag.min.js"></script>
+<script type="module" src="https://1.www.s81c.com/common/carbon/web-components/version/v2.60.0/tabs.min.js"></script>
+<script type="module" src="https://1.www.s81c.com/common/carbon/web-components/version/v2.60.0/dropdown.min.js"></script>
+<script type="module" src="https://1.www.s81c.com/common/carbon/web-components/version/v2.60.0/toggle.min.js"></script>
+<script type="module" src="https://1.www.s81c.com/common/carbon/web-components/version/v2.60.0/data-table.min.js"></script>
+<script type="module" src="https://1.www.s81c.com/common/carbon/web-components/version/v2.60.0/tile.min.js"></script>
+<script type="module" src="https://1.www.s81c.com/common/carbon/web-components/version/v2.60.0/progress-bar.min.js"></script>
+<script type="module" src="https://1.www.s81c.com/common/carbon/web-components/version/v2.60.0/progress-indicator.min.js"></script>
+<script type="module" src="https://1.www.s81c.com/common/carbon/web-components/version/v2.60.0/modal.min.js"></script>
+<script type="module" src="https://1.www.s81c.com/common/carbon/web-components/version/v2.60.0/notification.min.js"></script>
+<script type="module" src="https://1.www.s81c.com/common/carbon/web-components/version/v2.60.0/content-switcher.min.js"></script>
+<script type="module" src="https://1.www.s81c.com/common/carbon/web-components/version/v2.60.0/slider.min.js"></script>
+<script type="module" src="https://1.www.s81c.com/common/carbon/web-components/version/v2.60.0/accordion.min.js"></script>
+<script type="module" src="https://1.www.s81c.com/common/carbon/web-components/version/v2.60.0/text-input.min.js"></script>
+<script type="module" src="https://1.www.s81c.com/common/carbon/web-components/version/v2.60.0/select.min.js"></script>
+<script type="module" src="https://1.www.s81c.com/common/carbon/web-components/version/v2.60.0/checkbox.min.js"></script>
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js" } }
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Lewati ke konten utama</a>
+
+<!-- ============ HEADER: Carbon UI Shell ============ -->
+<cds-header aria-label="Lintas">
+  <cds-header-menu-button button-label-active="Tutup menu" button-label-inactive="Buka menu"></cds-header-menu-button>
+  <cds-header-name href="#top" prefix="">
+    <span class="brand-mark"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M2 3h4v14H2zM8 13h10v4H8zM8 3h10l-4 4H8z"/></svg>Lintas</span>
+  </cds-header-name>
+  <cds-header-nav menu-bar-label="Navigasi utama">
+    <cds-header-nav-item href="#fitur">Fitur</cds-header-nav-item>
+    <cds-header-nav-item href="#perjalanan">Perjalanan paket</cds-header-nav-item>
+    <cds-header-nav-item href="#kontrol">Menara kontrol</cds-header-nav-item>
+    <cds-header-nav-item href="#harga">Harga</cds-header-nav-item>
+    <cds-header-nav-item href="#faq">FAQ</cds-header-nav-item>
+  </cds-header-nav>
+  <div class="hdr-actions">
+    <div class="hdr-cta"><cds-button kind="primary" size="sm" href="#mulai">Coba gratis</cds-button></div>
+    <cds-header-global-action id="themeBtn" aria-label="Ganti tema terang/gelap" tooltip-text="Ganti tema" tooltip-alignment="right">
+      <svg slot="icon" class="icon20" viewBox="0 0 32 32" aria-hidden="true" id="themeIcon"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg>
+    </cds-header-global-action>
+  </div>
+  <cds-side-nav aria-label="Navigasi samping" collapse-mode="responsive" is-not-persistent>
+    <cds-side-nav-items>
+      <cds-side-nav-link href="#fitur">Fitur</cds-side-nav-link>
+      <cds-side-nav-link href="#perjalanan">Perjalanan paket</cds-side-nav-link>
+      <cds-side-nav-link href="#kontrol">Menara kontrol</cds-side-nav-link>
+      <cds-side-nav-link href="#harga">Harga</cds-side-nav-link>
+      <cds-side-nav-link href="#faq">FAQ</cds-side-nav-link>
+      <cds-side-nav-link href="#mulai">Coba gratis</cds-side-nav-link>
+    </cds-side-nav-items>
+  </cds-side-nav>
+</cds-header>
+
+<main id="main">
+<!-- ============ HERO ============ -->
+<section class="hero" id="top" aria-labelledby="hero-title">
+  <div class="hero-grid-bg" aria-hidden="true"></div>
+  <div class="wrap hero-body">
+    <div class="hero-copy">
+      <cds-tag type="blue" size="md">Baru · Lacak kapal via satelit</cds-tag>
+      <h1 id="hero-title">Setiap paket, setiap pulau, <em>terlihat.</em></h1>
+      <p class="lead">Lintas menyatukan truk, kapal, dan pesawat kargo dari 38 hub di seluruh Indonesia dalam satu menara kontrol. Lacak kiriman secara real-time, prediksi keterlambatan sebelum terjadi, dan kirim notifikasi ke pelanggan otomatis.</p>
+      <div class="hero-btns">
+        <cds-button kind="primary" size="xl" href="#mulai">Mulai uji coba 30 hari
+          <svg slot="icon" class="icon16" viewBox="0 0 32 32" aria-hidden="true"><path d="M18 6L16.57 7.393 24.15 15 4 15 4 17 24.15 17 16.57 24.573 18 26 28 16 18 6z"/></svg>
+        </cds-button>
+        <cds-button kind="tertiary" size="xl" id="openDemo">Jadwalkan demo</cds-button>
+      </div>
+      <div class="hero-trust">
+        <span><svg class="icon16" viewBox="0 0 32 32" aria-hidden="true"><path d="M14 21.414L9 16.413 10.413 15 14 18.586 21.585 11 23 12.415 14 21.414z"/><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z"/></svg>Tanpa kartu kredit</span>
+        <span><svg class="icon16" viewBox="0 0 32 32" aria-hidden="true"><path d="M14 21.414L9 16.413 10.413 15 14 18.586 21.585 11 23 12.415 14 21.414z"/><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z"/></svg>Integrasi 40+ kurir lokal</span>
+        <span><svg class="icon16" viewBox="0 0 32 32" aria-hidden="true"><path d="M14 21.414L9 16.413 10.413 15 14 18.586 21.585 11 23 12.415 14 21.414z"/><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z"/></svg>Data disimpan di Indonesia</span>
+      </div>
+    </div>
+    <div class="hero-stage">
+      <canvas class="gl" id="heroGlobe" role="img" aria-label="Globe 3D interaktif yang menampilkan jalur kiriman Lintas antarkota di Indonesia. Seret untuk memutar."></canvas>
+      <svg class="fallback" viewBox="0 0 600 600" role="img" aria-label="Ilustrasi globe dengan jalur kiriman antarpulau">
+        <defs><radialGradient id="fbg" cx="40%" cy="35%"><stop offset="0" stop-color="#4589ff" stop-opacity=".35"/><stop offset="1" stop-color="#4589ff" stop-opacity="0"/></radialGradient></defs>
+        <circle cx="300" cy="300" r="230" fill="url(#fbg)" stroke="currentColor" stroke-opacity=".25"/>
+        <g fill="currentColor" opacity=".35"><circle cx="200" cy="260" r="3"/><circle cx="230" cy="300" r="3"/><circle cx="270" cy="320" r="3"/><circle cx="320" cy="280" r="3"/><circle cx="360" cy="300" r="3"/><circle cx="410" cy="330" r="3"/><circle cx="300" cy="350" r="3"/></g>
+        <g fill="none" stroke="#ff832b" stroke-width="2"><path d="M200 260 Q260 180 360 300"/><path d="M230 300 Q330 230 410 330"/><path d="M270 320 Q300 390 360 300"/></g>
+      </svg>
+      <div class="route-card" id="routeCard">
+        <div class="rc-in">
+          <div class="rc-head"><span class="live">Langsung</span><span class="tnum" id="rcClock">--:-- WIB</span></div>
+          <cds-dropdown id="heroRoute" title-text="Fokus rute di globe" value="LTS-24081" label="Pilih rute" size="md"></cds-dropdown>
+          <div class="rc-meta">
+            <div>Moda<strong id="rcMode">Laut</strong></div>
+            <div>Estimasi tiba<strong id="rcEta">2 hari 4 jam</strong></div>
+          </div>
+          <cds-progress-bar id="rcProg" label="Progres perjalanan" helper-text="62% · tepat waktu" value="62" max="100" size="small"></cds-progress-bar>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="kpis wrap" style="padding:0;max-width:none">
+    <div class="kpi"><b>2,4 jt</b><span>paket dilacak per hari</span></div>
+    <div class="kpi"><b>514</b><span>kota &amp; kabupaten terjangkau</span></div>
+    <div class="kpi"><b>99,2%</b><span>kiriman tiba tepat waktu</span></div>
+    <div class="kpi"><b>38</b><span>hub sortir antarpulau</span></div>
+  </div>
+</section>
+
+<!-- ============ FITUR ============ -->
+<section class="section" id="fitur" aria-labelledby="fitur-title">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="l"><div class="eyebrow">Fitur platform</div><h2 class="h2" id="fitur-title">Satu sistem untuk seluruh rantai kiriman Anda.</h2></div>
+      <div class="r"><p class="lead">Dari penjemputan di gudang sampai tanda tangan penerima di pulau terluar — semua tercatat, terukur, dan bisa diotomatisasi.</p></div>
+    </div>
+
+    <cds-tabs value="lacak" id="featTabs">
+      <cds-tab id="tab-lacak" target="panel-lacak" value="lacak">Pelacakan</cds-tab>
+      <cds-tab id="tab-rute" target="panel-rute" value="rute">Optimasi rute</cds-tab>
+      <cds-tab id="tab-dok" target="panel-dok" value="dok">Dokumen &amp; bea</cds-tab>
+      <cds-tab id="tab-api" target="panel-api" value="api">API pengembang</cds-tab>
+    </cds-tabs>
+
+    <div class="feat-panels">
+      <div class="feat-panel" id="panel-lacak" role="tabpanel" aria-labelledby="tab-lacak">
+        <div class="txt">
+          <h3>Status kiriman yang selalu benar, bukan sekadar “dalam proses”.</h3>
+          <p>Setiap pemindaian di hub, posisi GPS truk, dan sinyal AIS kapal digabung menjadi satu linimasa. Pelanggan Anda melihat hal yang sama dengan tim operasional.</p>
+          <ul class="checks">
+            <li><svg class="icon16" viewBox="0 0 32 32" aria-hidden="true"><path d="M13 24L4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/></svg>Pembaruan posisi tiap 30 detik, termasuk di tengah laut</li>
+            <li><svg class="icon16" viewBox="0 0 32 32" aria-hidden="true"><path d="M13 24L4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/></svg>Halaman lacak bermerek Anda sendiri</li>
+            <li><svg class="icon16" viewBox="0 0 32 32" aria-hidden="true"><path d="M13 24L4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/></svg>Notifikasi WhatsApp &amp; email otomatis</li>
+          </ul>
+        </div>
+        <div class="viz">
+          <div class="viz-tile">
+            <form class="track-row" id="trackForm" novalidate>
+              <cds-text-input id="trackInput" label="Nomor resi" placeholder="Contoh: LTS-24081" value="LTS-24081" size="lg"></cds-text-input>
+              <cds-button kind="primary" size="lg" id="trackBtn" type="submit">Lacak</cds-button>
+            </form>
+            <div class="track-out" id="trackOut" aria-live="polite">
+              <div class="tid"><b id="trackId">LTS-24081</b><cds-tag type="green" id="trackTag">Dalam perjalanan</cds-tag></div>
+              <cds-progress-indicator id="trackSteps" space-equally>
+                <cds-progress-step state="complete" label="Dijemput" secondary-label="Jakarta"></cds-progress-step>
+                <cds-progress-step state="complete" label="Disortir" secondary-label="Hub Priok"></cds-progress-step>
+                <cds-progress-step state="current" label="Di laut" secondary-label="Laut Jawa"></cds-progress-step>
+                <cds-progress-step state="incomplete" label="Diterima" secondary-label="Makassar"></cds-progress-step>
+              </cds-progress-indicator>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feat-panel" id="panel-rute" role="tabpanel" aria-labelledby="tab-rute" hidden>
+        <div class="txt">
+          <h3>Pilih keseimbangan antara biaya dan kecepatan — Lintas menghitung sisanya.</h3>
+          <p>Mesin rute membandingkan jadwal kapal, slot kargo udara, kondisi cuaca, dan kapasitas hub untuk setiap kiriman. Geser prioritas dan lihat dampaknya langsung.</p>
+          <ul class="checks">
+            <li><svg class="icon16" viewBox="0 0 32 32" aria-hidden="true"><path d="M13 24L4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/></svg>Konsolidasi otomatis muatan kontainer</li>
+            <li><svg class="icon16" viewBox="0 0 32 32" aria-hidden="true"><path d="M13 24L4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/></svg>Rute ulang saat gelombang tinggi</li>
+          </ul>
+        </div>
+        <div class="viz">
+          <div class="viz-tile">
+            <cds-slider id="optSlider" label-text="Prioritas: hemat biaya ↔ paling cepat" min="0" max="100" step="5" value="40" min-label="Hemat" max-label="Cepat" hide-text-input></cds-slider>
+            <div class="opt-out">
+              <div><span>Biaya per kg</span><b id="optCost">Rp 3.850</b></div>
+              <div><span>Waktu tempuh</span><b id="optTime">3,2 hari</b></div>
+              <div><span>Emisi CO₂e</span><b id="optCo2">1,8 kg</b></div>
+            </div>
+            <div class="bars" id="optBars" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feat-panel" id="panel-dok" role="tabpanel" aria-labelledby="tab-dok" hidden>
+        <div class="txt">
+          <h3>Dokumen antarpulau tanpa map dan stempel.</h3>
+          <p>Surat jalan, manifes kapal, dan bukti serah terima dibuat otomatis dari data kiriman. Tim gudang cukup memindai label.</p>
+        </div>
+        <div class="viz">
+          <div class="doc-list">
+            <div><span class="dn"><svg class="icon20" viewBox="0 0 32 32" aria-hidden="true"><path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"/></svg>Surat jalan SJ-0918</span><cds-tag type="green" size="sm">Ditandatangani</cds-tag></div>
+            <div><span class="dn"><svg class="icon20" viewBox="0 0 32 32" aria-hidden="true"><path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"/></svg>Manifes KM Nusantara 07</span><cds-tag type="blue" size="sm">Terkirim ke pelabuhan</cds-tag></div>
+            <div><span class="dn"><svg class="icon20" viewBox="0 0 32 32" aria-hidden="true"><path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"/></svg>Bukti serah terima Hub Makassar</span><cds-tag type="warm-gray" size="sm">Menunggu</cds-tag></div>
+            <div><span class="dn"><svg class="icon20" viewBox="0 0 32 32" aria-hidden="true"><path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"/></svg>Faktur pajak elektronik</span><cds-tag type="purple" size="sm">Otomatis</cds-tag></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feat-panel" id="panel-api" role="tabpanel" aria-labelledby="tab-api" hidden>
+        <div class="txt">
+          <h3>REST API dan webhook yang dirancang untuk pengembang.</h3>
+          <p>Buat kiriman, cetak label, dan terima pembaruan status dalam hitungan menit. SDK tersedia untuk JavaScript, PHP, dan Python.</p>
+        </div>
+        <div class="viz">
+<pre class="code-tile"><code><span class="k">POST</span> /v2/kiriman
+{
+  <span class="s">"asal"</span>: "Jakarta Utara",
+  <span class="s">"tujuan"</span>: "Makassar",
+  <span class="s">"berat_kg"</span>: 12.5,
+  <span class="s">"layanan"</span>: "laut-reguler"
+}
+→ 201 · resi <span class="s">"LTS-24081"</span> · estimasi 3 hari</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="value-tiles">
+      <cds-clickable-tile href="#kontrol"><div class="vt"><svg class="icon32" viewBox="0 0 32 32" aria-hidden="true"><path d="M16,2A14,14,0,1,0,30,16,14.0158,14.0158,0,0,0,16,2Zm5,3.1055a12.0136,12.0136,0,0,1,2.9158,1.8994L23.5034,8H21ZM13.3784,27.7026A11.9761,11.9761,0,0,1,8.1157,6.9761L9.4648,9h3.3423l-1.5,4H7.2793L5.8967,17.1475,8.4648,21h5l1.4319,2.1475ZM16,28c-.2034,0-.4016-.02-.6025-.03l1.3967-4.19a1.9876,1.9876,0,0,0-.2334-1.7412l-1.4319-2.1475A1.9962,1.9962,0,0,0,13.4648,19h-3.93L8.1033,16.8525,8.7207,15H11v2h2V14.1812l2.9363-7.83-1.8726-.7022L13.5571,7H10.5352L9.728,5.7891A11.7941,11.7941,0,0,1,19,4.395V8a2.0025,2.0025,0,0,0,2,2h2.5857A1.9865,1.9865,0,0,0,25,9.4141l.1406-.1407.2818-.68A11.9813,11.9813,0,0,1,27.3,12H22.5986a1.9927,1.9927,0,0,0-1.9719,1.665L20.03,17.1064a1.99,1.99,0,0,0,.991,2.086l2.1647,1.4638,1.4585,3.646A11.9577,11.9577,0,0,1,16,28Zm8.8145-8.6563L22.1,17.5088l-.1-.06L22.5986,14h5.2207a11.743,11.743,0,0,1-1.7441,8.4951Z"/></svg><h3>Menara kontrol nasional</h3><p>Seluruh armada dan mitra kurir dalam satu peta.</p></div></cds-clickable-tile>
+      <cds-clickable-tile href="#perjalanan"><div class="vt"><svg class="icon32" viewBox="0 0 32 32" aria-hidden="true"><path d="M11.61,29.92a1,1,0,0,1-.6-1.07L12.83,17H8a1,1,0,0,1-1-1.23l3-13A1,1,0,0,1,11,2H21a1,1,0,0,1,.78.37,1,1,0,0,1,.2.85L20.25,11H25a1,1,0,0,1,.9.56,1,1,0,0,1-.11,1l-13,17A1,1,0,0,1,12,30,1.09,1.09,0,0,1,11.61,29.92ZM17.75,13l2-9H11.8L9.26,15h5.91L13.58,25.28,23,13Z"/></svg><h3>Prediksi keterlambatan</h3><p>Model cuaca dan antrean pelabuhan memberi peringatan 18 jam lebih awal.</p></div></cds-clickable-tile>
+      <cds-clickable-tile href="#faq"><div class="vt"><svg class="icon32" viewBox="0 0 32 32" aria-hidden="true"><path d="M14 16.59L11.41 14 10 15.41 14 19.41 22 11.41 20.59 10 14 16.59z"/><path d="M16,30,9.8242,26.7071A10.9818,10.9818,0,0,1,4,17V4A2.0021,2.0021,0,0,1,6,2H26a2.0021,2.0021,0,0,1,2,2V17a10.9818,10.9818,0,0,1-5.8242,9.7071ZM6,4V17a8.9852,8.9852,0,0,0,4.7656,7.9423L16,27.7333l5.2344-2.791A8.9852,8.9852,0,0,0,26,17V4Z"/></svg><h3>Asuransi &amp; klaim cepat</h3><p>Klaim kerusakan diproses dalam 3 hari kerja, langsung dari foto kurir.</p></div></cds-clickable-tile>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CERITA ISOMETRIK (scroll-driven) ============ -->
+<section class="story" id="perjalanan" aria-labelledby="story-title">
+  <div class="story-sticky" id="storySticky">
+    <canvas class="gl" id="storyCanvas" role="img" aria-label="Peta isometrik 3D: sebuah paket berpindah dari gudang di Cikarang, hub Tanjung Priok, menyeberang Laut Jawa dengan kapal, transit di Makassar, lalu diantar ke Toraja. Animasi mengikuti gulir halaman."></canvas>
+    <svg class="fallback" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Ilustrasi isometrik jalur kiriman dari Jawa ke Sulawesi">
+      <rect width="1200" height="700" fill="#0b2a55" opacity=".35"/>
+      <path d="M150 420 L420 300 L560 360 L290 480Z" fill="currentColor" opacity=".18"/>
+      <path d="M760 300 L1030 190 L1120 250 L850 360Z" fill="currentColor" opacity=".18"/>
+      <path d="M240 430 C330 380 400 360 470 350 C600 330 700 360 820 300 C900 260 960 240 1040 220" fill="none" stroke="#ff832b" stroke-width="5" stroke-dasharray="14 10"/>
+    </svg>
+    <div class="iso-labels" id="isoLabels" aria-hidden="true"></div>
+    <div class="story-panel" id="storyPanel">
+      <div class="eyebrow" id="story-title">Perjalanan satu paket</div>
+      <div class="story-step-num" id="storyNum">Langkah 1 dari 5</div>
+      <div class="story-fade" id="storyFade">
+        <h2 class="story-title" id="storyTitle">Dijemput di gudang</h2>
+        <p class="story-text" id="storyText"></p>
+      </div>
+      <cds-progress-indicator vertical id="storySteps">
+        <cds-progress-step state="current" label="Dijemput · Cikarang"></cds-progress-step>
+        <cds-progress-step state="incomplete" label="Disortir · Tanjung Priok"></cds-progress-step>
+        <cds-progress-step state="incomplete" label="Menyeberang · Laut Jawa"></cds-progress-step>
+        <cds-progress-step state="incomplete" label="Transit · Makassar"></cds-progress-step>
+        <cds-progress-step state="incomplete" label="Diterima · Toraja"></cds-progress-step>
+      </cds-progress-indicator>
+      <cds-progress-bar id="storyBar" label="Progres perjalanan" hide-label value="0" max="100" size="small"></cds-progress-bar>
+    </div>
+    <div class="story-hint" aria-hidden="true"><svg class="icon16" viewBox="0 0 32 32"><path d="M16 28L6 18 7.414 16.586 15 24.172 15 4 17 4 17 24.172 24.586 16.586 26 18 16 28z"/></svg>Gulir untuk mengikuti paket</div>
+  </div>
+</section>
+
+<!-- ============ MENARA KONTROL ============ -->
+<section class="section" id="kontrol" aria-labelledby="kontrol-title">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="l"><div class="eyebrow">Menara kontrol</div><h2 class="h2" id="kontrol-title">Kendalikan peta nasional dari satu panel.</h2></div>
+      <div class="r"><p class="lead">Pilih kiriman di tabel, saring moda, nyalakan lapisan cuaca. Globe di samping mengikuti setiap pilihan Anda.</p></div>
+    </div>
+
+    <div class="ctrl">
+      <div class="ctrl-side">
+        <div class="ctrl-sec">
+          <h3 id="modeLbl">Moda angkutan</h3>
+          <cds-content-switcher id="modeSwitch" value="semua" aria-labelledby="modeLbl" size="md">
+            <cds-content-switcher-item value="semua">Semua</cds-content-switcher-item>
+            <cds-content-switcher-item value="laut">Laut</cds-content-switcher-item>
+            <cds-content-switcher-item value="udara">Udara</cds-content-switcher-item>
+            <cds-content-switcher-item value="darat">Darat</cds-content-switcher-item>
+          </cds-content-switcher>
+        </div>
+        <div class="ctrl-sec ctrl-toggles">
+          <cds-toggle id="tgArcs" label-text="Jalur kiriman" label-a="Tampil" label-b="Tersembunyi" toggled size="md"></cds-toggle>
+          <cds-toggle id="tgWeather" label-text="Lapisan cuaca" label-a="Aktif" label-b="Nonaktif" size="md"></cds-toggle>
+          <cds-toggle id="tgRotate" label-text="Rotasi otomatis" label-a="Aktif" label-b="Nonaktif" toggled size="md"></cds-toggle>
+          <cds-toggle id="tgHubs" label-text="Label hub" label-a="Tampil" label-b="Tersembunyi" toggled size="md"></cds-toggle>
+        </div>
+        <div class="ctrl-sec">
+          <cds-slider id="speedSlider" label-text="Kecepatan simulasi (×)" min="0" max="4" step="0.5" value="1"></cds-slider>
+        </div>
+        <div class="ctrl-sec ctrl-table">
+          <div class="table-wrap">
+            <cds-table id="shipTable" radio is-selectable size="md" use-zebra-styles>
+              <cds-table-head>
+                <cds-table-header-row>
+                  <cds-table-header-cell>Resi</cds-table-header-cell>
+                  <cds-table-header-cell>Rute</cds-table-header-cell>
+                  <cds-table-header-cell class="col-hide-sm">Moda</cds-table-header-cell>
+                  <cds-table-header-cell>Status</cds-table-header-cell>
+                </cds-table-header-row>
+              </cds-table-head>
+              <cds-table-body id="shipBody"></cds-table-body>
+            </cds-table>
+          </div>
+        </div>
+      </div>
+      <div class="ctrl-stage" id="ctrlStage">
+        <canvas class="gl" id="ctrlGlobe" role="img" aria-label="Globe 3D menara kontrol. Kiriman yang dipilih di tabel disorot dan kamera berfokus pada rutenya."></canvas>
+        <svg class="fallback" viewBox="0 0 600 600" role="img" aria-label="Ilustrasi globe menara kontrol"><circle cx="300" cy="300" r="220" fill="none" stroke="currentColor" stroke-opacity=".3"/><path d="M180 300 Q300 180 420 320" fill="none" stroke="#ff832b" stroke-width="3"/></svg>
+        <div class="ctrl-legend" aria-hidden="true">
+          <cds-tag type="blue" size="sm">Laut</cds-tag><cds-tag type="magenta" size="sm">Udara</cds-tag><cds-tag type="teal" size="sm">Darat</cds-tag>
+        </div>
+        <div class="ctrl-notice" id="weatherNote" hidden>
+          <cds-inline-notification kind="warning" title="Gelombang tinggi" subtitle="Selat Makassar 2,5–4 m. 2 kiriman laut dialihkan." low-contrast hide-close-button open></cds-inline-notification>
+        </div>
+        <div class="ship-card" id="shipCard" aria-live="polite">
+          <div class="sc-top">
+            <div><div class="sc-id" id="scId">LTS-24081 · KM Nusantara 07</div><div class="sc-route" id="scRoute">Jakarta → Makassar</div></div>
+            <cds-tag type="green" id="scTag">Dalam perjalanan</cds-tag>
+          </div>
+          <cds-progress-indicator id="scSteps" space-equally>
+            <cds-progress-step state="complete" label="Dijemput"></cds-progress-step>
+            <cds-progress-step state="complete" label="Disortir"></cds-progress-step>
+            <cds-progress-step state="current" label="Perjalanan"></cds-progress-step>
+            <cds-progress-step state="incomplete" label="Diterima"></cds-progress-step>
+          </cds-progress-indicator>
+          <cds-progress-bar id="scBar" label="Progres" helper-text="62% · estimasi tiba 2 hari 4 jam" value="62" max="100" size="small"></cds-progress-bar>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATISTIK & TESTIMONI ============ -->
+<section class="section" id="cerita" aria-labelledby="cerita-title">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="l"><div class="eyebrow">Hasil pelanggan</div><h2 class="h2" id="cerita-title">Angka yang dirasakan gudang dan pelanggan.</h2></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b data-count="37" data-suffix="%">0%</b><span>penurunan biaya kirim antarpulau rata-rata di tahun pertama</span></div>
+      <div class="stat"><b data-count="18" data-suffix="jam">0</b><span>peringatan dini keterlambatan sebelum pelanggan bertanya</span></div>
+      <div class="stat"><b data-count="4.8" data-dec="1" data-suffix="/5">0</b><span>rating kepuasan penerima di halaman lacak</span></div>
+      <div class="stat"><b data-count="1200" data-suffix="+">0</b><span>UMKM dan distributor aktif mengirim lewat Lintas</span></div>
+    </div>
+    <div class="quotes">
+      <cds-tile><div class="q"><blockquote>Dulu kami menelepon tiga ekspedisi untuk tahu posisi kontainer ke Ambon. Sekarang cukup buka satu layar, dan pelanggan pun bisa lacak sendiri.</blockquote><div class="who"><span class="av" aria-hidden="true">RA</span><div><b>Rina Anggraeni</b><span>Kepala Logistik, Kopi Kawan Timur</span></div></div></div></cds-tile>
+      <cds-tile><div class="q"><blockquote>Peringatan cuaca Lintas menyelamatkan dua pengiriman batik untuk pameran di Makassar. Rutenya dialihkan ke kargo udara tanpa kami minta.</blockquote><div class="who"><span class="av" aria-hidden="true">BS</span><div><b>Bayu Setiawan</b><span>Pemilik, Sekar Wastra Pekalongan</span></div></div></div></cds-tile>
+      <cds-tile><div class="q"><blockquote>Integrasi API selesai dalam dua hari. Webhook statusnya rapi, dokumentasinya berbahasa Indonesia, dan timnya responsif.</blockquote><div class="who"><span class="av" aria-hidden="true">DP</span><div><b>Dimas Prakoso</b><span>CTO, Pasar Rakit Digital</span></div></div></div></cds-tile>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HARGA ============ -->
+<section class="section" id="harga" aria-labelledby="harga-title">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="l"><div class="eyebrow">Harga</div><h2 class="h2" id="harga-title">Bayar sesuai skala kiriman Anda.</h2></div>
+      <div class="r"><p class="lead">Semua paket termasuk halaman lacak bermerek, notifikasi, dan dukungan berbahasa Indonesia.</p></div>
+    </div>
+    <div class="price-bar">
+      <cds-content-switcher id="billSwitch" value="bulanan" size="md" aria-label="Periode tagihan">
+        <cds-content-switcher-item value="bulanan">Bulanan</cds-content-switcher-item>
+        <cds-content-switcher-item value="tahunan">Tahunan · hemat 20%</cds-content-switcher-item>
+      </cds-content-switcher>
+      <span style="font-size:14px;color:var(--cds-text-secondary)">Harga belum termasuk PPN 11%.</span>
+    </div>
+    <div class="plans">
+      <div class="plan">
+        <h3>Rintis</h3>
+        <p class="desc">Untuk UMKM yang baru mulai mengirim ke luar pulau.</p>
+        <div class="price">Rp 0</div><div class="per">gratis hingga 200 kiriman/bulan</div>
+        <ul class="checks">
+          <li><svg class="icon16" viewBox="0 0 32 32" aria-hidden="true"><path d="M13 24L4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/></svg>Pelacakan real-time</li>
+          <li><svg class="icon16" viewBox="0 0 32 32" aria-hidden="true"><path d="M13 24L4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/></svg>Halaman lacak standar</li>
+          <li><svg class="icon16" viewBox="0 0 32 32" aria-hidden="true"><path d="M13 24L4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/></svg>1 pengguna</li>
+        </ul>
+        <div class="btn-slot"><cds-button kind="tertiary" href="#mulai" style="width:100%">Mulai gratis</cds-button></div>
+      </div>
+      <div class="plan hl">
+        <h3>Tumbuh <cds-tag type="blue" size="sm">Paling populer</cds-tag></h3>
+        <p class="desc">Untuk distributor dan toko daring dengan kiriman rutin.</p>
+        <div class="price" data-m="Rp 1.490.000" data-y="Rp 1.190.000" id="pTumbuh">Rp 1.490.000</div><div class="per" data-m="per bulan" data-y="per bulan, ditagih tahunan">per bulan</div>
+        <ul class="checks">
+          <li><svg class="icon16" viewBox="0 0 32 32" aria-hidden="true"><path d="M13 24L4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/></svg>Hingga 5.000 kiriman/bulan</li>
+          <li><svg class="icon16" viewBox="0 0 32 32" aria-hidden="true"><path d="M13 24L4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/></svg>Optimasi rute &amp; prediksi cuaca</li>
+          <li><svg class="icon16" viewBox="0 0 32 32" aria-hidden="true"><path d="M13 24L4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/></svg>API &amp; webhook</li>
+          <li><svg class="icon16" viewBox="0 0 32 32" aria-hidden="true"><path d="M13 24L4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/></svg>10 pengguna</li>
+        </ul>
+        <div class="btn-slot"><cds-button kind="primary" href="#mulai" style="width:100%">Coba 30 hari</cds-button></div>
+      </div>
+      <div class="plan">
+        <h3>Korporat</h3>
+        <p class="desc">Untuk jaringan gudang multi-pulau dan kebutuhan SLA khusus.</p>
+        <div class="price" data-m="Rp 9,5 jt" data-y="Rp 7,6 jt">Rp 9,5 jt</div><div class="per" data-m="mulai, per bulan" data-y="mulai, per bulan, ditagih tahunan">mulai, per bulan</div>
+        <ul class="checks">
+          <li><svg class="icon16" viewBox="0 0 32 32" aria-hidden="true"><path d="M13 24L4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/></svg>Kiriman tanpa batas</li>
+          <li><svg class="icon16" viewBox="0 0 32 32" aria-hidden="true"><path d="M13 24L4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/></svg>Menara kontrol multi-hub</li>
+          <li><svg class="icon16" viewBox="0 0 32 32" aria-hidden="true"><path d="M13 24L4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/></svg>SLA 99,9% &amp; manajer akun</li>
+        </ul>
+        <div class="btn-slot"><cds-button kind="tertiary" id="openDemo2" style="width:100%">Hubungi penjualan</cds-button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="section" id="faq" aria-labelledby="faq-title">
+  <div class="wrap faq-grid">
+    <div class="l"><div class="eyebrow">FAQ</div><h2 class="h2" id="faq-title">Pertanyaan yang sering diajukan</h2></div>
+    <div class="r">
+      <cds-accordion>
+        <cds-accordion-item title="Apakah Lintas menggantikan ekspedisi yang sudah saya pakai?" open><p>Tidak harus. Lintas terhubung dengan lebih dari 40 kurir dan pelayaran lokal. Anda tetap memakai mitra yang ada, Lintas menyatukan datanya dan menambahkan armada kami bila diperlukan.</p></cds-accordion-item>
+        <cds-accordion-item title="Bagaimana pelacakan bekerja saat kapal di tengah laut?"><p>Kapal mitra dilengkapi transponder AIS dan terminal satelit. Posisinya diperbarui tiap 30 detik dan otomatis dicocokkan dengan manifes kontainer.</p></cds-accordion-item>
+        <cds-accordion-item title="Di mana data kiriman saya disimpan?"><p>Seluruh data disimpan di pusat data di Jakarta dan Batam, terenkripsi saat transit maupun saat disimpan, sesuai ketentuan pelindungan data pribadi yang berlaku.</p></cds-accordion-item>
+        <cds-accordion-item title="Berapa lama proses integrasi?"><p>Paket Rintis bisa dipakai hari ini lewat dasbor. Integrasi API untuk toko daring umumnya selesai 2–5 hari kerja dengan bantuan tim kami.</p></cds-accordion-item>
+        <cds-accordion-item title="Bisakah saya berhenti berlangganan kapan saja?"><p>Bisa. Paket bulanan dapat dihentikan kapan saja tanpa biaya penalti. Paket tahunan dapat dikembalikan secara prorata dalam 30 hari pertama.</p></cds-accordion-item>
+      </cds-accordion>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="section" id="mulai" aria-labelledby="mulai-title">
+  <div class="wrap cta">
+    <div class="l">
+      <div class="eyebrow">Mulai sekarang</div>
+      <h2 class="cta-big" id="mulai-title">Kirim lebih pintar, mulai minggu ini.</h2>
+      <p class="lead">Tim kami menyiapkan akun, mengimpor data kiriman 3 bulan terakhir, dan menunjukkan di mana biaya Anda bisa ditekan.</p>
+      <div class="cta-points">
+        <div><svg class="icon20" viewBox="0 0 32 32" aria-hidden="true"><path d="M16,30A14,14,0,1,1,30,16,14,14,0,0,1,16,30ZM16,4A12,12,0,1,0,28,16,12,12,0,0,0,16,4Z"/><path d="M20.59 22L15 16.41 15 7 17 7 17 15.58 22 20.59 20.59 22z"/></svg><span>Akun aktif dalam 1 hari kerja</span></div>
+        <div><svg class="icon20" viewBox="0 0 32 32" aria-hidden="true"><path d="M16,18a5,5,0,1,1,5-5A5.0057,5.0057,0,0,1,16,18Zm0-8a3,3,0,1,0,3,3A3.0033,3.0033,0,0,0,16,10Z"/><path d="M16,30,7.5645,20.0513c-.0479-.0571-.3482-.4515-.3482-.4515A10.8888,10.8888,0,0,1,5,13a11,11,0,0,1,22,0,10.8844,10.8844,0,0,1-2.2148,6.5973l-.0015.0025s-.3.3944-.3447.4474ZM8.8125,18.395c.001.0007.2334.3082.2866.3744L16,26.9079l6.91-8.15c.0439-.0552.2783-.3649.2788-.3657A8.901,8.901,0,0,0,25,13,9,9,0,1,0,7,13a8.9054,8.9054,0,0,0,1.8125,5.395Z"/></svg><span>Tim implementasi di Jakarta, Surabaya, dan Makassar</span></div>
+      </div>
+    </div>
+    <div class="r">
+      <form class="cta-form" id="ctaForm" novalidate>
+        <div class="row2">
+          <cds-text-input id="fNama" name="nama" label="Nama lengkap" placeholder="Siti Rahmawati" required autocomplete="name"></cds-text-input>
+          <cds-text-input id="fPerusahaan" name="perusahaan" label="Perusahaan" placeholder="CV Maju Bersama" autocomplete="organization"></cds-text-input>
+        </div>
+        <cds-text-input id="fEmail" name="email" type="email" label="Email kerja" placeholder="nama@perusahaan.co.id" required autocomplete="email"></cds-text-input>
+        <cds-select id="fVolume" name="volume" label-text="Volume kiriman per bulan" value="200-1000">
+          <cds-select-item value="0-200">Kurang dari 200</cds-select-item>
+          <cds-select-item value="200-1000">200 – 1.000</cds-select-item>
+          <cds-select-item value="1000-5000">1.000 – 5.000</cds-select-item>
+          <cds-select-item value="5000+">Lebih dari 5.000</cds-select-item>
+        </cds-select>
+        <cds-checkbox id="fSetuju" name="setuju">Saya setuju dihubungi tim Lintas melalui email atau WhatsApp.</cds-checkbox>
+        <cds-button kind="primary" size="lg" id="ctaSubmit" type="submit">Minta akses uji coba
+          <svg slot="icon" class="icon16" viewBox="0 0 32 32" aria-hidden="true"><path d="M18 6L16.57 7.393 24.15 15 4 15 4 17 24.15 17 16.57 24.573 18 26 28 16 18 6z"/></svg>
+        </cds-button>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="ft">
+      <div>
+        <span class="brand-mark" style="font-weight:600;font-size:20px"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M2 3h4v14H2zM8 13h10v4H8zM8 3h10l-4 4H8z"/></svg>Lintas</span>
+        <p>Platform logistik dan pelacakan kiriman antarpulau untuk bisnis di seluruh Indonesia.</p>
+      </div>
+      <div><h4>Produk</h4><ul><li><a href="#fitur">Pelacakan</a></li><li><a href="#kontrol">Menara kontrol</a></li><li><a href="#fitur">API</a></li><li><a href="#harga">Harga</a></li></ul></div>
+      <div><h4>Perusahaan</h4><ul><li><a href="#top">Tentang kami</a></li><li><a href="#top">Karier</a></li><li><a href="#top">Mitra kurir</a></li></ul></div>
+      <div><h4>Bantuan</h4><ul><li><a href="#faq">FAQ</a></li><li><a href="#mulai">Hubungi kami</a></li><li><a href="#top">Status layanan</a></li></ul></div>
+    </div>
+    <div class="ft-bottom">
+      <span>© 2026 Lintas. Merek fiktif untuk template portofolio.</span>
+      <span class="built">Dibangun dengan IBM Carbon Design System + three.js</span>
+    </div>
+  </div>
+</footer>
+
+<cds-modal id="demoModal" size="sm">
+  <cds-modal-header>
+    <cds-modal-close-button></cds-modal-close-button>
+    <cds-modal-label>Demo langsung · 30 menit</cds-modal-label>
+    <cds-modal-heading>Jadwalkan demo Lintas</cds-modal-heading>
+  </cds-modal-header>
+  <cds-modal-body>
+    <p style="margin-bottom:24px;color:var(--cds-text-secondary)">Pilih jadwal, tim kami akan menunjukkan menara kontrol dengan data rute Anda.</p>
+    <div style="display:grid;gap:24px">
+      <cds-text-input id="mEmail" label="Email kerja" placeholder="nama@perusahaan.co.id" type="email"></cds-text-input>
+      <cds-select id="mSlot" label-text="Jadwal" value="sel-10">
+        <cds-select-item value="sel-10">Selasa, 10.00 WIB</cds-select-item>
+        <cds-select-item value="rab-14">Rabu, 14.00 WIB</cds-select-item>
+        <cds-select-item value="kam-09">Kamis, 09.00 WITA</cds-select-item>
+      </cds-select>
+    </div>
+  </cds-modal-body>
+  <cds-modal-footer>
+    <cds-modal-footer-button kind="secondary" data-modal-close>Batal</cds-modal-footer-button>
+    <cds-modal-footer-button kind="primary" id="mSubmit">Kirim jadwal</cds-modal-footer-button>
+  </cds-modal-footer>
+</cds-modal>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<!-- ================= Aplikasi ================= -->
+<script type="module">
+import * as THREE from 'three';
+
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const root = document.documentElement;
+const isDark = () => root.classList.contains('cds-theme-zone-g100');
+function hasWebGL(){ try{ const c=document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2')||c.getContext('webgl'))); }catch(e){ return false; } }
+const GL = hasWebGL();
+if(!GL) root.classList.add('no-webgl');
+
+/* ---------- Data kiriman ---------- */
+const CITIES = {
+  jkt:{n:'Jakarta',lat:-6.2,lon:106.82}, sby:{n:'Surabaya',lat:-7.25,lon:112.75}, mdn:{n:'Medan',lat:3.59,lon:98.67},
+  mks:{n:'Makassar',lat:-5.14,lon:119.42}, bpn:{n:'Balikpapan',lat:-1.27,lon:116.83}, dps:{n:'Denpasar',lat:-8.65,lon:115.22},
+  djj:{n:'Jayapura',lat:-2.53,lon:140.7}, ptk:{n:'Pontianak',lat:-0.03,lon:109.33}, mdc:{n:'Manado',lat:1.47,lon:124.84},
+  btm:{n:'Batam',lat:1.13,lon:104.05}, amq:{n:'Ambon',lat:-3.7,lon:128.17}, koe:{n:'Kupang',lat:-10.17,lon:123.6},
+  plm:{n:'Palembang',lat:-2.98,lon:104.75}, soq:{n:'Sorong',lat:-0.88,lon:131.25}
+};
+const MODE_LABEL = {laut:'Laut', udara:'Udara', darat:'Darat'};
+const SHIPMENTS = [
+  {id:'LTS-24081', a:'jkt', b:'mks', m:'laut',  p:62, s:'Dalam perjalanan', t:'green', eta:'2 hari 4 jam', v:'KM Nusantara 07', st:2},
+  {id:'LTS-24082', a:'sby', b:'djj', m:'laut',  p:35, s:'Dalam perjalanan', t:'green', eta:'5 hari', v:'KM Cendrawasih 3', st:2},
+  {id:'LTS-24083', a:'jkt', b:'mdn', m:'udara', p:80, s:'Hampir tiba', t:'teal', eta:'1 jam 20 mnt', v:'Kargo LT-311', st:2},
+  {id:'LTS-24084', a:'btm', b:'ptk', m:'laut',  p:48, s:'Dalam perjalanan', t:'green', eta:'1 hari 6 jam', v:'KM Kapuas 2', st:2},
+  {id:'LTS-24085', a:'sby', b:'dps', m:'darat', p:91, s:'Hampir tiba', t:'teal', eta:'45 mnt', v:'Truk B 9124 LTS', st:2},
+  {id:'LTS-24086', a:'mks', b:'mdc', m:'udara', p:18, s:'Disortir', t:'blue', eta:'9 jam', v:'Kargo LT-522', st:1},
+  {id:'LTS-24087', a:'bpn', b:'soq', m:'laut',  p:27, s:'Tertunda cuaca', t:'red', eta:'3 hari 8 jam', v:'KM Mahakam 5', st:2},
+  {id:'LTS-24088', a:'jkt', b:'koe', m:'udara', p:55, s:'Dalam perjalanan', t:'green', eta:'2 jam 10 mnt', v:'Kargo LT-118', st:2},
+  {id:'LTS-24089', a:'plm', b:'jkt', m:'darat', p:70, s:'Dalam perjalanan', t:'green', eta:'6 jam', v:'Truk BG 4410 LTS', st:2},
+  {id:'LTS-24090', a:'amq', b:'sby', m:'laut',  p:12, s:'Tertunda cuaca', t:'red', eta:'6 hari', v:'KM Banda Raya', st:1},
+];
+const byId = Object.fromEntries(SHIPMENTS.map(s=>[s.id,s]));
+const routeName = s => `${CITIES[s.a].n} → ${CITIES[s.b].n}`;
+
+/* ---------- Daratan kasar (lon,lat) untuk globe titik ---------- */
+const INDO = [
+ [[95.3,5.6],[97.5,5.2],[100.3,2.5],[103.5,-0.5],[104.5,-1.8],[106,-3.2],[105.8,-5.8],[104.5,-5.9],[102.3,-4],[100.5,-1.5],[99,0.5],[98.5,1.8],[96,4],[95.2,5.2]],
+ [[105.2,-6.8],[106,-5.9],[108.3,-6.3],[110.4,-6.9],[112.6,-6.9],[114.4,-7.7],[114.4,-8.6],[112,-8.4],[110,-8.1],[108,-7.8],[106.4,-7.4],[105.4,-6.9]],
+ [[114.5,-8.1],[115.7,-8.3],[115.2,-8.8],[114.6,-8.4]],
+ [[116,-8.3],[117,-8.4],[119,-8.3],[121,-8.4],[123,-8.2],[123,-8.7],[120,-8.9],[117.5,-9.1],[116,-8.9]],
+ [[123.5,-10.3],[125,-9],[127.2,-8.4],[127,-8.8],[125,-9.6],[124,-10.4]],
+ [[119,-9.5],[120.8,-9.9],[120.5,-10.3],[119,-9.8]],
+ [[109,1.9],[109.6,1.9],[111,1.5],[113,3.1],[115.5,5],[116.8,6.9],[119.2,5.3],[118,4.3],[117.8,2],[119,1],[117.5,0],[116.8,-1.5],[116.4,-3.5],[114.5,-4],[111.5,-3.2],[110.2,-2.9],[109.3,-1],[109,0.5]],
+ [[119.5,-5.6],[119.4,-3.5],[118.8,-2.6],[119.5,-0.8],[120.3,0.5],[121,1.2],[123,1],[124.3,1.6],[125.2,1.5],[124.5,0.4],[123,0.5],[121.2,0.4],[120.3,-1],[121.5,-1],[123.4,-0.8],[121.5,-2],[122.4,-3.2],[123.2,-4.6],[122,-4.8],[121,-3.2],[120.6,-2.8],[120.5,-5.5]],
+ [[131,-1.3],[132.5,-0.4],[134,-0.9],[135,-3.3],[138,-1.6],[141,-2.6],[144,-3.8],[146,-5.5],[147.5,-6.2],[147.8,-8],[150,-10.3],[147,-10],[145,-7.8],[143,-9],[141,-9.1],[139,-8.1],[138,-7.5],[137.8,-5.2],[135,-4.4],[133,-4],[132,-2.8]],
+ [[127.5,2],[128.5,1.5],[128,0.5],[128.7,-0.6],[127.9,-0.8],[127.4,0.8]],
+ [[128,-2.8],[130.8,-3],[130.5,-3.6],[128.2,-3.5]],
+ [[126,-3.1],[127.2,-3.3],[126.8,-3.8],[126,-3.6]],
+ [[105.1,-1.5],[106.8,-2.2],[106.6,-3.1],[105.4,-2.3]]
+];
+const WORLD = [
+ [[26,41],[36,36],[35,31],[43,13],[52,16],[58,22],[57,25],[67,25],[72,21],[77,8],[80,15],[80,13],[87,22],[91,22],[94,17],[97,16],[98,8],[100.5,6.5],[101.3,2.8],[103.5,1.3],[104.2,1.5],[103.4,4],[102.3,6.2],[100.5,13.5],[102.5,12.3],[105,8.7],[106.7,10.4],[109.3,12],[108.8,15.5],[106,18.5],[108,21.6],[110.5,21],[113.5,22.4],[117,23.5],[120,26.5],[122,30],[120.5,34],[122.5,37.5],[118,38.5],[122,40.5],[125.5,39.5],[129.5,42.5],[135.3,43.5],[140.5,48.5],[141,52],[137,54],[142,59],[155,59],[163,61],[170,60],[178,64.5],[180,69],[140,72],[120,73],[105,77.5],[80,73],[70,73],[60,70],[45,68],[30,70],[28,60],[30,46]],
+ [[130,31.5],[131.5,34.2],[135,34],[140,35],[141,38],[142,42],[145,43.3],[141.5,45.5],[140,42],[139.8,38],[136.5,37],[132,35.5],[129.8,33.2]],
+ [[120,18.5],[122.3,18.4],[122,16],[124,13],[121.5,13.7],[120.6,14.5],[119.8,16]],
+ [[122,7],[123.5,8.6],[125.4,9.7],[126.5,7.3],[125.5,5.8],[124,6.5]],
+ [[123,10.5],[125,11.5],[124,9.7],[122.5,9.5]],
+ [[120.1,23],[121,25.2],[122,25],[120.8,22]],
+ [[79.8,9.8],[81.9,7.5],[81,6],[79.9,6.8]],
+ [[113.5,-22],[114,-26.5],[115,-34],[117.8,-35],[123.5,-33.9],[129,-31.6],[131.3,-31.5],[135,-34.6],[138,-34.8],[138.5,-35.6],[140,-37.9],[143.5,-38.8],[146.3,-39.1],[150,-37.5],[153,-31.5],[153.5,-28],[151,-23],[149,-20.5],[146.3,-19],[145.3,-15],[143.5,-14],[142.5,-10.8],[141.5,-13.5],[141.6,-17],[139.5,-17.5],[136,-15.6],[137,-12.3],[132.6,-11.5],[130,-13],[129.4,-14.9],[126.8,-14],[125,-15.5],[122.2,-17.4],[121,-19.6],[117,-20.6]],
+ [[-17,21],[-16,28],[-9,32],[-6,36],[10,37.2],[11,33.3],[20,30.5],[32,31.3],[34.5,28],[37,21],[43.3,12.5],[51.3,11.8],[43.5,-0.5],[40,-10],[40.5,-15.5],[35.5,-24],[32.5,-28.5],[27,-33.8],[20,-34.8],[18.4,-34],[15,-27],[11.8,-17],[13.8,-11],[12,-5],[9.5,1],[9.5,4],[4.5,6.2],[-2,4.7],[-7.5,4.4],[-12.5,7.5],[-15,11],[-17.2,14.7]],
+ [[44,-25],[47,-25],[50.4,-15.5],[49.3,-12],[44,-16.5]],
+ [[-9.5,37],[-9,43],[-1.5,43.5],[-1.5,46.5],[-4.5,48.3],[1.5,50.8],[4,51.5],[8,53.5],[8.6,57],[10.5,57.6],[12,54.5],[20,54.5],[21,57],[24,59.5],[30,60],[25,65.6],[21,64.4],[17.2,61],[18.5,59],[16,56],[12.5,56.3],[11,59],[5,58.5],[5,62],[14,67.5],[19,70],[28,71],[30,70],[30,46],[28.6,41],[26,40.5],[23,36.5],[22.5,40],[19.3,41.8],[13,45.6],[12.4,44.3],[16,41],[18.5,40.2],[16,38],[12.6,38],[15.5,40],[11,42.5],[8.7,44.4],[3.2,43.2],[3,42],[0,39],[-2,36.7],[-5.6,36]],
+ [[-5.7,50],[1.7,51.1],[1.6,52.7],[0,53.5],[-1.6,55.6],[-2,57.6],[-3,58.6],[-5,58.6],[-5.5,56],[-4.8,54.8],[-3,53.4],[-4.6,52.8],[-5,51.6]],
+ [[-168,65.5],[-162,70],[-156.5,71.3],[-141,69.6],[-128,70],[-115,68.8],[-95,68],[-82,66],[-86.5,72],[-80,73],[-70,67],[-62,59],[-55.5,52],[-60,48],[-66.5,45],[-70.7,41.8],[-74,40.6],[-76,37],[-75.6,35.2],[-81,31.5],[-80,27],[-80.4,25.2],[-82.7,27.7],[-84,30],[-89,30.3],[-94,29.5],[-97.4,27.5],[-97.7,21.5],[-96,19],[-91,18.8],[-90.4,21],[-87,21.5],[-88.3,16],[-83.2,15],[-83.6,11],[-79.5,9.5],[-77.3,8.6],[-80,7.4],[-85.5,10],[-88,13.3],[-92,14.6],[-96.5,15.7],[-105,19.7],[-105.5,23],[-112.7,31.5],[-114.7,30.3],[-109.5,23.2],[-112,26],[-117,32.5],[-120.6,34.5],[-124.3,40.4],[-124,46.2],[-123,49],[-127.5,50.5],[-133,55],[-140,59.8],[-148,60.5],[-152,58.8],[-158,57.2],[-164.5,54.7],[-158,58.7],[-162.5,60],[-165,62.5]],
+ [[-73,78],[-60,82],[-30,83.5],[-20,81],[-18,75],[-22,70],[-32,68],[-41,65],[-44,60],[-49,61.5],[-53,66],[-55,70],[-58,75.5]],
+ [[-80,0.5],[-81.3,-4.5],[-76,-14.5],[-70.3,-18.5],[-71.5,-30],[-73.6,-37],[-74,-44],[-75.5,-50],[-72,-54],[-68.5,-55],[-67.5,-46],[-65,-42],[-62,-39],[-57.5,-38],[-58.5,-34.5],[-53,-34],[-48,-26],[-41,-22.5],[-39,-15],[-35,-8],[-35.3,-5.3],[-41,-3],[-50,-0.5],[-51.5,4.5],[-57,6],[-61,10.4],[-67,10.6],[-71.5,12.3],[-76,9.3],[-77.5,7],[-78.8,1.5]],
+ [[172.6,-34.4],[178.5,-37.7],[176.8,-40],[174.6,-41.3],[172,-41],[170,-46],[166.5,-46],[168.4,-44],[172.7,-40.5]]
+];
+function bbox(poly){let a=[1e9,1e9,-1e9,-1e9];for(const[x,y]of poly){a[0]=Math.min(a[0],x);a[1]=Math.min(a[1],y);a[2]=Math.max(a[2],x);a[3]=Math.max(a[3],y);}return a;}
+function pip(x,y,poly){let c=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const[xi,yi]=poly[i],[xj,yj]=poly[j];if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi))c=!c;}return c;}
+const INDO_B = INDO.map(p=>[p,bbox(p)]), WORLD_B = WORLD.map(p=>[p,bbox(p)]);
+function landType(lon,lat){
+  for(const[p,b]of INDO_B) if(lon>=b[0]&&lon<=b[2]&&lat>=b[1]&&lat<=b[3]&&pip(lon,lat,p)) return 2;
+  for(const[p,b]of WORLD_B) if(lon>=b[0]&&lon<=b[2]&&lat>=b[1]&&lat<=b[3]&&pip(lon,lat,p)) return 1;
+  if(lat<-70) return 1;
+  return 0;
+}
+function ll2v(lat,lon,r=1,out=new THREE.Vector3()){
+  const phi=(90-lat)*Math.PI/180, th=(lon+180)*Math.PI/180;
+  return out.set(-r*Math.sin(phi)*Math.cos(th), r*Math.cos(phi), r*Math.sin(phi)*Math.sin(th));
+}
+// titik daratan dibuat sekali, dipakai dua globe
+let DOTS=null;
+function buildDots(){
+  if(DOTS) return DOTS;
+  const N = 30000, pos=[], kind=[], rnd=[];
+  const ga = Math.PI*(3-Math.sqrt(5));
+  for(let i=0;i<N;i++){
+    const y = 1 - (i/(N-1))*2, r = Math.sqrt(1-y*y), th = ga*i;
+    const x = Math.cos(th)*r, z = Math.sin(th)*r;
+    const lat = Math.asin(y)*180/Math.PI;
+    // balik dari ll2v: x=-sinφcosθ, z=sinφsinθ  →  θ=atan2(z,-x)
+    let lon = Math.atan2(z,-x)*180/Math.PI - 180; if(lon<-180) lon+=360;
+    const k = landType(lon,lat);
+    if(!k) continue;
+    pos.push(x*1.002,y*1.002,z*1.002); kind.push(k===2?1:0); rnd.push(Math.random());
+  }
+  DOTS={pos:new Float32Array(pos),kind:new Float32Array(kind),rnd:new Float32Array(rnd)};
+  return DOTS;
+}
+
+/* ---------- Kelas dasar panggung WebGL ---------- */
+class Stage{
+  constructor(canvas){
+    this.canvas=canvas;
+    this.renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'});
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+    this.renderer.setClearColor(0x000000,0);
+    this.scene=new THREE.Scene();
+    this.clock=new THREE.Clock(false);
+    this.time=0; this.speed=1; this.inView=false; this.running=false; this.dirty=true;
+    this._tick=this.tick.bind(this);
+    new IntersectionObserver(es=>{this.inView=es[es.length-1].isIntersecting; this.kick();},{rootMargin:'120px'}).observe(canvas);
+    new ResizeObserver(()=>{this.resize(); this.invalidate();}).observe(canvas.parentElement);
+    document.addEventListener('visibilitychange',()=>this.kick());
+  }
+  size(){ const r=this.canvas.parentElement.getBoundingClientRect(); return [Math.max(1,Math.round(r.width)),Math.max(1,Math.round(r.height))]; }
+  invalidate(){ this.dirty=true; this.kick(); }
+  kick(){ if(this.running||!this.inView||document.hidden) return; this.running=true; this.clock.start(); requestAnimationFrame(this._tick); }
+  tick(){
+    if(!this.inView||document.hidden){ this.running=false; this.clock.stop(); return; }
+    const dt=Math.min(this.clock.getDelta(),0.05);
+    if(!reduced) this.time+=dt*this.speed;
+    const busy=this.update(dt);
+    if(!reduced||busy||this.dirty){ this.renderer.render(this.scene,this.camera); this.dirty=false; }
+    if(!reduced||busy) requestAnimationFrame(this._tick); else { this.running=false; this.clock.stop(); }
+  }
+}
+
+/* ---------- Kurva busur lingkaran besar ---------- */
+class ArcCurve extends THREE.Curve{
+  constructor(a,b,h){ super(); this.a=a.clone().normalize(); this.b=b.clone().normalize(); this.h=h; this.ang=this.a.angleTo(this.b); }
+  getPoint(t,out=new THREE.Vector3()){
+    const s=Math.sin(this.ang)||1, w1=Math.sin((1-t)*this.ang)/s, w2=Math.sin(t*this.ang)/s;
+    return out.copy(this.a).multiplyScalar(w1).addScaledVector(this.b,w2).normalize().multiplyScalar(1.004+this.h*Math.sin(Math.PI*t));
+  }
+}
+const MODE_COLOR = {laut:new THREE.Color('#4589ff'), udara:new THREE.Color('#ff7eb6'), darat:new THREE.Color('#08bdba')};
+const MODE_COLOR_L = {laut:new THREE.Color('#0f62fe'), udara:new THREE.Color('#d02670'), darat:new THREE.Color('#007d79')};
+
+const arcVS=`varying float vT; void main(){ vT=uv.x; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);} `;
+const arcFS=`uniform vec3 uColor; uniform float uTime,uOffset,uOpacity,uHi;
+varying float vT;
+void main(){
+  float head=fract(uTime*0.18+uOffset);
+  float d=head-vT; if(d<0.0) d+=1.0;
+  float trail=smoothstep(0.32,0.0,d);
+  float a=(0.34+0.66*trail)*uOpacity*(0.35+0.65*uHi);
+  gl_FragColor=vec4(uColor*(0.75+0.6*trail+0.4*uHi),a);
+}`;
+const dotVS=`attribute float aKind; attribute float aRnd; uniform float uSize,uTime,uPR; varying float vK; varying float vTw; varying float vFace;
+void main(){ vK=aKind; vec4 mv=modelViewMatrix*vec4(position,1.0);
+  vec3 n=normalize(normalMatrix*position); vFace=smoothstep(-0.05,0.35,dot(n,normalize(-mv.xyz)));
+  vTw=0.65+0.35*sin(uTime*1.6+aRnd*40.0);
+  gl_PointSize=uSize*uPR*(1.0+aKind*0.55)*(3.0/-mv.z); gl_Position=projectionMatrix*mv; }`;
+const dotFS=`uniform vec3 uLand,uIndo; varying float vK; varying float vTw; varying float vFace;
+void main(){ vec2 c=gl_PointCoord-0.5; float d=length(c); if(d>0.5) discard;
+  float a=smoothstep(0.5,0.32,d)*vFace; vec3 col=mix(uLand,uIndo*mix(1.0,vTw,0.6),vK);
+  gl_FragColor=vec4(col,a*mix(0.75,1.0,vK)); }`;
+const atmoVS=`varying vec3 vN; varying vec3 vV; void main(){ vec4 mv=modelViewMatrix*vec4(position,1.0); vN=normalize(normalMatrix*normal); vV=normalize(-mv.xyz); gl_Position=projectionMatrix*mv; }`;
+const atmoFS=`uniform vec3 uColor; uniform float uPow,uInt; varying vec3 vN; varying vec3 vV;
+void main(){ float f=pow(clamp(0.72+dot(vN,vV),0.0,1.0),uPow); gl_FragColor=vec4(uColor,f*uInt); }`;
+const baseFS=`uniform vec3 uCore,uRim; varying vec3 vN; varying vec3 vV;
+void main(){ float f=pow(1.0-max(dot(vN,vV),0.0),2.2); gl_FragColor=vec4(mix(uCore,uRim,f),1.0); }`;
+
+class Globe extends Stage{
+  constructor(canvas,{dist=3.1,offsetX=0,interactive=true,sway=true,minZoom=0.62,liftY=0}={}){
+    super(canvas);
+    this.camera=new THREE.PerspectiveCamera(34,1,0.1,50);
+    this.minZoom=minZoom; this.liftY=liftY; this.baseDist=dist; this.dist=dist; this.distT=dist; this.offsetX=offsetX;
+    this.camera.position.set(0,0,dist);
+    this.group=new THREE.Group(); this.scene.add(this.group);
+    this.sway=sway; this.autoRotate=true; this.focus=null; this.drag=null; this.idleAt=0;
+    this.rot=new THREE.Vector2(); this.rotT=new THREE.Vector2(); this.userRot=new THREE.Vector2();
+    this.setHome(-2.5,118);
+    this.rot.copy(this.rotT);
+    const pr=this.renderer.getPixelRatio();
+    // inti bola
+    this.baseMat=new THREE.ShaderMaterial({vertexShader:atmoVS,fragmentShader:baseFS,uniforms:{uCore:{value:new THREE.Color()},uRim:{value:new THREE.Color()}}});
+    this.group.add(new THREE.Mesh(new THREE.SphereGeometry(0.995,72,48),this.baseMat));
+    // titik daratan
+    const D=buildDots(), g=new THREE.BufferGeometry();
+    g.setAttribute('position',new THREE.BufferAttribute(D.pos,3));
+    g.setAttribute('aKind',new THREE.BufferAttribute(D.kind,1));
+    g.setAttribute('aRnd',new THREE.BufferAttribute(D.rnd,1));
+    this.dotMat=new THREE.ShaderMaterial({vertexShader:dotVS,fragmentShader:dotFS,transparent:true,depthWrite:false,
+      uniforms:{uSize:{value:2.1},uTime:{value:0},uPR:{value:pr},uLand:{value:new THREE.Color()},uIndo:{value:new THREE.Color()}}});
+    this.group.add(new THREE.Points(g,this.dotMat));
+    // atmosfer
+    this.atmoMat=new THREE.ShaderMaterial({vertexShader:atmoVS,fragmentShader:atmoFS,transparent:true,blending:THREE.AdditiveBlending,side:THREE.BackSide,depthWrite:false,
+      uniforms:{uColor:{value:new THREE.Color('#4589ff')},uPow:{value:4.0},uInt:{value:1.0}}});
+    const atmo=new THREE.Mesh(new THREE.SphereGeometry(1.14,64,48),this.atmoMat); this.scene.add(atmo); this.atmo=atmo;
+    // kota
+    this.cityGroup=new THREE.Group(); this.group.add(this.cityGroup);
+    this.rings=[];
+    const ringGeo=new THREE.RingGeometry(0.0075,0.0105,32), dotGeo=new THREE.CircleGeometry(0.0055,16);
+    this.cityMat=new THREE.MeshBasicMaterial({color:0xffffff,side:THREE.DoubleSide,transparent:true,depthWrite:false});
+    for(const k in CITIES){
+      const c=CITIES[k], p=ll2v(c.lat,c.lon,1.006);
+      const d=new THREE.Mesh(dotGeo,this.cityMat); d.position.copy(p); d.lookAt(p.clone().multiplyScalar(2)); this.cityGroup.add(d);
+      const rm=new THREE.MeshBasicMaterial({color:0xffffff,side:THREE.DoubleSide,transparent:true,depthWrite:false});
+      const r=new THREE.Mesh(ringGeo,rm); r.position.copy(p); r.lookAt(p.clone().multiplyScalar(2)); r.userData.ph=Math.random(); this.cityGroup.add(r); this.rings.push(r);
+    }
+    // busur
+    this.arcs=new Map(); this.arcGroup=new THREE.Group(); this.group.add(this.arcGroup);
+    const pktGeo=new THREE.SphereGeometry(0.009,12,8);
+    SHIPMENTS.forEach((s,i)=>{
+      const A=ll2v(CITIES[s.a].lat,CITIES[s.a].lon), B=ll2v(CITIES[s.b].lat,CITIES[s.b].lon);
+      const ang=A.angleTo(B);
+      const h = s.m==='udara'? 0.05+ang*0.55 : s.m==='laut'? 0.012+ang*0.16 : 0.006+ang*0.06;
+      const curve=new ArcCurve(A,B,h);
+      const mat=new THREE.ShaderMaterial({vertexShader:arcVS,fragmentShader:arcFS,transparent:true,depthWrite:false,blending:THREE.NormalBlending,
+        uniforms:{uColor:{value:MODE_COLOR[s.m].clone()},uTime:{value:0},uOffset:{value:i*0.137},uOpacity:{value:1},uHi:{value:0.5}}});
+      const tube=new THREE.Mesh(new THREE.TubeGeometry(curve,96,s.m==='udara'?0.0045:0.006,6,false),mat);
+      const pkt=new THREE.Mesh(pktGeo,new THREE.MeshBasicMaterial({color:0xffffff,transparent:true}));
+      this.arcGroup.add(tube); this.arcGroup.add(pkt);
+      this.arcs.set(s.id,{s,curve,mat,pkt,op:1,opT:1,hi:0.5,hiT:0.5,ang});
+    });
+    // badai
+    this.storm=new THREE.Group(); this.stormOn=0; this.stormT=0;
+    const sp=ll2v(-2.6,118.2,1.01);
+    for(let i=0;i<4;i++){
+      const m=new THREE.Mesh(new THREE.RingGeometry(0.03+i*0.028,0.038+i*0.028,48,1,0,Math.PI*1.4),new THREE.MeshBasicMaterial({color:0xf1c21b,transparent:true,opacity:0,side:THREE.DoubleSide,depthWrite:false}));
+      m.userData.sp=(i%2?-1:1)*(0.6+i*0.25); this.storm.add(m);
+    }
+    this.storm.position.copy(sp); this.storm.lookAt(sp.clone().multiplyScalar(2)); this.group.add(this.storm);
+    // interaksi seret
+    if(interactive){
+      canvas.addEventListener('pointerdown',e=>{ this.drag={x:e.clientX,y:e.clientY,rx:this.userRot.x,ry:this.userRot.y,id:e.pointerId}; this.idleAt=performance.now(); this.invalidate(); });
+      window.addEventListener('pointermove',e=>{ if(!this.drag||e.pointerId!==this.drag.id) return; const k=2.4/Math.max(this.canvas.clientWidth,300);
+        this.userRot.y=this.drag.ry+(e.clientX-this.drag.x)*k*2.2; this.userRot.x=THREE.MathUtils.clamp(this.drag.rx+(e.clientY-this.drag.y)*k*1.4,-0.9,0.9); this.idleAt=performance.now(); this.invalidate(); });
+      window.addEventListener('pointerup',()=>{ this.drag=null; });
+      window.addEventListener('pointercancel',()=>{ this.drag=null; });
+    }
+    this.applyTheme(); this.resize();
+  }
+  setHome(lat,lon){ const v=ll2v(lat,lon); this.homeY=Math.atan2(-v.x,v.z); this.homeX=lat*Math.PI/180; this.rotT.set(this.homeX,this.homeY); }
+  applyTheme(){
+    const d=isDark();
+    this.baseMat.uniforms.uCore.value.set(d?'#0e1117':'#ffffff');
+    this.baseMat.uniforms.uRim.value.set(d?'#1d2b44':'#d0e2ff');
+    this.dotMat.uniforms.uLand.value.set(d?'#6f6f6f':'#a8a8a8');
+    this.dotMat.uniforms.uIndo.value.set(d?'#a6c8ff':'#0f62fe');
+    this.atmoMat.uniforms.uColor.value.set(d?'#4589ff':'#78a9ff');
+    this.atmoMat.uniforms.uInt.value=d?1.0:0.8;
+    this.cityMat.color.set(d?'#ffffff':'#161616');
+    this.rings.forEach(r=>r.material.color.set(d?'#ff832b':'#eb6200'));
+    for(const a of this.arcs.values()){ a.mat.uniforms.uColor.value.copy((d?MODE_COLOR:MODE_COLOR_L)[a.s.m]); a.mat.blending=d?THREE.AdditiveBlending:THREE.NormalBlending; a.mat.needsUpdate=true; a.pkt.material.color.set(d?'#ffffff':'#161616'); }
+    this.invalidate();
+  }
+  resize(){ const [w,h]=this.size(); this.renderer.setSize(w,h,false); this.camera.aspect=w/h;
+    this.camera.setViewOffset(w,h,-this.offsetX*w,(this.liftY&&w<672)?h*this.liftY:0,w,h);
+    // jaga globe muat di kanvas sempit
+    const fit = w/h<0.9 ? this.baseDist*(0.9/(w/h))**0.6 : this.baseDist; this.distFit=fit; if(!this.focus){this.distT=fit;}
+    this.camera.updateProjectionMatrix(); }
+  focusRoute(id){
+    const a=this.arcs.get(id); if(!a) return;
+    this.focus=id;
+    const mid=a.curve.getPoint(0.5).normalize();
+    const lat=Math.asin(mid.y)*180/Math.PI;
+    this.rotT.set(lat*Math.PI/180, Math.atan2(-mid.x,mid.z));
+    this.userRot.set(0,0);
+    this.distT=(this.distFit||this.baseDist)*THREE.MathUtils.clamp(0.55+a.ang*1.7,this.minZoom,1.0);
+    for(const b of this.arcs.values()) b.hiT = b.s.id===id?1:0.12;
+    this.invalidate();
+  }
+  clearFocus(){ this.focus=null; this.distT=this.distFit||this.baseDist; for(const b of this.arcs.values()) b.hiT=0.5; this.rotT.set(this.homeX,this.homeY); this.invalidate(); }
+  setFilter(mode){ for(const a of this.arcs.values()) a.filt = (mode==='semua'||a.s.m===mode)?1:0; this._applyOp(); }
+  setArcs(on){ this.arcsOn=on; this._applyOp(); }
+  _applyOp(){ for(const a of this.arcs.values()) a.opT=(this.arcsOn===false?0:1)*(a.filt??1); this.invalidate(); }
+  setWeather(on){ this.stormT=on?1:0; this.invalidate(); }
+  setCities(on){ this.cityGroup.visible=on; this.invalidate(); }
+  update(dt){
+    const k = reduced?1:1-Math.pow(0.0018,dt);   // pelunakan
+    let busy=false;
+    // rotasi
+    const now=performance.now();
+    let ty=this.rotT.y, tx=this.rotT.x;
+    if(this.autoRotate && !this.focus && !this.drag && now-this.idleAt>2500){ if(this.sway) ty+=Math.sin(this.time*0.12)*0.42; else ty+=this.time*0.05; }
+    ty+=this.userRot.y; tx+=this.userRot.x;
+    // jalur terpendek
+    let dy=ty-this.rot.y; dy=Math.atan2(Math.sin(dy),Math.cos(dy));
+    this.rot.y+=dy*(this.drag?1:k); this.rot.x+=(tx-this.rot.x)*(this.drag?1:k);
+    if(Math.abs(dy)>1e-4||Math.abs(tx-this.rot.x)>1e-4) busy=true;
+    this.group.rotation.set(this.rot.x,this.rot.y,0,'XYZ');
+    this.dist+=(this.distT-this.dist)*k; if(Math.abs(this.distT-this.dist)>1e-4) busy=true;
+    this.camera.position.set(0,0,this.dist);
+    // animasi
+    const t=this.time;
+    this.dotMat.uniforms.uTime.value=t;
+    for(const a of this.arcs.values()){
+      a.op+=(a.opT-a.op)*k; a.hi+=(a.hiT-a.hi)*k; if(Math.abs(a.opT-a.op)>1e-3||Math.abs(a.hiT-a.hi)>1e-3) busy=true;
+      const u=a.mat.uniforms; u.uTime.value=t; u.uOpacity.value=a.op; u.uHi.value=a.hi;
+      const head = reduced ? a.s.p/100 : ((t*0.18+u.uOffset.value)%1);
+      a.curve.getPoint(head,a.pkt.position); a.pkt.material.opacity=a.op*(0.4+0.6*a.hi); a.pkt.visible=a.op>0.02;
+      const sc=1+a.hi*0.8; a.pkt.scale.setScalar(sc);
+    }
+    this.rings.forEach(r=>{ const ph=(t*0.6+r.userData.ph)%1; const s=reduced?1.3:1+ph*1.8; r.scale.setScalar(s); r.material.opacity=reduced?0.55:(1-ph)*0.75; });
+    this.stormOn+=(this.stormT-this.stormOn)*k; if(Math.abs(this.stormT-this.stormOn)>1e-3) busy=true;
+    this.storm.children.forEach((m,i)=>{ m.rotation.z=t*m.userData.sp; m.material.opacity=this.stormOn*(0.85-i*0.15); });
+    this.storm.visible=this.stormOn>0.01;
+    return busy||!!this.drag;
+  }
+}
+
+/* ---------- Cerita isometrik ---------- */
+class IsoStory extends Stage{
+  constructor(canvas,labelsEl){
+    super(canvas);
+    this.labelsEl=labelsEl;
+    this.renderer.shadowMap.enabled=true; this.renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+    this.camera=new THREE.OrthographicCamera(-1,1,1,-1,-100,200);
+    this.camOffset=new THREE.Vector3(16,15.5,16);
+    this.target=new THREE.Vector3(-12,0,2); this.targetT=this.target.clone();
+    this.progress=0; this.progressT=0;
+    const S=this.scene;
+    this.hemi=new THREE.HemisphereLight(0xffffff,0x334466,1.1); S.add(this.hemi);
+    const sun=new THREE.DirectionalLight(0xffffff,1.6); sun.position.set(-12,24,10); sun.castShadow=true;
+    sun.shadow.mapSize.set(2048,2048); const sc=sun.shadow.camera; sc.left=-26; sc.right=26; sc.top=18; sc.bottom=-18; sc.near=1; sc.far=80; sun.shadow.bias=-0.0005; sun.shadow.normalBias=0.02;
+    S.add(sun); this.sun=sun;
+    // material
+    const M=(c)=>new THREE.MeshStandardMaterial({color:c,roughness:0.85,metalness:0,flatShading:true});
+    this.mats={water:M('#0b3d91'),land:M('#3d3d3d'),landTop:M('#525252'),bld:M('#8d8d8d'),bldL:M('#c6c6c6'),roof:M('#393939'),blue:M('#0f62fe'),teal:M('#009d9a'),purple:M('#8a3ffc'),magenta:M('#ee5396'),orange:M('#ff832b'),yellow:M('#f1c21b'),tree:M('#198038'),tree2:M('#24a148'),trunk:M('#6f4b2e'),hull:M('#da1e28'),white:M('#f4f4f4'),mount:M('#4d6650'),wood:M('#7a3b1e'),thatch:M('#5a4636'),dark:M('#262626')};
+    // air
+    const water=new THREE.Mesh(new THREE.PlaneGeometry(400,400),this.mats.water); water.rotation.x=-Math.PI/2; water.receiveShadow=true; S.add(water);
+    // pola ombak (titik)
+    const wp=[]; for(let x=-40;x<=40;x+=1.6) for(let z=-30;z<=30;z+=1.6) wp.push(x+(z%3.2?0.8:0),0.02,z);
+    const wg=new THREE.BufferGeometry(); wg.setAttribute('position',new THREE.Float32BufferAttribute(wp,3));
+    this.waveMat=new THREE.PointsMaterial({color:0xffffff,size:2,sizeAttenuation:false,transparent:true,opacity:0.18,depthWrite:false});
+    S.add(new THREE.Points(wg,this.waveMat));
+    // pulau
+    const island=(pts,h=0.6)=>{ const sh=new THREE.Shape(); sh.moveTo(pts[0][0],-pts[0][1]); sh.splineThru(pts.slice(1).concat([pts[0]]).map(p=>new THREE.Vector2(p[0],-p[1])));
+      const g=new THREE.ExtrudeGeometry(sh,{depth:h,bevelEnabled:true,bevelThickness:0.12,bevelSize:0.25,bevelSegments:2,curveSegments:10}); g.rotateX(-Math.PI/2);
+      const m=new THREE.Mesh(g,[this.mats.landTop,this.mats.land]); m.position.y=-0.12; m.receiveShadow=true; m.castShadow=true; S.add(m); return m; };
+    this.JAVA=[[-19,1],[-17,-2.5],[-12,-3],[-8,-2.6],[-4,-2.4],[-1.8,-1.6],[-1.6,0.6],[-4,2.4],[-8,4.5],[-12,5],[-16,4.6],[-19,3.5]];
+    this.SULA=[[5.8,-3.5],[9,-5.8],[13,-6.8],[17.5,-6.4],[19.5,-3.5],[17.5,-0.8],[13,0.6],[10,1.8],[7.4,1.4],[5.6,0.2]];
+    island(this.JAVA); island(this.SULA);
+    island([[-5,9],[-2,8.2],[1,8.6],[0,10],[-3.5,10.4]],0.4);           // pulau kecil
+    island([[3,-7.5],[5,-8.2],[6,-7],[4,-6.4]],0.4);
+    const Y=0.6;
+    const box=(w,h,d,mat,x,y,z,ry=0)=>{ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat); m.position.set(x,y+h/2,z); m.rotation.y=ry; m.castShadow=m.receiveShadow=true; S.add(m); return m; };
+    const prism=(w,h,d,mat,x,y,z,ry=0)=>{ const sh=new THREE.Shape([new THREE.Vector2(-w/2,0),new THREE.Vector2(w/2,0),new THREE.Vector2(0,h)]); const g=new THREE.ExtrudeGeometry(sh,{depth:d,bevelEnabled:false}); g.translate(0,0,-d/2); const m=new THREE.Mesh(g,mat); m.position.set(x,y,z); m.rotation.y=ry; m.castShadow=true; S.add(m); return m; };
+    this.box=box;
+    // Gudang Cikarang
+    box(4.4,1.6,3,this.mats.bldL,-15.6,Y,0.9); prism(4.6,0.9,3.1,this.mats.roof,-15.6,Y+1.6,0.9,Math.PI/2);
+    box(4.42,0.25,3.02,this.mats.blue,-15.6,Y+1.1,0.9);
+    box(1.2,0.9,0.1,this.mats.dark,-14.6,Y,2.45); box(1.2,0.9,0.1,this.mats.dark,-16.4,Y,2.45);
+    [[-13,2.0],[-12.6,2.0],[-13,1.6]].forEach(([x,z],i)=>box(0.36,0.36,0.36,this.mats.orange,x,Y+(i==2?0:0),z));
+    // Hub Priok
+    box(5,2,3.2,this.mats.bld,-7.2,Y,-1.4); box(5.02,0.3,3.22,this.mats.blue,-7.2,Y+2,-1.4);
+    box(1.2,0.6,1.2,this.mats.bldL,-8.4,Y+2.3,-1.8);
+    const cc=[this.mats.blue,this.mats.teal,this.mats.purple,this.mats.magenta,this.mats.orange,this.mats.yellow];
+    let ci=0; for(let ix=0;ix<3;ix++) for(let iz=0;iz<2;iz++) for(let iy=0;iy<1+((ix+iz)%3);iy++) box(1.3,0.5,0.55,cc[(ci++)%6],-4.4+ix*0.0,Y+iy*0.5,-1.9+iz*0.62+ix*0);
+    for(let ix=0;ix<2;ix++) for(let iy=0;iy<2;iy++) box(1.3,0.5,0.55,cc[(ci++)%6],-5.9,Y+iy*0.5,0.3+ix*0.62);
+    this.crane(-2.6,Y,-1.7,0);
+    // Hub Makassar
+    box(4,1.8,2.6,this.mats.bld,9.8,Y,-3.4); box(4.02,0.3,2.62,this.mats.teal,9.8,Y+1.8,-3.4);
+    for(let i=0;i<4;i++) box(1.3,0.5,0.55,cc[(i+2)%6],7.6,Y+(i>>1)*0.5,-2.9+(i%2)*0.62);
+    this.crane(6.6,Y,-1.9,Math.PI);
+    // Rumah Toraja (tongkonan)
+    this.tongkonan(15.6,Y,-5.1); this.tongkonan(13.6,Y,-5.6,0.75);
+    // gunung
+    const mount=(x,z,r,h)=>{ const m=new THREE.Mesh(new THREE.ConeGeometry(r,h,7),this.mats.mount); m.position.set(x,Y+h/2-0.05,z); m.castShadow=m.receiveShadow=true; S.add(m); const cap=new THREE.Mesh(new THREE.ConeGeometry(r*0.28,h*0.28,7),this.mats.white); cap.position.set(x,Y+h*0.86-0.05,z); S.add(cap); };
+    mount(17.6,-3.8,1.6,2.8); mount(16.4,-2.2,1.1,1.9); mount(12.2,-4.9,1.0,1.6); mount(-17.8,2.5,1.2,2.0); mount(-10.6,-1.4,0.9,1.5);
+    // jalur
+    const P=[[-13.6,Y,3.2],[-11.5,Y,3.0],[-9.5,Y,1.8],[-6.6,Y,0.8],[-4.6,Y,0.4],[-2.7,Y,-0.2],[-0.9,0.05,-0.2],[0.8,0.05,1.2],[2.6,0.05,1.7],[4.6,0.05,1.0],[6.0,0.05,-0.2],[7.7,Y,-1.0],[9.2,Y,-1.4],[11.2,Y,-1.9],[13.2,Y,-2.9],[15.0,Y,-3.6]].map(p=>new THREE.Vector3(...p));
+    this.path=new THREE.CatmullRomCurve3(P,false,'centripetal',0.5);
+    const tube=new THREE.TubeGeometry(this.path,400,0.09,6,false);
+    this.pathMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{uP:{value:0},uC:{value:new THREE.Color('#ff832b')},uTime:{value:0}},
+      vertexShader:`varying float vT; void main(){ vT=uv.x; gl_Position=projectionMatrix*modelViewMatrix*vec4(position+vec3(0.0,0.05,0.0),1.0);} `,
+      fragmentShader:`uniform float uP,uTime; uniform vec3 uC; varying float vT;
+        void main(){ float done=step(vT,uP); float dash=step(0.45,fract(vT*90.0-uTime*0.6));
+          float a=mix(0.38*dash,1.0,done); vec3 c=uC*mix(0.9,1.15,done); float glow=smoothstep(0.012,0.0,abs(vT-uP)); gl_FragColor=vec4(c+glow*0.6,max(a,glow)); }`});
+    S.add(new THREE.Mesh(tube,this.pathMat));
+    // titik henti
+    const STOPS=[P[0],P[3],P[8],P[12],P[15]];
+    this.stopT=STOPS.map(sp=>{ let best=0,bd=1e9; for(let i=0;i<=600;i++){ const q=this.path.getPointAt(i/600); const d=q.distanceToSquared(sp); if(d<bd){bd=d;best=i/600;} } return best; });
+    this.beacons=STOPS.map((sp,i)=>{ const g=new THREE.Group(); g.position.copy(sp);
+      const ring=new THREE.Mesh(new THREE.RingGeometry(0.42,0.56,40),new THREE.MeshBasicMaterial({color:0xff832b,transparent:true,opacity:0.9,side:THREE.DoubleSide,depthWrite:false})); ring.rotation.x=-Math.PI/2; ring.position.y=0.07; g.add(ring);
+      const pin=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,1.4,8),new THREE.MeshBasicMaterial({color:0xff832b})); pin.position.y=0.75; g.add(pin);
+      const head=new THREE.Mesh(new THREE.OctahedronGeometry(0.22),this.mats.orange); head.position.y=1.6; head.castShadow=true; g.add(head);
+      g.userData={ring,head}; S.add(g); return g; });
+    // kendaraan
+    this.truck=this.makeTruck(); this.ship=this.makeShip(); S.add(this.truck); S.add(this.ship);
+    // pohon
+    const rnd=mulberry(7); const tg=new THREE.ConeGeometry(0.32,0.9,6), tk=new THREE.CylinderGeometry(0.07,0.07,0.3,5);
+    const samples=[]; for(let i=0;i<=200;i++) samples.push(this.path.getPointAt(i/200));
+    const avoid=[[-15.6,0.9,3.2],[-7.2,-1.4,3.4],[-4.6,-1.2,1.8],[-5.9,0.6,1.2],[9.8,-3.4,2.8],[7.6,-2.6,1.4],[15.6,-5.1,1.6],[13.6,-5.6,1.4],[17.6,-3.8,1.8],[16.4,-2.2,1.3],[12.2,-4.9,1.2],[-17.8,2.5,1.4],[-10.6,-1.4,1.1],[-2.6,-1.7,1.3],[6.6,-1.9,1.3]];
+    const okAt=(x,z)=>{ for(const q of samples) if((q.x-x)**2+(q.z-z)**2<1.0) return false; for(const[a,b,r]of avoid) if((a-x)**2+(b-z)**2<r*r) return false; return true; };
+    let placed=0;
+    for(let tries=0;tries<900&&placed<70;tries++){
+      const isJ=rnd()<0.55, poly=isJ?this.JAVA:this.SULA;
+      const bb=bbox(poly); const x=bb[0]+rnd()*(bb[2]-bb[0]), z=bb[1]+rnd()*(bb[3]-bb[1]);
+      if(!pip(x,z,poly)) continue; if(!pip(x+0.8,z,poly)||!pip(x-0.8,z,poly)||!pip(x,z+0.8,poly)||!pip(x,z-0.8,poly)) continue; if(!okAt(x,z)) continue;
+      const s=0.7+rnd()*0.6; const t=new THREE.Mesh(tg,rnd()<0.5?this.mats.tree:this.mats.tree2); t.position.set(x,Y+0.3+0.45*s,z); t.scale.setScalar(s); t.castShadow=true; S.add(t);
+      const tr=new THREE.Mesh(tk,this.mats.trunk); tr.position.set(x,Y+0.15,z); S.add(tr); placed++;
+    }
+    // awan
+    this.clouds=[]; const cg=new THREE.IcosahedronGeometry(0.7,0);
+    for(let i=0;i<5;i++){ const c=new THREE.Group(); for(let j=0;j<3;j++){ const m=new THREE.Mesh(cg,this.mats.white); m.position.set(j*0.75-0.75,(j===1?0.25:0),rnd()*0.3); m.scale.setScalar(j===1?1.15:0.85); m.castShadow=true; c.add(m);} c.scale.setScalar(0.6+rnd()*0.25); c.position.set(-22+i*10,6.5+rnd()*1.5,-8+rnd()*14); c.userData.v=0.25+rnd()*0.3; S.add(c); this.clouds.push(c); }
+    // label HTML (cds-tag)
+    const LBL=[['Gudang Cikarang','gray'],['Hub Tanjung Priok','blue'],['Laut Jawa · KM Nusantara 07','cyan'],['Hub Makassar','teal'],['Penerima · Toraja','green']];
+    this.labels=LBL.map(([t,type],i)=>{ const d=document.createElement('div'); d.className='iso-label'; d.innerHTML=`<cds-tag type="${type}" size="md">${t}</cds-tag>`; labelsEl.appendChild(d); return d; });
+    this.labelAnchors=STOPS.map(s=>s.clone().add(new THREE.Vector3(0,2.1,0)));
+    this.applyTheme(); this.resize(); this.place(0);
+  }
+  crane(x,y,z,ry){ const g=new THREE.Group(); const m=this.mats.orange;
+    const leg=(lx,lz)=>{ const b=new THREE.Mesh(new THREE.BoxGeometry(0.16,3,0.16),m); b.position.set(lx,1.5,lz); b.castShadow=true; g.add(b); };
+    leg(-0.5,-0.5); leg(0.5,-0.5); leg(-0.5,0.5); leg(0.5,0.5);
+    const beam=new THREE.Mesh(new THREE.BoxGeometry(1.2,0.3,4.6),m); beam.position.set(0,3.1,1.0); beam.castShadow=true; g.add(beam);
+    const cab=new THREE.Mesh(new THREE.BoxGeometry(0.6,0.4,0.6),this.mats.white); cab.position.set(0,2.75,0.9); g.add(cab);
+    const cable=new THREE.Mesh(new THREE.BoxGeometry(0.03,1.4,0.03),this.mats.dark); cable.position.set(0,2.2,2.6); g.add(cable);
+    const ct=new THREE.Mesh(new THREE.BoxGeometry(1.1,0.45,0.5),this.mats.blue); ct.position.set(0,1.4,2.6); ct.castShadow=true; g.add(ct);
+    g.position.set(x,y,z); g.rotation.y=ry; this.scene.add(g); }
+  tongkonan(x,y,z,s=1){ const g=new THREE.Group();
+    const posts=[[-0.7,-0.45],[0.7,-0.45],[-0.7,0.45],[0.7,0.45]]; posts.forEach(([a,b])=>{ const p=new THREE.Mesh(new THREE.BoxGeometry(0.14,0.7,0.14),this.mats.wood); p.position.set(a,0.35,b); p.castShadow=true; g.add(p); });
+    const body=new THREE.Mesh(new THREE.BoxGeometry(1.7,0.75,1.1),this.mats.hull); body.position.y=1.05; body.castShadow=true; g.add(body);
+    const band=new THREE.Mesh(new THREE.BoxGeometry(1.72,0.12,1.12),this.mats.yellow); band.position.y=1.2; g.add(band);
+    const sh=new THREE.Shape(); sh.moveTo(-1.0,0); sh.lineTo(1.0,0); sh.quadraticCurveTo(1.6,0.2,1.95,1.05); sh.quadraticCurveTo(0,0.25,-1.95,1.05); sh.quadraticCurveTo(-1.6,0.2,-1.0,0);
+    const rg=new THREE.ExtrudeGeometry(sh,{depth:1.3,bevelEnabled:false,curveSegments:12}); rg.translate(0,0,-0.65);
+    const roof=new THREE.Mesh(rg,this.mats.thatch); roof.position.y=1.42; roof.castShadow=true; g.add(roof);
+    g.position.set(x,y,z); g.scale.setScalar(s); g.rotation.y=0.6; this.scene.add(g); }
+  makeTruck(){ const g=new THREE.Group(), body=new THREE.Group(); g.add(body);
+    const cargo=new THREE.Mesh(new THREE.BoxGeometry(1.25,0.72,0.7),this.mats.white); cargo.position.set(-0.2,0.56,0); cargo.castShadow=true; body.add(cargo);
+    const stripe=new THREE.Mesh(new THREE.BoxGeometry(1.26,0.14,0.71),this.mats.blue); stripe.position.set(-0.2,0.5,0); body.add(stripe);
+    const cab=new THREE.Mesh(new THREE.BoxGeometry(0.5,0.58,0.68),this.mats.blue); cab.position.set(0.68,0.49,0); cab.castShadow=true; body.add(cab);
+    const win=new THREE.Mesh(new THREE.BoxGeometry(0.06,0.22,0.6),this.mats.dark); win.position.set(0.93,0.6,0); body.add(win);
+    const wg=new THREE.CylinderGeometry(0.15,0.15,0.12,12); wg.rotateX(Math.PI/2);
+    [[-0.5,0.36],[-0.5,-0.36],[0.6,0.36],[0.6,-0.36]].forEach(([a,b])=>{ const w=new THREE.Mesh(wg,this.mats.dark); w.position.set(a,0.15,b); body.add(w); });
+    g.userData.body=body; return g; }
+  makeShip(){ const g=new THREE.Group(), body=new THREE.Group(); g.add(body);
+    const sh=new THREE.Shape(); sh.moveTo(-1.6,-0.55); sh.lineTo(1.1,-0.55); sh.quadraticCurveTo(1.9,-0.3,2.1,0); sh.quadraticCurveTo(1.9,0.3,1.1,0.55); sh.lineTo(-1.6,0.55); sh.lineTo(-1.6,-0.55);
+    const hg=new THREE.ExtrudeGeometry(sh,{depth:0.5,bevelEnabled:false}); hg.rotateX(-Math.PI/2);
+    const hull=new THREE.Mesh(hg,this.mats.hull); hull.position.y=-0.15; hull.castShadow=true; body.add(hull);
+    const deck=new THREE.Mesh(new THREE.BoxGeometry(3.2,0.08,1.08),this.mats.white); deck.position.set(0.1,0.37,0); body.add(deck);
+    const br=new THREE.Mesh(new THREE.BoxGeometry(0.6,0.75,0.9),this.mats.white); br.position.set(-1.25,0.78,0); br.castShadow=true; body.add(br);
+    const brw=new THREE.Mesh(new THREE.BoxGeometry(0.62,0.12,0.92),this.mats.dark); brw.position.set(-1.25,0.98,0); body.add(brw);
+    const cc=[this.mats.blue,this.mats.teal,this.mats.purple,this.mats.magenta,this.mats.orange,this.mats.yellow]; let i=0;
+    for(let ix=0;ix<3;ix++) for(let iz=0;iz<2;iz++) for(let iy=0;iy<(ix===1?2:1);iy++){ const c=new THREE.Mesh(new THREE.BoxGeometry(0.62,0.34,0.44),cc[(i++)%6]); c.position.set(-0.45+ix*0.66,0.58+iy*0.34,-0.24+iz*0.48); c.castShadow=true; body.add(c); }
+    const wake=new THREE.Mesh(new THREE.RingGeometry(0.9,1.15,32,1,Math.PI*0.6,Math.PI*0.8),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.35,side:THREE.DoubleSide,depthWrite:false})); wake.rotation.x=-Math.PI/2; wake.position.set(-1.6,0.04,0); g.add(wake);
+    g.userData.body=body; return g; }
+  applyTheme(){
+    const d=isDark(); const m=this.mats;
+    m.water.color.set(d?'#0a1f3f':'#a6c8ff'); m.land.color.set(d?'#262626':'#c6c6c6'); m.landTop.color.set(d?'#393939':'#f4f4f4');
+    m.bld.color.set(d?'#6f6f6f':'#e0e0e0'); m.bldL.color.set(d?'#8d8d8d':'#ffffff'); m.roof.color.set(d?'#262626':'#525252');
+    m.mount.color.set(d?'#3e5a45':'#a7c4a0'); m.white.color.set(d?'#e0e0e0':'#ffffff'); m.dark.color.set(d?'#161616':'#393939');
+    this.hemi.color.set(d?'#c6d4ff':'#ffffff'); this.hemi.groundColor.set(d?'#1a1f2e':'#8090a8'); this.hemi.intensity=d?0.9:1.25; this.sun.intensity=d?1.5:1.9;
+    this.waveMat.color.set(d?'#78a9ff':'#ffffff'); this.waveMat.opacity=d?0.16:0.45;
+    this.invalidate();
+  }
+  resize(){ const [w,h]=this.size(); this.renderer.setSize(w,h,false); this.w=w; this.h=h;
+    const asp=w/h; const narrow=w<1056;
+    let H = narrow? (asp<0.8? 5.2/asp : 9) : 9.2;
+    this.camera.left=-H*asp; this.camera.right=H*asp; this.camera.top=H; this.camera.bottom=-H; this.camera.updateProjectionMatrix();
+    this.halfW=H*asp; this.halfH=H; this.narrow=narrow;
+    this.place(this.progress,true);
+  }
+  setProgress(p){ this.progressT=THREE.MathUtils.clamp(p,0,1); this.invalidate(); }
+  pathParam(p){ // langkah: tahan di halte, lalu bergerak ke halte berikutnya
+    const n=this.stopT.length-1; const seg=Math.min(Math.floor(p*n),n-1); const local=p*n-seg;
+    const e=THREE.MathUtils.smoothstep(local,0.28,0.92);
+    return {u:THREE.MathUtils.lerp(this.stopT[seg],this.stopT[seg+1],e), step: local<0.6?seg:seg+1};
+  }
+  place(p,snap=false){
+    const {u}=this.pathParam(p); this.u=u;
+    const pos=this.path.getPointAt(u), tan=this.path.getTangentAt(u);
+    const onSea=pos.y<0.32;
+    this.truck.visible=!onSea; this.ship.visible=onSea;
+    const v=onSea?this.ship:this.truck; v.position.copy(pos); if(onSea) v.position.y=0.02;
+    v.rotation.y=Math.atan2(-tan.z,tan.x);
+    this.pathMat.uniforms.uP.value=u;
+    // kamera: kendaraan di sisi kanan (desktop) / atas (ponsel)
+    this.targetT.copy(pos);
+    const camDir=this.camOffset.clone().normalize();
+    const right=new THREE.Vector3(1,0,-1).normalize(); const up=new THREE.Vector3().crossVectors(right,camDir).normalize().negate();
+    if(!this.narrow) this.targetT.addScaledVector(right,-this.halfW*0.28); else this.targetT.addScaledVector(up,-this.halfH*0.28);
+    if(snap) this.target.copy(this.targetT);
+  }
+  update(dt){
+    const k=reduced?1:1-Math.pow(0.004,dt);
+    this.progress+=(this.progressT-this.progress)*k; const busy=Math.abs(this.progressT-this.progress)>1e-4;
+    this.place(this.progress);
+    this.target.lerp(this.targetT,k);
+    this.camera.position.copy(this.target).add(this.camOffset); this.camera.lookAt(this.target);
+    this.sun.position.set(this.target.x-12,24,this.target.z+10); this.sun.target.position.copy(this.target); this.sun.target.updateMatrixWorld();
+    const t=this.time;
+    this.pathMat.uniforms.uTime.value=t;
+    const bob=reduced?0:Math.sin(t*2.2)*0.04; this.ship.userData.body.position.y=bob; this.ship.userData.body.rotation.x=reduced?0:Math.sin(t*1.7)*0.04;
+    this.truck.userData.body.position.y=reduced?0:Math.abs(Math.sin(t*14))*0.015;
+    const active=this.pathParam(this.progress).step;
+    this.beacons.forEach((b,i)=>{ const on=i===active; const ph=(t*0.8)%1; b.userData.ring.scale.setScalar(on&&!reduced?1+ph*1.2:1); b.userData.ring.material.opacity=on?(reduced?0.9:1-ph):0.35; b.userData.head.rotation.y=t*1.2; b.userData.head.position.y=1.6+(reduced?0:Math.sin(t*2+i)*0.08); });
+    this.clouds.forEach(c=>{ c.position.x+=reduced?0:dt*c.userData.v; if(c.position.x>30) c.position.x=-30; });
+    // label
+    this.camera.updateMatrixWorld();
+    const v=new THREE.Vector3();
+    this.labels.forEach((el,i)=>{ v.copy(this.labelAnchors[i]).project(this.camera); const x=(v.x*0.5+0.5)*this.w, y=(-v.y*0.5+0.5)*this.h;
+      const vis=v.x>-1.1&&v.x<1.1&&v.y>-1.1&&v.y<1.1; el.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px) translate(-50%,-100%)`; el.style.opacity=vis?(i===active?1:0.6):0; });
+    return busy || this.target.distanceToSquared(this.targetT)>1e-5;
+  }
+}
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}}
+
+/* ================= Wiring UI Carbon ================= */
+const $=s=>document.querySelector(s);
+const STEPS=[
+  ['Dijemput di gudang','Paket dijemput dari gudang mitra di Cikarang. Label Lintas dipindai, berat dan dimensi tercatat otomatis — tanpa input manual.'],
+  ['Disortir di Tanjung Priok','Hub sortir memproses 48.000 paket per jam. Mesin rute memilih kapal dengan biaya, cuaca, dan jadwal sandar terbaik.'],
+  ['Menyeberang Laut Jawa','Kontainer naik KM Nusantara 07. Posisi kapal diperbarui tiap 30 detik lewat AIS dan satelit, bahkan di tengah laut.'],
+  ['Transit di Makassar','Bongkar muat, dokumen, dan serah terima tercatat digital. Paket langsung dijadwalkan ke kurir lokal terdekat.'],
+  ['Diterima di Toraja','Kurir mengantar sampai depan rumah. Penerima tanda tangan digital, pengirim menerima notifikasi WhatsApp seketika.']
+];
+
+async function main(){
+  await Promise.all(['cds-dropdown','cds-table','cds-toggle','cds-progress-indicator','cds-content-switcher','cds-slider','cds-modal'].map(t=>customElements.whenDefined(t)));
+
+  // dropdown rute hero
+  const dd=$('#heroRoute');
+  dd.innerHTML=SHIPMENTS.map(s=>`<cds-dropdown-item value="${s.id}">${routeName(s)} · ${MODE_LABEL[s.m]}</cds-dropdown-item>`).join('');
+  await customElements.whenDefined('cds-dropdown-item'); dd.value=''; await new Promise(r=>requestAnimationFrame(r)); dd.value='LTS-24081';
+  // tabel kiriman
+  $('#shipBody').innerHTML=SHIPMENTS.map((s,i)=>`<cds-table-row selection-name="kiriman" selection-value="${s.id}" ${i===0?'selected':''} data-id="${s.id}">
+    <cds-table-cell class="tnum">${s.id.replace('LTS-','')}</cds-table-cell><cds-table-cell>${routeName(s)}</cds-table-cell>
+    <cds-table-cell class="col-hide-sm">${MODE_LABEL[s.m]}</cds-table-cell><cds-table-cell><cds-tag type="${s.t}" size="sm">${s.s}</cds-tag></cds-table-cell></cds-table-row>`).join('');
+
+  let hero=null, ctrl=null, story=null;
+  if(GL){
+    hero=new Globe($('#heroGlobe'),{dist:3.55,minZoom:0.86});
+    ctrl=new Globe($('#ctrlGlobe'),{dist:3.5,minZoom:0.62,liftY:0.13});
+    story=new IsoStory($('#storyCanvas'),$('#isoLabels'));
+    hero.focusRoute('LTS-24081');
+    ctrl.focusRoute('LTS-24081');
+    window.__lintas={hero,ctrl,story};
+  }
+  const heroSet=id=>{ const s=byId[id]; if(!s) return;
+    $('#rcMode').textContent=MODE_LABEL[s.m]; $('#rcEta').textContent=s.eta;
+    const pb=$('#rcProg'); pb.value=s.p; pb.setAttribute('helper-text',`${s.p}% · ${s.s.toLowerCase()}`);
+    hero&&hero.focusRoute(id); };
+  dd.addEventListener('cds-dropdown-selected',e=>heroSet(e.detail.item.value));
+
+  // jam WIB
+  const clock=()=>{ try{ $('#rcClock').textContent=new Intl.DateTimeFormat('id-ID',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Jakarta',hour12:false}).format(new Date())+' WIB'; }catch(e){} };
+  clock(); setInterval(clock,30000);
+
+  // panel kontrol
+  const stepStates=(el,cur)=>[...el.querySelectorAll('cds-progress-step')].forEach((s,i)=>s.setAttribute('state',i<cur?'complete':i===cur?'current':'incomplete'));
+  const selectShip=id=>{ const s=byId[id]; if(!s) return;
+    $('#scId').textContent=`${s.id} · ${s.v}`; $('#scRoute').textContent=routeName(s);
+    const tg=$('#scTag'); tg.setAttribute('type',s.t); tg.textContent=s.s;
+    stepStates($('#scSteps'),s.st);
+    const b=$('#scBar'); b.value=s.p; b.setAttribute('helper-text',`${s.p}% · estimasi tiba ${s.eta}`); b.setAttribute('status',s.t==='red'?'error':'active');
+    document.querySelectorAll('#shipBody cds-table-row').forEach(r=>{ const on=r.dataset.id===id; if(on!==r.hasAttribute('selected')) r.toggleAttribute('selected',on); });
+    ctrl&&ctrl.focusRoute(id); };
+  $('#shipTable').addEventListener('cds-table-row-change-selection',e=>{ const r=e.target.closest('cds-table-row'); if(r&&e.detail.selected!==false) setTimeout(()=>selectShip(r.dataset.id)); });
+  $('#shipBody').addEventListener('click',e=>{ const r=e.target.closest('cds-table-row'); if(r) selectShip(r.dataset.id); });
+  $('#modeSwitch').addEventListener('cds-content-switcher-selected',e=>{ const v=e.detail.item.value; ctrl&&ctrl.setFilter(v);
+    document.querySelectorAll('#shipBody cds-table-row').forEach(r=>{ const s=byId[r.dataset.id]; r.style.display = (v==='semua'||s.m===v)?'':'none'; });
+    const first=SHIPMENTS.find(s=>v==='semua'||s.m===v); if(first) selectShip(first.id); });
+  $('#tgArcs').addEventListener('cds-toggle-changed',e=>ctrl&&ctrl.setArcs(e.detail.checked));
+  $('#tgWeather').addEventListener('cds-toggle-changed',e=>{ ctrl&&ctrl.setWeather(e.detail.checked); $('#weatherNote').hidden=!e.detail.checked; });
+  $('#tgRotate').addEventListener('cds-toggle-changed',e=>{ if(!ctrl) return; ctrl.autoRotate=e.detail.checked; if(e.detail.checked) ctrl.clearFocus(); ctrl.invalidate(); });
+  $('#tgHubs').addEventListener('cds-toggle-changed',e=>ctrl&&ctrl.setCities(e.detail.checked));
+  $('#speedSlider').addEventListener('cds-slider-changed',e=>{ if(ctrl){ ctrl.speed=Number(e.detail.value); ctrl.invalidate(); } });
+
+  // cerita scroll
+  const sec=$('#perjalanan'); let lastStep=-1;
+  const onScroll=()=>{
+    const r=sec.getBoundingClientRect(); const stickyH=$('#storySticky').offsetHeight;
+    const p=THREE.MathUtils.clamp(-r.top/Math.max(1,r.height-stickyH),0,1);
+    story&&story.setProgress(p);
+    const n=STEPS.length-1, seg=Math.min(Math.floor(p*n),n-1), local=p*n-seg; const step=p>=1?n:(local<0.6?seg:seg+1);
+    $('#storyBar').value=Math.round(p*100);
+    if(step!==lastStep){ lastStep=step; const f=$('#storyFade');
+      const swap=()=>{ $('#storyTitle').textContent=STEPS[step][0]; $('#storyText').textContent=STEPS[step][1]; $('#storyNum').textContent=`Langkah ${step+1} dari ${STEPS.length}`; f.classList.remove('out'); };
+      if(reduced) swap(); else { f.classList.add('out'); clearTimeout(f._t); f._t=setTimeout(swap,180); }
+      stepStates($('#storySteps'),step);
+    }
+  };
+  addEventListener('scroll',onScroll,{passive:true}); addEventListener('resize',onScroll); onScroll();
+
+  // tema
+  const themeIcon=$('#themeIcon');
+  const MOON=themeIcon.innerHTML, SUN='<path d="M16,12a4,4,0,1,1-4,4,4.0045,4.0045,0,0,1,4-4m0-2a6,6,0,1,0,6,6,6,6,0,0,0-6-6Z"/><path d="M6.854 5.375H8.854V10.333H6.854z" transform="rotate(-45 7.86 7.856)"/><path d="M2 15.005H7V17.005H2z"/><path d="M5.375 23.147H10.333V25.147H5.375z" transform="rotate(-45 7.86 24.149)"/><path d="M15 25.005H17V30.005H15z"/><path d="M23.147 21.668H25.147V26.626H23.147z" transform="rotate(-45 24.152 24.149)"/><path d="M25 15.005H30V17.005H25z"/><path d="M21.668 6.854H26.626V8.854H21.668z" transform="rotate(-45 24.152 7.856)"/><path d="M15 2.005H17V7.005H15z"/>';
+  const syncIcon=()=>{ themeIcon.innerHTML=isDark()?SUN:MOON; };
+  syncIcon();
+  $('#themeBtn').addEventListener('click',()=>{ const d=!isDark(); root.classList.toggle('cds-theme-zone-g100',d); root.classList.toggle('cds-theme-zone-white',!d);
+    try{localStorage.setItem('lintas-theme',d?'g100':'white');}catch(e){}
+    syncIcon(); [hero,ctrl,story].forEach(s=>s&&s.applyTheme()); });
+
+  const mqS=matchMedia('(max-width:671px)'); const vert=()=>$('#trackSteps').toggleAttribute('vertical',mqS.matches); vert(); mqS.addEventListener('change',vert);
+  // fitur: lacak resi
+  const doTrack=e=>{ e&&e.preventDefault(); const inp=$('#trackInput'); const v=(inp.value||'').trim().toUpperCase().replace(/^(\d)/,'LTS-$1'); const s=byId[v];
+    if(!s){ inp.setAttribute('invalid',''); inp.setAttribute('invalid-text','Resi tidak ditemukan. Coba LTS-24081 sampai LTS-24090.'); return; }
+    inp.removeAttribute('invalid'); $('#trackId').textContent=s.id; const tg=$('#trackTag'); tg.setAttribute('type',s.t); tg.textContent=s.s;
+    const steps=[...$('#trackSteps').querySelectorAll('cds-progress-step')];
+    const labs=[['Dijemput',CITIES[s.a].n],['Disortir','Hub '+CITIES[s.a].n],[s.m==='laut'?'Di laut':s.m==='udara'?'Di udara':'Di jalan',MODE_LABEL[s.m]],['Diterima',CITIES[s.b].n]];
+    steps.forEach((st,i)=>{ st.setAttribute('label',labs[i][0]); st.setAttribute('secondary-label',labs[i][1]); });
+    stepStates($('#trackSteps'),s.st); };
+  $('#trackForm').addEventListener('submit',doTrack); $('#trackBtn').addEventListener('click',doTrack);
+
+  // fitur: optimasi
+  const bars=$('#optBars'); bars.innerHTML=Array.from({length:14},(_,i)=>`<i class="${i%3===2?'alt':''}"></i>`).join('');
+  const fmt=n=>new Intl.NumberFormat('id-ID').format(n);
+  const opt=v=>{ v=Number(v); const cost=Math.round((3200+v*26)/10)*10, time=(4.6-v*0.034).toFixed(1).replace('.',','), co2=(1.2+v*0.022).toFixed(1).replace('.',',');
+    $('#optCost').textContent='Rp '+fmt(cost); $('#optTime').textContent=time+' hari'; $('#optCo2').textContent=co2+' kg';
+    [...bars.children].forEach((b,i)=>{ b.style.height=(25+Math.abs(Math.sin(i*0.9+v/18))*55+(i%3===2?0:v*0.2))+'%'; }); };
+  $('#optSlider').addEventListener('cds-slider-changed',e=>opt(e.detail.value)); opt(40);
+
+  // harga
+  $('#billSwitch').addEventListener('cds-content-switcher-selected',e=>{ const y=e.detail.item.value==='tahunan';
+    document.querySelectorAll('.plans [data-m]').forEach(el=>el.textContent=y?el.dataset.y:el.dataset.m); });
+
+  // statistik hitung naik
+  const io=new IntersectionObserver(es=>es.forEach(en=>{ if(!en.isIntersecting) return; io.unobserve(en.target); const el=en.target, to=parseFloat(el.dataset.count), dec=+(el.dataset.dec||0), suf=el.dataset.suffix||'';
+    const out=v=>{ el.innerHTML=(dec?v.toFixed(dec).replace('.',','):fmt(Math.round(v)))+(suf?`<small>${suf}</small>`:''); };
+    if(reduced){ out(to); return; } const t0=performance.now(); const step=t=>{ const k=Math.min((t-t0)/1400,1); out(to*(1-Math.pow(1-k,3))); if(k<1) requestAnimationFrame(step); }; requestAnimationFrame(step); }),{threshold:0.4});
+  document.querySelectorAll('[data-count]').forEach(el=>io.observe(el));
+
+  // modal & toast
+  const modal=$('#demoModal');
+  ['#openDemo','#openDemo2'].forEach(s=>$(s).addEventListener('click',()=>{ modal.open=true; }));
+  const toast=(title,sub,kind='success')=>{ const t=document.createElement('cds-toast-notification'); t.setAttribute('kind',kind); t.setAttribute('title',title); t.setAttribute('subtitle',sub); t.setAttribute('caption',new Intl.DateTimeFormat('id-ID',{hour:'2-digit',minute:'2-digit'}).format(new Date())); t.setAttribute('timeout','6000'); t.setAttribute('open','');
+    $('#toasts').appendChild(t); t.addEventListener('cds-notification-closed',()=>t.remove()); };
+  const okEmail=v=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v||'');
+  $('#mSubmit').addEventListener('click',()=>{ const em=$('#mEmail'); if(!okEmail(em.value)){ em.setAttribute('invalid',''); em.setAttribute('invalid-text','Masukkan email yang valid.'); return; } em.removeAttribute('invalid'); modal.open=false; toast('Demo terjadwal','Undangan kalender dikirim ke '+em.value+'.'); });
+  const submitCta=e=>{ e&&e.preventDefault(); let ok=true;
+    const n=$('#fNama'), em=$('#fEmail');
+    if(!(n.value||'').trim()){ n.setAttribute('invalid',''); n.setAttribute('invalid-text','Nama wajib diisi.'); ok=false; } else n.removeAttribute('invalid');
+    if(!okEmail(em.value)){ em.setAttribute('invalid',''); em.setAttribute('invalid-text','Gunakan format email yang valid.'); ok=false; } else em.removeAttribute('invalid');
+    if(!ok){ toast('Periksa formulir','Beberapa kolom belum terisi dengan benar.','error'); return; }
+    toast('Permintaan terkirim','Terima kasih, '+n.value.trim().split(' ')[0]+'! Tim Lintas menghubungi Anda dalam 1 hari kerja.'); $('#ctaForm').reset&&$('#ctaForm').reset(); n.value=''; em.value=''; };
+  $('#ctaForm').addEventListener('submit',submitCta); $('#ctaSubmit').addEventListener('click',submitCta);
+  // tutup side-nav setelah klik tautan
+  document.querySelectorAll('cds-side-nav-link').forEach(l=>l.addEventListener('click',()=>{ const sn=document.querySelector('cds-side-nav'), b=document.querySelector('cds-header-menu-button'); if(sn) sn.expanded=false; if(b) b.active=false; }));
+}
+main();
+</script>
+</body>
+</html>
