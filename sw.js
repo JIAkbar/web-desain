@@ -1,6 +1,6 @@
 // Service worker minimal: syarat tombol "Install app" di Chrome.
 // Halaman selalu diambil dari jaringan; kalau offline, pakai salinan beranda/galeri yang tersimpan.
-const CACHE = 'jia-v2';
+const CACHE = 'jia-v3';
 // Cloudflare Pages menyajikan /gallery.html sebagai /gallery.
 const OFFLINE = ['/', '/gallery'];
 self.addEventListener('install', e => {
