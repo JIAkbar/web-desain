@@ -177,6 +177,10 @@
   .panel sl-radio-button::part(button){padding-inline:12px}
   .swatches{display:flex;gap:8px;align-items:center}
   .readout{display:flex;gap:8px;flex-wrap:wrap}
+  .meters{display:grid;gap:14px;font-size:.86rem;color:var(--muted)}
+  .meters .row{margin-bottom:6px}.meters b{color:var(--ink)}
+  .meters sl-progress-bar{--height:8px;--indicator-color:var(--sl-color-primary-600)}
+  #mLight{--indicator-color:#e2a33c}
   .panel .foot{margin-top:auto;display:flex;gap:10px;flex-wrap:wrap}
   @media (max-width:960px){.cfg-grid{grid-template-columns:minmax(0,1fr)}.cfg .stage{height:min(520px,62vh);min-height:380px}}
 
@@ -341,7 +345,7 @@
       <div>
         <sl-badge variant="primary" pill>Arsitektur tropis modern · Bali — Jakarta</sl-badge>
         <h1>Rumah yang <em>bernapas</em> bersama iklim tropis.</h1>
-        <p class="lead">Ruang Studio merancang hunian yang sejuk tanpa banyak AC: overstek lebar, ventilasi silang, dan material lokal yang menua dengan indah. Geser waktu di samping untuk melihat bagaimana cahaya bergerak sepanjang hari.</p>
+        <p class="lead">Ruang Studio merancang hunian yang sejuk tanpa banyak AC: overstek lebar, ventilasi silang, dan material lokal yang menua dengan indah. Geser waktu pada model 3D untuk melihat bagaimana cahaya bergerak sepanjang hari.</p>
         <div class="hero-cta">
           <sl-button variant="primary" size="large" pill data-open-consult>Jadwalkan konsultasi<sl-icon slot="suffix" name="arrow-right"></sl-icon></sl-button>
           <sl-button size="large" pill href="#konfigurator" outline>Coba konfigurator 3D</sl-button>
@@ -386,10 +390,10 @@
               <p style="color:var(--muted)">Estimasi kasar untuk rumah tinggal. Angka final ditentukan setelah survei lahan.</p>
               <div class="controls">
                 <sl-range id="calcArea" label="Luas bangunan" min="60" max="500" step="10" value="180" help-text="Geser untuk mengubah luas (m²)"></sl-range>
-                <sl-radio-group id="calcPlan" label="Paket" value="lengkap">
+                <sl-radio-group id="calcPlan" label="Paket" value="lengkap" help-text="Konsep · Desain lengkap · Desain &amp; bangun">
                   <sl-radio-button value="konsep">Konsep</sl-radio-button>
-                  <sl-radio-button value="lengkap">Desain lengkap</sl-radio-button>
-                  <sl-radio-button value="bangun">Desain &amp; bangun</sl-radio-button>
+                  <sl-radio-button value="lengkap">Lengkap</sl-radio-button>
+                  <sl-radio-button value="bangun">Bangun</sl-radio-button>
                 </sl-radio-group>
               </div>
             </div>
@@ -442,7 +446,7 @@
           </div>
           <div>
             <sl-radio-group id="cfgFacade" label="Material fasad lantai 2" value="jati" size="small">
-              <sl-radio-button value="jati">Kayu jati</sl-radio-button>
+              <sl-radio-button value="jati">Jati</sl-radio-button>
               <sl-radio-button value="beton">Beton</sl-radio-button>
               <sl-radio-button value="andesit">Andesit</sl-radio-button>
               <sl-radio-button value="kapur">Kapur</sl-radio-button>
@@ -451,6 +455,10 @@
           <div class="row">
             <div><h3 style="margin:0">Warna kusen</h3><span style="font-size:.84rem;color:var(--muted)" id="frameName">Arang</span></div>
             <sl-color-picker id="cfgFrame" label="Warna kusen" value="#2b2622" swatches="#2b2622; #f4efe6; #6e4a31; #2f5a45; #ad4f2b; #4a5560" no-format-toggle size="medium" hoist></sl-color-picker>
+          </div>
+          <div class="meters">
+            <div><div class="row"><span>Kenyamanan termal</span><b class="num" id="mComfortV">86</b></div><sl-progress-bar id="mComfort" value="86" label="Kenyamanan termal"></sl-progress-bar></div>
+            <div><div class="row"><span>Cahaya alami saat ini</span><b class="num" id="mLightV">72</b></div><sl-progress-bar id="mLight" value="72" label="Cahaya alami"></sl-progress-bar></div>
           </div>
           <div class="readout">
             <sl-tag size="small" pill id="tagEnergy">Beban AC: rendah</sl-tag>
@@ -734,7 +742,7 @@ function calc(){
   const w = Math.round(weeks[plan] * (0.7 + area / 600));
   $('#outTime').textContent = plan === 'bangun' ? Math.round(w / 4.3) + ' bulan' : w + ' minggu';
   $('#outCost').textContent = fmtRp(area * rates[plan]);
-  $('#outSave').textContent = fmtRp(area * 47 * 0.38 * 1444 / 10) ;
+  $('#outSave').textContent = fmtRp(Math.round(area * 60 * 0.38 * 1444 / 1000) * 1000);
 }
 $('#calcArea').addEventListener('sl-input', calc);
 $('#calcPlan').addEventListener('sl-change', calc);
@@ -782,6 +790,11 @@ function updateReadouts(){
   const load = state.facade === 'jati' || state.facade === 'kapur' ? 'rendah' : state.facade === 'beton' ? 'sedang' : 'rendah';
   $('#tagEnergy').textContent = 'Beban AC: ' + load;
   $('#frameName').textContent = frameNames[state.frame.toLowerCase()] || state.frame.toUpperCase();
+  const comfort = { jati: 86, beton: 71, andesit: 77, kapur: 90 }[state.facade] - (state.time > 11 && state.time < 15.5 ? 4 : 0);
+  const sunUp = Math.max(0, Math.sin(Math.PI * (state.time - 6.1) / 12.4));
+  const light = Math.round(100 * Math.pow(sunUp, .6));
+  $('#mComfort').value = comfort; $('#mComfortV').textContent = comfort;
+  $('#mLight').value = light; $('#mLightV').textContent = light;
 }
 const ranges = [$('#heroTime'), $('#cfgTime')];
 const lightSw = [$('#heroLights'), $('#cfgLights')];
@@ -836,12 +849,13 @@ if (THREE) {
     };
     function run(){ return visible && !document.hidden; }
     function tick(now){
-      raf = 0; if (!run()) { last = 0; return; }
+      if (!run()) { raf = 0; last = 0; return; }
+      raf = -1; // busy: request() during the frame must not start a second chain
       const dt = last ? Math.min((now - last) / 1000, 0.05) : 0.016; last = now;
       pending = false;
       frames[el.id] = (frames[el.id] || 0) + 1;
       frame(dt, now / 1000);
-      if (continuous() || pending || now < aliveUntil) raf = requestAnimationFrame(tick); else last = 0;
+      if (continuous() || pending || now < aliveUntil) raf = requestAnimationFrame(tick); else { raf = 0; last = 0; }
     }
     function kick(){ if (!raf && run()) raf = requestAnimationFrame(tick); }
     new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) { pending = true; kick(); } }, { rootMargin: '80px' }).observe(el);
@@ -1052,7 +1066,8 @@ if (THREE) {
       atas: { pos: [.01, 52, 9], tgt: [0, 0, 1.5], up: 0, rf: 0 },
     };
     const distScale = () => aspect < .75 ? 1.55 : aspect < 1.05 ? 1.25 : 1;
-    function presetPos(p){ const v = new THREE.Vector3(...p.pos).sub(new THREE.Vector3(...p.tgt)).multiplyScalar(distScale()).add(new THREE.Vector3(...p.tgt)); return v; }
+    const presetTgt = p => new THREE.Vector3(...p.tgt).add(new THREE.Vector3(0, aspect < .8 ? 3.2 : 0, 0));
+    function presetPos(p){ return new THREE.Vector3(...p.pos).sub(new THREE.Vector3(...p.tgt)).multiplyScalar(distScale()).add(presetTgt(p)); }
 
     if (!opts.hero) {
       camera.position.copy(presetPos(PRESETS.eksterior)); target.set(...PRESETS.eksterior.tgt);
@@ -1077,7 +1092,7 @@ if (THREE) {
     }
     function setView(name){
       const p = PRESETS[name] || PRESETS.eksterior; const dur = rmq.matches ? 0 : 1.5;
-      const pos = presetPos(p), tgt = new THREE.Vector3(...p.tgt);
+      const pos = presetPos(p), tgt = presetTgt(p);
       const t = controls ? controls.target : target;
       if (gsap && dur > 0) {
         gsap.to(camera.position, { x: pos.x, y: pos.y, z: pos.z, duration: dur, ease: 'power3.inOut', onUpdate: () => loop.request() });
@@ -1107,7 +1122,7 @@ if (THREE) {
 
     watchSize(stageEl, renderer, (w, h) => {
       aspect = w / h; camera.aspect = aspect; camera.fov = aspect < .8 ? 36 : 30; camera.updateProjectionMatrix();
-      if (!opts.hero && !controls) { camera.position.copy(presetPos(PRESETS[state.view] || PRESETS.eksterior)); }
+      if (!opts.hero) { const pr = PRESETS[state.view] || PRESETS.eksterior; camera.position.copy(presetPos(pr)); (controls ? controls.target : target).copy(presetTgt(pr)); }
       loop.request();
     });
     apply(state);
@@ -1148,9 +1163,9 @@ if (THREE) {
     function sbox(g, mats, w, h, d, c, x, y, z, o){ const m = stationMat(c); mats.push(m); return box(g, w, h, d, m, x, y, z, o); }
     function smesh(g, mats, geo, c, x, y, z){ const m = stationMat(c); mats.push(m); const me = new THREE.Mesh(geo, m); me.position.set(x, y, z); me.castShadow = true; me.receiveShadow = true; g.add(me); return me; }
     SP.forEach(([x, z], i) => {
-      const g = new THREE.Group(); g.position.set(x, 0, z); scene.add(g);
+      const g = new THREE.Group(); g.position.set(x - 1.4, 0, z - 2.5); scene.add(g);
       const mats = [];
-      const pad = smesh(g, mats, new THREE.CylinderGeometry(3, 3.1, .24, 40), '#f3d3bd', 0, .12, 0);
+      const pad = smesh(g, mats, new THREE.CylinderGeometry(2.7, 2.8, .24, 40), '#f3d3bd', 0, .12, 0);
       const inner = new THREE.Group(); g.add(inner); inner.position.y = .24;
       if (i === 0) { // survey
         sbox(inner, mats, 3.2, .12, 3.2, '#93b37b', 0, .06, 0);
@@ -1203,6 +1218,15 @@ if (THREE) {
     const progTube = new THREE.Mesh(new THREE.TubeGeometry(path, TS, .2, RS, false), progMat); progTube.geometry.setDrawRange(0, 0); scene.add(progTube);
     pts.forEach(p => { const d = new THREE.Mesh(new THREE.CylinderGeometry(.34, .34, .08, 16), std('#e8743f', .6)); d.position.set(p.x, .05, p.z); scene.add(d); });
 
+    // scenery: low-poly trees and shrubs away from the route
+    { const r = rng(11), trunkM = std('#8c6a4f', .9, { flat: true }), leafA = std('#6f9a5a', .9, { flat: true }), leafB = std('#93b37b', .9, { flat: true });
+      for (let x = -26; x <= 30; x += 2.6) for (const zb of [-10.5, 11]) {
+        if (r() < .3) continue;
+        const px = x + (r() - .5) * 1.6, pz = zb + (r() - .5) * 3;
+        if (r() < .55) { const h = 1.2 + r() * 1.4; const t = new THREE.Mesh(new THREE.CylinderGeometry(.12, .16, h, 6), trunkM); t.position.set(px, h / 2, pz); t.castShadow = true; scene.add(t);
+          const c = new THREE.Mesh(new THREE.IcosahedronGeometry(.8 + r() * .5, 0), r() > .5 ? leafA : leafB); c.position.set(px, h + .5, pz); c.castShadow = true; scene.add(c); }
+        else { const b = new THREE.Mesh(new THREE.IcosahedronGeometry(.45 + r() * .4, 0), r() > .5 ? leafA : leafB); b.position.set(px, .35, pz); b.castShadow = true; scene.add(b); }
+      } }
     // station params on the curve
     const samples = 1200, stationU = SP.map(([x, z]) => { let best = 0, bd = 1e9; for (let s = 0; s <= samples; s++) { const q = path.getPointAt(s / samples); const d = (q.x - x) ** 2 + (q.z - z) ** 2; if (d < bd) { bd = d; best = s / samples; } } return best; });
     stationU[0] = 0; stationU[stationU.length - 1] = 1;
@@ -1278,7 +1302,7 @@ if (THREE) {
       renderer.render(scene, cam);
     }, () => false);
     watchSize(stage, renderer, (w, h) => {
-      aspect = w / h; halfH = aspect < .9 ? 9.5 : 8.2; halfW = halfH * aspect;
+      aspect = w / h; halfH = aspect < .9 ? 12.5 : 10.5; halfW = halfH * aspect;
       Object.assign(cam, { left: -halfW, right: halfW, top: halfH, bottom: -halfH }); cam.updateProjectionMatrix(); loop.request();
     });
     themeColors(); bus.addEventListener('theme', themeColors);
