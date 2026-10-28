@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pasar Rakyat — Belanja Pasar, Segar Sampai Depan Pintu</title>
+<meta name="description" content="Pasar Rakyat adalah platform pemesanan online untuk pedagang pasar tradisional: pilih sayur, buah, dan bumbu langsung dari lapak langganan, ditimbang jujur, lalu diantar kurir ke rumahmu.">
+<meta name="theme-color" content="#fbf6ee">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script>
+  // Tema awal sebelum render; mode gelap memakai varian "inverted" Fomantic-UI
+  (function(){var t;try{t=localStorage.getItem('pasarrakyat-theme')}catch(e){}
+  if(t!=='light'&&t!=='dark'){t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}
+  document.documentElement.dataset.theme=t;})();
+</script>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Fomantic-UI 2.9.4 (MIT, fork komunitas Semantic UI) + jQuery 3.7.1 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.4/dist/semantic.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.4/dist/semantic.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<style>
+  :root{
+    --font:"Rubik",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --brand:#1f7a4a;--brand-2:#16613a;--brand-soft:#e3f1e6;--marigold:#f4a51c;--chili:#e0483e;--orange:#f07a1f;
+    --page-bg:#fbf6ee;--bg-2:#f3eadb;--card:#ffffff;--line:rgba(60,40,10,.12);--ink:#2a2118;--ink-2:#6b5d4d;--ink-3:#968673;
+    --shadow:0 1px 2px rgba(60,40,10,.06),0 16px 36px -18px rgba(80,50,10,.3);
+    --shadow-lg:0 40px 90px -40px rgba(80,50,10,.5);
+    --r:18px;color-scheme:light;
+  }
+  :root[data-theme="dark"]{
+    --brand:#3fb877;--brand-2:#2f9c62;--brand-soft:#16271c;
+    --page-bg:#14110d;--bg-2:#1b1712;--card:#1f1a14;--line:rgba(255,235,200,.12);--ink:#f5ede1;--ink-2:#c3b5a2;--ink-3:#8f826f;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 16px 36px -18px rgba(0,0,0,.85);--shadow-lg:0 40px 90px -40px rgba(0,0,0,.9);
+    color-scheme:dark;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;font-size:16px}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  body{margin:0;font-family:var(--font);background:var(--page-bg);color:var(--ink);line-height:1.6;font-size:16px;overflow-x:clip;-webkit-font-smoothing:antialiased;transition:background-color .3s,color .3s}
+  /* Fomantic memakai Lato dan font monospace bawaan: diganti dengan font merek (ikon & pseudo-elemen tetap) */
+  body .ui,body .ui :not(i):not(.icon),.ui.popup,.ui.toast-container *:not(i){font-family:var(--font)!important}
+  code,kbd,pre,samp,.ui code{font-family:inherit!important}
+  svg,canvas{display:block;max-width:100%}
+  a{color:inherit}
+  h1,h2,h3,h4{margin:0;line-height:1.1;letter-spacing:-.02em;font-weight:700;color:inherit}
+  p{margin:0}
+  .num,.ui.statistic>.value,.price,.trust b,.ui.label.num{font-variant-numeric:tabular-nums}
+  .wrap{width:min(1240px,100% - 32px);margin-inline:auto}
+  :focus-visible{outline:2px solid var(--brand);outline-offset:3px}
+  .skip{position:absolute;left:-999px;top:8px;z-index:100;background:var(--ink);color:var(--page-bg);padding:8px 14px;border-radius:8px}
+  .skip:focus{left:12px}
+  /* warna merek untuk tombol utama Fomantic */
+  .ui.primary.button,.ui.primary.buttons .button{background:var(--brand);color:#fff}
+  .ui.primary.button:hover,.ui.primary.button:focus{background:var(--brand-2);color:#fff}
+  .ui.button{border-radius:12px}
+  .ui.inverted.segment,.ui.inverted.segments .segment{background:var(--card)}
+  .ui.segment{border-radius:var(--r);border-color:var(--line);box-shadow:0 1px 0 var(--line)}
+  .ui.cards>.card,.ui.card{border-radius:var(--r);box-shadow:0 0 0 1px var(--line),0 1px 0 var(--line)}
+  .ui.inverted.cards>.card,.ui.inverted.card{background:var(--card)}
+  .ui.toggle.checkbox input:checked~label:before,.ui.toggle.checkbox input:focus:checked~label:before{background-color:var(--brand)!important}
+  .ui.slider .inner .track-fill{background-color:var(--brand)}
+  .ui.progress .bar{background:var(--brand)}
+  .ui.indicating.progress[data-percent^="1"] .bar{background:var(--brand)}
+  .ui.star.rating .active.icon{color:var(--marigold)!important;text-shadow:none!important}
+  .tags{display:flex;flex-wrap:wrap;gap:6px}
+  .tags .ui.label{margin:0}
+
+  /* nav */
+  .nav{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--page-bg) 84%,transparent);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border-bottom:1px solid var(--line)}
+  .nav .wrap{display:flex;align-items:center;gap:10px;height:64px}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;font-size:1.18rem;letter-spacing:-.02em;min-width:0;white-space:nowrap}
+  .brand svg{width:34px;height:34px;flex:0 0 auto}
+  .nav-links{display:flex;gap:2px;margin-left:auto}
+  .nav-links a{text-decoration:none;color:var(--ink-2);font-weight:500;font-size:.95rem;padding:8px 12px;border-radius:10px}
+  .nav-links a:hover{color:var(--ink);background:color-mix(in srgb,var(--ink) 6%,transparent)}
+  .nav-act{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+  .nav-act .ui.button{margin:0}
+  #menuDd{display:none}
+  .ico-btn.ui.button{padding:.72em;box-shadow:none!important;background:transparent;color:var(--ink-2)}
+  .ico-btn.ui.button svg{width:20px;height:20px}
+  @media (max-width:940px){.nav-links{display:none}.nav-act{margin-left:auto}#menuDd{display:inline-flex}}
+  @media (max-width:420px){#navCta{display:none}}
+  #menuDd .menu{left:auto!important;right:0;min-width:200px}
+
+  /* hero */
+  .hero{padding:clamp(26px,5vw,60px) 0 40px;position:relative}
+  .hero::before{content:"";position:absolute;inset:-64px 0 auto;height:760px;background:radial-gradient(55% 60% at 85% 20%,rgba(244,165,28,.2),transparent 70%),radial-gradient(40% 50% at 5% 15%,color-mix(in srgb,var(--brand) 16%,transparent),transparent 70%);pointer-events:none;z-index:-1}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,4vw,56px);align-items:center}
+  .hero h1{font-size:clamp(2.3rem,4.6vw,4rem);font-weight:800;letter-spacing:-.04em;line-height:1.02;margin:18px 0 20px}
+  .grad{background:linear-gradient(100deg,var(--brand) 5%,var(--marigold) 55%,var(--chili));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{font-size:clamp(1rem,1.3vw,1.14rem);color:var(--ink-2);max-width:33em}
+  .cta-row{display:flex;flex-wrap:wrap;gap:10px;margin:28px 0 26px}
+  .cta-row .ui.button{margin:0}
+  .trust{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:470px}
+  .trust div{border-left:2px solid var(--line);padding-left:12px}
+  .trust b{display:block;font-size:1.4rem;line-height:1.2;letter-spacing:-.02em}
+  .trust span{font-size:.8rem;color:var(--ink-2)}
+
+  .stage{position:relative;border-radius:26px;overflow:hidden;background:radial-gradient(90% 80% at 70% 0%,#fff3d9 0%,#f6e3c2 52%,#dcefd9 100%);box-shadow:var(--shadow-lg);border:1px solid var(--line);isolation:isolate;transition:background .6s}
+  :root[data-theme="dark"] .stage{background:radial-gradient(90% 80% at 70% 0%,#2c2416 0%,#1a150e 55%,#101a12 100%)}
+  .stage.rain{background:radial-gradient(90% 80% at 70% 0%,#c9d2db 0%,#a9b5c2 60%,#8d9aa6 100%)}
+  :root[data-theme="dark"] .stage.rain{background:radial-gradient(90% 80% at 70% 0%,#1d2530 0%,#11161d 60%,#0b0f14 100%)}
+  .stage canvas{position:relative;z-index:1;width:100%;height:100%;opacity:0;transition:opacity .8s}
+  .stage.ready canvas{opacity:1}
+  .hero .stage{height:clamp(460px,72vh,660px)}
+  .fallback{position:absolute;inset:0;z-index:1;display:none}
+  .no-webgl .fallback{display:block}.no-webgl canvas{display:none}
+  .ov{position:absolute;z-index:3;inset:12px;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;gap:8px}
+  .ov-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap}
+  .ov-row>*,.ov>.glass{pointer-events:auto}
+  .glass{background:color-mix(in srgb,var(--card) 82%,transparent);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:14px;color:var(--ink)}
+  .pill{padding:7px 12px;font-size:.86rem;font-weight:600;display:flex;align-items:center;gap:8px;max-width:100%}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--brand);flex:0 0 auto;animation:ping 1.8s infinite}
+  @keyframes ping{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--brand) 60%,transparent)}70%,100%{box-shadow:0 0 0 8px transparent}}
+  @media (prefers-reduced-motion: reduce){.dot{animation:none}}
+  .glass .ui.menu{margin:0;border:0;box-shadow:none;background:transparent;min-height:0}
+  .glass .ui.menu .item{padding:.55em .8em;font-size:.86rem}
+  .basket{padding:12px 14px;max-width:360px;width:100%;align-self:flex-start}
+  .basket small{display:block;color:var(--ink-3);font-size:.74rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+  .basket b{display:block;font-size:1rem;margin:2px 0 8px}
+  .basket .ui.progress{margin:0}
+  .basket .ui.progress .bar{min-width:0}
+  @media (max-width:980px){.hero-grid{grid-template-columns:minmax(0,1fr)}.hero .stage{height:min(600px,74vh);min-height:460px}}
+  @media (max-width:420px){.glass.catmenu{width:100%}.glass.catmenu .ui.menu{display:flex}.glass.catmenu .ui.menu .item{flex:1;justify-content:center;padding:.55em .3em}}
+
+  /* sections */
+  section{scroll-margin-top:72px}
+  .sec{padding:clamp(70px,10vw,124px) 0}
+  .kicker{display:inline-flex;align-items:center;gap:8px;font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brand)}
+  .kicker::before{content:"";width:18px;height:3px;border-radius:2px;background:var(--orange)}
+  .sec-head{max-width:760px;margin-bottom:clamp(30px,5vw,52px)}
+  .sec-head.center{text-align:center;margin-inline:auto}
+  .sec-head h2{font-size:clamp(2rem,4.2vw,3.2rem);font-weight:800;letter-spacing:-.04em;margin-top:12px}
+  .sec-head p{color:var(--ink-2);margin-top:14px;font-size:1.06rem}
+
+  /* features */
+  .tabwrap{overflow-x:auto;scrollbar-width:none}
+  .tabwrap::-webkit-scrollbar{display:none}
+  .tabwrap .ui.menu{margin:0;min-width:max-content}
+  .ui.secondary.pointing.menu{border-bottom-color:var(--line)}
+  .ui.secondary.pointing.menu .item{font-size:1.02rem;color:var(--ink-2)}
+  .ui.secondary.pointing.menu .active.item{border-color:var(--brand);color:var(--ink)}
+  .ui.inverted.secondary.pointing.menu .item{color:var(--ink-2)}
+  .ui.inverted.secondary.pointing.menu .active.item{border-color:var(--brand);color:var(--ink)}
+  .feat-panel{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px;align-items:stretch;padding:26px 2px 4px}
+  .feat-copy h3{font-size:1.65rem;margin-bottom:12px}
+  .feat-copy p{color:var(--ink-2)}
+  .ticks{margin:18px 0 0;padding:0;list-style:none;display:grid;gap:10px}
+  .ticks li{display:flex;gap:10px;align-items:flex-start}
+  .ticks li svg{color:var(--brand);margin-top:4px;flex:0 0 auto;width:18px;height:18px}
+  .ui.tab.segment{margin:0!important}
+  .ui.tab{padding:0;background:transparent;border:0}
+  .meter{margin-bottom:18px!important}
+  .ui.progress .label{font-weight:500!important;font-size:.9rem!important;color:var(--ink-2)!important}
+  .mini-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:22px}
+  .mini-cards .card{padding:22px}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;min-width:0}
+  .box h3{font-size:1.14rem;margin:10px 0 6px}
+  .box p{color:var(--ink-2);font-size:.95rem}
+  .f-ico{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--brand-soft);color:var(--brand)}
+  .f-ico svg{width:22px;height:22px}
+  @media (max-width:900px){.feat-panel{grid-template-columns:minmax(0,1fr)}.mini-cards{grid-template-columns:minmax(0,1fr)}}
+
+  /* console */
+  .console{background:var(--bg-2)}
+  .console-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:stretch}
+  .console .stage{min-height:clamp(480px,70vh,660px)}
+  .console .stage canvas{position:absolute;inset:0}
+  .panel.ui.segment{display:flex;flex-direction:column;gap:14px;margin:0;padding:20px;background:var(--card)}
+  .panel-h{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .panel-h h3{font-size:1.15rem}
+  .ctl-h{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:700;margin:0 0 6px}
+  .ctl-h .info{cursor:help;color:var(--ink-3);display:inline-flex}
+  .row-sw{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--line);border-radius:12px}
+  .row-sw small{display:block;color:var(--ink-2);font-size:.82rem;line-height:1.35}
+  .qty{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .qty .ui.input{width:120px}
+  .qty .ui.buttons .button{padding:.7em .9em}
+  .panel .ui.statistics{margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .panel .ui.statistics>.statistic{margin:0!important;padding:8px 6px;border-radius:12px;background:color-mix(in srgb,var(--ink) 5%,transparent)}
+  .panel .ui.statistic>.value{font-size:1.45rem!important;font-weight:700}
+  .panel .ui.statistic>.label{font-size:.7rem;font-weight:600;letter-spacing:.04em;color:var(--ink-3)}
+  .panel .ui.steps{margin:0;width:100%}
+  .panel .ui.steps .step{padding:.7em .5em}
+  .panel .ui.steps .step .title{font-size:.86rem}
+  .vendors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:20px}
+  .vendors .ui.card{width:auto;margin:0;cursor:pointer;transition:transform .2s,box-shadow .2s}
+  .vendors .ui.card.on{box-shadow:0 0 0 2px var(--brand),var(--shadow)}
+  .vendors .ui.card:hover{transform:translateY(-2px)}
+  .vendors .ui.card .content .header{font-size:1.06rem}
+  .swatch{height:8px;border-radius:999px;margin-bottom:10px}
+  .ov-msg{max-width:380px;padding:10px 14px;font-size:.9rem;align-self:flex-start}
+  .ov-msg b{display:block}
+  .ov-msg span{color:var(--ink-2);font-size:.84rem}
+  @media (max-width:1000px){.console-grid{grid-template-columns:minmax(0,1fr)}.console .stage{min-height:440px;height:min(560px,68vh)}}
+  @media (max-width:760px){.vendors{grid-template-columns:minmax(0,1fr)}}
+  @media (max-width:420px){.panel .ui.steps .step .title{font-size:.78rem}.panel .ui.statistic>.value{font-size:1.2rem!important}}
+
+  /* story */
+  .story{position:relative;height:520vh}
+  .story-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--page-bg)}
+  .story-stage canvas{position:absolute;inset:0;width:100%;height:100%}
+  .story-fallback{position:absolute;inset:0;display:none;place-items:center;padding:24px}
+  .story.no-webgl .story-fallback{display:grid}.story.no-webgl canvas{display:none}
+  .story-fallback svg{width:min(900px,100%);height:auto}
+  .story-fallback .node{fill:var(--card);stroke:var(--line);stroke-width:2;transition:fill .4s}
+  .story-fallback .node.on{fill:var(--orange)}
+  .story-ui{position:absolute;inset:0;pointer-events:none;padding:88px 0 26px}
+  .story-ui .wrap{height:100%;display:flex;flex-direction:column;justify-content:space-between}
+  /* judul cerita di kartu tembus pandang supaya tidak tertimpa objek 3D */
+  .story-head{max-width:480px;width:fit-content;background:color-mix(in srgb,var(--page-bg) 84%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:20px;padding:18px 22px 20px}
+  .story-head h2{font-size:clamp(1.75rem,3.4vw,2.8rem);font-weight:800;letter-spacing:-.04em;margin-top:10px}
+  .story-head p{color:var(--ink-2);margin-top:10px}
+  .story-low{max-width:440px;pointer-events:auto}
+  .steps{position:relative;min-height:224px;list-style:none;margin:0;padding:0}
+  .step-i{position:absolute;left:0;right:0;bottom:0;opacity:0;transform:translateY(18px);transition:opacity .45s,transform .45s;pointer-events:none}
+  .step-i.on{opacity:1;transform:none;pointer-events:auto}
+  .step-card{background:color-mix(in srgb,var(--card) 92%,transparent);border:1px solid var(--line);border-radius:18px;padding:20px 22px;box-shadow:var(--shadow);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+  .step-i .n{font-size:.78rem;font-weight:800;color:var(--orange);letter-spacing:.08em;font-variant-numeric:tabular-nums}
+  .step-i h3{font-size:1.3rem;margin:8px 0 6px}
+  .step-i p{font-size:.94rem;color:var(--ink-2)}
+  .step-i .tags{margin-top:12px}
+  .story-prog{margin-top:12px;background:color-mix(in srgb,var(--card) 92%,transparent);border:1px solid var(--line);border-radius:14px;padding:10px 14px 8px;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+  .story-prog .ui.progress{margin:0 0 6px!important}
+  .story-lbl{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));font-size:.76rem;color:var(--ink-3);font-weight:600}
+  .story-lbl span{text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .story-lbl span:first-child{text-align:left}.story-lbl span:last-child{text-align:right}
+  .story-lbl span.on{color:var(--orange)}
+  @media (prefers-reduced-motion: reduce){.step-i{transition:none}}
+  @media (max-width:760px){.story-ui{padding:76px 0 12px}.story-head{padding:12px 16px}.story-head h2{font-size:1.4rem}.story-head p{display:none}.story-low{max-width:none}.steps{min-height:176px}.step-card{padding:14px 16px}.step-i h3{font-size:1.06rem;margin:4px 0}.step-i p{font-size:.86rem;line-height:1.45}.step-i .tags{margin-top:8px}.story-prog{margin-top:8px;padding:8px 12px 6px}}
+
+  /* stats & testimonials */
+  .stats.ui.statistics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:0 0 clamp(40px,6vw,64px)}
+  .stats.ui.statistics>.statistic{margin:0!important;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;align-items:flex-start}
+  .stats .ui.statistic>.value,.stats.ui.statistics .statistic>.value{font-size:clamp(1.9rem,3.6vw,2.8rem)!important;font-weight:800;letter-spacing:-.03em;color:var(--ink)}
+  .stats.ui.statistics .statistic>.label{text-transform:none;font-weight:400;font-size:.92rem;color:var(--ink-2);text-align:left;margin-top:4px}
+  @media (max-width:820px){.stats.ui.statistics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .testi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .testi blockquote{margin:12px 0 18px;font-size:1.02rem}
+  .who{display:flex;align-items:center;gap:12px;font-size:.9rem}
+  .who b{display:block}.who span{color:var(--ink-2);font-size:.82rem}
+  .ava{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;flex:0 0 auto}
+  @media (max-width:960px){.testi{grid-template-columns:minmax(0,1fr)}}
+
+  /* pricing */
+  .bill{display:flex;justify-content:center;margin-bottom:30px}
+  .prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch}
+  .plan{display:flex;flex-direction:column;gap:16px;position:relative}
+  .plan.hot{box-shadow:0 0 0 2px var(--brand),var(--shadow-lg)}
+  .plan .ui.ribbon.label{position:absolute;left:-15px;top:18px}
+  .plan.hot>div:first-child{margin-top:26px}
+  .price{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+  .price b{font-size:clamp(1.9rem,3.2vw,2.4rem);font-weight:800;letter-spacing:-.03em;line-height:1}
+  .price span{color:var(--ink-2);font-size:.9rem}
+  .old{text-decoration:line-through;color:var(--ink-3);font-size:.9rem;min-height:1.4em;font-variant-numeric:tabular-nums}
+  .plan .ticks{margin:0;flex:1;font-size:.94rem}
+  .plan .ui.button{margin:0}
+  @media (max-width:960px){.prices{grid-template-columns:minmax(0,1fr)}}
+
+  /* faq */
+  .faq-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:30px 60px}
+  .ui.styled.accordion{border-radius:var(--r);box-shadow:0 0 0 1px var(--line)}
+  .ui.styled.accordion .title{font-size:1.02rem;padding:1em 1.2em;color:var(--ink)}
+  .ui.styled.accordion .content p{color:var(--ink-2)}
+  .ui.inverted.styled.accordion{background:var(--card)}
+  @media (max-width:860px){.faq-grid{grid-template-columns:minmax(0,1fr)}}
+
+  /* cta */
+  .cta{border-radius:28px;padding:clamp(26px,6vw,76px);background:radial-gradient(90% 120% at 100% 0%,#f4a51c 0%,#e0483e 34%,#1f7a4a 74%,#0e3420 100%);color:#fff;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:30px;align-items:center}
+  .cta h2{font-size:clamp(1.9rem,4.2vw,3.2rem);font-weight:800;letter-spacing:-.04em}
+  .cta p{opacity:.92;margin-top:14px;max-width:30em}
+  .cta-box.ui.form{background:var(--card);color:var(--ink);border-radius:18px;padding:20px;min-width:0;box-shadow:0 30px 60px -30px rgba(0,0,0,.5)}
+  .cta-box small{display:block;color:var(--ink-2);font-size:.8rem;margin-top:8px}
+  @media (max-width:860px){.cta{grid-template-columns:minmax(0,1fr)}}
+
+  footer{padding:70px 0 34px;border-top:1px solid var(--line);margin-top:clamp(72px,10vw,120px)}
+  .foot-grid{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));gap:30px}
+  .foot-grid h4{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:12px}
+  .foot-grid a{display:block;text-decoration:none;padding:4px 0;font-size:.94rem;color:var(--ink-2)}
+  .foot-grid a:hover{color:var(--brand)}
+  .foot-grid p{color:var(--ink-2);font-size:.93rem;margin-top:12px;max-width:26em}
+  .foot-bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.85rem;color:var(--ink-2)}
+  .built{display:inline-flex;align-items:center;gap:8px}.built i{width:6px;height:6px;border-radius:50%;background:var(--orange)}
+  @media (max-width:820px){.foot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.foot-grid>div:first-child{grid-column:span 2}}
+
+  /* modal & toast */
+  .ui.modal{border-radius:20px}
+  .ui.modal>.header{border-radius:20px 20px 0 0}
+  .ui.modal>.actions{border-radius:0 0 20px 20px}
+  .ui.inverted.modal>.content,.ui.inverted.modal>.header,.ui.inverted.modal>.actions{background:var(--card)!important}
+  .ui.form .field>label{font-weight:600}
+  /* sebelum JS Fomantic aktif */
+  .ui.slider:empty{min-height:28px}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Lewati ke konten</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="logo" viewBox="0 0 34 34"><rect width="34" height="34" rx="10" fill="#1f7a4a"/><path d="M5 14 9 7h16l4 7z" fill="#f4a51c"/><path d="M5 14h4.8v1.6a2.4 2.4 0 0 1-4.8 0zM9.8 14h4.8v1.6a2.4 2.4 0 0 1-4.8 0zM14.6 14h4.8v1.6a2.4 2.4 0 0 1-4.8 0zM19.4 14h4.8v1.6a2.4 2.4 0 0 1-4.8 0zM24.2 14H29v1.6a2.4 2.4 0 0 1-4.8 0z" fill="#e0483e"/><rect x="8" y="19" width="18" height="9" rx="2" fill="#fff"/><circle cx="13" cy="22.5" r="2" fill="#e0483e"/><circle cx="17.5" cy="22.5" r="2" fill="#f4a51c"/><circle cx="22" cy="22.5" r="2" fill="#4caf50"/></symbol>
+  <symbol id="i-check" viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-store" viewBox="0 0 24 24"><path d="M3 9l2-5h14l2 5M3 9h18v1.5a2.5 2.5 0 0 1-5 0 2.5 2.5 0 0 1-4 0 2.5 2.5 0 0 1-4 0A2.5 2.5 0 0 1 3 10.5zM5 13v7h14v-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 3v3M5 21h14M7 21l1-11h8l1 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/><circle cx="12" cy="14.5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-bike" viewBox="0 0 24 24"><circle cx="5.5" cy="17" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="18.5" cy="17" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5.5 17h6l3-6h-4M14.5 11l4 6M15 7h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v5M12 8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+</defs></svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Pasar Rakyat, kembali ke atas"><svg aria-hidden="true"><use href="#logo"/></svg>Pasar Rakyat</a>
+    <nav class="nav-links" aria-label="Navigasi utama">
+      <a href="#fitur">Fitur</a><a href="#kendali">Pasar 3D</a><a href="#alur">Alur pesanan</a><a href="#harga">Harga</a><a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-act">
+      <button class="ui icon button ico-btn" id="themeBtn" type="button" aria-label="Ganti tema terang atau gelap"><svg aria-hidden="true"><use href="#i-moon"/></svg></button>
+      <button class="ui primary button" id="navCta" type="button">Daftarkan lapak</button>
+      <div class="ui dropdown icon button ico-btn" id="menuDd" tabindex="0" role="button" aria-label="Buka menu">
+        <svg aria-hidden="true"><use href="#i-menu"/></svg>
+        <div class="menu" data-inv>
+          <a class="item" href="#fitur">Fitur</a><a class="item" href="#kendali">Pasar 3D</a><a class="item" href="#alur">Alur pesanan</a><a class="item" href="#harga">Harga</a><a class="item" href="#faq">FAQ</a>
+          <div class="divider"></div><a class="item" href="#daftar"><b>Daftarkan lapak gratis</b></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="tags"><span class="ui green label">Baru · Antar pagi 06.00</span><span class="ui basic label" data-inv>Untuk pedagang pasar tradisional</span></div>
+        <h1>Belanja pasar, <span class="grad">segar sampai depan pintu.</span></h1>
+        <p class="lead">Pasar Rakyat membawa lapak langgananmu ke HP. Pilih sayur, buah, dan bumbu langsung dari pedagangnya, ditimbang jujur di depan kamera, lalu diantar kurir sebelum masak siang.</p>
+        <div class="cta-row">
+          <button class="ui large primary button" id="heroCta" type="button">Pesan dari pasar</button>
+          <a class="ui large basic button" href="#kendali" data-inv>Jelajahi pasar 3D</a>
+        </div>
+        <div class="trust">
+          <div><b>3.800+</b><span>lapak bergabung</span></div>
+          <div><b>46</b><span>pasar di 12 kota</span></div>
+          <div><b>98%</b><span>timbangan pas</span></div>
+        </div>
+      </div>
+      <div class="stage" id="heroStage">
+        <canvas id="heroCanvas" role="img" aria-label="Adegan 3D isometrik pasar tradisional: deretan lapak beratap belang warna-warni berisi sayur, buah, dan bumbu, pembeli berjalan di lorong, dan motor kurir berkeliling"></canvas>
+        <div class="fallback" aria-hidden="true"></div>
+        <div class="ov">
+          <div class="ov-row">
+            <div class="glass pill" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="heroLive">Bu Siti sedang menimbang bayam</span></div>
+            <div class="glass catmenu"><div class="ui secondary compact small menu" id="heroCat" data-inv role="tablist" aria-label="Sorot deretan lapak">
+              <a class="active item" data-cat="-1" role="tab" tabindex="0">Semua</a><a class="item" data-cat="0" role="tab" tabindex="0">Sayur</a><a class="item" data-cat="1" role="tab" tabindex="0">Buah</a><a class="item" data-cat="2" role="tab" tabindex="0">Bumbu</a>
+            </div></div>
+          </div>
+          <div class="glass basket">
+            <small>Pesanan PR-2041</small>
+            <b id="heroOrder">3 kg sayur · ditimbang di lapak</b>
+            <div class="ui small progress" id="heroProg" data-percent="45" data-inv><div class="bar"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="sec" id="fitur">
+    <div class="wrap">
+      <div class="sec-head"><span class="kicker">Fitur</span><h2>Lapak lama, pembeli baru.</h2><p>Pasar Rakyat dibangun bersama paguyuban pedagang di Yogyakarta, Semarang, dan Padang. Pedagang cukup punya HP Android, sisanya kami bantu.</p></div>
+      <div class="tabwrap"><div class="ui secondary pointing menu" id="featMenu" data-inv>
+        <a class="active item" data-tab="f1">Pesan online</a><a class="item" data-tab="f2">Lapak digital</a><a class="item" data-tab="f3">Antar cepat</a>
+      </div></div>
+      <div class="ui active tab" data-tab="f1"><div class="feat-panel">
+        <div class="feat-copy"><h3>Belanja dari lapak langganan</h3><p>Pembeli memilih pedagang yang sudah dikenal, bukan gudang tanpa nama. Harga mengikuti harga pasar hari itu dan boleh ditawar lewat chat.</p>
+          <ul class="ticks"><li><svg aria-hidden="true"><use href="#i-check"/></svg>Katalog harian diperbarui pedagang tiap subuh</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Catatan khusus: "cabai yang merah semua, ya"</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Satu keranjang dari beberapa lapak sekaligus</li></ul></div>
+        <div class="ui segment" data-inv><div class="panel-h" style="margin-bottom:14px"><h3>Pesanan pagi ini</h3><span class="ui green small label">Ramai</span></div>
+          <div class="ui small progress meter" data-percent="72" data-inv><div class="bar"></div><div class="label">Pesanan masuk sebelum 07.00 · 72%</div></div>
+          <div class="ui small progress meter" data-percent="88" data-inv><div class="bar"></div><div class="label">Pembeli langganan kembali · 88%</div></div>
+          <div class="ui small progress meter" data-percent="34" data-inv><div class="bar"></div><div class="label">Pesanan multi-lapak · 34%</div></div>
+        </div>
+      </div></div>
+      <div class="ui tab" data-tab="f2"><div class="feat-panel">
+        <div class="feat-copy"><h3>Lapak punya etalase sendiri</h3><p>Foto dagangan, harga per kilo, dan stok hari ini diatur dari HP. Pesanan masuk berbunyi seperti chat, lengkap dengan daftar timbang.</p>
+          <ul class="ticks"><li><svg aria-hidden="true"><use href="#i-check"/></svg>Ubah harga cepat saat cabai naik turun</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Rekap penjualan harian dan bulanan</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Pencairan dana setiap sore ke rekening atau dompet digital</li></ul></div>
+        <div class="ui segment" data-inv><div class="panel-h" style="margin-bottom:14px"><h3>Lapak Bu Siti · hari ini</h3><span class="ui orange small label">Stok menipis</span></div>
+          <div class="ui small progress meter" data-percent="81" data-inv><div class="bar"></div><div class="label">Bayam terjual · 81%</div></div>
+          <div class="ui small progress meter" data-percent="54" data-inv><div class="bar"></div><div class="label">Kangkung terjual · 54%</div></div>
+          <div class="ui small progress meter" data-percent="92" data-inv><div class="bar"></div><div class="label">Wortel terjual · 92%</div></div>
+        </div>
+      </div></div>
+      <div class="ui tab" data-tab="f3"><div class="feat-panel">
+        <div class="feat-copy"><h3>Kurir yang paham pasar</h3><p>Kurir kami mengambil dari beberapa lapak dalam satu putaran, menjaga sayur tetap dingin, dan mengantar sebelum jam masak siang.</p>
+          <ul class="ticks"><li><svg aria-hidden="true"><use href="#i-check"/></svg>Slot antar pagi, siang, dan sore</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Tas termal untuk ikan dan daging</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Lacak motor kurir di peta</li></ul></div>
+        <div class="ui segment" data-inv><div class="panel-h" style="margin-bottom:14px"><h3>Pengantaran minggu ini</h3><span class="ui green small label">Tepat waktu</span></div>
+          <div class="ui small progress meter" data-percent="96" data-inv><div class="bar"></div><div class="label">Sampai sesuai slot · 96%</div></div>
+          <div class="ui small progress meter" data-percent="63" data-inv><div class="bar"></div><div class="label">Diantar di bawah 45 menit · 63%</div></div>
+          <div class="ui small progress meter" data-percent="12" data-inv><div class="bar"></div><div class="label">Barang diganti karena kurang segar · 1,2%</div></div>
+        </div>
+      </div></div>
+      <div class="mini-cards">
+        <div class="box"><div class="f-ico"><svg aria-hidden="true"><use href="#i-store"/></svg></div><h3>Tanpa biaya pasang</h3><p>Pedagang mendaftar gratis. Kami hanya mengambil komisi kecil dari pesanan yang berhasil.</p></div>
+        <div class="box"><div class="f-ico"><svg aria-hidden="true"><use href="#i-scale"/></svg></div><h3>Timbangan terlihat</h3><p>Foto timbangan dikirim ke pembeli sebelum barang dibungkus. Berat kurang, selisihnya dikembalikan.</p></div>
+        <div class="box"><div class="f-ico"><svg aria-hidden="true"><use href="#i-bike"/></svg></div><h3>Kurir dari sekitar pasar</h3><p>Kurir direkrut dari warga sekitar pasar, kenal lorong dan kenal pedagangnya.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONSOLE: Fomantic drives 3D -->
+  <section class="sec console" id="kendali">
+    <div class="wrap">
+      <div class="sec-head"><span class="kicker">Pasar 3D</span><h2>Keliling pasar dari layar.</h2><p>Setiap kontrol di panel ini adalah komponen Fomantic-UI yang menggerakkan adegan three.js: pilih kategori, atur cuaca dan keramaian, lalu isi keranjang belanja.</p></div>
+      <div class="console-grid">
+        <div class="stage" id="hallStage">
+          <canvas id="hallCanvas" role="img" aria-label="Peta pasar 3D yang dapat diatur: deretan lapak terpilih menyala, hujan turun saat cuaca diubah, jumlah pembeli mengikuti keramaian, dan keranjang terisi sesuai pesanan"></canvas>
+          <div class="fallback" aria-hidden="true"></div>
+          <div class="ov">
+            <div class="ov-row"><div class="glass pill"><span class="ui small label" id="hallCat" data-inv>Semua lapak</span><span id="hallWx">Cerah · 28°C</span></div></div>
+            <div class="glass ov-msg" aria-live="polite"><b id="hallMsg">Keranjang masih kosong</b><span id="hallSub">Pilih kategori lalu tambahkan barang.</span></div>
+          </div>
+        </div>
+        <div class="ui segment panel" id="panel" data-inv>
+          <div class="panel-h"><h3>Panel belanja</h3><span class="ui green small label" id="openLbl">Pasar buka</span></div>
+          <div>
+            <div class="ctl-h"><label for="catSel">Kategori lapak</label><span class="info" data-content="Kamera berpindah ke deretan lapak dan atapnya menyala" data-position="left center" tabindex="0" aria-label="Info kategori"><svg width="16" height="16" aria-hidden="true"><use href="#i-info"/></svg></span></div>
+            <div class="ui fluid selection dropdown" id="catDd" data-inv>
+              <input type="hidden" name="cat" id="catSel" value="-1">
+              <i class="dropdown icon"></i><div class="default text">Semua lapak</div>
+              <div class="menu">
+                <div class="item" data-value="-1">Semua lapak</div>
+                <div class="item" data-value="sayur">Sayur segar</div>
+                <div class="item" data-value="buah">Buah</div>
+                <div class="item" data-value="bumbu">Bumbu &amp; rempah</div>
+              </div>
+            </div>
+          </div>
+          <div class="row-sw"><div><b id="rainLbl">Hujan</b><small>Langit mendung, pembeli berteduh</small></div><div class="ui toggle checkbox" id="rainCb" data-inv><input type="checkbox" aria-labelledby="rainLbl"><label></label></div></div>
+          <div><div class="ctl-h"><span id="crowdLbl">Keramaian pembeli</span><span class="num" id="crowdVal" style="color:var(--ink)">8 orang</span></div><div class="ui labeled ticked slider" id="crowdSl" aria-labelledby="crowdLbl" data-inv></div></div>
+          <div>
+            <div class="ctl-h"><span id="qtyLbl">Jumlah (kg)</span><span id="itemLbl" style="text-transform:none;letter-spacing:0;color:var(--ink-2)">Bayam</span></div>
+            <div class="qty">
+              <div class="ui right labeled input" data-inv><input type="number" id="qtyIn" min="0" max="8" step="1" value="2" aria-labelledby="qtyLbl" inputmode="numeric"><div class="ui basic label">kg</div></div>
+              <div class="ui icon buttons"><button class="ui button" type="button" id="qtyMinus" aria-label="Kurangi">−</button><button class="ui button" type="button" id="qtyPlus" aria-label="Tambah">+</button></div>
+            </div>
+          </div>
+          <div><div class="ctl-h"><span id="rateLbl">Kesegaran yang diminta</span><span id="rateTxt" style="text-transform:none;letter-spacing:0;color:var(--ink-2)">Pilihan</span></div><div class="ui huge star rating" id="rateR" aria-labelledby="rateLbl"></div></div>
+          <div class="ui mini three statistics" data-inv>
+            <div class="statistic"><div class="value" id="stKg">0</div><div class="label">kg di keranjang</div></div>
+            <div class="statistic"><div class="value" id="stItem">0</div><div class="label">jenis barang</div></div>
+            <div class="statistic"><div class="value" id="stRp">0</div><div class="label">ribu rupiah</div></div>
+          </div>
+          <div class="ui three mini unstackable steps" id="ordSteps" data-inv>
+            <div class="active step"><div class="content"><div class="title">Pilih</div></div></div>
+            <div class="disabled step"><div class="content"><div class="title">Timbang</div></div></div>
+            <div class="disabled step"><div class="content"><div class="title">Antar</div></div></div>
+          </div>
+          <div class="ui two buttons"><button class="ui button" id="addBtn" type="button" data-inv>Tambah ke keranjang</button><button class="ui primary button" id="orderBtn" type="button">Pesan sekarang</button></div>
+        </div>
+      </div>
+      <div class="ui three cards vendors" id="vendors" data-inv></div>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section class="story" id="alur" aria-label="Alur pesanan di Pasar Rakyat">
+    <div class="story-stage">
+      <canvas id="storyCanvas" role="img" aria-label="Peta isometrik perjalanan sebuah pesanan: kurir berjalan mengikuti garis oranye dari layar pesanan, lapak sayur, timbangan, motor antar, sampai rumah pembeli"></canvas>
+      <div class="story-fallback" aria-hidden="true"><svg viewBox="0 0 900 360" id="storySvg"><path d="M80 250 L250 130 L450 250 L650 130 L820 250" fill="none" stroke="#f07a1f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="14 12"/><g><circle class="node on" cx="80" cy="250" r="34"/><circle class="node" cx="250" cy="130" r="34"/><circle class="node" cx="450" cy="250" r="34"/><circle class="node" cx="650" cy="130" r="34"/><circle class="node" cx="820" cy="250" r="34"/></g></svg></div>
+      <div class="story-ui">
+        <div class="wrap">
+          <div class="story-head"><span class="kicker">Alur pesanan</span><h2>Dari lapak ke dapurmu.</h2><p>Gulir dan ikuti Mas Gilang membawa satu pesanan lewat lima langkah.</p></div>
+          <div class="story-low">
+            <ol class="steps">
+              <li class="step-i on"><div class="step-card"><span class="n">01 · PILIH</span><h3>Pembeli memilih dari HP</h3><p>Bu Wati memesan bayam, tomat, dan cabai dari lapak langganannya, lengkap dengan catatan "tomat yang agak keras".</p><div class="tags"><span class="ui green small label">Harga pasar hari ini</span><span class="ui basic small label" data-inv>Catatan khusus</span></div></div></li>
+              <li class="step-i"><div class="step-card"><span class="n">02 · LAPAK</span><h3>Pedagang menyiapkan pesanan</h3><p>Bu Siti menerima bunyi pesanan, memilih sayur paling segar, dan menandai barang yang kosong.</p><div class="tags"><span class="ui green small label">Pilih langsung</span><span class="ui orange small label">Ganti barang</span></div></div></li>
+              <li class="step-i"><div class="step-card"><span class="n">03 · TIMBANG</span><h3>Ditimbang jujur, difoto</h3><p>Foto timbangan terkirim ke pembeli. Kalau beratnya kurang, selisih otomatis dikembalikan.</p><div class="tags"><span class="ui green small label">Foto timbangan</span><span class="ui basic small label" data-inv>Refund selisih</span></div></div></li>
+              <li class="step-i"><div class="step-card"><span class="n">04 · ANTAR</span><h3>Kurir menjemput dari beberapa lapak</h3><p>Mas Gilang mengambil semua kantong dalam satu putaran, lalu berangkat dengan tas termal.</p><div class="tags"><span class="ui orange small label">Satu putaran</span><span class="ui basic small label" data-inv>Lacak di peta</span></div></div></li>
+              <li class="step-i"><div class="step-card"><span class="n">05 · TERIMA</span><h3>Sampai sebelum masak siang</h3><p>Bu Wati menerima belanjaan, memberi bintang, dan uang langsung cair ke pedagang sore itu.</p><div class="tags"><span class="ui green small label">Rata-rata 38 menit</span><span class="ui basic small label" data-inv>Cair sore hari</span></div></div></li>
+            </ol>
+            <div class="story-prog">
+              <div class="ui tiny progress" id="storyProg" data-percent="0" data-inv><div class="bar"></div></div>
+              <div class="story-lbl" aria-hidden="true"><span class="on">Pilih</span><span>Lapak</span><span>Timbang</span><span>Antar</span><span>Terima</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS + TESTIMONIALS -->
+  <section class="sec" id="testimoni">
+    <div class="wrap">
+      <div class="sec-head center"><span class="kicker">Hidup di pasar</span><h2>Lapak tetap ramai, walau hujan.</h2></div>
+      <div class="ui statistics stats" id="stats" data-inv>
+        <div class="statistic"><div class="value" data-end="3800" data-suf="+">0</div><div class="label">lapak bergabung</div></div>
+        <div class="statistic"><div class="value" data-end="31" data-pre="+" data-suf="%">0</div><div class="label">omzet rata-rata pedagang</div></div>
+        <div class="statistic"><div class="value" data-end="186000">0</div><div class="label">pesanan per bulan</div></div>
+        <div class="statistic"><div class="value" data-end="38" data-suf="′">0</div><div class="label">rata-rata waktu antar</div></div>
+      </div>
+      <div class="testi">
+        <div class="ui fluid card" data-inv><div class="content"><div class="ui star rating disabled" data-rating="5" data-max-rating="5"></div><blockquote>“Waktu hujan pasar sepi, tapi pesanan dari HP tetap masuk. Sekarang langganan saya sampai ke kompleks perumahan sebelah.”</blockquote><div class="who"><span class="ava" style="background:#1f7a4a">SR</span><div><b>Bu Siti Rahayu</b><span>Pedagang sayur, pasar di Yogyakarta</span></div></div></div></div>
+        <div class="ui fluid card" data-inv><div class="content"><div class="ui star rating disabled" data-rating="5" data-max-rating="5"></div><blockquote>“Foto timbangan itu yang bikin saya percaya. Belanja bulanan jadi lebih hemat karena harganya harga pasar, bukan harga toko.”</blockquote><div class="who"><span class="ava" style="background:#e0483e">WL</span><div><b>Wati Lestari</b><span>Ibu rumah tangga, Semarang</span></div></div></div></div>
+        <div class="ui fluid card" data-inv><div class="content"><div class="ui star rating disabled" data-rating="5" data-max-rating="5"></div><blockquote>“Sekali putaran saya ambil dari lima lapak. Rutenya sudah diurutkan, jadi bumbu tidak ketinggalan lagi.”</blockquote><div class="who"><span class="ava" style="background:#f4a51c">GP</span><div><b>Gilang Permana</b><span>Kurir pasar, Padang</span></div></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="sec" id="harga" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head center"><span class="kicker">Harga untuk pedagang</span><h2>Daftar gratis, bayar saat laku.</h2><p>Pembeli tidak dikenakan biaya aplikasi. Pedagang memilih paket sesuai ramainya lapak.</p></div>
+      <div class="bill"><div class="ui buttons" id="billBtns" role="group" aria-label="Periode tagihan"><button class="ui active primary button" data-bill="m" type="button" aria-pressed="true">Bulanan</button><button class="ui button" data-bill="y" type="button" aria-pressed="false" data-inv>Tahunan −20%</button></div></div>
+      <div class="prices">
+        <div class="ui fluid card plan" data-m="0" data-inv><div class="content" style="display:flex;flex-direction:column;gap:16px"><div><h3 style="font-size:1.25rem">Lapak Pemula</h3><p style="margin-top:6px;color:var(--ink-2)">Untuk mencoba berjualan online.</p></div><div><div class="old"></div><div class="price"><b>Gratis</b><span>komisi 5%</span></div></div><ul class="ticks"><li><svg aria-hidden="true"><use href="#i-check"/></svg>Etalase hingga 30 barang</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Pesanan lewat chat</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Pencairan harian</li></ul><button class="ui fluid button plan-btn" type="button" data-inv>Daftar gratis</button></div></div>
+        <div class="ui fluid card plan hot" data-m="49000" data-inv><div class="content" style="display:flex;flex-direction:column;gap:16px"><span class="ui orange ribbon label">Terpopuler</span><div><h3 style="font-size:1.25rem">Lapak Laris</h3><p style="margin-top:6px;color:var(--ink-2)">Paling banyak dipilih pedagang aktif.</p></div><div><div class="old"></div><div class="price"><b>Rp 49.000</b><span>/ bulan · komisi 2%</span></div></div><ul class="ticks"><li><svg aria-hidden="true"><use href="#i-check"/></svg>Etalase tanpa batas</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Foto timbangan otomatis</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Promo lapak di halaman pasar</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Rekap penjualan bulanan</li></ul><button class="ui fluid primary button plan-btn" type="button">Coba 30 hari</button></div></div>
+        <div class="ui fluid card plan" data-m="" data-inv><div class="content" style="display:flex;flex-direction:column;gap:16px"><div><h3 style="font-size:1.25rem">Paguyuban Pasar</h3><p style="margin-top:6px;color:var(--ink-2)">Untuk pengelola pasar dan koperasi pedagang.</p></div><div><div class="old"></div><div class="price"><b>Hubungi kami</b></div></div><ul class="ticks"><li><svg aria-hidden="true"><use href="#i-check"/></svg>Semua lapak dalam satu pasar</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Armada kurir pasar sendiri</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Dasbor pengelola &amp; retribusi</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Pelatihan pedagang di lokasi</li></ul><button class="ui fluid button plan-btn" type="button" data-inv>Jadwalkan kunjungan</button></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec" id="faq" style="padding-top:0">
+    <div class="wrap faq-grid">
+      <div class="sec-head" style="margin-bottom:0"><span class="kicker">FAQ</span><h2>Pertanyaan yang sering muncul.</h2><p>Belum terjawab? Tim lapangan kami ada di pasar setiap pagi.</p></div>
+      <div class="ui styled fluid accordion" id="faqAcc" data-inv>
+        <div class="active title"><i class="dropdown icon"></i>Pedagang tidak punya rekening bank, bisa ikut?</div>
+        <div class="active content"><p>Bisa. Hasil penjualan dapat dicairkan ke dompet digital atau diambil tunai di kantor pengelola pasar setiap sore.</p></div>
+        <div class="title"><i class="dropdown icon"></i>Bagaimana kalau barang yang dipesan habis?</div>
+        <div class="content"><p>Pedagang menandai barang kosong dan menawarkan pengganti lewat chat. Pembeli boleh setuju atau membatalkan barang itu tanpa biaya.</p></div>
+        <div class="title"><i class="dropdown icon"></i>Siapa yang menanggung barang rusak di jalan?</div>
+        <div class="content"><p>Pasar Rakyat. Kirim foto saat barang diterima, dana untuk barang rusak dikembalikan dalam 1×24 jam.</p></div>
+        <div class="title"><i class="dropdown icon"></i>Apakah harga di aplikasi lebih mahal?</div>
+        <div class="content"><p>Tidak. Harga ditentukan pedagang sesuai harga pasar hari itu. Pembeli hanya membayar ongkos antar sesuai jarak.</p></div>
+        <div class="title"><i class="dropdown icon"></i>Pasar kami belum terdaftar, bagaimana caranya?</div>
+        <div class="content"><p>Pengelola pasar atau paguyuban pedagang bisa mengajukan lewat formulir di bawah. Tim kami datang untuk survei dan pelatihan.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="wrap" id="daftar">
+    <div class="cta">
+      <div><h2>Bawa lapakmu ke HP pembeli.</h2><p>Daftar gratis hari ini. Tim lapangan kami datang ke pasar untuk memotret dagangan dan melatih cara menerima pesanan.</p></div>
+      <form class="ui form cta-box" id="ctaForm" novalidate data-inv>
+        <div class="field"><label for="ctaPhone">Nomor WhatsApp</label><input type="tel" id="ctaPhone" name="phone" placeholder="0812 3456 7890" autocomplete="tel" inputmode="tel"></div>
+        <div class="field"><label for="ctaKind">Saya adalah</label>
+          <select class="ui fluid dropdown" id="ctaKind" name="kind" data-inv><option value="pedagang">Pedagang pasar</option><option value="pengelola">Pengelola pasar / paguyuban</option><option value="kurir">Calon kurir</option></select></div>
+        <button class="ui fluid large primary button" type="submit">Daftar gratis</button>
+        <div class="ui error message"></div>
+        <small>Tim kami menghubungi dalam 1×24 jam</small>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div><a class="brand" href="#top"><svg aria-hidden="true"><use href="#logo"/></svg>Pasar Rakyat</a><p>Pemesanan online untuk pedagang pasar tradisional. Merek, nama, dan data di halaman ini fiktif.</p></div>
+      <div><h4>Produk</h4><a href="#fitur">Untuk pembeli</a><a href="#fitur">Untuk pedagang</a><a href="#kendali">Pasar 3D</a><a href="#harga">Harga</a></div>
+      <div><h4>Sumber daya</h4><a href="#faq">Pusat bantuan</a><a href="#alur">Alur pesanan</a><a href="#daftar">Daftarkan pasar</a></div>
+      <div><h4>Perusahaan</h4><a href="#top">Tentang kami</a><a href="#top">Jadi kurir</a><a href="#top">Kebijakan privasi</a></div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 Pasar Rakyat. Template contoh, bukan layanan nyata.</span><span class="built"><i></i>Dibangun dengan Fomantic-UI + three.js</span></div>
+  </div>
+</footer>
+
+<!-- Modal pesan dengan validasi formulir -->
+<div class="ui small modal" id="orderModal" data-inv>
+  <div class="header">Pesan dari Pasar Rakyat</div>
+  <div class="content">
+    <p style="color:var(--ink-2);margin-bottom:14px" id="modalSum">Keranjang: 0 kg</p>
+    <form class="ui form" id="orderForm" novalidate data-inv>
+      <div class="two fields">
+        <div class="field"><label for="oName">Nama penerima</label><input type="text" id="oName" name="name" placeholder="Wati Lestari" autocomplete="name"></div>
+        <div class="field"><label for="oPhone">Nomor WhatsApp</label><input type="tel" id="oPhone" name="phone" placeholder="0812 3456 7890" autocomplete="tel" inputmode="tel"></div>
+      </div>
+      <div class="field"><label for="oAddr">Alamat antar</label><textarea id="oAddr" name="addr" rows="2" placeholder="Jl. Melati No. 12, RT 03/RW 05" autocomplete="street-address"></textarea></div>
+      <div class="field"><label for="oSlot">Slot antar</label>
+        <select class="ui fluid dropdown" id="oSlot" name="slot" data-inv><option value="">Pilih slot</option><option value="pagi">Pagi · 06.00–08.00</option><option value="siang">Siang · 10.00–12.00</option><option value="sore">Sore · 15.00–17.00</option></select></div>
+      <div class="field"><div class="ui checkbox" data-inv><input type="checkbox" id="oAgree" name="agree"><label for="oAgree">Barang boleh diganti yang setara bila habis</label></div></div>
+      <div class="ui error message"></div>
+    </form>
+  </div>
+  <div class="actions"><button class="ui button cancel" type="button" data-inv>Batal</button><button class="ui primary button" type="button" id="orderSubmit">Kirim pesanan</button></div>
+</div>
+
+<template id="marketFallback">
+  <svg viewBox="0 0 600 520" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" role="img" aria-label="Ilustrasi pasar (WebGL tidak tersedia)">
+    <polygon points="300,150 570,305 300,460 30,305" fill="#ecdcc0"/>
+    <g><polygon points="110,250 230,180 270,200 150,270" fill="#2f9e44"/><polygon points="110,250 150,270 150,285 110,265" fill="#fff"/></g>
+    <g><polygon points="220,310 340,240 380,260 260,330" fill="#f59f00"/><polygon points="220,310 260,330 260,345 220,325" fill="#fff"/></g>
+    <g><polygon points="330,370 450,300 490,320 370,390" fill="#e03131"/><polygon points="330,370 370,390 370,405 330,385" fill="#fff"/></g>
+    <g fill="#e0483e"><circle cx="175" cy="285" r="7"/><circle cx="190" cy="278" r="7"/></g><g fill="#f4a51c"><circle cx="290" cy="345" r="8"/><circle cx="305" cy="337" r="8"/></g>
+    <path d="M70 360 L300 250 L520 360" fill="none" stroke="#f07a1f" stroke-width="7" stroke-linecap="round" stroke-dasharray="16 12"/>
+    <g transform="translate(440 410)"><rect width="50" height="18" rx="6" fill="#e0483e"/><rect x="34" y="-22" width="22" height="20" rx="3" fill="#1f7a4a"/><circle cx="8" cy="22" r="8" fill="#2b2f2d"/><circle cx="44" cy="22" r="8" fill="#2b2f2d"/></g>
+  </svg>
+</template>
+
+<script>
+/* Store bersama untuk UI (Fomantic/jQuery) dan modul 3D */
+(function(){
+  var rm = matchMedia('(prefers-reduced-motion: reduce)');
+  var s = { theme: document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light', cat: -1, rain: false, crowd: 8, qty: 2, rate: 4, cart: [], phase: 0, billing: 'm', storyStep: 0 };
+  var subs = new Set(), bus = new EventTarget();
+  window.__pr = { bus: bus, frames: {}, rm: rm, ui: false,
+    store: { get: function(){ return s; },
+      set: function(p){ var n = typeof p === 'function' ? p(s) : p, ch = false; for (var k in n) if (s[k] !== n[k]) { ch = true; break; } if (!ch) return; s = Object.assign({}, s, n); subs.forEach(function(f){ f(s); }); bus.dispatchEvent(new Event('state')); },
+      sub: function(f){ subs.add(f); return function(){ subs.delete(f); }; } } };
+  window.__pr.CAT = [
+    { id: 'sayur', name: 'Sayur segar', short: 'Sayur', roof: '#2f9e44', vendor: 'Lapak Bu Siti', item: 'Bayam', price: 12000, colors: ['#3f9b3a', '#68c25a', '#f08c2e', '#a8d672'] },
+    { id: 'buah', name: 'Buah', short: 'Buah', roof: '#f59f00', vendor: 'Lapak Pak Darto', item: 'Jeruk', price: 25000, colors: ['#f7931e', '#ffd43b', '#e03131', '#7bc96f'] },
+    { id: 'bumbu', name: 'Bumbu & rempah', short: 'Bumbu', roof: '#e03131', vendor: 'Lapak Mak Inah', item: 'Cabai merah', price: 38000, colors: ['#d62828', '#9c3d8f', '#f3e6cf', '#e8a33d'] }
+  ];
+})();
+</script>
+
+<!-- ================= UI: Fomantic-UI (jQuery) ================= -->
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const P = window.__pr, store = P.store, rmq = P.rm, CAT = P.CAT, $j = window.jQuery;
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const html = document.documentElement;
+  const fmtRp = n => 'Rp ' + Math.round(n).toLocaleString('id-ID');
+  const toast = (msg, cls = 'success', title) => $j.toast({ title: title || '', message: msg, class: cls, position: innerWidth < 600 ? 'bottom center' : 'bottom right', showProgress: 'bottom', displayTime: 3600 });
+  const RATE_TXT = ['Biasa', 'Cukup', 'Bagus', 'Pilihan', 'Super segar'];
+  const LIVE = [['Bu Siti sedang menimbang bayam', 0], ['Pak Darto membungkus jeruk', 1], ['Mak Inah menyiapkan cabai', 2], ['Kurir Gilang menuju Jl. Melati', -1]];
+
+  /* ---- tema: varian "inverted" Fomantic ---- */
+  function applyTheme(t){
+    html.dataset.theme = t;
+    $j('[data-inv]').toggleClass('inverted', t === 'dark');
+    $('meta[name="theme-color"]').content = t === 'dark' ? '#14110d' : '#fbf6ee';
+    $('#themeBtn use').setAttribute('href', t === 'dark' ? '#i-sun' : '#i-moon');
+    try { localStorage.setItem('pasarrakyat-theme', t); } catch (e) {}
+    $j('.info').popup('destroy').popup({ variation: t === 'dark' ? 'inverted' : '' });
+    P.bus.dispatchEvent(new Event('theme'));
+  }
+  $('#themeBtn').addEventListener('click', () => { const t = store.get().theme === 'dark' ? 'light' : 'dark'; store.set({ theme: t }); applyTheme(t); });
+
+  /* ---- modul Fomantic ---- */
+  $j('#menuDd').dropdown({ action: 'hide' });
+  $j('#featMenu .item').tab();
+  $j('.ui.progress[data-percent]').not('#storyProg').progress({ autoSuccess: false, showActivity: false });
+  $j('#storyProg').progress({ percent: 0, autoSuccess: false, showActivity: false });
+  $j('#faqAcc').accordion({ duration: rmq.matches ? 0 : 300 });
+  $j('.testi .rating').rating({ interactive: false });
+  $j('#ctaKind').dropdown();
+  $j('#oSlot').dropdown();
+  $j('#orderModal .ui.checkbox').checkbox();
+
+  // kategori: dropdown + menu hero + kartu lapak
+  const catIdx = v => CAT.findIndex(c => c.id === v);
+  $j('#catDd').dropdown({ onChange: v => { const i = catIdx(v); if (store.get().cat !== i) { store.set({ cat: i }); toast(i < 0 ? 'Menampilkan seluruh pasar' : `Kamera menuju deretan ${CAT[i].name.toLowerCase()}`, 'info'); } } });
+  $$('#heroCat .item').forEach(a => { const f = () => store.set({ cat: +a.dataset.cat }); a.addEventListener('click', f); a.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); f(); } }); });
+  $('#vendors').innerHTML = CAT.map((c, i) => `<div class="ui card" data-cat="${i}" tabindex="0" role="button" aria-label="Sorot ${c.vendor}" data-inv><div class="content"><div class="swatch" style="background:repeating-linear-gradient(90deg,${c.roof} 0 14px,#fff 14px 22px)"></div><div class="header">${c.vendor}</div><div class="meta">${c.name} · deret ${i + 1}</div><div class="description" style="margin-top:8px;color:var(--ink-2)">${c.item} mulai <b class="num">${fmtRp(c.price)}</b>/kg</div></div><div class="extra content"><span class="ui ${['green', 'yellow', 'red'][i]} small label">${['Segar subuh tadi', 'Manis, baru panen', 'Pedas pilihan'][i]}</span></div></div>`).join('');
+  $$('#vendors .card').forEach(c => { const f = () => store.set({ cat: +c.dataset.cat }); c.addEventListener('click', f); c.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); f(); } }); });
+
+  // cuaca
+  $j('#rainCb').checkbox({ onChange(){ const r = $j('#rainCb').checkbox('is checked'); store.set({ rain: r }); toast(r ? 'Hujan turun, pembeli berteduh di bawah tenda' : 'Cerah kembali, lorong ramai lagi', r ? 'info' : 'success'); } });
+  // keramaian
+  $j('#crowdSl').slider({ min: 0, max: 14, step: 1, start: 8, smooth: !rmq.matches, autoAdjustLabels: false, interpretLabel: v => [0, 7, 14].includes(v) ? String(v) : '', onMove: v => store.set({ crowd: v }) });
+  // jumlah & rating
+  const qtyIn = $('#qtyIn');
+  const setQty = v => { v = Math.max(0, Math.min(8, Math.round(+v || 0))); qtyIn.value = v; store.set({ qty: v }); };
+  qtyIn.addEventListener('input', () => setQty(qtyIn.value));
+  $('#qtyMinus').addEventListener('click', () => setQty(store.get().qty - 1));
+  $('#qtyPlus').addEventListener('click', () => setQty(store.get().qty + 1));
+  $j('#rateR').rating({ initialRating: 4, maxRating: 5, clearable: false, onRate: v => { store.set({ rate: v || 1 }); } });
+  $j('#rateR .icon').attr('aria-hidden', 'true');
+  $('#addBtn').addEventListener('click', () => {
+    const s = store.get(), c = Math.max(0, s.cat);
+    if (!s.qty) { toast('Isi jumlah dulu, minimal 1 kg', 'warning'); return; }
+    const cart = s.cart.concat([{ cat: c, kg: s.qty, rate: s.rate }]).slice(-6);
+    store.set({ cart, phase: Math.max(s.phase, 0) });
+    toast(`${s.qty} kg ${CAT[c].item.toLowerCase()} (${RATE_TXT[s.rate - 1].toLowerCase()}) masuk keranjang`, 'success', CAT[c].vendor);
+  });
+  // modal pesan + validasi formulir Fomantic
+  const $modal = $j('#orderModal').modal({ autofocus: false, closable: true, duration: rmq.matches ? 0 : 400 });
+  const $of = $j('#orderForm').form({
+    fields: {
+      name: { rules: [{ type: 'notEmpty', prompt: 'Nama penerima wajib diisi' }] },
+      phone: { rules: [{ type: 'regExp[/^(\\+62|0)8[0-9 ]{8,14}$/]', prompt: 'Nomor WhatsApp belum benar, contoh 0812 3456 7890' }] },
+      addr: { rules: [{ type: 'minLength[10]', prompt: 'Tulis alamat lengkap, minimal 10 huruf' }] },
+      slot: { rules: [{ type: 'notEmpty', prompt: 'Pilih slot antar' }] }
+    }, inline: false, on: 'blur'
+  });
+  function openOrder(){
+    const s = store.get(), kg = s.cart.reduce((a, l) => a + l.kg, 0);
+    $('#modalSum').textContent = kg ? `Keranjang: ${kg} kg dari ${new Set(s.cart.map(l => l.cat)).size} lapak · ${fmtRp(total(s))}` : 'Keranjang masih kosong, kami isi dengan contoh paket sayur 3 kg.';
+    $modal.modal('show');
+  }
+  $('#orderSubmit').addEventListener('click', () => {
+    if (!$of.form('validate form')) { toast('Periksa lagi isian yang ditandai merah', 'error'); return; }
+    const v = $of.form('get values'), s = store.get();
+    const cart = s.cart.length ? s.cart : [{ cat: 0, kg: 3, rate: 4 }];
+    store.set({ cart, phase: 1 }); $modal.modal('hide'); $of.form('clear');
+    toast(`Pesanan atas nama ${v.name.split(' ')[0]} sedang ditimbang. Kurir berangkat slot ${v.slot}.`, 'success', 'Pesanan PR-2042');
+    if (!rmq.matches) { setTimeout(() => store.set({ phase: 2 }), 3500); } else store.set({ phase: 2 });
+  });
+  $('#orderBtn').addEventListener('click', openOrder);
+  $('#heroCta').addEventListener('click', openOrder);
+  $('#navCta').addEventListener('click', () => document.getElementById('daftar').scrollIntoView({ behavior: rmq.matches ? 'auto' : 'smooth' }));
+  $$('.plan-btn').forEach(b => b.addEventListener('click', () => document.getElementById('daftar').scrollIntoView({ behavior: rmq.matches ? 'auto' : 'smooth' })));
+  // popup info
+  $j('.info').popup({ variation: store.get().theme === 'dark' ? 'inverted' : '' });
+  // harga
+  $$('#billBtns .button').forEach(b => b.addEventListener('click', () => store.set({ billing: b.dataset.bill })));
+  // CTA form
+  $j('#ctaForm').form({ fields: { phone: { rules: [{ type: 'regExp[/^(\\+62|0)8[0-9 ]{8,14}$/]', prompt: 'Masukkan nomor WhatsApp yang valid, contoh 0812 3456 7890' }] } },
+    onSuccess(e, f){ e.preventDefault(); toast(`Terima kasih! Tim lapangan menghubungi ${f.phone} dalam 1×24 jam.`, 'success', 'Pendaftaran diterima'); $j('#ctaForm').form('clear'); $j('#ctaKind').dropdown('set selected', 'pedagang'); return false; } });
+
+  const total = s => s.cart.reduce((a, l) => a + l.kg * CAT[l.cat].price * (1 + (l.rate - 3) * .05), 0);
+
+  /* ---- sinkron store → komponen ---- */
+  let liveK = 0;
+  function sync(s){
+    $$('#heroCat .item').forEach(a => { const on = +a.dataset.cat === s.cat; a.classList.toggle('active', on); a.setAttribute('aria-selected', on); });
+    const want = s.cat < 0 ? '-1' : CAT[s.cat].id; if ($j('#catDd').dropdown('get value') !== want) $j('#catDd').dropdown('set selected', want, true);
+    $$('#vendors .card').forEach(c => c.classList.toggle('on', +c.dataset.cat === s.cat));
+    if ($j('#rainCb').checkbox('is checked') !== s.rain) $j('#rainCb').checkbox(s.rain ? 'set checked' : 'set unchecked');
+    $('#crowdVal').textContent = s.crowd + ' orang';
+    const c = Math.max(0, s.cat);
+    $('#itemLbl').textContent = CAT[c].item + ' · ' + fmtRp(CAT[c].price) + '/kg';
+    $('#rateTxt').textContent = RATE_TXT[s.rate - 1];
+    const kg = s.cart.reduce((a, l) => a + l.kg, 0), kinds = new Set(s.cart.map(l => l.cat)).size, tot = total(s);
+    $('#stKg').textContent = kg; $('#stItem').textContent = kinds; $('#stRp').textContent = Math.round(tot / 1000).toLocaleString('id-ID');
+    $('#hallCat').textContent = s.cat < 0 ? 'Semua lapak' : CAT[s.cat].vendor;
+    $('#hallWx').textContent = s.rain ? 'Hujan · 24°C' : 'Cerah · 29°C';
+    $('#openLbl').textContent = s.rain ? 'Buka · hujan' : 'Pasar buka'; $('#openLbl').className = 'ui small label ' + (s.rain ? 'blue' : 'green');
+    $('#hallMsg').textContent = s.phase === 2 ? 'Kurir sedang mengantar pesananmu' : s.phase === 1 ? 'Pesanan sedang ditimbang' : kg ? `Keranjang berisi ${kg} kg` : 'Keranjang masih kosong';
+    $('#hallSub').textContent = s.phase ? `${kg} kg · ${fmtRp(tot)} · motor kurir menyala di peta.` : kg ? `${kinds} jenis barang · ${fmtRp(tot)}. Tekan Pesan sekarang.` : `Atur jumlah lalu tekan Tambah ke keranjang. Pratinjau: ${s.qty} kg.`;
+    $$('#ordSteps .step').forEach((st, k) => { const done = k < (s.phase || (kg ? 1 : 0)) || (s.phase === 2 && k < 2); st.className = (done ? 'completed step' : k === (s.phase || (kg ? 1 : 0)) ? 'active step' : 'disabled step'); });
+    $$('#billBtns .button').forEach(b => { const on = b.dataset.bill === s.billing; b.classList.toggle('active', on); b.classList.toggle('primary', on); b.setAttribute('aria-pressed', on); });
+    $$('.plan').forEach(p => { const m = +p.dataset.m; if (!m) return; const y = s.billing === 'y'; p.querySelector('.price b').textContent = fmtRp(y ? m * .8 : m); p.querySelector('.old').textContent = y ? fmtRp(m) : ''; });
+    $j('#storyProg').progress('set percent', s.storyStep / 4 * 100);
+    $$('.story-lbl span').forEach((el, k) => el.classList.toggle('on', k === s.storyStep));
+    const L = s.cat >= 0 ? LIVE[s.cat] : LIVE[liveK % LIVE.length]; $('#heroLive').textContent = L[0];
+    $('#heroOrder').textContent = kg ? `${kg} kg dari ${kinds} lapak · ${['ditimbang di lapak', 'sedang ditimbang', 'diantar kurir'][s.phase]}` : '3 kg sayur · ditimbang di lapak';
+    $j('#heroProg').progress('set percent', [45, 70, 92][s.phase]);
+  }
+  store.sub(sync); sync(store.get());
+  if (!rmq.matches) setInterval(() => { if (!document.hidden && store.get().cat < 0) { liveK++; sync(store.get()); } }, 5000);
+
+  /* ---- statistik ---- */
+  const io = new IntersectionObserver(es => { if (!es[0].isIntersecting) return; io.disconnect(); $$('#stats .value').forEach(b => {
+    const end = +b.dataset.end, pre = b.dataset.pre || '', suf = b.dataset.suf || '';
+    const out = v => pre + Math.round(v).toLocaleString('id-ID') + suf;
+    if (rmq.matches) { b.textContent = out(end); return; }
+    const t0 = performance.now(); const st = now => { const p = Math.min(1, (now - t0) / 1400); b.textContent = out(end * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(st); }; requestAnimationFrame(st);
+  }); }, { threshold: .3 });
+  io.observe($('#stats'));
+  applyTheme(store.get().theme);
+  P.ui = true;
+});
+</script>
+
+<!-- ================= 3D: three.js ================= -->
+<script type="module" async>
+const P = window.__pr, store = P.store, bus = P.bus, rmq = P.rm, CAT = P.CAT;
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+const isDark = () => store.get().theme === 'dark';
+const FONT = '"Rubik", system-ui, sans-serif';
+if (document.readyState === 'loading') await new Promise(r => document.addEventListener('DOMContentLoaded', r, { once: true }));
+
+function webglOK(){ try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch (e) { return false; } }
+function showFallbacks(){ const tpl = $('#marketFallback'); ['#heroStage', '#hallStage'].forEach(s => { const st = $(s); st.classList.add('no-webgl'); const fb = st.querySelector('.fallback'); if (!fb.firstChild) fb.append(tpl.content.cloneNode(true)); }); $('#alur').classList.add('no-webgl'); }
+let THREE, RoundedBoxGeometry;
+try { if (!webglOK()) throw new Error('no-webgl'); THREE = await import('three'); ({ RoundedBoxGeometry } = await import('three/addons/geometries/RoundedBoxGeometry.js')); } catch (e) { showFallbacks(); }
+
+const storySec = $('#alur'), svgNodes = $$('#storySvg .node');
+function textProgress(p){ const n = Math.round(clamp(p, 0, 1) * 4); $$('.step-i', storySec).forEach((s, k) => s.classList.toggle('on', k === n)); svgNodes.forEach((c, k) => c.classList.toggle('on', k <= n)); store.set({ storyStep: n }); }
+
+/* ---------- tata letak pasar ---------- */
+const ROW_Z = [-4.5, -.3, 3.9], COL_X = [-7.2, -2.4, 2.4, 7.2];
+const LOOP = [[-10, 1.75], [9.9, 1.75], [9.9, -2.45], [-10, -2.45]]; // jalur motor kurir lewat dua lorong
+const AISLES = [-2.45, 1.75, 6.0];
+const SKINS = ['#e3b08c', '#c68a63', '#a8714f', '#d9a17c', '#8d5a3c'];
+const SHIRTS = ['#e45d5d', '#4c9be8', '#9b6ad6', '#2bb38a', '#ef7f3a', '#5d6fe0', '#d6589a', '#3fb6c4', '#8fb33f', '#c9733f', '#f2b134', '#6d7fa0', '#b8487a', '#2f9e44'];
+
+if (THREE) {
+  const gsap = window.gsap;
+  if (gsap && window.ScrollTrigger) gsap.registerPlugin(window.ScrollTrigger);
+  const DPR = () => Math.min(window.devicePixelRatio || 1, 2);
+  const frames = P.frames;
+  function createLoop(el, frame, continuous){
+    let visible = false, raf = 0, last = 0, pending = true;
+    const L = { request(){ pending = true; kick(); } };
+    const run = () => visible && !document.hidden;
+    function tick(now){
+      if (!run()) { raf = 0; last = 0; return; }
+      raf = -1;
+      const dt = last ? Math.min((now - last) / 1000, .05) : .016; last = now; pending = false;
+      frames[el.id] = (frames[el.id] || 0) + 1;
+      frame(dt, now / 1000);
+      if (continuous() || pending) raf = requestAnimationFrame(tick); else { raf = 0; last = 0; }
+    }
+    function kick(){ if (!raf && run()) raf = requestAnimationFrame(tick); }
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) L.request(); }, { rootMargin: '80px' }).observe(el);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) L.request(); });
+    rmq.addEventListener('change', () => L.request());
+    return L;
+  }
+  function makeRenderer(canvas, alpha){
+    const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: !!alpha, powerPreference: 'high-performance' });
+    r.setPixelRatio(DPR()); r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFShadowMap;
+    r.toneMapping = THREE.ACESFilmicToneMapping; r.outputColorSpace = THREE.SRGBColorSpace; if (alpha) r.setClearColor(0x000000, 0);
+    return r;
+  }
+  function watchSize(el, renderer, onSize){ const apply = () => { const w = Math.max(1, el.clientWidth), h = Math.max(1, el.clientHeight); renderer.setPixelRatio(DPR()); renderer.setSize(w, h, false); onSize(w, h); }; new ResizeObserver(apply).observe(el); apply(); }
+  const std = (c, rough = .7, extra = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0, ...extra });
+  const matCache = new Map(); const M = (c, rough = .7) => { const k = c + rough; if (!matCache.has(k)) matCache.set(k, std(c, rough)); return matCache.get(k); };
+  function box(parent, w, hh, d, mat, x, y, z, o = {}){ const m = new THREE.Mesh(new THREE.BoxGeometry(w, hh, d), mat); m.position.set(x, y, z); m.castShadow = !!o.cast; m.receiveShadow = o.recv !== false; if (o.ry) m.rotation.y = o.ry; if (o.rz) m.rotation.z = o.rz; if (o.rx) m.rotation.x = o.rx; parent.add(m); return m; }
+  function cyl(parent, r, hh, mat, x, y, z, o = {}){ const m = new THREE.Mesh(new THREE.CylinderGeometry(r, o.r2 ?? r, hh, o.seg || 14), mat); m.position.set(x, y, z); m.castShadow = !!o.cast; m.receiveShadow = true; if (o.rz) m.rotation.z = o.rz; if (o.rx) m.rotation.x = o.rx; parent.add(m); return m; }
+  const V = (x, y, z) => new THREE.Vector3(x, y, z);
+  function canvasTex(w, hgt, draw){ const c = document.createElement('canvas'); c.width = w; c.height = hgt; draw(c.getContext('2d'), w, hgt); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; t.userData.canvas = c; t.userData.draw = draw; return t; }
+  const blobTex = canvasTex(64, 64, (x, w) => { const g = x.createRadialGradient(w / 2, w / 2, 0, w / 2, w / 2, w / 2); g.addColorStop(0, 'rgba(0,0,0,.4)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, w, w); });
+  const blobMat = new THREE.MeshBasicMaterial({ map: blobTex, transparent: true, depthWrite: false });
+  function blob(parent, s, x = 0, z = 0, sz){ const m = new THREE.Mesh(new THREE.PlaneGeometry(s, sz || s), blobMat); m.rotation.x = -Math.PI / 2; m.position.set(x, .015, z); parent.add(m); return m; }
+  const stripeTex = c => canvasTex(128, 32, (x, w, h) => { for (let i = 0; i < 8; i++) { x.fillStyle = i % 2 ? '#fbf3e4' : c; x.fillRect(i * 16, 0, 16, h); } });
+  function pavingTex(dark){
+    const t = canvasTex(256, 256, (x, w) => {
+      x.fillStyle = dark ? '#3a3328' : '#eadcc3'; x.fillRect(0, 0, w, w);
+      x.strokeStyle = dark ? '#2e281f' : '#dccaa9'; x.lineWidth = 3;
+      for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) { x.strokeRect(c * 64 + (r % 2) * 32, r * 64, 64, 64); }
+      for (let k = 0; k < 600; k++) { x.fillStyle = dark ? `rgba(255,255,255,${Math.random() * .03})` : `rgba(80,50,10,${Math.random() * .04})`; x.fillRect(Math.random() * w, Math.random() * w, 2, 2); }
+    });
+    t.wrapS = t.wrapT = THREE.RepeatWrapping; return t;
+  }
+  function person(o = {}){
+    const g = new THREE.Group(), shirt = M(o.shirt || '#4c9be8', .8), pants = M(o.pants || '#3b3a46', .85), skin = M(o.skin || '#d9a17c', .7);
+    const legs = [], arms = [];
+    [-.11, .11].forEach(px => { const p = new THREE.Group(); p.position.set(px, .8, 0); box(p, .16, .78, .16, pants, 0, -.39, 0, { cast: true }); g.add(p); legs.push(p); });
+    const torso = new THREE.Mesh(new THREE.CapsuleGeometry(.21, .34, 4, 10), shirt); torso.position.y = 1.14; torso.castShadow = true; g.add(torso);
+    [-.29, .29].forEach(px => { const p = new THREE.Group(); p.position.set(px, 1.39, 0); box(p, .11, .5, .11, shirt, 0, -.25, 0, { cast: true }); g.add(p); arms.push(p); });
+    const head = new THREE.Mesh(new THREE.SphereGeometry(.19, 14, 10), skin); head.position.y = 1.62; head.castShadow = true; g.add(head);
+    const top = o.hat ? M(o.hat, .7) : o.hijab ? M(o.hijab, .8) : M('#2a211c', .9);
+    const hr = new THREE.Mesh(new THREE.SphereGeometry(o.hat ? .23 : .2, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2.1), top); hr.position.y = 1.64; hr.rotation.x = o.hat ? 0 : -.25; g.add(hr);
+    if (o.hijab) { const hj = new THREE.Mesh(new THREE.CylinderGeometry(.2, .26, .3, 12), top); hj.position.y = 1.44; g.add(hj); }
+    if (o.caping) { const cp = new THREE.Mesh(new THREE.ConeGeometry(.5, .26, 16), M('#d9b26a', .9)); cp.position.y = 1.86; cp.castShadow = true; g.add(cp); }
+    return { g, legs, arms };
+  }
+  // tumpukan dagangan: satu InstancedMesh untuk semua butir agar ringan
+  function produceField(parent, count){
+    const im = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 1), std('#ffffff', .6), count); im.castShadow = true; im.instanceMatrix.setUsage(THREE.DynamicDrawUsage); parent.add(im); return im;
+  }
+
+  /* ---------------- adegan pasar (hero & konsol) ---------------- */
+  function createMarket(canvas, stageEl, opts){
+    const renderer = makeRenderer(canvas, true);
+    const scene = new THREE.Scene();
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -200, 400);
+    const hemi = new THREE.HemisphereLight('#fffaf0', '#b9a684', 1.55); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff1d6', 2.2); sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16, near: 1, far: 90 }); sun.shadow.bias = -.0008; sun.shadow.normalBias = .04;
+    scene.add(sun, sun.target);
+    const world = new THREE.Group(); scene.add(world);
+    let pt = pavingTex(false); pt.repeat.set(9, 6.5);
+    const floorMat = new THREE.MeshStandardMaterial({ map: pt, roughness: .9 });
+    const slabSide = std('#cdb58c', .9);
+    const slab = new THREE.Mesh(new RoundedBoxGeometry(23.4, .5, 16, 2, .2), [slabSide, slabSide, floorMat, slabSide, slabSide, slabSide]);
+    slab.position.set(0, -.25, .3); slab.receiveShadow = true; world.add(slab);
+    // genangan air (muncul saat hujan)
+    const puddleMat = new THREE.MeshStandardMaterial({ color: '#7f95a8', roughness: .08, metalness: .3, transparent: true, opacity: 0, depthWrite: false });
+    [[-5, 1.8, 1.6, .8], [3.6, -2.4, 1.2, .7], [8.4, 6.2, 1.8, .9], [-8.6, 6.0, 1.3, .7]].forEach(([x, z, w, d]) => { const m = new THREE.Mesh(new THREE.CircleGeometry(1, 20), puddleMat); m.scale.set(w, d, 1); m.rotation.x = -Math.PI / 2; m.position.set(x, .013, z); world.add(m); });
+    // lapak
+    const wood = M('#b98a57', .85), woodDark = M('#8d6038', .85), post = M('#6f5a46', .7);
+    const rows = [];
+    const field = produceField(world, 12 * 3 * 7 + 60);
+    const o3 = new THREE.Object3D(), col = new THREE.Color();
+    let pi = 0;
+    const putProduce = (x, y, z, r, c) => { o3.position.set(x, y, z); o3.rotation.set(0, (pi * 1.7) % 3, 0); o3.scale.setScalar(r); o3.updateMatrix(); field.setMatrixAt(pi, o3.matrix); field.setColorAt(pi, col.set(c)); pi++; };
+    ROW_Z.forEach((rz, ri) => {
+      const C = CAT[ri], roofTex = stripeTex(C.roof); roofTex.wrapS = THREE.RepeatWrapping; roofTex.repeat.set(3, 1);
+      const roofMat = new THREE.MeshStandardMaterial({ map: roofTex, roughness: .8, emissive: C.roof, emissiveIntensity: 0 });
+      const valMat = new THREE.MeshStandardMaterial({ map: roofTex, roughness: .8, emissive: C.roof, emissiveIntensity: 0, side: THREE.DoubleSide });
+      const stalls = [];
+      COL_X.forEach((cx, ci) => {
+        const g = new THREE.Group(); g.position.set(cx, 0, rz); world.add(g);
+        // meja dagangan
+        box(g, 3.7, .12, 1.5, wood, 0, .86, .3, { cast: true }); box(g, 3.6, .8, .08, woodDark, 0, .42, 1.0); [[-1.7, -.35], [1.7, -.35]].forEach(([x, z]) => box(g, .1, .8, .1, post, x, .4, z));
+        // tiang + atap belang miring + rumbai
+        [[-1.95, 1.15], [1.95, 1.15], [-1.95, -.9], [1.95, -.9]].forEach(([x, z]) => box(g, .1, 2.6 + (z < 0 ? .4 : 0), .1, post, x, (2.6 + (z < 0 ? .4 : 0)) / 2, z, { cast: true }));
+        box(g, 4.2, .08, 2.6, roofMat, 0, 2.82, .12, { cast: true, rx: -.18 });
+        const val = new THREE.Mesh(new THREE.PlaneGeometry(4.2, .32), valMat); val.position.set(0, 2.42, 1.42); g.add(val);
+        // keranjang + tumpukan
+        [-1.15, 0, 1.15].forEach((bx, k) => {
+          cyl(g, .42, .22, M('#a8773d', .95), bx, 1.03, .3, { r2: .34, cast: true });
+          const c1 = C.colors[(k + ci) % 4], c2 = C.colors[(k + ci + 1) % 4];
+          const mound = new THREE.Mesh(new THREE.SphereGeometry(.4, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2), M(c1, .65)); mound.scale.y = .55; mound.position.set(bx, 1.12, .3); g.add(mound);
+          for (let q = 0; q < 7; q++) { const a = q / 7 * Math.PI * 2; putProduce(cx + bx + Math.cos(a) * .22 * (q % 2 + .6), 1.24 + (q === 0 ? .1 : 0), rz + .3 + Math.sin(a) * .18, ri === 2 ? .09 : .12, q % 3 ? c1 : c2); }
+        });
+        // pedagang
+        const v = person({ shirt: SHIRTS[(ri * 4 + ci) % SHIRTS.length], skin: SKINS[(ri + ci) % 5], hijab: (ri + ci) % 3 === 0 ? ['#c74b7a', '#3f7f9e', '#7a5cc9'][ci % 3] : null, caping: (ri + ci) % 3 === 2 }); v.g.position.set(.6 - ci % 2 * 1.2, 0, -.55); g.add(v.g);
+        // lampu bohlam
+        const bulb = new THREE.Mesh(new THREE.SphereGeometry(.09, 10, 8), new THREE.MeshStandardMaterial({ color: '#fff3c4', emissive: '#ffd27a', emissiveIntensity: .2 })); bulb.position.set(0, 2.35, .4); g.add(bulb);
+        stalls.push({ g, bulb, vendor: v });
+      });
+      const tileMat = new THREE.MeshBasicMaterial({ color: C.roof, transparent: true, opacity: 0, depthWrite: false });
+      const tile = new THREE.Mesh(new THREE.PlaneGeometry(19, 1.9), tileMat); tile.rotation.x = -Math.PI / 2; tile.position.set(0, .014, rz + 2.15); world.add(tile);
+      const signTex = canvasTex(512, 96, (x, w, h) => { x.fillStyle = C.roof; x.fillRect(0, 0, w, h); x.fillStyle = '#fff'; x.font = `800 54px ${FONT}`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(C.name.toUpperCase(), w / 2, h / 2 + 3); });
+      const sign = new THREE.Mesh(new THREE.PlaneGeometry(2.6, .5), new THREE.MeshBasicMaterial({ map: signTex, toneMapped: false })); sign.position.set(-10.3, 2.0, rz + .6); sign.rotation.y = Math.PI / 2 - .7; world.add(sign);
+      box(world, .1, 2.0, .1, post, -10.3, 1.0, rz + .6);
+      rows.push({ stalls, roofMat, valMat, tileMat, lit: 0 });
+    });
+    field.count = pi; field.instanceMatrix.needsUpdate = true; if (field.instanceColor) field.instanceColor.needsUpdate = true;
+    // gapura pasar
+    const gateMat = std('#1f7a4a', .55);
+    box(world, .45, 3.6, .45, gateMat, -10.6, 1.8, 7.3, { cast: true }); box(world, .45, 3.6, .45, gateMat, -6.4, 1.8, 7.3, { cast: true });
+    box(world, 5.2, .7, .5, gateMat, -8.5, 3.75, 7.3, { cast: true });
+    const gateTex = canvasTex(512, 72, (x, w, h) => { x.fillStyle = '#1f7a4a'; x.fillRect(0, 0, w, h); x.fillStyle = '#f4a51c'; x.font = `800 46px ${FONT}`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('PASAR RAKYAT', w / 2, h / 2 + 3); });
+    const gate = new THREE.Mesh(new THREE.PlaneGeometry(4.8, .62), new THREE.MeshBasicMaterial({ map: gateTex, toneMapped: false })); gate.position.set(-8.5, 3.75, 7.56); world.add(gate);
+    // titik ambil: meja + timbangan + keranjang pesanan
+    const pick = new THREE.Group(); pick.position.set(7.4, 0, 6.3); world.add(pick);
+    box(pick, 3.4, .1, 1.3, wood, 0, .8, 0, { cast: true }); box(pick, 3.3, .75, .08, woodDark, 0, .4, .6);
+    box(pick, .7, .12, .6, M('#d0d6dc', .3), -1.1, .92, 0, { cast: true }); cyl(pick, .2, .3, M('#e0483e', .5), -1.1, 1.13, -.2, { rx: Math.PI / 2 });
+    const needle = box(pick, .02, .16, .02, M('#1f1f1f', .5), -1.1, 1.18, -.04); needle.geometry.translate(0, .07, 0);
+    const basket = new THREE.Group(); basket.position.set(.6, .85, 0); pick.add(basket);
+    const bMat = M('#a8773d', .95);
+    const bowl = new THREE.Mesh(new THREE.CylinderGeometry(.85, .62, .7, 18, 1, true), bMat); bowl.position.y = .35; bowl.castShadow = true; basket.add(bowl);
+    cyl(basket, .62, .06, bMat, 0, .03, 0);
+    const handle = new THREE.Mesh(new THREE.TorusGeometry(.8, .05, 6, 24, Math.PI), bMat); handle.position.y = .7; basket.add(handle);
+    const bItems = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 1), std('#ffffff', .6), 60); bItems.castShadow = true; bItems.count = 0; basket.add(bItems);
+    const pickTex = canvasTex(256, 64, (x, w, h) => { x.fillStyle = '#e0483e'; x.fillRect(0, 0, w, h); x.fillStyle = '#fff'; x.font = `800 34px ${FONT}`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('TITIK AMBIL', w / 2, h / 2 + 2); });
+    const pickSign = new THREE.Mesh(new THREE.PlaneGeometry(1.6, .4), new THREE.MeshBasicMaterial({ map: pickTex, toneMapped: false })); pickSign.position.set(0, .45, .65); pick.add(pickSign);
+    // motor kurir
+    const bike = new THREE.Group(); world.add(bike);
+    const red = M('#e0483e', .45), dark = M('#26282d', .6);
+    box(bike, .42, .3, 1.5, red, 0, .58, 0, { cast: true }); box(bike, .42, .5, .4, red, 0, .82, .62, { cast: true }); box(bike, .36, .14, .7, dark, 0, .82, -.15); box(bike, .7, .06, .06, dark, 0, 1.2, .74);
+    [-.62, .6].forEach(z => cyl(bike, .3, .14, dark, 0, .3, z, { rz: Math.PI / 2, cast: true }));
+    const bbox = box(bike, .7, .6, .6, std('#1f7a4a', .5), 0, 1.2, -.7, { cast: true });
+    const rider = person({ shirt: '#1f7a4a', skin: '#a8714f', hat: '#f4a51c' }); rider.legs.forEach(l => { l.rotation.x = -1.3; }); rider.arms.forEach(a => { a.rotation.x = -1.1; }); rider.g.position.set(0, .2, -.05); bike.add(rider.g);
+    const beacon = new THREE.Mesh(new THREE.SphereGeometry(.09, 10, 8), new THREE.MeshStandardMaterial({ color: '#ffb547', emissive: '#ffb547', emissiveIntensity: 0 })); beacon.position.set(0, 1.62, -.7); bike.add(beacon);
+    const bikeBlob = blob(world, 1.2, 0, 0, 2.2);
+    const loopLen = (() => { let L = 0; for (let i = 0; i < 4; i++) { const a = LOOP[i], b = LOOP[(i + 1) % 4]; L += Math.hypot(b[0] - a[0], b[1] - a[1]); } return L; })();
+    function loopAt(d){ d = ((d % loopLen) + loopLen) % loopLen; for (let i = 0; i < 4; i++) { const a = LOOP[i], b = LOOP[(i + 1) % 4], L = Math.hypot(b[0] - a[0], b[1] - a[1]); if (d <= L) { const f = d / L; return { x: a[0] + (b[0] - a[0]) * f, z: a[1] + (b[1] - a[1]) * f, h: Math.atan2(b[0] - a[0], b[1] - a[1]) }; } d -= L; } return { x: LOOP[0][0], z: LOOP[0][1], h: 0 }; }
+    // pembeli
+    const shoppers = SHIRTS.map((c, k) => { const p = person({ shirt: c, skin: SKINS[k % 5], hijab: k % 3 === 0 ? ['#c74b7a', '#3f7f9e', '#7a5cc9', '#2f9e44'][k % 4] : null }); world.add(p.g); const b = blob(world, .9); return { ...p, b, z: AISLES[k % 3] + (k % 2 ? .35 : -.35), sp: .055 + (k % 5) * .012, ph: k * .137 }; });
+    // payung saat hujan
+    const umbMat = [M('#e0483e', .7), M('#1f7a4a', .7), M('#f4a51c', .7), M('#4c9be8', .7)];
+    shoppers.forEach((s, k) => { const u = new THREE.Mesh(new THREE.ConeGeometry(.62, .3, 10), umbMat[k % 4]); u.position.y = 2.15; u.castShadow = true; u.visible = false; s.g.add(u); s.umb = u; });
+    // hujan: segmen garis ringan
+    const N = 420, rainGeo = new THREE.BufferGeometry(), rp = new Float32Array(N * 6), rseed = [];
+    for (let i = 0; i < N; i++) { const x = (Math.random() - .5) * 26, y = Math.random() * 11, z = (Math.random() - .5) * 18; rseed.push([x, y, z]); }
+    rainGeo.setAttribute('position', new THREE.BufferAttribute(rp, 3));
+    const rain = new THREE.LineSegments(rainGeo, new THREE.LineBasicMaterial({ color: '#cfe1f2', transparent: true, opacity: .55 })); rain.frustumCulled = false; rain.visible = false; world.add(rain);
+    function setRain(t){ for (let i = 0; i < N; i++) { const [x, y0, z] = rseed[i]; const y = ((y0 - t * 14) % 11 + 11) % 11; rp.set([x, y, z, x + .06, y + .45, z + .04], i * 6); } rainGeo.attributes.position.needsUpdate = true; }
+    // tanaman pot
+    [[-10.8, -6.6], [10.8, -6.6], [10.9, 3.2], [-4.8, 7.4]].forEach(([x, z]) => { cyl(world, .3, .55, M('#c97d4a', .8), x, .27, z, { r2: .24, cast: true }); const f = new THREE.Mesh(new THREE.IcosahedronGeometry(.55, 0), M('#3faa6a', .8)); f.position.set(x, 1.05, z); f.castShadow = true; world.add(f); });
+
+    const DIRS = { iso: V(1, 1.05, 1).normalize() };
+    const camDir = DIRS.iso.clone(), center = V(-.6, .4, .8), focus = V(-.6, .4, .8), tmp = V(0, 0, 0), c2 = new THREE.Color();
+    let halfW = 12, halfH = 10, aspect = 1, rainK = 0, first = true, zoom = 1, cartKey = '';
+    const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+    stageEl.addEventListener('pointermove', e => { const r = stageEl.getBoundingClientRect(); pointer.tx = ((e.clientX - r.left) / r.width - .5) * 2; pointer.ty = ((e.clientY - r.top) / r.height - .5) * 2; });
+    stageEl.addEventListener('pointerleave', () => { pointer.tx = 0; pointer.ty = 0; });
+    function themeColors(){
+      const d = isDark();
+      floorMat.map = pavingTex(d); floorMat.map.repeat.set(9, 6.5); pt.dispose(); pt = floorMat.map; floorMat.needsUpdate = true;
+      slabSide.color.set(d ? '#2d261c' : '#cdb58c');
+      loop.request();
+    }
+    function fillBasket(s){
+      const lines = s.cart.slice(); if (!s.phase && s.qty) lines.push({ cat: Math.max(0, s.cat), kg: s.qty, rate: s.rate, pending: true });
+      let n = 0; const key = JSON.stringify(lines); if (key === cartKey) return; cartKey = key;
+      lines.forEach(l => { const C = CAT[l.cat], per = l.kg * 2; for (let q = 0; q < per && n < 60; q++, n++) { const a = n * 2.4, r = .18 + (n % 5) * .1, y = .2 + Math.floor(n / 10) * .13; o3.position.set(Math.cos(a) * r, y, Math.sin(a) * r); o3.rotation.set(0, a, 0); o3.scale.setScalar((l.cat === 2 ? .1 : .14) * (.85 + l.rate * .05)); o3.updateMatrix(); bItems.setMatrixAt(n, o3.matrix); bItems.setColorAt(n, c2.set(C.colors[q % 4]).multiplyScalar(l.pending ? .78 + l.rate * .045 : 1)); } });
+      bItems.count = n; bItems.instanceMatrix.needsUpdate = true; if (bItems.instanceColor) bItems.instanceColor.needsUpdate = true;
+    }
+    const loop = createLoop(canvas, (dt, time) => {
+      const RM = rmq.matches, s = store.get(), k = RM || first ? 1 : 1 - Math.exp(-dt * 3);
+      const sel = s.cat;
+      tmp.set(sel >= 0 ? -1 : -.6, .4, sel >= 0 ? ROW_Z[sel] + 1.2 : .8); focus.lerp(tmp, k);
+      const zWant = sel >= 0 ? 1.55 : 1; zoom += (zWant - zoom) * k; cam.zoom = zoom; cam.updateProjectionMatrix();
+      pointer.x += (pointer.tx - pointer.x) * (RM ? 1 : .05); pointer.y += (pointer.ty - pointer.y) * (RM ? 1 : .05);
+      tmp.copy(camDir).applyAxisAngle(V(0, 1, 0), RM ? 0 : Math.sin(time * .2) * .04 + pointer.x * .06);
+      cam.position.copy(focus).addScaledVector(tmp, 90); cam.position.y -= RM ? 0 : pointer.y * 2; cam.lookAt(focus);
+      sun.position.copy(center).add(V(12, 24, 10)); sun.target.position.copy(center);
+      // cuaca
+      rainK += ((s.rain ? 1 : 0) - rainK) * (RM ? 1 : 1 - Math.exp(-dt * 2.5)); if (Math.abs(rainK - (s.rain ? 1 : 0)) < .002) rainK = s.rain ? 1 : 0;
+      const dk = isDark() ? .8 : 1;
+      hemi.intensity = (1.55 - rainK * .7) * dk; hemi.color.set('#fffaf0').lerp(c2.set('#b8c6d6'), rainK);
+      sun.intensity = (2.2 - rainK * 1.8) * dk; sun.color.set('#fff1d6').lerp(c2.set('#c9d6e6'), rainK);
+      puddleMat.opacity = rainK * .65;
+      rain.visible = rainK > .05; rain.material.opacity = .55 * rainK; if (rain.visible) setRain(RM ? 0 : time);
+      stageEl.classList.toggle('rain', rainK > .5);
+      // deretan terpilih
+      rows.forEach((r, i) => {
+        const want = sel === i ? 1 : 0; r.lit += (want - r.lit) * k; if (Math.abs(want - r.lit) < .003) r.lit = want;
+        const pulse = RM ? 1 : .8 + .2 * Math.sin(time * 4);
+        r.roofMat.emissiveIntensity = r.lit * .45 * pulse; r.valMat.emissiveIntensity = r.lit * .45 * pulse; r.tileMat.opacity = r.lit * .3;
+        r.stalls.forEach(st => { st.bulb.material.emissiveIntensity = .2 + rainK * 2 + r.lit * 1.5; });
+      });
+      // pembeli
+      shoppers.forEach((p, i) => {
+        const vis = i < s.crowd; p.g.visible = p.b.visible = vis; if (!vis) return;
+        const t = RM ? p.ph * 7 : time * p.sp * (s.rain ? .7 : 1) + p.ph, tri = Math.abs(((t % 2) + 2) % 2 - 1);
+        const x = -9.4 + 18.8 * tri, dir = ((t % 2) + 2) % 2 < 1 ? -1 : 1;
+        p.g.position.set(x, 0, p.z); p.g.rotation.y = dir > 0 ? Math.PI / 2 : -Math.PI / 2; p.b.position.set(x, .015, p.z);
+        const sw = RM ? 0 : Math.sin(time * 7 + i) * .55; p.legs[0].rotation.x = sw; p.legs[1].rotation.x = -sw; p.arms[0].rotation.x = -sw * .7; p.arms[1].rotation.x = s.rain ? -2.6 : sw * .7;
+        p.umb.visible = rainK > .5;
+      });
+      // motor kurir
+      const bp = loopAt(RM ? loopLen * .18 : time * (s.phase === 2 ? 3.2 : 2.1));
+      bike.position.set(bp.x, 0, bp.z); bike.rotation.y = bp.h; bikeBlob.position.set(bp.x, .015, bp.z); bikeBlob.rotation.z = -bp.h;
+      beacon.material.emissiveIntensity = s.phase === 2 ? (RM ? 1.2 : (Math.sin(time * 9) > 0 ? 1.6 : .2)) : 0;
+      bbox.material.color.set(s.phase === 2 ? '#f07a1f' : '#1f7a4a');
+      // keranjang & timbangan
+      fillBasket(s);
+      needle.rotation.z = -clamp(bItems.count / 60, 0, 1) * 2.4 + (RM ? 0 : Math.sin(time * 6) * .02 * (s.phase === 1 ? 1 : 0));
+      renderer.render(scene, cam);
+      first = false;
+      if (!stageEl.classList.contains('ready')) stageEl.classList.add('ready');
+    }, () => !rmq.matches);
+    watchSize(stageEl, renderer, (w, hh) => {
+      aspect = w / hh;
+      const base = opts.hero ? 11.8 : 11.6;
+      if (aspect >= 1) { halfW = base; halfH = halfW / aspect; if (halfH < 8.2) { halfH = 8.2; halfW = halfH * aspect; } }
+      else { halfW = opts.hero ? 10.6 : 11; halfH = halfW / aspect; }
+      Object.assign(cam, { left: -halfW, right: halfW, top: halfH, bottom: -halfH }); cam.updateProjectionMatrix(); loop.request();
+    });
+    bus.addEventListener('state', () => loop.request());
+    themeColors(); bus.addEventListener('theme', themeColors);
+    return { loop, renderer, scene, cam };
+  }
+
+  let heroV, hallV;
+  try { heroV = createMarket($('#heroCanvas'), $('#heroStage'), { hero: true }); hallV = createMarket($('#hallCanvas'), $('#hallStage'), {}); }
+  catch (e) { console.warn('WebGL gagal', e); showFallbacks(); }
+
+  /* ================= cerita isometrik (scroll) ================= */
+  function createStory(){
+    const section = storySec, stage = $('.story-stage', section), canvas = $('#storyCanvas');
+    const renderer = makeRenderer(canvas, false);
+    const scene = new THREE.Scene();
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -100, 200);
+    const camDir = V(1, 1.1, 1).normalize(), camTarget = V(0, 0, 0);
+    const hemi = new THREE.HemisphereLight('#ffffff', '#d3c4a8', 1.5); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff4e0', 2.3); sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, { left: -14, right: 14, top: 14, bottom: -14, near: 1, far: 80 }); sun.shadow.bias = -.0006; sun.shadow.normalBias = .03;
+    scene.add(sun, sun.target);
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(160, 90), std('#f5ecdc', 1)); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+    let gridRef = new THREE.GridHelper(160, 80, '#e6d7bd', '#ede2cd'); gridRef.position.y = .01; scene.add(gridRef);
+    const CLAY = new THREE.Color('#f7f1e6');
+    const SP = [[-16, 4], [-6, -4], [3, 4], [12, -4], [21, 4]];
+    const stations = [];
+    const sm = c => { const m = std(c, .72); m.userData.target = new THREE.Color(c); m.color.copy(CLAY); return m; };
+    const clayify = (obj, mats) => obj.traverse(o => { if (o.material && o.material.color && !o.material.map) { const m = o.material.clone(); m.userData.target = m.color.clone(); m.color.copy(CLAY); o.material = m; mats.push(m); } });
+    SP.forEach(([x, z], i) => {
+      const g = new THREE.Group(); g.position.set(x, 0, z); scene.add(g); const mats = [];
+      const inner = new THREE.Group(); inner.position.y = .2; g.add(inner);
+      const B = (w, hh, d, c, px, py, pz, o = {}) => { const m = sm(c); mats.push(m); return box(inner, w, hh, d, m, px, py, pz, { cast: true, ...o }); };
+      const C = (r, hh, c, px, py, pz, o = {}) => { const m = sm(c); mats.push(m); return cyl(inner, r, hh, m, px, py, pz, { cast: true, ...o }); };
+      const S = (r, c, px, py, pz) => { const m = sm(c); mats.push(m); const s = new THREE.Mesh(new THREE.IcosahedronGeometry(r, 1), m); s.position.set(px, py, pz); s.castShadow = true; inner.add(s); return s; };
+      const pad = new THREE.Mesh(new RoundedBoxGeometry(5.6, .24, 5.6, 2, .1), sm('#efe2c8')); mats.push(pad.material); pad.position.y = .12; pad.receiveShadow = true; g.add(pad);
+      if (i === 0) { // pilih: HP raksasa dengan etalase
+        B(2.2, 3.6, .24, '#26282d', -.4, 1.9, -1.2); B(1.95, 3.1, .02, '#fbf6ee', -.4, 1.95, -1.07);
+        const tiles = []; [['#3f9b3a', -.85, 2.9], ['#f7931e', .05, 2.9], ['#d62828', -.85, 2.0], ['#ffd43b', .05, 2.0]].forEach(([c, px, py]) => { tiles.push(B(.75, .7, .03, c, px, py, -1.05)); });
+        B(1.6, .34, .03, '#1f7a4a', -.4, 1.05, -1.05); g.userData.tiles = tiles;
+        B(.8, .12, .8, '#cdb58c', -.4, .06, -1.2);
+        S(.32, '#e0483e', 1.4, .5, .6); S(.26, '#f4a51c', 1.9, .42, .2); S(.24, '#3f9b3a', 1.2, .4, 1.2);
+      } else if (i === 1) { // lapak: atap belang, meja, pedagang
+        [[-1.9, 1.0], [1.9, 1.0], [-1.9, -1.0], [1.9, -1.0]].forEach(([px, pz]) => B(.12, 2.8, .12, '#6f5a46', px, 1.4, pz));
+        for (let s = 0; s < 8; s++) B(.52, .08, 2.6, s % 2 ? '#fbf3e4' : '#2f9e44', -1.82 + s * .52, 2.85, 0, { rx: -.15 });
+        B(3.6, .12, 1.4, '#b98a57', 0, .9, .4); B(3.5, .8, .08, '#8d6038', 0, .44, 1.08);
+        [-1.1, 0, 1.1].forEach((bx, k) => { C(.42, .22, '#a8773d', bx, 1.07, .4, { r2: .34 }); const m = new THREE.Mesh(new THREE.SphereGeometry(.4, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2), sm(['#3f9b3a', '#e0483e', '#f08c2e'][k])); mats.push(m.material); m.scale.y = .6; m.position.set(bx, 1.16, .4); inner.add(m); });
+        const v = person({ shirt: '#2f9e44', skin: '#c68a63', hijab: '#c74b7a' }); v.g.position.set(.4, 0, -.5); inner.add(v.g); clayify(v.g, mats); g.userData.vendor = v;
+      } else if (i === 2) { // timbang: meja + timbangan jarum
+        B(3.0, .12, 1.6, '#b98a57', 0, .86, -.6); B(2.9, .8, .08, '#8d6038', 0, .42, .2);
+        B(1.2, .5, .9, '#d0d6dc', -.2, 1.17, -.6); B(1.3, .06, 1.0, '#9aa6b8', -.2, 1.45, -.6);
+        C(.48, .14, '#ffffff', -.2, 1.95, -1.05, { rx: Math.PI / 2 }); C(.52, .1, '#e0483e', -.2, 1.95, -1.12, { rx: Math.PI / 2 });
+        B(.12, .5, .12, '#9aa6b8', -.2, 1.6, -1.05);
+        const ndl = B(.04, .4, .02, '#1f1f1f', -.2, 1.95, -.96, { cast: false }); ndl.geometry.translate(0, .17, 0); ndl.position.y = 1.95; g.userData.needle = ndl;
+        const pile = new THREE.Group(); pile.position.set(-.2, 1.5, -.6); inner.add(pile); g.userData.pile = pile;
+        [['#e0483e', 0, 0], ['#e0483e', .22, .1], ['#3f9b3a', -.22, .05], ['#f7931e', .05, -.2], ['#e0483e', -.05, .22]].forEach(([c, px, pz]) => { const m = sm(c); mats.push(m); const s = new THREE.Mesh(new THREE.IcosahedronGeometry(.16, 1), m); s.position.set(px, .14, pz); s.castShadow = true; pile.add(s); });
+        B(.9, .5, .7, '#f3e6cf', 1.2, 1.17, -.5);
+      } else if (i === 3) { // antar: motor + kotak antar
+        const bike = new THREE.Group(); inner.add(bike); g.userData.bike = bike; bike.position.set(-.4, 0, .3);
+        const T = (w, hh, d, c, px, py, pz) => { const m = sm(c); mats.push(m); return box(bike, w, hh, d, m, px, py, pz, { cast: true }); };
+        T(2.0, .4, .55, '#e0483e', 0, .75, 0); T(.55, .7, .55, '#e0483e', .95, 1.05, 0); T(.9, .18, .5, '#26282d', -.2, 1.02, 0); T(.08, .1, 1.0, '#26282d', 1.05, 1.55, 0);
+        T(.9, .8, .8, '#1f7a4a', -.95, 1.45, 0);
+        [-.75, .8].forEach(px => { const m = sm('#26282d'); mats.push(m); cyl(bike, .38, .2, m, px, .38, 0, { rx: Math.PI / 2, cast: true }); });
+        B(.18, 2.2, .18, '#6f5a46', 1.9, 1.1, -1.7); B(1.0, .5, .06, '#f4a51c', 1.9, 2.0, -1.62);
+      } else { // terima: rumah + pembeli di pintu
+        B(3.6, 2.2, 2.6, '#fbf3e4', -.2, 1.1, -1.0);
+        const roofL = B(4.0, .14, 1.7, '#c2552d', -.2, 2.6, -1.65, { rx: .6 }); const roofR = B(4.0, .14, 1.7, '#c2552d', -.2, 2.6, -.35, { rx: -.6 });
+        const door = B(.8, 1.5, .06, '#8d6038', .4, .75, .32); g.userData.door = door; door.geometry.translate(.4, 0, 0); door.position.x = 0;
+        B(.7, .6, .04, '#a8d5ef', -1.2, 1.3, .31);
+        const cst = person({ shirt: '#d6589a', skin: '#d9a17c', hijab: '#7a5cc9' }); cst.g.position.set(.9, 0, .9); cst.g.rotation.y = -Math.PI / 2 - .4; inner.add(cst.g); clayify(cst.g, mats); g.userData.cst = cst;
+        C(.3, .5, '#c97d4a', -1.8, .25, 1.0, { r2: .24 }); S(.48, '#3faa6a', -1.8, .95, 1.0);
+      }
+      stations.push({ g, mats, inner, lit: 0 });
+    });
+    const pts = [[-16, 4], [-11, 4], [-11, -4], [-6, -4], [-1, -4], [-1, 4], [3, 4], [7.5, 4], [7.5, -4], [12, -4], [16.5, -4], [16.5, 4], [21, 4]].map(([x, z]) => V(x, .3, z + 2.6));
+    const path = (() => { const Q = pts, cp = new THREE.CurvePath(); let cur = Q[0].clone(); for (let i = 1; i < Q.length - 1; i++) { const p = Q[i], dIn = p.clone().sub(Q[i - 1]).normalize(), dOut = Q[i + 1].clone().sub(p).normalize(); if (dIn.dot(dOut) > .999) continue; const r = Math.min(1.3, p.distanceTo(Q[i - 1]) / 2, p.distanceTo(Q[i + 1]) / 2); const a = p.clone().addScaledVector(dIn, -r), b = p.clone().addScaledVector(dOut, r); cp.add(new THREE.LineCurve3(cur.clone(), a)); cp.add(new THREE.QuadraticBezierCurve3(a, p.clone(), b)); cur = b; } cp.add(new THREE.LineCurve3(cur, Q[Q.length - 1].clone())); return cp; })();
+    const TS = 700, RS = 6;
+    scene.add(new THREE.Mesh(new THREE.TubeGeometry(path, TS, .1, RS, false), std('#e2d4ba', .9)));
+    const prog = new THREE.Mesh(new THREE.TubeGeometry(path, TS, .17, RS, false), new THREE.MeshStandardMaterial({ color: '#f07a1f', emissive: '#f07a1f', emissiveIntensity: .45, roughness: .5 })); prog.geometry.setDrawRange(0, 0); scene.add(prog);
+    pts.forEach(p => { const d = new THREE.Mesh(new THREE.CylinderGeometry(.3, .3, .08, 16), std('#f07a1f', .6)); d.position.set(p.x, .05, p.z); scene.add(d); });
+    const samples = 1200, stationU = SP.map(([x, z]) => { let best = 0, bd = 1e9; for (let s = 0; s <= samples; s++) { const q = path.getPointAt(s / samples); const d = (q.x - x) ** 2 + (q.z - (z + 2.6)) ** 2; if (d < bd) { bd = d; best = s / samples; } } return best; });
+    stationU[0] = 0; stationU[4] = 1;
+    // Mas Gilang, kurir berjaket hijau dan helm kuning, membawa keranjang
+    const chr = new THREE.Group(); scene.add(chr);
+    const K2 = person({ shirt: '#1f7a4a', pants: '#2b2f3a', skin: '#a8714f', hat: '#f4a51c' }); K2.g.scale.setScalar(1.35); chr.add(K2.g);
+    const kb = new THREE.Group(); kb.position.set(0, .95, .42); K2.g.add(kb);
+    const kbw = new THREE.Mesh(new THREE.CylinderGeometry(.3, .22, .28, 14, 1, true), std('#a8773d', .95)); kbw.castShadow = true; kb.add(kbw);
+    const kbItems = [['#3f9b3a', -.1, .05], ['#e0483e', .1, -.05], ['#f7931e', 0, .12], ['#d62828', .08, .1]].map(([c, px, pz]) => { const s = new THREE.Mesh(new THREE.IcosahedronGeometry(.1, 1), std(c, .6)); s.position.set(px, .12, pz); kb.add(s); return s; });
+    blob(chr, 1.6);
+
+    let targetU = 0, shownU = 0, walk = 0, step = 0, halfW = 10, halfH = 10, aspect = 1; const lastPos = V(0, 0, 0);
+    const steps = $$('.step-i', section);
+    function setProgress(p){
+      const n = 4, uu = clamp(p, 0, 1) * n, i = Math.min(n - 1, Math.floor(uu)), f = uu - i, w = smooth(.22, .82, f);
+      targetU = stationU[i] + (stationU[i + 1] - stationU[i]) * w; const s = w < .5 ? i : i + 1;
+      if (s !== step) { step = s; steps.forEach((el, k) => el.classList.toggle('on', k === s)); }
+      store.set({ storyStep: s }); loop.request();
+    }
+    function themeColors(){
+      const d = isDark();
+      scene.background = new THREE.Color(d ? '#14110d' : '#fbf6ee'); ground.material.color.set(d ? '#1c1812' : '#f5ecdc');
+      scene.remove(gridRef); gridRef.geometry.dispose(); gridRef.material.dispose(); gridRef = new THREE.GridHelper(160, 80, d ? '#2b241a' : '#e6d7bd', d ? '#221d15' : '#ede2cd'); gridRef.position.y = .01; scene.add(gridRef);
+      CLAY.set(d ? '#cfc4b2' : '#f7f1e6'); hemi.intensity = d ? .9 : 1.5; sun.intensity = d ? 1.7 : 2.3;
+      stations.forEach(s => s.mats.forEach(m => m.color.copy(CLAY).lerp(m.userData.target, s.lit)));
+      loop.request();
+    }
+    const loop = createLoop(canvas, (dt, time) => {
+      const RM = rmq.matches;
+      shownU += (targetU - shownU) * (RM ? 1 : 1 - Math.exp(-dt * 5)); if (Math.abs(targetU - shownU) > 1e-4) loop.request(); else shownU = targetU;
+      const u = clamp(shownU, 0, 1), pos = path.getPointAt(u), tan = path.getTangentAt(Math.min(u, .9999));
+      const moved = pos.distanceTo(lastPos); lastPos.copy(pos); walk += moved * 3.2; const mv = clamp(moved * 25, 0, 1);
+      chr.position.set(pos.x, Math.abs(Math.sin(walk)) * .08 * mv, pos.z); if (moved > 1e-4) chr.rotation.y = Math.atan2(tan.x, tan.z);
+      const sw = Math.sin(walk) * .7 * mv; K2.legs[0].rotation.x = sw; K2.legs[1].rotation.x = -sw; K2.arms[0].rotation.x = -1.0; K2.arms[1].rotation.x = -1.0;
+      kbItems.forEach((s, k) => { s.visible = u > stationU[1] + .005 + k * .006; });
+      prog.geometry.setDrawRange(0, Math.floor(u * TS) * RS * 6);
+      stations.forEach((s, i) => {
+        const goal = u >= stationU[i] - .004 ? 1 : 0, prev = s.lit; s.lit += (goal - s.lit) * (RM ? 1 : Math.min(1, dt * 4));
+        if (Math.abs(goal - s.lit) > .002) loop.request(); else s.lit = goal;
+        if (prev !== s.lit) s.mats.forEach(m => m.color.copy(CLAY).lerp(m.userData.target, s.lit));
+        s.inner.scale.setScalar(.82 + .18 * s.lit);
+        const ud = s.g.userData;
+        if (ud.tiles) ud.tiles.forEach((t, k) => t.scale.setScalar(clamp((u - stationU[0] + .01 - k * .004) * 60 + .4, .4, 1)));
+        if (ud.vendor) ud.vendor.arms[1].rotation.x = -clamp((u - stationU[1] + .02) * 30, 0, 1) * 1.6;
+        if (ud.needle) ud.needle.rotation.z = -clamp((u - stationU[2] + .03) * 25, 0, 1) * 1.9;
+        if (ud.pile) ud.pile.position.y = 1.5 + clamp((u - stationU[2] + .03) * 25, 0, 1) * .02;
+        if (ud.bike) ud.bike.position.x = -.4 + clamp((u - stationU[3] - .01) * 120, 0, 1) * 3.4;
+        if (ud.door) ud.door.rotation.y = clamp((u - stationU[4] + .02) * 60, 0, 1) * 1.3;
+        if (ud.cst) ud.cst.arms[0].rotation.x = -clamp((u - stationU[4] + .01) * 80, 0, 1) * 1.4;
+      });
+      const desired = V(pos.x, 0, pos.z);
+      if (aspect >= .9) desired.addScaledVector(V(1, 0, -1).normalize(), -halfW * .3);
+      if (camTarget.lengthSq() === 0) camTarget.copy(desired);
+      camTarget.lerp(desired, RM ? 1 : 1 - Math.exp(-dt * 3.5)); if (camTarget.distanceTo(desired) > .01) loop.request();
+      cam.position.copy(camTarget).addScaledVector(camDir, 60); cam.lookAt(camTarget);
+      sun.position.copy(camTarget).add(V(14, 26, 8)); sun.target.position.copy(camTarget);
+      renderer.render(scene, cam);
+    }, () => false);
+    // Layar sempit: tokoh dibingkai di ruang kosong ANTARA kartu judul (atas) dan kartu langkah (bawah);
+    // posisi kedua kartu diukur dari DOM lalu dipakai untuk frustum ortografik asimetris.
+    let frameY = .5;
+    const storyHead = stage.querySelector('.story-head'), storyLow = stage.querySelector('.story-low');
+    function applyFrame(){
+      if (!halfH) return;
+      frameY = .5;
+      if (aspect < .9 && storyHead && storyLow) {
+        const r = stage.getBoundingClientRect(), a = storyHead.getBoundingClientRect().bottom - r.top, onStep = storyLow.querySelector('.step-i.on') || storyLow;
+        const b = Math.min(onStep.getBoundingClientRect().top, storyLow.querySelector('.story-prog').getBoundingClientRect().top) - r.top;
+        if (r.height > 0 && b > a) frameY = Math.min(.8, Math.max(.2, (a + b) / 2 / r.height + .035));
+      }
+      Object.assign(cam, { left: -halfW, right: halfW, top: 2 * halfH * frameY, bottom: -2 * halfH * (1 - frameY) });
+      cam.updateProjectionMatrix();
+    }
+    P.storyFrame = () => frameY;
+    watchSize(stage, renderer, (w, hh) => { aspect = w / hh; if (aspect < .9) { halfW = Math.max(6.6, 9 * aspect); halfH = halfW / aspect; } else { halfH = 8.2; halfW = halfH * aspect; } applyFrame(); loop.request(); });
+    if (document.fonts) document.fonts.ready.then(() => { applyFrame(); loop.request(); });
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(storyHead);
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(storyLow);
+    themeColors(); bus.addEventListener('theme', themeColors);
+    const chrY = () => { const v = chr.position.clone().setY(1.4).project(cam); return (1 - v.y) / 2 * stage.clientHeight; };
+    return { setProgress, loop, applyFrame, chrY };
+  }
+  let story = null;
+  try { story = createStory(); } catch (e) { console.warn('Story WebGL gagal', e); storySec.classList.add('no-webgl'); }
+  const onProg = p => story ? story.setProgress(p) : textProgress(p);
+  if (gsap && window.ScrollTrigger) { window.ScrollTrigger.create({ trigger: storySec, start: 'top top', end: 'bottom bottom', onUpdate: s => onProg(s.progress) }); onProg(0); }
+  else { const upd = () => { const r = storySec.getBoundingClientRect(); onProg(clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1)); }; addEventListener('scroll', upd, { passive: true }); upd(); }
+  P.views = { heroV, hallV, story };
+} else {
+  const upd = () => { const r = storySec.getBoundingClientRect(); textProgress(clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1)); };
+  addEventListener('scroll', upd, { passive: true }); upd();
+  P.views = {};
+}
+</script>
+</body>
+</html>

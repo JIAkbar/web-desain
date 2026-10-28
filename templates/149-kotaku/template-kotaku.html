@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="id" theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kotaku — Perencanaan Kota &amp; Dasbor Warga</title>
+<meta name="description" content="Kotaku adalah platform perencanaan kota dan dasbor warga: lihat zonasi, transportasi, dan ruang hijau dalam peta 3D, kirim usulan, dan lacak sampai dibangun. Produk fiktif untuk template.">
+<meta name="theme-color" content="#f5f6fb">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script>
+  /* Materialize 2: tema lewat atribut theme="light|dark" di <html> */
+  (function(){var t;try{t=localStorage.getItem('kotaku-theme')}catch(e){}
+  if(t!=='light'&&t!=='dark'){t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}
+  document.documentElement.setAttribute('theme',t);})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Materialize 2.4.0 (MIT). Esri Calcite tidak dipakai: lisensinya Esri Master License Agreement, bukan lisensi terbuka. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@materializecss/materialize@2.4.0/dist/css/materialize.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/@materializecss/materialize@2.4.0/dist/js/materialize.min.js"></script>
+<style>
+  /* ---------- Token Materialize (warna merek) + token sendiri ---------- */
+  :root{
+    --md-sys-color-primary-light:#3a4bd1;--md-sys-color-on-primary-light:#ffffff;--md-sys-color-primary-container-light:#dfe2ff;--md-sys-color-on-primary-container-light:#0b1667;
+    --md-sys-color-secondary-container-light:#e3e5f5;--md-sys-color-on-secondary-container-light:#1a1d2e;
+    --md-sys-color-surface-light:#ffffff;--md-sys-color-background-light:#f5f6fb;--md-sys-color-on-background-light:#151826;--md-sys-color-on-surface-light:#151826;
+    --md-sys-color-surface-variant-light:#e3e5f2;--md-sys-color-on-surface-variant-light:#454859;--md-sys-color-outline-light:#767a8c;--md-sys-color-outline-variant-light:#cfd2e0;--md-sys-color-surface-tint-light:#3a4bd1;
+    --md-sys-color-primary-dark:#b9c2ff;--md-sys-color-on-primary-dark:#0f1a6e;--md-sys-color-primary-container-dark:#2a379c;--md-sys-color-on-primary-container-dark:#dfe2ff;
+    --md-sys-color-secondary-container-dark:#343849;--md-sys-color-on-secondary-container-dark:#e0e1f6;
+    --md-sys-color-surface-dark:#171a27;--md-sys-color-background-dark:#0e1019;--md-sys-color-on-background-dark:#e5e6f2;--md-sys-color-on-surface-dark:#e5e6f2;
+    --md-sys-color-surface-variant-dark:#2a2d3c;--md-sys-color-on-surface-variant-dark:#c5c7d7;--md-sys-color-outline-dark:#8e91a3;--md-sys-color-outline-variant-dark:#3a3d4f;--md-sys-color-surface-tint-dark:#b9c2ff;
+    --font:'Manrope',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+    --md-sys-typescale-display-large-font-family-name:var(--font);--md-sys-typescale-body-large-font-family-name:var(--font);--md-sys-typescale-label-large-font-family-name:var(--font);
+    --bg:#f5f6fb;--bg-2:#eceef7;--surface:#ffffff;--surface-2:#f0f1f8;
+    --ink:#151826;--ink-2:#545869;--line:#dcdeea;--line-strong:#8a8ea0;
+    --brand:#3a4bd1;--brand-ink:#3443bd;--on-brand:#ffffff;
+    --accent:#f0772f;--accent-ink:#b4521a;--green:#2f9e6a;--green-ink:#1f7a50;
+    --z-res:#f2b25c;--z-com:#6d8bff;--z-pub:#a98bf5;--z-new:#38c3c9;
+    --shadow:0 30px 80px -42px rgba(20,24,60,.45);--radius:20px;
+  }
+  [theme=dark]{
+    --bg:#0e1019;--bg-2:#131624;--surface:#171a27;--surface-2:#1f2333;
+    --ink:#e5e6f2;--ink-2:#a4a7ba;--line:#2a2e40;--line-strong:#6a6e84;
+    --brand:#8f9bff;--brand-ink:#b9c2ff;--on-brand:#0f1a6e;
+    --accent:#ff8a45;--accent-ink:#ffab7a;--green:#46c38a;--green-ink:#7ad9ab;
+    --shadow:0 30px 80px -40px rgba(0,0,0,.85);
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;background:var(--bg);font-size:16px!important;font-family:var(--font)}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:1rem;line-height:1.55;overflow-x:clip;-webkit-font-smoothing:antialiased;transition:background-color .35s,color .35s}
+  input,select,textarea,button,.btn,.chip,.tabs .tab a,.toast,.material-tooltip{font-family:var(--font)!important}
+  code,kbd,pre,samp{font-family:inherit}
+  .num,.price b,.stat b,.mini b,.meter b{font-variant-numeric:tabular-nums}
+  h1,h2,h3,h4,p{margin:0;font-weight:inherit;line-height:inherit}
+  h1,h2,h3,h4{font-size:inherit}
+  .wrap{width:min(1200px,100% - 32px);margin-inline:auto}
+  :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  section{scroll-margin-top:76px}
+  .display{font-weight:800;letter-spacing:-.035em;line-height:1.04;color:var(--ink)}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:.76rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--brand-ink)}
+  .eyebrow::before{content:"";width:22px;height:3px;border-radius:3px;background:var(--accent)}
+  .weak{color:var(--ink-2)}
+  .sec{padding:clamp(72px,10vw,128px) 0}
+  .alt{background:var(--bg-2)}
+  .sec-head{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px 48px;align-items:end;margin-bottom:clamp(32px,5vw,56px)}
+  .sec-head h2{font-size:clamp(2rem,4.4vw,3.3rem);margin-top:14px}
+  @media (max-width:820px){.sec-head{grid-template-columns:minmax(0,1fr)}}
+  ul.plain{list-style:none;padding:0;margin:0}
+  ul.plain li{list-style:none}
+
+  /* ---------- Penyesuaian komponen Materialize ---------- */
+  .btn{border-radius:12px;font-weight:700;letter-spacing:.01em;text-transform:none;gap:8px}
+  .btn:focus{background-color:revert-layer}
+  .btn-filled:focus{background-color:var(--md-sys-color-primary)}
+  .btn.accent{background:var(--accent);color:#1d0f05}
+  .btn.accent:hover,.btn.accent:focus{background:color-mix(in srgb,var(--accent) 88%,#fff);color:#1d0f05}
+  .btn.outlined{color:var(--ink);border-color:var(--line-strong)}
+  .btn.outlined:focus{background:transparent}
+  .btn svg{width:18px;height:18px}
+  .card{background:var(--surface);color:var(--ink);border-radius:var(--radius);box-shadow:none;border:1px solid var(--line);margin:0}
+  .card .card-content{padding:22px}
+  .card .card-title{font-weight:800;font-size:1.18rem;letter-spacing:-.01em;line-height:1.3;margin-bottom:8px;display:block}
+  .card .card-content p{color:var(--ink-2)}
+  .card .card-action{border-top:1px solid var(--line);padding:14px 22px;background:transparent}
+  .card-panel{border-radius:14px;margin:0;padding:14px 16px;box-shadow:none;background:color-mix(in srgb,var(--brand) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--brand) 30%,transparent);color:var(--ink)}
+  .card-panel.warn{background:color-mix(in srgb,var(--accent) 12%,var(--surface));border-color:color-mix(in srgb,var(--accent) 40%,transparent)}
+  .card-panel.ok{background:color-mix(in srgb,var(--green) 12%,var(--surface));border-color:color-mix(in srgb,var(--green) 40%,transparent)}
+  .card-panel b{display:block;font-weight:800;margin-bottom:2px}
+  .collapsible{border:0;margin:0;box-shadow:none;display:grid;gap:10px}
+  .collapsible>li{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface)}
+  .collapsible-header{border-bottom:0;background:transparent;font-weight:700;font-size:1.04rem;padding:1.05rem 3rem 1.05rem 1.25rem;position:relative;color:var(--ink)}
+  .collapsible-header::after{content:""!important;font-family:inherit!important;position:absolute;right:1.4rem;top:50%;width:.6rem;height:.6rem;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-70%) rotate(45deg);transition:transform .2s;margin:0}
+  .collapsible>li.active .collapsible-header::after{transform:translateY(-30%) rotate(-135deg)}
+  .collapsible-body{border-bottom:0;padding:0 1.25rem;color:var(--ink-2)}
+  .collapsible-body p{padding:0 0 1.1rem}
+  .tabs{background:var(--surface);border:1px solid var(--line);border-radius:14px;height:auto;min-height:52px;overflow-x:auto;overflow-y:hidden}
+  .tabs .tab{line-height:52px;height:52px;text-transform:none}
+  .tabs .tab a{font-weight:700;color:var(--ink-2);font-size:.98rem;text-overflow:ellipsis;padding:0 18px}
+  .tabs .tab a.active,.tabs .tab a:hover{color:var(--brand-ink);background:transparent}
+  .tabs .indicator{background-color:var(--accent);height:3px}
+  .chip{border-radius:999px;font-weight:700;cursor:pointer;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);gap:6px}
+  .chip:focus{background:var(--surface);color:var(--ink)}
+  .chip:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  .chip[aria-pressed=true]{background:var(--cc,var(--brand));border-color:var(--cc,var(--brand));color:#fff}
+  .chip .cdot{width:9px;height:9px;border-radius:50%;background:var(--cc,var(--brand))}
+  .chip[aria-pressed=true] .cdot{background:#fff}
+  .progress{background:var(--surface-2);height:8px;border-radius:8px;margin:6px 0 0}
+  .progress .determinate{background:var(--mc,var(--brand));border-radius:8px;transition:width .5s ease}
+  .switch label{color:var(--ink-2);font-weight:600;display:inline-flex;align-items:center;gap:10px}
+  .range-field{margin:0;position:relative}
+  input[type=range]{margin:6px 0 0}
+  .input-field{margin:0}
+  .input-field.outlined input,.input-field input{color:var(--ink)}
+  .input-field>label{color:var(--ink-2)}
+  .input-field.sel .select-wrapper{width:100%}
+  .select-wrapper input.select-dropdown{color:var(--ink);font-weight:600;width:100%;height:48px;margin:0;border:1px solid var(--md-sys-color-outline);border-radius:10px;padding:0 44px 0 14px;background:var(--surface);box-sizing:border-box;cursor:pointer;font-size:1rem}
+  .select-wrapper:focus-within{outline:none}
+  .select-wrapper input.select-dropdown:focus{outline:3px solid color-mix(in srgb,var(--brand) 45%,transparent);outline-offset:1px;border-color:var(--brand)}
+  .select-wrapper .caret{right:12px}
+  .dropdown-content{background:var(--surface);border-radius:12px}
+  .dropdown-content li>span,.dropdown-content li>a{color:var(--ink)}
+  [type=checkbox]+span:not(.lever){color:var(--ink-2);font-size:.95rem}
+  dialog.modal{color:var(--ink);max-width:min(560px,calc(100vw - 24px));width:560px;max-height:min(86vh,720px);border:1px solid var(--line)}
+  dialog.modal::backdrop{background:rgba(10,12,24,.55);backdrop-filter:blur(3px)}
+  dialog.modal .modal-header h2{font-size:1.4rem;font-weight:800;letter-spacing:-.02em}
+  dialog.modal .modal-content{overflow:auto;display:grid;gap:18px;padding-top:4px;padding-bottom:4px}
+  dialog.modal .modal-footer{gap:10px;justify-content:flex-end;background:transparent}
+  select.browser-default{width:100%;height:48px;border-radius:6px;border:1px solid var(--md-sys-color-outline);background:var(--surface);color:var(--ink);padding:0 12px;font-weight:600}
+  .material-tooltip{font-weight:600;border-radius:8px}
+  #toast-container .toast{border-radius:12px;font-weight:600}
+
+  /* ---------- Header ---------- */
+  .top{position:sticky;top:0;z-index:400;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--line)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:68px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.2rem;color:var(--ink);text-decoration:none;white-space:nowrap;letter-spacing:-.02em}
+  .brand svg{width:36px;height:36px;flex:0 0 auto}
+  .brand small{display:block;font-weight:700;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-2);line-height:1;margin-top:3px}
+  .nav{display:flex;align-items:center;gap:4px}
+  .nav a{color:var(--ink);font-weight:600;padding:.55rem .8rem;border-radius:999px;font-size:.96rem}
+  .nav a:hover{background:var(--surface-2)}
+  .top-act{display:flex;align-items:center;gap:8px}
+  .icon-btn{display:inline-grid;place-items:center;width:42px;height:42px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;flex:0 0 auto;padding:0}
+  .icon-btn:hover{background:var(--surface-2)}
+  .icon-btn svg{width:20px;height:20px}
+  .theme-ico-sun{display:none}
+  [theme=dark] .theme-ico-sun{display:block}
+  [theme=dark] .theme-ico-moon{display:none}
+  .menu-btn{display:none}
+  @media (max-width:980px){.nav{display:none}.menu-btn{display:inline-grid}.top-act .cta-top{display:none}}
+  @media (max-width:400px){.brand small{display:none}.brand{font-size:1.06rem}}
+  .sidenav{background:var(--surface);padding-top:16px}
+  .sidenav li>a{color:var(--ink);font-weight:700;font-size:1.02rem;height:52px;line-height:52px;padding:0 24px}
+  .sidenav .sn-head{padding:8px 24px 16px;border-bottom:1px solid var(--line);margin-bottom:8px}
+  .sidenav .sn-cta{padding:16px 24px}
+  .sidenav .sn-cta .btn{width:100%;justify-content:center}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:clamp(28px,5vw,64px) 0 36px}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6.2fr);gap:clamp(24px,4vw,56px);align-items:center}
+  .hero h1{font-size:clamp(2.45rem,5.6vw,4.6rem);margin:18px 0 20px}
+  .hero h1 em{font-style:normal;color:var(--brand-ink);position:relative;white-space:nowrap}
+  .hero h1 em::after{content:"";position:absolute;left:0;right:0;bottom:.06em;height:.14em;border-radius:.1em;background:var(--accent);opacity:.85;z-index:-1}
+  .lead{font-size:clamp(1.02rem,1.3vw,1.16rem);max-width:33em;color:var(--ink-2)}
+  .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+  .actions .btn{height:48px;padding:0 22px;font-size:1rem}
+  .mini{display:grid;grid-template-columns:repeat(3,minmax(0,auto));justify-content:start;gap:12px 30px;padding-top:22px;margin-top:30px;border-top:1px solid var(--line)}
+  .mini b{display:block;font-size:1.6rem;font-weight:800;letter-spacing:-.02em;color:var(--ink)}
+  .mini span{font-size:.84rem;color:var(--ink-2)}
+  @media (max-width:420px){.mini{gap:10px 16px}.mini b{font-size:1.25rem}}
+  .kicker{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:.86rem;padding:5px 12px 5px 5px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--ink);max-width:100%}
+  .kicker .pill{background:var(--brand);color:var(--on-brand);border-radius:999px;padding:2px 10px;font-size:.74rem;font-weight:800}
+  .stage{position:relative;border-radius:calc(var(--radius) + 6px);overflow:hidden;isolation:isolate;background:linear-gradient(170deg,var(--surface),var(--bg-2));border:1px solid var(--line);box-shadow:var(--shadow)}
+  .stage canvas{display:block;width:100%;height:100%;opacity:0;transition:opacity .8s ease}
+  .stage.ready canvas{opacity:1}
+  .hero .stage{height:clamp(470px,74vh,680px)}
+  .stage .fallback{position:absolute;inset:0;display:none}
+  .stage .fallback svg{width:100%;height:100%}
+  .stage.no-webgl .fallback{display:block}
+  .stage.no-webgl canvas{display:none}
+  .glass{background:color-mix(in srgb,var(--surface) 80%,transparent);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border:1px solid color-mix(in srgb,var(--line) 70%,transparent);color:var(--ink)}
+  .stage-top{position:absolute;top:14px;left:14px;right:14px;z-index:2;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;pointer-events:none}
+  .tag{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;font-size:.8rem;font-weight:700;font-variant-numeric:tabular-nums;max-width:100%}
+  .tag .dot{width:8px;height:8px;border-radius:50%;background:var(--dc,var(--brand));box-shadow:0 0 0 4px color-mix(in srgb,var(--dc,var(--brand)) 30%,transparent);flex:0 0 auto}
+  .stage-panel{position:absolute;left:14px;right:14px;bottom:14px;z-index:2;border-radius:16px;padding:10px 12px;display:grid;gap:8px}
+  .stage-panel .row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .stage-panel .lbl{font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+  .seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;border-radius:14px;background:var(--surface-2);border:1px solid var(--line)}
+  .seg .btn{height:38px;padding:0 8px;justify-content:center;border-radius:10px;min-width:0;font-size:.9rem;background:transparent;color:var(--ink-2);box-shadow:none}
+  .seg .btn:hover{background:color-mix(in srgb,var(--brand) 10%,transparent);color:var(--ink)}
+  .seg .btn[aria-checked=true]{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary)}
+  .seg .btn span{overflow:hidden;text-overflow:ellipsis}
+  .mini-btn{height:32px!important;padding:0 12px!important;font-size:.82rem!important}
+  @media (max-width:900px){.hero-grid{grid-template-columns:minmax(0,1fr)}.hero .stage{height:min(560px,74vh);min-height:450px}}
+
+  /* ---------- Fitur ---------- */
+  .feat-tabs{margin-bottom:22px}
+  .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .cards .card{display:flex;flex-direction:column}
+  .ico{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--brand) 13%,transparent);color:var(--brand-ink);margin-bottom:14px}
+  .ico svg{width:24px;height:24px}
+  .ico.o{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent-ink)}
+  .ico.g{background:color-mix(in srgb,var(--green) 15%,transparent);color:var(--green-ink)}
+  @media (max-width:900px){.cards{grid-template-columns:minmax(0,1fr)}}
+
+  /* ---------- Ruang kendali ---------- */
+  .sim-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:20px;align-items:start}
+  .sim .stage{height:clamp(520px,80vh,740px);position:sticky;top:88px}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;min-width:0;display:grid;gap:18px}
+  .panel-h{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .panel-h h3{font-size:1.1rem;font-weight:800}
+  .flabel{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:800;font-size:.92rem;color:var(--ink);margin-bottom:6px}
+  .flabel b{font-variant-numeric:tabular-nums;color:var(--brand-ink)}
+  .scale{display:flex;justify-content:space-between;font-size:.72rem;font-weight:700;color:var(--ink-2)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .meters{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;background:var(--surface-2);border-radius:14px;padding:12px 14px}
+  .meter{min-width:0}
+  .meter .mh{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:.8rem;color:var(--ink-2);font-weight:600}
+  .meter b{font-size:1.35rem;font-weight:800;color:var(--ink);letter-spacing:-.02em}
+  .info{width:22px;height:22px;border-radius:50%;border:1px solid var(--line-strong);display:inline-grid;place-items:center;font-size:.72rem;font-weight:800;color:var(--ink-2);background:transparent;cursor:help;padding:0;flex:0 0 auto}
+  .btn-row{display:flex;flex-wrap:wrap;gap:10px}
+  .row2{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  @media (max-width:1020px){.sim-grid{grid-template-columns:minmax(0,1fr)}.sim .stage{position:relative;top:0;height:min(540px,68vh);min-height:400px}}
+  @media (max-width:380px){.meters{grid-template-columns:minmax(0,1fr)}}
+
+  /* ---------- Cerita gulir isometrik ---------- */
+  .story{position:relative;height:520vh;background:var(--bg-2)}
+  .story-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+  .story-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .story-fallback{position:absolute;inset:0;display:none;place-items:center;padding:24px}
+  .story.no-webgl .story-fallback{display:grid}
+  .story.no-webgl canvas{display:none}
+  .story-fallback svg{width:min(900px,100%);height:auto}
+  .story-fallback .node{fill:var(--surface);stroke:var(--line);stroke-width:3;transition:fill .4s}
+  .story-fallback .node.on{fill:var(--accent)}
+  .story-ui{position:absolute;inset:0;pointer-events:none;padding:92px 0 28px}
+  .story-ui .wrap{position:relative;height:100%;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+  .story-head{max-width:470px;width:fit-content;background:color-mix(in srgb,var(--bg-2) 82%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:var(--radius);padding:18px 22px 20px;pointer-events:auto}
+  .story-head h2{font-size:clamp(1.7rem,3.3vw,2.7rem);margin-top:10px}
+  .story-card{max-width:460px;pointer-events:auto;background:color-mix(in srgb,var(--surface) 88%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:var(--radius);padding:16px 20px 18px;box-shadow:0 20px 50px -30px rgba(20,24,60,.5)}
+  .steps-ind{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;list-style:none;margin:0 0 12px;padding:0}
+  .steps-ind li{font-size:.7rem;font-weight:700;color:var(--ink-2);min-width:0;list-style:none}
+  .steps-ind li::before{content:"";display:block;height:5px;border-radius:5px;background:var(--line);margin-bottom:6px;transition:background .35s}
+  .steps-ind li.done::before{background:var(--brand)}
+  .steps-ind li.cur::before{background:var(--accent)}
+  .steps-ind li.cur{color:var(--accent-ink)}
+  .steps-ind li span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .scene-steps{position:relative;min-height:142px;list-style:none;margin:0;padding:0}
+  .scene-step{position:absolute;inset:0 0 auto 0;opacity:0;transform:translateY(14px);transition:opacity .45s ease,transform .45s ease;pointer-events:none;list-style:none}
+  .scene-step.on{opacity:1;transform:none;pointer-events:auto}
+  .scene-step h3{font-size:1.25rem;font-weight:800;margin:2px 0 6px;color:var(--ink)}
+  .scene-step p{font-size:.93rem;color:var(--ink-2)}
+  .scene-step .chip{margin-top:10px;cursor:default;height:28px;font-size:.78rem}
+  @media (max-width:760px){
+    .story-ui{padding:80px 0 14px}
+    .story-head{padding:12px 16px 14px}
+    .story-head h2{font-size:1.38rem}
+    .story-head p{display:none}
+    .story-card{max-width:none;padding:12px 14px 14px}
+    .steps-ind li span{display:none}
+    .steps-ind{margin-bottom:8px}
+    .scene-steps{min-height:112px}
+    .scene-step h3{font-size:1.06rem}
+    .scene-step p{font-size:.86rem}
+    .scene-step .chip{display:none}
+  }
+
+  /* ---------- Statistik + testimoni ---------- */
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;border-block:1px solid var(--line);padding:30px 0;margin-bottom:clamp(40px,6vw,72px)}
+  .stat b{display:block;font-size:clamp(2rem,4vw,3.1rem);font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--ink)}
+  .stat span{display:block;margin-top:8px;font-size:.76rem;letter-spacing:.12em;font-weight:800;text-transform:uppercase;color:var(--ink-2)}
+  @media (max-width:768px){.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 12px}}
+  .quotes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+  .quote .card-content{display:flex;flex-direction:column;gap:16px;height:100%}
+  .stars{display:flex;gap:2px;color:#f5a524}
+  .stars svg{width:18px;height:18px}
+  .quote blockquote{margin:0;font-size:1.04rem;color:var(--ink);border:0;padding:0}
+  .who{display:flex;align-items:center;gap:12px;margin-top:auto}
+  .avatar{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;flex:0 0 auto}
+  .who b{display:block}
+  .who small{color:var(--ink-2)}
+  @media (max-width:900px){.quotes{grid-template-columns:minmax(0,1fr)}}
+
+  /* ---------- Harga ---------- */
+  .bill{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+  .plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+  .plan .card-content{display:flex;flex-direction:column;gap:14px;height:100%;padding:26px 24px}
+  .plan.hot{border:2px solid var(--brand);box-shadow:var(--shadow)}
+  .plan-h{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+  .plan h3{font-size:1.3rem;font-weight:800}
+  .badge-s{display:inline-flex;align-items:center;border-radius:999px;padding:3px 10px;font-size:.74rem;font-weight:800;background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent-ink)}
+  .badge-s.b{background:color-mix(in srgb,var(--brand) 15%,transparent);color:var(--brand-ink)}
+  .badge-s.g{background:color-mix(in srgb,var(--green) 16%,transparent);color:var(--green-ink)}
+  .price{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+  .price b{font-size:clamp(1.9rem,3vw,2.4rem);font-weight:800;letter-spacing:-.03em;line-height:1;color:var(--ink)}
+  .price span{color:var(--ink-2);font-size:.9rem}
+  .plan ul{display:grid;gap:10px;font-size:.96rem}
+  .plan li{display:flex;gap:10px;align-items:flex-start}
+  .plan li svg{flex:0 0 auto;width:18px;height:18px;margin-top:3px;color:var(--green)}
+  .plan .btn{margin-top:auto;justify-content:center;width:100%;height:46px}
+  @media (max-width:900px){.plans{grid-template-columns:minmax(0,1fr)}}
+
+  /* ---------- FAQ + form ---------- */
+  .faq-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(24px,5vw,64px)}
+  @media (max-width:820px){.faq-grid{grid-template-columns:minmax(0,1fr)}}
+  .join-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,5vw,64px);align-items:start}
+  .formbox{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;display:grid;gap:20px}
+  .formbox h3{font-size:1.4rem;font-weight:800;letter-spacing:-.02em}
+  .formbox .btn{height:48px;justify-content:center}
+  .ticks{display:grid;gap:14px;margin-top:24px}
+  .ticks li{display:flex;gap:12px;align-items:flex-start;color:var(--ink-2)}
+  .ticks b{color:var(--ink);display:block}
+  .ticks svg{width:22px;height:22px;flex:0 0 auto;color:var(--accent);margin-top:2px}
+  @media (max-width:820px){.join-grid{grid-template-columns:minmax(0,1fr)}}
+  .err{color:#d6452f;font-size:.82rem;font-weight:700;margin-top:4px;display:none}
+  .err.on{display:block}
+
+  /* ---------- CTA + footer ---------- */
+  .cta{border-radius:calc(var(--radius) + 10px);padding:clamp(24px,6vw,72px);position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:28px;align-items:center;
+    background:radial-gradient(120% 140% at 100% 0%,#5b6cf0 0%,#2a35a8 46%,#141a5a 100%);color:#fff}
+  .cta::after{content:"";position:absolute;right:-80px;bottom:-90px;width:320px;height:320px;border-radius:50%;border:44px solid rgba(240,119,47,.42);pointer-events:none}
+  .cta h2{font-weight:800;font-size:clamp(2rem,4.2vw,3.2rem);letter-spacing:-.03em;line-height:1.05;color:#fff}
+  .cta p{color:#dfe2ff;margin-top:12px;max-width:34em}
+  .cta .acts{display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-end;position:relative;z-index:1}
+  .cta .btn.outlined{color:#fff;border-color:#fff}
+  .cta .btn{height:48px}
+  @media (max-width:820px){.cta{grid-template-columns:minmax(0,1fr)}.cta .acts{justify-content:flex-start}}
+  .site-footer{padding:64px 0 32px;background:var(--bg-2);border-top:1px solid var(--line);margin-top:clamp(72px,10vw,120px)}
+  .site-footer h4{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--ink-2);margin-bottom:12px}
+  .site-footer a:not(.brand){display:block;padding:3px 0;color:var(--ink)}
+  .site-footer a:not(.brand):hover{color:var(--brand-ink);text-decoration:underline}
+  .foot-grid{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));gap:28px}
+  .foot-bottom{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;margin-top:40px;padding-top:20px;border-top:1px solid var(--line);font-size:.84rem;color:var(--ink-2)}
+  @media (max-width:820px){.foot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.foot-grid > div:first-child{grid-column:span 2}}
+  .skip{position:absolute;left:-999px;top:8px;z-index:1000;background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:8px}
+  .skip:focus{left:12px}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Lewati ke konten utama</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo" viewBox="0 0 36 36"><rect x="1" y="1" width="34" height="34" rx="11" fill="currentColor"/><path d="M9 26V15l5-3v14M15 26V10l6-3v19M22 26v-9l5 2v7" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/><path d="M6.5 28.5h23" stroke="#f0772f" stroke-width="2.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="9.5" r="2.5" fill="currentColor"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Kotaku, ke atas"><svg style="color:var(--brand)" aria-hidden="true"><use href="#logo"/></svg><span>Kotaku<small>Rencana kota bersama warga</small></span></a>
+    <nav class="nav" aria-label="Navigasi utama">
+      <a href="#fitur">Fitur</a>
+      <a href="#kendali">Peta 3D</a>
+      <a href="#alur">Alur usulan</a>
+      <a href="#harga">Harga</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="top-act">
+      <button class="icon-btn" type="button" data-theme-toggle aria-label="Ganti tema terang/gelap" aria-pressed="false"><svg class="theme-ico-moon" aria-hidden="true"><use href="#i-moon"/></svg><svg class="theme-ico-sun" aria-hidden="true"><use href="#i-sun"/></svg></button>
+      <button class="btn btn-filled cta-top" type="button" data-open-demo>Minta demo</button>
+      <button class="icon-btn menu-btn sidenav-trigger" type="button" data-target="mnav" aria-label="Buka menu" aria-controls="mnav"><svg aria-hidden="true"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</header>
+<ul id="mnav" class="sidenav" aria-label="Menu seluler">
+  <li class="sn-head"><span class="brand"><svg style="color:var(--brand)" aria-hidden="true"><use href="#logo"/></svg><span>Kotaku</span></span></li>
+  <li><a href="#fitur" class="sidenav-close">Fitur</a></li>
+  <li><a href="#kendali" class="sidenav-close">Peta 3D</a></li>
+  <li><a href="#alur" class="sidenav-close">Alur usulan</a></li>
+  <li><a href="#harga" class="sidenav-close">Harga</a></li>
+  <li><a href="#faq" class="sidenav-close">FAQ</a></li>
+  <li><a href="#daftar" class="sidenav-close">Minta demo</a></li>
+  <li class="sn-cta"><button class="btn btn-filled sidenav-close" type="button" data-open-usulan>Kirim usulan</button></li>
+</ul>
+
+<main id="main">
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="kicker"><span class="pill">Baru</span>Simulasi tata ruang hingga 2045</span>
+        <h1 class="display">Rencanakan kota <em>bersama</em> warganya.</h1>
+        <p class="lead">Kotaku menyatukan peta zonasi, rute bus, dan ruang hijau dalam satu kota 3D. Perencana bisa menguji skenario, warga bisa mengirim usulan dan melacaknya sampai benar-benar dibangun.</p>
+        <div class="actions">
+          <button class="btn accent" type="button" data-open-usulan>Kirim usulan</button>
+          <a class="btn outlined" href="#kendali">Jelajahi peta 3D</a>
+        </div>
+        <div class="mini">
+          <div><b class="num">2.418</b><span>usulan warga tahun ini</span></div>
+          <div><b class="num">71%</b><span>ditindaklanjuti</span></div>
+          <div><b class="num">20 thn</b><span>skenario tata ruang</span></div>
+        </div>
+      </div>
+      <div class="stage" id="heroStage">
+        <canvas id="heroCanvas" role="img" aria-label="Kota 3D isometrik dengan blok permukiman, perkantoran, dan taman; gedung tumbuh dari tahun 2025 ke 2045, bus berjalan di rute oranye"></canvas>
+        <div class="fallback" aria-hidden="true"></div>
+        <div class="stage-top">
+          <span class="tag glass"><span class="dot" id="heroDot"></span><span id="heroYear" class="num">Tahun 2025</span></span>
+          <span class="tag glass num" id="heroGreen">Ruang hijau 9%</span>
+        </div>
+        <div class="stage-panel glass">
+          <div class="row"><span class="lbl" id="heroSegL">Lapisan peta</span><button class="btn outlined mini-btn" type="button" id="heroPlay" aria-pressed="true">Jeda</button></div>
+          <div class="seg" role="radiogroup" aria-labelledby="heroSegL" data-seg="hero">
+            <button class="btn" type="button" role="radio" aria-checked="true" data-layer="zonasi"><span>Zonasi</span></button>
+            <button class="btn" type="button" role="radio" aria-checked="false" data-layer="transportasi"><span>Transportasi</span></button>
+            <button class="btn" type="button" role="radio" aria-checked="false" data-layer="hijau"><span>Hijau</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FITUR (tabs + card) -->
+  <section class="sec" id="fitur">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Fitur</span><h2 class="display">Satu peta untuk semua yang membangun kota.</h2></div>
+        <p class="weak">Warga, perencana, dan pimpinan daerah melihat data yang sama. Bedanya hanya apa yang bisa mereka lakukan dengannya.</p>
+      </div>
+      <ul class="tabs feat-tabs" id="featTabs">
+        <li class="tab"><a href="#t-warga" class="active">Untuk warga</a></li>
+        <li class="tab"><a href="#t-renc">Untuk perencana</a></li>
+        <li class="tab"><a href="#t-pimp">Untuk pimpinan</a></li>
+      </ul>
+      <div id="t-warga"><div class="cards">
+        <div class="card"><div class="card-content"><div class="ico o"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg></div><span class="card-title">Usulan bertitik lokasi</span><p>Foto, tandai di peta, kirim. Usulan langsung masuk antrean kajian dengan nomor lacak.</p></div></div>
+        <div class="card"><div class="card-content"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h4l3-7 4 14 3-7h2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="card-title">Lacak sampai jadi</span><p>Lihat status usulanmu dari kajian, konsultasi, anggaran, sampai serah terima pekerjaan.</p></div></div>
+        <div class="card"><div class="card-content"><div class="ico g"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V6a2 2 0 1 1 4 0v4M11 9V4a2 2 0 1 1 4 0v6M15 9a2 2 0 1 1 4 0v5a7 7 0 0 1-7 7h-1a6 6 0 0 1-5-3l-2.5-4.3a1.7 1.7 0 0 1 2.8-1.9L7 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="card-title">Suara di konsultasi</span><p>Beri dukungan atau keberatan untuk rencana di sekitar rumahmu, lengkap dengan alasan.</p></div></div>
+      </div></div>
+      <div id="t-renc"><div class="cards">
+        <div class="card"><div class="card-content"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l9-4 9 4-9 4zM3 12l9 4 9-4M3 17l9 4 9-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div><span class="card-title">Lapisan zonasi 3D</span><p>Tumpuk zonasi, KDB, ketinggian, dan rawan banjir dalam satu model kota yang bisa diputar.</p></div></div>
+        <div class="card"><div class="card-content"><div class="ico o"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 11h16M8 19v-3M16 19v-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><span class="card-title">Uji rute bus</span><p>Gambar rute baru dan lihat langsung berapa persen warga yang tinggal 400 m dari halte.</p></div></div>
+        <div class="card"><div class="card-content"><div class="ico g"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21v-6M7 15h10l-5-12z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div><span class="card-title">Skenario 20 tahun</span><p>Geser tahun dan lihat kota tumbuh: kepadatan, ruang hijau, dan kebutuhan fasilitas.</p></div></div>
+      </div></div>
+      <div id="t-pimp"><div class="cards">
+        <div class="card"><div class="card-content"><div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><span class="card-title">Dasbor kinerja</span><p>Indikator layanan kota per kecamatan, diperbarui harian dan siap dibagikan ke publik.</p></div></div>
+        <div class="card"><div class="card-content"><div class="ico o"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><span class="card-title">Anggaran terlacak</span><p>Setiap usulan yang didanai terhubung ke paket pekerjaan, jadwal, dan progres fisiknya.</p></div></div>
+        <div class="card"><div class="card-content"><div class="ico g"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="card-title">Laporan terbuka</span><p>Ringkasan bulanan otomatis dalam bahasa yang mudah dipahami, bukan hanya tabel.</p></div></div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- RUANG KENDALI: komponen Materialize menggerakkan adegan -->
+  <section class="sec alt sim" id="kendali">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Peta 3D</span><h2 class="display">Geser tahunnya, lihat kotanya tumbuh.</h2></div>
+        <p class="weak">Panel ini dibangun dari komponen Materialize yang menggerakkan adegan three.js: kontrol segmen mewarnai ulang blok, slider menumbuhkan gedung sampai 2045, switch menyalakan malam, select memindahkan kamera, dan chip menampilkan fasilitas.</p>
+      </div>
+      <div class="sim-grid">
+        <div class="stage" id="simStage">
+          <canvas id="simCanvas" role="img" aria-label="Simulasi 3D Kota Sagara (fiktif) yang dikendalikan panel di sebelahnya"></canvas>
+          <div class="fallback" aria-hidden="true"></div>
+          <div class="stage-top">
+            <span class="tag glass"><span class="dot" id="simDot"></span><span id="simDist">Seluruh Kota Sagara</span></span>
+            <span class="tag glass num" id="simYearT">2025</span>
+          </div>
+        </div>
+        <div class="panel" id="ctrl">
+          <div class="panel-h"><h3>Kota Sagara <span class="weak" style="font-weight:600">(data contoh)</span></h3><span class="badge-s b" id="popBadge">612 rb jiwa</span></div>
+          <div>
+            <div class="flabel" id="segL">Lapisan peta</div>
+            <div class="seg" role="radiogroup" aria-labelledby="segL" data-seg="sim">
+              <button class="btn" type="button" role="radio" aria-checked="true" data-layer="zonasi" data-tooltip="Warna blok menurut peruntukan lahan" data-position="top"><span>Zonasi</span></button>
+              <button class="btn" type="button" role="radio" aria-checked="false" data-layer="transportasi" data-tooltip="Rute bus, halte, dan jangkauan 400 m" data-position="top"><span>Transportasi</span></button>
+              <button class="btn" type="button" role="radio" aria-checked="false" data-layer="hijau" data-tooltip="Taman, pohon, dan atap hijau" data-position="top"><span>Hijau</span></button>
+            </div>
+          </div>
+          <div>
+            <label class="flabel" for="yearR">Tahun rencana <b id="yearV">2025</b></label>
+            <p class="range-field"><input type="range" id="yearR" min="2025" max="2045" step="1" value="2025" aria-valuetext="tahun 2025"></p>
+            <div class="scale num" aria-hidden="true"><span>2025</span><span>2030</span><span>2035</span><span>2040</span><span>2045</span></div>
+          </div>
+          <div>
+            <label class="flabel" for="distSel">Kecamatan</label>
+            <div class="input-field sel">
+            <select id="distSel">
+              <option value="semua" selected>Seluruh Kota Sagara</option>
+              <option value="bisnis">Pusat Bisnis Sagara</option>
+              <option value="sungai">Kampung Tepi Sungai</option>
+              <option value="lama">Kota Lama</option>
+              <option value="timur">Kawasan Baru Timur</option>
+            </select>
+            </div>
+          </div>
+          <div class="row2">
+            <div class="switch"><label>Siang<input type="checkbox" id="nightSw" aria-label="Mode malam"><span class="lever"></span>Malam</label></div>
+            <button class="btn text mini-btn" type="button" id="resetSim">Kembalikan</button>
+          </div>
+          <div>
+            <div class="flabel" id="facL">Fasilitas</div>
+            <div class="chips" role="group" aria-labelledby="facL">
+              <button class="chip" type="button" aria-pressed="true" data-fac="halte" style="--cc:#e8692a"><span class="cdot"></span>Halte</button>
+              <button class="chip" type="button" aria-pressed="false" data-fac="sekolah" style="--cc:#7c5ce0"><span class="cdot"></span>Sekolah</button>
+              <button class="chip" type="button" aria-pressed="false" data-fac="puskesmas" style="--cc:#d6456a"><span class="cdot"></span>Puskesmas</button>
+              <button class="chip" type="button" aria-pressed="false" data-fac="taman" style="--cc:#2f9e6a"><span class="cdot"></span>Taman</button>
+            </div>
+          </div>
+          <div class="meters">
+            <div class="meter"><div class="mh"><span>Ruang hijau</span><button class="info" type="button" data-tooltip="Target tata ruang: 20% luas kota" data-position="top" aria-label="Info ruang hijau">i</button></div><b id="mGreen">9%</b><div class="progress" style="--mc:var(--green)"><div class="determinate" id="mGreenBar" style="width:45%"></div></div></div>
+            <div class="meter"><div class="mh"><span>Dekat halte</span><button class="info" type="button" data-tooltip="Warga yang tinggal 400 m dari halte" data-position="top" aria-label="Info jangkauan halte">i</button></div><b id="mTransit">54%</b><div class="progress" style="--mc:var(--accent)"><div class="determinate" id="mTransitBar" style="width:54%"></div></div></div>
+          </div>
+          <div class="card-panel" id="notice" aria-live="polite"><b id="noticeH">Zonasi 2025</b><span id="noticeT">Permukiman masih mendominasi; pusat bisnis terkumpul di tengah kota.</span></div>
+          <div class="btn-row"><button class="btn btn-filled" type="button" data-open-usulan>Kirim usulan di peta ini</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERITA ISOMETRIK -->
+  <section class="story" id="alur" aria-label="Perjalanan satu usulan warga dari usulan sampai dibangun">
+    <div class="story-stage">
+      <canvas id="storyCanvas" role="img" aria-label="Peta isometrik: Sinta berjalan di jalur oranye dari titik usulan, kajian, konsultasi warga, anggaran, hingga taman yang selesai dibangun saat halaman digulir"></canvas>
+      <div class="story-fallback" aria-hidden="true">
+        <svg viewBox="0 0 900 360" id="storySvg">
+          <path d="M80 250 L250 130 L450 250 L650 130 L820 250" fill="none" stroke="#f0772f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="14 12"/>
+          <g><circle class="node on" cx="80" cy="250" r="34"/><circle class="node" cx="250" cy="130" r="34"/><circle class="node" cx="450" cy="250" r="34"/><circle class="node" cx="650" cy="130" r="34"/><circle class="node" cx="820" cy="250" r="34"/></g>
+        </svg>
+      </div>
+      <div class="story-ui">
+        <div class="wrap">
+          <div class="story-head">
+            <span class="eyebrow">Alur usulan</span>
+            <h2 class="display">Ikuti usulan Sinta, dari lahan kosong sampai taman.</h2>
+            <p class="weak" style="margin-top:8px;font-size:.95rem">Gulir untuk melihat lima tahap yang dilalui setiap usulan di Kotaku.</p>
+          </div>
+          <div class="story-card" id="storyCard">
+            <ol class="steps-ind" id="stepInd" aria-label="Tahap usulan">
+              <li class="cur" aria-current="step"><span>Usulan</span></li>
+              <li><span>Kajian</span></li>
+              <li><span>Konsultasi</span></li>
+              <li><span>Anggaran</span></li>
+              <li><span>Dibangun</span></li>
+            </ol>
+            <ol class="scene-steps" aria-live="polite">
+              <li class="scene-step on"><h3>Usulan · Januari</h3><p>Sinta memotret lahan kosong di ujung gang dan mengusulkan taman kecil dengan halte bus lewat aplikasi Kotaku.</p><span class="chip">Usulan #2.418</span></li>
+              <li class="scene-step"><h3>Kajian · Maret</h3><p>Perencana mengecek tata ruang, risiko banjir, dan lalu lintas. Hasil kajiannya terbuka untuk dibaca siapa saja.</p><span class="chip">Layak dengan catatan</span></li>
+              <li class="scene-step"><h3>Konsultasi warga · Mei</h3><p>Warga sekitar memberi suara dan masukan: 312 setuju, 41 meminta tambahan lampu jalan di sisi gang.</p><span class="chip">88% setuju</span></li>
+              <li class="scene-step"><h3>Anggaran · Agustus</h3><p>Usulan masuk rencana anggaran tahun depan. Rinciannya bisa dilacak sampai ke tiap paket pekerjaan.</p><span class="chip">Rp 1,8 M</span></li>
+              <li class="scene-step"><h3>Dibangun · Tahun berikutnya</h3><p>Taman dibuka dan halte disinggahi bus jalur oranye. Sinta menerima notifikasi: usulanmu sudah jadi.</p><span class="chip">Selesai</span></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATISTIK + TESTIMONI -->
+  <section class="sec" id="testimoni">
+    <div class="wrap">
+      <div class="stats" id="stats">
+        <div class="stat"><b data-count="38">0</b><span>Kota &amp; kabupaten</span></div>
+        <div class="stat"><b data-count="164000">0</b><span>Usulan warga</span></div>
+        <div class="stat"><b data-count="71" data-suffix="%">0</b><span>Ditindaklanjuti</span></div>
+        <div class="stat"><b data-count="12" data-suffix=" hari">0</b><span>Rata-rata respons</span></div>
+      </div>
+      <div class="sec-head" style="margin-bottom:28px">
+        <div><span class="eyebrow">Kata pengguna</span><h2 class="display">Dipakai di balai kota dan di pos ronda.</h2></div>
+      </div>
+      <div class="quotes">
+        <div class="card quote"><div class="card-content"><div class="stars" role="img" aria-label="Nilai 5 dari 5"><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg></div>
+          <blockquote>Usulan halte depan sekolah saya diproses lima bulan. Setiap tahapnya kelihatan, jadi saya tidak perlu bolak-balik bertanya.</blockquote>
+          <div class="who"><span class="avatar" style="background:#e8692a">DW</span><span><b>Dewi Wulandari</b><small>Warga, ketua RW 07</small></span></div></div></div>
+        <div class="card quote"><div class="card-content"><div class="stars" role="img" aria-label="Nilai 5 dari 5"><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg></div>
+          <blockquote>Skenario rute bus yang dulu butuh dua minggu di spreadsheet sekarang selesai dalam satu rapat, dengan peta 3D di layar.</blockquote>
+          <div class="who"><span class="avatar" style="background:#3a4bd1">RH</span><span><b>Rizky Hidayat</b><small>Perencana transportasi</small></span></div></div></div>
+        <div class="card quote"><div class="card-content"><div class="stars" role="img" aria-label="Nilai 4 dari 5"><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true" style="opacity:.3"><use href="#i-star"/></svg></div>
+          <blockquote>Konsultasi publik jadi lebih tenang. Warga datang sudah melihat modelnya, jadi diskusinya langsung ke pilihan, bukan ke salah paham.</blockquote>
+          <div class="who"><span class="avatar" style="background:#2f9e6a">AS</span><span><b>Andi Saputra</b><small>Fasilitator musyawarah warga</small></span></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HARGA -->
+  <section class="sec alt" id="harga">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Harga</span><h2 class="display">Gratis untuk warga. Berlangganan untuk kota.</h2></div>
+        <p class="weak">Warga tidak pernah membayar untuk mengirim usulan. Pemerintah daerah berlangganan per kota, termasuk pelatihan dan migrasi data tata ruang.</p>
+      </div>
+      <div class="bill"><div class="switch"><label>Bulanan<input type="checkbox" id="billSw" aria-label="Tagihan tahunan"><span class="lever"></span>Tahunan</label></div><span class="badge-s g">Hemat 2 bulan</span></div>
+      <div class="plans">
+        <div class="card plan"><div class="card-content">
+          <div class="plan-h"><h3>Komunitas</h3><span class="badge-s g">Gratis</span></div>
+          <div class="price"><b class="num">Rp 0</b><span>selamanya</span></div>
+          <p class="weak">Untuk forum RT/RW dan komunitas yang ingin memetakan usulan lingkungannya.</p>
+          <ul class="plain"><li><svg aria-hidden="true"><use href="#i-check"/></svg>Peta usulan hingga 3 kelurahan</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Pemungutan suara warga</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Ekspor ke musrenbang</li></ul>
+          <button class="btn outlined" type="button" data-open-usulan>Mulai memetakan</button>
+        </div></div>
+        <div class="card plan hot"><div class="card-content">
+          <div class="plan-h"><h3>Kota</h3><span class="badge-s">Paling dipilih</span></div>
+          <div class="price"><b class="num" data-price-m="24 jt" data-price-y="20 jt">Rp 24 jt</b><span id="perLbl">/ bulan</span></div>
+          <p class="weak">Untuk kota dan kabupaten dengan satu dinas tata ruang dan satu dinas perhubungan.</p>
+          <ul class="plain"><li><svg aria-hidden="true"><use href="#i-check"/></svg>Model kota 3D &amp; skenario 20 tahun</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Simulasi rute bus &amp; jangkauan halte</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Pelacakan usulan sampai anggaran</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Dasbor publik tanpa batas pengunjung</li></ul>
+          <button class="btn btn-filled" type="button" data-open-demo>Minta demo</button>
+        </div></div>
+        <div class="card plan"><div class="card-content">
+          <div class="plan-h"><h3>Metropolitan</h3><span class="badge-s b">Wilayah</span></div>
+          <div class="price"><b class="num">Kustom</b><span>per wilayah</span></div>
+          <p class="weak">Untuk kawasan aglomerasi dengan beberapa kota dan sistem transportasi bersama.</p>
+          <ul class="plain"><li><svg aria-hidden="true"><use href="#i-check"/></svg>Semua fitur Kota</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Model lintas wilayah</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Integrasi data sensor &amp; GTFS</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Tim pendamping di lokasi</li></ul>
+          <button class="btn outlined" type="button" data-open-demo>Bicara dengan tim</button>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec" id="faq">
+    <div class="wrap faq-grid">
+      <div><span class="eyebrow">FAQ</span><h2 class="display" style="font-size:clamp(2rem,4vw,3rem);margin-top:14px">Yang sering ditanyakan.</h2>
+        <p class="weak" style="margin-top:14px">Kotaku adalah produk fiktif untuk template ini, jadi kota, nama, dan angkanya pun contoh.</p></div>
+      <ul class="collapsible" id="faqList">
+        <li class="active"><div class="collapsible-header" tabindex="0">Apakah warga perlu membayar?</div><div class="collapsible-body"><p>Tidak. Mengirim usulan, memberi suara, dan melacak status selalu gratis untuk warga.</p></div></li>
+        <li><div class="collapsible-header" tabindex="0">Dari mana data peta 3D-nya?</div><div class="collapsible-body"><p>Dari data tata ruang dan bangunan milik pemerintah daerah. Tim kami membantu membersihkan dan memodelkan datanya dalam enam minggu.</p></div></li>
+        <li><div class="collapsible-header" tabindex="0">Bagaimana usulan disaring?</div><div class="collapsible-body"><p>Usulan dikelompokkan otomatis menurut lokasi dan topik, lalu dikaji perencana. Usulan serupa digabung supaya suaranya tidak terpecah.</p></div></li>
+        <li><div class="collapsible-header" tabindex="0">Apakah bisa dipakai di ponsel murah?</div><div class="collapsible-body"><p>Bisa. Peta 3D otomatis turun ke peta 2D ringan di perangkat lama, dan usulan juga bisa dikirim lewat SMS.</p></div></li>
+        <li><div class="collapsible-header" tabindex="0">Siapa yang memiliki datanya?</div><div class="collapsible-body"><p>Pemerintah daerah pelanggan. Data bisa diekspor kapan saja dalam format terbuka.</p></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- DAFTAR + CTA -->
+  <section class="sec alt" id="daftar">
+    <div class="wrap join-grid">
+      <div>
+        <span class="eyebrow">Mulai</span>
+        <h2 class="display" style="font-size:clamp(2rem,4vw,3rem);margin-top:14px">Minta demo untuk kotamu.</h2>
+        <p class="weak" style="margin-top:14px">Kami siapkan model 3D contoh dari satu kecamatan di kotamu, lalu memandu timmu mencobanya.</p>
+        <ul class="plain ticks">
+          <li><svg aria-hidden="true"><use href="#i-pin"/></svg><span><b>Model contoh dalam 7 hari</b>Satu kecamatan, lengkap dengan zonasi dan rute bus.</span></li>
+          <li><svg aria-hidden="true"><use href="#i-pin"/></svg><span><b>Lokakarya setengah hari</b>Untuk perencana, humas, dan fasilitator warga.</span></li>
+          <li><svg aria-hidden="true"><use href="#i-pin"/></svg><span><b>Uji coba 90 hari</b>Tanpa kontrak, data tetap milikmu.</span></li>
+        </ul>
+      </div>
+      <form class="formbox" id="demoForm" novalidate>
+        <h3>Formulir demo</h3>
+        <div class="input-field outlined"><input id="fName" type="text" placeholder=" " autocomplete="name"><label for="fName">Nama lengkap</label><span class="err" id="eName">Tulis nama lengkapmu</span></div>
+        <div class="input-field outlined"><input id="fOrg" type="text" placeholder=" " autocomplete="organization"><label for="fOrg">Instansi / organisasi</label><span class="err" id="eOrg">Tulis nama instansi</span></div>
+        <div class="input-field outlined"><input id="fMail" type="email" placeholder=" " autocomplete="email"><label for="fMail">Email kerja</label><span class="err" id="eMail">Masukkan email yang valid</span></div>
+        <div><label class="flabel" for="fSize">Jumlah penduduk</label><div class="input-field sel"><select id="fSize"><option>Di bawah 250 ribu jiwa</option><option selected>250 ribu – 1 juta jiwa</option><option>Di atas 1 juta jiwa</option></select></div></div>
+        <label><input type="checkbox" class="filled-in" id="fOk"><span>Saya setuju dihubungi tim Kotaku</span></label>
+        <span class="err" id="eOk" style="margin-top:-14px">Centang untuk melanjutkan</span>
+        <button class="btn btn-filled" type="submit">Kirim permintaan demo</button>
+      </form>
+    </div>
+    <div class="wrap" style="margin-top:clamp(56px,8vw,96px)">
+      <div class="cta">
+        <div><h2>Kota yang baik dimulai dari mendengar.</h2><p>Buka satu peta yang sama untuk warga dan perencana, dan biarkan usulan terbaik naik ke permukaan.</p></div>
+        <div class="acts"><button class="btn accent" type="button" data-open-demo>Minta demo</button><a class="btn outlined" href="#harga">Lihat harga</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="#top"><svg style="color:var(--brand)" aria-hidden="true"><use href="#logo"/></svg><span>Kotaku<small>Rencana kota bersama warga</small></span></a>
+        <p class="weak" style="margin-top:14px;max-width:32em">Produk fiktif untuk template. Bukan situs resmi pemerintah kota mana pun; Kota Sagara dan seluruh angkanya adalah contoh.</p>
+      </div>
+      <div><h4>Produk</h4><a href="#fitur">Fitur</a><a href="#kendali">Peta 3D</a><a href="#harga">Harga</a></div>
+      <div><h4>Sumber daya</h4><a href="#alur">Alur usulan</a><a href="#faq">FAQ</a><a href="#daftar">Minta demo</a></div>
+      <div><h4>Kontak</h4><a href="#daftar">halo@kotaku.contoh</a><a href="#daftar">Jakarta · Surabaya · Makassar</a></div>
+    </div>
+    <div class="foot-bottom"><span class="num">© 2026 Kotaku. Merek fiktif untuk template.</span><span>Dibangun dengan Materialize + three.js</span></div>
+  </div>
+</footer>
+
+<!-- Dialog usulan (modal Materialize 2 = <dialog class="modal">) -->
+<dialog class="modal" id="usulanModal" aria-labelledby="usulanTitle">
+  <div class="modal-header"><h2 id="usulanTitle">Kirim usulan warga</h2></div>
+  <form class="modal-content" id="usulanForm" method="dialog" novalidate>
+    <p class="weak">Usulanmu akan muncul sebagai titik di peta Kota Sagara (contoh) dan masuk antrean kajian.</p>
+    <div class="input-field outlined"><input id="uTitle" type="text" placeholder=" "><label for="uTitle">Judul usulan</label><span class="err" id="eTitle">Tulis judul usulan, minimal 5 huruf</span></div>
+    <div><label class="flabel" for="uType">Jenis usulan</label><select class="browser-default" id="uType"><option>Taman &amp; ruang hijau</option><option>Halte &amp; rute bus</option><option>Trotoar &amp; penerangan</option><option>Drainase</option></select></div>
+    <div><label class="flabel" for="uDist">Kecamatan</label><select class="browser-default" id="uDist"><option>Kampung Tepi Sungai</option><option>Kota Lama</option><option>Pusat Bisnis Sagara</option><option>Kawasan Baru Timur</option></select></div>
+    <label><input type="checkbox" class="filled-in" id="uAnon"><span>Sembunyikan namaku di peta publik</span></label>
+  </form>
+  <div class="modal-footer"><button class="btn text" type="button" data-close-dialog>Batal</button><button class="btn btn-filled" type="button" id="uSend">Kirim usulan</button></div>
+</dialog>
+<dialog class="modal" id="demoModal" aria-labelledby="demoTitle">
+  <div class="modal-header"><h2 id="demoTitle">Minta demo Kotaku</h2></div>
+  <div class="modal-content"><p class="weak">Tinggalkan email kerja dan kami kirim jadwal demo 45 menit bersama perencana kami.</p>
+    <div class="input-field outlined"><input id="dMail" type="email" placeholder=" " autocomplete="email"><label for="dMail">Email kerja</label><span class="err" id="eDMail">Masukkan email yang valid</span></div></div>
+  <div class="modal-footer"><button class="btn text" type="button" data-close-dialog>Batal</button><button class="btn btn-filled" type="button" id="dSend">Kirim</button></div>
+</dialog>
+
+<template id="cityFallback">
+  <svg viewBox="0 0 600 460" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Ilustrasi kota isometrik">
+    <rect width="600" height="460" fill="#dfe6f3"/>
+    <path d="M300 90 L560 240 L300 390 L40 240Z" fill="#4b5160"/>
+    <g fill="#f2b25c"><path d="M170 240l40-23 40 23-40 23z"/><path d="M230 275l40-23 40 23-40 23z"/></g>
+    <g fill="#6d8bff"><path d="M290 160l30-17v-60l-30 17z" opacity=".8"/><path d="M290 160l-30-17v-60l30 17z"/><path d="M350 200l30-17v-80l-30 17z" opacity=".8"/><path d="M350 200l-30-17v-80l30 17z"/></g>
+    <path d="M380 260l40-23 40 23-40 23z" fill="#46c38a"/>
+    <path d="M120 240 L300 136 L480 240 L300 344Z" fill="none" stroke="#f0772f" stroke-width="5"/>
+  </svg>
+</template>
+
+<script type="module">
+/* ================= UI (Materialize) ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const rmq = matchMedia('(prefers-reduced-motion: reduce)');
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+const bus = new EventTarget();
+window.__kotaku = { bus };
+const root = document.documentElement;
+function rng(seed){ return () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+const M = window.M;
+
+/* --- tema: atribut theme Materialize --- */
+function setTheme(t, save = true){
+  root.setAttribute('theme', t);
+  $('meta[name="theme-color"]').content = t === 'dark' ? '#0e1019' : '#f5f6fb';
+  $$('[data-theme-toggle]').forEach(b => b.setAttribute('aria-pressed', String(t === 'dark')));
+  if (save) try { localStorage.setItem('kotaku-theme', t); } catch (e) {}
+  bus.dispatchEvent(new CustomEvent('theme', { detail: t }));
+}
+setTheme(root.getAttribute('theme') === 'dark' ? 'dark' : 'light', false);
+$$('[data-theme-toggle]').forEach(b => b.addEventListener('click', () => setTheme(root.getAttribute('theme') === 'dark' ? 'light' : 'dark')));
+
+const toast = text => { if (M && M.Toast) new M.Toast({ text, displayLength: 4200 }); };
+
+/* --- inisialisasi komponen Materialize --- */
+let sidenav = null;
+if (M) {
+  M.Tabs.init($('#featTabs'));
+  M.Collapsible.init($('#faqList'), { accordion: true });
+  M.FormSelect.init($$('select:not(.browser-default)'));
+  M.Range.init($$('input[type=range]'));
+  M.Tooltip.init($$('[data-tooltip]'), { enterDelay: 120 });
+  sidenav = M.Sidenav.init($('#mnav'), { edge: 'right' });
+  $('.menu-btn').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); const s = M.Sidenav.getInstance($('#mnav')); if (s) s.open(); } });
+}
+
+/* --- dialog (modal) --- */
+function openDialog(id){ const d = $('#' + id); if (sidenav && sidenav.close) try { sidenav.close(); } catch (e) {} if (!d.open) d.showModal(); const f = d.querySelector('input'); if (f) setTimeout(() => f.focus(), 30); }
+$$('dialog.modal').forEach(d => { $$('[data-close-dialog]', d).forEach(b => b.addEventListener('click', () => d.close())); d.addEventListener('click', e => { if (e.target === d) d.close(); }); });
+$$('[data-open-usulan]').forEach(b => b.addEventListener('click', () => openDialog('usulanModal')));
+$$('[data-open-demo]').forEach(b => b.addEventListener('click', () => openDialog('demoModal')));
+const showErr = (id, on) => $('#' + id).classList.toggle('on', on);
+$('#uSend').addEventListener('click', () => {
+  const t = $('#uTitle'), bad = t.value.trim().length < 5; showErr('eTitle', bad); t.toggleAttribute('aria-invalid', bad);
+  if (bad) return t.focus();
+  $('#usulanModal').close(); toast(`Usulan "${t.value.trim()}" diterima di ${$('#uDist').value}. Nomor lacak #${2419 + Math.floor(Math.random() * 40)}.`); $('#usulanForm').reset();
+});
+$('#usulanForm').addEventListener('submit', e => { e.preventDefault(); $('#uSend').click(); });
+$('#dSend').addEventListener('click', () => { const m = $('#dMail'), bad = !/^\S+@\S+\.\S+$/.test(m.value.trim()); showErr('eDMail', bad); if (bad) return m.focus(); $('#demoModal').close(); toast('Terima kasih! Jadwal demo kami kirim ke ' + m.value.trim() + '.'); m.value = ''; });
+$('#demoForm').addEventListener('submit', e => {
+  e.preventDefault(); const n = $('#fName'), o = $('#fOrg'), m = $('#fMail'), ok = $('#fOk');
+  const eN = n.value.trim().length < 2, eO = o.value.trim().length < 2, eM = !/^\S+@\S+\.\S+$/.test(m.value.trim()), eK = !ok.checked;
+  showErr('eName', eN); showErr('eOrg', eO); showErr('eMail', eM); showErr('eOk', eK);
+  if (eN) return n.focus(); if (eO) return o.focus(); if (eM) return m.focus(); if (eK) return ok.focus();
+  toast(`Terima kasih, ${n.value.trim().split(/\s+/)[0]}! Model contoh untuk ${o.value.trim()} siap dalam 7 hari.`); e.target.reset();
+});
+$('#billSw').addEventListener('change', e => { const y = e.target.checked; $$('[data-price-m]').forEach(p => p.textContent = 'Rp ' + (y ? p.dataset.priceY : p.dataset.priceM)); $('#perLbl').textContent = y ? '/ bulan, dibayar tahunan' : '/ bulan'; });
+
+/* --- statistik --- */
+const statIO = new IntersectionObserver(es => es.forEach(en => {
+  if (!en.isIntersecting) return; statIO.unobserve(en.target);
+  $$('[data-count]', en.target).forEach(el => {
+    const end = Number(el.dataset.count), suf = el.dataset.suffix || '', show = v => el.textContent = Math.round(v).toLocaleString('id-ID') + suf;
+    if (rmq.matches) return show(end);
+    const t0 = performance.now(); const step = now => { const p = Math.min(1, (now - t0) / 1400); show(end * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); }; requestAnimationFrame(step);
+  });
+}), { threshold: .3 });
+statIO.observe($('#stats'));
+
+/* ================= Model kota ================= */
+const DIST = {
+  semua: { name: 'Seluruh Kota Sagara', t: [-2.5, -1, 1], z: 1.04 },
+  bisnis: { name: 'Pusat Bisnis Sagara', t: [0, 3.5, -7.8], z: 1.9 },
+  sungai: { name: 'Kampung Tepi Sungai', t: [-14, 1, -6], z: 2 },
+  lama: { name: 'Kota Lama', t: [-8, 1, 9], z: 1.9 },
+  timur: { name: 'Kawasan Baru Timur', t: [8, 2.5, 4], z: 1.9 },
+};
+const LAYER_N = { zonasi: 'Zonasi', transportasi: 'Transportasi', hijau: 'Ruang hijau' };
+const greenPct = y => Math.round(9 + 11 * smooth(2026, 2042, y));
+const transitPct = y => Math.round(54 + 32 * smooth(2026, 2040, y));
+const popK = y => Math.round(612 + (y - 2025) * 9.4);
+const state = { layer: 'zonasi', year: 2025, night: false, dist: 'semua', fac: { halte: true, sekolah: false, puskesmas: false, taman: false } };
+const DEFAULTS = JSON.parse(JSON.stringify(state));
+const hero = { layer: 'zonasi', year: 2025, night: false, dist: 'semua', fac: { halte: false, sekolah: false, puskesmas: false, taman: false }, auto: !rmq.matches, dir: 1 };
+
+/* kontrol segmen (radiogroup) */
+function bindSeg(group, target, evt){
+  const btns = $$('[data-layer]', group);
+  const set = (v, focus) => { target.layer = v; btns.forEach(b => { const on = b.dataset.layer === v; b.setAttribute('aria-checked', String(on)); b.tabIndex = on ? 0 : -1; if (on && focus) b.focus(); }); bus.dispatchEvent(new Event(evt)); };
+  btns.forEach((b, i) => { b.addEventListener('click', () => set(b.dataset.layer)); b.addEventListener('keydown', e => { const d = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0; if (!d) return; e.preventDefault(); set(btns[(i + d + btns.length) % btns.length].dataset.layer, true); }); });
+  return set;
+}
+const setHeroLayer = bindSeg($('[data-seg=hero]'), hero, 'hero');
+const setSimLayer = bindSeg($('[data-seg=sim]'), state, 'state');
+
+/* hero: tahun berjalan otomatis (bisa dijeda) */
+const heroPlay = $('#heroPlay');
+function heroReadout(){ const y = Math.round(hero.year); $('#heroYear').textContent = 'Tahun ' + y; $('#heroGreen').textContent = 'Ruang hijau ' + greenPct(y) + '%'; $('#heroDot').style.setProperty('--dc', y > 2035 ? 'var(--green)' : 'var(--brand)'); }
+function setPlay(on){ hero.auto = on; heroPlay.textContent = on ? 'Jeda' : 'Putar'; heroPlay.setAttribute('aria-pressed', String(on)); heroPlay.setAttribute('aria-label', on ? 'Jeda pertumbuhan kota' : 'Putar pertumbuhan kota 2025 sampai 2045'); bus.dispatchEvent(new Event('hero')); }
+heroPlay.addEventListener('click', () => setPlay(!hero.auto));
+rmq.addEventListener('change', () => { if (rmq.matches) setPlay(false); });
+setPlay(hero.auto); heroReadout();
+let lastHeroUI = 0, holdT = 0;
+window.__kotaku.tickHero = (dt, now) => {
+  if (!hero.auto) return;
+  if (holdT > 0) { holdT -= dt; return; }
+  hero.year += hero.dir * dt * 1.4;
+  if (hero.year >= 2045) { hero.year = 2045; hero.dir = -1; holdT = 2.2; } else if (hero.year <= 2025) { hero.year = 2025; hero.dir = 1; holdT = 2.2; }
+  if (now - lastHeroUI > 150) { lastHeroUI = now; heroReadout(); }
+};
+
+/* panel ruang kendali */
+const yearR = $('#yearR'), distSel = $('#distSel'), nightSw = $('#nightSw');
+function readouts(){
+  const y = state.year, g = greenPct(y), tr = transitPct(y);
+  $('#yearV').textContent = y; $('#simYearT').textContent = (state.night ? 'Malam · ' : '') + y; yearR.setAttribute('aria-valuetext', 'tahun ' + y);
+  $('#simDist').textContent = DIST[state.dist].name; $('#simDot').style.setProperty('--dc', state.layer === 'hijau' ? 'var(--green)' : state.layer === 'transportasi' ? 'var(--accent)' : 'var(--brand)');
+  $('#mGreen').textContent = g + '%'; $('#mGreenBar').style.width = (g / 20 * 100) + '%';
+  $('#mTransit').textContent = tr + '%'; $('#mTransitBar').style.width = tr + '%';
+  $('#popBadge').textContent = popK(y).toLocaleString('id-ID') + ' rb jiwa';
+  const n = $('#notice'); let h, t, c = '';
+  if (state.layer === 'zonasi') { h = `Zonasi ${y}`; t = y < 2031 ? 'Permukiman masih mendominasi; pusat bisnis terkumpul di tengah kota.' : y < 2039 ? 'Lahan kosong di timur mulai terbangun menjadi kawasan campuran.' : 'Kawasan campuran timur penuh; dua blok permukiman tua menjadi taman.'; }
+  else if (state.layer === 'transportasi') { h = `Transportasi ${y}`; t = `${tr}% warga tinggal 400 m dari halte jalur oranye.`; c = tr < 70 ? 'warn' : 'ok'; }
+  else { h = `Ruang hijau ${y}`; t = g >= 20 ? 'Target 20% ruang hijau tercapai, termasuk atap hijau di permukiman.' : `Ruang hijau ${g}% dari target 20%. Blok tua di tepi sungai disiapkan menjadi taman.`; c = g >= 20 ? 'ok' : ''; }
+  if (state.night) t += ' Mode malam: lampu jalan dan jendela menyala.';
+  n.className = 'card-panel ' + c; $('#noticeH').textContent = h; $('#noticeT').textContent = t;
+}
+function emit(){ readouts(); bus.dispatchEvent(new Event('state')); }
+bus.addEventListener('state', readouts);
+yearR.addEventListener('input', () => { state.year = Number(yearR.value); emit(); });
+distSel.addEventListener('change', () => { state.dist = DIST[distSel.value] ? distSel.value : 'semua'; emit(); });
+nightSw.addEventListener('change', () => { state.night = nightSw.checked; emit(); });
+$$('[data-fac]').forEach(c => c.addEventListener('click', () => { const on = c.getAttribute('aria-pressed') !== 'true'; c.setAttribute('aria-pressed', String(on)); state.fac[c.dataset.fac] = on; emit(); }));
+$('#resetSim').addEventListener('click', () => {
+  Object.assign(state, JSON.parse(JSON.stringify(DEFAULTS))); setSimLayer(state.layer); yearR.value = state.year; nightSw.checked = false;
+  distSel.value = 'semua'; if (M) M.FormSelect.init(distSel);
+  $$('[data-fac]').forEach(c => c.setAttribute('aria-pressed', String(!!state.fac[c.dataset.fac]))); emit(); toast('Peta dikembalikan ke kondisi awal.');
+});
+readouts();
+
+/* warna token -> rgb untuk three.js */
+const probe = document.createElement('i'); probe.style.display = 'none'; document.body.append(probe);
+const pc = document.createElement('canvas'); pc.width = pc.height = 1; const pctx = pc.getContext('2d', { willReadFrequently: true });
+function themeColor(v){ probe.style.color = `var(${v})`; const c = getComputedStyle(probe).color; pctx.clearRect(0, 0, 1, 1); pctx.fillStyle = '#888'; pctx.fillStyle = c; pctx.fillRect(0, 0, 1, 1); const d = pctx.getImageData(0, 0, 1, 1).data; return `rgb(${d[0]},${d[1]},${d[2]})`; }
+const isDark = () => root.getAttribute('theme') === 'dark';
+
+/* ================= 3D ================= */
+function webglOK(){ try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch (e) { return false; } }
+const storySec = $('#alur');
+function showFallbacks(){
+  const tpl = $('#cityFallback');
+  ['#heroStage', '#simStage'].forEach(s => { const st = $(s); st.classList.add('no-webgl'); const fb = st.querySelector('.fallback'); if (!fb.firstElementChild) fb.append(tpl.content.cloneNode(true)); });
+  storySec.classList.add('no-webgl');
+}
+let THREE;
+try { if (!webglOK()) throw new Error('no-webgl'); THREE = await import('three'); } catch (err) { showFallbacks(); }
+function storyProgress(){ const r = storySec.getBoundingClientRect(); return clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1); }
+const segs = $$('#stepInd li'), sceneSteps = $$('.scene-step', storySec);
+function setStepUI(n){
+  sceneSteps.forEach((s, k) => s.classList.toggle('on', k === n));
+  segs.forEach((li, k) => { li.classList.toggle('done', k < n); li.classList.toggle('cur', k === n); if (k === n) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current'); });
+}
+
+/* tata kota: 6 x 6 blok. R permukiman, C bisnis, P fasilitas publik, G taman, N lahan baru (terbangun bertahap), X permukiman tua yang menjadi taman */
+const PITCH = 5.2, BLK = 3.8, NB = 6, EDGE = 15.6;
+const ZMAP = ['GRRCCR', 'XRCCCR', 'XRCCNR', 'RPRNRG', 'RRRPNR', 'GRRRRG'];
+const bc = i => (i - 2.5) * PITCH;
+
+if (THREE) {
+  const DPR = () => Math.min(window.devicePixelRatio || 1, 2);
+  const frames = window.__kotaku.frames = {};
+  function createLoop(el, frame, continuous){
+    let visible = false, raf = 0, last = 0, pending = true, aliveUntil = 0;
+    const L = { request(){ pending = true; kick(); }, keepAlive(ms){ aliveUntil = Math.max(aliveUntil, performance.now() + ms); kick(); } };
+    const run = () => visible && !document.hidden;
+    function tick(now){
+      if (!run()) { raf = 0; last = 0; return; }
+      raf = -1; const dt = last ? Math.min((now - last) / 1000, .1) : .016; last = now; pending = false;
+      frames[el.id] = (frames[el.id] || 0) + 1; frame(dt, now / 1000);
+      if (continuous() || pending || now < aliveUntil) raf = requestAnimationFrame(tick); else { raf = 0; last = 0; }
+    }
+    function kick(){ if (!raf && run()) raf = requestAnimationFrame(tick); }
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) { pending = true; kick(); } }, { rootMargin: '80px' }).observe(el);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) { pending = true; kick(); } });
+    rmq.addEventListener('change', () => L.request());
+    return L;
+  }
+  function makeRenderer(canvas){
+    const r = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+    r.setPixelRatio(DPR()); r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFShadowMap;
+    r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.05; r.outputColorSpace = THREE.SRGBColorSpace; return r;
+  }
+  function watchSize(el, renderer, onSize){ const apply = () => { const w = Math.max(1, el.clientWidth), h = Math.max(1, el.clientHeight); renderer.setPixelRatio(DPR()); renderer.setSize(w, h, false); onSize(w, h); }; new ResizeObserver(apply).observe(el); apply(); }
+  const std = (c, rough = .85, extra = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0, ...extra });
+  function box(parent, w, h, d, mat, x, y, z, o = {}){ const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y, z); m.castShadow = o.cast !== false; m.receiveShadow = true; if (o.ry) m.rotation.y = o.ry; parent.add(m); return m; }
+  function roundedLoop(x0, x1, z0, z1, r){
+    const pts = [[x0, z0], [x1, z0], [x1, z1], [x0, z1], [x0, z0], [x1, z0]].map(([x, z]) => new THREE.Vector3(x, 0, z));
+    const path = new THREE.CurvePath(); let cur = pts[0].clone().lerp(pts[1], r / pts[0].distanceTo(pts[1]));
+    for (let i = 1; i <= 4; i++) { const p = pts[i], dIn = p.clone().sub(pts[i - 1]).normalize(), dOut = pts[i + 1].clone().sub(p).normalize(); const a = p.clone().addScaledVector(dIn, -r), b = p.clone().addScaledVector(dOut, r); path.add(new THREE.LineCurve3(cur.clone(), a)); path.add(new THREE.QuadraticBezierCurve3(a, p.clone(), b)); cur = b; }
+    return path;
+  }
+
+  /* jendela prosedural: satu material untuk semua gedung, menyala saat malam */
+  function buildingMaterial(){
+    const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: .7, metalness: .05 });
+    m.userData.uNight = { value: 0 }; m.userData.uGlass = { value: .5 };
+    m.onBeforeCompile = sh => {
+      sh.uniforms.uNight = m.userData.uNight; sh.uniforms.uGlass = m.userData.uGlass;
+      sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vWp; varying vec3 vWn;')
+        .replace('#include <worldpos_vertex>', `#include <worldpos_vertex>
+          vec4 kWp = vec4(transformed, 1.0);
+          #ifdef USE_INSTANCING
+            kWp = instanceMatrix * kWp;
+          #endif
+          kWp = modelMatrix * kWp; vWp = kWp.xyz;
+          vec3 kN = objectNormal;
+          #ifdef USE_INSTANCING
+            kN = mat3(instanceMatrix) * kN;
+          #endif
+          vWn = normalize(mat3(modelMatrix) * kN);`);
+      sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying vec3 vWp; varying vec3 vWn; uniform float uNight; uniform float uGlass;')
+        .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
+          float kVert = 1.0 - step(0.5, abs(vWn.y));
+          float kH = abs(vWn.x) > 0.5 ? vWp.z : vWp.x;
+          float kFy = fract((vWp.y - 0.12) / 0.5), kFx = fract(kH / 0.46);
+          float kWin = kVert * step(0.32, kFy) * step(kFy, 0.74) * step(0.24, kFx) * step(kFx, 0.76) * step(0.55, vWp.y);
+          float kR = fract(sin(dot(floor(vec3(kH / 0.46, (vWp.y - 0.12) / 0.5, vWp.x + vWp.z)), vec3(12.9898, 78.233, 37.719))) * 43758.5453);
+          diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * 0.55 + vec3(0.05, 0.08, 0.13), kWin * uGlass);
+          totalEmissiveRadiance += kWin * step(0.32, kR) * uNight * vec3(1.0, 0.76, 0.42) * 1.5;`);
+    };
+    return m;
+  }
+
+  /* ---------- diorama kota ---------- */
+  function buildCity(){
+    const g = new THREE.Group();
+    const soil = std('#6b5040', .95), asphalt = std('#4a5060', .9), grass = std('#86b95e', .95, { flatShading: true });
+    const slab = new THREE.Mesh(new THREE.BoxGeometry(2 * EDGE + 2, 2.4, 2 * EDGE + 2), [soil, soil, asphalt, soil, soil, soil]); slab.position.set(0, -1.2, 0); slab.receiveShadow = true; g.add(slab);
+    // tepi sungai di sisi barat
+    const RX0 = -EDGE - 1, bankW = 1.4, riverW = 2.8;
+    const bank1 = new THREE.Mesh(new THREE.BoxGeometry(bankW, 2.4, 2 * EDGE + 2), [soil, soil, grass, soil, soil, soil]); bank1.position.set(RX0 - bankW / 2, -1.15, 0); bank1.receiveShadow = true; g.add(bank1);
+    const water = new THREE.Mesh(new THREE.BoxGeometry(riverW, 2.0, 2 * EDGE + 2), [soil, soil, new THREE.MeshStandardMaterial({ color: '#3d93cf', roughness: .25, emissive: '#1a4f7a', emissiveIntensity: .2 }), soil, soil, soil]); water.position.set(RX0 - bankW - riverW / 2, -1.4, 0); g.add(water);
+    const bank2 = new THREE.Mesh(new THREE.BoxGeometry(bankW, 2.4, 2 * EDGE + 2), [soil, soil, grass, soil, soil, soil]); bank2.position.set(RX0 - bankW * 1.5 - riverW, -1.15, 0); bank2.receiveShadow = true; g.add(bank2);
+    const XMIN = RX0 - bankW * 2 - riverW;
+    [-PITCH, PITCH].forEach(z => { box(g, riverW + bankW * 2 + .2, .16, 1.4, std('#9aa0ad', .8), RX0 - bankW - riverW / 2, .02, z); [-.62, .62].forEach(o => box(g, riverW + .4, .3, .06, std('#e8eaee', .6), RX0 - bankW - riverW / 2, .25, z + o)); });
+
+    // marka jalan (instanced)
+    const dashes = []; for (let k = -3; k <= 3; k++) for (let s = -EDGE + .6; s < EDGE; s += 1.3) { dashes.push([k * PITCH, s, 0]); dashes.push([s, k * PITCH, 1]); }
+    const dashM = new THREE.InstancedMesh(new THREE.BoxGeometry(.08, .02, .55), std('#e9ecf2', .6), dashes.length);
+    const M4 = new THREE.Matrix4(), Q = new THREE.Quaternion(), S3 = new THREE.Vector3(), P3 = new THREE.Vector3(), E = new THREE.Euler(), HID = new THREE.Matrix4().makeScale(0, 0, 0);
+    dashes.forEach(([x, z, r], i) => { Q.setFromEuler(E.set(0, r ? Math.PI / 2 : 0, 0)); M4.compose(P3.set(x, .011, z), Q, S3.set(1, 1, 1)); dashM.setMatrixAt(i, M4); }); g.add(dashM);
+
+    // blok + gedung
+    const blocks = [], bld = [], trees = [], rnd = rng(17);
+    for (let j = 0; j < NB; j++) for (let i = 0; i < NB; i++) {
+      const type = ZMAP[j][i], cx = bc(i), cz = bc(j), bi = blocks.length; blocks.push({ type, cx, cz });
+      const lot = (dx, dz, w, d, h0, h1, ta, tb, kind, roof) => bld.push({ x: cx + dx, z: cz + dz, w, d, h0, h1, ta, tb, kind, roof, bi, green: rnd() < .45 });
+      if (type === 'R' || type === 'X') for (const [a, b] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+        const w = 1.35 + rnd() * .25, d = 1.35 + rnd() * .25, h0 = .8 + rnd() * .8, r = rnd();
+        if (type === 'X') lot(a * .92, b * .92, w, d, h0, 0, 2029 + rnd() * 3, 2033 + rnd() * 3, 'R', true);
+        else lot(a * .92, b * .92, w, d, h0, r < .32 ? h0 + 1.5 + rnd() * 1.4 : h0 + rnd() * .35, 2026 + rnd() * 10, 2030 + rnd() * 12, 'R', true);
+      }
+      else if (type === 'C') [[-.82, -.82, 1.75, 1.75, 3 + rnd() * 2.6], [.9, .9, 1.6, 1.6, 1.9 + rnd() * 1.4], [.95, -.95, 1.45, 1.45, 1.2 + rnd() * .6], [-.95, .95, 1.45, 1.45, 1.4 + rnd() * .8]].forEach(([dx, dz, w, d, h]) => { const ta = 2026 + rnd() * 9; lot(dx, dz, w, d, h, h * (1.35 + rnd() * .75), ta, ta + 4 + rnd() * 4, 'C', false); });
+      else if (type === 'N') [[-.8, -.2, 1.8, 3.0, 2.6 + rnd() * 1.6], [1.05, -.95, 1.35, 1.5, 4 + rnd() * 3], [1.05, .95, 1.35, 1.4, 1.8 + rnd()]].forEach(([dx, dz, w, d, h], k) => { const ta = 2028 + k * 3 + rnd() * 2; lot(dx, dz, w, d, 0, h, ta, ta + 4, 'N', false); });
+      else if (type === 'P') { lot(0, -.55, 3.0, 2.0, 1.3, 1.5, 2030, 2034, 'P', true); lot(-1.0, 1.15, 1.3, 1.0, .7, .7, 2030, 2031, 'P', true); }
+      if (type === 'G' || type === 'X') { const n = type === 'G' ? 9 : 7; for (let k = 0; k < n; k++) { const ang = rnd() * Math.PI * 2, rr = .4 + rnd() * 1.35; trees.push({ x: cx + Math.cos(ang) * rr, z: cz + Math.sin(ang) * rr, s: .7 + rnd() * .5, bi, kind: rnd() < .5 ? 0 : 1, t0: type === 'X' ? 2031 + rnd() * 4 : 0 }); } }
+    }
+    // pohon tepi sungai
+    for (let z = -EDGE + .8; z < EDGE; z += 2.1) { if (Math.abs(z - PITCH) < 1.2 || Math.abs(z + PITCH) < 1.2) continue; trees.push({ x: RX0 - .7, z: z + rnd() * .6, s: .6 + rnd() * .4, bi: -1, kind: rnd() < .5 ? 0 : 1, t0: 0 }); trees.push({ x: XMIN + .7, z: z + 1 + rnd() * .6, s: .6 + rnd() * .4, bi: -1, kind: rnd() < .5 ? 0 : 1, t0: 0 }); }
+
+    const groundM = new THREE.InstancedMesh(new THREE.BoxGeometry(BLK, .22, BLK), std('#ffffff', .9), blocks.length); groundM.receiveShadow = true;
+    blocks.forEach((b, i) => { M4.compose(P3.set(b.cx, .11, b.cz), Q.identity(), S3.set(1, 1, 1)); groundM.setMatrixAt(i, M4); groundM.setColorAt(i, new THREE.Color('#ffffff')); }); g.add(groundM);
+    const bMat = buildingMaterial();
+    const bMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1).translate(0, .5, 0), bMat, bld.length); bMesh.castShadow = bMesh.receiveShadow = true;
+    const roofGeo = new THREE.ConeGeometry(1, 1, 4); roofGeo.rotateY(Math.PI / 4); roofGeo.translate(0, .5, 0);
+    const rMesh = new THREE.InstancedMesh(roofGeo, std('#ffffff', .75), bld.length); rMesh.castShadow = true;
+    bld.forEach((b, i) => { bMesh.setColorAt(i, new THREE.Color('#ffffff')); rMesh.setColorAt(i, new THREE.Color('#ffffff')); });
+    g.add(bMesh, rMesh);
+    const leaf = std('#ffffff', .9, { flatShading: true });
+    const tCone = new THREE.InstancedMesh(new THREE.ConeGeometry(.55, 1.4, 7).translate(0, 1.05, 0), leaf, trees.length), tBlob = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(.62, 0).translate(0, 1.0, 0), leaf.clone(), trees.length), tTrunk = new THREE.InstancedMesh(new THREE.CylinderGeometry(.08, .11, .6, 6).translate(0, .3, 0), std('#7d5f45', .9), trees.length);
+    [tCone, tBlob, tTrunk].forEach(m => { m.castShadow = true; g.add(m); });
+    trees.forEach((t, i) => { tCone.setColorAt(i, new THREE.Color('#ffffff')); tBlob.setColorAt(i, new THREE.Color('#ffffff')); });
+
+    // lampu jalan (instanced) di persimpangan
+    const lampsP = []; for (let a = -3; a <= 3; a++) for (let b = -3; b <= 3; b++) lampsP.push([a * PITCH + .8, b * PITCH + .8]);
+    const poleM = new THREE.InstancedMesh(new THREE.CylinderGeometry(.04, .05, 1.2, 5).translate(0, .6, 0), std('#5b6170', .6), lampsP.length);
+    const bulbMat = new THREE.MeshStandardMaterial({ color: '#fff3d1', emissive: '#ffd27a', emissiveIntensity: 0 }), bulbM = new THREE.InstancedMesh(new THREE.SphereGeometry(.12, 8, 6), bulbMat, lampsP.length);
+    lampsP.forEach(([x, z], i) => { M4.compose(P3.set(x, .22, z), Q.identity(), S3.set(1, 1, 1)); poleM.setMatrixAt(i, M4); M4.compose(P3.set(x, 1.45, z), Q.identity(), S3.set(1, 1, 1)); bulbM.setMatrixAt(i, M4); }); g.add(poleM, bulbM);
+
+    // rute bus oranye + bus
+    const routeMat = new THREE.MeshStandardMaterial({ color: '#f0772f', emissive: '#f0772f', emissiveIntensity: .35, roughness: .5 });
+    const routes = [roundedLoop(-2 * PITCH + .35, 2 * PITCH + .35, -PITCH + .35, PITCH + .35, 1.6), roundedLoop(-PITCH - .35, PITCH - .35, -2 * PITCH - .35, 2 * PITCH - .35, 1.6)];
+    const routeMeshes = routes.map(p => { const m = new THREE.Mesh(new THREE.TubeGeometry(p, 260, .13, 6, true), routeMat); m.position.y = .06; m.scale.y = .35; g.add(m); return m; });
+    const busBody = std('#f5f6f8', .5), busStripe = std('#f0772f', .6), busGlass = new THREE.MeshStandardMaterial({ color: '#203248', roughness: .2, emissive: '#ffe2a6', emissiveIntensity: 0 });
+    const buses = [];
+    routes.forEach((p, ri) => { for (let k = 0; k < 3; k++) { const b = new THREE.Group(); box(b, .62, .5, 1.5, busBody, 0, .38, 0); box(b, .64, .12, 1.52, busStripe, 0, .2, 0, { cast: false }); box(b, .66, .17, 1.3, busGlass, 0, .5, 0, { cast: false }); g.add(b); buses.push({ g: b, path: p, u: k / 3 + ri * .17, v: .045 + ri * .008 }); } });
+    // halte + cakupan 400 m
+    const halteMat = std('#f0772f', .6), shelterMat = std('#e8eaee', .6), stops = [];
+    const ringMat = new THREE.MeshBasicMaterial({ color: '#f0772f', transparent: true, opacity: .16, depthWrite: false }), rings = [];
+    routes.forEach((p, ri) => [.07, .32, .57, .82].forEach(u => { const pt = p.getPointAt(u), tg = p.getTangentAt(u), nrm = new THREE.Vector3(tg.z, 0, -tg.x).normalize(); const pos = pt.clone().addScaledVector(nrm, -.95);
+      const s = new THREE.Group(); s.position.set(pos.x, .22, pos.z); s.rotation.y = Math.atan2(tg.x, tg.z); g.add(s); box(s, .5, .05, 1.0, halteMat, 0, .72, 0); box(s, .05, .7, .05, shelterMat, -.2, .35, -.4); box(s, .05, .7, .05, shelterMat, -.2, .35, .4); box(s, .04, .5, .8, shelterMat, -.24, .4, 0, { cast: false });
+      stops.push(pos.clone()); const ring = new THREE.Mesh(new THREE.CircleGeometry(3.4, 40), ringMat); ring.rotation.x = -Math.PI / 2; ring.position.set(pos.x, .25 + ri * .005, pos.z); g.add(ring); rings.push(ring); }));
+    // pin fasilitas
+    const pinGeoHead = new THREE.SphereGeometry(.42, 18, 12), pinGeoTip = new THREE.ConeGeometry(.3, .7, 14).rotateX(Math.PI).translate(0, -.42, 0), pinDot = new THREE.CircleGeometry(.17, 16);
+    const pins = { halte: [], sekolah: [], puskesmas: [], taman: [] }, PCOL = { halte: '#e8692a', sekolah: '#7c5ce0', puskesmas: '#d6456a', taman: '#2f9e6a' };
+    function addPin(kind, x, z, bi){ const m = new THREE.MeshStandardMaterial({ color: PCOL[kind], emissive: PCOL[kind], emissiveIntensity: .35, roughness: .4 }); const p = new THREE.Group(); p.add(new THREE.Mesh(pinGeoHead, m), new THREE.Mesh(pinGeoTip, m)); const d = new THREE.Mesh(pinDot, new THREE.MeshBasicMaterial({ color: '#ffffff' })); d.position.z = .43; p.add(d); p.position.set(x, 3, z); p.rotation.y = Math.PI / 4; p.userData = { bi, x, z, show: 0, ph: Math.random() * 6 }; p.visible = false; g.add(p); pins[kind].push(p); }
+    stops.forEach((s, k) => { if (k % 2 === 0) addPin('halte', s.x, s.z, -1); });
+    blocks.forEach((b, bi) => { if (b.type === 'P') addPin(bi % 2 ? 'sekolah' : 'puskesmas', b.cx, b.cz - .5, bi); if (b.type === 'G') addPin('taman', b.cx, b.cz, bi); });
+    addPin('sekolah', bc(4), bc(5), 4 + 5 * 6); addPin('puskesmas', bc(1), bc(1), 1 + 6); addPin('sekolah', bc(5), bc(0), 5); addPin('taman', bc(0), bc(2), 12);
+
+    // awan
+    const cloudMat = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 1, transparent: true, opacity: .85, depthWrite: false }), clouds = [], rc = rng(91);
+    for (let i = 0; i < 4; i++) { const cg = new THREE.Group(); [[0, 0, 1.4], [1.3, .1, 1], [-1.3, -.1, 1.1], [.4, .6, 1]].forEach(([a, b, s]) => { const m = new THREE.Mesh(new THREE.IcosahedronGeometry(s, 1), cloudMat); m.position.set(a, b, 0); cg.add(m); }); cg.userData = { s: -26 + i * 15 + rc() * 4, back: -24 - rc() * 6, v: .4 + rc() * .4 }; cg.position.y = 6 + rc() * 3; g.add(cg); clouds.push(cg); }
+    return { root: g, blocks, bld, trees, groundM, bMesh, rMesh, bMat, tCone, tBlob, tTrunk, bulbMat, routeMat, routeMeshes, buses, busGlass, rings, ringMat, pins, clouds, cloudMat, XMIN };
+  }
+
+  const C = c => new THREE.Color(c);
+  const PAL = {
+    R: C('#f2b25c'), Rroof: C('#d9783c'), C: C('#7390ff'), N: C('#3cc6cc'), P: C('#a98bf5'), Proof: C('#7f61d9'),
+    clay: C('#eef0f5'), clayRoof: C('#d7dae4'), clayG: C('#e8ece6'), greenRoof: C('#5fbf73'),
+    gR: C('#efe6d4'), gC: C('#d9deea'), gP: C('#e9e2f5'), gN: C('#c9b083'), gG: C('#7cc46b'), gPave: C('#e6e8ee'), gPale: C('#dfe3e0'), gVivid: C('#4fbf62'),
+    leaf: C('#4f9a45'), leaf2: C('#6db552'), leafPale: C('#b9c9b4'), leafVivid: C('#2fae4f'),
+  };
+  function createCityView(canvas, stageEl, getS, opts){
+    const renderer = makeRenderer(canvas);
+    const scene = new THREE.Scene(); const K = buildCity(); scene.add(K.root);
+    const hemi = new THREE.HemisphereLight('#eef3ff', '#7a7465', 1.15); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff3df', 2.5); sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, { left: -26, right: 26, top: 26, bottom: -26, near: 1, far: 140 }); sun.shadow.bias = -.0006; sun.shadow.normalBias = .05; scene.add(sun, sun.target);
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -200, 400);
+    const DIR = new THREE.Vector3(1, 1, 1).normalize(), R2 = Math.SQRT1_2;
+    const S0 = getS();
+    const cur = { year: S0.year, t: new THREE.Vector3(...DIST[S0.dist].t), z: DIST[S0.dist].z, night: S0.night ? 1 : 0, mix: { zonasi: 0, transportasi: 0, hijau: 0 }, sky: new THREE.Color() };
+    cur.mix[S0.layer] = 1;
+    let aspect = 1, halfH = 20, padF = 0, first = true, lastYear = -1, lastMixKey = ''; const pointer = { x: 0, tx: 0 };
+    const tmpC = new THREE.Color(), tmpV = new THREE.Vector3(), Y = new THREE.Vector3(0, 1, 0), M4 = new THREE.Matrix4(), Q = new THREE.Quaternion(), S3 = new THREE.Vector3(), P3 = new THREE.Vector3(), HID = new THREE.Matrix4().makeScale(0, 0, 0);
+    const cA = new THREE.Color(), cB = new THREE.Color(), cZ = new THREE.Color();
+    const bH = new Float32Array(K.bld.length), blockTop = new Float32Array(K.blocks.length);
+    if (opts.hero) {
+      stageEl.addEventListener('pointermove', e => { const b = stageEl.getBoundingClientRect(); pointer.tx = ((e.clientX - b.left) / b.width - .5) * 2; loop.request(); });
+      stageEl.addEventListener('pointerleave', () => { pointer.tx = 0; loop.request(); });
+    }
+    function blend3(z, t, h, out){ const m = cur.mix; return out.copy(z).multiplyScalar(m.zonasi).add(cA.copy(t).multiplyScalar(m.transportasi)).add(cB.copy(h).multiplyScalar(m.hijau)); }
+    function updateCity(y){
+      const m = cur.mix;
+      blockTop.fill(0);
+      K.bld.forEach((b, i) => {
+        const h = b.h0 + (b.h1 - b.h0) * smooth(b.ta, b.tb, y); bH[i] = h; if (h > blockTop[b.bi]) blockTop[b.bi] = h;
+        if (h < .03) { K.bMesh.setMatrixAt(i, HID); K.rMesh.setMatrixAt(i, HID); return; }
+        M4.compose(P3.set(b.x, .22, b.z), Q.identity(), S3.set(b.w, h, b.d)); K.bMesh.setMatrixAt(i, M4);
+        if (b.roof) { const rh = Math.min(.55, .25 + h * .18); M4.compose(P3.set(b.x, .22 + h, b.z), Q.identity(), S3.set((b.w / 2 + .12) / .7071, rh, (b.d / 2 + .12) / .7071)); K.rMesh.setMatrixAt(i, M4); } else K.rMesh.setMatrixAt(i, HID);
+        const zc = b.kind === 'R' ? PAL.R : b.kind === 'C' ? PAL.C : b.kind === 'N' ? PAL.N : PAL.P;
+        K.bMesh.setColorAt(i, blend3(zc, PAL.clay, PAL.clay, cZ));
+        const gr = b.green && y > 2034 ? smooth(2034, 2042, y) : 0;
+        const zr = b.kind === 'P' ? PAL.Proof : PAL.Rroof;
+        K.rMesh.setColorAt(i, blend3(zr, PAL.clayRoof, tmpC.copy(PAL.clayRoof).lerp(PAL.greenRoof, gr), cZ));
+      });
+      K.blocks.forEach((b, i) => {
+        let z, t = PAL.gPave, h = PAL.gPale;
+        if (b.type === 'G') { z = PAL.gG; h = PAL.gVivid; }
+        else if (b.type === 'X') { const k = smooth(2031, 2036, y); z = tmpC.copy(PAL.gR).lerp(PAL.gG, k).clone(); h = PAL.gPale.clone().lerp(PAL.gVivid, k); }
+        else if (b.type === 'N') { const k = smooth(2028, 2034, y); z = PAL.gN.clone().lerp(PAL.gC, k); }
+        else z = b.type === 'R' ? PAL.gR : b.type === 'C' ? PAL.gC : PAL.gP;
+        K.groundM.setColorAt(i, blend3(z, t, h, cZ));
+      });
+      K.trees.forEach((t, i) => {
+        const s = t.t0 ? t.s * smooth(t.t0, t.t0 + 3, y) : t.s;
+        if (s < .02) { K.tCone.setMatrixAt(i, HID); K.tBlob.setMatrixAt(i, HID); K.tTrunk.setMatrixAt(i, HID); return; }
+        M4.compose(P3.set(t.x, t.bi < 0 ? .05 : .22, t.z), Q.identity(), S3.set(s, s, s)); K.tTrunk.setMatrixAt(i, M4);
+        if (t.kind) { K.tCone.setMatrixAt(i, M4); K.tBlob.setMatrixAt(i, HID); } else { K.tBlob.setMatrixAt(i, M4); K.tCone.setMatrixAt(i, HID); }
+        const base = t.kind ? PAL.leaf : PAL.leaf2; const col = blend3(base, PAL.leafPale, PAL.leafVivid, cZ); K.tCone.setColorAt(i, col); K.tBlob.setColorAt(i, col);
+      });
+      [K.bMesh, K.rMesh, K.groundM, K.tCone, K.tBlob, K.tTrunk].forEach(mm => { mm.instanceMatrix.needsUpdate = true; if (mm.instanceColor) mm.instanceColor.needsUpdate = true; });
+      K.bMesh.computeBoundingSphere(); K.rMesh.computeBoundingSphere();
+    }
+    const loop = createLoop(canvas, (dt, t) => {
+      const still = rmq.matches, S = getS(), k = still || first ? 1 : 1 - Math.exp(-dt * 3.2);
+      if (opts.tick && !still) opts.tick(dt, t * 1000);
+      const yk = still || first || opts.hero ? 1 : 1 - Math.exp(-dt * 4);
+      cur.year += (S.year - cur.year) * yk; if (Math.abs(S.year - cur.year) < .01) cur.year = S.year;
+      const d = DIST[S.dist] || DIST.semua; cur.t.lerp(tmpV.set(...d.t), k); cur.z += (d.z - cur.z) * k;
+      cur.night += ((S.night ? 1 : 0) - cur.night) * k;
+      let mixSettling = false; for (const L of ['zonasi', 'transportasi', 'hijau']) { const goal = S.layer === L ? 1 : 0; cur.mix[L] += (goal - cur.mix[L]) * k; if (Math.abs(goal - cur.mix[L]) < .002) cur.mix[L] = goal; else mixSettling = true; }
+      const mixKey = cur.mix.zonasi.toFixed(3) + cur.mix.transportasi.toFixed(3) + cur.mix.hijau.toFixed(3);
+      if (Math.abs(cur.year - lastYear) > .004 || mixKey !== lastMixKey) { updateCity(cur.year); lastYear = cur.year; lastMixKey = mixKey; }
+      const n = cur.night, day = 1 - n;
+      // langit & cahaya
+      cur.sky.set(isDark() ? '#1c2336' : '#d6e4f3').lerp(tmpC.set(isDark() ? '#070a14' : '#121a30'), n);
+      scene.background = cur.sky;
+      hemi.intensity = .4 + .8 * day; hemi.color.set('#eef3ff').lerp(tmpC.set('#6f7fb8'), n); hemi.groundColor.set('#7a7465').lerp(tmpC.set('#1b2131'), n);
+      sun.intensity = .35 + 2.25 * day; sun.color.set('#fff3df').lerp(tmpC.set('#9fb4ff'), n);
+      sun.position.copy(cur.t).add(tmpV.set(-10 + 4 * n, 30, 16)); sun.target.position.copy(cur.t);
+      K.bMat.userData.uNight.value = n; K.bMat.userData.uGlass.value = .45 + .35 * n;
+      K.bulbMat.emissiveIntensity = n * 3; K.busGlass.emissiveIntensity = n * 1.4;
+      const tr = cur.mix.transportasi;
+      K.routeMat.emissiveIntensity = .3 + .9 * tr + .5 * n; K.routeMeshes.forEach(r => r.scale.y = .35 + .65 * tr);
+      K.ringMat.opacity = .2 * tr; K.rings.forEach(r => r.visible = tr > .01);
+      // bus
+      const sp = still ? 0 : dt;
+      K.buses.forEach(b => { b.u = (b.u + b.v * sp * .4) % 1; const p = b.path.getPointAt(b.u), tg = b.path.getTangentAt(b.u); b.g.position.set(p.x, .02, p.z); b.g.rotation.y = Math.atan2(tg.x, tg.z); });
+      // pin fasilitas
+      let pinSettling = false;
+      for (const kind in K.pins) K.pins[kind].forEach(p => { const goal = S.fac[kind] ? 1 : 0, u = p.userData; u.show += (goal - u.show) * (still ? 1 : Math.min(1, dt * 5)); if (Math.abs(goal - u.show) < .01) u.show = goal; else pinSettling = true;
+        p.visible = u.show > .01; if (!p.visible) return; const top = u.bi >= 0 ? blockTop[u.bi] : .6; p.position.y = .22 + top + 1.4 + (still ? 0 : Math.sin(t * 2 + u.ph) * .15); p.scale.setScalar(.2 + .8 * u.show); });
+      // awan
+      K.cloudMat.opacity = .75 * day + .15; K.cloudMat.color.set('#ffffff').lerp(tmpC.set('#3a4560'), n);
+      K.clouds.forEach(cg => { const u = cg.userData; if (!still) { u.s += u.v * dt; if (u.s > 32) u.s = -32; } cg.position.x = (u.s + u.back) * R2; cg.position.z = (-u.s + u.back) * R2; });
+      const settling = cur.t.distanceTo(tmpV.set(...d.t)) > .01 || Math.abs(d.z - cur.z) > .002 || Math.abs((S.night ? 1 : 0) - cur.night) > .003 || mixSettling || pinSettling || Math.abs(S.year - cur.year) > .01;
+      if (settling) loop.request();
+      // kamera
+      pointer.x += (pointer.tx - pointer.x) * (1 - Math.exp(-dt * 3)); if (Math.abs(pointer.tx - pointer.x) > .002) loop.request();
+      tmpV.copy(DIR).applyAxisAngle(Y, pointer.x * .14 + (opts.hero && !still ? Math.sin(t * .11) * .06 : 0));
+      const hh = halfH / cur.z, hw = hh * aspect; Object.assign(cam, { left: -hw, right: hw, top: hh * (1 - padF), bottom: -hh * (1 + padF) }); cam.updateProjectionMatrix();
+      cam.position.copy(cur.t).addScaledVector(tmpV, 100); cam.lookAt(cur.t);
+      renderer.render(scene, cam); first = false;
+      if (!stageEl.classList.contains('ready')) stageEl.classList.add('ready');
+    }, () => !rmq.matches);
+    const panelEl = stageEl.querySelector('.stage-panel'), topEl = stageEl.querySelector('.stage-top');
+    function measure(){ const Hh = stageEl.clientHeight || 1; const pb = panelEl ? panelEl.offsetHeight + 14 : 0, pt = topEl ? topEl.offsetHeight + 14 : 0; padF = (pb - pt) / Hh; }
+    watchSize(stageEl, renderer, (w, h) => { aspect = w / h; halfH = clamp(26 / Math.max(aspect, .5), 18, 33); measure(); loop.request(); });
+    if (panelEl) new ResizeObserver(() => { measure(); loop.request(); }).observe(panelEl);
+    return { request(){ loop.keepAlive(2600); loop.request(); }, loop, renderer, scene, camera: cam, K };
+  }
+
+  let heroV = null, simV = null;
+  try {
+    heroV = createCityView($('#heroCanvas'), $('#heroStage'), () => hero, { hero: true, tick: window.__kotaku.tickHero });
+    simV = createCityView($('#simCanvas'), $('#simStage'), () => state, { hero: false });
+    bus.addEventListener('state', () => simV.request());
+    bus.addEventListener('hero', () => heroV.request());
+    bus.addEventListener('theme', () => requestAnimationFrame(() => { heroV.request(); simV.request(); }));
+  } catch (e) { console.warn('WebGL gagal dimulai', e); showFallbacks(); }
+
+  /* ================= Cerita isometrik: perjalanan usulan ================= */
+  function makeCitizen(s = 1){
+    const g = new THREE.Group(); g.scale.setScalar(s);
+    const top = std('#2a9d8f', .8), pants = std('#2d3550', .85), skin = std('#c08e6b', .8), hair = std('#2b2220', .7), shoe = std('#1c2026', .8), bag = std('#f0772f', .7);
+    const body = new THREE.Mesh(new THREE.BoxGeometry(.5, .62, .3), top); body.position.y = 1.14; body.castShadow = true; g.add(body);
+    const hip = new THREE.Mesh(new THREE.BoxGeometry(.5, .22, .3), pants); hip.position.y = .8; g.add(hip);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(.23, 16, 12), skin); head.position.y = 1.68; head.castShadow = true; g.add(head);
+    const hr = new THREE.Mesh(new THREE.SphereGeometry(.25, 16, 10, 0, Math.PI * 2, 0, Math.PI * .55), hair); hr.position.y = 1.72; hr.rotation.x = -.25; g.add(hr);
+    const bun = new THREE.Mesh(new THREE.SphereGeometry(.12, 10, 8), hair); bun.position.set(0, 1.8, -.22); g.add(bun);
+    const sb = new THREE.Mesh(new THREE.BoxGeometry(.3, .34, .14), bag); sb.position.set(-.32, .98, .02); g.add(sb);
+    const strap = new THREE.Mesh(new THREE.BoxGeometry(.52, .05, .32), bag); strap.position.y = 1.36; strap.rotation.z = .6; g.add(strap);
+    const ph = new THREE.Mesh(new THREE.BoxGeometry(.16, .28, .03), std('#1d2228', .4)); ph.position.set(.3, 1.12, .3); ph.rotation.x = -.6; g.add(ph);
+    function limb(mat, w, h, x, y, foot){ const piv = new THREE.Group(); piv.position.set(x, y, 0); const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, w), mat); m.position.y = -h / 2; m.castShadow = true; piv.add(m); if (foot) { const f = new THREE.Mesh(new THREE.BoxGeometry(w + .02, .12, w + .1), shoe); f.position.set(0, -h + .05, .04); piv.add(f); } g.add(piv); return piv; }
+    const legL = limb(pants, .18, .72, -.13, .78, true), legR = limb(pants, .18, .72, .13, .78, true), armL = limb(top, .13, .55, -.33, 1.4), armR = limb(top, .13, .55, .33, 1.4);
+    armR.rotation.x = -.7;
+    return { g, legL, legR, armL, armR };
+  }
+  function createStory(){
+    const stage = $('.story-stage', storySec), canvas = $('#storyCanvas');
+    const renderer = makeRenderer(canvas); const scene = new THREE.Scene();
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -100, 200);
+    const camDir = new THREE.Vector3(1, 1.1, 1).normalize(), camTarget = new THREE.Vector3();
+    const hemi = new THREE.HemisphereLight('#f4f8ff', '#b9b3a6', 1.3); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff3df', 2.4); sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16, near: 1, far: 80 }); sun.shadow.bias = -.0005; sun.shadow.normalBias = .03; scene.add(sun, sun.target);
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(160, 90), std('#eef1f6', 1)); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+    let grid = null;
+    const CLAY = new THREE.Color('#e9ecf2');
+    const SP = [[-16, 4], [-6, -4], [3, 4], [12, -4], [21, 4]];
+    const stations = [];
+    const smat = (c, e) => { const m = std(c, .8); m.userData.target = new THREE.Color(c); m.color.copy(CLAY); if (e) { m.emissive = new THREE.Color(e); m.userData.emis = true; m.emissiveIntensity = 0; } return m; };
+    function add(g, mats, geo, c, x, y, z, rot, e){ const m = smat(c, e); mats.push(m); const me = new THREE.Mesh(geo, m); me.position.set(x, y, z); if (rot) me.rotation.set(rot[0] || 0, rot[1] || 0, rot[2] || 0); me.castShadow = me.receiveShadow = true; g.add(me); return me; }
+    const B = (w, h, d) => new THREE.BoxGeometry(w, h, d), Cy = (rt, rb, h, s = 20) => new THREE.CylinderGeometry(rt, rb, h, s), Sph = (r, s = 14) => new THREE.SphereGeometry(r, s, Math.max(6, s * .6 | 0));
+    function person(inner, mats, c, x, z, sit){ add(inner, mats, Cy(.14, .16, sit ? .35 : .5, 10), c, x, sit ? .22 : .3, z); add(inner, mats, Sph(.12, 10), '#c08e6b', x, sit ? .5 : .64, z); }
+    function tree(inner, mats, x, z, s = 1){ add(inner, mats, Cy(.06, .08, .5 * s, 6), '#7d5f45', x, .25 * s, z); add(inner, mats, new THREE.IcosahedronGeometry(.45 * s, 0), '#5fae4f', x, .75 * s, z); }
+    SP.forEach(([x, z], i) => {
+      const g = new THREE.Group(); g.position.set(x - 1.4, 0, z - 2.6); scene.add(g);
+      const mats = []; add(g, mats, Cy(2.9, 3.0, .26, 44), '#e1e5f4', 0, .13, 0);
+      const inner = new THREE.Group(); inner.position.y = .26; g.add(inner);
+      if (i === 0) { // usulan: lahan kosong, papan tanda tanya, ponsel raksasa
+        add(inner, mats, B(2.4, .06, 2), '#c9b083', -.5, .03, -.5);
+        add(inner, mats, B(.08, 1.2, .08), '#7d5f45', -1.2, .6, -1.2); add(inner, mats, B(.9, .6, .06), '#f0772f', -1.2, 1.3, -1.17);
+        add(inner, mats, Sph(.13, 10), '#ffffff', -1.2, 1.38, -1.12);
+        add(inner, mats, B(1.0, 1.8, .16), '#1d2228', 1.2, .9, .6, [0, -.5, 0]); add(inner, mats, B(.86, 1.56, .02), '#8f9bff', 1.25, .92, .69, [0, -.5, 0], '#5b6cf0');
+        add(inner, mats, Sph(.32, 16), '#f0772f', 1.32, 1.1, .76); add(inner, mats, new THREE.ConeGeometry(.24, .4, 14).rotateX(Math.PI), '#f0772f', 1.32, .8, .76);
+      } else if (i === 1) { // kajian: meja gambar + maket + kaca pembesar
+        add(inner, mats, B(2.6, .12, 1.6), '#d9b98c', 0, .9, 0); [[-1.15, -.65], [1.15, -.65], [-1.15, .65], [1.15, .65]].forEach(([a, b]) => add(inner, mats, B(.1, .9, .1), '#8a6440', a, .45, b));
+        add(inner, mats, B(2.2, .02, 1.3), '#3a4bd1', 0, .97, 0);
+        [[-.6, -.2, .5], [-.1, .2, .8], [.4, -.25, .35], [.75, .25, .6]].forEach(([a, b, h]) => add(inner, mats, B(.32, h, .32), '#eef0f5', a, .98 + h / 2, b));
+        add(inner, mats, new THREE.TorusGeometry(.32, .06, 8, 24), '#5b6170', 1.6, 1.9, .9, [0, -.6, 0]); add(inner, mats, Cy(.05, .05, .6, 8), '#5b6170', 1.85, 1.45, 1.1, [0, 0, .6]);
+      } else if (i === 2) { // konsultasi warga: pendopo
+        add(inner, mats, B(3.4, .16, 3.4), '#c99a6b', .2, .08, .2);
+        [[-1.2, -1.2], [1.2, -1.2], [-1.2, 1.2], [1.2, 1.2]].forEach(([a, b]) => add(inner, mats, B(.14, 1.6, .14), '#8a6440', a, .96, b));
+        const rf = new THREE.ConeGeometry(1.9, .95, 4); rf.rotateY(Math.PI / 4); add(inner, mats, rf, '#7a4b3a', 0, 2.2, 0);
+        [['#2a9d8f', -.5, 1.3], ['#e8692a', .45, 1.35], ['#7c5ce0', 1.3, .45], ['#3a4bd1', 1.35, -.5], ['#d6456a', .9, .9]].forEach(([c, a, b]) => person(inner, mats, c, a, b, true));
+        add(inner, mats, Sph(.2, 12), '#ffffff', .7, 1.05, 1.5); add(inner, mats, Sph(.16, 12), '#ffffff', 1.55, .95, .2);
+      } else if (i === 3) { // anggaran: grafik batang + koin
+        [[.7, '#8f9bff'], [1.2, '#6d8bff'], [1.8, '#3a4bd1']].forEach(([h, c], k) => add(inner, mats, B(.55, h, .55), c, -1.2 + k * .75, h / 2, -.6));
+        for (let k = 0; k < 3; k++) for (let l = 0; l < 3 + k; l++) add(inner, mats, Cy(.28, .28, .1, 18), '#f5b324', .7 + k * .55, .06 + l * .11, .9 - k * .2);
+        add(inner, mats, B(.9, .08, 1.2), '#eef0f5', 1.4, .05, -1.1, [0, .3, 0]);
+      } else { // dibangun: taman + halte
+        add(inner, mats, Cy(2.4, 2.4, .06, 36), '#7cc46b', 0, .04, 0);
+        tree(inner, mats, -1.2, -1, 1.3); tree(inner, mats, 1.3, -1.1, 1.1); tree(inner, mats, -1.5, .7, 1); tree(inner, mats, .1, -1.6, 1.2);
+        add(inner, mats, B(1, .1, .3), '#8a6440', .2, .35, .2); add(inner, mats, B(1, .3, .06), '#8a6440', .2, .5, .05);
+        add(inner, mats, B(.6, .06, 1.3), '#f0772f', 1.4, 1.2, .9); add(inner, mats, B(.06, 1.1, .06), '#e8eaee', 1.2, .6, .4); add(inner, mats, B(.06, 1.1, .06), '#e8eaee', 1.2, .6, 1.4);
+        add(inner, mats, Sph(.16, 10), '#fff3d1', -.4, 1.5, 1.4, null, '#ffd27a'); add(inner, mats, B(.06, 1.4, .06), '#5b6170', -.4, .7, 1.4);
+        person(inner, mats, '#e8692a', -.5, .1); person(inner, mats, '#3a4bd1', .5, -.4);
+      }
+      stations.push({ g, mats, inner, lit: 0 });
+    });
+    const pts = [[-16, 4], [-11, 4], [-11, -4], [-6, -4], [-1, -4], [-1, 4], [3, 4], [7.5, 4], [7.5, -4], [12, -4], [16.5, -4], [16.5, 4], [21, 4]].map(([x, z]) => new THREE.Vector3(x, .3, z));
+    const path = new THREE.CurvePath(); const rad = 1.4; let cp = pts[0].clone();
+    for (let i = 1; i < pts.length - 1; i++) { const p = pts[i], dIn = p.clone().sub(pts[i - 1]).normalize(), dOut = pts[i + 1].clone().sub(p).normalize(); if (dIn.dot(dOut) > .999) continue; const a = p.clone().addScaledVector(dIn, -rad), b = p.clone().addScaledVector(dOut, rad); path.add(new THREE.LineCurve3(cp.clone(), a)); path.add(new THREE.QuadraticBezierCurve3(a, p.clone(), b)); cp = b; }
+    path.add(new THREE.LineCurve3(cp, pts[pts.length - 1].clone()));
+    const TS = 700, RS = 6, baseMat = std('#cfd5e0', .9);
+    scene.add(new THREE.Mesh(new THREE.TubeGeometry(path, TS, .12, RS, false), baseMat));
+    const progTube = new THREE.Mesh(new THREE.TubeGeometry(path, TS, .2, RS, false), new THREE.MeshStandardMaterial({ color: '#f0772f', emissive: '#f0772f', emissiveIntensity: .4, roughness: .5 })); progTube.geometry.setDrawRange(0, 0); scene.add(progTube);
+    SP.forEach(([x, z]) => { const d = new THREE.Mesh(new THREE.CylinderGeometry(.42, .42, .08, 20), std('#f0772f', .6)); d.position.set(x, .05, z); scene.add(d); });
+    // latar: blok kota mini + pohon
+    { const r = rng(29), bm = [std('#e3e6ef', .9), std('#d8dce8', .9), std('#eceef4', .9)], leafA = std('#4f8a45', .9, { flatShading: true }), leafB = std('#6fa257', .9, { flatShading: true }), trunkM = std('#8c6a4f', .9);
+      for (let x = -28; x <= 32; x += 2.6) for (const zb of [-10.5, 11.5]) { const v = r(); if (v < .3) continue; const px = x + (r() - .5) * 1.4, pz = zb + (r() - .5) * 2.4;
+        if (v < .62) { const h = .8 + r() * 2.6, w = 1.2 + r() * .6; const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, w), bm[Math.floor(r() * 3)]); b.position.set(px, h / 2, pz); b.castShadow = b.receiveShadow = true; scene.add(b); }
+        else { const h = .8 + r() * .8; const t = new THREE.Mesh(new THREE.CylinderGeometry(.1, .14, h, 6), trunkM); t.position.set(px, h / 2, pz); t.castShadow = true; scene.add(t); const c = new THREE.Mesh(r() < .5 ? new THREE.ConeGeometry(.7, 1.6, 7) : new THREE.IcosahedronGeometry(.75, 0), r() > .5 ? leafA : leafB); c.position.set(px, h + .6, pz); c.castShadow = true; scene.add(c); } } }
+    const samples = 1200, stationU = SP.map(([x, z]) => { let best = 0, bd = 1e9; for (let s = 0; s <= samples; s++) { const q = path.getPointAt(s / samples); const d = (q.x - x) ** 2 + (q.z - z) ** 2; if (d < bd) { bd = d; best = s / samples; } } return best; });
+    stationU[0] = 0; stationU[stationU.length - 1] = 1;
+    const sinta = makeCitizen(1.5); scene.add(sinta.g); const chr = sinta.g;
+
+    let lastT = 0, targetU = 0, shownU = 0, walkPhase = 0, step = -1, halfW = 10, halfH = 10, aspect = 1; const lastPos = new THREE.Vector3();
+    function mapProgress(p){ const n = SP.length - 1, u = clamp(p, 0, 1) * n, i = Math.min(n - 1, Math.floor(u)), f = u - i, w = smooth(.22, .82, f); return { u: stationU[i] + (stationU[i + 1] - stationU[i]) * w, step: w < .5 ? i : i + 1 }; }
+    function setProgress(p){ const m = mapProgress(p); targetU = m.u; if (m.step !== step) { step = m.step; setStepUI(step); } loop.request(); }
+    function themeColors(){
+      const bg = themeColor('--bg-2'), b3 = themeColor('--line'), dark = isDark();
+      scene.background = new THREE.Color(bg); ground.material.color.set(bg).lerp(new THREE.Color(b3), .2);
+      if (grid) { scene.remove(grid); grid.geometry.dispose(); grid.material.dispose(); }
+      grid = new THREE.GridHelper(160, 80, b3, b3); grid.material.transparent = true; grid.material.opacity = .6; grid.position.y = .01; scene.add(grid);
+      CLAY.set(b3).lerp(new THREE.Color(dark ? '#c9cede' : '#ffffff'), dark ? .3 : .45);
+      baseMat.color.set(b3).lerp(new THREE.Color(dark ? '#ffffff' : '#000000'), .1);
+      hemi.intensity = dark ? .85 : 1.3; sun.intensity = dark ? 1.9 : 2.4;
+      stations.forEach(s => s.lit === 0 && s.mats.forEach(m => m.color.copy(CLAY)));
+      loop.request();
+    }
+    const loop = createLoop(canvas, (dt) => {
+      const still = rmq.matches, now = performance.now(), cdt = Math.min(.12, lastT ? (now - lastT) / 1000 : dt); lastT = now;
+      const k = still ? 1 : 1 - Math.exp(-cdt * 5);
+      shownU += (targetU - shownU) * k; if (Math.abs(targetU - shownU) > 1e-4) loop.request(); else shownU = targetU;
+      const pos = path.getPointAt(clamp(shownU, 0, 1)), tan = path.getTangentAt(clamp(shownU, 0, .9999));
+      const moved = pos.distanceTo(lastPos); lastPos.copy(pos); walkPhase += moved * 3.2;
+      const moving = clamp(moved * 25, 0, 1);
+      chr.position.set(pos.x, Math.abs(Math.sin(walkPhase)) * .08 * moving, pos.z);
+      if (moved > 1e-4) chr.rotation.y = Math.atan2(tan.x, tan.z);
+      const sw = Math.sin(walkPhase) * .7 * moving; sinta.legL.rotation.x = sw; sinta.legR.rotation.x = -sw; sinta.armL.rotation.x = -sw * .8;
+      progTube.geometry.setDrawRange(0, Math.floor(shownU * TS) * RS * 6);
+      stations.forEach((s, i) => { const goal = shownU >= stationU[i] - .004 ? 1 : 0, prev = s.lit; s.lit += (goal - s.lit) * (still ? 1 : Math.min(1, cdt * 4)); if (Math.abs(goal - s.lit) > .002) loop.request(); else s.lit = goal; if (prev !== s.lit) s.mats.forEach(m => { m.color.copy(CLAY).lerp(m.userData.target, s.lit); if (m.userData.emis) m.emissiveIntensity = s.lit * 1.2; }); s.inner.scale.setScalar(.82 + .18 * s.lit); });
+      const desired = new THREE.Vector3(pos.x, 0, pos.z);
+      if (aspect >= .9) desired.addScaledVector(new THREE.Vector3(1, 0, -1).normalize(), -halfW * .3);
+      if (camTarget.lengthSq() === 0) camTarget.copy(desired);
+      camTarget.lerp(desired, still ? 1 : 1 - Math.exp(-cdt * 3.5)); if (camTarget.distanceTo(desired) > .01) loop.request();
+      cam.position.copy(camTarget).addScaledVector(camDir, 60); cam.lookAt(camTarget);
+      sun.position.copy(camTarget).add(new THREE.Vector3(14, 26, 8)); sun.target.position.copy(camTarget);
+      renderer.render(scene, cam);
+    }, () => false);
+    /* Layar sempit: tokoh dibingkai di ruang kosong ANTARA kartu judul dan kartu langkah (diukur dari DOM), frustum ortografis asimetris */
+    const head = stage.querySelector('.story-head'), card = stage.querySelector('#storyCard');
+    let frameY = .5;
+    function applyFrame(){
+      frameY = .5;
+      if (aspect < .9) { const r = stage.getBoundingClientRect(), a = head.getBoundingClientRect().bottom - r.top, b = card.getBoundingClientRect().top - r.top; if (r.height > 0 && b > a) frameY = clamp(((a + b) / 2 + 30) / r.height, .2, .8); }
+      Object.assign(cam, { left: -halfW, right: halfW, top: 2 * halfH * frameY, bottom: -2 * halfH * (1 - frameY) }); cam.updateProjectionMatrix();
+    }
+    watchSize(stage, renderer, (w, h) => { aspect = w / h; halfH = aspect < .9 ? 10.5 : 8.6; halfW = halfH * aspect; applyFrame(); loop.request(); });
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(head);
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(card);
+    if (document.fonts) document.fonts.ready.then(() => { applyFrame(); loop.request(); });
+    themeColors(); bus.addEventListener('theme', () => requestAnimationFrame(themeColors));
+    const v3 = new THREE.Vector3();
+    function chrY(){ v3.copy(chr.position); v3.y += 1.2; v3.project(cam); const r = stage.getBoundingClientRect(); return (1 - (v3.y + 1) / 2) * r.height; }
+    window.__kotaku.storyFrame = () => frameY;
+    return { setProgress, loop, renderer, scene, cam, chr, chrY };
+  }
+  let story = null;
+  try { story = createStory(); } catch (e) { console.warn('Cerita 3D gagal', e); storySec.classList.add('no-webgl'); }
+  window.__kotaku.views = { heroV, simV, story };
+  if (story) { const upd = () => story.setProgress(storyProgress()); addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd(); }
+}
+if (!window.__kotaku.views || !window.__kotaku.views.story) {
+  const nodes = $$('#storySvg .node');
+  const upd = () => { const n = Math.round(storyProgress() * 4); setStepUI(n); nodes.forEach((c, k) => c.classList.toggle('on', k <= n)); };
+  addEventListener('scroll', upd, { passive: true }); upd();
+}
+</script>
+</body>
+</html>
