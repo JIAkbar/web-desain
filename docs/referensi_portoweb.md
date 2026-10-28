@@ -77,16 +77,27 @@ Semua dimuat live dari CDN dengan versi dikunci; tidak ada kode pustaka yang dis
 | Pico CSS | 2.1.1 | MIT | `https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/` | 141-catatku |
 | Ant Design (+ React/ReactDOM 18.3.1 UMD, dayjs 1.11.13) | 5.29.3 | MIT | `https://cdn.jsdelivr.net/npm/antd@5.29.3/dist/antd.min.js` | 142-gudangku |
 | SAP UI5 Web Components (+ fiori) | 2.27.2 | Apache-2.0 | `https://cdn.jsdelivr.net/npm/@ui5/webcomponents@2.27.2/` (modul ES lewat importmap) | 143-pabrikita |
+| Vaadin web components (+ Lumo, lit 3.3.3) | 25.3.3 | Apache-2.0 | `https://cdn.jsdelivr.net/npm/@vaadin/*@25.3.3/` (modul ES lewat importmap) | 144-klinikita |
+| Fomantic-UI (+ jQuery 3.7.1) | 2.9.4 | MIT | `https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.4/dist/` | 145-pasarrakyat |
+| Foundation for Sites (+ jQuery 3.7.1) | 6.9.0 | MIT | `https://cdn.jsdelivr.net/npm/foundation-sites@6.9.0/dist/` | 146-wisatadesa |
+| Tabler (+ Tabler Icons 3.49.0) | 1.6.1 | MIT | `https://cdn.jsdelivr.net/npm/@tabler/core@1.6.1/dist/` | 147-armada |
+| Clarity Core (+ Clarity City 1.1.0, OFL-1.1) | 6.17.0 | MIT | `https://cdn.jsdelivr.net/npm/@cds/core@6.17.0/` (`+esm`) | 148-tenaga |
+| Materialize | 2.4.0 | MIT | `https://cdn.jsdelivr.net/npm/@materializecss/materialize@2.4.0/dist/` | 149-kotaku |
 | GSAP + ScrollTrigger | 3.12.5 | lisensi standar GreenSock (gratis untuk situs) | `https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/` | 130-ruang, 131-rapatin |
 | Google Fonts tambahan | — | OFL | Space Grotesk (pengganti fon mono di 48 template), Roboto, Manrope, IBM Plex Sans, Geist, dan fon isi landing 3D | template |
 
 Fon angka: semua fon di atas bernol polos; Space Grotesk diuji raster 27 Okt 2026 (piksel gelap di tengah nol = 0, JetBrains Mono sebagai kontrol = 504).
+
+### Ditolak: Esri Calcite Design System (28 Okt 2026)
+`@esri/calcite-components@5.2.0` → `"license": "SEE LICENSE.md"`; isinya "All rights reserved… licensed for use under the Esri Master License Agreement (MLA)". Bukan lisensi terbuka untuk template publik → Kotaku memakai Materialize (MIT).
 
 ## Keputusan "tidak diambil" / ganti sumber / jahit
 
 Tidak berlaku — belum pernah ada penggantian sumber, jahitan data, atau ruas yang sengaja dilewatkan di proyek ini. Proyek murni template statis, tidak ada angka/data sensitif yang berasal dari sumber luar.
 
 ## Riwayat
+
+- 2026-10-28 — tambah 6 pustaka design system untuk landing 3D 144–149 (#32 gelombang 4); Esri Calcite ditolak (lisensi tertutup).
 
 - 2026-10-28 — tambah 6 pustaka design system untuk landing 3D 138–143 (#32).
 
