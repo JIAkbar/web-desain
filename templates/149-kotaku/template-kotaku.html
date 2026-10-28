@@ -103,7 +103,7 @@
   .collapsible-body p{padding:0 0 1.1rem}
   .tabs{background:var(--surface);border:1px solid var(--line);border-radius:14px;height:auto;min-height:52px;overflow-x:auto;overflow-y:hidden}
   .tabs .tab{line-height:52px;height:52px;text-transform:none}
-  .tabs .tab a{font-weight:700;color:var(--ink-2);font-size:.98rem;text-overflow:ellipsis;padding:0 18px}
+  .tabs .tab a{padding:0 10px!important;font-weight:700;color:var(--ink-2);font-size:.98rem;text-overflow:ellipsis;padding:0 18px}
   .tabs .tab a.active,.tabs .tab a:hover{color:var(--brand-ink);background:transparent}
   .tabs .indicator{background-color:var(--accent);height:3px}
   .chip{border-radius:999px;font-weight:700;cursor:pointer;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);gap:6px}
@@ -197,6 +197,7 @@
   .seg .btn:hover{background:color-mix(in srgb,var(--brand) 10%,transparent);color:var(--ink)}
   .seg .btn[aria-checked=true]{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary)}
   .seg .btn span{overflow:hidden;text-overflow:ellipsis}
+  @media (max-width:440px){.seg .btn{font-size:.8rem;padding:0 4px;letter-spacing:-.01em}}
   .mini-btn{height:32px!important;padding:0 12px!important;font-size:.82rem!important}
   @media (max-width:900px){.hero-grid{grid-template-columns:minmax(0,1fr)}.hero .stage{height:min(560px,74vh);min-height:450px}}
 
@@ -431,9 +432,9 @@
         <p class="weak">Warga, perencana, dan pimpinan daerah melihat data yang sama. Bedanya hanya apa yang bisa mereka lakukan dengannya.</p>
       </div>
       <ul class="tabs feat-tabs" id="featTabs">
-        <li class="tab"><a href="#t-warga" class="active">Untuk warga</a></li>
-        <li class="tab"><a href="#t-renc">Untuk perencana</a></li>
-        <li class="tab"><a href="#t-pimp">Untuk pimpinan</a></li>
+        <li class="tab"><a href="#t-warga" class="active">Warga</a></li>
+        <li class="tab"><a href="#t-renc">Perencana</a></li>
+        <li class="tab"><a href="#t-pimp">Pimpinan</a></li>
       </ul>
       <div id="t-warga"><div class="cards">
         <div class="card"><div class="card-content"><div class="ico o"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg></div><span class="card-title">Usulan bertitik lokasi</span><p>Foto, tandai di peta, kirim. Usulan langsung masuk antrean kajian dengan nomor lacak.</p></div></div>
@@ -485,9 +486,9 @@
             <div class="scale num" aria-hidden="true"><span>2025</span><span>2030</span><span>2035</span><span>2040</span><span>2045</span></div>
           </div>
           <div>
-            <label class="flabel" for="distSel">Kecamatan</label>
+            <span class="flabel" id="distL">Kecamatan</span>
             <div class="input-field sel">
-            <select id="distSel">
+            <select id="distSel" aria-labelledby="distL">
               <option value="semua" selected>Seluruh Kota Sagara</option>
               <option value="bisnis">Pusat Bisnis Sagara</option>
               <option value="sungai">Kampung Tepi Sungai</option>
@@ -651,7 +652,7 @@
         <div class="input-field outlined"><input id="fName" type="text" placeholder=" " autocomplete="name"><label for="fName">Nama lengkap</label><span class="err" id="eName">Tulis nama lengkapmu</span></div>
         <div class="input-field outlined"><input id="fOrg" type="text" placeholder=" " autocomplete="organization"><label for="fOrg">Instansi / organisasi</label><span class="err" id="eOrg">Tulis nama instansi</span></div>
         <div class="input-field outlined"><input id="fMail" type="email" placeholder=" " autocomplete="email"><label for="fMail">Email kerja</label><span class="err" id="eMail">Masukkan email yang valid</span></div>
-        <div><label class="flabel" for="fSize">Jumlah penduduk</label><div class="input-field sel"><select id="fSize"><option>Di bawah 250 ribu jiwa</option><option selected>250 ribu – 1 juta jiwa</option><option>Di atas 1 juta jiwa</option></select></div></div>
+        <div><span class="flabel" id="sizeL">Jumlah penduduk</span><div class="input-field sel"><select id="fSize" aria-labelledby="sizeL"><option>Di bawah 250 ribu jiwa</option><option selected>250 ribu – 1 juta jiwa</option><option>Di atas 1 juta jiwa</option></select></div></div>
         <label><input type="checkbox" class="filled-in" id="fOk"><span>Saya setuju dihubungi tim Kotaku</span></label>
         <span class="err" id="eOk" style="margin-top:-14px">Centang untuk melanjutkan</span>
         <button class="btn btn-filled" type="submit">Kirim permintaan demo</button>
@@ -743,8 +744,19 @@ if (M) {
   M.Tabs.init($('#featTabs'));
   M.Collapsible.init($('#faqList'), { accordion: true });
   M.FormSelect.init($$('select:not(.browser-default)'));
+  $$('.select-wrapper').forEach(w => { const sel = w.querySelector('select'), inp = w.querySelector('input.select-dropdown'); if (sel && inp && sel.getAttribute('aria-labelledby')) inp.setAttribute('aria-labelledby', sel.getAttribute('aria-labelledby'));
+    const dd = w.querySelector('.dropdown-content'); if (!inp || !dd) return;
+    const place = () => { const r = inp.getBoundingClientRect(), h = Math.min(dd.scrollHeight, 300), below = innerHeight - r.bottom - 8;
+      Object.assign(dd.style, { position: 'fixed', inset: 'auto', margin: '0', left: r.left + 'px', width: r.width + 'px', maxHeight: Math.max(below, r.top - 8, 160) + 'px', top: (below >= h || below >= r.top ? r.bottom + 4 : Math.max(8, r.top - h - 4)) + 'px' }); };
+    dd.addEventListener('toggle', e => { if (e.newState === 'open') place(); });
+    addEventListener('scroll', () => { if (dd.matches(':popover-open')) place(); }, { passive: true }); });
   M.Range.init($$('input[type=range]'));
-  M.Tooltip.init($$('[data-tooltip]'), { enterDelay: 120 });
+  /* tooltip Materialize memakai CSS anchor positioning; posisinya dipastikan dari kotak pemicu agar konsisten di semua mesin render */
+  M.Tooltip.init($$('[data-tooltip]'), { enterDelay: 120 }).forEach(t => {
+    const tip = t.tooltipEl; if (!tip) return;
+    tip.addEventListener('toggle', e => { if (e.newState !== 'open') return; const r = t.el.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
+      Object.assign(tip.style, { position: 'fixed', inset: 'auto', margin: '0', left: clamp(r.left + r.width / 2 - w / 2, 8, innerWidth - w - 8) + 'px', top: (r.top - h - 8 < 4 ? r.bottom + 8 : r.top - h - 8) + 'px' }); });
+  });
   sidenav = M.Sidenav.init($('#mnav'), { edge: 'right' });
   $('.menu-btn').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); const s = M.Sidenav.getInstance($('#mnav')); if (s) s.open(); } });
 }

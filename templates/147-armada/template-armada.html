@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="id" data-bs-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Armada — Pelacakan Truk &amp; Logistik</title>
+<meta name="description" content="Armada: dasbor pelacakan armada truk untuk perusahaan logistik Indonesia. Posisi real-time, status pengiriman, jam istirahat sopir, dan biaya tol dalam satu layar.">
+<meta name="theme-color" content="#f6f8fb">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script>
+  /* mode gelap bawaan Tabler (data-bs-theme) dipasang sebelum render */
+  (function(){var t;try{t=localStorage.getItem('armada-theme')}catch(e){}
+  if(t!=='light'&&t!=='dark'){t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}
+  document.documentElement.setAttribute('data-bs-theme',t);})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Tabler 1.6.1 (MIT) + Tabler Icons webfont 3.49.0 (MIT) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.6.1/dist/css/tabler.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.49.0/dist/tabler-icons.min.css">
+<style>
+  :root,[data-bs-theme]{
+    --tblr-font-sans-serif:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --tblr-body-font-family:var(--tblr-font-sans-serif);
+    /* tanpa font monospace: semua kode memakai Inter */
+    --tblr-font-monospace:var(--tblr-font-sans-serif);
+    --tblr-body-font-size:.9375rem;
+    --ar-orange:#f76707;--ar-orange-soft:color-mix(in oklab,#f76707 14%,transparent);
+    --ar-hero-a:#e9f1fb;--ar-hero-b:#f6f8fb;--ar-sky:#dbe7f3;
+    --ar-shadow:0 30px 70px -36px rgba(20,40,80,.45);
+    --ar-glass:color-mix(in oklab,var(--tblr-bg-surface) 80%,transparent);
+  }
+  [data-bs-theme=dark]{--ar-hero-a:#0e1a2c;--ar-hero-b:#101827;--ar-sky:#16243a;--ar-shadow:0 30px 70px -30px rgba(0,0,0,.85)}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;background:var(--tblr-body-bg)}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  body{overflow-x:clip;font-feature-settings:"cv11" 0,"zero" 0;-webkit-font-smoothing:antialiased;transition:background-color .35s,color .35s}
+  code,kbd,pre,samp{font-family:inherit}
+  .num,.price-v,.kpi-v,.stat-v,.table td.tnum{font-variant-numeric:tabular-nums}
+  section{scroll-margin-top:72px}
+  :focus-visible{outline:2px solid var(--ar-orange);outline-offset:2px}
+  .skip{position:absolute;left:-999px;top:8px;z-index:2000}
+  .skip:focus{left:12px}
+  .display{font-weight:800;letter-spacing:-.035em;line-height:1.04;color:var(--tblr-body-color)}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:.74rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ar-orange)}
+  .eyebrow::before{content:"";width:22px;height:2px;border-radius:2px;background:currentColor}
+  .sec{padding:clamp(72px,10vw,124px) 0}
+  .sec.alt{background:var(--tblr-bg-surface-secondary)}
+  .sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px 48px;align-items:end;margin-bottom:clamp(30px,5vw,52px)}
+  .sec-head h2{font-size:clamp(1.9rem,4vw,3.1rem);margin:12px 0 0}
+  .sec-head p{margin:0;color:var(--tblr-secondary);font-size:1rem}
+  @media (max-width:820px){.sec-head{grid-template-columns:minmax(0,1fr)}}
+  .container-xl{padding-inline:16px}
+
+  /* ---------- Navbar ---------- */
+  .site-nav{position:sticky;top:0;z-index:1030;background:color-mix(in oklab,var(--tblr-bg-surface) 82%,transparent) !important;backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--tblr-border-color)}
+  .site-nav .navbar{min-height:64px;background:transparent;border:0;box-shadow:none}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.12rem;color:var(--tblr-body-color);letter-spacing:-.02em;text-decoration:none}
+  .brand:hover{text-decoration:none;color:var(--tblr-body-color)}
+  .brand svg{width:32px;height:32px;flex:0 0 auto}
+  .brand small{display:block;font-weight:600;font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:var(--tblr-secondary);line-height:1}
+  .nav-tools{display:flex;align-items:center;gap:6px;margin-inline-start:auto}
+  .nav-tools .btn-icon{width:40px;height:40px}
+  .theme-sun{display:none}
+  [data-bs-theme=dark] .theme-sun{display:inline-block}
+  [data-bs-theme=dark] .theme-moon{display:none}
+  @media (max-width:991.98px){
+    .site-nav .navbar-collapse{position:absolute;left:0;right:0;top:100%;background:var(--tblr-bg-surface);border-bottom:1px solid var(--tblr-border-color);box-shadow:0 20px 40px -20px rgba(0,0,0,.35);padding:8px 16px 16px}
+    .site-nav .navbar-nav .nav-link{padding:.7rem .25rem}
+  }
+  @media (max-width:420px){.brand small{display:none}.nav-cta{display:none !important}}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:clamp(24px,5vw,56px) 0 40px;background:radial-gradient(90% 60% at 80% 0%,var(--ar-hero-a),transparent 70%),var(--ar-hero-b);position:relative}
+  .hero::before{content:"";position:absolute;inset:0;background-image:radial-gradient(color-mix(in oklab,var(--tblr-border-color) 90%,transparent) 1px,transparent 1px);background-size:22px 22px;mask-image:linear-gradient(180deg,#000,transparent 85%);-webkit-mask-image:linear-gradient(180deg,#000,transparent 85%);pointer-events:none}
+  .hero-grid{position:relative;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6.4fr);gap:clamp(24px,4vw,56px);align-items:center}
+  .hero h1{font-size:clamp(2.4rem,5.3vw,4.4rem);margin:18px 0}
+  .hero h1 em{font-style:normal;color:var(--ar-orange);background:linear-gradient(transparent 70%,var(--ar-orange-soft) 70%)}
+  .lead{font-size:clamp(1rem,1.3vw,1.14rem);max-width:34em;color:var(--tblr-secondary);line-height:1.65}
+  .hero .btn-list{margin-top:24px}
+  .proof{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:28px;padding-top:22px;border-top:1px solid var(--tblr-border-color)}
+  .proof .stars{color:#f59f00;letter-spacing:1px}
+  .proof small{color:var(--tblr-secondary)}
+  .stage{position:relative;border-radius:22px;overflow:hidden;isolation:isolate;background:linear-gradient(180deg,var(--ar-sky),var(--tblr-bg-surface-secondary));border:1px solid var(--tblr-border-color);box-shadow:var(--ar-shadow)}
+  .stage canvas{display:block;width:100%;height:100%;opacity:0;transition:opacity .8s ease}
+  .stage.ready canvas{opacity:1}
+  .hero .stage{height:clamp(460px,72vh,660px)}
+  .stage .fallback{position:absolute;inset:0;display:none;place-items:center;padding:20px}
+  .stage.no-webgl .fallback{display:grid}
+  .stage.no-webgl canvas{display:none}
+  .stage .fallback svg{width:min(560px,92%);height:auto}
+  .glass{background:var(--ar-glass);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border:1px solid color-mix(in oklab,var(--tblr-border-color) 70%,transparent);color:var(--tblr-body-color)}
+  .stage-top{position:absolute;top:14px;left:14px;right:14px;z-index:2;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;pointer-events:none}
+  .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;font-size:.78rem;font-weight:700;font-variant-numeric:tabular-nums}
+  .stage-panel{position:absolute;left:14px;right:14px;bottom:14px;z-index:2;border-radius:16px;padding:12px 14px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 16px}
+  .lbl{display:block;font-size:.66rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--tblr-secondary);margin-bottom:6px}
+  .stage-panel .form-selectgroup{gap:4px}
+  .stage-panel .form-selectgroup-label{padding:.3rem .65rem;font-size:.8rem}
+  .stage-panel .form-switch{margin:0;min-height:0}
+  @media (max-width:991.98px){.hero-grid{grid-template-columns:minmax(0,1fr)}.hero .stage{height:min(560px,72vh);min-height:430px}}
+
+  /* ---------- Fitur ---------- */
+  .feat .ico{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:var(--tblr-primary-lt);color:var(--tblr-primary);font-size:1.45rem;margin-bottom:16px}
+  .feat h3{font-size:1.08rem;margin-bottom:6px}
+  .feat p{color:var(--tblr-secondary);margin-bottom:14px}
+
+  /* ---------- Ruang kendali ---------- */
+  .ctrl-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;align-items:start}
+  .ctrl-stage{position:sticky;top:80px;height:min(680px,calc(100vh - 100px))}
+  .ctrl-panel{display:grid;gap:16px;min-width:0}
+  .truck-table tbody tr{cursor:pointer}
+  .truck-table tbody tr.is-sel{background:color-mix(in oklab,var(--tblr-primary) 9%,transparent)}
+  .truck-table tbody tr.is-sel td:first-child{box-shadow:inset 3px 0 0 var(--tblr-primary)}
+  .truck-table tbody tr.is-dim{opacity:.45}
+  .truck-table td{white-space:nowrap}
+  .truck-table .plate{font-weight:700;color:var(--tblr-body-color)}
+  .truck-table .drv{font-size:.8rem;color:var(--tblr-secondary)}
+  .datagrid{--tblr-datagrid-item-width:8.5rem;--tblr-datagrid-padding:1rem}
+  .kbars{display:flex;align-items:flex-end;gap:3px;height:42px;margin-top:10px}
+  .kbars span{flex:1 1 0;min-width:0;height:var(--h);border-radius:3px 3px 1px 1px;background:var(--c,var(--tblr-primary));opacity:.85;transition:height .5s ease}
+  .kbars span:last-child{opacity:1}
+  .kpi-v{font-size:1.65rem;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+  .steps{margin:0}
+  @media (max-width:991.98px){
+    .ctrl-grid{grid-template-columns:minmax(0,1fr)}
+    /* di ponsel adegan 3D menempel di atas sementara panel digulir */
+    .ctrl-stage{top:66px;z-index:5;height:min(42vh,360px);min-height:240px}
+  }
+  @media (max-width:575.98px){.truck-table .hide-xs{display:none}.truck-table td,.truck-table th{padding-inline:.5rem}}
+
+  /* ---------- Cerita gulir isometrik ---------- */
+  .story{position:relative;height:520vh;background:var(--tblr-bg-surface-secondary)}
+  .story-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+  .story-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .story-fallback{position:absolute;inset:0;display:none;place-items:center;padding:24px}
+  .story.no-webgl .story-fallback{display:grid}
+  .story.no-webgl canvas{display:none}
+  .story-fallback svg{width:min(900px,100%);height:auto}
+  .story-fallback .node{fill:var(--tblr-bg-surface);stroke:var(--tblr-border-color);stroke-width:2;transition:fill .4s}
+  .story-fallback .node.on{fill:var(--ar-orange)}
+  .story-ui{position:absolute;inset:0;pointer-events:none;padding:88px 0 28px}
+  .story-ui .container-xl{position:relative;height:100%;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+  .story-head{max-width:470px;width:fit-content;background:color-mix(in oklab,var(--tblr-bg-surface-secondary) 84%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid var(--tblr-border-color);border-radius:16px;padding:18px 22px 20px;pointer-events:auto}
+  .story-head h2{font-size:clamp(1.7rem,3.2vw,2.6rem);margin:10px 0 0}
+  .story-head p{margin:8px 0 0;color:var(--tblr-secondary)}
+  .story-card{max-width:450px;pointer-events:auto;background:color-mix(in oklab,var(--tblr-bg-surface) 88%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid var(--tblr-border-color);border-radius:16px;padding:16px 20px 18px;box-shadow:0 20px 50px -30px rgba(20,40,80,.5)}
+  .tlm{position:relative;margin:0 0 10px}
+  .tlm::before{content:"";position:absolute;left:10%;right:10%;top:12px;height:3px;border-radius:3px;background:var(--tblr-border-color)}
+  .tlm .fill{position:absolute;left:10%;top:12px;height:3px;border-radius:3px;background:var(--ar-orange);width:0;transition:width .4s}
+  .timeline-mini{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;list-style:none;margin:0;padding:0;position:relative}
+  .timeline-mini li{display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;font-size:.7rem;font-weight:600;color:var(--tblr-secondary)}
+  .timeline-mini .badge{font-variant-numeric:tabular-nums;background:var(--tblr-bg-surface);border:1px solid var(--tblr-border-color);color:var(--tblr-secondary);transition:background-color .3s,color .3s}
+  .timeline-mini li.on{color:var(--tblr-body-color)}
+  .timeline-mini li.on .badge{background:var(--ar-orange);border-color:var(--ar-orange);color:#fff}
+  .scene-steps{position:relative;min-height:140px;list-style:none;margin:0;padding:0}
+  .scene-step{position:absolute;inset:0 0 auto 0;opacity:0;transform:translateY(14px);transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+  .scene-step.on{opacity:1;transform:none;pointer-events:auto}
+  .scene-step h3{font-size:1.2rem;font-weight:700;margin:2px 0 6px}
+  .scene-step p{font-size:.9rem;color:var(--tblr-secondary);margin:0}
+  .scene-step .tags{margin-top:10px;display:flex;gap:6px;flex-wrap:wrap}
+  @media (max-width:760px){
+    .story-ui{padding:76px 0 14px}
+    .story-head{padding:12px 16px 14px}
+    .story-head h2{font-size:1.4rem}
+    .story-head p{display:none}
+    .story-card{max-width:none;padding:12px 14px 14px}
+    .timeline-mini .tl-lbl{display:none}
+    .scene-steps{min-height:104px}
+    .scene-step h3{font-size:1.05rem}
+    .scene-step p{font-size:.85rem}
+    .scene-step .tags{display:none}
+  }
+
+  /* ---------- Statistik, harga, CTA ---------- */
+  .stat-v{font-size:clamp(1.9rem,3.6vw,2.7rem);font-weight:800;letter-spacing:-.03em;line-height:1.1}
+  .quote{font-size:1rem;line-height:1.65}
+  .price-v{font-size:clamp(1.9rem,3vw,2.4rem);font-weight:800;letter-spacing:-.03em;line-height:1}
+  .plan ul{list-style:none;padding:0;margin:16px 0 22px;display:grid;gap:9px}
+  .plan li{display:flex;gap:10px;align-items:flex-start}
+  .plan li i{color:var(--tblr-green);font-size:1.1rem;margin-top:1px}
+  .plan.hot{border:2px solid var(--tblr-primary)}
+  .cta{border-radius:24px;padding:clamp(26px,6vw,68px);position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:30px;align-items:center;
+    background:radial-gradient(120% 140% at 100% 0%,#2f6fd0 0%,#123a7a 45%,#0b1830 100%);color:#e8eefb}
+  .cta h2{font-size:clamp(1.9rem,4vw,3.1rem);color:#fff;margin:12px 0}
+  .cta .eyebrow{color:#ffb070}
+  .cta p{color:rgba(232,238,251,.82)}
+  .cta form{position:relative;z-index:1}
+  .cta-lanes{position:absolute;right:-40px;bottom:-30px;width:420px;opacity:.22;pointer-events:none}
+  @media (max-width:820px){.cta{grid-template-columns:minmax(0,1fr)}}
+  .site-footer{padding:60px 0 30px;border-top:1px solid var(--tblr-border-color);margin-top:clamp(72px,10vw,120px);background:var(--tblr-bg-surface-secondary)}
+  .site-footer h4{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--tblr-secondary);margin-bottom:12px}
+  .site-footer a{display:block;padding:3px 0;color:var(--tblr-body-color)}
+  .foot-grid{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));gap:28px}
+  .foot-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;border-top:1px solid var(--tblr-border-color);margin-top:40px;padding-top:22px;font-size:.85rem;color:var(--tblr-secondary)}
+  @media (max-width:820px){.foot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.foot-grid > div:first-child{grid-column:span 2}}
+  .toast-container{z-index:1090}
+  .avatar{font-weight:700}
+  .proof .avatar{font-size:.72rem;box-shadow:0 0 0 2px var(--tblr-bg-surface)}
+</style>
+</head>
+<body>
+<a class="skip btn btn-dark btn-sm" href="#main">Lewati ke konten</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo" viewBox="0 0 32 32"><rect x="1" y="1" width="30" height="30" rx="9" fill="currentColor"/><path d="M6 21.5 13 9h6l7 12.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/><path d="M10.5 16.5h11" stroke="#ff9a4d" stroke-width="2.4" stroke-linecap="round"/><path d="M16 9v3M16 19.5v3" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<header class="site-nav">
+  <nav class="navbar navbar-expand-lg" aria-label="Navigasi utama">
+    <div class="container-xl">
+      <a class="brand me-3" href="#top" aria-label="Armada, ke atas">
+        <svg style="color:var(--tblr-primary)"><use href="#logo"/></svg>
+        <span>Armada<small>Fleet · Logistik</small></span>
+      </a>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="#fitur">Fitur</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#kendali" data-bs-toggle="dropdown" data-bs-auto-close="true" role="button" aria-expanded="false">Solusi</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="#kendali"><i class="ti ti-map-2 me-2" aria-hidden="true"></i>Ruang kendali 3D</a>
+              <a class="dropdown-item" href="#perjalanan"><i class="ti ti-route me-2" aria-hidden="true"></i>Perjalanan kiriman</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#harga"><i class="ti ti-report-analytics me-2" aria-hidden="true"></i>Laporan biaya tol &amp; BBM</a>
+            </div>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="#perjalanan">Perjalanan</a></li>
+          <li class="nav-item"><a class="nav-link" href="#harga">Harga</a></li>
+          <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="nav-tools">
+        <button class="btn btn-ghost-secondary btn-icon" type="button" data-theme-toggle aria-label="Ganti mode terang/gelap" aria-pressed="false">
+          <i class="ti ti-moon theme-moon fs-2" aria-hidden="true"></i><i class="ti ti-sun theme-sun fs-2" aria-hidden="true"></i>
+        </button>
+        <button class="btn btn-primary nav-cta d-none d-sm-inline-flex" type="button" data-bs-toggle="modal" data-bs-target="#trialModal">Coba gratis</button>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Buka menu"><span class="navbar-toggler-icon"></span></button>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main id="main">
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="container-xl hero-grid">
+      <div>
+        <span class="badge bg-orange-lt"><span class="status-dot status-dot-animated status-orange me-1"></span>Langsung · 1.284 truk terlacak sekarang</span>
+        <h1 class="display">Setiap truk, setiap tol, <em>terlihat</em> dari satu layar.</h1>
+        <p class="lead">Armada memantau posisi, kecepatan, jam istirahat sopir, dan biaya tol seluruh truk Anda secara real-time. Kirim ETA otomatis ke pelanggan dan kurangi keterlambatan hingga 31%.</p>
+        <div class="btn-list">
+          <button class="btn btn-primary btn-lg" type="button" data-bs-toggle="modal" data-bs-target="#trialModal"><i class="ti ti-player-play me-1" aria-hidden="true"></i>Coba gratis 14 hari</button>
+          <a class="btn btn-outline-secondary btn-lg" href="#kendali">Lihat ruang kendali 3D</a>
+        </div>
+        <div class="proof">
+          <div class="avatar-list avatar-list-stacked">
+            <span class="avatar rounded-circle bg-blue text-white">DK</span><span class="avatar rounded-circle bg-orange text-white">SR</span><span class="avatar rounded-circle bg-green text-white">AW</span><span class="avatar rounded-circle bg-purple text-white">MT</span><span class="avatar rounded-circle">+4rb</span>
+          </div>
+          <div><div class="stars" aria-label="Rating 4,8 dari 5">★★★★★</div><small>4.900 sopir &amp; 380 perusahaan logistik</small></div>
+        </div>
+      </div>
+      <div class="stage" id="heroStage">
+        <canvas id="heroCanvas" role="img" aria-label="Model 3D isometrik simpang susun jalan tol: truk bergerak di lajur oranye, gerbang tol, jalan layang, dan rest area; status dan mode malam dapat diatur"></canvas>
+        <div class="fallback" aria-hidden="true"></div>
+        <div class="stage-top">
+          <span class="chip glass"><span class="status-dot status-dot-animated status-green"></span><span id="heroChip">8 truk di jalan · 2 istirahat</span></span>
+          <span class="chip glass num" id="heroClock">Siang · lalu lintas sedang</span>
+        </div>
+        <div class="stage-panel glass">
+          <div>
+            <span class="lbl" id="heroFilterLbl">Status</span>
+            <div class="form-selectgroup" role="radiogroup" aria-labelledby="heroFilterLbl">
+              <label class="form-selectgroup-item"><input type="radio" name="heroFilter" value="semua" class="form-selectgroup-input" data-filter checked><span class="form-selectgroup-label">Semua</span></label>
+              <label class="form-selectgroup-item"><input type="radio" name="heroFilter" value="jalan" class="form-selectgroup-input" data-filter><span class="form-selectgroup-label">Jalan</span></label>
+              <label class="form-selectgroup-item"><input type="radio" name="heroFilter" value="istirahat" class="form-selectgroup-input" data-filter><span class="form-selectgroup-label">Istirahat</span></label>
+              <label class="form-selectgroup-item"><input type="radio" name="heroFilter" value="terlambat" class="form-selectgroup-input" data-filter><span class="form-selectgroup-label">Terlambat</span></label>
+            </div>
+          </div>
+          <label class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" data-night>
+            <span class="form-check-label fw-bold">Malam</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FITUR -->
+  <section class="sec" id="fitur">
+    <div class="container-xl">
+      <div class="sec-head">
+        <div><span class="eyebrow">Fitur utama</span><h2 class="display">Dari gudang muat sampai tanda tangan penerima.</h2></div>
+        <p>GPS tracker, aplikasi sopir, dan integrasi kartu tol bekerja bersama. Dispatcher tidak perlu lagi menelepon sopir satu per satu untuk menanyakan posisi.</p>
+      </div>
+      <div class="row row-cards">
+        <div class="col-sm-6 col-lg-3"><div class="card feat h-100"><div class="card-body">
+          <div class="ico"><i class="ti ti-map-pin" aria-hidden="true"></i></div>
+          <h3>Posisi real-time</h3><p>Pembaruan tiap 10 detik, tetap tercatat saat sinyal hilang di jalur pegunungan.</p>
+          <span class="badge bg-green-lt">Akurasi 5 m</span>
+        </div></div></div>
+        <div class="col-sm-6 col-lg-3"><div class="card feat h-100"><div class="card-body">
+          <div class="ico"><i class="ti ti-clock" aria-hidden="true"></i></div>
+          <h3>ETA otomatis</h3><p>Pelanggan menerima tautan pelacakan dan perkiraan tiba yang dihitung dari lalu lintas tol.</p>
+          <span class="badge bg-blue-lt">WhatsApp &amp; email</span>
+        </div></div></div>
+        <div class="col-sm-6 col-lg-3"><div class="card feat h-100"><div class="card-body">
+          <div class="ico"><i class="ti ti-steering-wheel" aria-hidden="true"></i></div>
+          <h3>Jam kerja sopir</h3><p>Pengingat istirahat setiap 4 jam mengemudi dan skor keselamatan dari pengereman mendadak.</p>
+          <span class="badge bg-orange-lt">Lebih aman</span>
+        </div></div></div>
+        <div class="col-sm-6 col-lg-3"><div class="card feat h-100"><div class="card-body">
+          <div class="ico"><i class="ti ti-gas-station" aria-hidden="true"></i></div>
+          <h3>Biaya tol &amp; BBM</h3><p>Transaksi kartu tol dan pengisian BBM tercocokkan otomatis ke setiap surat jalan.</p>
+          <span class="badge bg-purple-lt">Laporan per rute</span>
+        </div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RUANG KENDALI 3D -->
+  <section class="sec alt" id="kendali">
+    <div class="container-xl">
+      <div class="sec-head">
+        <div><span class="eyebrow">Ruang kendali 3D</span><h2 class="display">Pilih truk, kamera mengikutinya.</h2></div>
+        <p>Setiap kontrol di panel ini adalah komponen Tabler asli yang menggerakkan adegan three.js: baris tabel memilih truk yang diikuti kamera, form-selectgroup meredupkan truk menurut status, slider mengatur kepadatan lalu lintas, dan sakelar menyalakan mode malam.</p>
+      </div>
+      <div class="ctrl-grid">
+        <div class="stage ctrl-stage" id="cfgStage">
+          <canvas id="cfgCanvas" role="img" aria-label="Simpang susun tol 3D interaktif; kamera mengikuti truk yang dipilih di tabel"></canvas>
+          <div class="fallback" aria-hidden="true"></div>
+          <div class="stage-top"><span class="chip glass" id="cfgChip"><i class="ti ti-eye" aria-hidden="true"></i>Seluruh simpang</span><span class="chip glass num" id="cfgClock">Siang · 45%</span></div>
+        </div>
+        <div class="ctrl-panel">
+          <div class="card">
+            <div class="card-header">
+              <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs" role="tablist">
+                <li class="nav-item" role="presentation"><a href="#tabTruk" class="nav-link active" data-bs-toggle="tab" aria-selected="true" role="tab"><i class="ti ti-truck me-1" aria-hidden="true"></i>Armada</a></li>
+                <li class="nav-item" role="presentation"><a href="#tabLalin" class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab" tabindex="-1"><i class="ti ti-adjustments me-1" aria-hidden="true"></i>Lalu lintas</a></li>
+              </ul>
+            </div>
+            <div class="tab-content">
+              <div class="tab-pane active show" id="tabTruk" role="tabpanel">
+                <div class="card-body pb-2">
+                  <span class="lbl" id="filterLbl">Saring status</span>
+                  <div class="form-selectgroup form-selectgroup-pills" role="radiogroup" aria-labelledby="filterLbl">
+                    <label class="form-selectgroup-item"><input type="radio" name="cfgFilter" value="semua" class="form-selectgroup-input" data-filter checked><span class="form-selectgroup-label">Semua <span class="badge bg-secondary-lt ms-1 num" data-count-of="semua">10</span></span></label>
+                    <label class="form-selectgroup-item"><input type="radio" name="cfgFilter" value="jalan" class="form-selectgroup-input" data-filter><span class="form-selectgroup-label"><span class="status-dot status-green me-1"></span>Jalan</span></label>
+                    <label class="form-selectgroup-item"><input type="radio" name="cfgFilter" value="istirahat" class="form-selectgroup-input" data-filter><span class="form-selectgroup-label"><span class="status-dot status-yellow me-1"></span>Istirahat</span></label>
+                    <label class="form-selectgroup-item"><input type="radio" name="cfgFilter" value="terlambat" class="form-selectgroup-input" data-filter><span class="form-selectgroup-label"><span class="status-dot status-red me-1"></span>Terlambat</span></label>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-vcenter card-table truck-table" aria-label="Daftar truk; pilih satu untuk diikuti kamera">
+                    <thead><tr><th class="w-1"><span class="visually-hidden">Pilih</span></th><th>Truk</th><th>Status</th><th class="hide-xs text-end">Km/j</th></tr></thead>
+                    <tbody id="truckRows"></tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="tab-pane" id="tabLalin" role="tabpanel">
+                <div class="card-body d-grid gap-3">
+                  <div>
+                    <div class="d-flex justify-content-between"><label class="form-label mb-1" for="density">Kepadatan lalu lintas</label><b class="num" id="densityV">45%</b></div>
+                    <input type="range" class="form-range" id="density" min="0" max="100" step="5" value="45" aria-describedby="densityHint">
+                    <small class="text-secondary" id="densityHint">Menambah mobil pribadi di jalan tol. ETA dan kecepatan rata-rata ikut berubah.</small>
+                  </div>
+                  <label class="form-check form-switch m-0">
+                    <input class="form-check-input" type="checkbox" id="nightSw" data-night>
+                    <span class="form-check-label">Mode malam (lampu jalan &amp; lampu truk)</span>
+                  </label>
+                  <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                    <span class="text-secondary">Sudut kamera</span>
+                    <div class="dropdown">
+                      <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="angleBtn"><i class="ti ti-camera me-1" aria-hidden="true"></i><span id="angleLbl">Timur</span></button>
+                      <div class="dropdown-menu dropdown-menu-end" aria-labelledby="angleBtn">
+                        <button class="dropdown-item active" type="button" data-angle="timur">Sudut timur</button>
+                        <button class="dropdown-item" type="button" data-angle="barat">Sudut barat</button>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item" type="button" data-angle="atas">Tampak atas</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="alert alert-info m-0" role="status"><div class="d-flex gap-2"><i class="ti ti-alert-triangle" aria-hidden="true"></i><div id="lalinNote">Lalu lintas sedang. Rata-rata truk melaju 62 km/j di ruas ini.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" id="detailCard">
+            <div class="card-header"><h3 class="card-title" id="detTitle">Pilih truk di tabel</h3><div class="card-actions"><button class="btn btn-sm" type="button" id="unfollow" disabled>Lepas kamera</button></div></div>
+            <div class="card-body">
+              <div class="datagrid">
+                <div class="datagrid-item"><div class="datagrid-title">Sopir</div><div class="datagrid-content" id="dDriver">—</div></div>
+                <div class="datagrid-item"><div class="datagrid-title">Muatan</div><div class="datagrid-content" id="dCargo">—</div></div>
+                <div class="datagrid-item"><div class="datagrid-title">Rute</div><div class="datagrid-content" id="dRoute">—</div></div>
+                <div class="datagrid-item"><div class="datagrid-title">ETA</div><div class="datagrid-content num" id="dEta">—</div></div>
+              </div>
+              <div class="mt-3">
+                <div class="d-flex justify-content-between mb-1 small"><span class="text-secondary">Progres perjalanan</span><b class="num" id="dProgV">0%</b></div>
+                <div class="progress progress-sm"><div class="progress-bar bg-orange" id="dProg" style="width:0%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Progres perjalanan"></div></div>
+              </div>
+              <ul class="steps steps-counter steps-orange mt-4 mb-0" id="dSteps" aria-label="Tahap pengiriman">
+                <li class="step-item">Muat</li><li class="step-item">Berangkat</li><li class="step-item">Tol</li><li class="step-item">Istirahat</li><li class="step-item">Bongkar</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI dengan batang mirip sparkline (CSS) -->
+      <div class="row row-cards mt-3" id="kpis">
+        <div class="col-6 col-lg-3"><div class="card card-sm"><div class="card-body"><div class="subheader">Truk aktif</div><div class="kpi-v num" id="kActive">10</div><div class="kbars" data-bars="k1" style="--c:var(--tblr-primary)"></div></div></div></div>
+        <div class="col-6 col-lg-3"><div class="card card-sm"><div class="card-body"><div class="subheader">Kecepatan rata-rata</div><div class="kpi-v num" id="kSpeed">62 km/j</div><div class="kbars" data-bars="k2" style="--c:var(--tblr-green)"></div></div></div></div>
+        <div class="col-6 col-lg-3"><div class="card card-sm"><div class="card-body"><div class="subheader">Tepat waktu</div><div class="kpi-v num" id="kOntime">93%</div><div class="kbars" data-bars="k3" style="--c:var(--ar-orange)"></div></div></div></div>
+        <div class="col-6 col-lg-3"><div class="card card-sm"><div class="card-body"><div class="subheader">Konsumsi BBM</div><div class="kpi-v num" id="kFuel">3,1 km/L</div><div class="kbars" data-bars="k4" style="--c:var(--tblr-purple)"></div></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERITA: PERJALANAN KIRIMAN -->
+  <section class="story" id="perjalanan" aria-label="Perjalanan satu kiriman bersama Armada">
+    <div class="story-stage">
+      <canvas id="storyCanvas" role="img" aria-label="Peta isometrik perjalanan kiriman: truk bergerak mengikuti jalur oranye dari gudang muat, gerbang depo, gerbang tol, rest area, hingga gudang bongkar saat halaman digulir"></canvas>
+      <div class="story-fallback" aria-hidden="true">
+        <svg viewBox="0 0 900 360" id="storySvg">
+          <path d="M80 250 L250 130 L450 250 L650 130 L820 250" fill="none" stroke="#f76707" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="14 12"/>
+          <g><circle class="node on" cx="80" cy="250" r="34"/><circle class="node" cx="250" cy="130" r="34"/><circle class="node" cx="450" cy="250" r="34"/><circle class="node" cx="650" cy="130" r="34"/><circle class="node" cx="820" cy="250" r="34"/></g>
+        </svg>
+      </div>
+      <div class="story-ui">
+        <div class="container-xl">
+          <div class="story-head">
+            <span class="eyebrow">Satu kiriman, lima titik</span>
+            <h2 class="display">Ikuti B 9123 UXT dari muat sampai bongkar.</h2>
+            <p>Gulir untuk melihat data yang dicatat Armada di setiap tahap.</p>
+          </div>
+          <div class="story-card" id="storyCard">
+            <div class="tlm" aria-hidden="true"><span class="fill" id="tlFill"></span>
+            <ol class="timeline-mini" id="tlMini">
+              <li class="on"><span class="badge">05.40</span><span class="tl-lbl">Muat</span></li>
+              <li><span class="badge">06.15</span><span class="tl-lbl">Berangkat</span></li>
+              <li><span class="badge">07.02</span><span class="tl-lbl">Tol</span></li>
+              <li><span class="badge">10.30</span><span class="tl-lbl">Istirahat</span></li>
+              <li><span class="badge">14.20</span><span class="tl-lbl">Bongkar</span></li>
+            </ol></div>
+            <ol class="scene-steps" aria-live="polite">
+              <li class="scene-step on"><h3>Muat di gudang Cikarang</h3><p>24 palet semen difoto dan dipindai. Berat muatan dan nomor segel tercatat di surat jalan digital.</p><div class="tags"><span class="badge bg-green-lt">Surat jalan digital</span><span class="badge bg-secondary-lt">Foto muatan</span></div></li>
+              <li class="scene-step"><h3>Berangkat dari depo</h3><p>Sopir memulai trip di aplikasi. Pelanggan menerima tautan pelacakan dan ETA pertama.</p><div class="tags"><span class="badge bg-blue-lt">Tautan pelacakan</span></div></li>
+              <li class="scene-step"><h3>Masuk tol</h3><p>Transaksi kartu tol tercocokkan otomatis. Kecepatan dipantau; peringatan muncul di atas 80 km/j.</p><div class="tags"><span class="badge bg-orange-lt">Biaya tol otomatis</span></div></li>
+              <li class="scene-step"><h3>Istirahat wajib</h3><p>Setelah 4 jam mengemudi, aplikasi mengingatkan sopir berhenti di rest area. ETA diperbarui sendiri.</p><div class="tags"><span class="badge bg-yellow-lt">Jam kerja sopir</span></div></li>
+              <li class="scene-step"><h3>Bongkar &amp; tanda tangan</h3><p>Penerima di Semarang menandatangani di ponsel sopir. Bukti kirim dan biaya trip langsung masuk laporan.</p><div class="tags"><span class="badge bg-green-lt">e-POD</span><span class="badge bg-purple-lt">Laporan trip</span></div></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATISTIK + TESTIMONI -->
+  <section class="sec" id="testimoni">
+    <div class="container-xl">
+      <div class="row row-cards mb-4" id="stats">
+        <div class="col-6 col-lg-3"><div class="card"><div class="card-body text-center"><div class="stat-v num" data-count="1284">0</div><div class="text-secondary">Truk terlacak</div></div></div></div>
+        <div class="col-6 col-lg-3"><div class="card"><div class="card-body text-center"><div class="stat-v num" data-count="31" data-suffix="%">0</div><div class="text-secondary">Keterlambatan turun</div></div></div></div>
+        <div class="col-6 col-lg-3"><div class="card"><div class="card-body text-center"><div class="stat-v num" data-count="18" data-prefix="Rp " data-suffix=" jt">0</div><div class="text-secondary">Hemat BBM / truk / tahun</div></div></div></div>
+        <div class="col-6 col-lg-3"><div class="card"><div class="card-body text-center"><div class="stat-v num">4,8</div><div class="text-secondary">Rating aplikasi sopir</div></div></div></div>
+      </div>
+      <div class="sec-head">
+        <div><span class="eyebrow">Kata pengguna</span><h2 class="display">Dispatcher tidur lebih nyenyak.</h2></div>
+        <p>Dari armada 12 truk di Medan sampai 400 truk antarpulau, Armada dipakai setiap hari oleh tim operasional.</p>
+      </div>
+      <div class="row row-cards">
+        <div class="col-lg-4"><div class="card h-100"><div class="card-body d-flex flex-column">
+          <div class="text-warning mb-2" aria-label="5 dari 5">★★★★★</div>
+          <p class="quote">“Dulu kami menelepon 60 sopir setiap pagi. Sekarang satu layar cukup, dan pelanggan berhenti menanyakan posisi barangnya.”</p>
+          <div class="d-flex align-items-center gap-3 mt-auto"><span class="avatar bg-blue-lt">HS</span><div><div class="fw-bold">Hendra Saputra</div><div class="text-secondary small">Kepala operasional, ekspedisi di Bekasi</div></div></div>
+        </div></div></div>
+        <div class="col-lg-4"><div class="card h-100"><div class="card-body d-flex flex-column">
+          <div class="text-warning mb-2" aria-label="5 dari 5">★★★★★</div>
+          <p class="quote">“Laporan tol dan BBM per rute membuka mata kami. Dua rute ternyata rugi, dan kami ubah dalam seminggu.”</p>
+          <div class="d-flex align-items-center gap-3 mt-auto"><span class="avatar bg-orange-lt">LW</span><div><div class="fw-bold">Lestari Wulandari</div><div class="text-secondary small">Direktur keuangan, distributor di Surabaya</div></div></div>
+        </div></div></div>
+        <div class="col-lg-4"><div class="card h-100"><div class="card-body d-flex flex-column">
+          <div class="text-warning mb-2" aria-label="4 dari 5">★★★★☆</div>
+          <p class="quote">“Pengingat istirahatnya membuat sopir kami lebih segar. Klaim kecelakaan turun sejak tahun lalu.”</p>
+          <div class="d-flex align-items-center gap-3 mt-auto"><span class="avatar bg-green-lt">YP</span><div><div class="fw-bold">Yohanes Pardede</div><div class="text-secondary small">Manajer armada, logistik di Medan</div></div></div>
+        </div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HARGA -->
+  <section class="sec alt" id="harga">
+    <div class="container-xl">
+      <div class="sec-head">
+        <div><span class="eyebrow">Harga</span><h2 class="display">Bayar per truk, bukan per pengguna.</h2></div>
+        <p>Semua paket termasuk aplikasi sopir dan dispatcher tanpa batas. Perangkat GPS bisa disewa atau dibeli.</p>
+      </div>
+      <div class="d-flex justify-content-center mb-4">
+        <div class="form-selectgroup" role="radiogroup" aria-label="Periode tagihan">
+          <label class="form-selectgroup-item"><input type="radio" name="billing" value="1" class="form-selectgroup-input" checked><span class="form-selectgroup-label">Bulanan</span></label>
+          <label class="form-selectgroup-item"><input type="radio" name="billing" value="12" class="form-selectgroup-input"><span class="form-selectgroup-label">Tahunan <span class="badge bg-green-lt ms-1">−15%</span></span></label>
+        </div>
+      </div>
+      <div class="row row-cards">
+        <div class="col-md-4"><div class="card plan h-100"><div class="card-body d-flex flex-column">
+          <div class="subheader">Mulai</div><h3 class="h2 mb-1">Dasar</h3><p class="text-secondary mb-3">Untuk armada hingga 15 truk.</p>
+          <div><span class="price-v" data-price="89000">Rp 89.000</span> <span class="text-secondary">/ truk / bulan</span></div>
+          <ul><li><i class="ti ti-check" aria-hidden="true"></i>Pelacakan real-time</li><li><i class="ti ti-check" aria-hidden="true"></i>Aplikasi sopir</li><li><i class="ti ti-check" aria-hidden="true"></i>Riwayat perjalanan 90 hari</li></ul>
+          <button class="btn btn-outline-primary w-100 mt-auto" type="button" data-bs-toggle="modal" data-bs-target="#trialModal" data-plan="Dasar">Mulai dengan Dasar</button>
+        </div></div></div>
+        <div class="col-md-4"><div class="card plan hot h-100"><div class="ribbon ribbon-top bg-orange"><i class="ti ti-star" aria-hidden="true"></i><span class="visually-hidden">Paling populer</span></div><div class="card-body d-flex flex-column">
+          <div class="subheader text-orange">Paling populer</div><h3 class="h2 mb-1">Operasional</h3><p class="text-secondary mb-3">Untuk ekspedisi yang tumbuh.</p>
+          <div><span class="price-v" data-price="149000">Rp 149.000</span> <span class="text-secondary">/ truk / bulan</span></div>
+          <ul><li><i class="ti ti-check" aria-hidden="true"></i>Semua fitur Dasar</li><li><i class="ti ti-check" aria-hidden="true"></i>ETA otomatis ke pelanggan</li><li><i class="ti ti-check" aria-hidden="true"></i>Integrasi kartu tol &amp; BBM</li><li><i class="ti ti-check" aria-hidden="true"></i>Skor keselamatan sopir</li></ul>
+          <button class="btn btn-primary w-100 mt-auto" type="button" data-bs-toggle="modal" data-bs-target="#trialModal" data-plan="Operasional">Coba Operasional</button>
+        </div></div></div>
+        <div class="col-md-4"><div class="card plan h-100"><div class="card-body d-flex flex-column">
+          <div class="subheader">Skala besar</div><h3 class="h2 mb-1">Korporasi</h3><p class="text-secondary mb-3">Lebih dari 200 truk atau multi-cabang.</p>
+          <div><span class="price-v">Kustom</span></div>
+          <ul><li><i class="ti ti-check" aria-hidden="true"></i>API &amp; integrasi ERP</li><li><i class="ti ti-check" aria-hidden="true"></i>Server data di Indonesia</li><li><i class="ti ti-check" aria-hidden="true"></i>Manajer akun khusus</li></ul>
+          <button class="btn btn-outline-primary w-100 mt-auto" type="button" data-bs-toggle="modal" data-bs-target="#trialModal" data-plan="Korporasi">Hubungi tim penjualan</button>
+        </div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec" id="faq">
+    <div class="container-xl">
+      <div class="sec-head">
+        <div><span class="eyebrow">FAQ</span><h2 class="display">Pertanyaan yang sering muncul.</h2></div>
+        <p>Tim dukungan kami siaga 24 jam karena truk Anda juga berjalan 24 jam.</p>
+      </div>
+      <div class="accordion" id="faqAcc">
+        <div class="accordion-item">
+          <h3 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#f1" aria-expanded="true" aria-controls="f1">Apakah perlu memasang alat GPS di setiap truk?</button></h3>
+          <div id="f1" class="accordion-collapse collapse show" data-bs-parent="#faqAcc"><div class="accordion-body">Bisa memakai alat GPS kami (dipasang dalam 30 menit), alat GPS yang sudah Anda miliki, atau cukup aplikasi sopir di ponsel untuk armada kecil.</div></div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#f2" aria-expanded="false" aria-controls="f2">Bagaimana jika sinyal hilang di jalur pegunungan?</button></h3>
+          <div id="f2" class="accordion-collapse collapse" data-bs-parent="#faqAcc"><div class="accordion-body">Alat menyimpan posisi hingga 72 jam dan mengirim ulang begitu sinyal kembali, sehingga riwayat rute tetap lengkap.</div></div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#f3" aria-expanded="false" aria-controls="f3">Apakah data kami aman?</button></h3>
+          <div id="f3" class="accordion-collapse collapse" data-bs-parent="#faqAcc"><div class="accordion-body">Data disimpan di pusat data di Indonesia, terenkripsi, dan hanya bisa dilihat pengguna yang Anda undang. Ekspor penuh tersedia kapan saja.</div></div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#f4" aria-expanded="false" aria-controls="f4">Bisakah pelanggan kami ikut melacak?</button></h3>
+          <div id="f4" class="accordion-collapse collapse" data-bs-parent="#faqAcc"><div class="accordion-body">Ya. Setiap surat jalan punya tautan pelacakan publik dengan logo perusahaan Anda, berlaku sampai barang diterima.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="kontak">
+    <div class="container-xl">
+      <div class="cta">
+        <svg class="cta-lanes" viewBox="0 0 200 120" aria-hidden="true"><path d="M0 100 C60 100 80 20 200 20M0 70 C70 70 90 -10 200 -10" fill="none" stroke="#ff9a4d" stroke-width="5" stroke-linecap="round" stroke-dasharray="12 10"/></svg>
+        <div>
+          <span class="eyebrow">Demo 20 menit</span>
+          <h2>Lihat truk Anda sendiri di peta besok pagi.</h2>
+          <p>Kami pasang satu alat gratis di truk pilihan Anda dan memandu tim dispatcher selama minggu pertama.</p>
+        </div>
+        <form class="card" id="ctaForm" novalidate aria-label="Minta demo">
+          <div class="card-body">
+            <div class="mb-3"><label class="form-label required" for="cCompany">Nama perusahaan</label><input class="form-control" id="cCompany" name="company" required placeholder="PT Contoh Logistik"><div class="invalid-feedback">Nama perusahaan wajib diisi.</div></div>
+            <div class="mb-3"><label class="form-label required" for="cMail">Email kerja</label><input class="form-control" id="cMail" name="email" type="email" required placeholder="nama@perusahaan.co.id" autocomplete="email"><div class="invalid-feedback">Masukkan email yang valid.</div></div>
+            <button class="btn btn-primary w-100" type="submit">Jadwalkan demo</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container-xl">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="#top" aria-label="Armada, ke atas"><svg style="color:var(--tblr-primary)"><use href="#logo"/></svg><span>Armada</span></a>
+        <p class="text-secondary mt-3" style="max-width:30em">Dasbor pelacakan armada dan logistik untuk perusahaan truk Indonesia. Merek fiktif untuk keperluan templat.</p>
+      </div>
+      <div><h4>Produk</h4><a href="#kendali">Ruang kendali</a><a href="#perjalanan">Aplikasi sopir</a><a href="#harga">Harga</a></div>
+      <div><h4>Perusahaan</h4><a href="#testimoni">Pelanggan</a><a href="#faq">Bantuan</a><a href="#kontak">Kontak</a></div>
+      <div><h4>Kontak</h4><a href="#kontak">halo@armada.example</a><a href="#kontak">0800-1000-2026</a></div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 Armada. Semua hak dilindungi.</span><span>Dibangun dengan Tabler + three.js</span></div>
+  </div>
+</footer>
+
+<!-- Modal + form -->
+<div class="modal modal-blur fade" id="trialModal" tabindex="-1" aria-labelledby="trialTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <form class="modal-content" id="trialForm" novalidate>
+      <div class="modal-header"><h2 class="modal-title h3" id="trialTitle">Coba Armada gratis 14 hari</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button></div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-sm-6"><label class="form-label required" for="tName">Nama</label><input class="form-control" id="tName" name="nama" required autocomplete="name" placeholder="Rina Hapsari"><div class="invalid-feedback">Nama wajib diisi.</div></div>
+          <div class="col-sm-6"><label class="form-label required" for="tPhone">No. WhatsApp</label><input class="form-control" id="tPhone" name="wa" type="tel" required pattern="^(\+62|0)[0-9 -]{8,14}$" autocomplete="tel" placeholder="0812 3456 7890"><div class="invalid-feedback">Gunakan format 08xx atau +62.</div></div>
+          <div class="col-12"><label class="form-label required" for="tMail">Email kerja</label><input class="form-control" id="tMail" name="email" type="email" required autocomplete="email" placeholder="rina@perusahaan.co.id"><div class="invalid-feedback">Masukkan email yang valid.</div></div>
+          <div class="col-sm-6"><label class="form-label" for="tFleet">Jumlah truk</label><select class="form-select" id="tFleet" name="armada"><option>1–15 truk</option><option selected>16–60 truk</option><option>61–200 truk</option><option>Lebih dari 200</option></select></div>
+          <div class="col-sm-6"><label class="form-label" for="tPlan">Paket</label><select class="form-select" id="tPlan" name="paket"><option>Dasar</option><option selected>Operasional</option><option>Korporasi</option></select></div>
+          <div class="col-12"><label class="form-check"><input class="form-check-input" type="checkbox" id="tAgree" required><span class="form-check-label">Saya setuju dihubungi tim Armada terkait uji coba.</span><span class="invalid-feedback">Centang untuk melanjutkan.</span></label></div>
+        </div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-link link-secondary me-auto" data-bs-dismiss="modal">Batal</button><button type="submit" class="btn btn-primary">Mulai uji coba</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true" data-bs-delay="5000">
+    <div class="toast-header"><span class="avatar avatar-xs me-2 bg-primary text-white"><i class="ti ti-truck" aria-hidden="true"></i></span><strong class="me-auto">Armada</strong><small class="text-secondary">baru saja</small><button type="button" class="ms-2 btn-close" data-bs-dismiss="toast" aria-label="Tutup"></button></div>
+    <div class="toast-body" id="toastBody">Tersimpan.</div>
+  </div>
+</div>
+
+<template id="tollFallback">
+  <svg viewBox="0 0 400 300" role="presentation">
+    <path d="M200 40 380 140 200 240 20 140z" fill="#a8c98a"/><path d="M20 140v20l180 100v-20zM380 140v20L200 260v-20z" fill="#8a7a62"/>
+    <path d="M60 118 260 228l30-17L90 101z" fill="#4b5563"/><path d="M75 110 275 220" stroke="#f76707" stroke-width="3" stroke-dasharray="8 6"/>
+    <path d="M300 92 120 192l-22-12 180-100z" fill="#64748b"/><path d="M289 86 109 186" stroke="#f76707" stroke-width="3"/>
+    <rect x="160" y="150" width="26" height="14" rx="2" fill="#2563eb"/><rect x="230" y="118" width="26" height="14" rx="2" fill="#f59f00"/>
+  </svg>
+</template>
+
+<script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.6.1/dist/js/tabler.min.js"></script>
+<script type="module">
+/* ================= UI (Tabler) ================= */
+const T = window.tabler;
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const rmq = matchMedia('(prefers-reduced-motion: reduce)');
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const fmtRp = n => 'Rp ' + Math.round(n).toLocaleString('id-ID');
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const bus = new EventTarget();
+window.__armada = { bus };
+const root = document.documentElement;
+
+/* --- mode gelap bawaan Tabler --- */
+function setTheme(t, save = true){
+  root.setAttribute('data-bs-theme', t);
+  $('meta[name="theme-color"]').content = t === 'dark' ? '#151f2c' : '#f6f8fb';
+  $$('[data-theme-toggle]').forEach(b => b.setAttribute('aria-pressed', String(t === 'dark')));
+  if (save) try { localStorage.setItem('armada-theme', t); } catch (e) {}
+  bus.dispatchEvent(new CustomEvent('theme', { detail: t }));
+}
+setTheme(root.getAttribute('data-bs-theme') === 'dark' ? 'dark' : 'light', false);
+$$('[data-theme-toggle]').forEach(b => b.addEventListener('click', () => setTheme(root.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark')));
+
+/* --- menu ponsel: tutup setelah memilih tautan --- */
+$$('#navMenu a.nav-link:not(.dropdown-toggle), #navMenu .dropdown-item').forEach(a => a.addEventListener('click', () => { const c = $('#navMenu'); if (c.classList.contains('show')) T.Collapse.getOrCreateInstance(c).hide(); }));
+
+/* --- toast --- */
+function toast(msg){ $('#toastBody').textContent = msg; T.Toast.getOrCreateInstance($('#toast')).show(); }
+
+/* --- modal + validasi formulir --- */
+const trial = $('#trialModal');
+trial.addEventListener('show.bs.modal', e => { const p = e.relatedTarget && e.relatedTarget.dataset.plan; if (p) $('#tPlan').value = p; });
+trial.addEventListener('shown.bs.modal', () => $('#tName').focus());
+function validate(f){ const ok = f.checkValidity(); f.classList.add('was-validated'); if (!ok) { const bad = f.querySelector(':invalid'); bad && bad.focus(); } return ok; }
+$('#trialForm').addEventListener('submit', e => {
+  e.preventDefault(); const f = e.target; if (!validate(f)) return;
+  T.Modal.getOrCreateInstance(trial).hide();
+  toast(`Terima kasih, ${f.nama.value.trim().split(/\s+/)[0]}! Akun uji coba paket ${f.paket.value} untuk ${f.armada.value} sedang disiapkan.`);
+  f.reset(); f.classList.remove('was-validated');
+});
+$('#ctaForm').addEventListener('submit', e => {
+  e.preventDefault(); const f = e.target; if (!validate(f)) return;
+  toast(`Demo untuk ${f.company.value} dijadwalkan. Undangan kami kirim ke ${f.email.value}.`); f.reset(); f.classList.remove('was-validated');
+});
+
+/* --- harga: periode --- */
+$$('input[name=billing]').forEach(r => r.addEventListener('change', () => { const k = r.value === '12' ? .85 : 1; $$('[data-price]').forEach(p => p.textContent = fmtRp(Math.round(Number(p.dataset.price) * k / 1000) * 1000)); }));
+
+/* --- statistik --- */
+const statIO = new IntersectionObserver(es => es.forEach(en => {
+  if (!en.isIntersecting) return; statIO.unobserve(en.target);
+  $$('[data-count]', en.target).forEach(el => {
+    const end = Number(el.dataset.count), pre = el.dataset.prefix || '', suf = el.dataset.suffix || '', show = v => el.textContent = pre + Math.round(v).toLocaleString('id-ID') + suf;
+    if (rmq.matches) return show(end);
+    const t0 = performance.now(); const step = now => { const p = Math.min(1, (now - t0) / 1400); show(end * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); }; requestAnimationFrame(step);
+  });
+}), { threshold: .3 });
+statIO.observe($('#stats'));
+
+/* --- data armada (fiktif) --- */
+const TRUCKS = [
+  { id: 't1', plate: 'B 9123 UXT', driver: 'Dedi Kurniawan', ini: 'DK', cargo: 'Semen 24 palet', route: 'Cikarang → Semarang', status: 'jalan', speed: 74, eta: '14.20', prog: 38, stage: 2, path: 0, u: .12, color: '#2563eb' },
+  { id: 't2', plate: 'B 9781 TKA', driver: 'Siti Rahayu', ini: 'SR', cargo: 'Air mineral 1.200 krat', route: 'Bogor → Bandung', status: 'jalan', speed: 68, eta: '11.05', prog: 61, stage: 2, path: 1, u: .45, color: '#0ca678' },
+  { id: 't3', plate: 'D 8812 FB', driver: 'Agus Wibowo', ini: 'AW', cargo: 'Tekstil 18 ton', route: 'Bandung → Surabaya', status: 'jalan', speed: 71, eta: 'Besok 06.40', prog: 22, stage: 2, path: 2, u: .25, color: '#7048e8' },
+  { id: 't4', plate: 'L 9034 UV', driver: 'Made Tirta', ini: 'MT', cargo: 'Pupuk 30 ton', route: 'Gresik → Cirebon', status: 'terlambat', speed: 41, eta: '17.55 (+48 mnt)', prog: 70, stage: 2, path: 3, u: .55, color: '#d63939' },
+  { id: 't5', plate: 'B 9456 PQR', driver: 'Yohana Simanjuntak', ini: 'YS', cargo: 'Elektronik 9 ton', route: 'Jakarta → Cikampek', status: 'jalan', speed: 63, eta: '09.40', prog: 84, stage: 2, path: 4, u: .18, color: '#f59f00' },
+  { id: 't6', plate: 'H 8765 OC', driver: 'Bayu Prasetyo', ini: 'BP', cargo: 'Beras 20 ton', route: 'Semarang → Jakarta', status: 'terlambat', speed: 39, eta: '15.10 (+25 mnt)', prog: 47, stage: 2, path: 5, u: .4, color: '#e8590c' },
+  { id: 't7', plate: 'B 9302 KLM', driver: 'Fajar Nugroho', ini: 'FN', cargo: 'Ban kendaraan 600 pcs', route: 'Tangerang → Solo', status: 'istirahat', speed: 18, eta: '19.30', prog: 51, stage: 3, path: 6, u: .3, color: '#4263eb' },
+  { id: 't8', plate: 'AB 8123 GH', driver: 'Rizky Hidayat', ini: 'RH', cargo: 'Kertas 22 ton', route: 'Yogyakarta → Jakarta', status: 'jalan', speed: 70, eta: '20.15', prog: 33, stage: 2, path: 0, u: .62, color: '#1098ad' },
+  { id: 't9', plate: 'B 9998 ZZ', driver: 'Nur Aisyah', ini: 'NA', cargo: 'Makanan beku 12 ton', route: 'Cikarang → Cirebon', status: 'istirahat', speed: 0, eta: '13.00', prog: 55, stage: 3, park: [13.6, 8.4], color: '#ae3ec9' },
+  { id: 't10', plate: 'F 8020 AD', driver: 'Joko Santoso', ini: 'JS', cargo: 'Galon 900 pcs', route: 'Bogor → Karawang', status: 'istirahat', speed: 0, eta: '12.10', prog: 64, stage: 3, park: [16.4, 8.4], color: '#2f9e44' },
+];
+const STATUS = { jalan: ['bg-green-lt', 'status-green', 'Jalan'], istirahat: ['bg-yellow-lt', 'status-yellow', 'Istirahat'], terlambat: ['bg-red-lt', 'status-red', 'Terlambat'] };
+const state = { filter: 'semua', density: 45, night: false, selected: null, angle: 'timur' };
+const DEFAULTS = { ...state };
+/* baris tabel dengan pilihan */
+$('#truckRows').innerHTML = TRUCKS.map(t => `<tr data-id="${t.id}">
+  <td><input class="form-check-input m-0 align-middle" type="radio" name="truckSel" value="${t.id}" aria-label="Ikuti ${esc(t.plate)}"></td>
+  <td><div class="d-flex align-items-center gap-2"><span class="avatar avatar-sm" style="background:${t.color};color:#fff">${t.ini}</span><div><div class="plate num">${esc(t.plate)}</div><div class="drv">${esc(t.driver)}</div></div></div></td>
+  <td><span class="badge ${STATUS[t.status][0]}"><span class="status-dot ${STATUS[t.status][1]} me-1"></span>${STATUS[t.status][2]}</span></td>
+  <td class="hide-xs text-end tnum">${t.speed}</td></tr>`).join('');
+$$('#truckRows tr').forEach(tr => tr.addEventListener('click', e => { const id = tr.dataset.id; state.selected = state.selected === id && e.target.type !== 'radio' ? null : id; sync(); emit(); }));
+/* batang KPI */
+const BARS = { k1: [7, 8, 9, 8, 10, 9, 10, 10], k2: [70, 66, 64, 61, 63, 60, 62, 62], k3: [90, 92, 91, 94, 93, 92, 93, 93], k4: [3.0, 3.1, 3.2, 3.0, 3.1, 3.2, 3.1, 3.1] };
+function bars(key, vals){ const el = $(`[data-bars=${key}]`), mx = Math.max(...vals) * 1.08, mn = Math.min(...vals) * .7; el.innerHTML = vals.map(v => `<span style="--h:${Math.round(18 + 82 * (v - mn) / (mx - mn))}%"></span>`).join(''); }
+const countFor = f => TRUCKS.filter(t => f === 'semua' || t.status === f).length;
+function readouts(){
+  const d = state.density / 100, speed = Math.round(76 - 30 * d), ontime = Math.round(97 - 9 * d), fuel = (3.45 - .7 * d).toFixed(1).replace('.', ',');
+  const moving = TRUCKS.filter(t => t.status !== 'istirahat').length, rest = TRUCKS.length - moving;
+  const traffic = d < .3 ? 'lancar' : d < .7 ? 'sedang' : 'padat';
+  $('#heroChip').textContent = state.filter === 'semua' ? `${moving} truk di jalan · ${rest} istirahat` : `${countFor(state.filter)} truk ${STATUS[state.filter][2].toLowerCase()}`;
+  $('#heroClock').textContent = `${state.night ? 'Malam' : 'Siang'} · lalu lintas ${traffic}`;
+  $('#cfgClock').textContent = `${state.night ? 'Malam' : 'Siang'} · ${state.density}%`;
+  $('#densityV').textContent = state.density + '%';
+  $('#lalinNote').textContent = `Lalu lintas ${traffic}. Rata-rata truk melaju ${speed} km/j di ruas ini.`;
+  $('#kActive').textContent = countFor(state.filter); $('#kSpeed').textContent = speed + ' km/j'; $('#kOntime').textContent = ontime + '%'; $('#kFuel').textContent = fuel + ' km/L';
+  bars('k1', BARS.k1.slice(0, 7).concat(countFor(state.filter))); bars('k2', BARS.k2.slice(0, 7).concat(speed)); bars('k3', BARS.k3.slice(0, 7).concat(ontime)); bars('k4', BARS.k4.slice(0, 7).concat(3.45 - .7 * d));
+  const t = TRUCKS.find(x => x.id === state.selected);
+  $('#cfgChip').innerHTML = t ? `<i class="ti ti-truck" aria-hidden="true"></i>Mengikuti ${esc(t.plate)}` : '<i class="ti ti-eye" aria-hidden="true"></i>Seluruh simpang';
+  $('#detTitle').textContent = t ? `${t.plate} · ${STATUS[t.status][2]}` : 'Pilih truk di tabel';
+  $('#unfollow').disabled = !t;
+  $('#dDriver').textContent = t ? t.driver : '—'; $('#dCargo').textContent = t ? t.cargo : '—'; $('#dRoute').textContent = t ? t.route : '—'; $('#dEta').textContent = t ? t.eta : '—';
+  const prog = t ? t.prog : 0; $('#dProg').style.width = prog + '%'; $('#dProg').setAttribute('aria-valuenow', prog); $('#dProgV').textContent = prog + '%';
+  $$('#dSteps .step-item').forEach((li, i) => li.classList.toggle('active', !!t && i === t.stage));
+}
+function emit(){ readouts(); bus.dispatchEvent(new CustomEvent('state', { detail: state })); }
+function sync(){
+  $$('[data-filter]').forEach(r => r.checked = r.value === state.filter);
+  $$('[data-night]').forEach(c => c.checked = state.night);
+  $('#density').value = state.density;
+  $$('#truckRows tr').forEach(tr => { const on = tr.dataset.id === state.selected, t = TRUCKS.find(x => x.id === tr.dataset.id); tr.classList.toggle('is-sel', on); tr.querySelector('input').checked = on; tr.classList.toggle('is-dim', state.filter !== 'semua' && t.status !== state.filter); tr.setAttribute('aria-selected', String(on)); });
+  $$('[data-angle]').forEach(b => b.classList.toggle('active', b.dataset.angle === state.angle));
+  $('#angleLbl').textContent = { timur: 'Timur', barat: 'Barat', atas: 'Atas' }[state.angle];
+}
+$$('[data-filter]').forEach(r => r.addEventListener('change', () => { state.filter = r.value; sync(); emit(); }));
+$$('[data-night]').forEach(c => c.addEventListener('change', () => { state.night = c.checked; sync(); emit(); }));
+$('#density').addEventListener('input', e => { state.density = Number(e.target.value); emit(); });
+$$('[data-angle]').forEach(b => b.addEventListener('click', () => { state.angle = b.dataset.angle; sync(); emit(); }));
+$('#unfollow').addEventListener('click', () => { state.selected = null; sync(); emit(); toast('Kamera kembali ke seluruh simpang.'); });
+sync(); readouts();
+
+/* warna tema -> rgb untuk three.js */
+const probe = document.createElement('i'); probe.style.display = 'none'; document.body.append(probe);
+const pc = document.createElement('canvas'); pc.width = pc.height = 1; const pctx = pc.getContext('2d', { willReadFrequently: true });
+function themeColor(v){ probe.style.color = `var(${v})`; const c = getComputedStyle(probe).color; pctx.clearRect(0, 0, 1, 1); pctx.fillStyle = '#888'; pctx.fillStyle = c; pctx.fillRect(0, 0, 1, 1); const d = pctx.getImageData(0, 0, 1, 1).data; return `rgb(${d[0]},${d[1]},${d[2]})`; }
+const isDark = () => root.getAttribute('data-bs-theme') === 'dark';
+
+/* ================= 3D ================= */
+function webglOK(){ try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch (e) { return false; } }
+const storySec = $('#perjalanan');
+function showFallbacks(){
+  const tpl = $('#tollFallback');
+  ['#heroStage', '#cfgStage'].forEach(s => { const st = $(s); st.classList.add('no-webgl'); const fb = st.querySelector('.fallback'); if (!fb.firstChild) fb.append(tpl.content.cloneNode(true)); });
+  storySec.classList.add('no-webgl');
+}
+let THREE;
+try { if (!webglOK()) throw new Error('no-webgl'); THREE = await import('three'); } catch (err) { showFallbacks(); }
+function storyProgress(){ const r = storySec.getBoundingClientRect(); return clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1); }
+const tlItems = $$('#tlMini li'), sceneSteps = $$('.scene-step', storySec);
+function setStepUI(n){
+  sceneSteps.forEach((s, k) => s.classList.toggle('on', k === n));
+  tlItems.forEach((li, k) => li.classList.toggle('on', k <= n));
+  $('#tlFill').style.width = (n / 4 * 80) + '%';
+}
+
+if (THREE) {
+  const DPR = () => Math.min(window.devicePixelRatio || 1, 2);
+  const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+  const frames = window.__armada.frames = {};
+  function createLoop(el, frame, continuous){
+    let visible = false, raf = 0, last = 0, pending = true, aliveUntil = 0;
+    const L = { request(){ pending = true; kick(); }, keepAlive(ms){ aliveUntil = Math.max(aliveUntil, performance.now() + ms); kick(); } };
+    const run = () => visible && !document.hidden;
+    function tick(now){
+      if (!run()) { raf = 0; last = 0; return; }
+      raf = -1; const dt = last ? Math.min((now - last) / 1000, .1) : .016; last = now; pending = false;
+      frames[el.id] = (frames[el.id] || 0) + 1; frame(dt, now / 1000);
+      if (continuous() || pending || now < aliveUntil) raf = requestAnimationFrame(tick); else { raf = 0; last = 0; }
+    }
+    function kick(){ if (!raf && run()) raf = requestAnimationFrame(tick); }
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) { pending = true; kick(); } }, { rootMargin: '80px' }).observe(el);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) { pending = true; kick(); } });
+    rmq.addEventListener('change', () => L.request());
+    return L;
+  }
+  function makeRenderer(canvas){
+    const r = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+    r.setPixelRatio(DPR()); r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+    r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.05; r.outputColorSpace = THREE.SRGBColorSpace; return r;
+  }
+  function watchSize(el, renderer, onSize){ const apply = () => { const w = Math.max(1, el.clientWidth), h = Math.max(1, el.clientHeight); renderer.setPixelRatio(DPR()); renderer.setSize(w, h, false); onSize(w, h); }; new ResizeObserver(apply).observe(el); apply(); }
+  const std = (c, rough = .85, extra = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0, ...extra });
+  function rng(seed){ return () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+  function box(parent, w, h, d, mat, x, y, z, o = {}){ const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y, z); m.castShadow = o.cast !== false; m.receiveShadow = true; if (o.ry) m.rotation.y = o.ry; parent.add(m); return m; }
+  const V3 = (x, y, z) => new THREE.Vector3(x, y, z);
+  /* pita 3D mengikuti kurva (permukaan atas + sisi + bawah) untuk jalan, jalan layang, ramp */
+  function strip(curve, width, thick, mat, n = 120, yOff = 0){
+    const pos = [], up = V3(0, 1, 0), side = V3(), push = (a, b, c, d) => pos.push(...a, ...b, ...c, ...b, ...d, ...c);
+    let prev = null;
+    for (let i = 0; i <= n; i++) {
+      const t = i / n, p = curve.getPointAt(t), tg = curve.getTangentAt(t); tg.y = 0; tg.normalize(); side.crossVectors(tg, up).normalize().multiplyScalar(width / 2);
+      const y = p.y + yOff, L = [p.x - side.x, y, p.z - side.z], R = [p.x + side.x, y, p.z + side.z], Lb = [L[0], y - thick, L[2]], Rb = [R[0], y - thick, R[2]];
+      if (prev) { push(prev.L, L, prev.R, R); if (thick > 0) { push(prev.Lb, Lb, prev.L, L); push(prev.R, R, prev.Rb, Rb); } }
+      prev = { L, R, Lb, Rb };
+    }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.computeVertexNormals();
+    const m = new THREE.Mesh(g, mat); m.receiveShadow = true; m.castShadow = thick > 0; return m;
+  }
+  const curveOf = pts => new THREE.CatmullRomCurve3(pts.map(p => V3(...p)), false, 'catmullrom', .2);
+
+  /* truk low-poly; maju ke arah +z */
+  function makeTruck(color, o = {}){
+    const g = new THREE.Group(), mats = [];
+    const m = (c, r = .7, x = {}) => { const mm = std(c, r, x); mats.push(mm); return mm; };
+    const body = m(color, .55), cab = m(o.cab || '#f1f3f5', .5), dark = m('#2b2f38', .8), glass = m('#20324a', .2);
+    const head = new THREE.MeshStandardMaterial({ color: '#fff7d6', emissive: '#ffe08a', emissiveIntensity: .1 }), tail = new THREE.MeshStandardMaterial({ color: '#7a1010', emissive: '#ff3b3b', emissiveIntensity: .2 });
+    mats.push(head, tail);
+    box(g, .9, .22, 3.2, dark, 0, .42, -.1); box(g, .96, .95, .92, cab, 0, 1.0, 1.05); box(g, .82, .38, .04, glass, 0, 1.16, 1.52, { cast: false });
+    box(g, 1.02, 1.2, 2.2, body, 0, 1.22, -.55); box(g, 1.03, .12, 2.21, cab, 0, 1.86, -.55, { cast: false });
+    [-.3, .3].forEach(x => { box(g, .2, .1, .04, head, x, .68, 1.52, { cast: false }); box(g, .16, .1, .04, tail, x, .62, -1.67, { cast: false }); });
+    const wheels = [], wgeo = new THREE.CylinderGeometry(.25, .25, .2, 12); wgeo.rotateZ(Math.PI / 2);
+    [[.47, 1.05], [-.47, 1.05], [.47, -.6], [-.47, -.6], [.47, -1.2], [-.47, -1.2]].forEach(([x, z]) => { const w = new THREE.Mesh(wgeo, dark); w.position.set(x, .25, z); w.castShadow = true; g.add(w); wheels.push(w); });
+    const beaconMat = new THREE.MeshStandardMaterial({ color: '#2fb344', emissive: '#2fb344', emissiveIntensity: .6 }); mats.push(beaconMat);
+    const beacon = new THREE.Mesh(new THREE.SphereGeometry(.16, 12, 8), beaconMat); beacon.position.set(0, 1.62, 1.05); g.add(beacon);
+    const beamGeo = new THREE.PlaneGeometry(1.6, 3.6); beamGeo.rotateX(-Math.PI / 2); beamGeo.translate(0, .06, 3.4);
+    const beam = new THREE.Mesh(beamGeo, new THREE.MeshBasicMaterial({ color: '#ffe6a8', transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false })); g.add(beam);
+    return { g, mats, wheels, head, tail, beacon, beam };
+  }
+
+  /* ---------- simpang susun tol ---------- */
+  const PATHS = [
+    curveOf([[-23, 0, -.6], [0, 0, -.6], [23, 0, -.6]]),                                   // 0 tol A arah timur
+    curveOf([[23, 0, -3.4], [0, 0, -3.4], [-23, 0, -3.4]]),                                 // 1 tol A arah barat
+    curveOf([[3, 3.2, -17], [3, 3.2, 0], [3, 3.2, 17]]),                                     // 2 layang B arah selatan
+    curveOf([[5, 3.2, 17], [5, 3.2, 0], [5, 3.2, -17]]),                                     // 3 layang B arah utara
+    curveOf([[-23, 0, -.6], [-10, 0, -.6], [-5, 0, .4], [-1.6, .9, 3.4], [.8, 2.3, 7], [2.4, 3.15, 10.6], [3, 3.2, 13], [3, 3.2, 17]]), // 4 ramp naik
+    curveOf([[23, 0, -3.4], [16, 0, -3.4], [11.6, .3, -4.8], [8.8, 1.6, -7.4], [6.4, 2.9, -10.4], [5.1, 3.2, -13], [5, 3.2, -17]]),     // 5 ramp naik
+    curveOf([[-23, 0, -.6], [5, 0, -.6], [9.4, 0, .6], [11.6, 0, 3.6], [12.6, 0, 6.4], [15, 0, 11.2], [18.6, 0, 11.4], [20.4, 0, 8], [20.8, 0, 3.6], [21.8, 0, .4], [23, 0, -.6]]), // 6 masuk rest area
+  ];
+  const PLEN = PATHS.map(p => p.getLength());
+  function buildToll(){
+    const R = new THREE.Group();
+    const M = {
+      grass: std('#a8c98a', 1), earth: std('#8a7a62', 1), earthD: std('#6f624e', 1), asphalt: std('#4b5563', .9), asphalt2: std('#5b6575', .9), concrete: std('#cfd4dc', .85), concrete2: std('#b3bac6', .85),
+      white: std('#f8fafc', .6), lane: new THREE.MeshStandardMaterial({ color: '#f76707', emissive: '#f76707', emissiveIntensity: .45, roughness: .5 }),
+      wall: std('#eef1f5', .9), roof: std('#2563eb', .7), orange: std('#f76707', .6), glass: new THREE.MeshStandardMaterial({ color: '#1f3349', roughness: .3, emissive: '#ffd27a', emissiveIntensity: 0 }),
+      trunk: std('#8c6a4f', .9, { flatShading: true }), leaf: std('#4f9a52', .9, { flatShading: true }), leaf2: std('#74b85c', .9, { flatShading: true }),
+      lamp: new THREE.MeshStandardMaterial({ color: '#fff3d0', emissive: '#ffd27a', emissiveIntensity: 0 }), pole: std('#9aa3b2', .5),
+    };
+    const plinth = new THREE.Mesh(new THREE.BoxGeometry(46, 2, 34), [M.earth, M.earth, M.grass, M.earthD, M.earth, M.earthD]); plinth.position.y = -1; plinth.receiveShadow = true; R.add(plinth);
+    // tol A (dua jalur, median)
+    box(R, 46, .1, 7, M.asphalt, 0, .05, -2, { cast: false });
+    box(R, 46, .3, .3, M.concrete, 0, .25, -2);
+    [1.45, -5.45].forEach(z => box(R, 46, .03, .1, M.white, 0, .11, z, { cast: false }));
+    // layang B: dek, pembatas, tiang
+    box(R, 5.2, .45, 34, M.concrete2, 4, 2.97, 0); box(R, 4.8, .04, 34, M.asphalt2, 4, 3.21, 0, { cast: false });
+    [1.5, 6.5].forEach(x => box(R, .22, .45, 34, M.concrete, x, 3.42, 0));
+    [-14, -8.5, -2, 4.5, 10, 15].forEach(z => { box(R, .7, 2.8, .7, M.concrete, 4, 1.4, z); box(R, 4.6, .4, .9, M.concrete, 4, 2.6, z); });
+    // ramp + jalan masuk rest area
+    const r4 = strip(curveOf([[-9, 0, -.4], [-5, 0, .4], [-1.6, .9, 3.4], [.8, 2.3, 7], [2.4, 3.15, 10.6], [3, 3.2, 13.4]]), 2.4, .4, M.concrete2, 90, .02); R.add(r4);
+    const r5 = strip(curveOf([[17, 0, -3.6], [11.6, .3, -4.8], [8.8, 1.6, -7.4], [6.4, 2.9, -10.4], [5.1, 3.2, -13.2]]), 2.4, .4, M.concrete2, 90, .02); R.add(r5);
+    const r6a = strip(curveOf([[5, 0, -.2], [9.4, 0, .9], [11.6, 0, 3.6], [12.6, 0, 6.4]]), 2.4, 0, M.asphalt, 50, .06); R.add(r6a);
+    const r6b = strip(curveOf([[20.6, 0, 9], [20.8, 0, 3.6], [21.8, 0, .6]]), 2.4, 0, M.asphalt, 40, .06); R.add(r6b);
+    // tiang ramp
+    [[-1.2, 3.8, 1], [.6, 6.8, 2.2], [7.2, -9.3, 2.6], [10, -6.2, 1.2]].forEach(([x, z, h]) => box(R, .5, h, .5, M.concrete, x, h / 2, z));
+    // lajur oranye (rute truk)
+    PATHS.forEach((p, i) => { const s = strip(p, .34, 0, M.lane, i === 6 ? 160 : 90, .09 + i * .004); s.castShadow = false; R.add(s); });
+    // gerbang tol
+    const gate = new THREE.Group(); gate.position.set(-12, 0, -2); R.add(gate);
+    box(gate, 2.6, .35, 9, M.roof, 0, 3.2, 0); box(gate, 2.62, .14, 9.02, M.orange, 0, 3.0, 0, { cast: false });
+    [-4, 0, 4].forEach(z => { box(gate, .3, 3, .3, M.concrete, 0, 1.5, z); });
+    [-3.1, -.9, .9, 3.1].forEach(z => { box(gate, 1.8, .2, .55, M.concrete, 0, .1, z); box(gate, .8, 1.2, .5, M.wall, 0, .8, z); box(gate, .82, .4, .52, M.glass, 0, 1.15, z, { cast: false }); });
+    // kantor gerbang tol + gudang di latar
+    box(R, 4, 2.2, 3, M.wall, -12, 1.1, 5.5); box(R, 4.2, .3, 3.2, M.roof, -12, 2.35, 5.5); box(R, 2.4, .6, .05, M.glass, -12, 1.4, 7.03, { cast: false });
+    [[-16, -11], [-9.5, -11.5]].forEach(([x, z]) => { box(R, 5.5, 3, 4, M.concrete, x, 1.5, z); box(R, 5.7, .25, 4.2, M.concrete2, x, 3.1, z); box(R, 2, 2, .06, M.asphalt2, x, 1, z + 2.02, { cast: false }); box(R, 5.52, .3, 4.02, M.orange, x, 2.6, z, { cast: false }); });
+    // rest area: parkir, minimarket, SPBU
+    box(R, 10, .08, 7.2, M.asphalt, 15.6, .04, 8.6, { cast: false });
+    for (let x = 12.2; x <= 19; x += 2.8) box(R, .08, .02, 2.6, M.white, x, .09, 8.4, { cast: false });
+    box(R, 6, 2.2, 2.6, M.wall, 15.6, 1.1, 14.4); box(R, 6.2, .3, 2.8, M.roof, 15.6, 2.35, 14.4); box(R, 6.22, .3, .1, M.orange, 15.6, 1.95, 13.1, { cast: false }); box(R, 4.4, .9, .05, M.glass, 15.6, 1.1, 13.08, { cast: false });
+    const sp = new THREE.Group(); sp.position.set(8.4, 0, 10.4); R.add(sp);
+    box(sp, 4, .3, 2.6, M.wall, 0, 2.6, 0); box(sp, 4.02, .12, 2.62, M.orange, 0, 2.42, 0, { cast: false });
+    [[-1.6, -1], [1.6, -1], [-1.6, 1], [1.6, 1]].forEach(([x, z]) => box(sp, .2, 2.4, .2, M.concrete, x, 1.2, z));
+    [-.8, .8].forEach(x => { box(sp, .5, 1, .4, M.roof, x, .5, 0); box(sp, .3, .2, .05, M.glass, x, .8, .21, { cast: false }); });
+    // pepohonan
+    const r = rng(5);
+    for (let i = 0; i < 30; i++) { let x = -22 + r() * 44, z = -16 + r() * 32; if (Math.abs(z + 2) < 4.6 || (x > 0 && x < 8) || (x > 6.5 && x < 22 && z > 4 && z < 16) || (x > -15 && x < -9 && z > 3 && z < 8)) continue; if ((x > -19 && x < -6.5 && z < -8.5)) continue; if (x > 5 && x < 18 && z > -12 && z < -3) continue;
+      const h = .9 + r() * .7; const t = new THREE.Mesh(new THREE.CylinderGeometry(.12, .16, h, 6), M.trunk); t.position.set(x, h / 2, z); t.castShadow = true; R.add(t);
+      const c = new THREE.Mesh(new THREE.IcosahedronGeometry(.7 + r() * .5, 0), r() > .5 ? M.leaf : M.leaf2); c.position.set(x, h + .5, z); c.castShadow = true; R.add(c); }
+    // lampu jalan + genangan cahaya (tanpa point light)
+    const poolMat = new THREE.MeshBasicMaterial({ color: '#ffcf7a', transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
+    const poolGeo = new THREE.CircleGeometry(1.9, 24); poolGeo.rotateX(-Math.PI / 2);
+    const lampSpots = [[-18, 0, 1.9], [-6, 0, 1.9], [12, 0, 1.9], [-12, 0, -6], [0, 0, -6], [18, 0, -6], [13, 0, 12.5], [18.4, 0, 12.5], [6.4, 3.2, -6], [6.4, 3.2, 8], [1.6, 3.2, 1]];
+    lampSpots.forEach(([x, y, z]) => { box(R, .1, 2, .1, M.pole, x, y + 1, z, { cast: false }); const l = new THREE.Mesh(new THREE.SphereGeometry(.18, 10, 8), M.lamp); l.position.set(x, y + 2.05, z); R.add(l); const p = new THREE.Mesh(poolGeo, poolMat); p.position.set(x, y + .12, z); R.add(p); });
+    // mobil pribadi (instanced) mengisi jalur menurut kepadatan
+    const CARS = 28, carBody = new THREE.InstancedMesh(new THREE.BoxGeometry(.8, .42, 1.6), std('#ffffff', .45), CARS), carTop = new THREE.InstancedMesh(new THREE.BoxGeometry(.7, .32, .8), std('#1f2937', .3), CARS);
+    carBody.castShadow = true; carBody.receiveShadow = true; const palette = ['#e03131', '#f8f9fa', '#1c7ed6', '#868e96', '#212529', '#fab005', '#2f9e44', '#f1f3f5'];
+    const cars = []; for (let i = 0; i < CARS; i++) { carBody.setColorAt(i, new THREE.Color(palette[i % palette.length])); cars.push({ path: i % 4, u: r(), sp: 4.2 + r() * 2.4, lane: (r() - .5) * .2 }); }
+    carBody.instanceColor.needsUpdate = true; R.add(carBody, carTop);
+    return { root: R, M, poolMat, carBody, carTop, cars };
+  }
+
+  const ANGLES = { timur: V3(1, .9, 1).normalize(), barat: V3(-1, .9, 1).normalize(), atas: V3(.05, 1, .42).normalize() };
+  const STATUS_C = { jalan: '#2fb344', istirahat: '#f59f00', terlambat: '#d63939' };
+
+  function createTollView(canvas, stageEl, opts){
+    const renderer = makeRenderer(canvas);
+    const scene = new THREE.Scene(); const S = buildToll(); scene.add(S.root);
+    const hemi = new THREE.HemisphereLight('#eef4ff', '#7a7466', 1.15); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff4e0', 2.5); sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, { left: -32, right: 32, top: 32, bottom: -32, near: 1, far: 140 }); sun.shadow.bias = -.0006; sun.shadow.normalBias = .04;
+    scene.add(sun, sun.target);
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -200, 400);
+    // truk
+    const trucks = TRUCKS.map(t => { const k = makeTruck(t.color); k.g.scale.setScalar(.82); S.root.add(k.g); k.beacon.material.color.set(STATUS_C[t.status]); k.beacon.material.emissive.set(STATUS_C[t.status]); return { ...t, ...k, dim: 0, u0: t.u }; });
+    trucks.forEach(t => { if (t.park) { t.g.position.set(t.park[0], 0, t.park[1]); t.g.rotation.y = Math.PI; } });
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(1.6, .09, 8, 40), new THREE.MeshBasicMaterial({ color: '#f76707' })); ring.rotation.x = Math.PI / 2; ring.visible = false; scene.add(ring);
+    const cur = { t: V3(0, 1.5, 0), z: 1, dir: ANGLES.timur.clone(), night: 0 }, goal = { t: V3(0, 1.5, 0), z: 1, dir: ANGLES.timur.clone(), night: 0 };
+    let aspect = 1, halfH = 17, filter = 'semua', selected = null, density = .45;
+    const pointer = { x: 0, tx: 0 };
+    const C = { day: new THREE.Color(), night: new THREE.Color(), sky: new THREE.Color(), hemiD: new THREE.Color('#eef4ff'), hemiN: new THREE.Color('#6a7fbf'), sunD: new THREE.Color('#fff4e0'), sunN: new THREE.Color('#8ea6dc') };
+    function applyTheme(){ C.day.set(themeColor('--ar-sky')); C.night.set(isDark() ? '#070d18' : '#142038'); scene.background = C.sky.copy(C.day).lerp(C.night, cur.night); loop.request(); }
+    function apply(s){
+      filter = s.filter; density = s.density / 100; selected = opts.hero ? null : s.selected;
+      goal.dir.copy(ANGLES[opts.hero ? 'timur' : s.angle] || ANGLES.timur); goal.night = s.night ? 1 : 0;
+      if (!selected) { goal.t.set(0, 1.5, 0); goal.z = s.angle === 'atas' && !opts.hero ? .95 : 1; }
+      loop.keepAlive(2400); loop.request();
+    }
+    if (opts.hero) {
+      stageEl.addEventListener('pointermove', e => { const b = stageEl.getBoundingClientRect(); pointer.tx = ((e.clientX - b.left) / b.width - .5) * 2; loop.request(); });
+      stageEl.addEventListener('pointerleave', () => { pointer.tx = 0; loop.request(); });
+    }
+    const tmpDir = V3(), up = V3(0, 1, 0), tmpM = new THREE.Object3D(), tp = V3();
+    let simT = 0;
+    const loop = createLoop(canvas, (dt, t) => {
+      const still = rmq.matches, k = still ? 1 : 1 - Math.exp(-dt * 3.2);
+      if (!still) simT += dt;
+      // truk bergerak di lajur oranye
+      trucks.forEach(tr => {
+        if (tr.path !== undefined) {
+          const len = PLEN[tr.path], sp = (tr.speed / 74) * 3.2 * (1 - .35 * density);
+          tr.u = (tr.u0 + simT * sp / len) % 1;
+          const p = PATHS[tr.path].getPointAt(tr.u), tg = PATHS[tr.path].getTangentAt(tr.u);
+          tr.g.position.set(p.x, p.y, p.z); tr.g.rotation.y = Math.atan2(tg.x, tg.z);
+          const edge = Math.min(tr.u, 1 - tr.u); tr.g.scale.setScalar(.82 * smooth(0, .03, edge));
+          if (!still) tr.wheels.forEach(w => w.rotation.x += dt * sp * 4);
+        }
+        const want = filter === 'semua' || tr.status === filter ? 0 : 1; tr.dim += (want - tr.dim) * k; if (Math.abs(want - tr.dim) > .003) loop.request(); else tr.dim = want;
+        tr.mats.forEach(m => { m.transparent = tr.dim > .01; m.opacity = 1 - .82 * tr.dim; m.depthWrite = tr.dim < .5; });
+        tr.head.emissiveIntensity = .1 + 2.4 * cur.night; tr.tail.emissiveIntensity = .2 + 1.6 * cur.night;
+        tr.beam.material.opacity = .32 * cur.night * (1 - tr.dim) * (tr.path !== undefined ? 1 : 0);
+      });
+      // mobil
+      const nCars = Math.round(S.cars.length * density); S.carBody.count = S.carTop.count = nCars;
+      for (let i = 0; i < nCars; i++) { const c = S.cars[i], P = PATHS[c.path]; const u = (c.u + simT * c.sp * (1 - .4 * density) / PLEN[c.path]) % 1; const p = P.getPointAt(u), tg = P.getTangentAt(u);
+        tmpM.position.set(p.x + c.lane, p.y + .3, p.z); tmpM.rotation.set(0, Math.atan2(tg.x, tg.z), 0); tmpM.scale.setScalar(smooth(0, .02, Math.min(u, 1 - u))); tmpM.updateMatrix(); S.carBody.setMatrixAt(i, tmpM.matrix);
+        tmpM.position.y += .34; tmpM.position.x -= Math.sin(tmpM.rotation.y) * .1; tmpM.position.z -= Math.cos(tmpM.rotation.y) * .1; tmpM.updateMatrix(); S.carTop.setMatrixAt(i, tmpM.matrix); }
+      S.carBody.instanceMatrix.needsUpdate = S.carTop.instanceMatrix.needsUpdate = true;
+      // kamera mengikuti truk terpilih
+      const sel = selected && trucks.find(x => x.id === selected);
+      if (sel) { sel.g.getWorldPosition(tp); goal.t.set(tp.x, tp.y + .6, tp.z); goal.z = 2.5; ring.visible = true; ring.position.set(tp.x, tp.y + .14, tp.z); ring.scale.setScalar(1 + (still ? 0 : Math.sin(t * 4) * .08)); }
+      else ring.visible = false;
+      cur.t.lerp(goal.t, sel ? (still ? 1 : 1 - Math.exp(-dt * 5)) : k); cur.z += (goal.z - cur.z) * k; cur.dir.lerp(goal.dir, k).normalize(); cur.night += (goal.night - cur.night) * k;
+      if (cur.t.distanceTo(goal.t) > .01 || Math.abs(goal.z - cur.z) > .002 || cur.dir.distanceTo(goal.dir) > .001 || Math.abs(goal.night - cur.night) > .002) loop.request();
+      const n = cur.night, day = 1 - n;
+      scene.background = C.sky.copy(C.day).lerp(C.night, n);
+      hemi.intensity = .55 + .65 * day; hemi.color.copy(C.hemiN).lerp(C.hemiD, day);
+      sun.intensity = .6 + 1.9 * day; sun.color.copy(C.sunN).lerp(C.sunD, day);
+      S.M.lamp.emissiveIntensity = .15 + 2.6 * n; S.poolMat.opacity = .36 * n; S.M.glass.emissiveIntensity = 1.2 * n; S.M.lane.emissiveIntensity = .45 + .9 * n;
+      renderer.toneMappingExposure = .95 + .12 * day;
+      pointer.x += (pointer.tx - pointer.x) * (1 - Math.exp(-dt * 3)); if (Math.abs(pointer.tx - pointer.x) > .002) loop.request();
+      tmpDir.copy(cur.dir).applyAxisAngle(up, pointer.x * .16 + (opts.hero && !still ? Math.sin(t * .13) * .07 : 0));
+      const hh = halfH / cur.z, hw = hh * aspect; Object.assign(cam, { left: -hw, right: hw, top: hh, bottom: -hh }); cam.updateProjectionMatrix();
+      cam.position.copy(cur.t).addScaledVector(tmpDir, 100); cam.lookAt(cur.t);
+      sun.position.copy(cur.t).add(V3(16, 30, 10)); sun.target.position.copy(cur.t);
+      renderer.render(scene, cam);
+      if (!stageEl.classList.contains('ready')) stageEl.classList.add('ready');
+    }, () => !rmq.matches);
+    watchSize(stageEl, renderer, (w, h) => { aspect = w / h; halfH = aspect < .8 ? 15.5 / Math.max(aspect, .5) : aspect < 1.2 ? 20.5 : aspect > 1.9 ? 14 : 17; loop.request(); });
+    applyTheme(); apply(state);
+    return { apply, applyTheme, loop, renderer, scene, camera: cam, trucks };
+  }
+
+  let heroV = null, cfgV = null;
+  try {
+    heroV = createTollView($('#heroCanvas'), $('#heroStage'), { hero: true });
+    cfgV = createTollView($('#cfgCanvas'), $('#cfgStage'), { hero: false });
+    bus.addEventListener('state', e => { heroV.apply(e.detail); cfgV.apply(e.detail); });
+    bus.addEventListener('theme', () => requestAnimationFrame(() => { heroV.applyTheme(); cfgV.applyTheme(); }));
+  } catch (e) { console.warn('WebGL gagal dimulai', e); showFallbacks(); }
+
+  /* ================= Cerita isometrik: satu kiriman ================= */
+  function createStory(){
+    const stage = $('.story-stage', storySec), canvas = $('#storyCanvas');
+    const renderer = makeRenderer(canvas); const scene = new THREE.Scene();
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -100, 200);
+    const camDir = V3(1, 1.1, 1).normalize(), camTarget = V3();
+    const hemi = new THREE.HemisphereLight('#f4f8ff', '#b3b6be', 1.3); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff3df', 2.4); sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16, near: 1, far: 80 }); sun.shadow.bias = -.0005; sun.shadow.normalBias = .03; scene.add(sun, sun.target);
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(160, 90), std('#eef1f6', 1)); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+    let grid = null;
+    const CLAY = new THREE.Color('#e9ecf2');
+    const SP = [[-16, 4], [-6, -4], [3, 4], [12, -4], [21, 4]];
+    const stations = [];
+    const smat = c => { const m = std(c, .8); m.userData.target = new THREE.Color(c); m.color.copy(CLAY); return m; };
+    function add(g, mats, geo, c, x, y, z, rot){ const m = smat(c); mats.push(m); const me = new THREE.Mesh(geo, m); me.position.set(x, y, z); if (rot) me.rotation.set(rot[0] || 0, rot[1] || 0, rot[2] || 0); me.castShadow = me.receiveShadow = true; g.add(me); return me; }
+    const B = (w, h, d) => new THREE.BoxGeometry(w, h, d), Cy = (rt, rb, h, s = 20) => new THREE.CylinderGeometry(rt, rb, h, s);
+    SP.forEach(([x, z], i) => {
+      const g = new THREE.Group(); g.position.set(x - 1.4, 0, z - 2.6); scene.add(g);
+      const mats = []; add(g, mats, Cy(2.9, 3.0, .26, 44), '#d5deec', 0, .13, 0);
+      const inner = new THREE.Group(); inner.position.y = .26; g.add(inner);
+      if (i === 0) { // muat: gudang + palet + forklift
+        add(inner, mats, B(3.4, 2.2, 1.6), '#cfd4dc', 0, 1.1, -1.1); add(inner, mats, B(3.5, .2, 1.7), '#2563eb', 0, 2.3, -1.1); add(inner, mats, B(1.6, 1.5, .05), '#5b6575', 0, .8, -.27); add(inner, mats, B(3.42, .25, .05), '#f76707', 0, 1.95, -.27);
+        [[-1.2, .7], [-.5, .7], [-1.2, 1.4]].forEach(([px, pz]) => { add(inner, mats, B(.6, .12, .6), '#b08968', px, .06, pz); add(inner, mats, B(.55, .5, .55), '#e9c46a', px, .37, pz); });
+        add(inner, mats, B(.7, .5, 1), '#f59f00', 1.2, .45, .9); add(inner, mats, B(.1, 1.3, .1), '#2b2f38', 1.0, .85, 1.45); add(inner, mats, B(.1, 1.3, .1), '#2b2f38', 1.4, .85, 1.45); add(inner, mats, B(.5, .06, .6), '#2b2f38', 1.2, .2, 1.75);
+      } else if (i === 1) { // berangkat: gerbang depo + palang
+        add(inner, mats, B(1, 1.6, 1), '#eef1f5', -1.3, .8, -.8); add(inner, mats, B(1.15, .15, 1.15), '#2563eb', -1.3, 1.68, -.8); add(inner, mats, B(.6, .4, .04), '#9fc6e6', -1.3, 1.1, -.29);
+        add(inner, mats, B(.3, .9, .3), '#f76707', -.5, .45, .2); add(inner, mats, B(2.6, .1, .1), '#ffffff', .8, .85, .2); [0, 1, 2].forEach(k => add(inner, mats, B(.35, .11, .11), '#d63939', .1 + k * .8, .85, .2));
+        add(inner, mats, B(.12, 2.2, .12), '#5b6575', 1.6, 1.1, -1.4); add(inner, mats, B(1.2, .6, .08), '#2563eb', 1.6, 2.1, -1.36);
+      } else if (i === 2) { // tol: atap gerbang + gardu
+        add(inner, mats, B(3.6, .25, 2), '#2563eb', 0, 2.5, -.6); add(inner, mats, B(3.62, .1, 2.02), '#f76707', 0, 2.33, -.6);
+        [-1.5, 1.5].forEach(px => add(inner, mats, B(.22, 2.3, .22), '#cfd4dc', px, 1.15, -.6));
+        add(inner, mats, B(.8, 1.1, .7), '#eef1f5', 0, .55, -.9); add(inner, mats, B(.82, .35, .72), '#20324a', 0, .85, -.9);
+        add(inner, mats, B(.2, .8, .2), '#f59f00', .9, .4, .3); add(inner, mats, B(1.6, .08, .08), '#ffffff', -.1, .78, .3);
+        add(inner, mats, B(.3, .4, .1), '#2fb344', -1.2, 1.2, .2);
+      } else if (i === 3) { // istirahat: warung kopi + payung + pompa BBM
+        add(inner, mats, B(2.2, 1.4, 1.2), '#f4e7cc', -.8, .7, -1.2); add(inner, mats, B(2.4, .15, 1.5), '#d0573a', -.8, 1.45, -1.1);
+        add(inner, mats, Cy(.04, .04, 1.4, 8), '#5b6575', .9, .7, .6); add(inner, mats, new THREE.ConeGeometry(.9, .4, 12), '#f76707', .9, 1.5, .6); add(inner, mats, Cy(.4, .4, .06, 16), '#cfd4dc', .9, .7, .6);
+        add(inner, mats, Cy(.09, .07, .16, 12), '#ffffff', .8, .82, .5);
+        add(inner, mats, B(.5, 1, .4), '#2563eb', 1.8, .5, -1.1); add(inner, mats, B(.3, .2, .05), '#9fc6e6', 1.8, .75, -.88);
+      } else { // bongkar: dok gudang + tumpukan kardus + papan centang
+        add(inner, mats, B(3.4, 2, 1.4), '#cfd4dc', 0, 1, -1.3); add(inner, mats, B(3.4, .5, 1.2), '#5b6575', 0, .25, -.15); add(inner, mats, B(1.2, 1.2, .05), '#3a3f4b', -.6, 1.2, -.58); add(inner, mats, B(1.2, 1.2, .05), '#3a3f4b', .9, 1.2, -.58);
+        [[-1.3, .9, 0], [-.8, .9, 0], [-1.05, .9, 1]].forEach(([px, pz, l]) => add(inner, mats, B(.45, .45, .45), '#c8a27a', px, .23 + (l ? .45 : 0), pz));
+        add(inner, mats, B(.1, 1.2, .1), '#5b6575', 1.6, .6, 1.2); add(inner, mats, B(.8, .6, .06), '#ffffff', 1.6, 1.3, 1.22); add(inner, mats, B(.4, .08, .02), '#2fb344', 1.6, 1.3, 1.26, [0, 0, -.7]);
+      }
+      stations.push({ g, mats, inner, lit: 0 });
+    });
+    // jalur oranye
+    const pts = [[-16, 4], [-11, 4], [-11, -4], [-6, -4], [-1, -4], [-1, 4], [3, 4], [7.5, 4], [7.5, -4], [12, -4], [16.5, -4], [16.5, 4], [21, 4]].map(([x, z]) => V3(x, .3, z));
+    const path = new THREE.CurvePath(); const rad = 1.6; let cur = pts[0].clone();
+    for (let i = 1; i < pts.length - 1; i++) { const p = pts[i], dIn = p.clone().sub(pts[i - 1]).normalize(), dOut = pts[i + 1].clone().sub(p).normalize(); if (dIn.dot(dOut) > .999) continue; const a = p.clone().addScaledVector(dIn, -rad), b = p.clone().addScaledVector(dOut, rad); path.add(new THREE.LineCurve3(cur.clone(), a)); path.add(new THREE.QuadraticBezierCurve3(a, p.clone(), b)); cur = b; }
+    path.add(new THREE.LineCurve3(cur, pts[pts.length - 1].clone()));
+    const TS = 700, RS = 6, baseMat = std('#cfd5e0', .9);
+    scene.add(new THREE.Mesh(new THREE.TubeGeometry(path, TS, .12, RS, false), baseMat));
+    const progTube = new THREE.Mesh(new THREE.TubeGeometry(path, TS, .2, RS, false), new THREE.MeshStandardMaterial({ color: '#f76707', emissive: '#f76707', emissiveIntensity: .35, roughness: .5 })); progTube.geometry.setDrawRange(0, 0); scene.add(progTube);
+    SP.forEach(([x, z]) => { const d = new THREE.Mesh(new THREE.CylinderGeometry(.42, .42, .08, 20), std('#f76707', .6)); d.position.set(x, .05, z); scene.add(d); });
+    // tepi jalan: pohon & rambu
+    { const r = rng(31), trunkM = std('#8c6a4f', .9, { flatShading: true }), leafA = std('#4f9a52', .9, { flatShading: true }), leafB = std('#74b85c', .9, { flatShading: true }), signM = std('#2fb344', .6), poleM = std('#9aa3b2', .5);
+      for (let x = -28; x <= 32; x += 2.8) for (const zb of [-12.5, 12.5]) { if (r() < .35) continue; const px = x + (r() - .5) * 1.6, pz = zb + (r() - .5) * 3;
+        if (r() < .12) { const p = new THREE.Mesh(new THREE.BoxGeometry(.1, 1.8, .1), poleM); p.position.set(px, .9, pz); scene.add(p); const s = new THREE.Mesh(new THREE.BoxGeometry(1.4, .7, .06), signM); s.position.set(px, 1.9, pz); s.castShadow = true; scene.add(s); continue; }
+        const h = 1 + r() * 1.2; const t = new THREE.Mesh(new THREE.CylinderGeometry(.12, .16, h, 6), trunkM); t.position.set(px, h / 2, pz); t.castShadow = true; scene.add(t); const c = new THREE.Mesh(new THREE.IcosahedronGeometry(.7 + r() * .5, 0), r() > .5 ? leafA : leafB); c.position.set(px, h + .5, pz); c.castShadow = true; scene.add(c); } }
+    const samples = 1200, stationU = SP.map(([x, z]) => { let best = 0, bd = 1e9; for (let s = 0; s <= samples; s++) { const q = path.getPointAt(s / samples); const d = (q.x - x) ** 2 + (q.z - z) ** 2; if (d < bd) { bd = d; best = s / samples; } } return best; });
+    stationU[0] = 0; stationU[stationU.length - 1] = 1;
+    // tokoh: truk B 9123 UXT
+    const truck = makeTruck('#2563eb'); truck.g.scale.setScalar(.95); truck.beacon.visible = false; scene.add(truck.g); const chr = truck.g;
+
+    let lastT = 0, targetU = 0, shownU = 0, step = -1, lastPos = V3(), halfW = 10, halfH = 10, aspect = 1;
+    function mapProgress(p){ const n = SP.length - 1, u = clamp(p, 0, 1) * n, i = Math.min(n - 1, Math.floor(u)), f = u - i, w = smooth(.22, .82, f); return { u: stationU[i] + (stationU[i + 1] - stationU[i]) * w, step: w < .5 ? i : i + 1 }; }
+    function setProgress(p){ const m = mapProgress(p); targetU = m.u; if (m.step !== step) { step = m.step; setStepUI(step); } loop.request(); }
+    function themeColors(){
+      const bg = themeColor('--tblr-bg-surface-secondary'), b3 = themeColor('--tblr-border-color'), dark = isDark();
+      scene.background = new THREE.Color(bg); ground.material.color.set(bg).lerp(new THREE.Color(b3), .2);
+      if (grid) { scene.remove(grid); grid.geometry.dispose(); grid.material.dispose(); }
+      grid = new THREE.GridHelper(160, 80, b3, b3); grid.material.transparent = true; grid.material.opacity = .6; grid.position.y = .01; scene.add(grid);
+      CLAY.set(b3).lerp(new THREE.Color(dark ? '#c9cfdb' : '#ffffff'), dark ? .3 : .45);
+      baseMat.color.set(b3).lerp(new THREE.Color(dark ? '#ffffff' : '#000000'), .1);
+      hemi.intensity = dark ? .8 : 1.3; sun.intensity = dark ? 1.9 : 2.4;
+      stations.forEach(s => s.mats.forEach(m => m.color.copy(CLAY).lerp(m.userData.target, s.lit)));
+      loop.request();
+    }
+    const loop = createLoop(canvas, (dt) => {
+      const still = rmq.matches, now = performance.now(), cdt = Math.min(.12, lastT ? (now - lastT) / 1000 : dt); lastT = now;
+      const k = still ? 1 : 1 - Math.exp(-cdt * 5);
+      shownU += (targetU - shownU) * k; if (Math.abs(targetU - shownU) > 1e-4) loop.request(); else shownU = targetU;
+      const pos = path.getPointAt(clamp(shownU, 0, 1)), tan = path.getTangentAt(clamp(shownU, 0, .9999));
+      const moved = pos.distanceTo(lastPos); lastPos.copy(pos);
+      chr.position.set(pos.x, 0, pos.z);
+      if (moved > 1e-4) { chr.rotation.y = Math.atan2(tan.x, tan.z); truck.wheels.forEach(w => w.rotation.x += moved * 4); }
+      progTube.geometry.setDrawRange(0, Math.floor(shownU * TS) * RS * 6);
+      stations.forEach((s, i) => { const goal = shownU >= stationU[i] - .004 ? 1 : 0, prev = s.lit; s.lit += (goal - s.lit) * (still ? 1 : Math.min(1, cdt * 4)); if (Math.abs(goal - s.lit) > .002) loop.request(); else s.lit = goal; if (prev !== s.lit) s.mats.forEach(m => m.color.copy(CLAY).lerp(m.userData.target, s.lit)); s.inner.scale.setScalar(.82 + .18 * s.lit); });
+      const desired = V3(pos.x, 0, pos.z);
+      if (aspect >= .9) desired.addScaledVector(V3(1, 0, -1).normalize(), -halfW * .3);
+      if (camTarget.lengthSq() === 0) camTarget.copy(desired);
+      camTarget.lerp(desired, still ? 1 : 1 - Math.exp(-cdt * 3.5)); if (camTarget.distanceTo(desired) > .01) loop.request();
+      cam.position.copy(camTarget).addScaledVector(camDir, 60); cam.lookAt(camTarget);
+      sun.position.copy(camTarget).add(V3(14, 26, 8)); sun.target.position.copy(camTarget);
+      renderer.render(scene, cam);
+    }, () => false);
+    /* Layar sempit: truk dibingkai di ruang kosong ANTARA kartu judul dan kartu langkah (diukur dari DOM) dengan frustum ortografis asimetris */
+    const head = stage.querySelector('.story-head'), card = stage.querySelector('#storyCard');
+    let frameY = .5;
+    function applyFrame(){
+      frameY = .5;
+      if (aspect < .9) { const r = stage.getBoundingClientRect(), a = head.getBoundingClientRect().bottom - r.top, b = card.getBoundingClientRect().top - r.top; if (r.height > 0 && b > a) frameY = clamp(((a + b) / 2 + 22) / r.height, .2, .8); }
+      Object.assign(cam, { left: -halfW, right: halfW, top: 2 * halfH * frameY, bottom: -2 * halfH * (1 - frameY) }); cam.updateProjectionMatrix();
+    }
+    watchSize(stage, renderer, (w, h) => { aspect = w / h; halfH = aspect < .9 ? 10.5 : 8.6; halfW = halfH * aspect; applyFrame(); loop.request(); });
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(head);
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(card);
+    if (document.fonts) document.fonts.ready.then(() => { applyFrame(); loop.request(); });
+    themeColors(); bus.addEventListener('theme', () => requestAnimationFrame(themeColors));
+    return { setProgress, loop, renderer, scene, cam, chr, frame: () => frameY };
+  }
+  let story = null;
+  try { story = createStory(); } catch (e) { console.warn('Cerita 3D gagal', e); storySec.classList.add('no-webgl'); }
+  window.__armada.views = { heroV, cfgV, story };
+  if (story) { const upd = () => story.setProgress(storyProgress()); addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd(); }
+}
+if (!window.__armada.views || !window.__armada.views.story) {
+  const nodes = $$('#storySvg .node');
+  const upd = () => { const n = Math.round(storyProgress() * 4); setStepUI(n); nodes.forEach((c, k) => c.classList.toggle('on', k <= n)); };
+  addEventListener('scroll', upd, { passive: true }); upd();
+}
+</script>
+</body>
+</html>

@@ -1049,7 +1049,7 @@ if (THREE) {
       box(g, .9, 1.6, .5, M('#cdd6e4', .7), -3.0, .8, -1.9, { cast: true });
       // lampu panel (menyala saat poli disorot / malam)
       const lampMat = new THREE.MeshStandardMaterial({ color: '#f6f8fc', emissive: '#fff4d6', emissiveIntensity: .05 });
-      box(g, 2.6, .06, 1.0, lampMat, 0, 2.5, -.6);
+      box(g, 2.4, .14, .08, lampMat, .4, 2.15, -2.3);
       // papan nama di atas pintu
       const signTex = canvasTex(256, 64, (x, w, hh) => { x.fillStyle = R.color; x.fillRect(0, 0, w, hh); x.fillStyle = '#fff'; x.font = `800 34px ${FONT}`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(R.name, w / 2, hh / 2 + 2); });
       const sign = new THREE.Mesh(new THREE.PlaneGeometry(1.7, .42), new THREE.MeshBasicMaterial({ map: signTex, toneMapped: false })); sign.position.set(1.9, 1.75, 2.42); g.add(sign);
@@ -1121,7 +1121,7 @@ if (THREE) {
       const RM = rmq.matches, s = store.get(), k = RM || first ? 1 : 1 - Math.exp(-dt * 3);
       // kamera: fokus ke ruang poli terpilih
       const sel = s.poli;
-      tmp.copy(sel >= 0 ? V(ROOMS[sel].x + .4, .4, -4.2) : V(0, .4, 0)); if (s.view === 'dekat' && sel < 0) tmp.set(-1.5, .4, 1.5);
+      tmp.copy(sel >= 0 ? V(ROOMS[sel].x + .4, .8, -4.9) : V(0, .4, 0)); if (s.view === 'dekat' && sel < 0) tmp.set(-1.5, .4, 1.5);
       focus.lerp(tmp, k);
       const zWant = (sel >= 0 ? (s.view === 'atas' ? 1.7 : 1.85) : 1) * (s.view === 'dekat' ? 1.45 : 1);
       zoom += (zWant - zoom) * k; cam.zoom = zoom; cam.updateProjectionMatrix();
@@ -1134,7 +1134,7 @@ if (THREE) {
       const ang = clamp((s.hour - 6) / 12, 0, 1) * Math.PI, warm = 1 - Math.sin(ang);
       sun.position.copy(center).add(V(Math.cos(ang) * 22, 8 + Math.sin(ang) * 20, 12)); sun.target.position.copy(center);
       const dk = isDark() ? .78 : 1;
-      hemi.intensity = (1.6 - nightK * 1.25) * dk; hemi.color.set('#ffffff').lerp(col.set('#8fa6d6'), nightK);
+      hemi.intensity = (1.6 - nightK * .95) * dk; hemi.color.set('#ffffff').lerp(col.set('#8fa6d6'), nightK);
       sun.intensity = (2.1 - nightK * 1.95) * dk; sun.color.set('#fff6ea').lerp(col.set('#ffb36b'), warm * .7 * (1 - nightK)).lerp(col.set('#9db4ff'), nightK);
       winMat.emissiveIntensity = nightK * 1.4;
       stageEl.classList.toggle('night', nightK > .5);
