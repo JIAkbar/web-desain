@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kanvas — Desain Kolaboratif untuk Studio Kreatif Indonesia</title>
+<meta name="description" content="Kanvas: alat desain kolaboratif untuk studio kreatif Indonesia. Satu kanvas untuk brief, sketsa, layout, review, dan ekspor.">
+<meta name="theme-color" content="#ffffff">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script>
+  (function(){var t;try{t=localStorage.getItem('kanvas-theme')}catch(e){}
+  if(t!=='light'&&t!=='dark'){t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}
+  document.documentElement.setAttribute('data-theme',t);})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://esm.sh" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="module" src="https://esm.sh/@spectrum-web-components/bundle@1.12.4/elements.js?bundle"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<style>
+  /* ---------- Spectrum token overrides: Source Sans 3 everywhere, no monospace ---------- */
+  sp-theme{
+    --kv-sans:'Source Sans 3','Source Sans Pro',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --spectrum-sans-serif-font-family:'Source Sans 3';
+    --spectrum-sans-font-family-stack:var(--kv-sans);
+    --spectrum-global-font-family-base:var(--kv-sans);
+    --spectrum-code-font-family:'Source Sans 3';
+    --spectrum-code-font-family-stack:var(--kv-sans);
+    --spectrum-global-font-family-code:var(--kv-sans);
+    --spectrum-alias-code-text-font-family:var(--kv-sans);
+    display:block;min-height:100vh;
+    background:var(--kv-bg);color:var(--kv-ink);
+    font-family:var(--kv-sans);font-size:17px;line-height:1.6;
+  }
+  :root{
+    --kv-display:'Bricolage Grotesque','Source Sans 3',system-ui,sans-serif;
+    --kv-sans:'Source Sans 3','Source Sans Pro',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --kv-accent:#6a4cf5;
+    --kv-path:#f5871f;
+    --radius:18px;
+  }
+  [data-theme=light]{
+    --kv-bg:#ffffff;--kv-bg-2:#f6f5f2;--kv-surface:#ffffff;--kv-ink:#1b1b1b;--kv-muted:#5c5c5c;--kv-line:#e3e1dc;
+    --kv-stage-a:#fbf7ff;--kv-stage-b:#efe9ff;
+    --kv-shadow:0 1px 2px rgba(20,16,40,.06),0 14px 36px -16px rgba(20,16,40,.22);
+    --kv-shadow-lg:0 40px 90px -40px rgba(40,20,90,.45);
+    color-scheme:light;
+  }
+  [data-theme=dark]{
+    --kv-bg:#121212;--kv-bg-2:#1b1b1b;--kv-surface:#1f1f1f;--kv-ink:#f2f2f2;--kv-muted:#b3b3b3;--kv-line:#333333;
+    --kv-stage-a:#1f1a2e;--kv-stage-b:#131118;
+    --kv-shadow:0 1px 2px rgba(0,0,0,.5),0 14px 36px -16px rgba(0,0,0,.8);
+    --kv-shadow-lg:0 40px 90px -40px rgba(0,0,0,.95);
+    color-scheme:dark;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  body{margin:0;background:var(--kv-bg);color:var(--kv-ink);font-family:var(--kv-sans);font-size:17px;line-height:1.6;overflow-x:clip;-webkit-font-smoothing:antialiased;transition:background-color .3s}
+  code,kbd,pre,samp,tt{font-family:inherit}
+  img,svg,canvas{display:block;max-width:100%}
+  h1,h2,h3,h4{margin:0;font-family:var(--kv-display);line-height:1.05;letter-spacing:-.02em;font-weight:700}
+  p{margin:0}
+  a{color:inherit}
+  .num{font-variant-numeric:tabular-nums}
+  .wrap{width:min(1240px,100% - 40px);margin-inline:auto}
+  @media (max-width:420px){.wrap{width:calc(100% - 32px)}}
+  :focus-visible{outline:2px solid var(--kv-accent);outline-offset:3px;border-radius:6px}
+  .skip{position:absolute;left:-999px;top:8px;z-index:100;background:var(--kv-ink);color:var(--kv-bg);padding:8px 14px;border-radius:8px}
+  .skip:focus{left:12px}
+  sp-slider,sp-tabs,sp-action-group,sp-picker,sp-textfield,sp-button,sp-swatch-group,sp-progress-bar{max-width:100%}
+  sp-slider:not(:defined),sp-tabs:not(:defined),sp-action-group:not(:defined),sp-picker:not(:defined),sp-swatch-group:not(:defined),sp-switch:not(:defined),sp-accordion:not(:defined),sp-textfield:not(:defined),sp-action-menu:not(:defined),sp-progress-bar:not(:defined){visibility:hidden}
+  .ic{max-width:none;width:18px;height:18px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:.8rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--kv-accent)}
+  .eyebrow::before{content:"";width:24px;height:2px;border-radius:2px;background:currentColor}
+
+  /* nav */
+  .nav{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--kv-bg) 80%,transparent);-webkit-backdrop-filter:saturate(1.4) blur(14px);backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--kv-line)}
+  .nav .wrap{display:flex;align-items:center;gap:16px;height:66px}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--kv-display);font-weight:800;font-size:1.25rem;letter-spacing:-.02em}
+  .brand svg{width:32px;height:32px;flex:0 0 auto}
+  .nav-links{display:flex;gap:2px;margin-left:24px}
+  .nav-links a{text-decoration:none;color:var(--kv-muted);font-weight:600;font-size:.95rem;padding:6px 12px;border-radius:999px}
+  .nav-links a:hover{color:var(--kv-ink);background:var(--kv-bg-2)}
+  .nav-actions{display:flex;align-items:center;gap:8px;margin-left:auto;flex:0 0 auto}
+  .only-mobile{display:none!important}
+  @media (max-width:960px){.nav-links{display:none}.only-mobile{display:inline-flex!important}}
+  @media (max-width:560px){.hide-sm{display:none!important}}
+
+  /* hero */
+  .hero{padding:clamp(28px,5vw,64px) 0 48px;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:-20% -10% auto auto;width:70%;height:90%;background:radial-gradient(closest-side,color-mix(in srgb,var(--kv-accent) 22%,transparent),transparent);pointer-events:none;filter:blur(10px)}
+  .hero-grid{position:relative;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,4vw,56px);align-items:center}
+  .hero h1{font-size:clamp(2.5rem,5vw,4.6rem);font-weight:800;letter-spacing:-.035em;line-height:.98;margin:18px 0 20px}
+  .hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--kv-accent),#e8478b 60%,var(--kv-path));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{font-size:clamp(1.02rem,1.3vw,1.18rem);color:var(--kv-muted);max-width:34em}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 30px}
+  .people{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--kv-muted);font-size:.95rem}
+  .people b{color:var(--kv-ink)}
+  .faces{display:flex}
+  .face{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:.78rem;border:2px solid var(--kv-bg);margin-left:-8px}
+  .face:first-child{margin-left:0}
+  .mini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:26px;padding-top:22px;border-top:1px solid var(--kv-line)}
+  .mini b{display:block;font-family:var(--kv-display);font-size:clamp(1.3rem,2.2vw,1.7rem);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .mini span{font-size:.84rem;color:var(--kv-muted);line-height:1.3;display:block}
+
+  .stage{position:relative;border-radius:26px;overflow:hidden;background:radial-gradient(90% 80% at 50% 25%,var(--kv-stage-a),var(--kv-stage-b));border:1px solid var(--kv-line);box-shadow:var(--kv-shadow-lg);isolation:isolate;touch-action:pan-y}
+  .stage canvas{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .8s}
+  .stage.ready canvas{opacity:1}
+  .hero .stage{height:clamp(460px,72vh,660px)}
+  .stage .fallback{position:absolute;inset:0;display:none;place-items:center}
+  .stage.no-webgl .fallback{display:grid}
+  .stage.no-webgl canvas{display:none}
+  .fb-stack{position:relative;width:200px;height:250px;transform:rotateX(55deg) rotateZ(-40deg);transform-style:preserve-3d}
+  .fb-stack i{position:absolute;inset:0;border-radius:14px;border:1.5px solid var(--kv-accent);background:color-mix(in srgb,var(--kv-surface) 70%,transparent)}
+  .glass{background:color-mix(in srgb,var(--kv-surface) 78%,transparent);-webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3);border:1px solid color-mix(in srgb,var(--kv-line) 80%,transparent);border-radius:16px;box-shadow:var(--kv-shadow)}
+  .stage-top{position:absolute;top:14px;left:14px;right:14px;z-index:2;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;pointer-events:none}
+  .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;font-size:.84rem;font-weight:600;border-radius:999px;font-variant-numeric:tabular-nums}
+  .stage-panel{position:absolute;left:14px;right:14px;bottom:14px;z-index:2;padding:10px 16px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 20px;align-items:end}
+  .stage-panel sp-slider{width:100%}
+  .tip{position:absolute;z-index:3;pointer-events:none;transform:translate(-50%,calc(-100% - 10px));padding:5px 10px;border-radius:8px;font-size:.8rem;font-weight:600;white-space:nowrap;background:var(--kv-ink);color:var(--kv-bg);opacity:0;transition:opacity .15s}
+  .tip.on{opacity:1}
+  @media (max-width:960px){.hero-grid{grid-template-columns:minmax(0,1fr)}.hero .stage{height:min(560px,70vh);min-height:440px}}
+  @media (max-width:520px){.stage-panel{grid-template-columns:minmax(0,1fr)}}
+
+  /* sections */
+  section{scroll-margin-top:72px}
+  .sec{padding:clamp(72px,10vw,128px) 0}
+  .sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px 48px;align-items:end;margin-bottom:clamp(32px,5vw,56px)}
+  .sec-head h2{font-size:clamp(2.1rem,4.4vw,3.5rem);font-weight:800;letter-spacing:-.03em;margin-top:14px}
+  .sec-head p{color:var(--kv-muted);max-width:34em}
+  @media (max-width:820px){.sec-head{grid-template-columns:minmax(0,1fr)}}
+  .card{background:var(--kv-surface);border:1px solid var(--kv-line);border-radius:var(--radius);box-shadow:var(--kv-shadow)}
+
+  .features{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px}
+  .feat{grid-column:span 2;padding:26px;display:flex;flex-direction:column;gap:10px;transition:transform .25s}
+  .feat:hover{transform:translateY(-3px)}
+  .feat.wide{grid-column:span 3}
+  .feat .ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;color:#fff;margin-bottom:10px}
+  .feat .ico svg{width:22px;height:22px}
+  .feat h3{font-size:1.3rem}
+  .feat p{color:var(--kv-muted);font-size:.98rem}
+  .feat .meta{margin-top:auto;padding-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  @media (max-width:960px){.feat,.feat.wide{grid-column:span 3}}
+  @media (max-width:620px){.feat,.feat.wide{grid-column:span 6}}
+
+  /* playground */
+  .play{background:var(--kv-bg-2);border-top:1px solid var(--kv-line);border-bottom:1px solid var(--kv-line)}
+  .play-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:stretch}
+  .play .stage{height:clamp(480px,74vh,680px);cursor:grab}
+  .play .stage:active{cursor:grabbing}
+  .panel{padding:20px;display:flex;flex-direction:column;gap:18px;min-width:0}
+  .panel h3{font-size:1.2rem}
+  .ctl{display:grid;gap:8px;min-width:0}
+  .ctl-label{font-size:.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--kv-muted)}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .panel sp-tabs{width:100%}
+  .panel sp-tab-panel{font-size:.92rem;color:var(--kv-muted);padding-top:8px}
+  .panel sp-picker{width:100%}
+  .panel-foot{margin-top:auto;display:grid;gap:12px}
+  .panel-foot .btns{display:flex;gap:10px;flex-wrap:wrap}
+  @media (max-width:980px){.play-grid{grid-template-columns:minmax(0,1fr)}.play .stage{height:min(540px,64vh);min-height:400px}}
+
+  /* story */
+  .story{position:relative;height:540vh;background:var(--kv-bg)}
+  .story-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+  .story-stage canvas{position:absolute;inset:0;width:100%;height:100%}
+  .story-fallback{position:absolute;inset:0;display:none;place-items:center;padding:24px}
+  .story.no-webgl .story-fallback{display:grid}
+  .story.no-webgl canvas{display:none}
+  .story-fallback svg{width:min(900px,100%);height:auto}
+  .story-fallback .node{fill:var(--kv-surface);stroke:var(--kv-line);stroke-width:2;transition:fill .4s}
+  .story-fallback .node.on{fill:var(--kv-path)}
+  .story-ui{position:absolute;inset:0;pointer-events:none;padding:90px 0 28px}
+  .story-ui .wrap{position:relative;height:100%;display:flex;flex-direction:column;justify-content:space-between}
+  /* judul cerita di atas kartu tembus pandang supaya tidak tertimpa objek 3D */
+  .story-head{max-width:460px;width:fit-content;background:color-mix(in srgb,var(--kv-bg) 84%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid color-mix(in srgb,var(--kv-line) 80%,transparent);border-radius:20px;padding:18px 22px 20px}
+  .story-head h2{font-size:clamp(1.8rem,3.4vw,2.9rem);font-weight:800;letter-spacing:-.03em;margin-top:10px}
+  .story-head p{color:var(--kv-muted);margin-top:8px;font-size:.98rem}
+  .steps{position:relative;max-width:430px;min-height:226px}
+  .step{position:absolute;left:0;right:0;bottom:0;opacity:0;transform:translateY(18px);transition:opacity .45s,transform .45s;pointer-events:none}
+  .step.on{opacity:1;transform:none;pointer-events:auto}
+  .step-card{padding:20px 22px;border-radius:20px;background:color-mix(in srgb,var(--kv-surface) 92%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+  .step .top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .step .n{font-family:var(--kv-display);font-size:2.3rem;font-weight:800;line-height:1;color:var(--kv-path);font-variant-numeric:tabular-nums}
+  .step h3{font-size:1.35rem;margin:10px 0 6px}
+  .step p{font-size:.96rem;color:var(--kv-muted)}
+  .story-progress{display:flex;align-items:center;gap:12px;margin-top:14px;font-size:.84rem;font-weight:600;color:var(--kv-muted);font-variant-numeric:tabular-nums}
+  .bar{flex:0 0 150px;height:5px;border-radius:5px;background:var(--kv-line);overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:var(--kv-path);border-radius:5px}
+  @media (max-width:760px){
+    .story-ui{padding:78px 0 16px}
+    .story-head{padding:12px 16px 14px}
+    .story-head h2{font-size:1.5rem}
+    .story-head p{display:none}
+    .steps{max-width:none;min-height:204px}
+    .step-card{padding:16px 18px}
+    .step .n{font-size:1.9rem}
+    .step h3{font-size:1.14rem;margin-top:6px}
+    .step p{font-size:.9rem}
+  }
+
+  /* stats & testimonials */
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));overflow:hidden;margin-bottom:clamp(40px,6vw,72px)}
+  .stat{padding:28px 24px;border-left:1px solid var(--kv-line)}
+  .stat:first-child{border-left:0}
+  .stat b{display:block;font-family:var(--kv-display);font-weight:800;font-size:clamp(2.2rem,4.4vw,3.6rem);letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+  .stat span{display:block;margin-top:10px;color:var(--kv-muted);font-size:.95rem}
+  @media (max-width:760px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat:nth-child(3){border-left:0}.stat:nth-child(n+3){border-top:1px solid var(--kv-line)}}
+  .testi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .testi figure{margin:0;padding:26px;display:flex;flex-direction:column;gap:18px}
+  .testi blockquote{margin:0;font-size:1.06rem;line-height:1.6}
+  .testi figcaption{display:flex;align-items:center;gap:12px;margin-top:auto;font-size:.92rem}
+  .testi figcaption b{display:block}
+  .testi figcaption span{color:var(--kv-muted);font-size:.84rem}
+  .testi .face{width:42px;height:42px;margin:0;border:0}
+  @media (max-width:960px){.testi{grid-template-columns:minmax(0,1fr)}}
+
+  /* pricing */
+  .price-toggle{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:28px}
+  .prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch}
+  .plan{padding:26px;display:flex;flex-direction:column;gap:16px}
+  .plan.hot{border:2px solid var(--kv-accent);box-shadow:var(--kv-shadow-lg)}
+  .plan .head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+  .plan h3{font-size:1.35rem}
+  .plan .desc{color:var(--kv-muted);font-size:.95rem}
+  .price{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+  .price b{font-family:var(--kv-display);font-weight:800;font-size:clamp(2.1rem,3.4vw,2.7rem);letter-spacing:-.03em;line-height:1}
+  .price span{color:var(--kv-muted);font-size:.9rem}
+  .plan ul{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:.98rem}
+  .plan li{display:flex;gap:10px;align-items:flex-start}
+  .plan li svg{color:var(--kv-accent);margin-top:4px;flex:0 0 auto}
+  .plan sp-button{margin-top:auto;width:100%}
+  @media (max-width:960px){.prices{grid-template-columns:minmax(0,1fr)}}
+
+  /* faq */
+  .faq-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:32px 64px}
+  .faq-grid sp-accordion{border-radius:var(--radius)}
+  #faqList p{margin:0;font-size:1rem;line-height:1.6;color:var(--kv-muted)}
+  @media (max-width:860px){.faq-grid{grid-template-columns:minmax(0,1fr)}}
+
+  /* cta */
+  .cta{border-radius:30px;padding:clamp(28px,5vw,64px);background:radial-gradient(120% 140% at 100% 0%,#ff8a5b 0%,#e8478b 35%,#6a4cf5 75%,#2a1c6e 100%);color:#fff;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:32px;align-items:center;position:relative;overflow:hidden}
+  .cta h2{font-size:clamp(2.1rem,4.4vw,3.5rem);font-weight:800;letter-spacing:-.03em}
+  .cta>div>p{opacity:.9;margin-top:14px;max-width:30em}
+  .cta .perks{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+  .cta .perks span{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);border-radius:999px;padding:5px 12px;font-size:.88rem;font-weight:600}
+  .cta .pill{display:inline-flex;padding:5px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.55);font-size:.86rem;font-weight:700}
+  .cta form{position:relative;z-index:1;padding:22px;display:grid;gap:12px;color:var(--kv-ink)}
+  .cta form sp-textfield,.cta form sp-picker{width:100%}
+  .cta form .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+  .cta form sp-button{width:100%}
+  .cta .deco{position:absolute;right:-50px;bottom:-70px;width:min(340px,60vw);opacity:.18;pointer-events:none}
+  @media (max-width:860px){.cta{grid-template-columns:minmax(0,1fr)}}
+  @media (max-width:480px){.cta form .two{grid-template-columns:minmax(0,1fr)}.cta form{padding:16px}}
+  .toast-wrap{position:fixed;left:12px;right:12px;bottom:14px;z-index:90;display:flex;justify-content:center;pointer-events:none}
+  .toast-wrap sp-toast{pointer-events:auto;max-width:100%}
+
+  /* footer */
+  footer{padding:64px 0 32px;border-top:1px solid var(--kv-line);margin-top:clamp(72px,10vw,120px);background:var(--kv-bg-2)}
+  .foot-grid{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));gap:32px}
+  .foot-grid h4{font-family:var(--kv-sans);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--kv-muted);margin-bottom:14px}
+  .foot-grid a:not(.brand){display:block;text-decoration:none;padding:4px 0;font-size:.97rem}
+  .foot-grid a:not(.brand):hover{color:var(--kv-accent)}
+  .foot-grid p{color:var(--kv-muted);font-size:.95rem;max-width:26em;margin-top:14px}
+  .foot-bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--kv-line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.88rem;color:var(--kv-muted)}
+  @media (max-width:820px){.foot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.foot-grid>div:first-child{grid-column:span 2}}
+</style>
+</head>
+<body>
+<sp-theme system="spectrum" color="light" scale="medium" id="theme">
+<a class="skip" href="#main">Lewati ke konten</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6a4cf5"/><stop offset=".6" stop-color="#e8478b"/><stop offset="1" stop-color="#f5871f"/></linearGradient>
+    <symbol id="logo" viewBox="0 0 32 32"><rect x="1" y="1" width="30" height="30" rx="9" fill="url(#lg)"/><rect x="8" y="12" width="13" height="13" rx="3" fill="#fff" opacity=".45"/><rect x="11" y="9" width="13" height="13" rx="3" fill="#fff" opacity=".7"/><rect x="14" y="6" width="11" height="11" rx="3" fill="#fff"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5 9-5Z"/><path d="M3 13l9 5 9-5"/><path d="M3 17.5l9 5 9-5" opacity=".5"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"/><circle cx="17" cy="9" r="2.6"/><path d="M16.5 14.6c2.6.2 4.4 2 5 4.9"/></symbol>
+    <symbol id="i-comment" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4V5Z"/><path d="M8 9.5h8M8 12.5h5"/></symbol>
+    <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 1.8-.8 1.8-1.7 0-1.3-1-1.6-1-2.7 0-1 .8-1.6 1.8-1.6H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3Z"/><circle cx="7.5" cy="11" r="1.2"/><circle cx="10.5" cy="7.2" r="1.2"/><circle cx="15" cy="7.5" r="1.2"/></symbol>
+    <symbol id="i-export" viewBox="0 0 24 24"><path d="M12 15V3M7.5 7.5L12 3l4.5 4.5"/><path d="M4 14v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M8.5 16.5a5 5 0 0 1 7 0M5 13a10 10 0 0 1 4-2.4M19 13a10 10 0 0 0-3-2"/><circle cx="12" cy="20" r=".8"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  </defs>
+</svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Kanvas, ke atas"><svg><use href="#logo"/></svg><span>Kanvas</span></a>
+    <nav class="nav-links" aria-label="Navigasi utama">
+      <a href="#fitur">Fitur</a><a href="#kendali">Lapisan 3D</a><a href="#alur">Alur kerja</a><a href="#harga">Harga</a><a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-actions">
+      <sp-action-button quiet id="themeBtn" label="Ganti ke tema gelap" title="Ganti tema terang/gelap"><svg slot="icon" class="ic"><use href="#i-moon"/></svg></sp-action-button>
+      <sp-button class="hide-sm" variant="accent" size="m" href="#daftar">Coba gratis</sp-button>
+      <sp-action-menu class="only-mobile" label="Buka menu" placement="bottom-end" id="menu">
+        <svg slot="icon" class="ic"><use href="#i-menu"/></svg>
+        <sp-menu-item href="#fitur">Fitur</sp-menu-item>
+        <sp-menu-item href="#kendali">Lapisan 3D</sp-menu-item>
+        <sp-menu-item href="#alur">Alur kerja</sp-menu-item>
+        <sp-menu-item href="#harga">Harga</sp-menu-item>
+        <sp-menu-item href="#faq">FAQ</sp-menu-item>
+        <sp-menu-divider></sp-menu-divider>
+        <sp-menu-item href="#daftar">Coba gratis</sp-menu-item>
+      </sp-action-menu>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div>
+        <sp-badge variant="indigo" size="s">Baru · Mode multiplayer</sp-badge>
+        <h1>Desain bareng, <em>berlapis-lapis</em>, di satu kanvas.</h1>
+        <p class="lead">Kanvas membantu studio kreatif Indonesia mengerjakan brief, sketsa, layout, review klien, sampai ekspor file — real-time, di browser, tanpa kirim-kirim file “final_rev7_beneran.pdf”.</p>
+        <div class="hero-cta">
+          <sp-button variant="accent" size="l" href="#daftar">Mulai gratis</sp-button>
+          <sp-button variant="secondary" treatment="outline" size="l" href="#kendali">Bongkar lapisannya</sp-button>
+        </div>
+        <div class="people">
+          <div class="faces" aria-hidden="true"><span class="face" style="background:#6a4cf5">S</span><span class="face" style="background:#e8478b">B</span><span class="face" style="background:#f5871f">A</span><span class="face" style="background:#12805c">W</span></div>
+          <span><b class="num">640+</b> studio dari Medan sampai Makassar</span>
+        </div>
+        <div class="mini">
+          <div><b class="num">12 rb</b><span>desainer aktif</span></div>
+          <div><b class="num">3× </b><span>review klien lebih cepat</span></div>
+          <div><b class="num">4,8</b><span>rating dari 1.900 ulasan</span></div>
+        </div>
+      </div>
+      <div class="stage" id="heroStage">
+        <canvas id="heroCanvas" role="img" aria-label="Tumpukan lapisan artboard 3D sebuah desain poster yang melayang dan dapat dipisahkan. Arahkan kursor untuk memiringkan, geser slider untuk mengatur jarak lapisan."></canvas>
+        <div class="fallback" aria-hidden="true"><div class="fb-stack"><i style="transform:translateZ(0)"></i><i style="transform:translateZ(30px)"></i><i style="transform:translateZ(60px)"></i><i style="transform:translateZ(90px)"></i></div></div>
+        <div class="stage-top">
+          <span class="chip glass"><sp-status-light variant="positive" size="s" style="padding-block:0">3 orang sedang mengedit</sp-status-light></span>
+          <span class="chip glass hide-sm" id="heroLayerChip">6 lapisan · Poster</span>
+        </div>
+        <div class="tip" id="heroTip" aria-hidden="true"></div>
+        <div class="stage-panel glass">
+          <sp-slider id="heroSpread" label="Jarak antar-lapisan" min="0" max="100" value="55" data-spread></sp-slider>
+          <sp-swatch-group id="heroSwatch" selects="single" size="s" rounding="full" aria-label="Warna aksen" data-accent></sp-swatch-group>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="sec" id="fitur">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Kenapa Kanvas</span><h2>Semua lapisan kerja studio, akhirnya rapi.</h2></div>
+        <p>Dari brief klien di WhatsApp sampai file cetak di percetakan langganan: Kanvas menyatukan alurnya supaya tim kreatif bisa fokus berkarya.</p>
+      </div>
+      <div class="features">
+        <article class="card feat wide"><div class="ico" style="background:#6a4cf5"><svg class="ic"><use href="#i-users"/></svg></div><h3>Multiplayer sungguhan</h3><p>Lihat kursor rekan setim bergerak, edit lapisan yang sama tanpa bentrok, dan putar ulang riwayat perubahan kapan saja.</p><div class="meta"><sp-status-light variant="positive" size="s">Real-time</sp-status-light><sp-badge size="s" variant="neutral">Riwayat 90 hari</sp-badge></div></article>
+        <article class="card feat wide"><div class="ico" style="background:#e8478b"><svg class="ic"><use href="#i-comment"/></svg></div><h3>Review klien tanpa akun</h3><p>Bagikan tautan, klien menaruh pin komentar langsung di desain. Revisi tercatat per putaran, bukan per chat.</p><div class="meta"><sp-badge size="s" variant="fuchsia">Pin komentar</sp-badge><sp-badge size="s" variant="neutral">Persetujuan</sp-badge></div></article>
+        <article class="card feat"><div class="ico" style="background:#f5871f"><svg class="ic"><use href="#i-palette"/></svg></div><h3>Pustaka brand</h3><p>Warna, tipografi, dan komponen klien tersimpan sebagai pustaka yang selalu sinkron.</p><div class="meta"><sp-badge size="s" variant="orange">Token warna</sp-badge></div></article>
+        <article class="card feat"><div class="ico" style="background:#12805c"><svg class="ic"><use href="#i-layers"/></svg></div><h3>Aset motif nusantara</h3><p>Ribuan motif batik, tenun, dan ilustrasi lokal berlisensi jelas siap pakai.</p><div class="meta"><sp-badge size="s" variant="seafoam">12.000+ aset</sp-badge></div></article>
+        <article class="card feat"><div class="ico" style="background:#0d66d0"><svg class="ic"><use href="#i-export"/></svg></div><h3>Ekspor siap cetak</h3><p>PDF CMYK dengan bleed, PNG untuk media sosial, dan SVG untuk developer — sekali klik.</p><div class="meta"><sp-badge size="s" variant="blue">CMYK</sp-badge><sp-badge size="s" variant="neutral">SVG</sp-badge></div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLAYGROUND -->
+  <section class="sec play" id="kendali">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Lapisan 3D</span><h2>Bongkar desainnya, lapis demi lapis.</h2></div>
+        <p>Setiap desain di Kanvas tersusun dari lapisan. Kontrol di panel ini adalah komponen Spectrum sungguhan — ubah tata letak, jarak, warna aksen, dan template, lalu lihat tumpukannya berubah di 3D.</p>
+      </div>
+      <div class="play-grid">
+        <div class="stage" id="playStage">
+          <canvas id="playCanvas" role="img" aria-label="Lapisan desain 3D interaktif. Seret untuk memutar; tata letak, jarak, dan warna diatur dari panel kontrol."></canvas>
+          <div class="fallback" aria-hidden="true"><div class="fb-stack"><i></i><i style="transform:translateZ(30px)"></i><i style="transform:translateZ(60px)"></i></div></div>
+          <div class="stage-top">
+            <span class="chip glass" id="playChip">Poster acara · Tumpuk</span>
+            <span class="chip glass hide-sm">Seret untuk memutar</span>
+          </div>
+          <div class="tip" id="playTip" aria-hidden="true"></div>
+        </div>
+        <div class="card panel">
+          <div class="row"><h3>Panel lapisan</h3><sp-status-light variant="info" size="s" id="layerCount">6 lapisan</sp-status-light></div>
+          <sp-tabs id="modeTabs" selected="tumpuk" size="m" label="Tata letak lapisan">
+            <sp-tab label="Tumpuk" value="tumpuk"></sp-tab>
+            <sp-tab label="Kipas" value="kipas"></sp-tab>
+            <sp-tab label="Grid" value="grid"></sp-tab>
+            <sp-tab-panel value="tumpuk">Lapisan ditumpuk dan dipisahkan ke arah kedalaman.</sp-tab-panel>
+            <sp-tab-panel value="kipas">Lapisan dibuka seperti kipas kartu.</sp-tab-panel>
+            <sp-tab-panel value="grid">Lapisan dijajarkan berdampingan.</sp-tab-panel>
+          </sp-tabs>
+          <div class="ctl"><sp-slider id="playSpread" label="Jarak antar-lapisan" min="0" max="100" value="55" data-spread></sp-slider></div>
+          <div class="ctl"><span class="ctl-label" id="accLbl">Warna aksen</span><sp-swatch-group id="accentGroup" selects="single" rounding="full" aria-labelledby="accLbl" data-accent></sp-swatch-group></div>
+          <div class="ctl">
+            <sp-field-label for="tplPicker" size="m">Template</sp-field-label>
+            <sp-picker id="tplPicker" label="Template" value="poster">
+              <sp-menu-item value="poster">Poster festival</sp-menu-item>
+              <sp-menu-item value="kopi">Aplikasi kedai kopi</sp-menu-item>
+              <sp-menu-item value="batik">Katalog batik</sp-menu-item>
+            </sp-picker>
+          </div>
+          <div class="ctl"><span class="ctl-label" id="camLbl">Sudut kamera</span>
+            <sp-action-group id="camGroup" selects="single" compact size="m" aria-labelledby="camLbl">
+              <sp-action-button value="depan">Depan</sp-action-button>
+              <sp-action-button value="iso" selected>Isometrik</sp-action-button>
+              <sp-action-button value="samping">Samping</sp-action-button>
+            </sp-action-group>
+          </div>
+          <div class="ctl">
+            <sp-switch id="floatSw" checked>Lapisan melayang</sp-switch>
+            <sp-switch id="darkSw">Tema gelap Spectrum</sp-switch>
+          </div>
+          <div class="panel-foot">
+            <sp-progress-bar id="exportBar" label="Siap diekspor" progress="0" style="width:100%"></sp-progress-bar>
+            <div class="btns"><sp-button variant="accent" id="exportBtn">Ekspor PNG</sp-button><sp-button variant="secondary" treatment="outline" id="flatBtn">Rapatkan</sp-button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section class="story" id="alur" aria-label="Alur kerja desain di Kanvas">
+    <div class="story-stage">
+      <canvas id="storyCanvas" role="img" aria-label="Studio isometrik: seorang desainer membawa artboard mengikuti jalur oranye dari meja brief, sketsa, layout, review, hingga ekspor saat halaman digulir."></canvas>
+      <div class="story-fallback" aria-hidden="true">
+        <svg viewBox="0 0 900 300" id="storySvg">
+          <path d="M80 150 H820" stroke="var(--kv-path)" stroke-width="6" stroke-linecap="round" fill="none"/>
+          <circle class="node" cx="80" cy="150" r="30"/><circle class="node" cx="265" cy="150" r="30"/><circle class="node" cx="450" cy="150" r="30"/><circle class="node" cx="635" cy="150" r="30"/><circle class="node" cx="820" cy="150" r="30"/>
+        </svg>
+      </div>
+      <div class="story-ui">
+        <div class="wrap">
+          <div class="story-head">
+            <span class="eyebrow">Alur kerja studio</span>
+            <h2>Dari brief ke file final, satu jalur.</h2>
+            <p>Gulir dan ikuti Sari membawa artboard poster festival dari meja ke meja di studionya.</p>
+          </div>
+          <div>
+            <div class="steps">
+              <div class="step on"><div class="card step-card"><div class="top"><span class="n">01</span><sp-badge size="s" variant="yellow">Brief</sp-badge></div><h3>Brief masuk</h3><p>Klien mengisi formulir brief di Kanvas: tujuan, ukuran, referensi, tenggat. Semua tersimpan di satu halaman proyek.</p></div></div>
+              <div class="step"><div class="card step-card"><div class="top"><span class="n">02</span><sp-badge size="s" variant="neutral">Sketsa</sp-badge></div><h3>Sketsa kasar</h3><p>Sari menggambar wireframe di tablet. Sketsa langsung menjadi lapisan pertama artboard, bukan foto buram di galeri.</p></div></div>
+              <div class="step"><div class="card step-card"><div class="top"><span class="n">03</span><sp-badge size="s" variant="indigo">Layout</sp-badge></div><h3>Layout &amp; pustaka brand</h3><p>Warna, font, dan motif dari pustaka brand klien diterapkan. Bima mengedit tipografi di lapisan yang sama, real-time.</p></div></div>
+              <div class="step"><div class="card step-card"><div class="top"><span class="n">04</span><sp-badge size="s" variant="fuchsia">Review</sp-badge><sp-status-light size="s" variant="positive">Disetujui</sp-status-light></div><h3>Review klien</h3><p>Klien menaruh tiga pin komentar dari ponselnya. Revisi selesai sore itu juga, lalu klik “Setujui”.</p></div></div>
+              <div class="step"><div class="card step-card"><div class="top"><span class="n">05</span><sp-badge size="s" variant="seafoam">Ekspor</sp-badge></div><h3>Ekspor siap cetak</h3><p>PDF CMYK dengan bleed untuk percetakan, PNG untuk Instagram, dan tautan arsip untuk klien. Selesai.</p></div></div>
+            </div>
+            <div class="story-progress"><span class="bar"><i id="storyBar"></i></span><span id="storyCount">Langkah 1 dari 5</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS + TESTIMONIALS -->
+  <section class="sec" id="bukti">
+    <div class="wrap">
+      <div class="card stats" id="stats">
+        <div class="stat"><b data-count="640" data-suffix="+">0</b><span>studio kreatif</span></div>
+        <div class="stat"><b data-count="12000" data-suffix="+">0</b><span>desainer aktif</span></div>
+        <div class="stat"><b data-count="280000">0</b><span>artboard per bulan</span></div>
+        <div class="stat"><b data-count="72" data-suffix="%">0</b><span>revisi lebih sedikit</span></div>
+      </div>
+      <div class="sec-head" style="margin-bottom:32px">
+        <div><span class="eyebrow">Kata studio</span><h2>Lebih banyak berkarya, lebih sedikit kirim file.</h2></div>
+        <p>Studio branding, agensi kampanye, sampai ilustrator lepas memakai Kanvas setiap hari.</p>
+      </div>
+      <div class="testi">
+        <figure class="card"><blockquote>“Klien kami sekarang komentar langsung di desain. Tidak ada lagi screenshot dicoret-coret di chat.”</blockquote><figcaption><span class="face" style="background:#6a4cf5">S</span><div><b>Sari Wulandari</b><span>Creative Director, Studio Lontar</span></div></figcaption></figure>
+        <figure class="card"><blockquote>“Pustaka brand menyelamatkan kami saat mengerjakan 40 materi kampanye Lebaran dalam seminggu.”</blockquote><figcaption><span class="face" style="background:#e8478b">B</span><div><b>Bima Prasetyo</b><span>Lead Designer, Rupa Kolektif</span></div></figcaption></figure>
+        <figure class="card"><blockquote>“Ekspor CMYK-nya langsung diterima percetakan langganan kami. Itu saja sudah sepadan.”</blockquote><figcaption><span class="face" style="background:#12805c">A</span><div><b>Ayu Lestari</b><span>Ilustrator, Denpasar</span></div></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="sec" id="harga" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Harga</span><h2>Harga studio, bukan harga korporat.</h2></div>
+        <p>Bayar dalam rupiah per editor aktif. Viewer dan klien selalu gratis.</p>
+      </div>
+      <div class="price-toggle">
+        <sp-action-group id="billing" selects="single" compact size="m" aria-label="Periode tagihan">
+          <sp-action-button value="bulanan" selected>Bulanan</sp-action-button>
+          <sp-action-button value="tahunan">Tahunan</sp-action-button>
+        </sp-action-group>
+        <sp-badge size="s" variant="positive">Hemat 2 bulan</sp-badge>
+      </div>
+      <div class="prices">
+        <article class="card plan">
+          <div class="head"><h3>Sketsa</h3><sp-badge size="s" variant="neutral">Individu</sp-badge></div>
+          <p class="desc">Untuk ilustrator dan desainer lepas.</p>
+          <div class="price"><b>Rp 0</b><span>selamanya</span></div>
+          <ul><li><svg class="ic"><use href="#i-check"/></svg>3 proyek aktif</li><li><svg class="ic"><use href="#i-check"/></svg>Review klien tanpa akun</li><li><svg class="ic"><use href="#i-check"/></svg>Ekspor PNG &amp; PDF</li></ul>
+          <sp-button variant="secondary" treatment="outline" href="#daftar">Buat akun</sp-button>
+        </article>
+        <article class="card plan hot">
+          <div class="head"><h3>Studio</h3><sp-badge size="s" variant="indigo">Paling populer</sp-badge></div>
+          <p class="desc">Untuk studio dan agensi yang kerja bareng setiap hari.</p>
+          <div class="price"><b data-price="89000">Rp 89.000</b><span>/ editor / bulan</span></div>
+          <ul><li><svg class="ic"><use href="#i-check"/></svg>Proyek &amp; viewer tak terbatas</li><li><svg class="ic"><use href="#i-check"/></svg>Pustaka brand bersama</li><li><svg class="ic"><use href="#i-check"/></svg>Ekspor CMYK &amp; SVG</li><li><svg class="ic"><use href="#i-check"/></svg>12.000+ aset motif nusantara</li></ul>
+          <sp-button variant="accent" href="#daftar">Coba 14 hari gratis</sp-button>
+        </article>
+        <article class="card plan">
+          <div class="head"><h3>Agensi</h3><sp-badge size="s" variant="neutral">SSO</sp-badge></div>
+          <p class="desc">Untuk agensi dengan banyak klien dan tim.</p>
+          <div class="price"><b data-price="149000">Rp 149.000</b><span>/ editor / bulan</span></div>
+          <ul><li><svg class="ic"><use href="#i-check"/></svg>Ruang kerja per klien</li><li><svg class="ic"><use href="#i-check"/></svg>SSO &amp; log aktivitas</li><li><svg class="ic"><use href="#i-check"/></svg>Penyimpanan 2 TB</li><li><svg class="ic"><use href="#i-check"/></svg>Pendampingan onboarding</li></ul>
+          <sp-button variant="secondary" treatment="outline" href="#daftar">Hubungi kami</sp-button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec" id="faq" style="padding-top:0">
+    <div class="wrap faq-grid">
+      <div><span class="eyebrow">FAQ</span><h2 style="font-size:clamp(2rem,4vw,3.1rem);font-weight:800;letter-spacing:-.03em;margin-top:14px">Yang sering ditanyakan studio</h2><p style="color:var(--kv-muted);margin-top:14px">Masih ragu? Ngobrol dengan tim kami — biasanya dibalas sebelum kopi kamu dingin.</p></div>
+      <sp-accordion id="faqList" allow-multiple size="m">
+        <sp-accordion-item label="Apakah bisa membuka file dari aplikasi desain lain?" open><p>Bisa. Kanvas mengimpor SVG, PDF, PNG, dan format lapisan dari aplikasi desain populer. Lapisan dan teks tetap bisa diedit.</p></sp-accordion-item>
+        <sp-accordion-item label="Apakah klien harus membuat akun?"><p>Tidak. Klien cukup membuka tautan review, menaruh pin komentar, lalu menekan tombol “Setujui”.</p></sp-accordion-item>
+        <sp-accordion-item label="Bagaimana dengan file cetak CMYK?"><p>Paket Studio dan Agensi mengekspor PDF CMYK dengan bleed dan crop mark sesuai standar percetakan di Indonesia.</p></sp-accordion-item>
+        <sp-accordion-item label="Bisa bekerja saat internet putus?"><p>Ya, perubahan disimpan di perangkat dan tersinkron otomatis saat koneksi kembali.</p></sp-accordion-item>
+        <sp-accordion-item label="Ada harga khusus untuk pelajar?"><p>Mahasiswa desain dan SMK mendapat paket Studio gratis selama masa studi dengan email kampus.</p></sp-accordion-item>
+      </sp-accordion>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="wrap" id="daftar">
+    <div class="cta">
+      <svg class="deco" viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="12" width="15" height="15" rx="3" fill="#fff" opacity=".5"/><rect x="9" y="8" width="15" height="15" rx="3" fill="#fff" opacity=".7"/><rect x="14" y="4" width="14" height="14" rx="3" fill="#fff"/></svg>
+      <div>
+        <span class="pill">14 hari paket Studio gratis</span>
+        <h2 style="margin-top:16px">Ajak studiomu ke satu kanvas.</h2>
+        <p>Daftar, undang tim, dan impor proyek pertamamu. Kami bantu migrasi pustaka brand klien tanpa biaya.</p>
+        <div class="perks"><span><svg class="ic" style="width:16px;height:16px"><use href="#i-check"/></svg>Tanpa kartu kredit</span><span><svg class="ic" style="width:16px;height:16px"><use href="#i-check"/></svg>Bayar rupiah</span><span><svg class="ic" style="width:16px;height:16px"><use href="#i-check"/></svg>Klien gratis</span></div>
+      </div>
+      <form class="card" id="signupForm" novalidate>
+        <div class="two">
+          <div><sp-field-label for="fNama" required>Nama</sp-field-label><sp-textfield id="fNama" name="nama" placeholder="Sari Wulandari" autocomplete="name"></sp-textfield></div>
+          <div><sp-field-label for="fPeran">Peran</sp-field-label>
+            <sp-picker id="fPeran" label="Peran" value="desainer"><sp-menu-item value="desainer">Desainer</sp-menu-item><sp-menu-item value="direktur">Creative director</sp-menu-item><sp-menu-item value="pemilik">Pemilik studio</sp-menu-item><sp-menu-item value="pelajar">Pelajar</sp-menu-item></sp-picker></div>
+        </div>
+        <div><sp-field-label for="fEmail" required>Email studio</sp-field-label><sp-textfield id="fEmail" name="email" type="email" placeholder="sari@studiolontar.id" autocomplete="email"><sp-help-text slot="negative-help-text">Masukkan email yang valid.</sp-help-text></sp-textfield></div>
+        <sp-checkbox id="fNews" checked>Kirimi saya tips desain bulanan</sp-checkbox>
+        <sp-button variant="accent" size="l" type="submit" id="submitBtn">Buat ruang kerja studio</sp-button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<div class="toast-wrap" id="toasts" aria-live="polite"></div>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div><a class="brand" href="#top"><svg><use href="#logo"/></svg><span>Kanvas</span></a><p>Alat desain kolaboratif untuk studio kreatif Indonesia. Dibuat di Yogyakarta, dipakai dari Sabang sampai Merauke.</p></div>
+      <div><h4>Produk</h4><a href="#fitur">Fitur</a><a href="#kendali">Lapisan 3D</a><a href="#harga">Harga</a></div>
+      <div><h4>Sumber daya</h4><a href="#alur">Alur kerja</a><a href="#faq">FAQ</a><a href="#daftar">Bantuan migrasi</a></div>
+      <div><h4>Studio</h4><a href="#bukti">Cerita pelanggan</a><a href="#daftar">Kontak</a></div>
+    </div>
+    <div class="foot-bottom"><span>© <span class="num">2026</span> Kanvas (merek fiktif untuk template).</span><span>Dibangun dengan Spectrum Web Components + three.js</span></div>
+  </div>
+</footer>
+</sp-theme>
+
+<script type="module">
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const html = document.documentElement, themeEl = $('#theme');
+const rmq = matchMedia('(prefers-reduced-motion: reduce)');
+const bus = new EventTarget();
+window.__kv = { frames: {} };
+const fmt = n => n.toLocaleString('id-ID');
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+const isDark = () => html.getAttribute('data-theme') === 'dark';
+
+/* ---------- theme via <sp-theme color> ---------- */
+function setTheme(mode, save = true){
+  html.setAttribute('data-theme', mode); themeEl.setAttribute('color', mode);
+  if (save) { try { localStorage.setItem('kanvas-theme', mode); } catch (e) {} }
+  const dark = mode === 'dark', btn = $('#themeBtn');
+  btn.innerHTML = `<svg slot="icon" class="ic"><use href="#i-${dark ? 'sun' : 'moon'}"/></svg>`;
+  btn.setAttribute('label', dark ? 'Ganti ke tema terang' : 'Ganti ke tema gelap');
+  $('#darkSw').checked = dark;
+  $('meta[name=theme-color]').content = dark ? '#121212' : '#ffffff';
+  bus.dispatchEvent(new Event('theme'));
+}
+$('#themeBtn').addEventListener('click', () => setTheme(isDark() ? 'light' : 'dark'));
+$('#darkSw').addEventListener('change', e => setTheme(e.target.checked ? 'dark' : 'light'));
+
+/* ---------- toast ---------- */
+function toast(msg, variant = 'positive'){
+  const t = document.createElement('sp-toast');
+  t.variant = variant; t.timeout = 6000; t.textContent = msg; t.open = true;
+  $('#toasts').replaceChildren(t);
+  t.addEventListener('close', () => t.remove());
+}
+
+/* ---------- shared scene state ---------- */
+const ACCENTS = [['#6a4cf5', 'Ungu'], ['#e8478b', 'Fuchsia'], ['#f5871f', 'Jingga'], ['#12805c', 'Hijau toska'], ['#0d66d0', 'Biru']];
+const TEMPLATES = {
+  poster: { name: 'Poster festival', title: ['Festival', 'Senja Kota'], sub: '12–14 Des · Lapangan Banteng', cta: 'Beli tiket', badge: '-30%', bg: ['#fff4e8', '#2a1f3d'] },
+  kopi: { name: 'Aplikasi kedai kopi', title: ['Kopi Susu', 'Gula Aren'], sub: 'Rp 24.000 · Antar 15 menit', cta: 'Pesan', badge: 'BARU', bg: ['#f6efe7', '#2b2420'] },
+  batik: { name: 'Katalog batik', title: ['Parang', 'Rusak Biru'], sub: 'Batik tulis · Solo', cta: 'Lihat koleksi', badge: '1/30', bg: ['#eef3ff', '#1c2233'] },
+};
+const MODES = { tumpuk: 'Tumpuk', kipas: 'Kipas', grid: 'Grid' };
+const LAYERS = ['Latar', 'Ilustrasi', 'Judul', 'Tombol', 'Stiker', 'Kursor tim'];
+const state = { spread: 55, accent: ACCENTS[0][0], mode: 'tumpuk', tpl: 'poster', cam: 'iso', float: !rmq.matches, flat: false };
+
+function fillSwatches(){
+  $$('[data-accent]').forEach(g => {
+    g.innerHTML = ACCENTS.map(([c, n]) => `<sp-swatch color="${c}" value="${c}" label="${n}"></sp-swatch>`).join('');
+    g.selected = [state.accent];
+  });
+}
+fillSwatches();
+function updateUI(){
+  $('#playChip').textContent = `${TEMPLATES[state.tpl].name} · ${MODES[state.mode]}`;
+  $('#heroLayerChip').textContent = `${LAYERS.length} lapisan · ${TEMPLATES[state.tpl].name}`;
+  html.style.setProperty('--kv-accent', state.accent);
+}
+function emit(kind){ updateUI(); bus.dispatchEvent(new CustomEvent('state', { detail: kind })); }
+$$('[data-spread]').forEach(s => {
+  const on = () => { state.spread = Number(s.value); state.flat = false; $$('[data-spread]').forEach(o => { if (o !== s) o.value = state.spread; }); emit('layout'); };
+  s.addEventListener('input', on); s.addEventListener('change', on);
+});
+$$('[data-accent]').forEach(g => g.addEventListener('change', () => {
+  const v = g.selected && g.selected[0]; if (!v) { g.selected = [state.accent]; return; }
+  state.accent = v; $$('[data-accent]').forEach(o => { if (o !== g) o.selected = [v]; }); emit('art');
+}));
+$('#modeTabs').addEventListener('change', e => { state.mode = e.target.selected; state.flat = false; emit('layout'); });
+$('#tplPicker').addEventListener('change', e => { state.tpl = e.target.value; emit('art'); });
+$('#camGroup').addEventListener('change', e => { const v = e.target.selected[0]; if (v) { state.cam = v; emit('cam'); } });
+$('#floatSw').addEventListener('change', e => { state.float = e.target.checked; emit('layout'); });
+$('#flatBtn').addEventListener('click', () => { state.flat = !state.flat; $('#flatBtn').textContent = state.flat ? 'Pisahkan' : 'Rapatkan'; emit('layout'); });
+let exporting = false;
+$('#exportBtn').addEventListener('click', () => {
+  if (exporting) return; exporting = true;
+  const bar = $('#exportBar'); bar.label = 'Mengekspor…'; let p = 0;
+  const step = () => { p = Math.min(100, p + (rmq.matches ? 100 : 7)); bar.progress = p; if (p < 100) setTimeout(step, 60); else { bar.label = 'Selesai · 2400 × 3000 px'; exporting = false; toast(`${TEMPLATES[state.tpl].name}.png berhasil diekspor (2400 × 3000 px)`); } };
+  step();
+});
+
+/* pricing */
+$('#billing').addEventListener('change', e => {
+  const k = e.target.selected[0] === 'tahunan' ? 10 / 12 : 1;
+  $$('[data-price]').forEach(b => b.textContent = 'Rp ' + fmt(Math.round(+b.dataset.price * k / 1000) * 1000));
+});
+
+/* form */
+$('#signupForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  await customElements.whenDefined('sp-textfield');
+  const nama = $('#fNama'), email = $('#fEmail');
+  const okN = !!String(nama.value || '').trim(), okE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email.value || '').trim());
+  nama.invalid = !okN; email.invalid = !okE;
+  if (!okN) { nama.focus(); return; }
+  if (!okE) { email.focus(); return; }
+  toast(`Terima kasih, ${String(nama.value).trim().split(' ')[0]}! Tautan ruang kerja dikirim ke ${String(email.value).trim()}.`);
+  nama.value = ''; email.value = ''; nama.invalid = false; email.invalid = false;
+});
+$('#submitBtn').addEventListener('click', () => $('#signupForm').requestSubmit());
+// href on sp-menu-item closes the menu automatically; keep focus sane
+$('#menu').addEventListener('change', () => {});
+
+/* stats */
+const statIO = new IntersectionObserver(es => es.forEach(en => {
+  if (!en.isIntersecting) return; statIO.unobserve(en.target);
+  $$('[data-count]', en.target).forEach(el => {
+    const end = +el.dataset.count, suf = el.dataset.suffix || '';
+    const show = v => el.textContent = fmt(Math.round(v)) + suf;
+    if (rmq.matches) { show(end); return; }
+    const t0 = performance.now(); const step = now => { const p = Math.min(1, (now - t0) / 1400); show(end * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); }; requestAnimationFrame(step);
+  });
+}), { threshold: .3 });
+statIO.observe($('#stats'));
+
+setTheme(isDark() ? 'dark' : 'light', false);
+updateUI();
+
+/* ---------- artboard textures (drawn with Canvas 2D, no external images) ---------- */
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function mix(a, b, t){ const pa = parseInt(a.slice(1), 16), pb = parseInt(b.slice(1), 16); const r = (pa >> 16) * (1 - t) + (pb >> 16) * t, g = (pa >> 8 & 255) * (1 - t) + (pb >> 8 & 255) * t, bl = (pa & 255) * (1 - t) + (pb & 255) * t; return `rgb(${r | 0},${g | 0},${bl | 0})`; }
+const TW = 512, TH = 640;
+function drawLayer(ctx, i, tpl, accent, dark){
+  const T = TEMPLATES[tpl];
+  ctx.clearRect(0, 0, TW, TH);
+  const ink = dark ? '#f5f1ea' : '#1d1a24', soft = dark ? 'rgba(255,255,255,.55)' : 'rgba(20,16,30,.5)';
+  const F = "'Bricolage Grotesque','Source Sans 3',sans-serif", S = "'Source Sans 3',sans-serif";
+  if (i === 0) { // background
+    rr(ctx, 4, 4, TW - 8, TH - 8, 34); ctx.fillStyle = T.bg[dark ? 1 : 0]; ctx.fill();
+    ctx.fillStyle = dark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.05)';
+    for (let x = 36; x < TW; x += 32) for (let y = 36; y < TH; y += 32) { ctx.beginPath(); ctx.arc(x, y, 2, 0, 7); ctx.fill(); }
+    ctx.fillStyle = dark ? 'rgba(255,255,255,.08)' : 'rgba(0,0,0,.06)'; rr(ctx, 30, 26, TW - 60, 34, 17); ctx.fill();
+    ctx.fillStyle = accent; ctx.beginPath(); ctx.arc(54, 43, 8, 0, 7); ctx.fill();
+  } else if (i === 1) { // illustration
+    ctx.save(); rr(ctx, 40, 84, TW - 80, 268, 26); ctx.clip();
+    const g = ctx.createLinearGradient(0, 84, 0, 352); g.addColorStop(0, mix(accent, '#ffffff', .35)); g.addColorStop(1, accent); ctx.fillStyle = g; ctx.fillRect(40, 84, TW - 80, 268);
+    ctx.fillStyle = '#ffd36e'; ctx.beginPath(); ctx.arc(330, 190, 54, 0, 7); ctx.fill();
+    ctx.fillStyle = mix(accent, '#000000', .35); ctx.beginPath(); ctx.moveTo(40, 352); ctx.lineTo(150, 230); ctx.lineTo(240, 300); ctx.lineTo(330, 210); ctx.lineTo(472, 352); ctx.fill();
+    ctx.fillStyle = mix(accent, '#000000', .55); ctx.beginPath(); ctx.moveTo(40, 352); ctx.lineTo(120, 290); ctx.lineTo(210, 352); ctx.fill();
+    if (tpl === 'batik') { ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 6; for (let k = -4; k < 10; k++) { ctx.beginPath(); ctx.moveTo(40 + k * 50, 84); ctx.lineTo(40 + k * 50 + 268, 352); ctx.stroke(); } }
+    if (tpl === 'kopi') { ctx.fillStyle = '#fff'; rr(ctx, 190, 170, 120, 150, 18); ctx.fill(); ctx.fillStyle = '#8a5a3b'; rr(ctx, 200, 200, 100, 110, 12); ctx.fill(); }
+    ctx.restore();
+  } else if (i === 2) { // headline
+    ctx.fillStyle = ink; ctx.font = `800 58px ${F}`; ctx.textBaseline = 'alphabetic';
+    ctx.fillText(T.title[0], 44, 422); ctx.fillStyle = accent; ctx.fillText(T.title[1], 44, 482);
+    ctx.fillStyle = soft; ctx.font = `600 24px ${S}`; ctx.fillText(T.sub, 46, 522);
+  } else if (i === 3) { // buttons
+    ctx.fillStyle = accent; rr(ctx, 44, 552, 200, 56, 28); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.font = `700 24px ${S}`; ctx.fillText(T.cta, 72, 588);
+    ctx.strokeStyle = ink; ctx.lineWidth = 3; rr(ctx, 262, 552, 130, 56, 28); ctx.stroke();
+    ctx.fillStyle = ink; ctx.fillText('Info', 300, 588);
+  } else if (i === 4) { // sticker
+    ctx.save(); ctx.translate(400, 110); ctx.rotate(-.25);
+    ctx.fillStyle = '#ffd36e'; ctx.beginPath(); for (let k = 0; k < 24; k++) { const a = k / 24 * Math.PI * 2, r = k % 2 ? 54 : 66; ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r); } ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#1d1a24'; ctx.font = `800 30px ${F}`; ctx.textAlign = 'center'; ctx.fillText(T.badge, 0, 11); ctx.restore();
+    ctx.fillStyle = mix(accent, '#ffffff', .2); ctx.beginPath(); ctx.arc(80, 380, 0, 0, 7); ctx.fill();
+  } else { // collaborator cursors
+    const cur = (x, y, c, name) => { ctx.fillStyle = c; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 26, y + 30); ctx.lineTo(x + 12, y + 30); ctx.lineTo(x + 4, y + 42); ctx.closePath(); ctx.fill(); ctx.font = `700 20px ${S}`; const w = ctx.measureText(name).width + 22; rr(ctx, x + 18, y + 36, w, 32, 16); ctx.fill(); ctx.fillStyle = '#fff'; ctx.fillText(name, x + 29, y + 58); };
+    cur(250, 300, '#e8478b', 'Bima'); cur(120, 500, '#12805c', 'Sari');
+  }
+}
+
+/* ================= 3D ================= */
+function webglOK(){ try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch (e) { return false; } }
+function showFallbacks(){ ['#heroStage', '#playStage'].forEach(s => $(s).classList.add('no-webgl')); $('#alur').classList.add('no-webgl'); }
+let THREE, RoundedBoxGeometry;
+try {
+  if (!webglOK()) throw new Error('no-webgl');
+  THREE = await import('three');
+  ({ RoundedBoxGeometry } = await import('three/addons/geometries/RoundedBoxGeometry.js'));
+} catch (err) { showFallbacks(); }
+
+if (THREE) {
+  const gsap = window.gsap;
+  if (gsap && window.ScrollTrigger) gsap.registerPlugin(window.ScrollTrigger);
+  const DPR = () => Math.min(window.devicePixelRatio || 1, 2);
+
+  function createLoop(el, frame, continuous){
+    let visible = false, raf = 0, last = 0, pending = true, aliveUntil = 0;
+    const L = { request(){ pending = true; kick(); }, keepAlive(ms){ aliveUntil = Math.max(aliveUntil, performance.now() + ms); kick(); } };
+    const run = () => visible && !document.hidden;
+    function tick(now){
+      if (!run()) { raf = 0; last = 0; return; }
+      raf = -1;
+      const dt = last ? Math.min((now - last) / 1000, .05) : .016; last = now; pending = false;
+      window.__kv.frames[el.id] = (window.__kv.frames[el.id] || 0) + 1;
+      frame(dt, now / 1000);
+      if (continuous() || pending || now < aliveUntil) raf = requestAnimationFrame(tick); else { raf = 0; last = 0; }
+    }
+    function kick(){ if (!raf && run()) raf = requestAnimationFrame(tick); }
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) { pending = true; kick(); } }, { rootMargin: '80px' }).observe(el);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) { pending = true; kick(); } });
+    rmq.addEventListener('change', () => L.request());
+    return L;
+  }
+  function makeRenderer(canvas, alpha = true){
+    const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha, powerPreference: 'high-performance' });
+    r.setPixelRatio(DPR()); r.setClearColor(0x000000, 0);
+    r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+    r.toneMapping = THREE.NeutralToneMapping; r.toneMappingExposure = 1;
+    r.outputColorSpace = THREE.SRGBColorSpace;
+    return r;
+  }
+  function watchSize(el, renderer, onSize){
+    const apply = () => { const w = Math.max(1, el.clientWidth), h = Math.max(1, el.clientHeight); renderer.setPixelRatio(DPR()); renderer.setSize(w, h, false); onSize(w, h); };
+    new ResizeObserver(apply).observe(el); apply();
+  }
+  const std = (c, rough = .7, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0, ...o });
+  function box(parent, w, h, d, mat, x, y, z, o = {}){
+    const m = new THREE.Mesh(o.round ? new RoundedBoxGeometry(w, h, d, 2, o.round) : new THREE.BoxGeometry(w, h, d), mat);
+    m.position.set(x, y, z); m.castShadow = o.cast !== false; m.receiveShadow = true;
+    if (o.ry) m.rotation.y = o.ry; if (o.rx) m.rotation.x = o.rx; if (o.rz) m.rotation.z = o.rz;
+    parent.add(m); return m;
+  }
+  function rng(seed){ return () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+
+  /* ---------- floating artboard layers ---------- */
+  const LW = 4, LH = 5;
+  const CAMS = { depan: [0, .12], iso: [.72, .5], samping: [1.35, .22] };
+  function createLayers(canvas, stageEl, opts){
+    const renderer = makeRenderer(canvas);
+    const scene = new THREE.Scene();
+    const cam = new THREE.PerspectiveCamera(30, 1, .5, 200);
+    const hemi = new THREE.HemisphereLight('#ffffff', '#cfc6e8', 1.6); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#ffffff', 1.6); sun.position.set(-6, 14, 10); sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, { left: -12, right: 12, top: 12, bottom: -12, near: 1, far: 50 }); sun.shadow.bias = -.0005; scene.add(sun);
+    const root = new THREE.Group(); scene.add(root);
+    // soft floor shadow catcher
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.ShadowMaterial({ opacity: .1 })); floor.rotation.x = -Math.PI / 2; floor.position.y = -4.2; floor.receiveShadow = true; scene.add(floor);
+
+    const layers = LAYERS.map((name, i) => {
+      const cvs = document.createElement('canvas'); cvs.width = TW; cvs.height = TH;
+      const tex = new THREE.CanvasTexture(cvs); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
+      const mat = new THREE.MeshStandardMaterial({ map: tex, transparent: true, side: THREE.DoubleSide, roughness: .6, alphaTest: .02, depthWrite: i === 0 });
+      const g = new THREE.Group();
+      const plane = new THREE.Mesh(new THREE.PlaneGeometry(LW, LH), mat); plane.castShadow = true; plane.userData.i = i; g.add(plane);
+      // layer frame (thin rounded outline + faint glass sheet so transparent layers still read as layers)
+      const sheet = new THREE.Mesh(new THREE.PlaneGeometry(LW, LH), new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: i === 0 ? 0 : .07, side: THREE.DoubleSide, depthWrite: false })); sheet.position.z = -.002; g.add(sheet);
+      const shape = new THREE.Shape(); const w = LW / 2, h = LH / 2, r = .28;
+      shape.moveTo(-w + r, -h); shape.lineTo(w - r, -h); shape.quadraticCurveTo(w, -h, w, -h + r); shape.lineTo(w, h - r); shape.quadraticCurveTo(w, h, w - r, h); shape.lineTo(-w + r, h); shape.quadraticCurveTo(-w, h, -w, h - r); shape.lineTo(-w, -h + r); shape.quadraticCurveTo(-w, -h, -w + r, -h);
+      const pts = shape.getPoints(10).map(p => new THREE.Vector3(p.x, p.y, .003));
+      const lineMat = new THREE.LineBasicMaterial({ color: '#ffffff', transparent: true, opacity: .6 });
+      const frame = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts), lineMat); g.add(frame);
+      root.add(g);
+      return { name, i, cvs, tex, mat, g, plane, sheet, lineMat, cur: { x: 0, y: 0, z: 0, ry: 0, rz: 0, s: 1 }, hover: 0 };
+    });
+    function redraw(){
+      const dark = isDark();
+      layers.forEach(L => { drawLayer(L.cvs.getContext('2d'), L.i, state.tpl, state.accent, dark); L.tex.needsUpdate = true; });
+      loop.request();
+    }
+    function paintTheme(){
+      const dark = isDark();
+      hemi.color.set(dark ? '#d9d2ff' : '#ffffff'); hemi.groundColor.set(dark ? '#16121f' : '#cfc6e8'); hemi.intensity = dark ? 1.2 : 1.6;
+      floor.material.opacity = dark ? .3 : .1;
+      layers.forEach(L => { L.sheet.material.color.set(dark ? '#ffffff' : '#ffffff'); });
+      redraw();
+    }
+    function targetOf(L, t){
+      const n = layers.length, k = L.i - (n - 1) / 2, sp = state.flat ? 0 : state.spread / 100;
+      const fl = state.float && !rmq.matches ? Math.sin(t * 1.1 + L.i * .8) * .08 * (.3 + sp) : 0;
+      const mode = opts.hero ? 'tumpuk' : state.mode;
+      if (mode === 'kipas') return { x: k * (.15 + .75 * sp), y: fl - Math.abs(k) * (.05 + .25 * sp), z: k * .14, ry: -k * .08 * sp, rz: -k * (.04 + .2 * sp), s: 1 };
+      if (mode === 'grid') { const c = L.i % 3, r = Math.floor(L.i / 3); const gap = .25 + sp * .9; return { x: (c - 1) * (LW * .62 + gap), y: (.5 - r) * (LH * .62 + gap) + fl, z: 0, ry: 0, rz: 0, s: .62 }; }
+      return { x: 0, y: fl + k * .04 * sp, z: k * (.08 + sp * 1.25), ry: 0, rz: 0, s: 1 };
+    }
+    // camera orbit
+    let az = CAMS.iso[0], el = CAMS.iso[1], azT = az, elT = el, aspect = 1, drag = null;
+    const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+    function camGoal(){ const c = CAMS[opts.hero ? 'iso' : state.cam] || CAMS.iso; return c; }
+    // free band between the top chips and the bottom panel
+    const topEl = stageEl.querySelector('.stage-top'), panelEl = stageEl.querySelector('.stage-panel');
+    let band = { top: 0, bottom: 0 };
+    function measure(){ const r = stageEl.getBoundingClientRect(); if (!r.height) return; const a = topEl ? topEl.getBoundingClientRect().bottom - r.top : 0, b = panelEl ? panelEl.getBoundingClientRect().top - r.top : r.height; band = { top: a / r.height, bottom: 1 - b / r.height }; }
+    const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), tip = stageEl.querySelector('.tip');
+    let hover = -1;
+    function pick(cx, cy){ const r = canvas.getBoundingClientRect(); ndc.set(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1); ray.setFromCamera(ndc, cam); const hits = ray.intersectObjects(layers.map(L => L.plane), false); return hits.length ? hits[0].object.userData.i : -1; }
+    stageEl.addEventListener('pointermove', e => {
+      const r = stageEl.getBoundingClientRect(); pointer.tx = ((e.clientX - r.left) / r.width - .5) * 2; pointer.ty = ((e.clientY - r.top) / r.height - .5) * 2;
+      if (drag) { azT = drag.az - (e.clientX - drag.x) / r.width * 3; elT = clamp(drag.el + (e.clientY - drag.y) / r.height * 1.5, -.1, 1.2); loop.request(); return; }
+      if (e.target.closest('.stage-panel,.stage-top')) { hover = -1; tip.classList.remove('on'); loop.request(); return; }
+      const h = pick(e.clientX, e.clientY);
+      if (h !== hover) { hover = h; if (h >= 0) { tip.textContent = `Lapisan ${h + 1} · ${LAYERS[h]}`; tip.classList.add('on'); } else tip.classList.remove('on'); }
+      if (h >= 0) { tip.style.left = clamp(e.clientX - r.left, 80, r.width - 80) + 'px'; tip.style.top = (e.clientY - r.top - 6) + 'px'; }
+      loop.keepAlive(700);
+    });
+    stageEl.addEventListener('pointerleave', () => { pointer.tx = 0; pointer.ty = 0; hover = -1; tip.classList.remove('on'); loop.keepAlive(800); });
+    if (!opts.hero) {
+      canvas.addEventListener('pointerdown', e => { if (e.pointerType === 'touch') return; drag = { x: e.clientX, y: e.clientY, az: azT, el: elT }; canvas.setPointerCapture(e.pointerId); });
+      canvas.addEventListener('pointerup', () => { drag = null; }); canvas.addEventListener('pointercancel', () => { drag = null; });
+    }
+    const box3 = new THREE.Box3(), tmpV = new THREE.Vector3(), corners = Array.from({ length: 8 }, () => new THREE.Vector3());
+    let dist = 20;
+    const loop = createLoop(canvas, (dt, t) => {
+      const k = rmq.matches ? 1 : 1 - Math.exp(-dt * 5);
+      let busy = false;
+      pointer.x += (pointer.tx - pointer.x) * k; pointer.y += (pointer.ty - pointer.y) * k;
+      if (Math.abs(pointer.tx - pointer.x) > .002 || Math.abs(pointer.ty - pointer.y) > .002) busy = true;
+      layers.forEach(L => {
+        const T = targetOf(L, t), c = L.cur;
+        for (const key of ['x', 'y', 'z', 'ry', 'rz', 's']) { const d = T[key] - c[key]; c[key] += d * k; if (Math.abs(d) > .001) busy = true; }
+        L.hover += ((hover === L.i ? 1 : 0) - L.hover) * k; if (Math.abs((hover === L.i ? 1 : 0) - L.hover) > .01) busy = true;
+        L.g.position.set(c.x, c.y + L.hover * .18, c.z + L.hover * .12); L.g.rotation.set(0, c.ry, c.rz); L.g.scale.setScalar(c.s);
+        L.lineMat.color.set(hover === L.i ? state.accent : (isDark() ? '#ffffff' : '#ffffff')); L.lineMat.opacity = hover === L.i ? 1 : (isDark() ? .35 : .9);
+      });
+      // camera
+      if (!drag && !opts.hero) { /* keep user azimuth */ }
+      if (opts.hero) { const g = camGoal(); azT = g[0] + pointer.x * .35 + (state.float && !rmq.matches ? Math.sin(t * .25) * .12 : 0); elT = g[1] - pointer.y * .12; }
+      az += (azT - az) * (rmq.matches ? 1 : 1 - Math.exp(-dt * 3)); el += (elT - el) * (rmq.matches ? 1 : 1 - Math.exp(-dt * 3));
+      if (Math.abs(azT - az) > .001 || Math.abs(elT - el) > .001) busy = true;
+      // fit: bounding box of layers -> distance so it fits the free band
+      box3.makeEmpty(); layers.forEach(L => { L.g.updateMatrixWorld(); box3.expandByObject(L.plane); });
+      const ctr = box3.getCenter(new THREE.Vector3()), rad = box3.getBoundingSphere(new THREE.Sphere()).radius;
+      const avail = Math.max(.35, 1 - band.top - band.bottom - .04);
+      const vf = THREE.MathUtils.degToRad(cam.fov) / 2, hf = Math.atan(Math.tan(vf) * aspect);
+      const want = Math.max(rad / Math.sin(vf * avail), rad / Math.sin(hf)) * 1.0;
+      dist += (want - dist) * (rmq.matches ? 1 : 1 - Math.exp(-dt * 4)); if (Math.abs(want - dist) > .01) busy = true;
+      const dir = new THREE.Vector3(Math.sin(az) * Math.cos(el), Math.sin(el), Math.cos(az) * Math.cos(el));
+      cam.position.copy(ctr).addScaledVector(dir, dist); cam.lookAt(ctr);
+      // shift the image so the stack centres in the free band (view offset)
+      const fullH = canvas.clientHeight || 1, fullW = canvas.clientWidth || 1;
+      const shift = ((band.top - band.bottom) / 2) * fullH;
+      cam.setViewOffset(fullW, fullH, 0, -shift, fullW, fullH);
+      floor.position.y = box3.min.y - .6;
+      sun.position.set(ctr.x - 6, ctr.y + 14, ctr.z + 10); sun.target.position.copy(ctr); sun.target.updateMatrixWorld();
+      renderer.render(scene, cam);
+      if (busy) loop.request();
+      if (!stageEl.classList.contains('ready')) stageEl.classList.add('ready');
+    }, () => state.float && !rmq.matches);
+    watchSize(stageEl, renderer, (w, h) => { aspect = w / h; cam.aspect = aspect; cam.fov = aspect < .8 ? 36 : 30; cam.updateProjectionMatrix(); measure(); loop.request(); });
+    if (document.fonts) document.fonts.ready.then(() => { measure(); redraw(); });
+    bus.addEventListener('state', e => { if (e.detail === 'art') redraw(); if (e.detail === 'cam' && !opts.hero) { const g = camGoal(); azT = g[0]; elT = g[1]; } loop.request(); });
+    bus.addEventListener('theme', paintTheme);
+    paintTheme();
+    if (!opts.hero) { const g = camGoal(); az = azT = g[0]; el = elT = g[1]; }
+    return { loop, renderer, scene, cam };
+  }
+
+  let heroV = null, playV = null;
+  try {
+    heroV = createLayers($('#heroCanvas'), $('#heroStage'), { hero: true });
+    playV = createLayers($('#playCanvas'), $('#playStage'), { hero: false });
+  } catch (e) { console.warn('WebGL init gagal', e); showFallbacks(); }
+
+  /* ================= Isometric scroll story ================= */
+  function cardTexture(step, accent){
+    const c = document.createElement('canvas'); c.width = 256; c.height = 320; const x = c.getContext('2d');
+    rr(x, 4, 4, 248, 312, 20); x.fillStyle = '#ffffff'; x.fill();
+    if (step === 0) { x.fillStyle = '#ffd36e'; x.fillRect(4, 4, 248, 40); x.fillStyle = '#9a8f80'; for (let k = 0; k < 8; k++) x.fillRect(28, 70 + k * 28, k % 3 === 2 ? 120 : 196, 8); }
+    else if (step === 1) { x.strokeStyle = '#8c8c8c'; x.lineWidth = 4; x.setLineDash([10, 8]); x.strokeRect(28, 28, 200, 120); x.beginPath(); x.moveTo(28, 28); x.lineTo(228, 148); x.moveTo(228, 28); x.lineTo(28, 148); x.stroke(); x.setLineDash([]); for (let k = 0; k < 3; k++) x.fillRect(28, 176 + k * 26, 180 - k * 40, 7); x.strokeRect(28, 262, 90, 30); }
+    else { const g = x.createLinearGradient(0, 28, 0, 148); g.addColorStop(0, mix(accent, '#ffffff', .4)); g.addColorStop(1, accent); x.fillStyle = g; rr(x, 28, 28, 200, 120, 12); x.fill(); x.fillStyle = '#ffd36e'; x.beginPath(); x.arc(170, 70, 22, 0, 7); x.fill();
+      x.fillStyle = '#1d1a24'; x.font = "800 30px 'Bricolage Grotesque',sans-serif"; x.fillText('Festival', 28, 190); x.fillStyle = accent; x.fillText('Senja', 28, 222); x.fillStyle = accent; rr(x, 28, 250, 100, 34, 17); x.fill();
+      if (step >= 3) [[200, 60], [60, 200], [190, 268]].forEach(([px, py], k) => { x.fillStyle = '#e8478b'; x.beginPath(); x.arc(px, py, 14, 0, 7); x.fill(); x.fillStyle = '#fff'; x.font = "700 16px 'Source Sans 3',sans-serif"; x.fillText(String(k + 1), px - 4, py + 6); });
+      if (step >= 4) { x.fillStyle = '#12805c'; x.beginPath(); x.arc(212, 284, 22, 0, 7); x.fill(); x.strokeStyle = '#fff'; x.lineWidth = 5; x.beginPath(); x.moveTo(201, 284); x.lineTo(209, 292); x.lineTo(224, 276); x.stroke(); } }
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+  }
+  function createStory(){
+    const section = $('#alur'), stage = $('.story-stage', section), canvas = $('#storyCanvas');
+    const renderer = makeRenderer(canvas, false);
+    const scene = new THREE.Scene();
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -100, 200);
+    const camDir = new THREE.Vector3(1, 1.1, 1).normalize(), camTarget = new THREE.Vector3();
+    const hemi = new THREE.HemisphereLight('#ffffff', '#cfc6e8', 1.05); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff6ea', 1.45); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+    Object.assign(sun.shadow.camera, { left: -20, right: 20, top: 20, bottom: -20, near: 1, far: 80 }); sun.shadow.bias = -.0005; sun.shadow.normalBias = .03;
+    scene.add(sun, sun.target);
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(160, 90), new THREE.MeshBasicMaterial({ color: '#ffffff', toneMapped: false })); ground.rotation.x = -Math.PI / 2; scene.add(ground);
+    const shadowCatch = new THREE.Mesh(new THREE.PlaneGeometry(160, 90), new THREE.ShadowMaterial({ opacity: .12 })); shadowCatch.rotation.x = -Math.PI / 2; shadowCatch.position.y = .005; shadowCatch.receiveShadow = true; scene.add(shadowCatch);
+    let grid = null;
+    const CLAY = new THREE.Color('#efedf3'), PATH = '#f5871f';
+    const SP = [[-16, 4], [-6, -4], [3, 4], [12, -4], [21, 4]];
+    const stations = [], blink = [];
+    const smat = c => { const m = std(c, .7); m.userData.target = new THREE.Color(c); m.color.copy(CLAY); return m; };
+    function sb(g, mats, w, h, d, c, x, y, z, o){ const m = smat(c); mats.push(m); return box(g, w, h, d, m, x, y, z, o); }
+    function sm(g, mats, geo, c, x, y, z){ const m = smat(c); mats.push(m); const me = new THREE.Mesh(geo, m); me.position.set(x, y, z); me.castShadow = true; me.receiveShadow = true; g.add(me); return me; }
+    function desk(g, mats, w = 2.6, d = 1.4, top = '#e9dcc9'){ sb(g, mats, w, .1, d, top, 0, .95, 0, { round: .03 }); [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([a, b]) => sb(g, mats, .08, .9, .08, '#4b4b4b', a * (w / 2 - .12), .45, b * (d / 2 - .12))); }
+    function stool(g, mats, x, z, c){ sm(g, mats, new THREE.CylinderGeometry(.32, .32, .1, 18), c, x, .62, z); sb(g, mats, .08, .6, .08, '#4b4b4b', x, .3, z); }
+    SP.forEach(([x, z], i) => {
+      const g = new THREE.Group(); g.position.set(x - 1.6, 0, z - 2.6); scene.add(g);
+      const mats = [];
+      sm(g, mats, new THREE.CylinderGeometry(2.8, 2.9, .2, 48), '#fde6d6', 0, .1, 0);
+      const inner = new THREE.Group(); inner.position.y = .2; g.add(inner);
+      if (i === 0) { // brief: desk, clipboard, sticky-note board
+        desk(inner, mats);
+        sb(inner, mats, .7, .04, .9, '#6e4a31', -.5, 1.02, .1, { round: .01 }); sb(inner, mats, .6, .02, .78, '#ffffff', -.5, 1.05, .12);
+        sm(inner, mats, new THREE.CylinderGeometry(.12, .1, .24, 14), '#f5871f', .8, 1.12, .25);
+        sb(inner, mats, 2.2, 1.5, .08, '#ffffff', 0, 2.1, -.85, { round: .03 }); [[-.7, 2.4, '#ffd36e'], [-.1, 2.5, '#9be3c4'], [.55, 2.35, '#ffb3d1'], [-.4, 1.85, '#b9b0ff'], [.3, 1.8, '#ffd36e']].forEach(([sx, sy, c]) => sb(inner, mats, .42, .42, .03, c, sx, sy, -.79));
+        stool(inner, mats, -.2, 1.2, '#6a4cf5');
+      } else if (i === 1) { // sketch: tilted drawing table + pencil + lamp
+        sb(inner, mats, 2.4, .08, 1.5, '#e9dcc9', 0, 1.15, 0, { rx: -.35, round: .02 }); sb(inner, mats, 1.8, .02, 1.1, '#ffffff', 0, 1.21, .02, { rx: -.35 });
+        sb(inner, mats, .1, 1.1, 1.1, '#4b4b4b', -1, .55, 0); sb(inner, mats, .1, 1.1, 1.1, '#4b4b4b', 1, .55, 0);
+        const pen = sm(inner, mats, new THREE.CylinderGeometry(.05, .05, .9, 8), '#ffd36e', .3, 1.4, .1); pen.rotation.z = 1.1; pen.rotation.y = .5;
+        sb(inner, mats, .05, 1.2, .05, '#4b4b4b', 1.05, 1.9, -.6); sm(inner, mats, new THREE.ConeGeometry(.28, .34, 12), '#e8478b', 1.05, 2.55, -.35).rotation.x = .6;
+        stool(inner, mats, 0, 1.3, '#e8478b');
+      } else if (i === 2) { // layout: big monitor with grid + keyboard
+        desk(inner, mats, 3, 1.5);
+        sb(inner, mats, 2.2, 1.3, .08, '#1d1d1d', 0, 1.95, -.45, { round: .03 });
+        const scr = sb(inner, mats, 2.0, 1.1, .01, '#6a4cf5', 0, 1.95, -.4); scr.material.emissive = new THREE.Color('#6a4cf5'); g.userData.screen = scr;
+        [[-.55, 2.15, .7, .5, '#ffd36e'], [.35, 2.15, .9, .5, '#ffffff'], [0, 1.65, 1.8, .35, '#b9b0ff']].forEach(([bx, by, bw, bh, c]) => sb(inner, mats, bw, bh, .01, c, bx, by, -.39));
+        sb(inner, mats, .1, .5, .1, '#4b4b4b', 0, 1.15, -.5); sb(inner, mats, 1.1, .04, .35, '#d9d9d9', 0, 1.02, .25, { round: .01 });
+        stool(inner, mats, 0, 1.3, '#12805c');
+      } else if (i === 3) { // review: easel with board + comment bubbles
+        sb(inner, mats, .08, 2.4, .08, '#6e4a31', -.6, 1.2, -.2, { rz: .12 }); sb(inner, mats, .08, 2.4, .08, '#6e4a31', .6, 1.2, -.2, { rz: -.12 });
+        sb(inner, mats, 1.7, 1.2, .06, '#ffffff', 0, 2.0, -.15, { round: .02 });
+        sb(inner, mats, 1.3, .55, .01, '#6a4cf5', 0, 2.2, -.11); sb(inner, mats, .9, .12, .01, '#1d1d1d', -.2, 1.75, -.11);
+        const bubs = new THREE.Group(); bubs.position.set(1.2, 3.1, 0); inner.add(bubs); g.userData.bob = bubs;
+        [[0, 0, '#e8478b'], [-.9, .35, '#ffffff'], [.4, -.7, '#ffd36e']].forEach(([bx, by, c]) => { const b = sm(bubs, mats, new THREE.SphereGeometry(.34, 18, 12), c, bx, by, 0); b.scale.set(1.2, .85, .5); });
+        stool(inner, mats, -1, 1.1, '#f5871f'); stool(inner, mats, .9, 1.2, '#6a4cf5');
+      } else { // export: printer + paper + boxes + phone stand
+        sb(inner, mats, 1.6, .8, 1.1, '#d9d9d9', -.4, .4, 0, { round: .06 }); sb(inner, mats, 1.2, .1, .7, '#4b4b4b', -.4, .82, 0, { round: .02 });
+        const paper = sb(inner, mats, .9, .02, 1.0, '#ffffff', -.4, .55, .8, { rx: .15 }); g.userData.paper = paper;
+        sb(inner, mats, .8, .6, .8, '#c9a27a', 1.2, .3, -.6, { round: .03 }); sb(inner, mats, .6, .45, .6, '#c9a27a', 1.2, .82, -.6, { round: .03 });
+        sb(inner, mats, .5, .9, .06, '#1d1d1d', 1.1, .85, .7, { rx: -.2, round: .03 }); const ph = sb(inner, mats, .42, .78, .01, '#12805c', 1.1, .86, .74, { rx: -.2 }); ph.material.emissive = new THREE.Color('#12805c'); g.userData.phone = ph;
+      }
+      stations.push({ g, mats, inner, lit: 0 });
+    });
+    // orange path
+    const pts = [[-16, 4], [-11, 4], [-11, -4], [-6, -4], [-1, -4], [-1, 4], [3, 4], [7.5, 4], [7.5, -4], [12, -4], [16.5, -4], [16.5, 4], [21, 4]].map(([x, z]) => new THREE.Vector3(x, .3, z));
+    const path = new THREE.CurvePath(); const rad = 1.4; let cp = pts[0].clone();
+    for (let i = 1; i < pts.length - 1; i++) { const p = pts[i], dIn = p.clone().sub(pts[i - 1]).normalize(), dOut = pts[i + 1].clone().sub(p).normalize(); if (dIn.dot(dOut) > .999) continue; const a = p.clone().addScaledVector(dIn, -rad), b = p.clone().addScaledVector(dOut, rad); path.add(new THREE.LineCurve3(cp.clone(), a)); path.add(new THREE.QuadraticBezierCurve3(a, p.clone(), b)); cp = b; }
+    path.add(new THREE.LineCurve3(cp, pts[pts.length - 1].clone()));
+    const TS = 720, RS = 6;
+    const baseMat = std('#dedbe6', .9);
+    scene.add(new THREE.Mesh(new THREE.TubeGeometry(path, TS, .12, RS, false), baseMat));
+    const progMat = new THREE.MeshStandardMaterial({ color: PATH, emissive: PATH, emissiveIntensity: .4, roughness: .5 });
+    const progTube = new THREE.Mesh(new THREE.TubeGeometry(path, TS, .2, RS, false), progMat); progTube.geometry.setDrawRange(0, 0); scene.add(progTube);
+    const dotMat = std(PATH, .6); pts.forEach(p => { const d = new THREE.Mesh(new THREE.CylinderGeometry(.32, .32, .08, 16), dotMat); d.position.set(p.x, .05, p.z); scene.add(d); });
+    // scenery: plants & plinths with abstract shapes (studio vibe)
+    const cabMat = std('#e3dff0', .8);
+    { const r = rng(9), pot = std('#c9a27a', .8), leafA = std('#12805c', .8, { flatShading: true }), leafB = std('#3fb68b', .8, { flatShading: true }), shapes = [std('#ffd36e', .6), std('#b9b0ff', .6), std('#ffb3d1', .6)];
+      for (let x = -26; x <= 30; x += 3) for (const zb of [-10.5, 11]) {
+        if (r() < .35) continue;
+        const px = x + (r() - .5) * 1.4, pz = zb + (r() - .5) * 2.4, kind = r();
+        if (kind < .5) { const p = new THREE.Mesh(new THREE.CylinderGeometry(.35, .28, .6, 10), pot); p.position.set(px, .3, pz); p.castShadow = true; scene.add(p); const l = new THREE.Mesh(new THREE.IcosahedronGeometry(.55 + r() * .4, 0), r() > .5 ? leafA : leafB); l.position.set(px, 1.05, pz); l.castShadow = true; scene.add(l); }
+        else { const h = .6 + r() * .6; const c = new THREE.Mesh(new RoundedBoxGeometry(.9, h, .9, 2, .05), cabMat); c.position.set(px, h / 2, pz); c.castShadow = true; c.receiveShadow = true; scene.add(c);
+          const geo = [new THREE.SphereGeometry(.38, 16, 12), new THREE.TorusGeometry(.3, .12, 10, 20), new THREE.ConeGeometry(.36, .7, 4)][Math.floor(r() * 3)]; const s = new THREE.Mesh(geo, shapes[Math.floor(r() * 3)]); s.position.set(px, h + .42, pz); s.castShadow = true; scene.add(s); }
+      } }
+    const samples = 1200, stationU = SP.map(([x, z]) => { let best = 0, bd = 1e9; for (let s = 0; s <= samples; s++) { const q = path.getPointAt(s / samples); const d = (q.x - x) ** 2 + (q.z - z) ** 2; if (d < bd) { bd = d; best = s / samples; } } return best; });
+    stationU[0] = 0; stationU[stationU.length - 1] = 1;
+    // character: designer carrying an artboard whose content evolves per step
+    const chr = new THREE.Group(); scene.add(chr);
+    const skin = std('#b98563', .8), top = std('#e8478b', .85), pants = std('#2a2a35', .9), hair = std('#1b1b1f', .9);
+    const body = new THREE.Mesh(new THREE.CapsuleGeometry(.32, .55, 4, 10), top); body.position.y = 1.25; body.castShadow = true; chr.add(body);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(.3, 16, 12), skin); head.position.y = 1.98; head.castShadow = true; chr.add(head);
+    const hb = new THREE.Mesh(new THREE.SphereGeometry(.33, 16, 10, 0, Math.PI * 2, 0, Math.PI / 1.7), hair); hb.position.y = 2.0; hb.rotation.x = -.35; chr.add(hb);
+    const bun = new THREE.Mesh(new THREE.SphereGeometry(.15, 12, 10), hair); bun.position.set(0, 2.32, -.12); chr.add(bun);
+    function limb(m, w, h, x, y){ const piv = new THREE.Group(); piv.position.set(x, y, 0); const me = new THREE.Mesh(new THREE.BoxGeometry(w, h, w), m); me.position.y = -h / 2; me.castShadow = true; piv.add(me); chr.add(piv); return piv; }
+    const legL = limb(pants, .2, .8, -.15, .85), legR = limb(pants, .2, .8, .15, .85), armL = limb(top, .15, .6, -.42, 1.55), armR = limb(top, .15, .6, .42, 1.55);
+    const cardTex = [0, 1, 2, 3, 4].map(s => cardTexture(s, '#6a4cf5'));
+    const cardMat = new THREE.MeshStandardMaterial({ map: cardTex[0], roughness: .5 });
+    const card = new THREE.Mesh(new RoundedBoxGeometry(.8, 1.0, .05, 2, .02), [std('#ffffff'), std('#ffffff'), std('#ffffff'), std('#ffffff'), cardMat, std('#ffffff')]);
+    card.position.set(0, 1.5, .62); card.castShadow = true; chr.add(card);
+    let targetU = 0, shownU = 0, walkPhase = 0, step = 0, lastPos = new THREE.Vector3(), halfW = 10, halfH = 10, aspect = 1;
+    const bar = $('#storyBar'), count = $('#storyCount'), steps = $$('.step', section);
+    function mapProgress(p){ const n = SP.length - 1, u = clamp(p, 0, 1) * n, i = Math.min(n - 1, Math.floor(u)), f = u - i; const w = smooth(.22, .82, f); return { u: stationU[i] + (stationU[i + 1] - stationU[i]) * w, step: w < .5 ? i : i + 1 }; }
+    function setProgress(p){
+      const m = mapProgress(p); targetU = m.u;
+      if (m.step !== step) { step = m.step; steps.forEach((s, k) => s.classList.toggle('on', k === step)); count.textContent = `Langkah ${step + 1} dari ${SP.length}`; }
+      bar.style.width = (clamp(p, 0, 1) * 100).toFixed(1) + '%'; loop.request();
+    }
+    function themeColors(){
+      const dark = isDark(), bg = dark ? '#121212' : '#ffffff';
+      scene.background = new THREE.Color(bg); ground.material.color.set(bg); shadowCatch.material.opacity = dark ? .45 : .12;
+      if (grid) { scene.remove(grid); grid.geometry.dispose(); grid.material.dispose(); }
+      grid = new THREE.GridHelper(160, 80, dark ? '#202020' : '#ecebf0', dark ? '#1a1a1a' : '#f2f1f5'); grid.position.y = .01; scene.add(grid);
+      CLAY.set(dark ? '#55515f' : '#efedf3'); baseMat.color.set(dark ? '#3a3842' : '#dedbe6'); cabMat.color.set(dark ? '#45414f' : '#e3dff0');
+      hemi.intensity = dark ? .85 : 1.05; hemi.groundColor.set(dark ? '#121212' : '#cfc6e8'); sun.intensity = dark ? 1.35 : 1.45;
+      stations.forEach(s => s.mats.forEach(m => m.color.copy(CLAY).lerp(m.userData.target, s.lit)));
+      loop.request();
+    }
+    let shownCard = -1;
+    const loop = createLoop(canvas, (dt, t) => {
+      const k = rmq.matches ? 1 : 1 - Math.exp(-dt * 5);
+      shownU += (targetU - shownU) * k; if (Math.abs(targetU - shownU) > 1e-4) loop.request(); else shownU = targetU;
+      const pos = path.getPointAt(clamp(shownU, 0, 1)), tan = path.getTangentAt(clamp(shownU, 0, .9999));
+      const moved = pos.distanceTo(lastPos); lastPos.copy(pos); walkPhase += moved * 3.2;
+      const moving = clamp(moved * 25, 0, 1);
+      chr.position.set(pos.x, Math.abs(Math.sin(walkPhase)) * .08 * moving, pos.z);
+      if (moved > 1e-4) chr.rotation.y = Math.atan2(tan.x, tan.z);
+      const sw = Math.sin(walkPhase) * .7 * moving;
+      legL.rotation.x = sw; legR.rotation.x = -sw; armL.rotation.x = -1 + sw * .15; armR.rotation.x = -1 - sw * .15;
+      // the artboard evolves: reached-station index
+      let reached = 0; stationU.forEach((u, i) => { if (shownU >= u - .01) reached = i; });
+      if (reached !== shownCard) { shownCard = reached; cardMat.map = cardTex[reached]; cardMat.needsUpdate = true; }
+      progTube.geometry.setDrawRange(0, Math.floor(shownU * TS) * RS * 6);
+      stations.forEach((s, i) => {
+        const goal = shownU >= stationU[i] - .004 ? 1 : 0;
+        const prev = s.lit; s.lit += (goal - s.lit) * (rmq.matches ? 1 : Math.min(1, dt * 4));
+        if (Math.abs(goal - s.lit) > .002) loop.request(); else s.lit = goal;
+        if (prev !== s.lit || s.lit === 0) s.mats.forEach(m => m.color.copy(CLAY).lerp(m.userData.target, s.lit));
+        s.inner.scale.setScalar(.84 + .16 * s.lit);
+        const anim = !rmq.matches && s.lit > .5;
+        if (s.g.userData.bob) s.g.userData.bob.position.y = 3.1 + (anim ? Math.sin(t * 2) * .12 : 0);
+        if (s.g.userData.screen) s.g.userData.screen.material.emissiveIntensity = .25 * s.lit;
+        if (s.g.userData.phone) s.g.userData.phone.material.emissiveIntensity = s.lit * (anim ? .3 + .2 * Math.sin(t * 3) : .4);
+        if (s.g.userData.paper) s.g.userData.paper.position.z = .8 + (anim ? (Math.sin(t * 1.5) * .5 + .5) * .25 : .2);
+      });
+      const desired = new THREE.Vector3(pos.x, 0, pos.z), right = new THREE.Vector3(1, 0, -1).normalize();
+      if (aspect >= .9) desired.addScaledVector(right, -halfW * .3);
+      if (camTarget.lengthSq() === 0) camTarget.copy(desired);
+      camTarget.lerp(desired, rmq.matches ? 1 : 1 - Math.exp(-dt * 3.5)); if (camTarget.distanceTo(desired) > .01) loop.request();
+      cam.position.copy(camTarget).addScaledVector(camDir, 60); cam.lookAt(camTarget);
+      sun.position.copy(camTarget).add(new THREE.Vector3(14, 26, 8)); sun.target.position.copy(camTarget);
+      renderer.render(scene, cam);
+    }, () => !rmq.matches && stations.some((s, i) => s.lit > .5 && Math.abs(shownU - stationU[i]) < .12));
+    // Di layar sempit, tokoh dibingkai di ruang kosong antara kartu judul (atas) dan kartu langkah (bawah)
+    // lewat frustum ortografis asimetris — tidak pernah lewat di belakang salah satu kartu.
+    const storyHead = stage.querySelector('.story-head'), storySteps = stage.querySelector('.steps');
+    function applyFrame(){
+      if (!halfH) return;
+      let frameY = .5;
+      if (aspect < .9 && storyHead && storySteps) { const r = stage.getBoundingClientRect(), a = storyHead.getBoundingClientRect().bottom - r.top, b = storySteps.getBoundingClientRect().top - r.top; if (r.height > 0 && b > a) frameY = Math.min(.85, Math.max(.15, (a + b) / 2 / r.height)); }
+      Object.assign(cam, { left: -halfW, right: halfW, top: 2 * halfH * frameY, bottom: -2 * halfH * (1 - frameY) }); cam.updateProjectionMatrix();
+    }
+    watchSize(stage, renderer, (w, h) => { aspect = w / h; halfH = aspect < .9 ? 12.5 : 10.5; halfW = halfH * aspect; applyFrame(); loop.request(); });
+    if (document.fonts) document.fonts.ready.then(() => { cardTex.forEach((t, s) => { const n = cardTexture(s, '#6a4cf5'); t.image = n.image; t.needsUpdate = true; }); applyFrame(); loop.request(); });
+    themeColors(); bus.addEventListener('theme', themeColors);
+    return { setProgress, loop, renderer, scene, cam, chr };
+  }
+  let story = null;
+  try { story = createStory(); } catch (e) { console.warn('Story WebGL gagal', e); $('#alur').classList.add('no-webgl'); }
+  const sec = $('#alur'), svgNodes = $$('#storySvg .node');
+  function onProg(p){
+    if (story) story.setProgress(p);
+    else { const n = Math.round(clamp(p, 0, 1) * 4); $$('.step', sec).forEach((s, k) => s.classList.toggle('on', k === n)); svgNodes.forEach((c, k) => c.classList.toggle('on', k <= n)); $('#storyBar').style.width = (p * 100) + '%'; $('#storyCount').textContent = `Langkah ${n + 1} dari 5`; }
+  }
+  const upd = () => { const r = sec.getBoundingClientRect(); onProg(clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1)); };
+  if (gsap && window.ScrollTrigger) window.ScrollTrigger.create({ trigger: sec, start: 'top top', end: 'bottom bottom', onUpdate: self => onProg(self.progress), onRefresh: self => onProg(self.progress) });
+  else addEventListener('scroll', upd, { passive: true });
+  addEventListener('resize', upd); upd();
+  window.__kv.views = { heroV, playV, story, THREE };
+} else {
+  const sec = $('#alur'), nodes = $$('#storySvg .node');
+  const upd = () => { const r = sec.getBoundingClientRect(); const p = clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1); const n = Math.round(p * 4); $$('.step', sec).forEach((s, k) => s.classList.toggle('on', k === n)); nodes.forEach((c, k) => c.classList.toggle('on', k <= n)); $('#storyBar').style.width = (p * 100) + '%'; $('#storyCount').textContent = `Langkah ${n + 1} dari 5`; };
+  addEventListener('scroll', upd, { passive: true }); upd();
+}
+window.__kv.state = state;
+</script>
+</body>
+</html>
