@@ -83,6 +83,12 @@ Semua dimuat live dari CDN dengan versi dikunci; tidak ada kode pustaka yang dis
 | Tabler (+ Tabler Icons 3.49.0) | 1.6.1 | MIT | `https://cdn.jsdelivr.net/npm/@tabler/core@1.6.1/dist/` | 147-armada |
 | Clarity Core (+ Clarity City 1.1.0, OFL-1.1) | 6.17.0 | MIT | `https://cdn.jsdelivr.net/npm/@cds/core@6.17.0/` (`+esm`) | 148-tenaga |
 | Materialize | 2.4.0 | MIT | `https://cdn.jsdelivr.net/npm/@materializecss/materialize@2.4.0/dist/` | 149-kotaku |
+| Flowbite (+ Tailwind browser 4.1.13) | 4.0.2 | MIT | `https://cdn.jsdelivr.net/npm/flowbite@4.0.2/dist/` | 150-rumahku |
+| Basecoat UI (+ Tailwind browser 4.1.13) | 1.0.2 | MIT | `https://cdn.jsdelivr.net/npm/basecoat-css@1.0.2/dist/` | 151-kerjain |
+| Web Awesome (inti gratis) | 3.14.0 | MIT | `https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.14.0/dist-cdn/` | 152-nada |
+| NES.css | 2.3.0 | MIT | `https://cdn.jsdelivr.net/npm/nes.css@2.3.0/css/nes.min.css` (Press Start 2P hanya untuk teks tanpa angka; angka memakai Pixelify Sans) | 153-pixelara |
+| Wired Elements | 3.0.0-rc.6 | MIT | `https://cdn.jsdelivr.net/npm/wired-elements@3.0.0-rc.6/+esm` | 154-coretan |
+| Pure.css | 3.0.0 | BSD-3-Clause | `https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/` | 155-hijau |
 | GSAP + ScrollTrigger | 3.12.5 | lisensi standar GreenSock (gratis untuk situs) | `https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/` | 130-ruang, 131-rapatin |
 | Google Fonts tambahan | — | OFL | Space Grotesk (pengganti fon mono di 48 template), Roboto, Manrope, IBM Plex Sans, Geist, dan fon isi landing 3D | template |
 
@@ -91,11 +97,16 @@ Fon angka: semua fon di atas bernol polos; Space Grotesk diuji raster 27 Okt 202
 ### Ditolak: Esri Calcite Design System (28 Okt 2026)
 `@esri/calcite-components@5.2.0` → `"license": "SEE LICENSE.md"`; isinya "All rights reserved… licensed for use under the Esri Master License Agreement (MLA)". Bukan lisensi terbuka untuk template publik → Kotaku memakai Materialize (MIT).
 
+### Ditolak: Preline UI (28 Okt 2026)
+`preline@5.0.0`: "Licensed under MIT and Preline UI Fair Use License"; berkas LICENSE menambah larangan produk pesaing, atribusi wajib, dan hak cabut oleh penulis. Bukan lisensi terbuka murni → Kerjain memakai Basecoat (MIT).
+
 ## Keputusan "tidak diambil" / ganti sumber / jahit
 
 Tidak berlaku — belum pernah ada penggantian sumber, jahitan data, atau ruas yang sengaja dilewatkan di proyek ini. Proyek murni template statis, tidak ada angka/data sensitif yang berasal dari sumber luar.
 
 ## Riwayat
+
+- 2026-10-28 — tambah 6 pustaka untuk landing 3D 150–155 (#32 gelombang 5); Preline ditolak (Fair Use License).
 
 - 2026-10-28 — tambah 6 pustaka design system untuk landing 3D 144–149 (#32 gelombang 4); Esri Calcite ditolak (lisensi tertutup).
 
