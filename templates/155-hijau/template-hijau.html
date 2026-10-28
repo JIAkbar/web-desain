@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hijau — Kit Hidroponik Rooftop &amp; Pemantauan Kebun Kota</title>
+<meta name="description" content="Hijau: kit hidroponik untuk atap dan balkon rumah kota, lengkap dengan sensor pH, EC, dan suhu air yang terpantau dari ponsel. Panen selada sendiri dalam 30 hari.">
+<meta name="theme-color" content="#f3f6ee">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script>
+  /* Pure.css tidak punya tema gelap: tema terang/gelap memakai variabel CSS di atas kelas Pure */
+  (function(){var t;try{t=localStorage.getItem('hijau-theme')}catch(e){}
+  if(t!=='light'&&t!=='dark'){t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}
+  document.documentElement.setAttribute('data-theme',t);})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Pure.css 3.0.0 (BSD-3-Clause): inti + grid responsif -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/grids-responsive-min.css">
+<style>
+  :root{
+    --bg:#f3f6ee;--bg2:#e8eee0;--surface:#ffffff;--surface2:#f6f9f2;
+    --ink:#0f241a;--text:#2b3a32;--muted:#5d6e64;--line:#dce4d4;--line2:#c5d1bd;
+    --primary:#1f7a4d;--primary-h:#17633e;--primary-ink:#ffffff;--primary-soft:#dcefe3;
+    --lime:#a6d84a;--lime-soft:#eef7d9;--orange:#ef7d22;--orange-soft:#fde8d5;--water:#3b82c4;--water-soft:#deebf7;--danger:#c63d2f;
+    --sky:#d6ebee;--shadow:0 30px 70px -40px rgba(15,40,25,.55);
+    --glass:rgba(255,255,255,.8);
+    --display:'Bricolage Grotesque',system-ui,sans-serif;
+    --sans:'Figtree',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --r:16px;
+    color-scheme:light;
+  }
+  [data-theme=dark]{
+    --bg:#0b1410;--bg2:#0f1b15;--surface:#14221b;--surface2:#192a21;
+    --ink:#ecf5ee;--text:#cbd8cf;--muted:#90a397;--line:#22352b;--line2:#2e4538;
+    --primary:#5fd28f;--primary-h:#7fdea6;--primary-ink:#06170d;--primary-soft:#173526;
+    --lime:#bde66b;--lime-soft:#26331a;--orange:#ff9a45;--orange-soft:#3a2716;--water:#74b2ec;--water-soft:#16283a;--danger:#ff7d6c;
+    --sky:#14262a;--shadow:0 30px 70px -30px rgba(0,0,0,.85);
+    --glass:rgba(20,34,27,.82);
+    color-scheme:dark;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;background:var(--bg)}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition-duration:.01ms !important;animation-duration:.01ms !important}}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;overflow-x:clip;-webkit-font-smoothing:antialiased;transition:background-color .35s,color .35s}
+  h1,h2,h3,h4{font-family:var(--display);color:var(--ink);font-weight:700;letter-spacing:-.025em;line-height:1.05;margin:0}
+  p{margin:0 0 1em}
+  a{color:var(--primary)}
+  code,kbd,pre,samp{font-family:inherit}
+  .num,.stat b,.price b,.mini b,.pure-table td{font-variant-numeric:tabular-nums}
+  .wrap{width:min(1240px,100% - 32px);margin-inline:auto}
+  :focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+  .skip{position:absolute;left:-999px;top:8px;z-index:200;background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:10px}
+  .skip:focus{left:12px}
+  section{scroll-margin-top:72px}
+  .sr{position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:0 !important;border:0 !important;overflow:hidden !important;clip:rect(0,0,0,0);white-space:nowrap}
+  .muted{color:var(--muted)}
+  .sec{padding:clamp(72px,10vw,124px) 0}
+  .alt{background:var(--bg2)}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:.74rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--primary)}
+  .eyebrow::before{content:"";width:10px;height:10px;border-radius:3px 10px 3px 10px;background:var(--lime);box-shadow:0 0 0 3px color-mix(in srgb,var(--lime) 30%,transparent)}
+  .sec-head{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px 48px;align-items:end;margin-bottom:clamp(30px,5vw,54px)}
+  .sec-head h2{font-size:clamp(2rem,4.4vw,3.5rem);margin-top:14px}
+  .sec-head p{margin:0}
+  @media (max-width:820px){.sec-head{grid-template-columns:minmax(0,1fr)}}
+  /* jarak antarkolom untuk grid Pure */
+  .gx{margin:-11px}
+  .gx>[class*=pure-u]{padding:11px}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;font-size:.74rem;font-weight:800;background:var(--primary-soft);color:var(--primary);white-space:nowrap}
+  .badge.o{background:var(--orange-soft);color:var(--orange)} .badge.w{background:var(--water-soft);color:var(--water)} .badge.l{background:var(--lime-soft);color:color-mix(in srgb,var(--lime) 50%,var(--ink))}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 1px 2px rgba(15,40,25,.04),0 22px 44px -34px rgba(15,40,25,.4)}
+
+  /* ---------- Komponen Pure: warna dari token ---------- */
+  .pure-button{font-family:var(--sans);font-weight:700;border-radius:999px;padding:.7em 1.3em;background:var(--surface2);color:var(--ink);border:1.5px solid var(--line2);transition:background-color .2s,color .2s,border-color .2s,transform .15s;line-height:1.2}
+  .pure-button:hover,.pure-button:focus{background-image:none;background:var(--surface);border-color:var(--ink)}
+  .pure-button-primary,a.pure-button-primary{background:var(--primary);color:var(--primary-ink);border-color:var(--primary)}
+  .pure-button-primary:hover,.pure-button-primary:focus{background:var(--primary-h);border-color:var(--primary-h);color:var(--primary-ink)}
+  .pure-button.accent{background:var(--orange);border-color:var(--orange);color:#fff}
+  .pure-button.accent:hover,.pure-button.accent:focus{background:color-mix(in srgb,var(--orange) 85%,#000);color:#fff}
+  .pure-button.lg{font-size:1.05rem;padding:.85em 1.5em}
+  .pure-button.sm{font-size:.84rem;padding:.5em 1em}
+  .pure-button-group{display:inline-flex;flex-wrap:wrap;letter-spacing:normal}
+  .pure-button-group .pure-button{border-radius:0;margin:0 0 0 -1.5px;font-size:.84rem;padding:.55em .95em;background:var(--surface)}
+  .pure-button-group .pure-button:first-child{border-radius:999px 0 0 999px;margin-left:0}
+  .pure-button-group .pure-button:last-child{border-radius:0 999px 999px 0}
+  .pure-button-group .pure-button.pure-button-active,.pure-button-group .pure-button[aria-pressed=true]{background:var(--primary);border-color:var(--primary);color:var(--primary-ink);box-shadow:none;position:relative;z-index:1}
+  .pure-button-active,.pure-button:active{box-shadow:inset 0 0 0 1px rgba(0,0,0,.1)}
+  .pure-form label{color:var(--ink);font-weight:700;font-size:.86rem}
+  .pure-form input[type=text],.pure-form input[type=email],.pure-form input[type=tel],.pure-form select,.pure-form textarea{background:var(--surface);color:var(--ink);border:1.5px solid var(--line2);border-radius:12px;box-shadow:none;padding:.65em .85em;font-family:var(--sans);font-size:.95rem;height:auto}
+  .pure-form select{height:2.75em;appearance:none;-webkit-appearance:none;padding-right:2.2em;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%237b8b80' stroke-width='2'/></svg>");background-repeat:no-repeat;background-position:right .85em center}
+  .pure-form input:focus,.pure-form select:focus,.pure-form textarea:focus{border-color:var(--primary);outline:2px solid color-mix(in srgb,var(--primary) 30%,transparent);outline-offset:1px}
+  .pure-form ::placeholder{color:var(--muted);opacity:.85}
+  .pure-form .pure-checkbox,.pure-form .pure-radio{display:flex;align-items:center;gap:9px;font-weight:600;color:var(--text);margin:.35em 0;font-size:.92rem;cursor:pointer}
+  .pure-form input[type=checkbox],.pure-form input[type=radio]{accent-color:var(--primary);width:18px;height:18px;margin:0;flex:0 0 auto}
+  .pure-form input[type=range]{width:100%;accent-color:var(--orange);margin:6px 0 0;height:24px}
+  .pure-form .pure-form-message,.pure-form .pure-form-message-inline{color:var(--muted);font-size:.8rem}
+  .pure-form .err{display:block;visibility:hidden;min-height:1.1rem;color:var(--danger);font-size:.78rem;font-weight:800}
+  .pure-form .err.on{visibility:visible}
+  .pure-form .bad{border-color:var(--danger) !important}
+  .pure-form-aligned .pure-control-group label{width:9.5em;text-align:left}
+  .pure-form-aligned .pure-control-group{margin-bottom:.4em}
+  .pure-form-aligned .pure-controls{margin-left:9.5em}
+  .pure-form-aligned .pure-control-group .err{margin-left:9.9em}
+  .pure-form-aligned .pure-control-group input,.pure-form-aligned .pure-control-group select{width:calc(100% - 10.2em)}
+  @media (max-width:480px){.pure-form-aligned .pure-control-group input,.pure-form-aligned .pure-control-group select{width:100%}}
+  @media (max-width:480px){.pure-form-aligned .pure-controls{margin-left:0}.pure-form-aligned .pure-control-group .err{margin-left:0}}
+  .pure-table{border:1px solid var(--line);border-radius:12px;overflow:hidden;border-collapse:separate;border-spacing:0;width:100%;color:var(--text)}
+  .pure-table thead{background:var(--surface2);color:var(--ink)}
+  .pure-table th{font-weight:800;font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .pure-table td,.pure-table th{border-left:0;border-bottom:1px solid var(--line);padding:.6em .9em}
+  .pure-table tbody tr:last-child td{border-bottom:0}
+  .pure-table td b{color:var(--ink)}
+  .pure-table-striped tr:nth-child(2n-1) td{background:transparent}
+  .pure-table-striped tr:nth-child(2n) td{background:var(--surface2)}
+  .pure-menu-link{color:var(--text);font-weight:600;border-radius:999px;padding:.55em .95em;transition:background-color .2s,color .2s}
+  .pure-menu-link:hover,.pure-menu-link:focus,.pure-menu-active>.pure-menu-link{background:var(--surface2);color:var(--ink)}
+  .pure-menu-selected>.pure-menu-link,.pure-menu-selected>.pure-menu-link:visited{background:var(--primary);color:var(--primary-ink)}
+  .pure-menu-children{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:6px;min-width:250px;box-shadow:0 26px 50px -24px rgba(0,0,0,.45);z-index:80}
+  .pure-menu-children .pure-menu-link{border-radius:10px;font-size:.9rem;white-space:normal;line-height:1.35}
+  .pure-menu-children .pure-menu-link small{display:block;color:var(--muted);font-weight:500;font-size:.76rem;margin-top:2px}
+  .pure-menu-has-children>.pure-menu-link:after{color:var(--muted);font-size:.6em;padding-left:.6em}
+  .pure-menu-scrollable{padding:2px 0 6px}
+  .pure-menu-scrollable .pure-menu-link{font-size:.84rem;border:1.5px solid var(--line2);margin-right:6px;padding:.4em .9em}
+  .pure-menu-scrollable .pure-menu-selected .pure-menu-link{border-color:var(--primary)}
+
+  /* ---------- Navigasi ---------- */
+  .site-nav{position:sticky;top:0;z-index:60;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:66px}
+  .pure-menu-heading.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:1.4rem;color:var(--ink);text-transform:none;padding:0;letter-spacing:-.03em;text-decoration:none;white-space:nowrap}
+  .brand svg{width:34px;height:34px;flex:0 0 auto}
+  .brand small{display:block;font-family:var(--sans);font-weight:700;font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);line-height:1}
+  .main-menu{width:auto}
+  .main-menu .pure-menu-list{display:flex;align-items:center}
+  .nav-r{display:flex;align-items:center;gap:6px}
+  .icon-btn{display:inline-grid;place-items:center;width:42px;height:42px;border-radius:999px;border:0;background:transparent;color:var(--ink);cursor:pointer;flex:0 0 auto}
+  .icon-btn:hover{background:var(--surface2)}
+  .icon-btn svg{width:20px;height:20px}
+  .theme-ico-sun{display:none} [data-theme=dark] .theme-ico-sun{display:block} [data-theme=dark] .theme-ico-moon{display:none}
+  .menu-btn{display:none}
+  .mnav{display:none;border-top:1px solid var(--line);padding:8px 0 14px}
+  .mnav.open{display:block}
+  .mnav .pure-menu-link{font-size:1.05rem;font-weight:700}
+  @media (max-width:1000px){.main-menu{display:none}.menu-btn{display:inline-grid}}
+  @media (max-width:440px){.brand small{display:none}.nav-cta{display:none}}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:clamp(24px,5vw,56px) 0 36px}
+  .hero h1{font-size:clamp(2.6rem,5.4vw,4.5rem);margin:18px 0;letter-spacing:-.04em}
+  .hero h1 em{font-style:normal;color:var(--primary);position:relative;white-space:nowrap}
+  .hero h1 em::after{content:"";position:absolute;left:-2px;right:-2px;bottom:.06em;height:.2em;border-radius:6px;background:color-mix(in srgb,var(--lime) 70%,transparent);z-index:-1}
+  .lead{font-size:clamp(1rem,1.3vw,1.15rem);max-width:34em;color:var(--muted)}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+  .mini{display:grid;grid-template-columns:repeat(3,minmax(0,auto));justify-content:start;gap:12px 30px;padding-top:22px;margin-top:30px;border-top:1px solid var(--line)}
+  .mini b{display:block;font-family:var(--display);font-size:1.75rem;color:var(--ink);letter-spacing:-.03em}
+  .mini span{font-size:.82rem;color:var(--muted)}
+  @media (max-width:420px){.mini{gap:10px 16px}.mini b{font-size:1.35rem}}
+  .hero-text{padding-right:clamp(0px,3vw,40px)}
+  .stage{position:relative;border-radius:calc(var(--r) + 12px);overflow:hidden;isolation:isolate;background:linear-gradient(180deg,var(--sky),var(--bg2));border:1px solid var(--line);box-shadow:var(--shadow)}
+  .stage canvas{display:block;width:100%;height:100%;opacity:0;transition:opacity .8s ease}
+  .stage.ready canvas{opacity:1}
+  .hero .stage{height:clamp(470px,74vh,680px)}
+  .stage .fallback{position:absolute;inset:0;display:none;place-items:center;padding:20px}
+  .stage.no-webgl .fallback{display:grid}
+  .stage.no-webgl canvas{display:none}
+  .stage .fallback svg{width:min(540px,92%);height:auto}
+  .glass{background:var(--glass);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border:1px solid color-mix(in srgb,var(--surface) 55%,transparent);color:var(--ink)}
+  .stage-top{position:absolute;top:14px;left:14px;right:14px;z-index:2;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;pointer-events:none}
+  .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;font-size:.78rem;font-weight:800;font-variant-numeric:tabular-nums}
+  .chip .dot{width:8px;height:8px;border-radius:50%;background:var(--primary);box-shadow:0 0 0 4px color-mix(in srgb,var(--primary) 25%,transparent)}
+  .stage-panel{position:absolute;left:14px;right:14px;bottom:14px;z-index:2;border-radius:var(--r);padding:12px 14px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 16px}
+  .stage-panel .lbl,.panel h3{display:block;font-family:var(--sans);font-size:.66rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin:0 0 7px}
+  .stage-panel .pure-checkbox{margin:0;font-weight:700;color:var(--ink)}
+  @media (max-width:1023px){.hero .stage{height:min(560px,72vh);min-height:430px;margin-top:10px}}
+
+  /* ---------- Fitur ---------- */
+  .feat{height:100%;padding:22px}
+  .feat .ico{width:50px;height:50px;border-radius:14px 22px 14px 22px;display:grid;place-items:center;background:var(--primary-soft);color:var(--primary);margin-bottom:16px}
+  .feat .ico svg{width:24px;height:24px}
+  .feat h3{font-size:1.3rem;margin:0 0 6px}
+  .feat p{font-size:.93rem;color:var(--muted);margin-bottom:12px}
+  .feat .tags{display:flex;flex-wrap:wrap;gap:6px}
+
+  /* ---------- Kendali kebun 3D ---------- */
+  .explore .stage{height:clamp(500px,76vh,720px)}
+  .panel{display:flex;flex-direction:column;gap:16px;padding:20px;height:100%;min-width:0}
+  .panel .row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .panel fieldset{border:0;padding:0;margin:0;min-width:0}
+  .readv{font-family:var(--display);font-size:1.3rem;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+  .radios{display:flex;gap:18px;flex-wrap:wrap}
+  .panel .pure-table{font-size:.88rem}
+  .panel .pure-table td:last-child{text-align:right}
+  .ok{color:var(--primary);font-weight:800} .warn{color:var(--orange);font-weight:800}
+  @media (max-width:1023px){.explore .stage{height:min(540px,66vh);min-height:400px}}
+
+  /* ---------- Cerita gulir isometrik ---------- */
+  .story{position:relative;height:520vh;background:var(--bg2)}
+  .story-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+  .story-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .story-fallback{position:absolute;inset:0;display:none;place-items:center;padding:24px}
+  .story.no-webgl .story-fallback{display:grid}
+  .story.no-webgl canvas{display:none}
+  .story-fallback svg{width:min(900px,100%);height:auto}
+  .story-fallback .node{fill:var(--surface);stroke:var(--line2);stroke-width:2;transition:fill .4s}
+  .story-fallback .node.on{fill:var(--orange)}
+  .story-ui{position:absolute;inset:0;pointer-events:none;padding:88px 0 28px}
+  .story-ui .wrap{position:relative;height:100%;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+  .story-head{max-width:470px;width:fit-content;background:color-mix(in srgb,var(--bg2) 84%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:var(--r);padding:18px 22px 20px;pointer-events:auto}
+  .story-head h2{font-size:clamp(1.7rem,3.3vw,2.7rem);margin:10px 0 0}
+  .story-head p{margin:8px 0 0;font-size:.95rem}
+  .story-card{max-width:450px;pointer-events:auto;background:color-mix(in srgb,var(--surface) 88%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:var(--r);padding:16px 20px 18px;box-shadow:0 20px 50px -30px rgba(15,40,25,.5)}
+  .tlm{position:relative;margin:0 0 10px}
+  .tlm::before{content:"";position:absolute;left:10%;right:10%;top:12px;height:3px;border-radius:3px;background:var(--line2)}
+  .tlm .fill{position:absolute;left:10%;top:12px;height:3px;border-radius:3px;background:var(--orange);width:0;transition:width .4s}
+  .timeline-mini{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;list-style:none;margin:0;padding:0;position:relative}
+  .timeline-mini li{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.7rem;font-weight:700;color:var(--muted)}
+  .timeline-mini .badge{font-variant-numeric:tabular-nums;background:var(--surface2);color:var(--muted);border:1px solid var(--line);transition:background-color .3s,color .3s}
+  .timeline-mini li.on{color:var(--ink)}
+  .timeline-mini li.on .badge{background:var(--orange);border-color:var(--orange);color:#fff}
+  .scene-steps{position:relative;min-height:146px;list-style:none;margin:0;padding:0}
+  .scene-step{position:absolute;inset:0 0 auto 0;opacity:0;transform:translateY(14px);transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+  .scene-step.on{opacity:1;transform:none;pointer-events:auto}
+  .scene-step h3{font-size:1.3rem;margin:2px 0 6px}
+  .scene-step p{font-size:.92rem;color:var(--muted);margin:0}
+  .scene-step .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  @media (max-width:760px){
+    .story-ui{padding:76px 0 14px}
+    .story-head{padding:12px 16px 14px}
+    .story-head h2{font-size:1.45rem}
+    .story-head p{display:none}
+    .story-card{max-width:none;padding:12px 14px 14px}
+    .timeline-mini .tl-lbl{display:none}
+    .scene-steps{min-height:104px}
+    .scene-step h3{font-size:1.1rem}
+    .scene-step p{font-size:.86rem}
+    .scene-step .tags{display:none}
+  }
+
+  /* ---------- Statistik + testimoni ---------- */
+  .stats-band{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;border-block:1px solid var(--line);padding:30px 0;margin-bottom:clamp(40px,6vw,72px)}
+  .stat{text-align:center}
+  .stat b{display:block;font-family:var(--display);font-size:clamp(2rem,4vw,3.1rem);font-weight:700;color:var(--ink);letter-spacing:-.04em;line-height:1.1}
+  .stat span{font-size:.72rem;letter-spacing:.13em;font-weight:800;color:var(--muted);text-transform:uppercase}
+  @media (max-width:768px){.stats-band{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .quote{height:100%;display:flex;flex-direction:column;padding:22px 24px}
+  .quote blockquote{margin:0 0 18px;font-size:1rem;line-height:1.65;color:var(--text)}
+  .quote blockquote::before{content:"“";display:block;font-family:var(--display);font-size:3rem;line-height:.6;color:var(--orange);margin-bottom:6px}
+  .who{display:flex;gap:12px;align-items:center;margin-top:auto}
+  .who b{display:block;color:var(--ink)}
+  .who small{color:var(--muted)}
+  .avatar{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;flex:0 0 auto}
+
+  /* ---------- Harga ---------- */
+  .price-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+  .plan{height:100%;display:flex;flex-direction:column;position:relative;padding:24px}
+  .plan h3{font-size:1.45rem}
+  .plan .for{color:var(--muted);font-size:.9rem;margin:4px 0 0}
+  .price{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;margin:16px 0 12px}
+  .price b{font-family:var(--display);font-size:clamp(1.8rem,2.8vw,2.3rem);font-weight:700;letter-spacing:-.04em;line-height:1;color:var(--ink)}
+  .price span{color:var(--muted);font-size:.85rem}
+  .plan ul{list-style:none;margin:6px 0 22px;padding:0;display:grid;gap:9px;font-size:.93rem}
+  .plan li{display:flex;gap:10px;align-items:flex-start}
+  .plan li svg{flex:0 0 auto;width:18px;height:18px;margin-top:3px;color:var(--primary)}
+  .plan .pure-button{margin-top:auto;width:100%;text-align:center}
+  .plan.hot{border:2px solid var(--primary)}
+  .plan .flag{position:absolute;top:16px;right:16px}
+  .cmp{margin-top:28px;overflow-x:auto}
+  .cmp .pure-table{min-width:560px}
+  .cmp td:not(:first-child),.cmp th:not(:first-child){text-align:center}
+
+  /* ---------- FAQ ---------- */
+  .faq details{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-bottom:12px;padding:0 18px}
+  .faq summary{cursor:pointer;list-style:none;padding:16px 34px 16px 0;position:relative;font-weight:700;color:var(--ink)}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"";position:absolute;right:2px;top:50%;width:10px;height:10px;border-right:2px solid var(--primary);border-bottom:2px solid var(--primary);transform:translateY(-70%) rotate(45deg);transition:transform .25s}
+  .faq details[open] summary::after{transform:translateY(-30%) rotate(-135deg)}
+  .faq details p{margin:0 0 16px;color:var(--muted)}
+
+  /* ---------- CTA ---------- */
+  .cta{border-radius:calc(var(--r) + 14px);padding:clamp(24px,6vw,68px);position:relative;overflow:hidden;background:radial-gradient(120% 140% at 100% 0%,#3f9a5f 0%,#1d6a42 42%,#0d3322 100%);color:#e9f4ec}
+  .cta h2{font-size:clamp(2rem,4.2vw,3.3rem);color:#fff;margin:14px 0}
+  .cta .eyebrow{color:#cdeb8f}
+  .cta p{color:rgba(233,244,236,.86)}
+  .cta .card{position:relative;z-index:1;padding:clamp(16px,3vw,28px);color:var(--text)}
+  .cta-art{position:absolute;right:-50px;bottom:-60px;width:340px;opacity:.14;pointer-events:none}
+
+  .toasts{position:fixed;right:12px;bottom:12px;z-index:130;display:grid;gap:8px;width:min(380px,calc(100vw - 24px))}
+  .toast{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--primary);border-radius:12px;padding:12px 16px;color:var(--ink);font-weight:600;font-size:.92rem;box-shadow:0 16px 40px -16px rgba(0,0,0,.45)}
+  .site-footer{padding:60px 0 30px;background:var(--bg2);border-top:1px solid var(--line);margin-top:clamp(72px,10vw,120px)}
+  .site-footer h4{font-family:var(--sans);font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;font-weight:800;color:var(--muted);margin-bottom:12px}
+  .site-footer a{display:block;padding:3px 0;color:var(--text);text-decoration:none}
+  .site-footer a:hover{color:var(--primary)}
+  .foot-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;border-top:1px solid var(--line);margin-top:36px;padding-top:20px;font-size:.86rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Lewati ke konten</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo" viewBox="0 0 34 34"><rect x="1" y="1" width="32" height="32" rx="10" fill="currentColor"/><path d="M17 27V15" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><path d="M17 17c-5 0-8-3-8-8 5 0 8 3 8 8zM17 15c0-4.5 2.6-7 7-7 0 4.4-2.6 7-7 7z" fill="#a6d84a"/><path d="M9 27h16" stroke="#ef7d22" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<header class="site-nav">
+  <div class="wrap nav">
+    <a class="pure-menu-heading brand" href="#top" aria-label="Hijau, ke atas">
+      <svg style="color:var(--primary)" aria-hidden="true"><use href="#logo"/></svg>
+      <span>Hijau<small>Kebun atap kota</small></span>
+    </a>
+    <nav class="pure-menu pure-menu-horizontal main-menu" aria-label="Navigasi utama">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item"><a class="pure-menu-link" href="#fitur">Kenapa Hijau</a></li>
+        <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover" id="kitMenu">
+          <a class="pure-menu-link" href="#atur" aria-haspopup="true" aria-expanded="false">Kit tanam</a>
+          <ul class="pure-menu-children">
+            <li class="pure-menu-item"><a class="pure-menu-link" href="#atur" data-size="kecil">Kit Balkon<small>2 menara, 48 lubang tanam</small></a></li>
+            <li class="pure-menu-item"><a class="pure-menu-link" href="#atur" data-size="sedang">Kit Rooftop<small>4 menara + 2 talang NFT</small></a></li>
+            <li class="pure-menu-item"><a class="pure-menu-link" href="#atur" data-size="besar">Kebun Atap Komunal<small>6 menara + 3 talang, untuk RT</small></a></li>
+          </ul>
+        </li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="#perjalanan">Cara kerja</a></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="#harga">Harga</a></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="#faq">FAQ</a></li>
+      </ul>
+    </nav>
+    <div class="nav-r">
+      <button class="icon-btn" type="button" id="themeBtn" aria-label="Ganti tema terang atau gelap" aria-pressed="false">
+        <svg class="theme-ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <svg class="theme-ico-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <a class="pure-button pure-button-primary sm nav-cta" href="#pesan">Pesan kit</a>
+      <button class="icon-btn menu-btn" type="button" id="menuBtn" aria-label="Buka menu" aria-expanded="false" aria-controls="mnav">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+  <nav class="wrap pure-menu mnav" id="mnav" aria-label="Menu seluler">
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item"><a class="pure-menu-link" href="#fitur">Kenapa Hijau</a></li>
+      <li class="pure-menu-item"><a class="pure-menu-link" href="#atur">Kit tanam 3D</a></li>
+      <li class="pure-menu-item"><a class="pure-menu-link" href="#perjalanan">Cara kerja</a></li>
+      <li class="pure-menu-item"><a class="pure-menu-link" href="#harga">Harga</a></li>
+      <li class="pure-menu-item"><a class="pure-menu-link" href="#faq">FAQ</a></li>
+      <li class="pure-menu-item"><a class="pure-menu-link" href="#pesan">Pesan kit</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="wrap pure-g" style="align-items:center">
+      <div class="pure-u-1 pure-u-lg-5-12 hero-text">
+        <span class="badge o">Baru · sensor nutrisi otomatis</span>
+        <h1>Panen sayur dari <em>atap</em> rumahmu sendiri.</h1>
+        <p class="lead">Kit hidroponik Hijau dipasang teknisi kami di rooftop atau balkon, lalu pH, nutrisi, dan suhu air dipantau sensor setiap 10 menit. Kamu cukup menyemai, menunggu notifikasi, dan memetik.</p>
+        <div class="hero-cta">
+          <a class="pure-button pure-button-primary lg" href="#pesan">Survei atap gratis</a>
+          <a class="pure-button lg" href="#atur">Atur kebun 3D</a>
+        </div>
+        <div class="mini">
+          <div><b>3.200</b><span>atap terpasang</span></div>
+          <div><b>30 hr</b><span>selada siap petik</span></div>
+          <div><b>-90%</b><span>air vs tanah</span></div>
+        </div>
+      </div>
+      <div class="pure-u-1 pure-u-lg-7-12">
+        <div class="stage" id="heroStage">
+          <canvas id="heroCanvas" role="img" aria-label="Rooftop 3D isometrik: greenhouse dengan menara hidroponik, talang NFT, tandon air, pompa dengan pipa oranye, dan panel sensor di atas atap rumah kota"></canvas>
+          <div class="fallback" aria-hidden="true"></div>
+          <div class="stage-top">
+            <span class="chip glass"><span class="dot"></span><span id="heroChip">Pompa menyala · nutrisi mengalir</span></span>
+            <span class="chip glass num" id="heroRead">pH 6,0 · 26°C</span>
+          </div>
+          <div class="stage-panel glass pure-form">
+            <div>
+              <span class="lbl" id="heroPlantLbl">Tanaman</span>
+              <div class="pure-button-group" role="group" aria-labelledby="heroPlantLbl">
+                <button class="pure-button" type="button" data-plant="selada" aria-pressed="true">Selada</button>
+                <button class="pure-button" type="button" data-plant="kangkung" aria-pressed="false">Kangkung</button>
+                <button class="pure-button" type="button" data-plant="cabai" aria-pressed="false">Cabai</button>
+                <button class="pure-button" type="button" data-plant="stroberi" aria-pressed="false">Stroberi</button>
+              </div>
+            </div>
+            <label class="pure-checkbox" for="heroGrow"><input type="checkbox" id="heroGrow" data-grow> Lampu tanam</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FITUR -->
+  <section class="sec" id="fitur">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Kenapa Hijau</span><h2>Kebun yang tahu kapan ia haus, bahkan saat kamu di kantor.</h2></div>
+        <p class="muted">Setiap kit memakai pompa hemat listrik, pipa food grade, dan sensor yang terhubung ke aplikasi. Kalau ada yang tidak beres, ponselmu yang lebih dulu tahu.</p>
+      </div>
+      <div class="pure-g gx">
+        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-4"><div class="card feat">
+          <div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 8h3M17 8h3M4 13h3M17 13h3M4 18h3M17 18h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <h3>Menara vertikal</h3><p>24 lubang tanam per menara setinggi 1,6 m. Muat di balkon 1×2 m, cukup untuk sayur satu keluarga.</p>
+          <div class="tags"><span class="badge">24 lubang</span><span class="badge l">Pipa food grade</span></div>
+        </div></div>
+        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-4"><div class="card feat">
+          <div class="ico" style="background:var(--water-soft);color:var(--water)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+          <h3>Sensor pH &amp; nutrisi</h3><p>pH, EC, suhu air, dan level tandon terbaca tiap 10 menit. Notifikasi muncul sebelum daun menguning.</p>
+          <div class="tags"><span class="badge w">4 sensor</span><span class="badge">Tiap 10 menit</span></div>
+        </div></div>
+        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-4"><div class="card feat">
+          <div class="ico" style="background:var(--orange-soft);color:var(--orange)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+          <h3>Pompa 18 watt</h3><p>Sirkulasi bergiliran 15 menit tiap jam. Tagihan listrik naik sekitar Rp 9.000 per bulan, bisa tenaga surya.</p>
+          <div class="tags"><span class="badge o">Hemat listrik</span></div>
+        </div></div>
+        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-4"><div class="card feat">
+          <div class="ico" style="background:var(--lime-soft);color:color-mix(in srgb,var(--lime) 45%,var(--ink))"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 21c0-4 3-7 7-7s7 3 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <h3>Agronom pendamping</h3><p>Kirim foto daun lewat aplikasi, agronom kami membalas dalam 2 jam kerja. Kunjungan perawatan tiap 3 bulan.</p>
+          <div class="tags"><span class="badge l">Chat 2 jam</span><span class="badge">Kunjungan rutin</span></div>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KENDALI KEBUN 3D -->
+  <section class="sec alt explore" id="atur">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Kebun 3D</span><h2>Pilih tanaman, majukan hari, lalu lihat kebunmu tumbuh.</h2></div>
+        <p class="muted">Semua kontrol di panel ini adalah modul Pure.css asli yang menggerakkan adegan three.js: grup tombol mengganti tanaman, slider menumbuhkannya, kotak centang menyalakan lampu tanam, dan pilihan ukuran atap mengubah tata letak.</p>
+      </div>
+      <div class="pure-g gx">
+        <div class="pure-u-1 pure-u-lg-14-24">
+          <div class="stage" id="cfgStage">
+            <canvas id="cfgCanvas" role="img" aria-label="Kebun atap 3D interaktif; tanaman, umur, lampu tanam, waktu, dan ukuran atap mengikuti kontrol formulir"></canvas>
+            <div class="fallback" aria-hidden="true"></div>
+            <div class="stage-top"><span class="chip glass" id="cfgChip">Kit Rooftop · 4 menara</span><span class="chip glass num" id="cfgDay">Hari ke-21</span></div>
+          </div>
+        </div>
+        <div class="pure-u-1 pure-u-lg-10-24">
+          <form class="card panel pure-form pure-form-stacked" id="cfgForm" onsubmit="return false">
+            <div>
+              <h3 id="focusLbl">Arahkan kamera</h3>
+              <nav class="pure-menu pure-menu-horizontal pure-menu-scrollable" aria-labelledby="focusLbl">
+                <ul class="pure-menu-list" id="focusMenu">
+                  <li class="pure-menu-item pure-menu-selected"><a class="pure-menu-link" href="#atur" data-focus="semua" aria-current="true">Seluruh atap</a></li>
+                  <li class="pure-menu-item"><a class="pure-menu-link" href="#atur" data-focus="menara">Menara tanam</a></li>
+                  <li class="pure-menu-item"><a class="pure-menu-link" href="#atur" data-focus="pompa">Tandon &amp; pompa</a></li>
+                  <li class="pure-menu-item"><a class="pure-menu-link" href="#atur" data-focus="sensor">Panel sensor</a></li>
+                </ul>
+              </nav>
+            </div>
+            <div>
+              <h3 id="plantLbl">Jenis tanaman</h3>
+              <div class="pure-button-group" role="group" aria-labelledby="plantLbl">
+                <button class="pure-button" type="button" data-plant="selada" aria-pressed="true">Selada</button>
+                <button class="pure-button" type="button" data-plant="kangkung" aria-pressed="false">Kangkung</button>
+                <button class="pure-button" type="button" data-plant="cabai" aria-pressed="false">Cabai</button>
+                <button class="pure-button" type="button" data-plant="stroberi" aria-pressed="false">Stroberi</button>
+              </div>
+            </div>
+            <div>
+              <div class="row"><label for="dayRange" style="margin:0">Umur tanaman</label><span class="readv" id="dayRead">21 hari</span></div>
+              <input type="range" id="dayRange" min="0" max="45" step="1" value="21" aria-describedby="harvestNote">
+              <span class="pure-form-message" id="harvestNote">Selada siap petik pada hari ke-30.</span>
+            </div>
+            <div class="pure-g gx" style="align-items:flex-end">
+              <div class="pure-u-1 pure-u-sm-1-2">
+                <label for="sizeSel">Ukuran atap</label>
+                <select id="sizeSel" class="pure-input-1">
+                  <option value="kecil">Balkon 2 × 3 m</option>
+                  <option value="sedang" selected>Rooftop 4 × 5 m</option>
+                  <option value="besar">Atap komunal 6 × 8 m</option>
+                </select>
+              </div>
+              <div class="pure-u-1 pure-u-sm-1-2">
+                <fieldset>
+                  <legend class="sr">Waktu</legend>
+                  <div class="radios">
+                    <label class="pure-radio" for="tSiang"><input type="radio" id="tSiang" name="waktu" value="siang" checked> Siang</label>
+                    <label class="pure-radio" for="tMalam"><input type="radio" id="tMalam" name="waktu" value="malam"> Malam</label>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+            <label class="pure-checkbox" for="cfgGrow"><input type="checkbox" id="cfgGrow" data-grow> Nyalakan lampu tanam LED saat malam</label>
+            <table class="pure-table pure-table-striped" aria-label="Pembacaan sensor kebun">
+              <thead><tr><th>Sensor</th><th>Nilai</th><th>Status</th></tr></thead>
+              <tbody id="sensorBody"></tbody>
+            </table>
+            <div class="row" style="margin-top:auto">
+              <a class="pure-button pure-button-primary" href="#pesan">Pesan kit ini</a>
+              <button class="pure-button" type="button" id="resetBtn">Atur ulang</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERITA -->
+  <section class="story" id="perjalanan" aria-label="Perjalanan kit Hijau dari pesan sampai masak">
+    <div class="story-stage">
+      <canvas id="storyCanvas" role="img" aria-label="Peta isometrik: Mbak Rina berjalan mengikuti jalur oranye dari memesan kit, memasang menara, menyemai, memanen, hingga memasak hasil kebun saat halaman digulir"></canvas>
+      <div class="story-fallback" aria-hidden="true">
+        <svg viewBox="0 0 900 360" id="storySvg">
+          <path d="M80 250 L250 130 L450 250 L650 130 L820 250" fill="none" stroke="#ef7d22" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="14 12"/>
+          <g><circle class="node on" cx="80" cy="250" r="34"/><circle class="node" cx="250" cy="130" r="34"/><circle class="node" cx="450" cy="250" r="34"/><circle class="node" cx="650" cy="130" r="34"/><circle class="node" cx="820" cy="250" r="34"/></g>
+        </svg>
+      </div>
+      <div class="story-ui">
+        <div class="wrap">
+          <div class="story-head">
+            <span class="eyebrow">Dari kardus ke wajan</span>
+            <h2>Ikuti kit Mbak Rina selama 35 hari.</h2>
+            <p class="muted">Gulir untuk melihat apa yang diurus Hijau di setiap langkah.</p>
+          </div>
+          <div class="story-card" id="storyCard">
+            <div class="tlm" aria-hidden="true"><span class="fill" id="tlFill"></span>
+            <ol class="timeline-mini" id="tlMini">
+              <li class="on"><span class="badge">H-3</span><span class="tl-lbl">Pesan</span></li>
+              <li><span class="badge">Hari 1</span><span class="tl-lbl">Pasang</span></li>
+              <li><span class="badge">Hari 2</span><span class="tl-lbl">Semai</span></li>
+              <li><span class="badge">Hari 32</span><span class="tl-lbl">Panen</span></li>
+              <li><span class="badge">Hari 35</span><span class="tl-lbl">Masak</span></li>
+            </ol></div>
+            <ol class="scene-steps" aria-live="polite">
+              <li class="scene-step on"><h3>Pesan dari aplikasi</h3><p>Mbak Rina mengirim foto atapnya. Teknisi menghitung beban, sinar matahari, dan jarak ke keran, lalu mengusulkan Kit Rooftop.</p><div class="tags"><span class="badge">Survei gratis</span><span class="badge w">Foto atap</span></div></li>
+              <li class="scene-step"><h3>Pasang dalam 3 jam</h3><p>Dua teknisi merakit empat menara, talang NFT, tandon 250 liter, dan pompa. Sensor langsung tersambung ke Wi-Fi rumah.</p><div class="tags"><span class="badge o">3 jam</span><span class="badge">Garansi 2 tahun</span></div></li>
+              <li class="scene-step"><h3>Semai benih</h3><p>Benih selada di rockwool diletakkan di nampan semai. Aplikasi mengingatkan kapan bibit dipindah ke menara.</p><div class="tags"><span class="badge l">Benih termasuk</span></div></li>
+              <li class="scene-step"><h3>Panen pertama</h3><p>Hari ke-32, notifikasi berbunyi: selada siap petik. Satu menara menghasilkan sekitar 2,4 kg sekali panen.</p><div class="tags"><span class="badge">2,4 kg / menara</span><span class="badge w">Air hemat 90%</span></div></li>
+              <li class="scene-step"><h3>Masak malam ini</h3><p>Selada segar jadi gado-gado, kangkung jadi tumis terasi. Sisa panen dibagikan ke tetangga satu RT.</p><div class="tags"><span class="badge o">Dari atap ke piring</span></div></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATISTIK + TESTIMONI -->
+  <section class="sec" id="testimoni">
+    <div class="wrap">
+      <div class="stats-band" id="stats" role="list" aria-label="Statistik Hijau">
+        <div class="stat" role="listitem"><b class="num" data-count="3200">0</b><span>Atap terpasang</span></div>
+        <div class="stat" role="listitem"><b class="num" data-count="186" data-suffix=" t">0</b><span>Sayur dipanen</span></div>
+        <div class="stat" role="listitem"><b class="num" data-count="14">0</b><span>Kota layanan</span></div>
+        <div class="stat" role="listitem"><b class="num">4,9</b><span>Rating pelanggan</span></div>
+      </div>
+      <div class="pure-g gx">
+        <div class="pure-u-1 pure-u-lg-1-3"><div class="card quote">
+          <blockquote>Atap ruko kami dulu cuma tempat jemuran. Sekarang tiap Sabtu panen selada dan pakcoy, anak-anak yang paling semangat memetik.</blockquote>
+          <div class="who"><span class="avatar" style="background:#1f7a4d">RA</span><div><b>Rina Aprilia</b><small>Kit Rooftop, Tangerang Selatan</small></div></div>
+        </div></div>
+        <div class="pure-u-1 pure-u-lg-1-3"><div class="card quote">
+          <blockquote>Notifikasi pH-nya menyelamatkan panen waktu saya dinas ke luar kota. Saya cukup minta tetangga menambah larutan dari tandon cadangan.</blockquote>
+          <div class="who"><span class="avatar" style="background:#ef7d22">DS</span><div><b>Dimas Setiawan</b><small>Kit Balkon, Surabaya</small></div></div>
+        </div></div>
+        <div class="pure-u-1 pure-u-lg-1-3"><div class="card quote">
+          <blockquote>Kebun atap komunal ini jadi kegiatan rutin warga. Hasil panennya dijual murah di posyandu, uangnya masuk kas RT.</blockquote>
+          <div class="who"><span class="avatar" style="background:#3b82c4">SH</span><div><b>Pak Sahroni</b><small>Ketua RT, Bandung</small></div></div>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HARGA -->
+  <section class="sec alt" id="harga">
+    <div class="wrap">
+      <div class="price-head">
+        <div><span class="eyebrow">Harga kit</span><h2 style="font-size:clamp(2rem,4.4vw,3.4rem);margin-top:14px">Sudah termasuk pemasangan dan benih pertama.</h2></div>
+        <div class="pure-button-group" role="group" aria-label="Cara bayar" id="payGroup">
+          <button class="pure-button" type="button" data-pay="lunas" aria-pressed="true">Bayar lunas</button>
+          <button class="pure-button" type="button" data-pay="cicil" aria-pressed="false">Cicil 12 bulan</button>
+        </div>
+      </div>
+      <div class="pure-g gx">
+        <div class="pure-u-1 pure-u-md-1-3"><div class="card plan">
+          <h3>Kit Balkon</h3><p class="for">Apartemen &amp; balkon 2 × 3 m</p>
+          <div class="price"><b data-price="1490000">Rp 1.490.000</b><span data-per>sekali bayar</span></div>
+          <ul>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>2 menara, 48 lubang tanam</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Sensor pH &amp; suhu air</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Tandon 60 liter</li>
+          </ul>
+          <a class="pure-button" href="#pesan" data-kit="Kit Balkon">Pilih Kit Balkon</a>
+        </div></div>
+        <div class="pure-u-1 pure-u-md-1-3"><div class="card plan hot">
+          <span class="badge o flag">Paling laris</span>
+          <h3>Kit Rooftop</h3><p class="for">Rumah tapak &amp; ruko 4 × 5 m</p>
+          <div class="price"><b data-price="4900000">Rp 4.900.000</b><span data-per>sekali bayar</span></div>
+          <ul>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>4 menara + 2 talang NFT</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>4 sensor + notifikasi aplikasi</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Greenhouse UV + lampu tanam LED</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Kunjungan perawatan tiap 3 bulan</li>
+          </ul>
+          <a class="pure-button pure-button-primary" href="#pesan" data-kit="Kit Rooftop">Pilih Kit Rooftop</a>
+        </div></div>
+        <div class="pure-u-1 pure-u-md-1-3"><div class="card plan">
+          <h3>Kebun Komunal</h3><p class="for">Atap RT, sekolah, masjid 6 × 8 m</p>
+          <div class="price"><b data-price="14500000">Rp 14.500.000</b><span data-per>sekali bayar</span></div>
+          <ul>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>6 menara + 3 talang NFT</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Panel surya untuk pompa</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Pelatihan pengurus kebun</li>
+          </ul>
+          <a class="pure-button" href="#pesan" data-kit="Kebun Komunal">Ajukan kebun komunal</a>
+        </div></div>
+      </div>
+      <div class="cmp">
+        <table class="pure-table pure-table-horizontal" aria-label="Perbandingan kit">
+          <thead><tr><th>Fitur</th><th>Balkon</th><th>Rooftop</th><th>Komunal</th></tr></thead>
+          <tbody>
+            <tr><td>Lubang tanam</td><td>48</td><td>120</td><td>216</td></tr>
+            <tr><td>Panen selada / bulan</td><td>± 4 kg</td><td>± 11 kg</td><td>± 20 kg</td></tr>
+            <tr><td>Beban atap maks.</td><td>90 kg/m²</td><td>110 kg/m²</td><td>120 kg/m²</td></tr>
+            <tr><td>Listrik pompa / bulan</td><td>Rp 6.000</td><td>Rp 9.000</td><td>Rp 0 (surya)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec" id="faq">
+    <div class="wrap"><div class="pure-g gx">
+      <div class="pure-u-1 pure-u-lg-2-5">
+        <span class="eyebrow">FAQ</span>
+        <h2 style="font-size:clamp(2rem,4.4vw,3.2rem);margin:14px 0">Pertanyaan sebelum naik ke atap.</h2>
+        <p class="muted">Belum terjawab? Tulis di formulir survei, agronom kami akan menelepon.</p>
+      </div>
+      <div class="pure-u-1 pure-u-lg-3-5 faq">
+        <details open><summary>Apakah atap saya kuat?</summary><p>Teknisi mengecek struktur saat survei gratis. Kit Rooftop berbobot sekitar 110 kg/m² saat terisi air, di bawah batas aman dak beton rumah pada umumnya.</p></details>
+        <details><summary>Bagaimana jika listrik padam?</summary><p>Akar menara tetap lembap hingga 6 jam. Untuk pemadaman lebih lama, tersedia baterai cadangan dan opsi panel surya.</p></details>
+        <details><summary>Sayur apa saja yang bisa ditanam?</summary><p>Selada, pakcoy, kangkung, bayam, seledri, cabai, tomat ceri, hingga stroberi. Aplikasi menyarankan resep nutrisi untuk tiap jenis.</p></details>
+        <details><summary>Berapa biaya nutrisi bulanan?</summary><p>Sekitar Rp 45.000 per bulan untuk Kit Rooftop. Nutrisi AB mix bisa dipesan langsung dari aplikasi dan diantar ke rumah.</p></details>
+        <details><summary>Apakah ada garansi?</summary><p>Garansi 2 tahun untuk pompa dan sensor, 5 tahun untuk rangka menara. Penggantian suku cadang dikirim maksimal 3 hari kerja.</p></details>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- CTA / FORM -->
+  <section class="sec" id="pesan" style="padding-top:0">
+    <div class="wrap">
+      <div class="cta">
+        <svg class="cta-art" viewBox="0 0 200 200" aria-hidden="true"><path d="M100 190V90M100 110c-30 0-50-20-50-50 30 0 50 20 50 50zM100 95c0-28 18-45 45-45 0 27-17 45-45 45z" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round"/></svg>
+        <div class="pure-g gx" style="align-items:center">
+          <div class="pure-u-1 pure-u-lg-1-2">
+            <span class="eyebrow">Survei atap gratis</span>
+            <h2>Atapmu bisa jadi kebun dalam satu akhir pekan.</h2>
+            <p>Isi formulir, teknisi kami datang untuk mengukur dan memberi rekomendasi kit tanpa biaya. Jadwal survei tersedia Senin sampai Sabtu.</p>
+          </div>
+          <div class="pure-u-1 pure-u-lg-1-2">
+            <form class="card pure-form pure-form-aligned" id="ctaForm" novalidate>
+              <fieldset>
+                <legend class="sr">Formulir survei atap</legend>
+                <div class="pure-control-group"><label for="fName">Nama</label><input id="fName" name="nama" type="text" placeholder="mis. Rina Aprilia" autocomplete="name" required><span class="err" id="fNameErr">Nama wajib diisi.</span></div>
+                <div class="pure-control-group"><label for="fPhone">WhatsApp</label><input id="fPhone" name="wa" type="tel" placeholder="08xx xxxx xxxx" autocomplete="tel" required><span class="err" id="fPhoneErr">Nomor belum benar.</span></div>
+                <div class="pure-control-group"><label for="fCity">Kota</label><select id="fCity" name="kota"><option>Jakarta</option><option>Tangerang</option><option>Bekasi</option><option>Depok</option><option>Bogor</option><option>Bandung</option><option>Surabaya</option><option>Semarang</option><option>Yogyakarta</option><option>Medan</option><option>Makassar</option><option>Denpasar</option></select></div>
+                <div class="pure-control-group"><label for="fKit">Kit diminati</label><select id="fKit" name="kit"><option>Kit Balkon</option><option selected>Kit Rooftop</option><option>Kebun Komunal</option></select></div>
+                <div class="pure-controls">
+                  <label class="pure-checkbox" for="fAgree"><input id="fAgree" type="checkbox" checked> Kirimi saya jadwal survei lewat WhatsApp</label>
+                  <button type="submit" class="pure-button pure-button-primary" style="margin-top:10px">Jadwalkan survei</button>
+                </div>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap"><div class="pure-g gx">
+    <div class="pure-u-1 pure-u-md-2-5">
+      <a class="pure-menu-heading brand" href="#top" style="color:var(--ink)"><svg style="color:var(--primary)" aria-hidden="true"><use href="#logo"/></svg><span>Hijau</span></a>
+      <p class="muted" style="margin-top:12px;max-width:30em">Kebun hidroponik untuk atap dan balkon rumah kota di Indonesia. Dipasang, dipantau, dan didampingi.</p>
+    </div>
+    <div class="pure-u-1-2 pure-u-md-1-5"><h4>Kit</h4><a href="#harga">Balkon</a><a href="#harga">Rooftop</a><a href="#harga">Komunal</a></div>
+    <div class="pure-u-1-2 pure-u-md-1-5"><h4>Bantuan</h4><a href="#faq">FAQ</a><a href="#perjalanan">Cara kerja</a><a href="#pesan">Survei atap</a></div>
+    <div class="pure-u-1 pure-u-md-1-5"><h4>Kontak</h4><a href="#pesan">halo@hijau.contoh</a><a href="#pesan">Senin–Sabtu 08.00–17.00</a></div>
+  </div></div>
+  <div class="wrap foot-bottom">
+    <span>© <span class="num">2026</span> Hijau. Merek fiktif untuk templat.</span>
+    <span>Dibangun dengan Pure.css + three.js</span>
+  </div>
+</footer>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<template id="roofFallback">
+  <svg viewBox="0 0 540 380" role="img" aria-label="Ilustrasi kebun atap Hijau">
+    <path d="M40 240 270 120 500 240 270 360Z" fill="#c9ccc4"/><path d="M40 240v24l230 120 230-120v-24L270 360Z" fill="#9ea398"/>
+    <g fill="#f4f6ef" stroke="#7d8a7f" stroke-width="2"><rect x="190" y="130" width="22" height="110" rx="6"/><rect x="240" y="150" width="22" height="110" rx="6"/><rect x="290" y="170" width="22" height="110" rx="6"/></g>
+    <g fill="#8fd16a"><circle cx="186" cy="150" r="10"/><circle cx="216" cy="175" r="10"/><circle cx="186" cy="200" r="10"/><circle cx="236" cy="170" r="10"/><circle cx="266" cy="195" r="10"/><circle cx="236" cy="220" r="10"/><circle cx="286" cy="190" r="10"/><circle cx="316" cy="215" r="10"/><circle cx="286" cy="240" r="10"/></g>
+    <rect x="370" y="200" width="50" height="60" rx="8" fill="#3b82c4"/><path d="M370 230 C330 230 330 120 300 120 L200 120" fill="none" stroke="#ef7d22" stroke-width="7" stroke-linecap="round"/>
+  </svg>
+</template>
+
+<script type="module">
+/* ================= UI (Pure.css + JS ringan) ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const rmq = matchMedia('(prefers-reduced-motion: reduce)');
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const fmt = n => Math.round(n).toLocaleString('id-ID');
+const dec = (n, d = 1) => n.toFixed(d).replace('.', ',');
+const bus = new EventTarget();
+window.__hijau = { bus };
+const root = document.documentElement;
+
+/* --- tema --- */
+function setTheme(t, save = true){
+  root.setAttribute('data-theme', t);
+  $('meta[name="theme-color"]').content = t === 'dark' ? '#0b1410' : '#f3f6ee';
+  $('#themeBtn').setAttribute('aria-pressed', String(t === 'dark'));
+  if (save) try { localStorage.setItem('hijau-theme', t); } catch (e) {}
+  bus.dispatchEvent(new CustomEvent('theme', { detail: t }));
+}
+setTheme(root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light', false);
+$('#themeBtn').addEventListener('click', () => setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+
+/* --- menu: dropdown Pure (hover + klik/keyboard) dan menu seluler --- */
+const kit = $('#kitMenu'), kitLink = kit.querySelector(':scope > .pure-menu-link');
+function setKit(open){ kit.classList.toggle('pure-menu-active', open); kitLink.setAttribute('aria-expanded', String(open)); }
+kitLink.addEventListener('click', e => { if (!kit.classList.contains('pure-menu-active')) { e.preventDefault(); setKit(true); } });
+kit.addEventListener('focusout', e => { if (!kit.contains(e.relatedTarget)) setKit(false); });
+kit.addEventListener('mouseleave', () => setKit(false));
+const mnav = $('#mnav'), menuBtn = $('#menuBtn');
+function setMenu(open){ mnav.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', String(open)); }
+menuBtn.addEventListener('click', () => setMenu(!mnav.classList.contains('open')));
+$$('#mnav a, .pure-menu-children a').forEach(a => a.addEventListener('click', () => { setMenu(false); setKit(false); }));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { setMenu(false); setKit(false); } });
+
+/* --- toast --- */
+function toast(msg){ const n = document.createElement('div'); n.className = 'toast'; n.setAttribute('role', 'status'); n.textContent = msg; $('#toasts').append(n); setTimeout(() => { n.style.transition = 'opacity .4s'; n.style.opacity = '0'; setTimeout(() => n.remove(), 400); }, 4800); }
+
+/* --- harga: lunas / cicil --- */
+$$('#payGroup [data-pay]').forEach(b => b.addEventListener('click', () => {
+  $$('#payGroup [data-pay]').forEach(o => { o.setAttribute('aria-pressed', String(o === b)); o.classList.toggle('pure-button-active', o === b); });
+  const cicil = b.dataset.pay === 'cicil';
+  $$('[data-price]').forEach(p => { const v = Number(p.dataset.price); p.textContent = 'Rp ' + fmt(cicil ? Math.ceil(v * 1.06 / 12 / 1000) * 1000 : v); });
+  $$('[data-per]').forEach(p => p.textContent = cicil ? '/ bulan × 12' : 'sekali bayar');
+}));
+$$('[data-kit]').forEach(a => a.addEventListener('click', () => { $('#fKit').value = a.dataset.kit; }));
+
+/* --- formulir survei --- */
+$('#ctaForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const f = e.target, nama = f.nama.value.trim(), wa = f.wa.value.replace(/[\s-]/g, '');
+  const okN = nama.length > 1, okW = /^(\+62|62|0)8\d{7,12}$/.test(wa);
+  f.nama.classList.toggle('bad', !okN); $('#fNameErr').classList.toggle('on', !okN); f.nama.setAttribute('aria-invalid', String(!okN));
+  f.wa.classList.toggle('bad', !okW); $('#fPhoneErr').classList.toggle('on', !okW); f.wa.setAttribute('aria-invalid', String(!okW));
+  if (!okN) return f.nama.focus(); if (!okW) return f.wa.focus();
+  toast(`Terima kasih, ${nama.split(/\s+/)[0]}! Teknisi ${f.kota.value} akan menghubungi via WhatsApp untuk survei ${f.kit.value}.`);
+  f.reset();
+});
+
+/* --- statistik --- */
+const statIO = new IntersectionObserver(es => es.forEach(en => {
+  if (!en.isIntersecting) return; statIO.unobserve(en.target);
+  $$('[data-count]', en.target).forEach(el => {
+    const end = Number(el.dataset.count), suf = el.dataset.suffix || '', show = v => el.textContent = fmt(v) + suf;
+    if (rmq.matches) return show(end);
+    const t0 = performance.now(); const step = now => { const p = Math.min(1, (now - t0) / 1400); show(end * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); }; requestAnimationFrame(step);
+  });
+}), { threshold: .3 });
+statIO.observe($('#stats'));
+
+/* --- state kebun (hero + kendali) --- */
+const state = { plant: 'selada', day: 21, grow: false, night: false, size: 'sedang', focus: 'semua' };
+const DEFAULTS = { ...state };
+const PLANT = {
+  selada: { name: 'Selada', harvest: 30, ph: 6.0, ec: 1.2 },
+  kangkung: { name: 'Kangkung', harvest: 21, ph: 6.2, ec: 1.6 },
+  cabai: { name: 'Cabai', harvest: 45, ph: 6.3, ec: 2.4, fruit: 30 },
+  stroberi: { name: 'Stroberi', harvest: 40, ph: 5.8, ec: 1.8, fruit: 26 },
+};
+const SIZE = { kecil: { name: 'Kit Balkon', towers: 2, nft: 1, tank: 60 }, sedang: { name: 'Kit Rooftop', towers: 4, nft: 2, tank: 250 }, besar: { name: 'Kebun Komunal', towers: 6, nft: 3, tank: 500 } };
+function readings(){
+  const p = PLANT[state.plant], g = clamp(state.day / p.harvest, 0, 1.2);
+  const temp = state.night ? 23.5 + (state.grow ? 1 : 0) : 26.2;
+  const ec = p.ec * (.55 + .45 * Math.min(1, g));
+  const tank = Math.round(SIZE[state.size].tank * (.92 - .25 * Math.min(1, g)));
+  return { ph: p.ph, ec, temp, tank, left: Math.max(0, p.harvest - state.day) };
+}
+function readouts(){
+  const p = PLANT[state.plant], r = readings(), s = SIZE[state.size];
+  $('#dayRead').textContent = state.day + ' hari';
+  $('#cfgDay').textContent = 'Hari ke-' + state.day;
+  $('#dayRange').setAttribute('aria-valuetext', `${state.day} hari, ${r.left ? r.left + ' hari lagi panen' : 'siap panen'}`);
+  $('#harvestNote').textContent = r.left ? `${p.name} siap petik pada hari ke-${p.harvest} (${r.left} hari lagi).` : `${p.name} sudah siap dipetik!`;
+  $('#cfgChip').textContent = `${s.name} · ${s.towers} menara`;
+  $('#heroRead').textContent = `pH ${dec(r.ph)} · ${dec(r.temp)}°C`;
+  $('#heroChip').textContent = state.night ? (state.grow ? 'Malam · lampu tanam menyala' : 'Malam · pompa tetap bekerja') : 'Pompa menyala · nutrisi mengalir';
+  const rows = [
+    ['pH larutan', dec(r.ph), Math.abs(r.ph - 6) < .35],
+    ['Nutrisi (EC)', dec(r.ec) + ' mS/cm', r.ec < 2.6],
+    ['Suhu air', dec(r.temp) + '°C', r.temp < 27],
+    ['Isi tandon', r.tank + ' L', true],
+  ];
+  $('#sensorBody').innerHTML = rows.map(([a, b, ok]) => `<tr><td>${a}</td><td><b>${b}</b></td><td class="${ok ? 'ok' : 'warn'}">${ok ? 'Normal' : 'Cek'}</td></tr>`).join('');
+}
+function emit(){ readouts(); bus.dispatchEvent(new CustomEvent('state', { detail: state })); }
+function syncControls(){
+  $$('[data-plant]').forEach(b => { const on = b.dataset.plant === state.plant; b.setAttribute('aria-pressed', String(on)); b.classList.toggle('pure-button-active', on); });
+  $('#dayRange').value = state.day; $('#sizeSel').value = state.size;
+  $$('[data-grow]').forEach(c => c.checked = state.grow);
+  $('#tSiang').checked = !state.night; $('#tMalam').checked = state.night;
+  $$('#focusMenu [data-focus]').forEach(a => { const on = a.dataset.focus === state.focus; a.parentElement.classList.toggle('pure-menu-selected', on); if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+}
+$$('[data-plant]').forEach(b => b.addEventListener('click', () => { state.plant = b.dataset.plant; syncControls(); emit(); }));
+$('#dayRange').addEventListener('input', e => { state.day = Number(e.target.value); emit(); });
+$('#sizeSel').addEventListener('change', e => { state.size = e.target.value; emit(); });
+$$('[data-grow]').forEach(c => c.addEventListener('change', () => { state.grow = c.checked; if (c.checked && c.id === 'cfgGrow') state.night = true; syncControls(); emit(); }));
+$$('input[name=waktu]').forEach(r => r.addEventListener('change', () => { state.night = $('#tMalam').checked; emit(); }));
+$$('#focusMenu [data-focus]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); state.focus = a.dataset.focus; syncControls(); emit(); }));
+$$('[data-size]').forEach(a => a.addEventListener('click', () => { state.size = a.dataset.size; syncControls(); emit(); }));
+$('#resetBtn').addEventListener('click', () => { Object.assign(state, DEFAULTS); syncControls(); emit(); toast('Kebun dikembalikan ke tampilan awal.'); });
+syncControls(); readouts();
+
+/* ================= 3D ================= */
+function webglOK(){ try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch (e) { return false; } }
+const storySec = $('#perjalanan');
+function showFallbacks(){
+  const tpl = $('#roofFallback');
+  ['#heroStage', '#cfgStage'].forEach(s => { const st = $(s); st.classList.add('no-webgl'); const fb = st.querySelector('.fallback'); if (!fb.firstChild) fb.append(tpl.content.cloneNode(true)); });
+  storySec.classList.add('no-webgl');
+}
+let THREE;
+try { if (!webglOK()) throw new Error('no-webgl'); THREE = await import('three'); } catch (err) { THREE = null; showFallbacks(); }
+function storyProgress(){ const r = storySec.getBoundingClientRect(); return clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1); }
+const tlItems = $$('#tlMini li'), sceneSteps = $$('.scene-step', storySec);
+function setStepUI(n){
+  sceneSteps.forEach((s, k) => s.classList.toggle('on', k === n));
+  tlItems.forEach((li, k) => li.classList.toggle('on', k <= n));
+  $('#tlFill').style.width = (n / 4 * 80) + '%';
+}
+const isDark = () => root.getAttribute('data-theme') === 'dark';
+
+if (THREE) {
+  const DPR = () => Math.min(window.devicePixelRatio || 1, 2);
+  const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+  const frames = window.__hijau.frames = {};
+  function createLoop(el, frame, continuous){
+    let visible = false, raf = 0, last = 0, pending = true, aliveUntil = 0;
+    const L = { request(){ pending = true; kick(); }, keepAlive(ms){ aliveUntil = Math.max(aliveUntil, performance.now() + ms); kick(); } };
+    const run = () => visible && !document.hidden;
+    function tick(now){
+      if (!run()) { raf = 0; last = 0; return; }
+      raf = -1; const dt = last ? Math.min((now - last) / 1000, .1) : .016; last = now; pending = false;
+      frames[el.id] = (frames[el.id] || 0) + 1; frame(dt, now / 1000);
+      if (continuous() || pending || now < aliveUntil) raf = requestAnimationFrame(tick); else { raf = 0; last = 0; }
+    }
+    function kick(){ if (!raf && run()) raf = requestAnimationFrame(tick); }
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) { pending = true; kick(); } }, { rootMargin: '80px' }).observe(el);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) { pending = true; kick(); } });
+    rmq.addEventListener('change', () => L.request());
+    return L;
+  }
+  function makeRenderer(canvas){
+    const r = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+    r.setPixelRatio(DPR()); r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+    r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.05; r.outputColorSpace = THREE.SRGBColorSpace; return r;
+  }
+  function watchSize(el, renderer, onSize){ const apply = () => { const w = Math.max(1, el.clientWidth), h = Math.max(1, el.clientHeight); renderer.setPixelRatio(DPR()); renderer.setSize(w, h, false); onSize(w, h); }; new ResizeObserver(apply).observe(el); apply(); }
+  const std = (c, rough = .8, extra = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0, ...extra });
+  function rng(seed){ return () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+  function box(parent, w, h, d, mat, x, y, z, o = {}){ const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y, z); m.castShadow = o.cast !== false; m.receiveShadow = true; if (o.ry) m.rotation.y = o.ry; parent.add(m); return m; }
+  function cyl(parent, rt, rb, h, mat, x, y, z, seg = 16, o = {}){ const m = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg), mat); m.position.set(x, y, z); m.castShadow = o.cast !== false; m.receiveShadow = true; if (o.rx) m.rotation.x = o.rx; if (o.rz) m.rotation.z = o.rz; parent.add(m); return m; }
+  /* jalur bersudut membulat (pipa, jalur cerita) */
+  function roundedPath(pts, rad){ const path = new THREE.CurvePath(); let cur = pts[0].clone(); for (let i = 1; i < pts.length - 1; i++) { const p = pts[i], dIn = p.clone().sub(pts[i - 1]).normalize(), dOut = pts[i + 1].clone().sub(p).normalize(); if (dIn.dot(dOut) > .999) continue; const r = Math.min(rad, p.distanceTo(pts[i - 1]) / 2, p.distanceTo(pts[i + 1]) / 2); const a = p.clone().addScaledVector(dIn, -r), b = p.clone().addScaledVector(dOut, r); path.add(new THREE.LineCurve3(cur.clone(), a)); path.add(new THREE.QuadraticBezierCurve3(a, p.clone(), b)); cur = b; } path.add(new THREE.LineCurve3(cur, pts[pts.length - 1].clone())); return path; }
+  function makePerson(o = {}){
+    const g = new THREE.Group(); g.scale.setScalar(o.s || 1);
+    const shirt = std(o.shirt || '#1f7a4d', .85), pants = std(o.pants || '#2f2a26', .85), skin = std('#c08c68', .8), mats = [shirt, pants, skin];
+    function limb(parent, mat, w, h, x, y){ const piv = new THREE.Group(); piv.position.set(x, y, 0); const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, w), mat); m.position.y = -h / 2; m.castShadow = true; piv.add(m); parent.add(piv); return piv; }
+    const legL = limb(g, pants, .19, .74, -.13, .78), legR = limb(g, pants, .19, .74, .13, .78);
+    const torso = new THREE.Group(); torso.position.y = .78; g.add(torso);
+    const body = new THREE.Mesh(new THREE.BoxGeometry(.5, .62, .32), shirt); body.position.y = .34; body.castShadow = true; torso.add(body);
+    if (o.apron) { const ap = std(o.apron, .9); mats.push(ap); const a = new THREE.Mesh(new THREE.BoxGeometry(.44, .7, .04), ap); a.position.set(0, .22, .18); torso.add(a); }
+    const head = new THREE.Mesh(new THREE.SphereGeometry(.23, 14, 10), skin); head.position.y = .9; head.castShadow = true; torso.add(head);
+    if (o.hijab) { const hj = std(o.hijab, .9); mats.push(hj); const h = new THREE.Mesh(new THREE.SphereGeometry(.26, 14, 10), hj); h.position.set(0, .93, -.03); torso.add(h); const d = new THREE.Mesh(new THREE.ConeGeometry(.32, .38, 14), hj); d.position.y = .66; torso.add(d); const f = new THREE.Mesh(new THREE.SphereGeometry(.2, 12, 8), skin); f.position.set(0, .88, .08); f.scale.z = .7; torso.add(f); }
+    else { const hc = std(o.hat || '#e2702a', .8); mats.push(hc); const c = new THREE.Mesh(new THREE.CylinderGeometry(.2, .3, .2, 14), hc); c.position.y = 1.1; c.castShadow = true; torso.add(c); }
+    if (o.crate) { const cr = std(o.crate, .8); mats.push(cr); const b = new THREE.Mesh(new THREE.BoxGeometry(.62, .34, .44), cr); b.position.set(0, .2, .42); b.castShadow = true; torso.add(b); }
+    const armL = limb(torso, shirt, .14, .56, -.33, .62), armR = limb(torso, shirt, .14, .56, .33, .62);
+    if (o.crate) { armL.rotation.x = armR.rotation.x = -1.1; }
+    return { g, torso, legL, legR, armL, armR, mats };
+  }
+
+  /* ---------- tanaman per jenis ---------- */
+  function plantGeo(type){
+    let g;
+    if (type === 'selada') { g = new THREE.IcosahedronGeometry(.34, 1); g.scale(1, .58, 1); g.translate(0, .14, 0); }
+    else if (type === 'kangkung') { g = new THREE.ConeGeometry(.2, .95, 6); g.translate(0, .47, 0); }
+    else if (type === 'cabai') { g = new THREE.IcosahedronGeometry(.3, 0); g.scale(1, 1.15, 1); g.translate(0, .32, 0); }
+    else { g = new THREE.IcosahedronGeometry(.3, 0); g.scale(1.25, .55, 1.25); g.translate(0, .14, 0); }
+    return g;
+  }
+  const PLANT_COL = { selada: '#93d266', kangkung: '#4f9e3c', cabai: '#3f8a3a', stroberi: '#3d9447' };
+  const FRUIT = { cabai: { col: '#e0362b', geo: () => { const g = new THREE.ConeGeometry(.055, .24, 6); g.rotateX(Math.PI); return g; } }, stroberi: { col: '#e3304a', geo: () => new THREE.SphereGeometry(.085, 8, 6) } };
+
+  /* ---------- rooftop + greenhouse ---------- */
+  function buildRoof(){
+    const R = new THREE.Group(), r = rng(5);
+    const M = {
+      slab: std('#c9ccc4', .95), slabSide: std('#a3a89d', .95), parapet: std('#dfe1da', .9), tile: std('#b8bdb3', .95),
+      pvc: std('#f2f4ee', .5), pvcD: std('#d7dcd2', .6), frame: std('#4d6a5a', .5, { metalness: .2 }), glass: new THREE.MeshStandardMaterial({ color: '#cfeee6', roughness: .1, metalness: 0, transparent: true, opacity: .16, depthWrite: false, side: THREE.DoubleSide }),
+      tank: std('#3b82c4', .5), tankLid: std('#2c6aa3', .5), pump: std('#2d3530', .5, { metalness: .3 }), wood: std('#9a6b46', .8), sensorBody: std('#f4f6ef', .5),
+      bld: std('#dfe4dc', .95), bld2: std('#cdd5cb', .95), win: new THREE.MeshStandardMaterial({ color: '#9fb6c2', roughness: .4, emissive: '#ffcc7a', emissiveIntensity: 0 }),
+      led: new THREE.MeshStandardMaterial({ color: '#4a3a52', roughness: .4, emissive: '#ff4fd8', emissiveIntensity: 0 }),
+      leaf: std('#5fa046', .85, { flatShading: true }), pot: std('#c9744a', .85), umbrella: std('#ef7d22', .8), solar: std('#1f3b5a', .3, { metalness: .5 }),
+    };
+    // atap beton + parapet
+    const slab = new THREE.Mesh(new THREE.BoxGeometry(32, 1.4, 24), [M.slabSide, M.slabSide, M.slab, M.slabSide, M.slabSide, M.slabSide]); slab.position.y = -.7; slab.receiveShadow = true; R.add(slab);
+    box(R, 32, .9, .4, M.parapet, 0, .45, -11.8); box(R, .4, .9, 24, M.parapet, -15.8, .45, 0); box(R, 32, .5, .4, M.parapet, 0, .25, 11.8, { cast: false }); box(R, .4, .5, 24, M.parapet, 15.8, .25, 0, { cast: false });
+    // ubin jalan
+    for (let i = 0; i < 9; i++) box(R, 1.6, .05, 1.6, M.tile, 12.8, .03, -9 + i * 2.2, { cast: false });
+    // rumah tangga (pintu tangga)
+    box(R, 4.5, 3.2, 4, M.parapet, -12.6, 1.6, -8.9); box(R, 5, .3, 4.5, M.slabSide, -12.6, 3.3, -8.9); box(R, 1.2, 2.2, .1, M.wood, -12.6, 1.1, -6.85, { cast: false });
+    // gedung kota di belakang
+    const city = new THREE.Group(); R.add(city);
+    [[-30, -32, 9, 17, 7], [-17, -36, 7, 20, 8], [-5, -38, 8, 15, 7], [7, -35, 6, 18, 6], [19, -33, 9, 14, 8], [-38, -16, 7, 13, 9], [-40, 0, 8, 16, 7], [32, -20, 6, 12, 6]].forEach(([x, z, w, h, d], i) => {
+      box(city, w, h, d, i % 2 ? M.bld : M.bld2, x, h / 2 - 12, z, { cast: false });
+      for (let fy = 0; fy < Math.floor(h / 3) - 1; fy++) for (let fx = 0; fx < 3; fx++) if (r() > .35) box(city, w * .18, 1, .1, M.win, x - w * .3 + fx * w * .3, -12 + 2.2 + fy * 3, z + d / 2 + .06, { cast: false });
+    });
+    // tandon + pompa
+    const tankG = new THREE.Group(); tankG.position.set(10, 0, -7); R.add(tankG);
+    box(tankG, 3.4, .4, 3.4, M.pvcD, 0, .2, 0); cyl(tankG, 1.3, 1.3, 2.6, M.tank, -.4, 1.7, 0, 24); cyl(tankG, 1.32, 1.32, .25, M.tankLid, -.4, 3.1, 0, 24);
+    box(tankG, .9, .7, .7, M.pump, 1.15, .75, .9); cyl(tankG, .26, .26, .5, M.pump, 1.15, 1.35, .9, 12);
+    // panel sensor
+    const sensor = new THREE.Group(); sensor.position.set(9.6, 0, 3.2); sensor.rotation.y = Math.PI / 4; R.add(sensor);
+    cyl(sensor, .08, .08, 2.2, M.frame, 0, 1.1, 0, 8); box(sensor, 2.2, 1.4, .18, M.sensorBody, 0, 2.6, 0);
+    const sc = document.createElement('canvas'); sc.width = 256; sc.height = 160; const sx = sc.getContext('2d');
+    const screenTex = new THREE.CanvasTexture(sc); screenTex.colorSpace = THREE.SRGBColorSpace; screenTex.anisotropy = 4;
+    const screen = new THREE.Mesh(new THREE.PlaneGeometry(2, 1.25), new THREE.MeshBasicMaterial({ map: screenTex, toneMapped: false })); screen.position.set(0, 2.6, .095); sensor.add(screen);
+    cyl(sensor, .06, .06, .6, M.frame, .6, 3.6, 0, 6); cyl(sensor, .18, .18, .06, M.sensorBody, .6, 3.92, 0, 12);
+    function drawScreen(rd, plant){
+      sx.fillStyle = '#0f241a'; sx.fillRect(0, 0, 256, 160);
+      sx.fillStyle = '#a6d84a'; sx.font = '700 18px Figtree, sans-serif'; sx.fillText('HIJAU · ' + plant.toUpperCase(), 14, 28);
+      sx.fillStyle = '#ffffff'; sx.font = '800 34px Figtree, sans-serif'; sx.fillText('pH ' + dec(rd.ph), 14, 72);
+      sx.font = '600 22px Figtree, sans-serif'; sx.fillStyle = '#cfe7d6'; sx.fillText('EC ' + dec(rd.ec) + '  ·  ' + dec(rd.temp) + '°C', 14, 108);
+      sx.fillStyle = '#ef7d22'; sx.fillRect(14, 126, 228 * clamp(rd.tank / 520, .05, 1), 14); sx.strokeStyle = '#3d5a48'; sx.lineWidth = 2; sx.strokeRect(14, 126, 228, 14);
+      screenTex.needsUpdate = true;
+    }
+    // area santai: meja payung + pot tanaman + panel surya
+    const lounge = new THREE.Group(); lounge.position.set(10.5, 0, 8.6); R.add(lounge);
+    cyl(lounge, .9, .9, .1, M.wood, 0, .9, 0, 20); cyl(lounge, .06, .06, .9, M.frame, 0, .45, 0, 8); cyl(lounge, .05, .05, 2.6, M.frame, 0, 1.6, 0, 8);
+    const umb = new THREE.Mesh(new THREE.ConeGeometry(2, .7, 8), M.umbrella); umb.position.set(0, 3, 0); umb.castShadow = true; lounge.add(umb);
+    [[-1.4, .4], [1.3, -.6]].forEach(([x, z]) => box(lounge, .7, .45, .7, M.wood, x, .22, z));
+    [[-14, 9.6], [-11.6, 10.2], [-14.4, 6.8], [13.8, -1.2], [14.4, 1.4]].forEach(([x, z]) => { cyl(R, .45, .35, .8, M.pot, x, .4, z, 12); const l = new THREE.Mesh(new THREE.IcosahedronGeometry(.7, 0), M.leaf); l.position.set(x, 1.2, z); l.castShadow = true; R.add(l); });
+    const solar = new THREE.Group(); solar.position.set(-12.6, 3.5, -8.9); R.add(solar); const sp = box(solar, 4.2, .1, 3.2, M.solar, 0, .45, 0); sp.rotation.x = .35;
+    return { root: R, M, tankG, drawScreen, sensor };
+  }
+
+  /* tata letak kebun per ukuran atap */
+  const LAYOUT = {
+    kecil: { gh: [-1, 0, 10.5, 9], towers: [[-3.8, -2], [-.6, -2]], nft: [[-1.4, 2.4, 6.4]] },
+    sedang: { gh: [-1.2, 0, 15.5, 11.5], towers: [[-6.6, -3], [-3.4, -3], [-.2, -3], [3, -3]], nft: [[-1.8, 1.4, 10], [-1.8, 3.8, 10]] },
+    besar: { gh: [-1.4, .2, 20, 14.5], towers: [[-9, -4.2], [-6, -4.2], [-3, -4.2], [0, -4.2], [3, -4.2], [6, -4.2]], nft: [[-2, .3, 14], [-2, 2.8, 14], [-2, 5.3, 14]] },
+  };
+  const LEVELS = 6, PER = 4, TOWER_H = 4.1;
+  function stripeTex(){
+    const c = document.createElement('canvas'); c.width = 64; c.height = 8; const x = c.getContext('2d');
+    x.fillStyle = '#ef7d22'; x.fillRect(0, 0, 64, 8); x.fillStyle = '#ffc07a'; x.fillRect(0, 0, 18, 8);
+    const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.SRGBColorSpace; return t;
+  }
+  const STRIPE = stripeTex();
+  function buildFarm(sizeKey, M){
+    const L = LAYOUT[sizeKey], F = new THREE.Group(), pots = [], ledBars = [], pipes = [];
+    const [gx, gz, gw, gd] = L.gh, gh = 6.2;
+    // rangka greenhouse
+    const frame = new THREE.Group(); F.add(frame);
+    const posts = [];
+    for (let i = 0; i <= Math.round(gw / 3.5); i++) { const x = gx - gw / 2 + i * gw / Math.round(gw / 3.5); posts.push([x, gz - gd / 2], [x, gz + gd / 2]); }
+    posts.forEach(([x, z]) => box(frame, .14, gh - 1.4, .14, M.frame, x, (gh - 1.4) / 2, z));
+    [gz - gd / 2, gz + gd / 2].forEach(z => box(frame, gw, .14, .14, M.frame, gx, gh - 1.4, z, { cast: false }));
+    [gx - gw / 2, gx + gw / 2].forEach(x => box(frame, .14, .14, gd, M.frame, x, gh - 1.4, gz, { cast: false }));
+    box(frame, gw, .16, .16, M.frame, gx, gh, gz, { cast: false });
+    const slope = Math.atan2(1.4, gd / 2), sl = Math.hypot(1.4, gd / 2);
+    [-1, 1].forEach(s => { const p = new THREE.Mesh(new THREE.PlaneGeometry(gw, sl), M.glass); p.position.set(gx, gh - .7, gz + s * gd / 4); p.rotation.x = -Math.PI / 2 + s * slope; F.add(p); });
+    const back = new THREE.Mesh(new THREE.PlaneGeometry(gw, gh - 1.4), M.glass); back.position.set(gx, (gh - 1.4) / 2, gz - gd / 2); F.add(back);
+    const side = new THREE.Mesh(new THREE.PlaneGeometry(gd, gh - 1.4), M.glass); side.position.set(gx - gw / 2, (gh - 1.4) / 2, gz); side.rotation.y = Math.PI / 2; F.add(side);
+    // menara vertikal
+    L.towers.forEach(([x, z], ti) => {
+      cyl(F, .55, .65, .35, M.pvcD, x, .18, z, 16); cyl(F, .32, .32, TOWER_H, M.pvc, x, .35 + TOWER_H / 2, z, 16); cyl(F, .38, .38, .2, M.pvcD, x, .45 + TOWER_H, z, 16);
+      for (let l = 0; l < LEVELS; l++) for (let k = 0; k < PER; k++) { const a = k / PER * Math.PI * 2 + (l % 2) * Math.PI / PER + ti * .3; pots.push({ x: x + Math.cos(a) * .44, y: .9 + l * .62, z: z + Math.sin(a) * .44, a, tilt: .5 }); }
+    });
+    // talang NFT
+    L.nft.forEach(([x, z, len]) => {
+      box(F, len, .3, .42, M.pvc, x, 1.15, z); box(F, len, .06, .46, M.pvcD, x, 1.33, z, { cast: false });
+      for (let i = 0; i <= Math.round(len / 3); i++) box(F, .1, 1, .1, M.frame, x - len / 2 + .3 + i * (len - .6) / Math.round(len / 3), .5, z);
+      const n = Math.floor(len / .78); for (let i = 0; i < n; i++) pots.push({ x: x - len / 2 + .5 + i * (len - 1) / (n - 1), y: 1.36, z, a: 0, tilt: 0 });
+    });
+    // lampu tanam LED di atas
+    const ledG = new THREE.BoxGeometry(1, .12, .3); const ledN = L.towers.length + L.nft.length;
+    const leds = new THREE.InstancedMesh(ledG, M.led, ledN); const tmp = new THREE.Object3D(); let li = 0;
+    L.towers.forEach(([x, z]) => { tmp.position.set(x, gh - 1.6, z); tmp.scale.set(1.4, 1, 1); tmp.updateMatrix(); leds.setMatrixAt(li++, tmp.matrix); });
+    L.nft.forEach(([x, z, len]) => { tmp.position.set(x, gh - 1.6, z); tmp.scale.set(len * .9, 1, 1); tmp.updateMatrix(); leds.setMatrixAt(li++, tmp.matrix); });
+    F.add(leds);
+    // pipa oranye: pompa → header → tiap menara / talang
+    const H = 5.05, hz = gz - gd / 2 + .55, pumpOut = new THREE.Vector3(11.15, 1.6, -6.1);
+    const routes = L.towers.map(([x, z]) => [pumpOut, new THREE.Vector3(11.15, H, -6.1), new THREE.Vector3(11.15, H, hz), new THREE.Vector3(x, H, hz), new THREE.Vector3(x, H, z), new THREE.Vector3(x, .55 + TOWER_H, z)]);
+    L.nft.forEach(([x, z, len]) => routes.push([pumpOut, new THREE.Vector3(11.15, H, -6.1), new THREE.Vector3(11.15, H, hz), new THREE.Vector3(x - len / 2 + .3, H, hz), new THREE.Vector3(x - len / 2 + .3, H, z), new THREE.Vector3(x - len / 2 + .3, 1.4, z)]));
+    // kembali ke tandon (saluran balik di lantai)
+    routes.push([new THREE.Vector3(L.nft[0][0] + L.nft[0][2] / 2, .2, L.nft[0][1]), new THREE.Vector3(8.6, .2, L.nft[0][1]), new THREE.Vector3(8.6, .2, -7), new THREE.Vector3(8.9, .2, -7)]);
+    routes.forEach((pts, i) => {
+      const path = roundedPath(pts, .6), len = path.getLength(), tex = STRIPE.clone(); tex.needsUpdate = true; tex.repeat.set(len * 1.6, 1);
+      const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: .45, emissive: '#ef7d22', emissiveIntensity: .15 });
+      const m = new THREE.Mesh(new THREE.TubeGeometry(path, Math.max(24, Math.round(len * 5)), i === routes.length - 1 ? .1 : .085, 8, false), mat); m.castShadow = true; F.add(m); pipes.push(tex);
+    });
+    // tanaman (instanced) + buah
+    const leaves = new THREE.InstancedMesh(plantGeo('selada'), std(PLANT_COL.selada, .75, { flatShading: true }), pots.length); leaves.castShadow = true; leaves.receiveShadow = true; F.add(leaves);
+    const fruits = new THREE.InstancedMesh(FRUIT.cabai.geo(), std('#e0362b', .45), pots.length * 2); F.add(fruits);
+    const cups = new THREE.InstancedMesh(new THREE.CylinderGeometry(.14, .11, .16, 10), M.pvcD, pots.length);
+    pots.forEach((p, i) => { tmp.position.set(p.x, p.y - .04, p.z); tmp.rotation.set(0, -p.a, p.tilt ? .5 : 0); tmp.scale.setScalar(1); tmp.updateMatrix(); cups.setMatrixAt(i, tmp.matrix); }); F.add(cups);
+    const jit = pots.map((p, i) => .8 + ((i * 37) % 11) / 25);
+    let curType = 'selada';
+    function setPlants(type, g, fruitAmt){
+      if (type !== curType) { leaves.geometry.dispose(); leaves.geometry = plantGeo(type); leaves.material.color.set(PLANT_COL[type]); if (FRUIT[type]) { fruits.geometry.dispose(); fruits.geometry = FRUIT[type].geo(); fruits.material.color.set(FRUIT[type].col); } curType = type; }
+      const s = .18 + .95 * g;
+      pots.forEach((p, i) => { tmp.position.set(p.x + Math.cos(p.a) * p.tilt * .1, p.y + .02, p.z + Math.sin(p.a) * p.tilt * .1); tmp.rotation.set(0, i * 1.7, 0); tmp.scale.setScalar(s * jit[i]); tmp.updateMatrix(); leaves.setMatrixAt(i, tmp.matrix); });
+      leaves.instanceMatrix.needsUpdate = true;
+      const fs = FRUIT[type] ? fruitAmt : 0;
+      pots.forEach((p, i) => { for (let k = 0; k < 2; k++) { const a = i * 2.3 + k * 2.6, rr = .26 * s * jit[i]; tmp.position.set(p.x + Math.cos(a) * rr, p.y + (type === 'cabai' ? .22 : .1) * s * jit[i] + .04, p.z + Math.sin(a) * rr); tmp.rotation.set(0, a, 0); tmp.scale.setScalar(Math.max(.001, fs * (1 + k * .15))); tmp.updateMatrix(); fruits.setMatrixAt(i * 2 + k, tmp.matrix); } });
+      fruits.instanceMatrix.needsUpdate = true;
+    }
+    const center = new THREE.Vector3(gx, 2.2, gz);
+    return { group: F, setPlants, pipes, center, leds, towers: L.towers, gh: L.gh };
+  }
+
+  const FOCUS = { semua: { t: [0, 1.6, .5], z: 1 }, menara: { t: [-1.8, 2.6, -2.6], z: 1.75 }, pompa: { t: [10, 2.4, -6], z: 2.3 }, sensor: { t: [9.6, 2.4, 3.2], z: 2.6 } };
+  const CAM_DIR = new THREE.Vector3(1, .86, 1).normalize();
+
+  function createRoofView(canvas, stageEl, opts){
+    const renderer = makeRenderer(canvas), scene = new THREE.Scene();
+    const S = buildRoof(); scene.add(S.root);
+    const hemi = new THREE.HemisphereLight('#eef8ff', '#8b8f84', 1.15); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff3dc', 2.6); sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, { left: -24, right: 24, top: 24, bottom: -24, near: 1, far: 120 }); sun.shadow.bias = -.0006; sun.shadow.normalBias = .04; scene.add(sun, sun.target);
+    const grow = new THREE.PointLight('#ff5fd6', 0, 22, 1.6); scene.add(grow);
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -200, 400);
+    let farm = null, farmKey = '', aspect = 1, halfH = 15;
+    const cur = { t: new THREE.Vector3(...FOCUS.semua.t), z: 1, g: 0, fruit: 0, night: 0, grow: 0 }, goal = { t: cur.t.clone(), z: 1, g: 0, fruit: 0, night: 0, grow: 0 };
+    let plantType = 'selada', screenKey = '';
+    const C = { day: new THREE.Color(), night: new THREE.Color(), sky: new THREE.Color(), hemiD: new THREE.Color('#eef8ff'), hemiN: new THREE.Color('#5a6ea8'), sunD: new THREE.Color('#fff3dc'), moon: new THREE.Color('#9fb4e6') };
+    const gardener = makePerson({ shirt: '#ffffff', pants: '#3a3f4b', apron: '#1f7a4d', hijab: '#2e5e46', s: 1.3 }); scene.add(gardener.g);
+    function setFarm(key){ if (key === farmKey) return; if (farm) { S.root.remove(farm.group); farm.group.traverse(o => { if (o.isMesh && o.geometry) o.geometry.dispose(); }); } farm = buildFarm(key, S.M); S.root.add(farm.group); farmKey = key; plantType = '__'; }
+    function growth(s){ const p = PLANT[s.plant]; return { g: smooth(0, 1, Math.min(1.1, s.day / p.harvest)) , fruit: p.fruit ? smooth(p.fruit - 4, p.fruit + 6, s.day) : 0 }; }
+    function apply(s){
+      setFarm(s.size);
+      const f = FOCUS[opts.hero ? 'semua' : s.focus] || FOCUS.semua; goal.t.set(...f.t); goal.z = f.z;
+      const gr = growth(s); goal.g = gr.g; goal.fruit = gr.fruit; goal.night = s.night ? 1 : 0; goal.grow = s.grow ? 1 : 0;
+      if (s.plant !== plantType) { plantType = s.plant; farm.setPlants(plantType, cur.g, cur.fruit); }
+      const rd = readings(), key = [s.plant, s.day, s.night, s.grow, s.size].join('|');
+      if (key !== screenKey) { screenKey = key; S.drawScreen(rd, PLANT[s.plant].name); }
+      loop.keepAlive(2400); loop.request();
+    }
+    function applyTheme(){ C.day.set(isDark() ? '#1d3036' : '#cfe7ec'); C.night.set(isDark() ? '#070d14' : '#16213a'); loop.request(); }
+    const pointer = { x: 0, tx: 0 };
+    if (opts.hero) {
+      stageEl.addEventListener('pointermove', e => { const b = stageEl.getBoundingClientRect(); pointer.tx = ((e.clientX - b.left) / b.width - .5) * 2; loop.request(); });
+      stageEl.addEventListener('pointerleave', () => { pointer.tx = 0; loop.request(); });
+    }
+    const tmpDir = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0);
+    const walk = new THREE.CatmullRomCurve3([[6.6, 5.2], [6.6, -2], [7.2, -5.4], [12.6, -4.6], [12.8, 4], [8.4, 9], [-8, 9.6], [-12.6, 7], [-13.2, -2], [-9, 8.6], [4, 8.4]].map(([x, z]) => new THREE.Vector3(x, 0, z)), true);
+    const loop = createLoop(canvas, (dt, t) => {
+      const still = rmq.matches, k = still ? 1 : 1 - Math.exp(-dt * 3.2);
+      cur.t.lerp(goal.t, k); cur.z += (goal.z - cur.z) * k; cur.night += (goal.night - cur.night) * k; cur.grow += (goal.grow - cur.grow) * k;
+      const pg = cur.g, pf = cur.fruit; cur.g += (goal.g - cur.g) * k; cur.fruit += (goal.fruit - cur.fruit) * k;
+      if (Math.abs(pg - cur.g) > 1e-4 || Math.abs(pf - cur.fruit) > 1e-4) farm.setPlants(plantType, cur.g, cur.fruit);
+      if (cur.t.distanceTo(goal.t) > .01 || Math.abs(goal.z - cur.z) > .002 || Math.abs(goal.g - cur.g) > .002 || Math.abs(goal.fruit - cur.fruit) > .002 || Math.abs(goal.night - cur.night) > .002 || Math.abs(goal.grow - cur.grow) > .002) loop.request();
+      const n = cur.night, gl = cur.grow;
+      C.sky.copy(C.day).lerp(C.night, n); scene.background = C.sky;
+      hemi.color.copy(C.hemiD).lerp(C.hemiN, n); hemi.intensity = 1.15 - .7 * n;
+      sun.color.copy(C.sunD).lerp(C.moon, n); sun.intensity = 2.6 - 2.05 * n;
+      sun.position.set(cur.t.x + 18 - n * 30, cur.t.y + 26, cur.t.z + 10); sun.target.position.copy(cur.t);
+      S.M.win.emissiveIntensity = 1.6 * smooth(.2, .9, n);
+      S.M.led.emissiveIntensity = gl * (1.2 + 1.6 * n);
+      grow.intensity = gl * (25 + 55 * n); grow.position.copy(farm.center).setY(4.4);
+      renderer.toneMappingExposure = 1.05 - .15 * n;
+      // aliran nutrisi di pipa oranye
+      if (!still) farm.pipes.forEach(tx => { tx.offset.x -= dt * 1.4; });
+      // tukang kebun berkeliling
+      const u = still ? .62 : (t * .018) % 1, p = walk.getPointAt(u), tg = walk.getTangentAt(u);
+      gardener.g.position.set(p.x, 0, p.z); gardener.g.rotation.y = Math.atan2(tg.x, tg.z);
+      const sw = still ? 0 : Math.sin(t * 7) * .55; gardener.legL.rotation.x = sw; gardener.legR.rotation.x = -sw; gardener.armL.rotation.x = -sw * .7; gardener.armR.rotation.x = sw * .7;
+      // kamera isometrik
+      pointer.x += (pointer.tx - pointer.x) * (1 - Math.exp(-dt * 3)); if (Math.abs(pointer.tx - pointer.x) > .002) loop.request();
+      tmpDir.copy(CAM_DIR).applyAxisAngle(up, pointer.x * .15 + (opts.hero && !still ? Math.sin(t * .12) * .07 : 0));
+      const hh = halfH / cur.z, hw = hh * aspect; Object.assign(cam, { left: -hw, right: hw, top: hh, bottom: -hh }); cam.updateProjectionMatrix();
+      cam.position.copy(cur.t).addScaledVector(tmpDir, 100); cam.lookAt(cur.t);
+      renderer.render(scene, cam);
+      if (!stageEl.classList.contains('ready')) stageEl.classList.add('ready');
+    }, () => !rmq.matches);
+    watchSize(stageEl, renderer, (w, h) => { aspect = w / h; halfH = aspect < .8 ? 11.4 / Math.max(aspect, .55) : aspect < 1.2 ? 14.5 : 12; loop.request(); });
+    applyTheme(); scene.background = C.sky.copy(C.day); apply(state);
+    if (document.fonts) document.fonts.load('800 34px Figtree').then(() => { screenKey = ''; apply(state); }).catch(() => {});
+    return { apply, applyTheme, loop, renderer, scene, camera: cam };
+  }
+
+  let heroV = null, cfgV = null;
+  try {
+    heroV = createRoofView($('#heroCanvas'), $('#heroStage'), { hero: true });
+    cfgV = createRoofView($('#cfgCanvas'), $('#cfgStage'), { hero: false });
+    bus.addEventListener('state', e => { heroV.apply(e.detail); cfgV.apply(e.detail); });
+    bus.addEventListener('theme', () => { heroV.applyTheme(); cfgV.applyTheme(); });
+  } catch (e) { console.warn('WebGL gagal dimulai', e); showFallbacks(); }
+
+  /* ================= Cerita isometrik: kit Mbak Rina ================= */
+  function createStory(){
+    const stage = $('.story-stage', storySec), canvas = $('#storyCanvas');
+    const renderer = makeRenderer(canvas); const scene = new THREE.Scene();
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -100, 200);
+    const camDir = new THREE.Vector3(1, 1.1, 1).normalize(), camTarget = new THREE.Vector3();
+    const hemi = new THREE.HemisphereLight('#f4f9f2', '#a9b3a0', 1.3); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff3e0', 2.4); sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16, near: 1, far: 80 }); sun.shadow.bias = -.0005; sun.shadow.normalBias = .03; scene.add(sun, sun.target);
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(160, 90), std('#e8eee0', 1)); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+    let grid = null;
+    const CLAY = new THREE.Color('#eef1ea');
+    const SP = [[-16, 4], [-6, -4], [3, 4], [12, -4], [21, 4]];
+    const stations = [];
+    const smat = c => { const m = std(c, .75); m.userData.target = new THREE.Color(c); m.color.copy(CLAY); return m; };
+    function add(g, mats, geo, c, x, y, z, rot){ const m = smat(c); mats.push(m); const me = new THREE.Mesh(geo, m); me.position.set(x, y, z); if (rot) me.rotation.set(rot[0] || 0, rot[1] || 0, rot[2] || 0); me.castShadow = me.receiveShadow = true; g.add(me); return me; }
+    const B = (w, h, d) => new THREE.BoxGeometry(w, h, d), Cy = (rt, rb, h, s = 18) => new THREE.CylinderGeometry(rt, rb, h, s), Ic = (r, d = 0) => new THREE.IcosahedronGeometry(r, d);
+    SP.forEach(([x, z], i) => {
+      const g = new THREE.Group(); g.position.set(x - 1.4, 0, z - 2.6); scene.add(g);
+      const mats = []; add(g, mats, Cy(2.9, 3.0, .26, 44), '#d9e6cf', 0, .13, 0);
+      const inner = new THREE.Group(); inner.position.y = .26; g.add(inner);
+      if (i === 0) { // pesan: ponsel + kardus kit + motor kurir
+        add(inner, mats, B(1.5, 2.6, .2), '#1d2a22', -.4, 1.5, -.9, [0, .3, 0]); add(inner, mats, B(1.3, 2.3, .04), '#eef6ee', -.37, 1.5, -.78, [0, .3, 0]);
+        add(inner, mats, B(1.3, .4, .05), '#1f7a4d', -.37, 2.4, -.76, [0, .3, 0]); add(inner, mats, B(.7, .7, .05), '#a6d84a', -.37, 1.5, -.75, [0, .3, 0]);
+        add(inner, mats, B(1.5, 1, 1.1), '#c99b62', 1.1, .5, .6); add(inner, mats, B(1.52, .18, 1.12), '#1f7a4d', 1.1, .7, .6);
+        add(inner, mats, B(1.6, .5, .5), '#ef7d22', -1.2, .55, 1.3); [[-1.8, 1.3], [-.6, 1.3]].forEach(([wx, wz]) => add(inner, mats, new THREE.TorusGeometry(.24, .08, 8, 16), '#2b2f38', wx, .3, wz));
+      } else if (i === 1) { // pasang: menara setengah jadi + kotak perkakas + tangga
+        add(inner, mats, Cy(.55, .65, .3), '#d7dcd2', -.6, .15, -.4); add(inner, mats, Cy(.32, .32, 2.2), '#f2f4ee', -.6, 1.4, -.4); add(inner, mats, Cy(.32, .32, 1.1), '#f2f4ee', .9, .32, 1.2, [0, 0, Math.PI / 2]);
+        add(inner, mats, B(1, .5, .5), '#c63d2f', 1.3, .25, -.6); add(inner, mats, B(.7, .1, .1), '#2f3a33', 1.3, .58, -.6);
+        add(inner, mats, Cy(.08, .08, 2.4, 10), '#ef7d22', -1.4, 1.2, .6, [0, 0, .2]); add(inner, mats, B(1.3, .5, 1.3), '#3b82c4', 1.4, .25, 1.1 - 2.2);
+      } else if (i === 2) { // semai: nampan semai + botol semprot
+        add(inner, mats, B(2.6, .3, 1.8), '#2d3530', 0, .3, -.2);
+        for (let a = 0; a < 6; a++) for (let b = 0; b < 4; b++) { add(inner, mats, B(.32, .12, .32), '#d9c39a', -1.05 + a * .42, .5, -.85 + b * .42); add(inner, mats, new THREE.ConeGeometry(.08, .3, 5), '#7cc45a', -1.05 + a * .42, .7, -.85 + b * .42); }
+        add(inner, mats, Cy(.22, .22, .8, 12), '#3b82c4', 1.6, .4, 1.1); add(inner, mats, B(.3, .2, .2), '#ef7d22', 1.6, .9, 1.1);
+        add(inner, mats, B(.8, .5, .6), '#c99b62', -1.4, .25, 1.2);
+      } else if (i === 3) { // panen: menara penuh + keranjang
+        add(inner, mats, Cy(.55, .65, .3), '#d7dcd2', -.4, .15, -.6); add(inner, mats, Cy(.32, .32, 3.2), '#f2f4ee', -.4, 1.9, -.6);
+        for (let l = 0; l < 5; l++) for (let k = 0; k < 3; k++) { const a = k / 3 * Math.PI * 2 + l * .6; add(inner, mats, Ic(.3, 1), '#93d266', -.4 + Math.cos(a) * .5, .7 + l * .6, -.6 + Math.sin(a) * .5); }
+        add(inner, mats, Cy(.7, .55, .6, 16), '#b5824f', 1.3, .3, 1); [[1.1, .9], [1.5, 1.1], [1.25, 1.3]].forEach(([lx, lz]) => add(inner, mats, Ic(.3, 1), '#7cc45a', lx, .7, lz));
+      } else { // masak: kompor + wajan + mangkuk
+        add(inner, mats, B(2.8, 1, 1.2), '#e6e1d4', 0, .5, -.8); add(inner, mats, B(2.8, .1, 1.2), '#2f3a33', 0, 1.05, -.8);
+        add(inner, mats, Cy(.55, .35, .25, 18), '#2d3530', -.6, 1.25, -.8); add(inner, mats, Ic(.28, 1), '#4f9e3c', -.6, 1.35, -.8); add(inner, mats, Cy(.04, .04, .9, 6), '#2d3530', .1, 1.3, -.8, [0, 0, Math.PI / 2]);
+        add(inner, mats, Cy(.4, .3, .4, 16), '#f4f6ef', .8, 1.3, -.8); add(inner, mats, Ic(.3, 1), '#93d266', .8, 1.5, -.8);
+        add(inner, mats, Cy(1, 1, .1, 20), '#9a6b46', .6, .75, 1.2); add(inner, mats, Cy(.06, .06, .7, 8), '#2f3a33', .6, .35, 1.2);
+        add(inner, mats, Cy(.3, .22, .2, 14), '#ef7d22', .4, .9, 1.1); add(inner, mats, Cy(.3, .22, .2, 14), '#3b82c4', .95, .9, 1.4);
+      }
+      stations.push({ g, mats, inner, lit: 0 });
+    });
+    const pts = [[-16, 4], [-11, 4], [-11, -4], [-6, -4], [-1, -4], [-1, 4], [3, 4], [7.5, 4], [7.5, -4], [12, -4], [16.5, -4], [16.5, 4], [21, 4]].map(([x, z]) => new THREE.Vector3(x, .3, z));
+    const path = roundedPath(pts, 1.4);
+    const TS = 700, RS = 6, baseMat = std('#cfd8c6', .9);
+    scene.add(new THREE.Mesh(new THREE.TubeGeometry(path, TS, .12, RS, false), baseMat));
+    const progTube = new THREE.Mesh(new THREE.TubeGeometry(path, TS, .2, RS, false), new THREE.MeshStandardMaterial({ color: '#ef7d22', emissive: '#ef7d22', emissiveIntensity: .35, roughness: .5 })); progTube.geometry.setDrawRange(0, 0); scene.add(progTube);
+    SP.forEach(([x, z]) => { const d = new THREE.Mesh(new THREE.CylinderGeometry(.42, .42, .08, 20), std('#ef7d22', .6)); d.position.set(x, .05, z); scene.add(d); });
+    // atap gedung kecil di tepi (instanced) + pot tanaman
+    { const r = rng(17), N = 40, bg = new THREE.BoxGeometry(1, 1, 1), bm = std('#dfe3d9', .95), blds = new THREE.InstancedMesh(bg, bm, N), tmp = new THREE.Object3D(); let n = 0; const potM = std('#c9744a', .85), leafM = std('#5fa046', .9, { flatShading: true });
+      for (let x = -30; x <= 34; x += 3.4) for (const zb of [-13, 13]) { if (n >= N) break; if (r() < .6) { const w = 2 + r() * 1.2, h = .4 + r() * 1.6; tmp.position.set(x, h / 2, zb + (r() - .5) * 2.5); tmp.scale.set(w, h, w); tmp.updateMatrix(); blds.setMatrixAt(n++, tmp.matrix); } else { const px = x + (r() - .5), pz = zb + (r() - .5) * 2; const p = new THREE.Mesh(new THREE.CylinderGeometry(.4, .3, .7, 10), potM); p.position.set(px, .35, pz); p.castShadow = true; scene.add(p); const l = new THREE.Mesh(new THREE.IcosahedronGeometry(.65, 0), leafM); l.position.set(px, 1.05, pz); l.castShadow = true; scene.add(l); } }
+      blds.count = n; blds.castShadow = blds.receiveShadow = true; scene.add(blds); }
+    const samples = 1200, stationU = SP.map(([x, z]) => { let best = 0, bd = 1e9; for (let s = 0; s <= samples; s++) { const q = path.getPointAt(s / samples); const d = (q.x - x) ** 2 + (q.z - z) ** 2; if (d < bd) { bd = d; best = s / samples; } } return best; });
+    stationU[0] = 0; stationU[stationU.length - 1] = 1;
+    const rina = makePerson({ shirt: '#f4f6ef', pants: '#3a3f4b', apron: '#1f7a4d', hijab: '#2e5e46', crate: '#c99b62', s: 1.45 }); scene.add(rina.g); const chr = rina.g;
+
+    let lastT = 0, targetU = 0, shownU = 0, walkPhase = 0, step = -1, lastPos = new THREE.Vector3(), halfW = 10, halfH = 10, aspect = 1;
+    function mapProgress(p){ const n = SP.length - 1, u = clamp(p, 0, 1) * n, i = Math.min(n - 1, Math.floor(u)), f = u - i, w = smooth(.22, .82, f); return { u: stationU[i] + (stationU[i + 1] - stationU[i]) * w, step: w < .5 ? i : i + 1 }; }
+    function setProgress(p){ const m = mapProgress(p); targetU = m.u; if (m.step !== step) { step = m.step; setStepUI(step); } loop.request(); }
+    function themeColors(){
+      const dark = isDark(), bg = dark ? '#0f1b15' : '#e8eee0', ln = dark ? '#2e4538' : '#c5d1bd';
+      scene.background = new THREE.Color(bg); ground.material.color.set(bg).lerp(new THREE.Color(ln), .2);
+      if (grid) { scene.remove(grid); grid.geometry.dispose(); grid.material.dispose(); }
+      grid = new THREE.GridHelper(160, 80, ln, ln); grid.material.transparent = true; grid.material.opacity = .55; grid.position.y = .01; scene.add(grid);
+      CLAY.set(ln).lerp(new THREE.Color(dark ? '#c9d2c4' : '#ffffff'), dark ? .3 : .55);
+      baseMat.color.set(ln).lerp(new THREE.Color(dark ? '#ffffff' : '#000000'), .1);
+      hemi.intensity = dark ? .8 : 1.3; sun.intensity = dark ? 1.9 : 2.4;
+      stations.forEach(s => s.mats.forEach(m => m.color.copy(CLAY).lerp(m.userData.target, s.lit)));
+      loop.request();
+    }
+    const loop = createLoop(canvas, (dt) => {
+      const still = rmq.matches, now = performance.now(), cdt = Math.min(.12, lastT ? (now - lastT) / 1000 : dt); lastT = now;
+      const k = still ? 1 : 1 - Math.exp(-cdt * 5);
+      shownU += (targetU - shownU) * k; if (Math.abs(targetU - shownU) > 1e-4) loop.request(); else shownU = targetU;
+      const pos = path.getPointAt(clamp(shownU, 0, 1)), tan = path.getTangentAt(clamp(shownU, 0, .9999));
+      const moved = pos.distanceTo(lastPos); lastPos.copy(pos); walkPhase += moved * 3.2;
+      const moving = clamp(moved * 25, 0, 1);
+      chr.position.set(pos.x, Math.abs(Math.sin(walkPhase)) * .08 * moving, pos.z);
+      if (moved > 1e-4) chr.rotation.y = Math.atan2(tan.x, tan.z);
+      const sw = Math.sin(walkPhase) * .7 * moving; rina.legL.rotation.x = sw; rina.legR.rotation.x = -sw;
+      progTube.geometry.setDrawRange(0, Math.floor(shownU * TS) * RS * 6);
+      stations.forEach((s, i) => { const goal = shownU >= stationU[i] - .004 ? 1 : 0, prev = s.lit; s.lit += (goal - s.lit) * (still ? 1 : Math.min(1, cdt * 4)); if (Math.abs(goal - s.lit) > .002) loop.request(); else s.lit = goal; if (prev !== s.lit) s.mats.forEach(m => m.color.copy(CLAY).lerp(m.userData.target, s.lit)); s.inner.scale.setScalar(.82 + .18 * s.lit); });
+      const desired = new THREE.Vector3(pos.x, 0, pos.z);
+      if (aspect >= .9) desired.addScaledVector(new THREE.Vector3(1, 0, -1).normalize(), -halfW * .3);
+      if (camTarget.lengthSq() === 0) camTarget.copy(desired);
+      camTarget.lerp(desired, still ? 1 : 1 - Math.exp(-cdt * 3.5)); if (camTarget.distanceTo(desired) > .01) loop.request();
+      cam.position.copy(camTarget).addScaledVector(camDir, 60); cam.lookAt(camTarget);
+      sun.position.copy(camTarget).add(new THREE.Vector3(14, 26, 8)); sun.target.position.copy(camTarget);
+      renderer.render(scene, cam);
+    }, () => false);
+    /* Layar sempit: tokoh dibingkai di ruang kosong ANTARA kartu judul dan kartu langkah (diukur dari DOM) dengan frustum ortografis asimetris */
+    const head = stage.querySelector('.story-head'), card = stage.querySelector('#storyCard');
+    let frameY = .5;
+    function applyFrame(){
+      frameY = .5;
+      if (aspect < .9) { const r = stage.getBoundingClientRect(), a = head.getBoundingClientRect().bottom - r.top, b = card.getBoundingClientRect().top - r.top; if (r.height > 0 && b > a) frameY = clamp(((a + b) / 2 + 32) / r.height, .2, .8); }
+      Object.assign(cam, { left: -halfW, right: halfW, top: 2 * halfH * frameY, bottom: -2 * halfH * (1 - frameY) }); cam.updateProjectionMatrix();
+    }
+    watchSize(stage, renderer, (w, h) => { aspect = w / h; halfH = aspect < .9 ? 10.5 : 8.6; halfW = halfH * aspect; applyFrame(); loop.request(); });
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(head);
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(card);
+    if (document.fonts) document.fonts.ready.then(() => { applyFrame(); loop.request(); });
+    themeColors(); bus.addEventListener('theme', () => requestAnimationFrame(themeColors));
+    return { setProgress, loop, renderer, scene, cam, chr, frame: () => frameY };
+  }
+  let story = null;
+  try { story = createStory(); } catch (e) { console.warn('Cerita 3D gagal', e); storySec.classList.add('no-webgl'); }
+  window.__hijau.views = { heroV, cfgV, story };
+  if (story) { const upd = () => story.setProgress(storyProgress()); addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd(); }
+}
+if (!window.__hijau.views || !window.__hijau.views.story) {
+  const nodes = $$('#storySvg .node');
+  const upd = () => { const n = Math.round(storyProgress() * 4); setStepUI(n); nodes.forEach((c, k) => c.classList.toggle('on', k <= n)); };
+  addEventListener('scroll', upd, { passive: true }); upd();
+}
+</script>
+</body>
+</html>

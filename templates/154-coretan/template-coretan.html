@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coretan — Aplikasi Belajar Seru untuk Anak SD</title>
+<meta name="description" content="Coretan: aplikasi belajar menggambar, berhitung, dan membaca untuk anak SD kelas 1–6. Lima belas menit sehari, penuh warna, dengan laporan untuk orang tua.">
+<meta name="theme-color" content="#fbf6ea">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script>
+  /* tema terang = kertas buku tulis, tema gelap = papan tulis */
+  (function(){var t;try{t=localStorage.getItem('coretan-theme')}catch(e){}
+  if(t!=='light'&&t!=='dark'){t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}
+  document.documentElement.setAttribute('data-theme',t);})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<!-- Wired Elements 3.0.0-rc.6 (MIT) dimuat sebagai ES module -->
+<script type="module" src="https://cdn.jsdelivr.net/npm/wired-elements@3.0.0-rc.6/+esm"></script>
+<style>
+  :root{
+    --bg:#fbf6ea;--bg2:#f3ecdb;--surface:#fffdf7;--surface2:#f7f1e3;
+    --ink:#2a2733;--text:#3d3a46;--muted:#6b6776;--line:#e3dac6;--line2:#cfc4ab;--rule:rgba(84,120,190,.10);--margin:rgba(228,72,62,.28);
+    --red:#e4483e;--yellow:#f5bf2e;--blue:#3a72d8;--green:#2f9e5f;--orange:#ef7d22;--purple:#8b5cf6;--pink:#ec6aa0;
+    --red-soft:#fde3df;--yellow-soft:#fdf0c7;--blue-soft:#dfe9fb;--green-soft:#dcf1e3;--orange-soft:#fde6d2;
+    --accent:var(--red);--btn-ink:#2a2733;
+    --sky:#cfe8f5;--shadow:0 26px 60px -36px rgba(50,40,20,.45);
+    --glass:rgba(255,253,247,.8);
+    --hand:'Patrick Hand','Comic Sans MS','Segoe Print',cursive;
+    --sans:'Nunito',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --sk:255px 18px 225px 18px/18px 225px 18px 255px;
+    color-scheme:light;
+  }
+  [data-theme=dark]{
+    --bg:#17221e;--bg2:#1c2924;--surface:#22312b;--surface2:#273831;
+    --ink:#f6f2e4;--text:#dcd8c8;--muted:#a2ab9f;--line:#33463d;--line2:#44594f;--rule:rgba(255,255,255,.045);--margin:rgba(255,120,110,.22);
+    --red:#ff7a6c;--yellow:#ffd257;--blue:#7fa8ff;--green:#5fd08e;--orange:#ff9b4a;--purple:#b197ff;--pink:#ff8fc0;
+    --red-soft:#3d2622;--yellow-soft:#3a3218;--blue-soft:#1f2c47;--green-soft:#1d3a2a;--orange-soft:#3d2a18;
+    --sky:#22363a;--shadow:0 26px 60px -30px rgba(0,0,0,.8);
+    --glass:rgba(34,49,43,.82);
+    color-scheme:dark;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;background:var(--bg)}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition-duration:.01ms !important;animation-duration:.01ms !important}}
+  body{margin:0;background-color:var(--bg);background-image:linear-gradient(var(--rule) 1px,transparent 1px);background-size:100% 34px;color:var(--text);font-family:var(--sans);font-size:1rem;line-height:1.6;overflow-x:clip;-webkit-font-smoothing:antialiased;transition:background-color .35s,color .35s}
+  h1,h2,h3,h4{font-family:var(--hand);font-weight:400;color:var(--ink);line-height:1.08;letter-spacing:.005em;margin:0}
+  p{margin:0 0 1em}
+  a{color:var(--blue);text-underline-offset:3px}
+  img,svg{max-width:100%}
+  code,kbd,pre,samp{font-family:inherit}
+  .num,.stat b,.price b,.mini b{font-variant-numeric:tabular-nums}
+  button,input,select,textarea{font:inherit}
+  .wrap{width:min(1220px,100% - 32px);margin-inline:auto}
+  :focus-visible{outline:2.5px dashed var(--orange);outline-offset:4px}
+  .skip{position:absolute;left:-999px;top:8px;z-index:200;background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:10px}
+  .skip:focus{left:12px}
+  section{scroll-margin-top:76px}
+  .sr{position:absolute !important;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+  .muted{color:var(--muted)}
+  .sec{padding:clamp(72px,10vw,124px) 0}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--hand);font-size:1.25rem;color:var(--red);line-height:1}
+  .eyebrow svg{width:30px;height:14px}
+  .sec-head{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px 48px;align-items:end;margin-bottom:clamp(30px,5vw,54px)}
+  .sec-head h2{font-size:clamp(2.3rem,5vw,3.9rem);margin-top:10px}
+  .sec-head p{margin:0;font-size:1.05rem}
+  @media (max-width:820px){.sec-head{grid-template-columns:minmax(0,1fr)}}
+  .sketch{border:2px solid var(--ink);border-radius:var(--sk)}
+  .tag{display:inline-flex;align-items:center;gap:6px;padding:3px 12px;font-weight:800;font-size:.78rem;border:1.5px solid currentColor;border-radius:var(--sk);line-height:1.5;white-space:nowrap}
+  .tag.r{color:var(--red);background:var(--red-soft)} .tag.y{color:color-mix(in srgb,var(--yellow) 55%,var(--ink));background:var(--yellow-soft)} .tag.b{color:var(--blue);background:var(--blue-soft)} .tag.g{color:var(--green);background:var(--green-soft)} .tag.o{color:var(--orange);background:var(--orange-soft)}
+
+  /* ---------- Komponen Wired: warna dari token ---------- */
+  wired-button,wired-icon-button,wired-fab,wired-card,wired-toggle,wired-slider,wired-checkbox,wired-radio,wired-combo,wired-tabs,wired-item,wired-input,wired-progress,wired-spinner,wired-divider{color:var(--ink)}
+  wired-button{font-family:var(--hand);font-size:1.18rem;line-height:1.1;background:var(--surface);border-radius:4px;--wired-button-bg:transparent}
+  wired-button.go{background:var(--yellow);color:#2a2733}
+  [data-theme=dark] wired-button.go{color:#1c1a22}
+  wired-button.red{background:var(--red);color:#fff}
+  wired-button.ghost{background:transparent}
+  wired-button.lg{font-size:1.35rem}
+  wired-input,wired-progress,wired-combo,wired-item,wired-checkbox,wired-radio{font-family:var(--sans)}
+  wired-input{width:100%;font-size:1rem;padding:8px 10px;background:var(--surface)}
+  wired-combo{--wired-combo-popup-bg:var(--surface);--wired-item-selected-bg:var(--yellow-soft);background:var(--surface);font-weight:700;min-width:0}
+  wired-tabs{--wired-item-selected-bg:var(--yellow);--wired-item-selected-color:#2a2733;font-family:var(--hand);font-size:1.15rem}
+  wired-toggle{--wired-toggle-on-color:var(--green);--wired-toggle-off-color:var(--muted)}
+  wired-slider{width:100%;--wired-slider-knob-color:var(--red);--wired-slider-knob-zero-color:var(--muted);--wired-slider-bar-color:var(--ink);--wired-slider-knob-outline-color:var(--ink)}
+  wired-slider.hue{--wired-slider-knob-color:var(--knob,#e4483e)}
+  wired-slider.size{--wired-slider-knob-color:var(--blue)}
+  wired-checkbox,wired-radio{--wired-checkbox-icon-color:var(--red);--wired-radio-icon-color:var(--blue);font-weight:700;font-size:.95rem}
+  wired-progress{width:100%;height:36px;--wired-progress-color:var(--yellow);--wired-progress-label-color:var(--ink);--wired-progress-label-background:transparent;--wired-progress-font-size:15px;font-weight:800}
+  wired-fab{--wired-fab-bg-color:var(--yellow);color:#2a2733;font-size:0}
+  wired-fab svg{width:24px;height:24px;display:block}
+  wired-card{display:block;color:var(--text);background:var(--surface)}
+  wired-card.flat{background:transparent}
+  wired-spinner{color:var(--orange);width:28px;height:28px}
+  wired-icon-button{--wired-icon-size:22px;line-height:0}
+  wired-icon-button svg{width:22px;height:22px;display:block}
+
+  /* ---------- Navigasi ---------- */
+  .site-nav{position:sticky;top:0;z-index:60;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(12px) saturate(1.3);-webkit-backdrop-filter:blur(12px) saturate(1.3);border-bottom:2px dashed var(--line2)}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:70px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--hand);font-size:1.75rem;color:var(--ink);text-decoration:none;white-space:nowrap;line-height:1}
+  .brand svg{width:42px;height:42px;flex:0 0 auto}
+  .brand small{display:block;font-family:var(--sans);font-size:.6rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .links{display:flex;gap:2px;list-style:none;margin:0;padding:0}
+  .links a{display:block;padding:8px 13px;color:var(--text);font-weight:700;text-decoration:none;border-radius:var(--sk);font-size:.95rem}
+  .links a:hover,.links a:focus-visible{background:var(--yellow-soft);color:var(--ink)}
+  .nav-r{display:flex;align-items:center;gap:6px}
+  .theme-ico-sun{display:none} [data-theme=dark] .theme-ico-sun{display:block} [data-theme=dark] .theme-ico-moon{display:none}
+  .menu-btn{display:none}
+  .mnav{position:absolute;right:16px;top:68px;width:min(300px,calc(100vw - 32px));display:none;z-index:70}
+  .mnav.open{display:block}
+  .mnav ul{list-style:none;margin:0;padding:4px}
+  .mnav a{display:block;padding:10px 12px;font-family:var(--hand);font-size:1.4rem;color:var(--ink);text-decoration:none;border-radius:var(--sk)}
+  .mnav a:hover,.mnav a:focus-visible{background:var(--yellow-soft)}
+  @media (max-width:960px){.links{display:none}.menu-btn{display:inline-block}}
+  @media (max-width:440px){.brand small{display:none}.nav-cta{display:none}}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:clamp(26px,5vw,60px) 0 30px;position:relative}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6.3fr);gap:clamp(24px,4vw,56px);align-items:center}
+  .hero h1{font-size:clamp(3rem,6.6vw,5.6rem);margin:18px 0 18px;line-height:.98}
+  .hl{position:relative;white-space:nowrap;color:var(--red);display:inline-block}
+  .hl svg{position:absolute;left:-4%;bottom:-.12em;width:108%;height:.42em;z-index:-1;overflow:visible}
+  .hl svg path{stroke:var(--yellow)}
+  .lead{font-size:clamp(1.03rem,1.35vw,1.18rem);max-width:33em;color:var(--muted)}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:24px}
+  .hero-cta a.link{font-family:var(--hand);font-size:1.3rem;color:var(--ink);text-decoration-style:wavy;text-decoration-color:var(--orange)}
+  .mini{display:grid;grid-template-columns:repeat(3,minmax(0,auto));justify-content:start;gap:10px 30px;margin-top:30px;padding-top:20px;border-top:2px dashed var(--line2)}
+  .mini b{display:block;font-family:var(--hand);font-size:2.1rem;font-weight:400;color:var(--ink);line-height:1}
+  .mini span{font-size:.84rem;color:var(--muted);font-weight:600}
+  @media (max-width:420px){.mini{gap:10px 16px}.mini b{font-size:1.7rem}}
+  .stage{position:relative;overflow:hidden;isolation:isolate;background:linear-gradient(180deg,var(--sky),var(--bg2));border:2.5px solid var(--ink);border-radius:28px 22px 30px 20px/20px 30px 22px 28px;box-shadow:6px 8px 0 -1px color-mix(in srgb,var(--ink) 85%,transparent)}
+  .stage canvas{display:block;width:100%;height:100%;opacity:0;transition:opacity .8s ease}
+  .stage.ready canvas{opacity:1}
+  .hero .stage{height:clamp(470px,74vh,680px)}
+  .stage .fallback{position:absolute;inset:0;display:none;place-items:center;padding:20px}
+  .stage.no-webgl .fallback{display:grid}
+  .stage.no-webgl canvas{display:none}
+  .stage .fallback svg{width:min(520px,92%);height:auto}
+  .glass{background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:2px solid var(--ink);border-radius:var(--sk);color:var(--ink)}
+  .stage-top{position:absolute;top:14px;left:14px;right:14px;z-index:2;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;pointer-events:none}
+  .chip{display:inline-flex;align-items:center;gap:8px;padding:4px 12px;font-size:.8rem;font-weight:800;font-variant-numeric:tabular-nums}
+  .chip .dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 30%,transparent)}
+  .stage-panel{position:absolute;left:14px;right:14px;bottom:14px;z-index:2;padding:10px 14px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 14px}
+  .tgl{display:flex;align-items:center;gap:8px;font-weight:800;font-size:.92rem;color:var(--ink)}
+  .lbl{display:block;font-family:var(--hand);font-size:1.15rem;color:var(--ink);margin-bottom:4px;line-height:1.1}
+  @media (max-width:900px){.hero-grid{grid-template-columns:minmax(0,1fr)}.hero .stage{height:min(560px,72vh);min-height:430px}}
+
+  /* ---------- Fitur ---------- */
+  .feats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
+  @media (max-width:1060px){.feats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:600px){.feats{grid-template-columns:minmax(0,1fr)}}
+  .feat{height:100%;padding:20px 20px 22px}
+  .feat .ico{width:58px;height:58px;display:grid;place-items:center;margin-bottom:12px;border:2px solid var(--ink);border-radius:var(--sk)}
+  .feat .ico svg{width:30px;height:30px}
+  .feat h3{font-size:1.75rem;margin:0 0 6px}
+  .feat p{font-size:.95rem;color:var(--muted);margin-bottom:12px}
+  .feat .tags{display:flex;flex-wrap:wrap;gap:6px}
+
+  /* ---------- Kelas 3D (kendali Wired) ---------- */
+  .lab-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:22px;align-items:stretch}
+  .lab .stage{height:clamp(500px,76vh,720px)}
+  .panel{padding:18px 18px 20px;display:flex;flex-direction:column;gap:16px;min-width:0}
+  .panel .row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .read{font-family:var(--hand);font-size:1.25rem;color:var(--ink);font-variant-numeric:tabular-nums}
+  .swatch{display:inline-block;width:18px;height:18px;border:2px solid var(--ink);border-radius:50% 45% 55% 50%;vertical-align:-3px;margin-right:6px}
+  wired-tab p{margin:6px 2px 0;font-size:.92rem;color:var(--muted);font-family:var(--sans)}
+  wired-tabs{min-width:0}
+  .tabs-wrap{overflow-x:auto;overflow-y:hidden;margin:0 -4px;padding:0 4px 4px;scrollbar-width:thin}
+  wired-radio-group{display:flex;flex-wrap:wrap;gap:4px 14px}
+  .checks{display:flex;flex-wrap:wrap;gap:6px 18px}
+  .star-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center}
+  .busy{display:inline-flex;align-items:center;gap:8px;font-size:.82rem;font-weight:800;color:var(--muted);visibility:hidden}
+  .busy.on{visibility:visible}
+  @media (max-width:980px){.lab-grid{grid-template-columns:minmax(0,1fr)}.lab .stage{height:min(540px,66vh);min-height:400px}}
+
+  /* ---------- Cerita gulir isometrik ---------- */
+  .story{position:relative;height:520vh;background:var(--bg2)}
+  .story-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+  .story-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .story-fallback{position:absolute;inset:0;display:none;place-items:center;padding:24px}
+  .story.no-webgl .story-fallback{display:grid}
+  .story.no-webgl canvas{display:none}
+  .story-fallback svg{width:min(900px,100%);height:auto}
+  .story-fallback .node{fill:var(--surface);stroke:var(--ink);stroke-width:3;transition:fill .4s}
+  .story-fallback .node.on{fill:var(--yellow)}
+  .story-ui{position:absolute;inset:0;pointer-events:none;padding:90px 0 28px}
+  .story-ui .wrap{position:relative;height:100%;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+  .story-head{max-width:480px;width:fit-content;background:color-mix(in srgb,var(--bg2) 82%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:2px solid var(--ink);border-radius:var(--sk);padding:16px 22px 18px;pointer-events:auto}
+  .story-head h2{font-size:clamp(2rem,3.8vw,3.1rem);margin:8px 0 0}
+  .story-head p{margin:8px 0 0;font-size:.95rem}
+  .story-card{max-width:460px;pointer-events:auto;background:color-mix(in srgb,var(--surface) 90%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:2px solid var(--ink);border-radius:var(--sk);padding:14px 20px 18px;box-shadow:5px 6px 0 -1px color-mix(in srgb,var(--ink) 80%,transparent)}
+  .tlm{position:relative;margin:0 0 10px}
+  .tlm::before{content:"";position:absolute;left:10%;right:10%;top:13px;height:0;border-top:3px dashed var(--line2)}
+  .tlm .fill{position:absolute;left:10%;top:12px;height:4px;border-radius:3px;background:var(--orange);width:0;transition:width .4s}
+  .timeline-mini{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;list-style:none;margin:0;padding:0;position:relative}
+  .timeline-mini li{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.72rem;font-weight:800;color:var(--muted)}
+  .timeline-mini .dotn{display:grid;place-items:center;min-width:28px;height:28px;padding:0 6px;border:2px solid var(--ink);border-radius:50% 46% 52% 48%;background:var(--surface);color:var(--ink);font-family:var(--hand);font-size:1rem;font-variant-numeric:tabular-nums;transition:background-color .3s}
+  .timeline-mini li.on{color:var(--ink)}
+  .timeline-mini li.on .dotn{background:var(--yellow);color:#2a2733}
+  .scene-steps{position:relative;min-height:158px;list-style:none;margin:0;padding:0}
+  .scene-step{position:absolute;inset:0 0 auto 0;opacity:0;transform:translateY(14px);transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+  .scene-step.on{opacity:1;transform:none;pointer-events:auto}
+  .scene-step h3{font-size:1.75rem;margin:2px 0 4px}
+  .scene-step p{font-size:.93rem;color:var(--muted);margin:0}
+  .scene-step .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  @media (max-width:760px){
+    .story-ui{padding:78px 0 14px}
+    .story-head{padding:10px 16px 12px}
+    .story-head h2{font-size:1.75rem}
+    .story-head p{display:none}
+    .story-card{max-width:none;padding:12px 14px 14px}
+    .timeline-mini .tl-lbl{display:none}
+    .scene-steps{min-height:100px}
+    .scene-step h3{font-size:1.45rem}
+    .scene-step p{font-size:.87rem}
+    .scene-step .tags{display:none}
+  }
+
+  /* ---------- Statistik + testimoni ---------- */
+  .stats-band{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;padding:26px 0;margin-bottom:clamp(40px,6vw,70px);border-block:2px dashed var(--line2)}
+  .stat{text-align:center}
+  .stat b{display:block;font-family:var(--hand);font-weight:400;font-size:clamp(2.6rem,5vw,3.8rem);color:var(--ink);line-height:1.05}
+  .stat span{font-size:.8rem;font-weight:800;color:var(--muted)}
+  @media (max-width:768px){.stats-band{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .quotes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+  @media (max-width:980px){.quotes{grid-template-columns:minmax(0,1fr)}}
+  .quote{padding:20px 22px 22px;height:100%;display:flex;flex-direction:column}
+  .quote blockquote{margin:0 0 18px;font-size:1.02rem;line-height:1.6;color:var(--text)}
+  .quote blockquote::before{content:"“";display:block;font-family:var(--hand);font-size:3.6rem;line-height:.6;color:var(--red);margin-bottom:6px}
+  .who{display:flex;gap:12px;align-items:center;margin-top:auto}
+  .who b{display:block;color:var(--ink)}
+  .who small{color:var(--muted)}
+  .avatar{width:46px;height:46px;border:2px solid var(--ink);border-radius:50% 45% 52% 48%;display:grid;place-items:center;font-family:var(--hand);font-size:1.3rem;color:#2a2733;flex:0 0 auto}
+
+  /* ---------- Harga ---------- */
+  .price-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:26px}
+  .plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;align-items:stretch}
+  @media (max-width:980px){.plans{grid-template-columns:minmax(0,1fr);max-width:520px}}
+  .plan{padding:22px 22px 24px;height:100%;display:flex;flex-direction:column;position:relative}
+  .plan h3{font-size:2rem}
+  .plan .for{color:var(--muted);font-size:.92rem;margin:4px 0 0}
+  .price{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;margin:14px 0 6px}
+  .price b{font-family:var(--hand);font-weight:400;font-size:clamp(2.4rem,3.6vw,3rem);color:var(--ink);line-height:1}
+  .price span{color:var(--muted);font-size:.88rem;font-weight:700}
+  .plan ul{list-style:none;margin:10px 0 22px;padding:0;display:grid;gap:9px;font-size:.95rem}
+  .plan li{display:flex;gap:10px;align-items:flex-start}
+  .plan li svg{flex:0 0 auto;width:20px;height:20px;margin-top:2px;color:var(--green)}
+  .plan wired-button{margin-top:auto;align-self:flex-start}
+  .plan .ribbon{position:absolute;top:-14px;right:18px;transform:rotate(3deg);background:var(--red);color:#fff;font-family:var(--hand);font-size:1.1rem;padding:2px 14px;border:2px solid var(--ink);border-radius:var(--sk)}
+  .save{font-weight:800;color:var(--green)}
+
+  /* ---------- FAQ ---------- */
+  .faq-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:40px}
+  @media (max-width:900px){.faq-grid{grid-template-columns:minmax(0,1fr)}}
+  .faq details{background:var(--surface);border:2px solid var(--ink);border-radius:var(--sk);margin-bottom:14px;padding:0 18px}
+  .faq summary{cursor:pointer;list-style:none;padding:16px 34px 16px 0;position:relative;font-weight:800;color:var(--ink)}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";position:absolute;right:0;top:50%;transform:translateY(-50%);font-family:var(--hand);font-size:2rem;color:var(--red);line-height:1}
+  .faq details[open] summary::after{content:"–"}
+  .faq details p{margin:0 0 16px;color:var(--muted)}
+
+  /* ---------- CTA ---------- */
+  .cta{position:relative;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:34px;align-items:center;padding:clamp(24px,6vw,64px);background:var(--yellow);color:#2a2733;border:2.5px solid #2a2733;border-radius:34px 26px 38px 24px/24px 38px 26px 34px;box-shadow:8px 10px 0 -1px #2a2733;overflow:hidden}
+  .cta h2{font-size:clamp(2.4rem,5vw,4rem);color:#2a2733;margin:10px 0 12px}
+  .cta .eyebrow{color:#b8321f}
+  .cta p{color:#3d3a46}
+  .cta .art{position:absolute;right:-30px;top:-30px;width:220px;opacity:.22;pointer-events:none}
+  .form{position:relative;z-index:1;background:var(--surface);color:var(--text);padding:clamp(16px,3vw,26px)}
+  .field{margin-bottom:12px}
+  .field label,.field .flbl{display:block;font-weight:800;font-size:.86rem;color:var(--ink);margin-bottom:2px}
+  .err{display:block;min-height:1.2rem;font-size:.78rem;font-weight:800;color:var(--red);visibility:hidden}
+  .err.on{visibility:visible}
+  @media (max-width:860px){.cta{grid-template-columns:minmax(0,1fr)}}
+
+  /* ---------- Dialog + toast ---------- */
+  wired-dialog{--wired-dialog-z-index:120}
+  .dlg{width:min(420px,calc(100vw - 56px));color:#2a2733;padding:6px 6px 4px;text-align:left;font-family:var(--sans)}
+  .dlg h3{font-size:2rem;color:#2a2733}
+  .dlg p{color:#5b5866;font-size:.93rem}
+  .dlg wired-input{color:#2a2733;background:#fff}
+  .dlg .field label{color:#2a2733}
+  .dlg .acts{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:6px}
+  .dlg wired-button{color:#2a2733;background:#fff}
+  .dlg wired-button.go{background:#f5bf2e}
+  .toasts{position:fixed;right:12px;bottom:12px;z-index:130;display:grid;gap:8px;width:min(360px,calc(100vw - 24px))}
+  .toast{background:var(--surface);color:var(--ink);border:2px solid var(--ink);border-radius:var(--sk);padding:12px 16px;font-weight:700;box-shadow:4px 5px 0 -1px var(--ink);font-size:.93rem}
+
+  /* ---------- Footer ---------- */
+  .site-footer{padding:60px 0 30px;background:var(--bg2);border-top:2px dashed var(--line2);margin-top:clamp(72px,10vw,120px)}
+  .foot-grid{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));gap:28px}
+  .site-footer h4{font-family:var(--hand);font-size:1.4rem;margin-bottom:8px}
+  .site-footer a{display:block;padding:3px 0;color:var(--text);text-decoration:none;font-weight:600}
+  .site-footer a:hover{color:var(--red)}
+  .site-footer a.brand{display:flex}
+  .foot-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;border-top:2px dashed var(--line2);margin-top:36px;padding-top:20px;font-size:.88rem;color:var(--muted)}
+  @media (max-width:820px){.foot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.foot-grid>div:first-child{grid-column:span 2}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Lewati ke konten</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo" viewBox="0 0 42 42"><path d="M5 9c1-3 4-4 8-4h17c4 0 7 2 7 6v19c0 4-3 7-7 7H12c-4 0-7-3-7-7z" fill="#f5bf2e" stroke="#2a2733" stroke-width="2.2" stroke-linejoin="round"/><path d="M11 27c3-7 6-12 8-11s-3 9 0 9 5-10 8-9-1 8 2 8 3-3 4-4" fill="none" stroke="#e4483e" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M29 8l5 5-12 12-6 1 1-6z" fill="#3a72d8" stroke="#2a2733" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 13c2 1 4 3 5 5 2-5 6-10 11-13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="squig" viewBox="0 0 30 14"><path d="M2 9c3-6 6-6 8 0s5 6 8 0 6-6 10 0" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="currentColor" stroke="#2a2733" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<header class="site-nav">
+  <nav class="wrap nav" aria-label="Navigasi utama">
+    <a class="brand" href="#top" aria-label="Coretan, ke atas">
+      <svg aria-hidden="true"><use href="#logo"/></svg>
+      <span>Coretan<small>Belajar sambil main</small></span>
+    </a>
+    <ul class="links">
+      <li><a href="#fitur">Pelajaran</a></li>
+      <li><a href="#kelas">Kelas 3D</a></li>
+      <li><a href="#cerita">Sehari Dika</a></li>
+      <li><a href="#harga">Harga</a></li>
+      <li><a href="#faq">Tanya jawab</a></li>
+    </ul>
+    <div class="nav-r">
+      <wired-icon-button id="themeBtn" data-label="Ganti tema terang atau gelap" aria-pressed="false">
+        <svg class="theme-ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <svg class="theme-ico-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </wired-icon-button>
+      <wired-button class="go nav-cta" data-open-dialog>Coba gratis</wired-button>
+      <wired-icon-button class="menu-btn" id="menuBtn" data-label="Buka menu" aria-expanded="false" aria-controls="mnav">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7c5-1 11 1 16 0M4 12c6 1 10-1 16 0M4 17c4-1 7 1 10 0" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      </wired-icon-button>
+    </div>
+  </nav>
+  <wired-card class="mnav" id="mnav" elevation="3">
+    <ul>
+      <li><a href="#fitur">Pelajaran</a></li>
+      <li><a href="#kelas">Kelas 3D</a></li>
+      <li><a href="#cerita">Sehari Dika</a></li>
+      <li><a href="#harga">Harga</a></li>
+      <li><a href="#faq">Tanya jawab</a></li>
+    </ul>
+  </wired-card>
+</header>
+
+<main id="main">
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="tag r">Baru · Kurikulum Merdeka kelas 1–6</span>
+        <h1>Belajar seru, satu <span class="hl">coretan<svg viewBox="0 0 200 30" preserveAspectRatio="none" aria-hidden="true"><path d="M4 18c40-10 90-14 192-8M10 26c50-8 110-10 182-4" fill="none" stroke-width="9" stroke-linecap="round"/></svg></span> setiap hari.</h1>
+        <p class="lead">Coretan mengajak anak SD menggambar, berhitung dengan sempoa, dan membaca cerita rakyat lewat permainan 15 menit sehari. Tanpa iklan, tanpa ranking yang bikin minder, dan orang tua menerima laporan setiap Jumat.</p>
+        <div class="hero-cta">
+          <wired-button class="go lg" elevation="3" data-open-dialog>Coba gratis 14 hari</wired-button>
+          <a class="link" href="#kelas">Masuk kelas 3D →</a>
+        </div>
+        <div class="mini">
+          <div><b>120 rb</b><span>anak belajar aktif</span></div>
+          <div><b>4,8</b><span>nilai dari orang tua</span></div>
+          <div><b>15 mnt</b><span>cukup sehari</span></div>
+        </div>
+      </div>
+      <div class="stage" id="heroStage">
+        <canvas id="heroCanvas" role="img" aria-label="Sekolah 3D bergaya sketsa: pojok menggambar dengan krayon melayang, sempoa raksasa, pojok baca, dan taman bermain tempat seorang anak berjalan"></canvas>
+        <div class="fallback" aria-hidden="true"></div>
+        <div class="stage-top">
+          <span class="chip glass"><span class="dot"></span><span id="heroChip">Kelas sedang dibuka</span></span>
+          <span class="chip glass num" id="heroStars">★ 3 bintang hari ini</span>
+        </div>
+        <div class="stage-panel glass">
+          <div class="tgl"><wired-toggle id="heroRainbow" data-rainbow data-label="Mode pelangi"></wired-toggle><span aria-hidden="true">Mode pelangi</span></div>
+          <wired-button class="go" id="heroShuffle">Acak warna krayon</wired-button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FITUR -->
+  <section class="sec" id="fitur">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow"><svg aria-hidden="true"><use href="#squig"/></svg>Tiga pelajaran inti</span><h2>Mencoret, menghitung, membaca. Semuanya terasa seperti main.</h2></div>
+        <p class="muted">Setiap pelajaran disusun bersama guru SD dan psikolog anak. Soal menyesuaikan kemampuan, jadi anak yang cepat tidak bosan dan anak yang pelan tidak tertinggal.</p>
+      </div>
+      <div class="feats">
+        <wired-card class="feat" elevation="2">
+          <div class="ico" style="background:var(--red-soft);color:var(--red)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l3-1 11-11-2-2L5 17z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 6l2-2 4 4-2 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+          <h3>Menggambar</h3><p>Kanvas krayon digital, tebak gambar bersama teman sekelas, dan tantangan menggambar hewan Nusantara.</p>
+          <div class="tags"><span class="tag r">48 tema</span><span class="tag y">Galeri kelas</span></div>
+        </wired-card>
+        <wired-card class="feat" elevation="2">
+          <div class="ico" style="background:var(--blue-soft);color:var(--blue)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 9h18M3 15h18" stroke="currentColor" stroke-width="1.6"/><circle cx="8" cy="9" r="1.8" fill="currentColor"/><circle cx="12" cy="9" r="1.8" fill="currentColor"/><circle cx="15" cy="15" r="1.8" fill="currentColor"/></svg></div>
+          <h3>Berhitung</h3><p>Sempoa interaktif, perkalian lewat lagu, dan soal cerita belanja di warung yang dekat dengan keseharian anak.</p>
+          <div class="tags"><span class="tag b">Sempoa</span><span class="tag g">Adaptif</span></div>
+        </wired-card>
+        <wired-card class="feat" elevation="2">
+          <div class="ico" style="background:var(--green-soft);color:var(--green)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 6v14" stroke="currentColor" stroke-width="2"/></svg></div>
+          <h3>Membaca</h3><p>Ratusan cerita rakyat bersuara, dari Malin Kundang sampai Timun Mas. Anak bisa merekam suaranya sendiri.</p>
+          <div class="tags"><span class="tag g">320 cerita</span><span class="tag o">Bersuara</span></div>
+        </wired-card>
+        <wired-card class="feat" elevation="2">
+          <div class="ico" style="background:var(--yellow-soft);color:color-mix(in srgb,var(--yellow) 60%,var(--ink))"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V5M16 20v-7M21 20H3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+          <h3>Laporan orang tua</h3><p>Ringkasan mingguan lewat WhatsApp: pelajaran yang sudah dikuasai, yang perlu diulang, dan waktu layar anak.</p>
+          <div class="tags"><span class="tag y">Tiap Jumat</span><span class="tag b">Batas waktu</span></div>
+        </wired-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- KELAS 3D: komponen Wired menggerakkan adegan -->
+  <section class="sec lab" id="kelas" style="background:var(--bg2)">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow"><svg aria-hidden="true"><use href="#squig"/></svg>Kelas 3D</span><h2>Atur kelasnya sendiri, lalu lihat semuanya berubah.</h2></div>
+        <p class="muted">Setiap kontrol di panel ini adalah komponen Wired Elements yang menggerakkan adegan three.js: tab memindahkan kamera ke pojok pelajaran, slider mewarnai krayon, sakelar menyalakan pelangi, dan combo mengganti tokoh.</p>
+      </div>
+      <div class="lab-grid">
+        <div class="stage" id="labStage">
+          <canvas id="labCanvas" role="img" aria-label="Kelas 3D interaktif; kamera berpindah ke pojok pelajaran yang dipilih, warna dan ukuran benda mengikuti kontrol"></canvas>
+          <div class="fallback" aria-hidden="true"></div>
+          <div class="stage-top"><span class="chip glass" id="labChip">Seluruh sekolah</span><span class="chip glass num" id="labMood">Siang · cerah</span></div>
+        </div>
+        <wired-card class="panel" elevation="3">
+          <div>
+            <span class="lbl" id="subjLbl">Pilih pelajaran</span>
+            <div class="tabs-wrap">
+              <wired-tabs id="subjTabs" selected="semua" aria-labelledby="subjLbl">
+                <wired-tab name="semua" label="Semua"><p>Seluruh sekolah: pojok gambar, sempoa, pojok baca, dan taman.</p></wired-tab>
+                <wired-tab name="gambar" label="Gambar"><p>Kuda-kuda lukis dan krayon raksasa. Warna gambar ikut slider.</p></wired-tab>
+                <wired-tab name="hitung" label="Hitung"><p>Sempoa sepuluh baris; manik-maniknya bergeser saat anak berhitung.</p></wired-tab>
+                <wired-tab name="baca" label="Baca"><p>Perpustakaan mini dengan buku cerita rakyat yang melayang terbuka.</p></wired-tab>
+              </wired-tabs>
+            </div>
+          </div>
+          <div class="row">
+            <div style="min-width:0;flex:1 1 150px">
+              <span class="lbl" id="kidLbl">Tokoh</span>
+              <wired-combo id="kidCombo" selected="dika" aria-labelledby="kidLbl">
+                <wired-item value="dika">Dika · kelas 2</wired-item>
+                <wired-item value="sari">Sari · kelas 4</wired-item>
+                <wired-item value="pensi">Pensi · maskot</wired-item>
+              </wired-combo>
+            </div>
+            <span class="busy" id="busy" aria-hidden="true"><wired-spinner id="spin" duration="1200"></wired-spinner>kamera bergerak</span>
+          </div>
+          <div>
+            <div class="row"><span class="lbl" id="hueLbl" style="margin:0">Warna krayon</span><span class="read" id="hueRead"><span class="swatch" id="hueSw"></span>Merah</span></div>
+            <wired-slider class="hue" id="hueSlider" min="0" max="359" value="6" data-label="Warna krayon"></wired-slider>
+          </div>
+          <div>
+            <div class="row"><span class="lbl" style="margin:0">Ukuran benda melayang</span><span class="read" id="sizeRead">100%</span></div>
+            <wired-slider class="size" id="sizeSlider" min="60" max="160" value="100" data-label="Ukuran benda melayang"></wired-slider>
+          </div>
+          <div class="row">
+            <div class="tgl"><wired-toggle id="labRainbow" data-rainbow data-label="Mode pelangi"></wired-toggle><span aria-hidden="true">Mode pelangi</span></div>
+            <div class="checks">
+              <wired-checkbox id="inkChk" checked>Garis sketsa</wired-checkbox>
+              <wired-checkbox id="floatChk" checked>Benda melayang</wired-checkbox>
+            </div>
+          </div>
+          <div>
+            <span class="lbl" id="moodLbl" style="margin-top:4px">Suasana</span>
+            <wired-radio-group id="moodGroup" selected="siang" aria-labelledby="moodLbl">
+              <wired-radio name="pagi">Pagi</wired-radio>
+              <wired-radio name="siang">Siang</wired-radio>
+              <wired-radio name="senja">Senja</wired-radio>
+            </wired-radio-group>
+          </div>
+          <div>
+            <span class="lbl">Bintang hari ini <span class="muted" style="font-family:var(--sans);font-size:.8rem;font-weight:700">(target 10)</span></span>
+            <div class="star-row">
+              <wired-progress id="starBar" value="30" max="100" percentage aria-label="Bintang hari ini"></wired-progress>
+              <wired-fab id="starFab" data-label="Beri bintang"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"/></svg></wired-fab>
+            </div>
+          </div>
+          <div class="row" style="margin-top:auto">
+            <wired-button class="go" data-open-dialog>Daftarkan anak</wired-button>
+            <wired-button class="ghost" id="resetBtn">Atur ulang</wired-button>
+          </div>
+        </wired-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERITA -->
+  <section class="story" id="cerita" aria-label="Sehari bersama Dika di Coretan">
+    <div class="story-stage">
+      <canvas id="storyCanvas" role="img" aria-label="Peta isometrik bergaya sketsa: Dika berjalan di jalur oranye dari membuka aplikasi, memilih pelajaran, bermain, mendapat bintang, hingga memamerkan hasilnya kepada orang tua saat halaman digulir"></canvas>
+      <div class="story-fallback" aria-hidden="true">
+        <svg viewBox="0 0 900 360" id="storySvg">
+          <path d="M80 250 L250 130 L450 250 L650 130 L820 250" fill="none" stroke="#ef7d22" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="14 12"/>
+          <g><circle class="node on" cx="80" cy="250" r="34"/><circle class="node" cx="250" cy="130" r="34"/><circle class="node" cx="450" cy="250" r="34"/><circle class="node" cx="650" cy="130" r="34"/><circle class="node" cx="820" cy="250" r="34"/></g>
+        </svg>
+      </div>
+      <div class="story-ui">
+        <div class="wrap">
+          <div class="story-head">
+            <span class="eyebrow"><svg aria-hidden="true"><use href="#squig"/></svg>Sepulang sekolah</span>
+            <h2>Ikuti Dika dari buka aplikasi sampai pamer ke ayah.</h2>
+            <p class="muted">Gulir pelan-pelan untuk melihat apa yang terjadi di setiap langkah.</p>
+          </div>
+          <div class="story-card" id="storyCard">
+            <div class="tlm" aria-hidden="true"><span class="fill" id="tlFill"></span>
+            <ol class="timeline-mini" id="tlMini">
+              <li class="on"><span class="dotn">1</span><span class="tl-lbl">Buka</span></li>
+              <li><span class="dotn">2</span><span class="tl-lbl">Pilih</span></li>
+              <li><span class="dotn">3</span><span class="tl-lbl">Main</span></li>
+              <li><span class="dotn">4</span><span class="tl-lbl">Bintang</span></li>
+              <li><span class="dotn">5</span><span class="tl-lbl">Pamer</span></li>
+            </ol></div>
+            <ol class="scene-steps" aria-live="polite">
+              <li class="scene-step on"><h3>Buka aplikasi</h3><p>Pukul 16.00, PR sudah selesai. Dika membuka Coretan di tablet keluarga; batas waktu 15 menit langsung berjalan.</p><div class="tags"><span class="tag g">Profil anak</span><span class="tag b">Batas waktu</span></div></li>
+              <li class="scene-step"><h3>Pilih pelajaran</h3><p>Hari ini ada tiga pintu: menggambar, berhitung, membaca. Coretan menyarankan berhitung karena kemarin Dika belum tuntas.</p><div class="tags"><span class="tag b">Saran harian</span></div></li>
+              <li class="scene-step"><h3>Main sambil belajar</h3><p>Sempoa bergeser, krayon menari. Soal penjumlahan disamarkan jadi belanja jajanan di warung Bu Ijah.</p><div class="tags"><span class="tag r">12 soal</span><span class="tag y">Adaptif</span></div></li>
+              <li class="scene-step"><h3>Dapat bintang</h3><p>Sepuluh soal benar beruntun. Bintang emas masuk ke buku stiker, dan karakter Pensi menari kegirangan.</p><div class="tags"><span class="tag y">+3 bintang</span></div></li>
+              <li class="scene-step"><h3>Pamer ke orang tua</h3><p>Gambar Dika ditempel di kulkas digital. Ayah dan Ibu menerima ringkasan singkat dan bisa mengirim stiker semangat.</p><div class="tags"><span class="tag o">Laporan Jumat</span><span class="tag g">Stiker ortu</span></div></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATISTIK + TESTIMONI -->
+  <section class="sec" id="testimoni">
+    <div class="wrap">
+      <div class="stats-band" id="stats" role="list" aria-label="Statistik Coretan">
+        <div class="stat" role="listitem"><b class="num" data-count="120000">0</b><span>Anak belajar aktif</span></div>
+        <div class="stat" role="listitem"><b class="num" data-count="2400000">0</b><span>Bintang dibagikan</span></div>
+        <div class="stat" role="listitem"><b class="num" data-count="860">0</b><span>Sekolah mitra</span></div>
+        <div class="stat" role="listitem"><b class="num">4,8</b><span>Nilai orang tua</span></div>
+      </div>
+      <div class="quotes">
+        <wired-card class="quote" elevation="2">
+          <blockquote>Anak saya dulu takut matematika. Sekarang dia yang minta main sempoa tiap sore, dan bangga pamer bintangnya ke neneknya.</blockquote>
+          <div class="who"><span class="avatar" style="background:#f5bf2e">RA</span><div><b>Ratna Ayuningtyas</b><small>Ibu dari Kirana, kelas 2</small></div></div>
+        </wired-card>
+        <wired-card class="quote" elevation="2">
+          <blockquote>Batas 15 menitnya benar-benar dipatuhi. Habis itu aplikasinya mengajak anak menutup tablet dan menggambar di kertas.</blockquote>
+          <div class="who"><span class="avatar" style="background:#7fb5ff">HS</span><div><b>Hendra Saputra</b><small>Ayah dari Bima, kelas 4</small></div></div>
+        </wired-card>
+        <wired-card class="quote" elevation="2">
+          <blockquote>Saya memakai Coretan di kelas untuk literasi pagi. Cerita rakyat bersuaranya membantu siswa yang masih mengeja.</blockquote>
+          <div class="who"><span class="avatar" style="background:#7fd4a0">LM</span><div><b>Bu Lestari Murni</b><small>Guru kelas 1, SD negeri mitra</small></div></div>
+        </wired-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- HARGA -->
+  <section class="sec" id="harga" style="padding-top:0">
+    <div class="wrap">
+      <div class="price-head">
+        <div><span class="eyebrow"><svg aria-hidden="true"><use href="#squig"/></svg>Harga</span><h2 style="font-size:clamp(2.3rem,5vw,3.9rem);margin-top:10px">Lebih murah dari sebungkus krayon tiap minggu.</h2></div>
+        <div class="tgl"><wired-toggle id="yearly" data-label="Bayar tahunan"></wired-toggle><span aria-hidden="true">Bayar tahunan <span class="save">hemat 20%</span></span></div>
+      </div>
+      <div class="plans">
+        <wired-card class="plan" elevation="2">
+          <h3>Coba</h3><p class="for">Untuk mengenal Coretan</p>
+          <div class="price"><b>Gratis</b><span>selamanya</span></div>
+          <ul>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>1 profil anak</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>5 pelajaran per minggu</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>20 cerita rakyat bersuara</li>
+          </ul>
+          <wired-button data-open-dialog>Mulai gratis</wired-button>
+        </wired-card>
+        <wired-card class="plan" elevation="4" style="background:var(--yellow-soft)">
+          <span class="ribbon">Paling disukai</span>
+          <h3>Keluarga</h3><p class="for">Untuk 1–3 anak di rumah</p>
+          <div class="price"><b data-price="39000">Rp 39.000</b><span data-per>/ bulan</span></div>
+          <ul>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>3 profil anak</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Semua pelajaran &amp; 320 cerita</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Laporan WhatsApp tiap Jumat</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Mode tanpa internet</li>
+          </ul>
+          <wired-button class="go" elevation="2" data-open-dialog>Coba 14 hari gratis</wired-button>
+        </wired-card>
+        <wired-card class="plan" elevation="2">
+          <h3>Sekolah</h3><p class="for">Per kelas, hingga 36 siswa</p>
+          <div class="price"><b data-price="290000">Rp 290.000</b><span data-per>/ bulan</span></div>
+          <ul>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Dasbor guru &amp; rapor kelas</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Mode proyektor untuk literasi pagi</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Pelatihan guru dua kali setahun</li>
+          </ul>
+          <wired-button data-open-dialog>Hubungi tim sekolah</wired-button>
+        </wired-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec" id="faq" style="background:var(--bg2)">
+    <div class="wrap faq-grid">
+      <div>
+        <span class="eyebrow"><svg aria-hidden="true"><use href="#squig"/></svg>Tanya jawab</span>
+        <h2 style="font-size:clamp(2.3rem,5vw,3.6rem);margin:10px 0 14px">Yang sering ditanyakan orang tua.</h2>
+        <p class="muted">Masih ragu? Tulis pertanyaanmu lewat formulir di bawah. Tim kami membalas dalam satu hari kerja.</p>
+      </div>
+      <div class="faq">
+        <details open><summary>Untuk usia berapa Coretan cocok?</summary><p>Anak SD kelas 1 sampai 6 (sekitar 6–12 tahun). Saat mendaftar, anak mengikuti permainan pemanasan singkat agar tingkat soal pas sejak hari pertama.</p></details>
+        <details><summary>Apakah ada iklan atau pembelian di dalam aplikasi?</summary><p>Tidak ada sama sekali. Bintang tidak bisa dibeli; anak hanya mendapatkannya dengan belajar.</p></details>
+        <details><summary>Bagaimana dengan waktu layar?</summary><p>Orang tua menentukan batas harian (bawaan 15 menit). Setelah habis, Coretan menyarankan kegiatan di kertas, dan aplikasi terkunci sampai besok.</p></details>
+        <details><summary>Apakah bisa dipakai tanpa internet?</summary><p>Paket Keluarga dapat mengunduh pelajaran seminggu. Kemajuan anak tersinkron otomatis begitu tablet tersambung lagi.</p></details>
+        <details><summary>Data anak saya aman?</summary><p>Kami hanya menyimpan nama panggilan dan kelas. Tidak ada foto wajah, lokasi, atau fitur obrolan dengan orang asing.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="sec" id="daftar">
+    <div class="wrap">
+      <div class="cta">
+        <svg class="art" viewBox="0 0 200 200" aria-hidden="true"><path d="M20 120c30-60 60-90 80-70s-40 60-10 70 50-60 80-50" fill="none" stroke="#2a2733" stroke-width="10" stroke-linecap="round"/></svg>
+        <div>
+          <span class="eyebrow"><svg aria-hidden="true"><use href="#squig"/></svg>Coba gratis 14 hari</span>
+          <h2>Biarkan anakmu mencoret hari ini.</h2>
+          <p>Kami kirim tautan pendaftaran dan panduan singkat untuk orang tua. Tanpa kartu kredit, batalkan kapan saja.</p>
+        </div>
+        <wired-card class="form" elevation="3">
+          <form id="ctaForm" novalidate>
+            <div class="field"><label id="pNameLbl" for="pName">Nama orang tua</label><wired-input id="pName" name="nama" placeholder="mis. Ratna" data-label="Nama orang tua"></wired-input><span class="err" id="pNameErr">Isi nama dulu, ya.</span></div>
+            <div class="field"><label id="pMailLbl" for="pMail">Email</label><wired-input id="pMail" name="email" type="email" placeholder="nama@contoh.id" data-label="Email"></wired-input><span class="err" id="pMailErr">Email belum benar.</span></div>
+            <div class="field"><span class="flbl" id="gradeLbl">Kelas anak</span>
+              <wired-combo id="gradeCombo" selected="2" aria-labelledby="gradeLbl">
+                <wired-item value="1">Kelas 1</wired-item><wired-item value="2">Kelas 2</wired-item><wired-item value="3">Kelas 3</wired-item><wired-item value="4">Kelas 4</wired-item><wired-item value="5">Kelas 5</wired-item><wired-item value="6">Kelas 6</wired-item>
+              </wired-combo>
+            </div>
+            <div class="field"><wired-checkbox id="weekly" checked>Kirim laporan mingguan ke WhatsApp</wired-checkbox></div>
+            <wired-button class="go" elevation="2" id="ctaSubmit">Kirim tautan daftar</wired-button>
+          </form>
+        </wired-card>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="#top"><svg aria-hidden="true"><use href="#logo"/></svg><span>Coretan</span></a>
+        <p class="muted" style="margin-top:12px;max-width:30em">Aplikasi belajar untuk anak SD Indonesia. Dibuat oleh guru, orang tua, dan ilustrator lokal.</p>
+      </div>
+      <div><h4>Pelajaran</h4><a href="#fitur">Menggambar</a><a href="#fitur">Berhitung</a><a href="#fitur">Membaca</a></div>
+      <div><h4>Untuk</h4><a href="#harga">Keluarga</a><a href="#harga">Sekolah</a><a href="#faq">Tanya jawab</a></div>
+      <div><h4>Kontak</h4><a href="#daftar">halo@coretan.contoh</a><a href="#daftar">Formulir daftar</a></div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span class="num">2026</span> Coretan. Merek fiktif untuk templat.</span>
+      <span>Dibangun dengan Wired Elements + three.js</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Dialog daftar (wired-dialog) -->
+<wired-dialog id="signup" role="dialog" aria-modal="true" aria-labelledby="dlgTitle" aria-hidden="true" inert>
+  <div class="dlg">
+    <h3 id="dlgTitle">Daftar gratis 14 hari</h3>
+    <p>Isi nama panggilan anak; kami siapkan profil dan kirim tautan ke email orang tua.</p>
+    <div class="field"><label for="dKid">Nama panggilan anak</label><wired-input id="dKid" placeholder="mis. Dika" data-label="Nama panggilan anak"></wired-input><span class="err" id="dKidErr">Isi nama panggilan.</span></div>
+    <div class="field"><label for="dMail">Email orang tua</label><wired-input id="dMail" type="email" placeholder="nama@contoh.id" data-label="Email orang tua"></wired-input><span class="err" id="dMailErr">Email belum benar.</span></div>
+    <div class="acts"><wired-button id="dlgCancel">Nanti saja</wired-button><wired-button class="go" id="dlgOk">Daftar</wired-button></div>
+  </div>
+</wired-dialog>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<template id="worldFallback">
+  <svg viewBox="0 0 520 360" role="img" aria-label="Ilustrasi sekolah Coretan">
+    <path d="M60 230 260 120 460 230 260 340Z" fill="#9ed17a" stroke="#2a2733" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M60 230v24l200 110 200-110v-24L260 340Z" fill="#e3c9a0" stroke="#2a2733" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M220 170v-50l40-30 40 30v50z" fill="#fff4dc" stroke="#2a2733" stroke-width="4" stroke-linejoin="round"/><path d="M210 124 260 82l50 42" fill="#e4483e" stroke="#2a2733" stroke-width="4" stroke-linejoin="round"/>
+    <g transform="rotate(-25 130 150)"><rect x="110" y="110" width="22" height="90" rx="4" fill="#e4483e" stroke="#2a2733" stroke-width="4"/><path d="M110 110l11-24 11 24" fill="#e4483e" stroke="#2a2733" stroke-width="4" stroke-linejoin="round"/></g>
+    <g transform="rotate(18 160 140)"><rect x="150" y="100" width="22" height="90" rx="4" fill="#3a72d8" stroke="#2a2733" stroke-width="4"/><path d="M150 100l11-24 11 24" fill="#3a72d8" stroke="#2a2733" stroke-width="4" stroke-linejoin="round"/></g>
+    <rect x="330" y="150" width="90" height="60" fill="none" stroke="#2a2733" stroke-width="4"/><path d="M330 170h90M330 190h90" stroke="#2a2733" stroke-width="3"/><g fill="#f5bf2e" stroke="#2a2733" stroke-width="3"><circle cx="345" cy="170" r="7"/><circle cx="362" cy="170" r="7"/><circle cx="395" cy="190" r="7"/><circle cx="378" cy="190" r="7"/></g>
+    <path d="M250 70l8 16 18 2-13 12 3 18-16-9-16 9 3-18-13-12 18-2z" fill="#f5bf2e" stroke="#2a2733" stroke-width="4" stroke-linejoin="round"/>
+  </svg>
+</template>
+
+<script type="module">
+/* ================= UI (Wired Elements) ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const rmq = matchMedia('(prefers-reduced-motion: reduce)');
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmt = n => Math.round(n).toLocaleString('id-ID');
+const bus = new EventTarget();
+window.__coretan = { bus };
+const root = document.documentElement;
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const WIRED = ['wired-button', 'wired-icon-button', 'wired-card', 'wired-toggle', 'wired-slider', 'wired-checkbox', 'wired-radio', 'wired-radio-group', 'wired-combo', 'wired-tabs', 'wired-input', 'wired-progress', 'wired-spinner', 'wired-fab', 'wired-dialog'];
+const wiredReady = Promise.race([Promise.all(WIRED.map(t => customElements.whenDefined(t))), wait(6000)]);
+
+/* --- tema --- */
+function setTheme(t, save = true){
+  root.setAttribute('data-theme', t);
+  $('meta[name="theme-color"]').content = t === 'dark' ? '#17221e' : '#fbf6ea';
+  $('#themeBtn').setAttribute('aria-pressed', String(t === 'dark'));
+  if (save) try { localStorage.setItem('coretan-theme', t); } catch (e) {}
+  bus.dispatchEvent(new CustomEvent('theme', { detail: t }));
+  /* garis sketsa Wired memakai currentColor: gambar ulang agar warna tinta ikut tema */
+  requestAnimationFrame(() => $$(WIRED.join(',')).forEach(el => { if (el.wiredRender) try { el.wiredRender(true); } catch (e) {} }));
+}
+$('#themeBtn').addEventListener('click', () => setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+
+/* --- aksesibilitas: label untuk kontrol di dalam shadow DOM Wired --- */
+async function labelInner(){
+  await wiredReady;
+  for (const el of $$('[data-label]')) {
+    try { await el.updateComplete; } catch (e) {}
+    const inner = el.shadowRoot && el.shadowRoot.querySelector('input,button');
+    if (inner) inner.setAttribute('aria-label', el.dataset.label);
+  }
+  $$('wired-slider').forEach(s => { const i = s.shadowRoot && s.shadowRoot.querySelector('input'); if (i) i.setAttribute('aria-valuetext', s.id === 'hueSlider' ? hueName(s.value) : s.value + '%'); });
+}
+
+/* --- menu seluler --- */
+const mnav = $('#mnav'), menuBtn = $('#menuBtn');
+function setMenu(open){ mnav.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', String(open)); const b = menuBtn.shadowRoot && menuBtn.shadowRoot.querySelector('button'); if (b) b.setAttribute('aria-expanded', String(open)); if (open) requestAnimationFrame(() => mnav.wiredRender && mnav.wiredRender(true)); }
+menuBtn.addEventListener('click', () => setMenu(!mnav.classList.contains('open')));
+$$('#mnav a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { setMenu(false); closeDialog(); } });
+document.addEventListener('click', e => { if (mnav.classList.contains('open') && !e.target.closest('#mnav,#menuBtn')) setMenu(false); });
+
+/* --- toast --- */
+function toast(msg){ const n = document.createElement('div'); n.className = 'toast'; n.setAttribute('role', 'status'); n.textContent = msg; $('#toasts').append(n); setTimeout(() => { n.style.transition = 'opacity .4s'; n.style.opacity = '0'; setTimeout(() => n.remove(), 400); }, 4600); }
+
+/* --- dialog daftar --- */
+const dlg = $('#signup'); let lastFocus = null;
+function openDialog(){ lastFocus = document.activeElement; dlg.removeAttribute('inert'); dlg.setAttribute('aria-hidden', 'false'); dlg.open = true; setMenu(false); setTimeout(() => { const i = $('#dKid').shadowRoot && $('#dKid').shadowRoot.querySelector('input'); if (i) i.focus(); }, 80); }
+function closeDialog(){ if (!dlg.open) return; dlg.open = false; dlg.setAttribute('aria-hidden', 'true'); dlg.setAttribute('inert', ''); if (lastFocus && lastFocus.focus) lastFocus.focus(); }
+$$('[data-open-dialog]').forEach(b => b.addEventListener('click', openDialog));
+$('#dlgCancel').addEventListener('click', closeDialog);
+const okEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+function check(input, errEl, ok){ errEl.classList.toggle('on', !ok); return ok; }
+$('#dlgOk').addEventListener('click', () => {
+  const kid = ($('#dKid').value || '').trim(), mail = ($('#dMail').value || '').trim();
+  const a = check($('#dKid'), $('#dKidErr'), kid.length > 1), b = check($('#dMail'), $('#dMailErr'), okEmail(mail));
+  if (!a || !b) return;
+  closeDialog(); toast(`Profil ${kid} siap! Tautan pendaftaran dikirim ke ${mail}.`);
+  $('#dKid').value = ''; $('#dMail').value = '';
+});
+$('#ctaSubmit').addEventListener('click', () => $('#ctaForm').requestSubmit());
+$('#ctaForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const nama = ($('#pName').value || '').trim(), mail = ($('#pMail').value || '').trim();
+  const a = check($('#pName'), $('#pNameErr'), nama.length > 1), b = check($('#pMail'), $('#pMailErr'), okEmail(mail));
+  if (!a || !b) return;
+  const kelas = $('#gradeCombo').selected || '2', weekly = $('#weekly').checked;
+  toast(`Terima kasih, ${nama.split(/\s+/)[0]}! Tautan untuk anak kelas ${kelas} dikirim ke ${mail}${weekly ? ', laporan mingguan aktif' : ''}.`);
+  $('#pName').value = ''; $('#pMail').value = '';
+});
+
+/* --- harga: tahunan --- */
+$('#yearly').addEventListener('change', e => {
+  const y = e.detail ? e.detail.checked : $('#yearly').checked;
+  $$('[data-price]').forEach(p => { const v = Number(p.dataset.price); p.textContent = 'Rp ' + fmt(y ? Math.round(v * 12 * .8 / 1000) * 1000 : v); });
+  $$('[data-per]').forEach(p => p.textContent = y ? '/ tahun' : '/ bulan');
+});
+
+/* --- statistik --- */
+const statIO = new IntersectionObserver(es => es.forEach(en => {
+  if (!en.isIntersecting) return; statIO.unobserve(en.target);
+  $$('[data-count]', en.target).forEach(el => {
+    const end = Number(el.dataset.count), show = v => el.textContent = fmt(v);
+    if (rmq.matches) return show(end);
+    const t0 = performance.now(); const step = now => { const p = Math.min(1, (now - t0) / 1400); show(end * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); }; requestAnimationFrame(step);
+  });
+}), { threshold: .3 });
+statIO.observe($('#stats'));
+
+/* --- state kelas (hero + kelas 3D) --- */
+const state = { subject: 'semua', hue: 6, size: 100, rainbow: false, kid: 'dika', mood: 'siang', ink: true, float: true, stars: 3 };
+const DEFAULTS = { ...state };
+const SUBJ = { semua: 'Seluruh sekolah', gambar: 'Pojok menggambar', hitung: 'Pojok berhitung', baca: 'Pojok baca' };
+const MOOD = { pagi: 'Pagi · sejuk', siang: 'Siang · cerah', senja: 'Senja · jingga' };
+function hueName(h){ h = Number(h); return h < 14 ? 'Merah' : h < 38 ? 'Oranye' : h < 66 ? 'Kuning' : h < 160 ? 'Hijau' : h < 198 ? 'Toska' : h < 250 ? 'Biru' : h < 290 ? 'Ungu' : h < 340 ? 'Merah muda' : 'Merah'; }
+function readouts(){
+  const hn = state.rainbow ? 'Pelangi' : hueName(state.hue);
+  $('#hueRead').innerHTML = `<span class="swatch" style="background:${state.rainbow ? 'conic-gradient(#e4483e,#f5bf2e,#2f9e5f,#3a72d8,#8b5cf6,#e4483e)' : `hsl(${state.hue} 75% 55%)`}"></span>${hn}`;
+  $('#hueSlider').style.setProperty('--knob', `hsl(${state.hue} 75% 52%)`);
+  $('#sizeRead').textContent = state.size + '%';
+  $('#labChip').textContent = SUBJ[state.subject];
+  $('#labMood').textContent = MOOD[state.mood];
+  $('#heroChip').textContent = state.rainbow ? 'Mode pelangi menyala' : 'Kelas sedang dibuka';
+  $('#heroStars').textContent = `★ ${state.stars} bintang hari ini`;
+  $('#starBar').value = Math.min(100, state.stars * 10);
+  $$('wired-slider').forEach(s => { const i = s.shadowRoot && s.shadowRoot.querySelector('input'); if (i) i.setAttribute('aria-valuetext', s.id === 'hueSlider' ? hueName(state.hue) : state.size + '%'); });
+}
+function emit(){ readouts(); bus.dispatchEvent(new CustomEvent('state', { detail: state })); }
+let syncing = false;
+function syncControls(){
+  syncing = true;
+  $$('[data-rainbow]').forEach(t => { if (t.checked !== state.rainbow) t.checked = state.rainbow; });
+  const tabs = $('#subjTabs'); if (tabs.selected !== state.subject) tabs.selected = state.subject;
+  const kc = $('#kidCombo'); if (kc.selected !== state.kid) kc.selected = state.kid;
+  const mg = $('#moodGroup'); if (mg.selected !== state.mood) mg.selected = state.mood;
+  if ($('#hueSlider').value !== state.hue) $('#hueSlider').value = state.hue;
+  if ($('#sizeSlider').value !== state.size) $('#sizeSlider').value = state.size;
+  $('#inkChk').checked = state.ink; $('#floatChk').checked = state.float;
+  syncing = false;
+}
+$$('[data-rainbow]').forEach(t => t.addEventListener('change', () => { state.rainbow = !!t.checked; syncControls(); emit(); }));
+$('#heroShuffle').addEventListener('click', () => { state.hue = Math.floor(Math.random() * 360); state.rainbow = false; syncControls(); emit(); });
+$('#hueSlider').addEventListener('change', e => { state.hue = Math.round(e.detail ? e.detail.value : $('#hueSlider').value); emit(); });
+$('#sizeSlider').addEventListener('change', e => { state.size = Math.round(e.detail ? e.detail.value : $('#sizeSlider').value); emit(); });
+$('#kidCombo').addEventListener('selected', e => { const v = (e.detail && e.detail.selected) || $('#kidCombo').selected; if (v && v !== state.kid) { state.kid = v; emit(); } });
+$('#moodGroup').addEventListener('selected', e => { const v = (e.detail && e.detail.selected) || $('#moodGroup').selected; if (v && v !== state.mood) { state.mood = v; emit(); } });
+$('#inkChk').addEventListener('change', () => { state.ink = !!$('#inkChk').checked; emit(); });
+$('#floatChk').addEventListener('change', () => { state.float = !!$('#floatChk').checked; emit(); });
+/* wired-tabs tidak memancarkan event: amati klik dan tombol panah lalu baca .selected */
+function readTabs(){ const t = $('#subjTabs'); Promise.resolve(t.updateComplete).then(() => { if (syncing) return; const v = t.selected || 'semua'; if (v !== state.subject) { state.subject = v; emit(); } }); }
+$('#subjTabs').addEventListener('click', readTabs); $('#subjTabs').addEventListener('keyup', readTabs);
+$('#starFab').addEventListener('click', () => { state.stars = state.stars >= 10 ? 1 : state.stars + 1; emit(); bus.dispatchEvent(new Event('star')); if (state.stars === 10) toast('Sepuluh bintang! Target hari ini tercapai.'); });
+$('#resetBtn').addEventListener('click', () => { Object.assign(state, DEFAULTS); syncControls(); emit(); toast('Kelas dikembalikan seperti semula.'); });
+/* slider Wired tidak menggambar ulang saat lebarnya berubah */
+const ro = new ResizeObserver(es => es.forEach(en => { const el = en.target; if (el.wiredRender) try { el.wiredRender(true); } catch (e) {} }));
+wiredReady.then(() => { $$('wired-slider,wired-progress,wired-tabs wired-tab').forEach(el => ro.observe(el)); syncControls(); readouts(); labelInner(); });
+readouts();
+
+/* ================= 3D ================= */
+function webglOK(){ try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch (e) { return false; } }
+const storySec = $('#cerita');
+function showFallbacks(){
+  const tpl = $('#worldFallback');
+  ['#heroStage', '#labStage'].forEach(s => { const st = $(s); st.classList.add('no-webgl'); const fb = st.querySelector('.fallback'); if (!fb.firstChild) fb.append(tpl.content.cloneNode(true)); });
+  storySec.classList.add('no-webgl');
+}
+let THREE, BGU;
+try { if (!webglOK()) throw new Error('no-webgl'); THREE = await import('three'); BGU = await import('three/addons/utils/BufferGeometryUtils.js'); } catch (err) { THREE = null; showFallbacks(); }
+function storyProgress(){ const r = storySec.getBoundingClientRect(); return clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1); }
+const tlItems = $$('#tlMini li'), sceneSteps = $$('.scene-step', storySec);
+function setStepUI(n){
+  sceneSteps.forEach((s, k) => s.classList.toggle('on', k === n));
+  tlItems.forEach((li, k) => li.classList.toggle('on', k <= n));
+  $('#tlFill').style.width = (n / 4 * 80) + '%';
+}
+const isDark = () => root.getAttribute('data-theme') === 'dark';
+
+if (THREE) {
+  const DPR = () => Math.min(window.devicePixelRatio || 1, 2);
+  const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+  const frames = window.__coretan.frames = {};
+  function createLoop(el, frame, continuous){
+    let visible = false, raf = 0, last = 0, pending = true, aliveUntil = 0;
+    const L = { request(){ pending = true; kick(); }, keepAlive(ms){ aliveUntil = Math.max(aliveUntil, performance.now() + ms); kick(); } };
+    const run = () => visible && !document.hidden;
+    function tick(now){
+      if (!run()) { raf = 0; last = 0; return; }
+      raf = -1; const dt = last ? Math.min((now - last) / 1000, .1) : .016; last = now; pending = false;
+      frames[el.id] = (frames[el.id] || 0) + 1; frame(dt, now / 1000);
+      if (continuous() || pending || now < aliveUntil) raf = requestAnimationFrame(tick); else { raf = 0; last = 0; }
+    }
+    function kick(){ if (!raf && run()) raf = requestAnimationFrame(tick); }
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) { pending = true; kick(); } }, { rootMargin: '80px' }).observe(el);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) { pending = true; kick(); } });
+    rmq.addEventListener('change', () => L.request());
+    return L;
+  }
+  function makeRenderer(canvas){
+    const r = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+    r.setPixelRatio(DPR()); r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFShadowMap;
+    r.outputColorSpace = THREE.SRGBColorSpace; return r;
+  }
+  function watchSize(el, renderer, onSize){ const apply = () => { const w = Math.max(1, el.clientWidth), h = Math.max(1, el.clientHeight); renderer.setPixelRatio(DPR()); renderer.setSize(w, h, false); onSize(w, h); }; new ResizeObserver(apply).observe(el); apply(); }
+  function rng(seed){ return () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+
+  /* ---- gaya sketsa: toon 3 tingkat + garis tinta (inverted hull yang sedikit "bergetar") ---- */
+  const grad = new THREE.DataTexture(new Uint8Array([70, 160, 255]), 3, 1, THREE.RedFormat); grad.minFilter = grad.magFilter = THREE.NearestFilter; grad.needsUpdate = true;
+  const toon = (c, extra = {}) => new THREE.MeshToonMaterial({ color: c, gradientMap: grad, ...extra });
+  function makeInk(width){
+    const m = new THREE.MeshBasicMaterial({ color: '#2a2733', side: THREE.BackSide });
+    m.userData.u = { uW: { value: width }, uStep: { value: 0 } };
+    m.onBeforeCompile = s => {
+      Object.assign(s.uniforms, m.userData.u);
+      s.vertexShader = 'uniform float uW;\nuniform float uStep;\n' + s.vertexShader.replace('#include <begin_vertex>',
+        'float hj = fract(sin(dot(position.xyz + vec3(uStep), vec3(12.9898, 78.233, 37.719))) * 43758.5453);\nvec3 transformed = position + normal * uW * (0.7 + 0.6 * hj);');
+    };
+    return m;
+  }
+  const hullCache = new WeakMap();
+  function hullGeo(g){ let h = hullCache.get(g); if (!h) { h = g.clone(); for (const k of Object.keys(h.attributes)) if (k !== 'position') h.deleteAttribute(k); h = BGU.mergeVertices(h, 1e-3); h.computeVertexNormals(); hullCache.set(g, h); } return h; }
+  function inked(mesh, ink){ const o = new THREE.Mesh(hullGeo(mesh.geometry), ink); o.raycast = () => {}; o.userData.hull = true; mesh.add(o); return mesh; }
+  function inkedInstanced(im, ink){ const h = new THREE.InstancedMesh(hullGeo(im.geometry), ink, im.count); h.instanceMatrix = im.instanceMatrix; h.frustumCulled = false; im.frustumCulled = false; im.add(h); return h; }
+  function M(parent, geo, mat, x, y, z, ink, o = {}){ const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); if (o.r) m.rotation.set(o.r[0] || 0, o.r[1] || 0, o.r[2] || 0); if (o.s) m.scale.set(...o.s); m.castShadow = o.cast !== false; m.receiveShadow = true; if (ink && o.ink !== false) inked(m, ink); parent.add(m); return m; }
+  const B = (w, h, d) => new THREE.BoxGeometry(w, h, d), Cy = (rt, rb, h, s = 16) => new THREE.CylinderGeometry(rt, rb, h, s), Sp = (r, w = 16, h = 12) => new THREE.SphereGeometry(r, w, h), Co = (r, h, s = 16) => new THREE.ConeGeometry(r, h, s);
+  function starGeo(R = .5, r = .22, d = .22){ const s = new THREE.Shape(); for (let i = 0; i < 10; i++) { const a = Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r : R; i ? s.lineTo(Math.cos(a) * rr, Math.sin(a) * rr) : s.moveTo(Math.cos(a) * rr, Math.sin(a) * rr); } const g = new THREE.ExtrudeGeometry(s, { depth: d, bevelEnabled: true, bevelSize: .04, bevelThickness: .04, bevelSegments: 1 }); g.center(); return g; }
+
+  /* ---- tokoh: Dika, Sari, Pensi ---- */
+  function makeKid(type, ink, o = {}){
+    const g = new THREE.Group(), mats = [];
+    const tm = c => { const m = toon(c); mats.push(m); return m; };
+    const skin = tm('#e2a983'), shirt = tm('#ffffff'), red = tm('#d8352d'), hair = tm('#2b2220'), shoe = tm('#2b2b33');
+    function limb(parent, mat, w, h, x, y){ const piv = new THREE.Group(); piv.position.set(x, y, 0); const m = M(piv, B(w, h, w), mat, 0, -h / 2, 0, ink); parent.add(piv); return piv; }
+    if (type === 'pensi') {
+      const yel = tm('#f5bf2e'), wood = tm('#f1cf9a'), lead = tm('#3b3a44'), pink = tm('#f28ab0'), silver = tm('#b9bcc6'), white = tm('#ffffff');
+      const legL = limb(g, lead, .16, .45, -.16, .45), legR = limb(g, lead, .16, .45, .16, .45);
+      const torso = new THREE.Group(); torso.position.y = .45; g.add(torso);
+      M(torso, Cy(.42, .42, 1.3, 6), yel, 0, .65, 0, ink);
+      M(torso, Co(.42, .45, 6), wood, 0, 1.52, 0, ink); M(torso, Co(.14, .16, 6), lead, 0, 1.7, 0, null);
+      M(torso, Cy(.43, .43, .16, 12), silver, 0, -.06, 0, ink); M(torso, Cy(.41, .41, .22, 12), pink, 0, -.24, 0, ink, { cast: false });
+      [-1, 1].forEach(s => { M(torso, Sp(.13, 12, 10), white, s * .16, .95, .36, ink); M(torso, Sp(.06, 8, 6), lead, s * .16, .95, .48, null); });
+      const armL = limb(torso, yel, .12, .5, -.48, .85), armR = limb(torso, yel, .12, .5, .48, .85);
+      return { g, torso, legL, legR, armL, armR, mats };
+    }
+    const girl = type === 'sari', adult = !!o.adult;
+    if (adult) { shirt.color.set(o.shirt || '#2f9e5f'); red.color.set(girl ? (o.skirt || '#8b5cf6') : '#3b3a48'); }
+    const legL = limb(g, girl && !adult ? skin : red, .19, .7, -.13, .74), legR = limb(g, girl && !adult ? skin : red, .19, .7, .13, .74);
+    [legL, legR].forEach(l => M(l, B(.22, .14, .3), shoe, 0, -.68, .04, ink, { ink: false }));
+    const torso = new THREE.Group(); torso.position.y = .74; g.add(torso);
+    M(torso, B(.52, .6, .34), shirt, 0, .32, 0, ink);
+    if (girl) M(torso, Co(.46, adult ? .9 : .5, 12), red, 0, adult ? -.2 : -.02, 0, ink); else M(torso, B(.54, .22, .36), red, 0, .02, 0, ink);
+    if (!adult) M(torso, B(.16, .05, .02), red, -.13, .5, .18, null, { cast: false });
+    M(torso, Sp(.27, 18, 14), skin, 0, .9, 0, ink);
+    if (adult && girl) { const hj = tm(o.hijab || '#ec6aa0'); M(torso, Sp(.31, 18, 12), hj, 0, .93, -.03, ink); M(torso, Co(.36, .42, 16), hj, 0, .62, -.02, null, { cast: false }); M(torso, Sp(.24, 14, 10), skin, 0, .88, .1, null, { cast: false, s: [1, 1, .7] }); }
+    else M(torso, Sp(.285, 16, 10).rotateX(-.25), hair, 0, .97, -.02, ink, { s: [1, adult ? .6 : .8, 1] });
+    if (girl && !adult) { [-1, 1].forEach(s => M(torso, Sp(.13, 10, 8), hair, s * .3, .86, -.08, ink)); }
+    else if (!adult) { M(torso, Cy(.29, .29, .12, 18), red, 0, 1.12, 0, ink); M(torso, B(.36, .04, .26), red, 0, 1.08, .26, ink); }
+    [-1, 1].forEach(s => M(torso, Sp(.035, 6, 6), hair, s * .1, .92, adult && girl ? .3 : .25, null, { cast: false }));
+    if (adult && !girl) M(torso, B(.5, .5, .04), tm('#f5bf2e'), 0, .38, .18, null, { cast: false, s: [1, 1, 1] });
+    if (!adult) M(torso, B(.44, .5, .22), tm(girl ? '#f5bf2e' : '#3a72d8'), 0, .36, -.29, ink);
+    const armL = limb(torso, skin, .13, .54, -.34, .6), armR = limb(torso, skin, .13, .54, .34, .6);
+    M(armL, B(.16, .2, .16), shirt, 0, -.08, 0, null, { cast: false }); M(armR, B(.16, .2, .16), shirt, 0, -.08, 0, null, { cast: false });
+    return { g, torso, legL, legR, armL, armR, mats };
+  }
+  function makeCrayon(color, ink){
+    const g = new THREE.Group(), body = toon(color), band = toon(new THREE.Color(color).multiplyScalar(.72));
+    M(g, Cy(.34, .34, 2.4, 14), body, 0, 0, 0, ink); M(g, Cy(.355, .355, 1.3, 14), band, 0, -.1, 0, null, { cast: false });
+    M(g, Co(.34, .62, 14), body, 0, 1.51, 0, ink);
+    g.userData.mats = [body, band]; return g;
+  }
+
+  /* ---------- dunia sekolah Coretan ---------- */
+  function buildWorld(ink){
+    const R = new THREE.Group(), r = rng(7);
+    const C = {
+      grass: toon('#9fd27b'), grass2: toon('#8cc66a'), kraft: toon('#e7cda3'), kraft2: toon('#d8b98a'), sand: toon('#f1dca8'), court: toon('#e9cfa0'),
+      wall: toon('#fff4dc'), roof: toon('#e4483e'), wood: toon('#b07a4f'), wood2: toon('#8d5d39'), white: toon('#ffffff'), paper: toon('#fffaf0'),
+      trunk: toon('#9a6a44'), leaf: toon('#5fb35a'), leaf2: toon('#79c464'), cloud: toon('#ffffff'), metal: toon('#c4c7d1'), blue: toon('#3a72d8'), yellow: toon('#f5bf2e'), green: toon('#2f9e5f'), purple: toon('#8b5cf6'),
+      win: toon('#9fd3f0', { emissive: new THREE.Color('#ffcf6e'), emissiveIntensity: 0 }),
+    };
+    // alas: lembar karton tebal berumput
+    M(R, B(36, 1.6, 28), [C.kraft, C.kraft, C.grass, C.kraft2, C.kraft, C.kraft2], 0, -.8, 0, ink, { cast: false });
+    // jalan setapak + lapangan
+    M(R, B(30, .06, 2.4), C.sand, 0, .03, 0, null, { cast: false }); M(R, B(2.4, .06, 22), C.sand, 0, .035, 0, null, { cast: false });
+    M(R, B(7, .08, 6), C.court, 0, .045, 0, null, { cast: false });
+    // tiang bendera merah putih
+    M(R, Cy(.08, .1, 6.2, 8), C.metal, 0, 3.1, 0, ink); M(R, Sp(.16, 10, 8), C.yellow, 0, 6.25, 0, ink);
+    const flag = new THREE.Group(); flag.position.set(0, 5.6, 0); R.add(flag);
+    M(flag, B(1.8, .5, .04), C.roof, .9, .25, 0, ink); M(flag, B(1.8, .5, .04), C.white, .9, -.25, 0, ink);
+    // pojok BACA (atas): perpustakaan mini
+    const lib = new THREE.Group(); lib.position.set(-9.5, 0, -7.5); R.add(lib);
+    M(lib, B(7, .3, 5), C.court, 0, .15, 0, ink, { cast: false });
+    M(lib, B(6, 3.2, 4), C.wall, 0, 1.9, -.2, ink);
+    const roofG = Co(4.9, 2.2, 4); roofG.rotateY(Math.PI / 4); M(lib, roofG, C.roof, 0, 4.6, -.2, ink, { s: [1.05, 1, .75] });
+    M(lib, B(1.1, 1.9, .1), C.wood2, 0, 1.25, 1.82, ink); [-1, 1].forEach(s => M(lib, B(1.1, .9, .08), C.win, s * 1.9, 2.2, 1.82, ink));
+    // rak buku + buku warna-warni (instanced)
+    M(lib, B(3.2, 2, .7), C.wood, -1.2, 1.3, 2.7, ink);
+    const bookG = B(.22, .62, .5), bookN = 26, books = new THREE.InstancedMesh(bookG, toon('#ffffff'), bookN), BC = ['#e4483e', '#3a72d8', '#f5bf2e', '#2f9e5f', '#8b5cf6', '#ef7d22', '#ec6aa0'];
+    const tmp = new THREE.Object3D();
+    for (let i = 0; i < bookN; i++) { const row = i < 13 ? 0 : 1, k = i % 13; tmp.position.set(-2.55 + k * .225, 1.0 + row * .9 - (r() * .06), 2.82); tmp.rotation.set(0, 0, (r() - .5) * .12); tmp.scale.set(1, .8 + r() * .3, 1); tmp.updateMatrix(); books.setMatrixAt(i, tmp.matrix); books.setColorAt(i, new THREE.Color(BC[i % BC.length])); }
+    books.castShadow = true; lib.add(books);
+    // tumpukan buku besar
+    [['#3a72d8', 0], ['#f5bf2e', .5], ['#e4483e', 1]].forEach(([c, y], i) => { M(lib, B(1.8, .5, 1.3), toon(c), 2.3, .55 + y, 2.6, ink, { r: [0, i * .25, 0] }); M(lib, B(1.7, .4, 1.22), C.paper, 2.36, .55 + y, 2.6, null, { r: [0, i * .25, 0], cast: false }); });
+    // pojok GAMBAR (kiri): kuda-kuda + krayon raksasa
+    const art = new THREE.Group(); art.position.set(-10.5, 0, 7); R.add(art);
+    M(art, B(6.4, .3, 5.4), C.court, 0, .15, 0, ink, { cast: false });
+    [[-1, .3], [1, .3]].forEach(([s]) => M(art, B(.16, 4.4, .16), C.wood, s * 1.2, 2.2, .2, ink, { r: [-.12, 0, s * -.08] }));
+    M(art, B(.16, 4.2, .16), C.wood, 0, 2.1, -.8, ink, { r: [.32, 0, 0] });
+    M(art, B(3.2, .14, .5), C.wood, 0, 1.55, .5, ink);
+    const canvasFrame = M(art, B(3.2, 2.5, .14), C.white, 0, 2.95, .42, ink, { r: [-.12, 0, 0] });
+    const pc = document.createElement('canvas'); pc.width = 256; pc.height = 200; const px = pc.getContext('2d');
+    const paintTex = new THREE.CanvasTexture(pc); paintTex.colorSpace = THREE.SRGBColorSpace;
+    const paint = new THREE.Mesh(new THREE.PlaneGeometry(3, 2.32), new THREE.MeshBasicMaterial({ map: paintTex })); paint.position.set(0, 0, .075); canvasFrame.add(paint);
+    function drawPaint(hue, rainbow){
+      px.fillStyle = '#fffaf0'; px.fillRect(0, 0, 256, 200); px.lineCap = px.lineJoin = 'round';
+      if (rainbow) { ['#e4483e', '#ef7d22', '#f5bf2e', '#2f9e5f', '#3a72d8', '#8b5cf6'].forEach((c, i) => { px.strokeStyle = c; px.lineWidth = 9; px.beginPath(); px.arc(128, 175, 110 - i * 10, Math.PI, 0); px.stroke(); }); }
+      else { px.fillStyle = '#f5bf2e'; px.beginPath(); px.arc(206, 46, 22, 0, 7); px.fill(); px.strokeStyle = '#ef7d22'; px.lineWidth = 3; for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4; px.beginPath(); px.moveTo(206 + Math.cos(a) * 28, 46 + Math.sin(a) * 28); px.lineTo(206 + Math.cos(a) * 38, 46 + Math.sin(a) * 38); px.stroke(); } }
+      const c = `hsl(${hue},75%,52%)`, c2 = `hsl(${(hue + 35) % 360},70%,45%)`;
+      px.fillStyle = c; px.strokeStyle = '#2a2733'; px.lineWidth = 4;
+      px.beginPath(); px.rect(54, 98, 86, 68); px.fill(); px.stroke();
+      px.fillStyle = c2; px.beginPath(); px.moveTo(44, 100); px.lineTo(97, 52); px.lineTo(150, 100); px.closePath(); px.fill(); px.stroke();
+      px.fillStyle = '#fffaf0'; px.fillRect(86, 124, 22, 42); px.strokeRect(86, 124, 22, 42);
+      px.strokeStyle = '#2f9e5f'; px.lineWidth = 6; px.beginPath(); for (let x = 8; x < 250; x += 12) { px.moveTo(x, 186); px.lineTo(x + 5, 172); } px.stroke();
+      px.strokeStyle = '#2a2733'; px.lineWidth = 4; px.beginPath(); px.arc(196, 120, 12, 0, 7); px.moveTo(196, 132); px.lineTo(196, 160); px.moveTo(180, 142); px.lineTo(212, 142); px.moveTo(196, 160); px.lineTo(184, 178); px.moveTo(196, 160); px.lineTo(208, 178); px.stroke();
+      paintTex.needsUpdate = true;
+    }
+    // palet + kotak krayon
+    M(art, Cy(1, 1, .14, 20), C.wood, 2, .4, 1.6, ink, { s: [1, 1, .75] });
+    ['#e4483e', '#f5bf2e', '#3a72d8', '#2f9e5f'].forEach((c, i) => M(art, Sp(.18, 10, 8), toon(c), 1.5 + i * .34, .5, 1.5 + (i % 2) * .3, null, { s: [1, .4, 1] }));
+    M(art, B(1.4, .9, .8), C.yellow, -2.1, .75, 1.8, ink);
+    // pojok HITUNG (kanan): sempoa raksasa
+    const abacus = new THREE.Group(); abacus.position.set(10, 0, -7.2); abacus.rotation.y = -Math.PI / 4 + .78; R.add(abacus);
+    M(abacus, B(7, .3, 4.6), C.court, 0, .15, 0, ink, { cast: false, r: [0, 0, 0] });
+    const AW = 5.6, AH = 3.8;
+    [-1, 1].forEach(s => M(abacus, B(.3, AH + .6, .5), C.wood, s * AW / 2, AH / 2 + .5, 0, ink));
+    M(abacus, B(AW + .6, .34, .56), C.wood2, 0, AH + .6, 0, ink); M(abacus, B(AW + .6, .34, .56), C.wood2, 0, .62, 0, ink);
+    const rods = 5, per = 10, beadG = Sp(.24, 14, 10); beadG.scale(1.05, 1, 1);
+    for (let i = 0; i < rods; i++) M(abacus, Cy(.04, .04, AW, 6), C.metal, 0, 1.25 + i * .62, 0, null, { r: [0, 0, Math.PI / 2], cast: false });
+    const beads = new THREE.InstancedMesh(beadG, toon('#ffffff'), rods * per); beads.castShadow = true; abacus.add(beads); inkedInstanced(beads, ink);
+    const RC = ['#e4483e', '#f5bf2e', '#2f9e5f', '#3a72d8', '#8b5cf6'];
+    const beadState = []; for (let i = 0; i < rods; i++) { const left = Math.floor(r() * 7) + 1; beadState.push({ left, shown: left }); for (let j = 0; j < per; j++) beads.setColorAt(i * per + j, new THREE.Color(RC[i])); }
+    function layoutBeads(){ for (let i = 0; i < rods; i++) { const st = beadState[i]; for (let j = 0; j < per; j++) { const isLeft = j < st.shown, xL = -AW / 2 + .45 + j * .46, xR = AW / 2 - .45 - (per - 1 - j) * .46, fl = clamp(st.shown - j, 0, 1); tmp.position.set(xR + (xL - xR) * fl, 1.25 + i * .62, 0); tmp.rotation.set(0, 0, 0); tmp.scale.set(.9, 1, 1); tmp.updateMatrix(); beads.setMatrixAt(i * per + j, tmp.matrix); } } beads.instanceMatrix.needsUpdate = true; }
+    layoutBeads();
+    // balok angka bertitik
+    [[2.9, 1.5, '#e4483e'], [3.3, 2.5, '#3a72d8'], [-3.1, 1.6, '#f5bf2e']].forEach(([x, z, c], i) => { const b = M(abacus, B(.9, .9, .9), toon(c), x, .6, z * .55, ink, { r: [0, i * .5, 0] }); for (let k = 0; k <= i; k++) M(b, Sp(.09, 8, 6), C.white, (k - i / 2) * .26, .46, 0, null, { cast: false, s: [1, .4, 1] }); });
+    // TAMAN (bawah): perosotan, ayunan, jungkat-jungkit
+    const park = new THREE.Group(); park.position.set(9.5, 0, 7.5); R.add(park);
+    M(park, Cy(4.3, 4.3, .12, 32), C.sand, 0, .06, 0, null, { cast: false });
+    const slide = new THREE.Group(); slide.position.set(-1.6, 0, -1.2); slide.rotation.y = .5; park.add(slide);
+    [[-.5, -.5], [.5, -.5], [-.5, .5], [.5, .5]].forEach(([x, z]) => M(slide, B(.14, 2.4, .14), C.blue, x, 1.2, z, ink));
+    M(slide, B(1.2, .14, 1.2), C.yellow, 0, 2.4, 0, ink); M(slide, B(1, .1, 3.4), C.roof, 0, 1.25, 2.1, ink, { r: [.66, 0, 0] });
+    for (let k = 0; k < 4; k++) M(slide, B(1, .08, .1), C.blue, 0, .5 + k * .5, -.62, null, { cast: false });
+    const swing = new THREE.Group(); swing.position.set(1.6, 0, -1.4); swing.rotation.y = -.7; park.add(swing);
+    [-1, 1].forEach(s => { M(swing, B(.14, 3.1, .14), C.green, s * 1.4, 1.5, .55, ink, { r: [-.2, 0, 0] }); M(swing, B(.14, 3.1, .14), C.green, s * 1.4, 1.5, -.55, ink, { r: [.2, 0, 0] }); });
+    M(swing, Cy(.08, .08, 3, 8), C.metal, 0, 3, 0, ink, { r: [0, 0, Math.PI / 2] });
+    const seats = [-.6, .6].map(x => { const p = new THREE.Group(); p.position.set(x, 3, 0); swing.add(p); [-.18, .18].forEach(dx => M(p, B(.03, 2.2, .03), C.metal, dx, -1.1, 0, null, { cast: false })); M(p, B(.5, .08, .3), C.yellow, 0, -2.2, 0, ink); return p; });
+    const seesaw = new THREE.Group(); seesaw.position.set(1.8, 0, 2); seesaw.rotation.y = .9; park.add(seesaw);
+    M(seesaw, Cy(.25, .35, .6, 8), C.purple, 0, .3, 0, ink); const plank = new THREE.Group(); plank.position.y = .62; seesaw.add(plank);
+    M(plank, B(3.4, .12, .4), C.yellow, 0, 0, 0, ink);
+    // pohon (instanced) + pagar
+    const treePos = []; for (let i = 0; i < 18; i++) { const side = i % 4; let x, z; if (side === 0) { x = -16 + r() * 32; z = -12.4 + r() * .8; } else if (side === 1) { x = 16.2 - r() * .8; z = -12 + r() * 24; } else if (side === 2) { x = -16.2 + r() * .8; z = -2 + r() * 14; } else { x = -4 + r() * 20; z = 12.4 - r() * .8; } if (Math.abs(x - 9.5) < 5 && Math.abs(z - 7.5) < 5) continue; treePos.push([x, z, .8 + r() * .5]); }
+    [[-4.5, -4.6, 1.2], [4.6, 3.6, 1.1], [-4.2, 4.2, .9], [4.4, -4.4, 1]].forEach(t => treePos.push(t));
+    const trunkG = Cy(.18, .26, 1.6, 7); trunkG.translate(0, .8, 0); const crownG = new THREE.IcosahedronGeometry(1.1, 1);
+    const trunks = new THREE.InstancedMesh(trunkG, C.trunk, treePos.length), crowns = new THREE.InstancedMesh(crownG, C.leaf, treePos.length);
+    treePos.forEach(([x, z, s], i) => { tmp.position.set(x, 0, z); tmp.rotation.set(0, r() * 6, 0); tmp.scale.setScalar(s); tmp.updateMatrix(); trunks.setMatrixAt(i, tmp.matrix); tmp.position.y = 2.2 * s; tmp.scale.set(s, s * 1.05, s); tmp.updateMatrix(); crowns.setMatrixAt(i, tmp.matrix); crowns.setColorAt(i, new THREE.Color(i % 2 ? '#5fb35a' : '#7cc562')); });
+    trunks.castShadow = crowns.castShadow = true; R.add(trunks, crowns); inkedInstanced(trunks, ink); inkedInstanced(crowns, ink);
+    // awan (instanced)
+    const cloudPos = []; for (let i = 0; i < 4; i++) { const cx = -12 + i * 8 + r() * 2, cz = -15 + r() * 2, cy = 11 + r() * 2.5; for (let j = 0; j < 3; j++) cloudPos.push([cx + (j - 1) * 1.3, cy + (j === 1 ? .5 : 0), cz, j === 1 ? 1.2 : .9]); }
+    const clouds = new THREE.InstancedMesh(Sp(1, 14, 10), C.cloud, cloudPos.length); R.add(clouds); inkedInstanced(clouds, ink);
+    const cloudOff = new Float32Array(4);
+    function layoutClouds(){ cloudPos.forEach(([x, y, z, s], i) => { tmp.position.set(x + cloudOff[Math.floor(i / 3)], y, z); tmp.rotation.set(0, 0, 0); tmp.scale.set(s, s * .72, s); tmp.updateMatrix(); clouds.setMatrixAt(i, tmp.matrix); }); clouds.instanceMatrix.needsUpdate = true; }
+    layoutClouds();
+    // pelangi (muncul di mode pelangi)
+    const rainbow = new THREE.Group(); rainbow.position.set(-2, 0, -10.5); rainbow.rotation.y = Math.PI / 4; R.add(rainbow);
+    ['#e4483e', '#ef7d22', '#f5bf2e', '#2f9e5f', '#3a72d8', '#8b5cf6'].forEach((c, i) => M(rainbow, new THREE.TorusGeometry(9 - i * .5, .26, 6, 48, Math.PI), toon(c), 0, 0, 0, i === 0 || i === 5 ? ink : null, { cast: false }));
+    rainbow.scale.setScalar(.001); rainbow.visible = false;
+    // benda melayang: krayon, buku terbuka, simbol hitung, bintang
+    const floaters = [];
+    function floater(obj, x, y, z, ph, spin = .4){ const g = new THREE.Group(); g.position.set(x, y, z); g.add(obj); R.add(g); floaters.push({ g, y, ph, spin, base: obj.rotation.clone() }); return g; }
+    const crayons = [0, 1, 2, 3].map(i => { const c = makeCrayon('#e4483e', ink); c.rotation.set(.35 + i * .1, i * .8, -.5 + i * .3); return c; });
+    crayons.forEach((c, i) => floater(c, -12.6 + i * 1.6, 5.4 + (i % 2) * 1.1, 4.4 + i * 1.2, i * 1.3));
+    const openBook = new THREE.Group(); [-1, 1].forEach(s => { M(openBook, B(1.4, .1, 1.9), C.blue, s * .68, 0, 0, ink, { r: [0, 0, s * .28] }); M(openBook, B(1.28, .1, 1.76), C.paper, s * .64, .1, 0, ink, { r: [0, 0, s * .28] }); });
+    floater(openBook, -9, 7.4, -3.8, 2.1, .25);
+    const sym = (parts, color) => { const g = new THREE.Group(), m = toon(color); parts.forEach(([w, h, rz]) => M(g, B(w, h, .3), m, 0, 0, 0, ink, { r: [0, 0, rz] })); return g; };
+    floater(sym([[1.2, .32, 0], [.32, 1.2, 0]], '#e4483e'), 6.6, 6.8, -4.4, .4);
+    floater(sym([[1.2, .32, 0]], '#3a72d8'), 9, 7.6, -3.4, 1.4);
+    floater(sym([[1.2, .32, Math.PI / 4], [1.2, .32, -Math.PI / 4]], '#2f9e5f'), 11.8, 6.6, -5.2, 2.4);
+    const bigStar = new THREE.Mesh(starGeo(.9, .4, .3), toon('#f5bf2e')); bigStar.castShadow = true; inked(bigStar, ink); floater(bigStar, 0, 8.2, 0, .7, 1);
+    // ledakan bintang (tombol FAB)
+    const burstN = 14, burst = new THREE.InstancedMesh(starGeo(.34, .15, .12), toon('#f5bf2e'), burstN); burst.frustumCulled = false; R.add(burst); inkedInstanced(burst, ink);
+    const bursts = []; for (let i = 0; i < burstN; i++) bursts.push({ a: i / burstN * Math.PI * 2, v: 2.4 + r() * 2.2, up: 5 + r() * 3 });
+    function layoutBurst(origin, T, still){ bursts.forEach((b, i) => { if (T >= 1.6) { tmp.position.set(0, -50, 0); tmp.scale.setScalar(.001); } else { const tt = still ? .7 : T; tmp.position.set(origin.x + Math.cos(b.a) * b.v * tt, origin.y + b.up * tt - 4.5 * tt * tt, origin.z + Math.sin(b.a) * b.v * tt); tmp.rotation.set(0, b.a + tt * 4, 0); tmp.scale.setScalar(still ? 1 : Math.max(.001, 1 - Math.max(0, T - 1.1) * 2)); } tmp.updateMatrix(); burst.setMatrixAt(i, tmp.matrix); }); burst.instanceMatrix.needsUpdate = true; }
+    layoutBurst(new THREE.Vector3(), 9, true);
+    // anak berjalan di taman
+    const kidSpot = new THREE.Group(); R.add(kidSpot);
+    const kidLoop = new THREE.CatmullRomCurve3([[6.5, 4.6], [10.5, 3.8], [13, 7], [11.8, 10.6], [7.6, 10.8], [5.6, 7.6]].map(([x, z]) => new THREE.Vector3(x, 0, z)), true);
+    return { root: R, C, crayons, drawPaint, floaters, rainbow, beads, beadState, layoutBeads, rods, flag, seats, plank, clouds, cloudOff, layoutClouds, burst, bursts, layoutBurst, kidSpot, kidLoop, trunks };
+  }
+
+  const VIEWS = { semua: { t: [0, 2.2, .4], z: 1 }, gambar: { t: [-10.5, 3.2, 6.5], z: 1.95 }, hitung: { t: [9.6, 3.6, -6.4], z: 1.95 }, baca: { t: [-9.2, 3.6, -5.8], z: 1.9 } };
+  const MOODS = { pagi: { sky: '#cfeaf7', sun: '#fff1d8', hemi: '#eaf6ff', ang: .55, el: .55, int: 2.1 }, siang: { sky: '#bfe2f6', sun: '#ffffff', hemi: '#f4fbff', ang: 1.35, el: 1.05, int: 2.6 }, senja: { sky: '#f7c7a0', sun: '#ffb06b', hemi: '#ffe1c8', ang: 2.5, el: .42, int: 2.0 } };
+  const CAM_DIR = new THREE.Vector3(1, .9, 1).normalize();
+
+  function createWorldView(canvas, stageEl, opts){
+    const renderer = makeRenderer(canvas), scene = new THREE.Scene();
+    const ink = makeInk(.1); const S = buildWorld(ink); scene.add(S.root); scene.background = new THREE.Color(MOODS.siang.sky);
+    const hemi = new THREE.HemisphereLight('#f4fbff', '#c9b48a', 1.25); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#ffffff', 2.4); sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, { left: -26, right: 26, top: 26, bottom: -26, near: 1, far: 120 }); sun.shadow.bias = -.0006; sun.shadow.normalBias = .04; scene.add(sun, sun.target);
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -200, 400);
+    const cur = { t: new THREE.Vector3(...VIEWS.semua.t), z: 1, size: 1, rain: 0, mood: 1 }, goal = { t: cur.t.clone(), z: 1, size: 1, rain: 0 };
+    const moodCol = { sky: new THREE.Color(MOODS.siang.sky), sun: new THREE.Color('#fff'), hemi: new THREE.Color('#fff'), ang: MOODS.siang.ang, el: MOODS.siang.el, int: MOODS.siang.int };
+    const tgt = { sky: new THREE.Color(), sun: new THREE.Color(), hemi: new THREE.Color(), ang: 0, el: 0, int: 0 };
+    let aspect = 1, halfH = 17, kid = null, kidType = '', hue = -1, rainbowOn = false, floatOn = true, lastBoil = 0, lastBead = 0, burstT = 9, burstStart = 0, moving = false;
+    const pointer = { x: 0, tx: 0 }, tmpDir = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0), dark = new THREE.Color('#14201c'), col = new THREE.Color();
+    function setKid(type){ if (type === kidType) return; if (kid) { S.kidSpot.remove(kid.g); } kid = makeKid(type, ink); kid.g.scale.setScalar(type === 'pensi' ? 1.75 : 1.6); S.kidSpot.add(kid.g); kidType = type; }
+    function setHue(h, rb){ hue = h; S.crayons.forEach((c, i) => { const hh = rb ? (i * 72 + h) % 360 : (h + (i - 1.5) * 16 + 360) % 360; c.userData.mats[0].color.setHSL(hh / 360, .78, .55); c.userData.mats[1].color.setHSL(hh / 360, .7, .4); }); S.drawPaint(h, rb); }
+    function apply(s){
+      const v = VIEWS[opts.hero ? 'semua' : s.subject] || VIEWS.semua; goal.t.set(...v.t); goal.z = v.z;
+      goal.size = s.size / 100; goal.rain = s.rainbow ? 1 : 0;
+      if (s.hue !== hue || s.rainbow !== rainbowOn) { rainbowOn = s.rainbow; setHue(s.hue, s.rainbow); }
+      setKid(s.kid); floatOn = s.float; ink.visible = s.ink;
+      const m = MOODS[s.mood] || MOODS.siang; tgt.sky.set(m.sky); tgt.sun.set(m.sun); tgt.hemi.set(m.hemi); tgt.ang = m.ang; tgt.el = m.el; tgt.int = m.int;
+      loop.keepAlive(2600); loop.request();
+    }
+    function star(){ burstT = 0; burstStart = performance.now(); loop.keepAlive(1900); loop.request(); }
+    if (opts.hero) {
+      stageEl.addEventListener('pointermove', e => { const b = stageEl.getBoundingClientRect(); pointer.tx = ((e.clientX - b.left) / b.width - .5) * 2; loop.request(); });
+      stageEl.addEventListener('pointerleave', () => { pointer.tx = 0; loop.request(); });
+    }
+    const burstOrigin = new THREE.Vector3(0, 8.2, 0);
+    const loop = createLoop(canvas, (dt, t) => {
+      const still = rmq.matches, k = still ? 1 : 1 - Math.exp(-dt * 3.2);
+      cur.t.lerp(goal.t, k); cur.z += (goal.z - cur.z) * k; cur.size += (goal.size - cur.size) * k; cur.rain += (goal.rain - cur.rain) * k;
+      moodCol.sky.lerp(tgt.sky, k); moodCol.sun.lerp(tgt.sun, k); moodCol.hemi.lerp(tgt.hemi, k); moodCol.ang += (tgt.ang - moodCol.ang) * k; moodCol.el += (tgt.el - moodCol.el) * k; moodCol.int += (tgt.int - moodCol.int) * k;
+      const busy = cur.t.distanceTo(goal.t) > .05 || Math.abs(goal.z - cur.z) > .01;
+      if (busy || Math.abs(goal.size - cur.size) > .002 || Math.abs(goal.rain - cur.rain) > .002 || Math.abs(tgt.ang - moodCol.ang) > .002) loop.request();
+      if (busy !== moving) { moving = busy; if (opts.onMoving) opts.onMoving(busy); }
+      // langit, cahaya
+      const dk = isDark();
+      col.copy(moodCol.sky); if (dk) col.lerp(dark, .72); scene.background = col;
+      hemi.color.copy(moodCol.hemi); hemi.intensity = dk ? .75 : 1.25; sun.color.copy(moodCol.sun); sun.intensity = moodCol.int * (dk ? .75 : 1);
+      S.C.win.emissiveIntensity = dk ? 1.2 : 0;
+      sun.position.set(cur.t.x + Math.cos(moodCol.ang) * 30, cur.t.y + 12 + moodCol.el * 22, cur.t.z + Math.sin(moodCol.ang) * 30 - 6); sun.target.position.copy(cur.t);
+      // garis tinta bergetar seperti animasi coretan tangan (6 fps)
+      if (!still && t - lastBoil > .16) { ink.userData.u.uStep.value = Math.floor(t * 6) % 7; lastBoil = t; }
+      // benda melayang + ukuran
+      S.floaters.forEach(f => { const bob = still || !floatOn ? 0 : Math.sin(t * 1.3 + f.ph) * .35; f.g.position.y = f.y + bob; f.g.scale.setScalar(cur.size); f.g.rotation.y = still || !floatOn ? f.ph : t * f.spin * .6 + f.ph; });
+      // mode pelangi: krayon berganti warna terus
+      if (rainbowOn && !still) { const hh = (t * 40) % 360; S.crayons.forEach((c, i) => { c.userData.mats[0].color.setHSL(((hh + i * 72) % 360) / 360, .78, .55); c.userData.mats[1].color.setHSL(((hh + i * 72) % 360) / 360, .7, .4); }); }
+      S.rainbow.visible = cur.rain > .01; S.rainbow.scale.setScalar(Math.max(.001, cur.rain));
+      // sempoa: manik bergeser seperti sedang berhitung
+      if (!still && t - lastBead > 1.1) { lastBead = t; const st = S.beadState[Math.floor(Math.random() * S.rods)]; st.left = (st.left + 1 + Math.floor(Math.random() * 3)) % 11; }
+      let beadMove = false; S.beadState.forEach(st => { const d = st.left - st.shown; if (Math.abs(d) > .005) { st.shown += d * (still ? 1 : Math.min(1, dt * 5)); beadMove = true; } else st.shown = st.left; }); if (beadMove) S.layoutBeads();
+      // bendera, ayunan, jungkat-jungkit, awan
+      if (!still) {
+        S.flag.rotation.y = Math.sin(t * 2.2) * .18;
+        S.seats.forEach((p, i) => p.rotation.x = Math.sin(t * 1.8 + i * 1.7) * .35);
+        S.plank.rotation.z = Math.sin(t * 1.2) * .22;
+        for (let i = 0; i < 4; i++) S.cloudOff[i] = Math.sin(t * .08 + i * 1.7) * 2.2; S.layoutClouds();
+      }
+      // bintang meledak dari tombol FAB
+      if (burstT < 1.6) { burstT = (performance.now() - burstStart) / 1000; S.layoutBurst(burstOrigin, burstT, still); }
+      // anak berjalan di taman
+      if (kid) {
+        const u = still ? .15 : (t * .025) % 1, p = S.kidLoop.getPointAt(u), tg = S.kidLoop.getTangentAt(u);
+        kid.g.position.set(p.x, 0, p.z); kid.g.rotation.y = Math.atan2(tg.x, tg.z);
+        const sw = still ? 0 : Math.sin(t * 7) * .6; kid.legL.rotation.x = sw; kid.legR.rotation.x = -sw; kid.armL.rotation.x = -sw * .8; kid.armR.rotation.x = sw * .8;
+        if (still) { kid.armR.rotation.x = -2.6; kid.armR.rotation.z = .2; }
+      }
+      // kamera isometrik ortografis
+      pointer.x += (pointer.tx - pointer.x) * (1 - Math.exp(-dt * 3)); if (Math.abs(pointer.tx - pointer.x) > .002) loop.request();
+      tmpDir.copy(CAM_DIR).applyAxisAngle(up, pointer.x * .16 + (opts.hero && !still ? Math.sin(t * .13) * .08 : 0));
+      const hh = halfH / cur.z, hw = hh * aspect; Object.assign(cam, { left: -hw, right: hw, top: hh, bottom: -hh }); cam.updateProjectionMatrix();
+      cam.position.copy(cur.t).addScaledVector(tmpDir, 100); cam.lookAt(cur.t);
+      renderer.render(scene, cam);
+      if (!stageEl.classList.contains('ready')) stageEl.classList.add('ready');
+    }, () => !rmq.matches);
+    watchSize(stageEl, renderer, (w, h) => { aspect = w / h; halfH = aspect < .8 ? 11.8 / Math.max(aspect, .55) : aspect < 1.2 ? 15.5 : 12.6; loop.request(); });
+    apply(state);
+    return { apply, star, loop, renderer, scene, camera: cam, ink };
+  }
+
+  let heroV = null, labV = null;
+  try {
+    heroV = createWorldView($('#heroCanvas'), $('#heroStage'), { hero: true });
+    const busyEl = $('#busy'), spin = $('#spin');
+    labV = createWorldView($('#labCanvas'), $('#labStage'), { hero: false, onMoving: m => { busyEl.classList.toggle('on', m); spin.spinning = m && !rmq.matches; } });
+    bus.addEventListener('state', e => { heroV.apply(e.detail); labV.apply(e.detail); });
+    bus.addEventListener('star', () => { heroV.star(); labV.star(); });
+    bus.addEventListener('theme', () => { heroV.loop.request(); labV.loop.request(); });
+  } catch (e) { console.warn('WebGL gagal dimulai', e); showFallbacks(); }
+
+  /* ================= Cerita isometrik: sehari Dika ================= */
+  function createStory(){
+    const stage = $('.story-stage', storySec), canvas = $('#storyCanvas');
+    const renderer = makeRenderer(canvas), scene = new THREE.Scene(), ink = makeInk(.05);
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -100, 200);
+    const camDir = new THREE.Vector3(1, 1.1, 1).normalize(), camTarget = new THREE.Vector3();
+    const hemi = new THREE.HemisphereLight('#ffffff', '#c9b48a', 1.35); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff4e0', 2.3); sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16, near: 1, far: 80 }); sun.shadow.bias = -.0005; sun.shadow.normalBias = .03; scene.add(sun, sun.target);
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(160, 90), toon('#f3ecdb')); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+    let grid = null;
+    const CLAY = new THREE.Color('#f2ede2');
+    const SP = [[-16, 4], [-6, -4], [3, 4], [12, -4], [21, 4]];
+    const stations = [];
+    const smat = c => { const m = toon(c); m.userData.target = new THREE.Color(c); m.color.copy(CLAY); return m; };
+    function add(g, mats, geo, c, x, y, z, rot, noInk){ const m = smat(c); mats.push(m); const me = new THREE.Mesh(geo, m); me.position.set(x, y, z); if (rot) me.rotation.set(rot[0] || 0, rot[1] || 0, rot[2] || 0); me.castShadow = me.receiveShadow = true; if (!noInk) inked(me, ink); g.add(me); return me; }
+    SP.forEach(([x, z], i) => {
+      const g = new THREE.Group(); g.position.set(x - 1.4, 0, z - 2.6); scene.add(g);
+      const mats = []; add(g, mats, Cy(2.9, 3.0, .26, 40), '#fff4dc', 0, .13, 0);
+      const inner = new THREE.Group(); inner.position.y = .26; g.add(inner);
+      if (i === 0) { // buka aplikasi: tablet raksasa di meja
+        add(inner, mats, B(2.8, .16, 1.6), '#b07a4f', 0, 1.2, -.2); [[-1.2, -.8], [1.2, -.8], [-1.2, .4], [1.2, .4]].forEach(([lx, lz]) => add(inner, mats, B(.14, 1.2, .14), '#8d5d39', lx, .6, lz));
+        add(inner, mats, B(2.1, 1.5, .14), '#2a2733', 0, 2.15, -.7, [-.25, 0, 0]);
+        add(inner, mats, B(1.9, 1.3, .04), '#fff4dc', 0, 2.15, -.62, [-.25, 0, 0], true);
+        [['#e4483e', -.55, .3], ['#3a72d8', 0, .3], ['#2f9e5f', .55, .3], ['#f5bf2e', -.55, -.25], ['#8b5cf6', 0, -.25], ['#ef7d22', .55, -.25]].forEach(([c, ax, ay]) => add(inner, mats, B(.38, .38, .05), c, ax, 2.15 + ay * .97, -.6 + ay * .24, [-.25, 0, 0], true));
+        add(inner, mats, Cy(.14, .2, .9, 10), '#f5bf2e', 1.6, .45, .9); add(inner, mats, Co(.42, .5, 12), '#fff4dc', 1.6, 1.1, .9);
+        add(inner, mats, B(.9, .5, .6), '#3a72d8', -1.6, .25, 1.1);
+      } else if (i === 1) { // pilih pelajaran: tiga pintu warna
+        [['#e4483e', -1.5], ['#3a72d8', 0], ['#2f9e5f', 1.5]].forEach(([c, dx], k) => { add(inner, mats, B(1.1, 2.1, .3), c, dx, 1.05, -.6 + k * .2); add(inner, mats, B(.8, .8, .06), '#fff4dc', dx, 1.4, -.43 + k * .2, null, true); add(inner, mats, Sp(.07, 8, 6), '#f5bf2e', dx + .35, .9, -.42 + k * .2, null, true); });
+        add(inner, mats, Cy(.08, .08, 2.6, 8), '#8d5d39', 1.9, 1.3, 1.2); add(inner, mats, B(1.3, .5, .1), '#f5bf2e', 1.4, 2.3, 1.2);
+        add(inner, mats, Co(.18, .5, 10), '#e4483e', -1.6, .25, 1.4, [0, 0, 1.4]); add(inner, mats, Cy(.18, .18, 1.2, 10), '#e4483e', -1, .2, 1.4, [0, 0, Math.PI / 2]);
+      } else if (i === 2) { // main: sempoa + kuda-kuda
+        add(inner, mats, B(.16, 2.2, .3), '#b07a4f', -1.9, 1.1, -.6); add(inner, mats, B(.16, 2.2, .3), '#b07a4f', .1, 1.1, -.6); add(inner, mats, B(2.2, .16, .34), '#8d5d39', -.9, 2.2, -.6);
+        ['#e4483e', '#f5bf2e', '#2f9e5f', '#3a72d8'].forEach((c, row) => { for (let b = 0; b < 4; b++) add(inner, mats, Sp(.13, 10, 8), c, -1.6 + b * .3 + (b > 1 ? .5 : 0), .6 + row * .42, -.6, null, b % 2 === 1); });
+        add(inner, mats, B(1.6, 1.3, .1), '#fffaf0', 1.4, 1.6, .1, [-.15, -.5, 0]); add(inner, mats, B(.14, 1.8, .14), '#b07a4f', 1.4, .9, .5, [.3, 0, 0]);
+        add(inner, mats, Cy(.12, .12, .9, 10), '#8b5cf6', .6, .12, 1.4, [Math.PI / 2, 0, .5]); add(inner, mats, Cy(.12, .12, .9, 10), '#ef7d22', 1.1, .12, 1.6, [Math.PI / 2, 0, -.3]);
+      } else if (i === 3) { // dapat bintang: podium + bintang emas
+        add(inner, mats, B(1.2, .6, 1.2), '#3a72d8', -1.2, .3, -.4); add(inner, mats, B(1.2, 1.1, 1.2), '#e4483e', 0, .55, -.4); add(inner, mats, B(1.2, .4, 1.2), '#2f9e5f', 1.2, .2, -.4);
+        const st = add(inner, mats, starGeo(.8, .36, .3), '#f5bf2e', 0, 2.1, -.4); st.userData.spin = true;
+        [[-1.2, 1.1], [1.2, .9]].forEach(([sx, sy]) => add(inner, mats, starGeo(.32, .14, .12), '#f5bf2e', sx, sy + .2, -.4));
+        add(inner, mats, Cy(.3, .3, .06, 16), '#f5bf2e', 1.5, .05, 1.2, [0, 0, 0]);
+      } else { // pamer ke orang tua: sofa, kulkas bergambar, ayah & ibu
+        add(inner, mats, B(2.4, .5, 1), '#8b5cf6', -.4, .45, -1.1); add(inner, mats, B(2.4, .9, .3), '#7a4fd6', -.4, .9, -1.55); [-1, 1].forEach(s => add(inner, mats, B(.3, .7, 1), '#7a4fd6', -.4 + s * 1.2, .55, -1.1));
+        add(inner, mats, B(1.1, 2.3, 1), '#ffffff', 1.9, 1.15, -.5); add(inner, mats, B(.7, .55, .04), '#fff4dc', 1.9, 1.6, .02, [0, 0, .08], true); add(inner, mats, B(.3, .2, .05), '#e4483e', 1.8, 1.55, .04, null, true);
+        const dad = makeKid('dika', ink, { adult: true, shirt: '#2f7f86' }), mom = makeKid('sari', ink, { adult: true, shirt: '#f5bf2e', skirt: '#8b5cf6', hijab: '#ec6aa0' });
+        [[dad, -1.1, 1.6], [mom, .3, 1.5]].forEach(([p, px, s]) => { p.g.scale.setScalar(s); p.g.position.set(px, 0, -.55); p.g.traverse(m => { if (m.isMesh && !m.userData.hull && !p.mats.includes(m.material)) p.mats.push(m.material); }); p.mats.forEach(m => { m.userData.target = m.color.clone(); m.color.copy(CLAY); mats.push(m); }); inner.add(p.g); p.armR.rotation.x = -2.5; });
+      }
+      stations.push({ g, mats, inner, lit: 0 });
+    });
+    // jalur oranye
+    const pts = [[-16, 4], [-11, 4], [-11, -4], [-6, -4], [-1, -4], [-1, 4], [3, 4], [7.5, 4], [7.5, -4], [12, -4], [16.5, -4], [16.5, 4], [21, 4]].map(([x, z]) => new THREE.Vector3(x, .3, z));
+    const path = new THREE.CurvePath(); const rad = 1.4; let cur = pts[0].clone();
+    for (let i = 1; i < pts.length - 1; i++) { const p = pts[i], dIn = p.clone().sub(pts[i - 1]).normalize(), dOut = pts[i + 1].clone().sub(p).normalize(); if (dIn.dot(dOut) > .999) continue; const a = p.clone().addScaledVector(dIn, -rad), b = p.clone().addScaledVector(dOut, rad); path.add(new THREE.LineCurve3(cur.clone(), a)); path.add(new THREE.QuadraticBezierCurve3(a, p.clone(), b)); cur = b; }
+    path.add(new THREE.LineCurve3(cur, pts[pts.length - 1].clone()));
+    const TS = 700, RS = 6, baseMat = toon('#ddd3bd');
+    scene.add(new THREE.Mesh(new THREE.TubeGeometry(path, TS, .12, RS, false), baseMat));
+    const progTube = new THREE.Mesh(new THREE.TubeGeometry(path, TS, .2, RS, false), new THREE.MeshToonMaterial({ color: '#ef7d22', emissive: '#ef7d22', emissiveIntensity: .3, gradientMap: grad })); progTube.geometry.setDrawRange(0, 0); scene.add(progTube);
+    SP.forEach(([x, z]) => { const d = new THREE.Mesh(Cy(.42, .42, .08, 20), toon('#ef7d22')); d.position.set(x, .05, z); scene.add(d); });
+    // pepohonan + krayon berserakan di tepi
+    { const r = rng(31), trunkM = toon('#9a6a44'), leafA = toon('#5fb35a'), leafB = toon('#7cc562'), crG = new THREE.IcosahedronGeometry(.9, 1), trG = Cy(.14, .2, 1.2, 7);
+      for (let x = -30; x <= 34; x += 3.6) for (const zb of [-12.5, 12.5]) { const xx = x + (r() - .5) * 2, zz = zb + (r() - .5) * 3; if (r() < .62) { const s = .8 + r() * .5; M(scene, trG, trunkM, xx, .6 * s, zz, ink, { s: [s, s, s] }); M(scene, crG, r() > .5 ? leafA : leafB, xx, 1.7 * s, zz, ink, { s: [s, s, s] }); } else { const c = makeCrayon(['#e4483e', '#3a72d8', '#f5bf2e', '#2f9e5f', '#8b5cf6'][Math.floor(r() * 5)], ink); c.rotation.set(Math.PI / 2, 0, r() * 6); c.position.set(xx, .36, zz); c.scale.setScalar(.7); scene.add(c); } } }
+    const samples = 1200, stationU = SP.map(([x, z]) => { let best = 0, bd = 1e9; for (let s = 0; s <= samples; s++) { const q = path.getPointAt(s / samples); const d = (q.x - x) ** 2 + (q.z - z) ** 2; if (d < bd) { bd = d; best = s / samples; } } return best; });
+    stationU[0] = 0; stationU[stationU.length - 1] = 1;
+    const dika = makeKid('dika', ink); dika.g.scale.setScalar(1.45); scene.add(dika.g); const chr = dika.g;
+    const spinners = []; stations.forEach(s => s.inner.traverse(o => { if (o.userData.spin) spinners.push(o); }));
+
+    let lastT = 0, targetU = 0, shownU = 0, walkPhase = 0, step = -1, lastPos = new THREE.Vector3(), halfW = 10, halfH = 10, aspect = 1;
+    function mapProgress(p){ const n = SP.length - 1, u = clamp(p, 0, 1) * n, i = Math.min(n - 1, Math.floor(u)), f = u - i, w = smooth(.22, .82, f); return { u: stationU[i] + (stationU[i + 1] - stationU[i]) * w, step: w < .5 ? i : i + 1 }; }
+    function setProgress(p){ const m = mapProgress(p); targetU = m.u; if (m.step !== step) { step = m.step; setStepUI(step); } loop.request(); }
+    function themeColors(){
+      const dark = isDark(), bg = dark ? '#1c2924' : '#f3ecdb', ln = dark ? '#33463d' : '#d9cfb8';
+      scene.background = new THREE.Color(bg); ground.material.color.set(bg);
+      if (grid) { scene.remove(grid); grid.geometry.dispose(); grid.material.dispose(); }
+      grid = new THREE.GridHelper(160, 160, ln, ln); grid.material.transparent = true; grid.material.opacity = dark ? .6 : .75; grid.position.y = .01; scene.add(grid);
+      CLAY.set(dark ? '#cfd6cc' : '#f6f1e6');
+      ink.color.set(dark ? '#0f1714' : '#2a2733');
+      baseMat.color.set(dark ? '#44594f' : '#d6ccb4');
+      hemi.intensity = dark ? .9 : 1.35; sun.intensity = dark ? 1.8 : 2.3;
+      stations.forEach(s => s.mats.forEach(m => m.color.copy(CLAY).lerp(m.userData.target, s.lit)));
+      loop.request();
+    }
+    let boil = 0;
+    const loop = createLoop(canvas, (dt) => {
+      const still = rmq.matches, now = performance.now(), cdt = Math.min(.12, lastT ? (now - lastT) / 1000 : dt); lastT = now;
+      const k = still ? 1 : 1 - Math.exp(-cdt * 5);
+      shownU += (targetU - shownU) * k; if (Math.abs(targetU - shownU) > 1e-4) loop.request(); else shownU = targetU;
+      const pos = path.getPointAt(clamp(shownU, 0, 1)), tan = path.getTangentAt(clamp(shownU, 0, .9999));
+      const moved = pos.distanceTo(lastPos); lastPos.copy(pos); walkPhase += moved * 3.2;
+      const moving = clamp(moved * 25, 0, 1);
+      chr.position.set(pos.x, Math.abs(Math.sin(walkPhase)) * .08 * moving, pos.z);
+      if (moved > 1e-4) chr.rotation.y = Math.atan2(tan.x, tan.z);
+      const sw = Math.sin(walkPhase) * .7 * moving; dika.legL.rotation.x = sw; dika.legR.rotation.x = -sw; dika.armL.rotation.x = -sw * .8; dika.armR.rotation.x = sw * .8;
+      if (moving < .05 && step === 4) dika.armR.rotation.x = -2.6;
+      if (moving > .1 && !still) { boil += moved; ink.userData.u.uStep.value = Math.floor(boil * 2) % 7; }
+      progTube.geometry.setDrawRange(0, Math.floor(shownU * TS) * RS * 6);
+      stations.forEach((s, i) => { const goal = shownU >= stationU[i] - .004 ? 1 : 0, prev = s.lit; s.lit += (goal - s.lit) * (still ? 1 : Math.min(1, cdt * 4)); if (Math.abs(goal - s.lit) > .002) loop.request(); else s.lit = goal; if (prev !== s.lit) s.mats.forEach(m => m.color.copy(CLAY).lerp(m.userData.target, s.lit)); s.inner.scale.setScalar(.82 + .18 * s.lit); });
+      spinners.forEach(o => { o.rotation.y = still ? .4 : now / 900; }); if (!still && step >= 3) loop.request();
+      const desired = new THREE.Vector3(pos.x, 0, pos.z);
+      if (aspect >= .9) desired.addScaledVector(new THREE.Vector3(1, 0, -1).normalize(), -halfW * .3);
+      if (camTarget.lengthSq() === 0) camTarget.copy(desired);
+      camTarget.lerp(desired, still ? 1 : 1 - Math.exp(-cdt * 3.5)); if (camTarget.distanceTo(desired) > .01) loop.request();
+      cam.position.copy(camTarget).addScaledVector(camDir, 60); cam.lookAt(camTarget);
+      sun.position.copy(camTarget).add(new THREE.Vector3(14, 26, 8)); sun.target.position.copy(camTarget);
+      renderer.render(scene, cam);
+    }, () => false);
+    /* Layar sempit: Dika dibingkai di ruang kosong ANTARA kartu judul dan kartu langkah (diukur dari DOM) dengan frustum ortografis asimetris */
+    const head = stage.querySelector('.story-head'), card = stage.querySelector('#storyCard');
+    let frameY = .5;
+    function applyFrame(){
+      frameY = .5;
+      if (aspect < .9) { const r = stage.getBoundingClientRect(), a = head.getBoundingClientRect().bottom - r.top, b = card.getBoundingClientRect().top - r.top; if (r.height > 0 && b > a) frameY = clamp(((a + b) / 2 + 30) / r.height, .2, .8); }
+      Object.assign(cam, { left: -halfW, right: halfW, top: 2 * halfH * frameY, bottom: -2 * halfH * (1 - frameY) }); cam.updateProjectionMatrix();
+    }
+    watchSize(stage, renderer, (w, h) => { aspect = w / h; halfH = aspect < .9 ? 10.5 : 8.6; halfW = halfH * aspect; applyFrame(); loop.request(); });
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(head);
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(card);
+    if (document.fonts) document.fonts.ready.then(() => { applyFrame(); loop.request(); });
+    themeColors(); bus.addEventListener('theme', () => requestAnimationFrame(themeColors));
+    return { setProgress, loop, renderer, scene, cam, chr, frame: () => frameY };
+  }
+  let story = null;
+  try { story = createStory(); } catch (e) { console.warn('Cerita 3D gagal', e); storySec.classList.add('no-webgl'); }
+  window.__coretan.views = { heroV, labV, story };
+  if (story) { const upd = () => story.setProgress(storyProgress()); addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd(); }
+}
+if (!window.__coretan.views || !window.__coretan.views.story) {
+  const nodes = $$('#storySvg .node');
+  const upd = () => { const n = Math.round(storyProgress() * 4); setStepUI(n); nodes.forEach((c, k) => c.classList.toggle('on', k <= n)); };
+  addEventListener('scroll', upd, { passive: true }); upd();
+}
+</script>
+</body>
+</html>

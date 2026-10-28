@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pixelara — Petualangan Retro dari Studio Game Indie Indonesia</title>
+<meta name="description" content="Pixelara adalah studio game indie Indonesia yang merilis Pulau Lentera, petualangan retro 8-bit tentang pulau voxel, gua kristal, dan kastil tua. Template landing page NES.css + three.js.">
+<meta name="theme-color" content="#fff6e0">
+<script>
+  /* tema disimpan per pengunjung; dipasang sebelum render supaya tidak berkedip */
+  (function(){var t;try{t=localStorage.getItem('pixelara-theme')}catch(e){}
+  if(t!=='light'&&t!=='dark'){t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}
+  document.documentElement.setAttribute('data-theme',t);})();
+</script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<!-- Press Start 2P hanya untuk judul tanpa angka (nolnya bergaris); angka & teks memakai Pixelify Sans (nol polos) -->
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- NES.css 2.3.0 (MIT) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nes.css@2.3.0/css/nes.min.css">
+<style>
+  /* ---------- Token merek + tema ---------- */
+  :root{
+    --px-head:'Press Start 2P',system-ui,sans-serif;
+    --px-sans:'Pixelify Sans',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
+    --px-blue:#1f6fd1;--px-blue-d:#124c94;--px-green:#2f7d14;--px-green-d:#1f560c;--px-yellow:#f7d51d;--px-yellow-d:#c9a800;--px-red:#c8432b;--px-red-d:#8f2a17;
+    --px-path:#ff8a2a;
+  }
+  [data-theme=light]{
+    color-scheme:light;
+    --px-bg:#fff6e0;--px-bg2:#f6e8c8;--px-surface:#ffffff;--px-ink:#212529;--px-text:#3d4149;--px-line:#212529;
+    --px-grid:rgba(33,37,41,.05);--px-sky:linear-gradient(180deg,#5ec4ff 0%,#9fe0ff 55%,#d8f4ff 100%);
+  }
+  [data-theme=dark]{
+    color-scheme:dark;
+    --px-bg:#15172a;--px-bg2:#1d2038;--px-surface:#212529;--px-ink:#ffffff;--px-text:#d5d8e6;--px-line:#ffffff;
+    --px-grid:rgba(255,255,255,.04);--px-sky:linear-gradient(180deg,#0c1033 0%,#232a6b 60%,#3f3a7a 100%);
+  }
+  .stage[data-night="1"]{--px-sky:linear-gradient(180deg,#05071c 0%,#141a4a 60%,#2b2560 100%)}
+  html{font-family:var(--px-sans);background:var(--px-bg);scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  html,body{font-family:var(--px-sans)!important}
+  body{margin:0;background-color:var(--px-bg);background-image:linear-gradient(var(--px-grid) 2px,transparent 2px),linear-gradient(90deg,var(--px-grid) 2px,transparent 2px);background-size:32px 32px;color:var(--px-text);overflow-x:clip;font-size:18px;line-height:1.55;transition:background-color .3s,color .3s}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+  /* tanpa font monospace; angka tabular dengan nol polos */
+  code,kbd,pre,samp{font-family:inherit!important;font-size:inherit}
+  .num,.stat b,.price b,.hud b,.nes-table td{font-variant-numeric:tabular-nums}
+  .ps{font-family:var(--px-head);letter-spacing:0;font-weight:400}
+  h1,h2,h3,h4{color:var(--px-ink);margin:0;font-weight:400}
+  h1.ps,h2.ps{line-height:1.35}
+  h3,h4{font-family:var(--px-sans);font-weight:700;line-height:1.2}
+  p{margin:0}
+  a{color:inherit}
+  :focus-visible{outline:3px dashed var(--px-path)!important;outline-offset:4px}
+  [id]{scroll-margin-top:84px}
+  .wrap{max-width:1220px;margin:0 auto;padding:0 16px}
+  @media (min-width:640px){.wrap{padding:0 28px}}
+  @media (min-width:1024px){.wrap{padding:0 40px}}
+  .skip{position:absolute;left:-999px;top:8px;z-index:1100}
+  .skip:focus{left:12px}
+  .sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+  /* ---------- NES.css: warna aksesibel + tema ---------- */
+  .nes-btn{font-family:var(--px-sans);font-weight:700;font-size:1rem;line-height:1.4;padding:8px 14px}
+  .nes-btn.ps{font-family:var(--px-head);font-weight:400;font-size:12px;line-height:1.6;padding:10px 14px}
+  .nes-btn.is-primary{background-color:var(--px-blue)}
+  .nes-btn.is-primary::after{box-shadow:inset -4px -4px var(--px-blue-d)}
+  .nes-btn.is-primary:hover{background-color:#2a7fe6}
+  .nes-btn.is-primary:hover::after{box-shadow:inset -6px -6px var(--px-blue-d)}
+  .nes-btn.is-success{background-color:var(--px-green)}
+  .nes-btn.is-success::after{box-shadow:inset -4px -4px var(--px-green-d)}
+  .nes-btn.is-success:hover{background-color:#3a9419}
+  .nes-btn.is-success:hover::after{box-shadow:inset -6px -6px var(--px-green-d)}
+  .nes-btn.is-error{background-color:var(--px-red)}
+  .nes-btn.is-error::after{box-shadow:inset -4px -4px var(--px-red-d)}
+  .nes-btn.is-warning{color:#212529}
+  .nes-container{background:var(--px-surface)}
+  .nes-container.is-dark{background:#212529}
+  .nes-container.with-title>.title{font-family:var(--px-head);font-size:12px;line-height:1.6;background:var(--px-surface)}
+  .nes-container.is-dark.with-title>.title{background:#212529}
+  .nes-badge{font-family:var(--px-sans);font-weight:700;font-size:1rem;width:auto;min-width:8em;padding:0 .4em}
+  .nes-badge span:first-child{position:relative!important;display:block;padding:0 .4em}
+  .nes-select select,.nes-input,.nes-textarea{font-family:var(--px-sans);font-size:1rem}
+  .nes-select select{padding:.5rem 2.5rem .5rem 1rem}
+  .nes-radio+span,.nes-checkbox+span{font-family:var(--px-sans);font-weight:600}
+  .nes-radio.is-dark+span,.nes-checkbox.is-dark+span{color:#fff}
+  label{cursor:pointer}
+  .nes-table{font-family:var(--px-sans)}
+  .nes-table th{font-weight:700}
+  .nes-balloon{font-size:1rem;line-height:1.5}
+  .nes-balloon.is-dark{color:#fff}
+  .nes-dialog{max-width:min(520px,calc(100vw - 32px));font-family:var(--px-sans)}
+  .nes-dialog::backdrop{background:rgba(10,12,30,.6)}
+  .nes-progress{height:28px}
+  .nes-field label{font-weight:700;display:block;margin-bottom:4px;color:var(--px-ink)}
+  [data-theme=dark] .nes-input,[data-theme=dark] .nes-textarea,[data-theme=dark] .nes-select select{background-color:#212529;color:#fff}
+
+  /* ---------- Navbar ---------- */
+  .nav{position:sticky;top:0;z-index:50;background:var(--px-bg);border-bottom:4px solid var(--px-line)}
+  .nav .wrap{display:flex;align-items:center;gap:12px;height:72px}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--px-ink);text-decoration:none!important;white-space:nowrap}
+  .brand svg{width:36px;height:36px;flex:0 0 auto;image-rendering:pixelated}
+  .brand span{font-family:var(--px-head);font-size:14px}
+  .nav-links{display:flex;gap:2px;margin:0 auto;list-style:none;padding:0}
+  .nav-links a{display:block;padding:8px 12px;text-decoration:none;font-weight:700;color:var(--px-text)}
+  .nav-links a:hover{color:var(--px-ink);background:var(--px-bg2);text-decoration:none}
+  .nav-act{display:flex;align-items:center;gap:6px;margin-left:auto}
+  .sq{width:44px;height:44px;padding:0!important;display:inline-grid;place-items:center;margin:4px}
+  .sq svg{image-rendering:pixelated}
+  [data-theme=light] .i-sun,[data-theme=dark] .i-moon{display:none}
+  .menu-btn{display:none!important}
+  .mnav{display:none;border-top:4px solid var(--px-line);background:var(--px-bg)}
+  .mnav.open{display:block}
+  .mnav ul{list-style:none;margin:0;padding:8px 16px 16px}
+  .mnav a{display:block;padding:12px 0;font-weight:700;font-size:1.15rem;color:var(--px-ink);text-decoration:none;border-bottom:2px dashed var(--px-line)}
+  @media (max-width:959px){.nav-links{display:none}.menu-btn{display:inline-grid!important}}
+  @media (max-width:440px){.nav-cta{display:none!important}.brand span{font-size:12px}}
+
+  /* ---------- Hero ---------- */
+  .eyebrow{display:inline-block;font-weight:700;font-size:.95rem;letter-spacing:.08em;text-transform:uppercase;color:var(--px-red)}
+  [data-theme=dark] .eyebrow{color:#ff9a7a}
+  .hero{padding:clamp(28px,4vw,56px) 0 clamp(52px,7vw,90px)}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6.6fr);gap:clamp(24px,4vw,56px);align-items:center}
+  .hero h1{font-size:clamp(20px,2.7vw,36px);margin:18px 0 20px;color:var(--px-ink)}
+  .hero h1 .hl{color:var(--px-blue)}
+  [data-theme=dark] .hero h1 .hl{color:#7cc4ff}
+  .lead{font-size:clamp(1.05rem,1.3vw,1.2rem);max-width:32em}
+  .cta-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+  .hero-meta{display:flex;flex-wrap:wrap;gap:14px 30px;margin-top:28px}
+  .hero-meta div{display:flex;flex-direction:column}
+  .hero-meta b{font-size:2rem;line-height:1;color:var(--px-ink);font-weight:700}
+  .hero-meta span{font-size:.95rem}
+  .stage{position:relative;overflow:hidden;isolation:isolate;background:var(--px-sky);border:4px solid var(--px-line);box-shadow:8px 8px 0 var(--px-line);transition:background .6s}
+  .stage canvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges;opacity:0;transition:opacity .6s;touch-action:pan-y}
+  .stage.ready canvas{opacity:1}
+  .hero .stage{height:clamp(480px,74vh,660px)}
+  .stage .fallback{position:absolute;inset:0;display:none}
+  .stage.no-webgl .fallback{display:block}
+  .stage.no-webgl canvas{display:none}
+  .stage .fallback svg{width:100%;height:100%;image-rendering:pixelated}
+  .hud{position:absolute;top:12px;left:12px;right:12px;z-index:2;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;pointer-events:none}
+  .hud .chip{display:inline-flex;align-items:center;gap:10px;padding:6px 12px;background:rgba(33,37,41,.86);color:#fff;font-weight:700;border:3px solid #fff;font-size:1rem;pointer-events:auto}
+  .hud .chip .nes-icon{margin:0 12px 12px 0}
+  .stage-panel{position:absolute;left:12px;right:12px;bottom:12px;z-index:2;margin:0!important;padding:12px 16px!important;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 14px}
+  .stage-panel .picks{display:flex;flex-wrap:wrap;gap:4px 0}
+  .stage-panel .picks label{margin:0}
+  .stage-panel .nes-btn{margin:0}
+  @media (max-width:959px){.hero-grid{grid-template-columns:minmax(0,1fr)}.hero .stage{height:min(600px,76vh);min-height:470px}}
+  @media (max-width:420px){.stage-panel{padding:10px 12px!important}.nes-radio+span{font-size:.95rem}.nes-radio{margin-right:14px}}
+
+  /* ---------- Section ---------- */
+  .sec{padding:clamp(72px,10vw,120px) 0;position:relative}
+  .sec.alt{background:var(--px-bg2);border-top:4px solid var(--px-line);border-bottom:4px solid var(--px-line)}
+  .sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px 48px;align-items:end;margin-bottom:clamp(30px,5vw,54px)}
+  .sec-head h2{font-size:clamp(18px,2.5vw,30px);margin-top:12px}
+  .sec-head p{font-size:1.08rem}
+  @media (max-width:820px){.sec-head{grid-template-columns:minmax(0,1fr)}}
+
+  .feat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px 22px}
+  .feat{margin:0!important;height:100%;box-sizing:border-box}
+  .feat .ico{height:40px;margin-bottom:8px}
+  .feat h3{font-size:1.3rem;margin:0 0 8px}
+  .feat p{font-size:1rem}
+  @media (max-width:1060px){.feat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:600px){.feat-grid{grid-template-columns:minmax(0,1fr)}}
+
+  /* studio */
+  .studio-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:28px;align-items:stretch}
+  .studio .stage{height:clamp(500px,74vh,700px)}
+  .ctl{margin:0!important;display:flex;flex-direction:column;gap:18px}
+  .ctl h3.ph{font-size:1rem;letter-spacing:.06em;text-transform:uppercase;margin:0 0 6px}
+  .ctl .picks{display:flex;flex-direction:column;gap:6px}
+  .ctl .picks label{margin:0}
+  .ctl .checks{display:flex;flex-wrap:wrap;gap:6px 18px}
+  .ctl .btns{display:flex;flex-wrap:wrap;gap:6px}
+  .ctl .btns .nes-btn{margin:4px}
+  .hearts{display:flex;gap:2px;min-height:34px}
+  .hearts .nes-icon{margin-right:20px;margin-bottom:0}
+  .meter{display:flex;justify-content:space-between;font-weight:700;color:var(--px-ink);margin-bottom:4px}
+  .npc{display:flex;align-items:flex-end;gap:10px}
+  .npc svg{flex:0 0 auto;width:48px;height:48px;image-rendering:pixelated}
+  .npc .nes-balloon{margin:0 0 18px;padding:10px 14px;flex:1}
+  @media (max-width:1060px){.studio-grid{grid-template-columns:minmax(0,1fr)}.studio .stage{height:min(540px,66vh);min-height:420px}}
+
+  /* ---------- Cerita isometrik ---------- */
+  .story{position:relative;height:520vh}
+  .story-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--px-bg2)}
+  .story-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;image-rendering:pixelated;image-rendering:crisp-edges}
+  .story-fallback{position:absolute;inset:0;display:none;place-items:center;padding:24px}
+  .story.no-webgl .story-fallback{display:grid}
+  .story.no-webgl canvas{display:none}
+  .story-fallback svg{width:min(900px,100%);height:auto}
+  .story-fallback .node{fill:var(--px-surface);stroke:var(--px-line);stroke-width:4}
+  .story-fallback .node.on{fill:var(--px-path)}
+  .story-ui{position:absolute;inset:0;pointer-events:none;padding:92px 0 24px}
+  .story-ui .wrap{position:relative;height:100%;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+  .story-head{max-width:480px;width:fit-content;margin:0!important;padding:16px 20px!important;pointer-events:auto;background:color-mix(in oklab,var(--px-surface) 84%,transparent)!important}
+  .story-head.is-dark{background:rgba(33,37,41,.86)!important}
+  .story-head h2{font-size:clamp(15px,1.9vw,24px);margin:10px 0 0}
+  .story-head p{margin:8px 0 0;font-size:1rem}
+  .story-card{max-width:450px;margin:0!important;padding:16px 20px!important;pointer-events:auto;background:color-mix(in oklab,var(--px-surface) 92%,transparent)!important}
+  .story-card.is-dark{background:rgba(33,37,41,.92)!important}
+  .story-card .nes-progress{height:20px;margin:0}
+  .s-labels{display:flex;justify-content:space-between;gap:4px;font-size:.9rem;font-weight:700;text-transform:uppercase;margin:8px 0 2px;color:var(--px-text)}
+  .s-labels span.on{color:var(--px-red)}
+  [data-theme=dark] .s-labels span{color:#c9cbe0}
+  [data-theme=dark] .s-labels span.on{color:#ffb35c}
+  .scene-steps{position:relative;min-height:150px;margin:6px 0 0;padding:0;list-style:none}
+  .scene-step{position:absolute;inset:0 0 auto 0;opacity:0;transform:translateY(10px);transition:opacity .35s steps(4),transform .35s steps(4);pointer-events:none}
+  .scene-step.on{opacity:1;transform:none;pointer-events:auto}
+  .scene-step .n{font-weight:700;font-size:2.2rem;line-height:1;color:var(--px-red);font-variant-numeric:tabular-nums}
+  [data-theme=dark] .scene-step .n{color:#ffb35c}
+  .scene-step h3{font-size:1.25rem;margin:6px 0 6px;color:var(--px-ink)}
+  [data-theme=dark] .story-card .scene-step h3{color:#fff}
+  .scene-step p{font-size:1rem}
+  @media (max-width:760px){
+    .story-ui{padding:84px 0 14px}
+    .story-head{padding:12px 14px!important}
+    .story-head h2{font-size:14px}
+    .story-head p{display:none}
+    .story-card{max-width:none;padding:12px 14px!important}
+    .s-labels{font-size:.78rem;letter-spacing:0}
+    .scene-steps{min-height:132px}
+    .scene-step .n{font-size:1.7rem}
+    .scene-step h3{font-size:1.08rem}
+    .scene-step p{font-size:.95rem}
+  }
+  @media (max-width:340px){.s-labels{display:none}}
+
+  /* statistik + testimoni */
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;margin-bottom:clamp(44px,6vw,72px)}
+  .stat{margin:0!important;padding:18px!important}
+  .stat b{display:block;font-size:clamp(2.2rem,3.8vw,3.2rem);line-height:1;color:var(--px-ink);font-weight:700}
+  .stat.is-dark b{color:#fff}
+  .stat>span{font-size:1rem}
+  @media (max-width:860px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .testi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-bottom:clamp(40px,6vw,64px)}
+  .testi .nes-balloon{margin:0 0 22px;width:100%;box-sizing:border-box}
+  .who{display:flex;align-items:center;gap:12px;padding-left:6px}
+  .who svg{width:44px;height:44px;image-rendering:pixelated;flex:0 0 auto}
+  .who b{display:block;color:var(--px-ink)}
+  .who small{font-size:.92rem}
+  @media (max-width:960px){.testi{grid-template-columns:minmax(0,1fr)}}
+  .spec-wrap{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:28px;align-items:start}
+  .nes-table-responsive{margin:0}
+  .nes-table{width:100%}
+  @media (max-width:860px){.spec-wrap{grid-template-columns:minmax(0,1fr)}}
+  @media (max-width:420px){.nes-table td,.nes-table th{padding:.4rem .5rem!important;font-size:.95rem}}
+
+  /* harga */
+  .price-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px 24px;align-items:stretch}
+  .plan{margin:0!important;display:flex;flex-direction:column;gap:12px;height:100%;box-sizing:border-box}
+  .plan h3{font-size:1.45rem}
+  .plan.best{box-shadow:8px 8px 0 var(--px-yellow-d)}
+  .price b{font-size:2.4rem;color:var(--px-ink);font-weight:700}
+  .plan.is-dark .price b,.plan.is-dark h3{color:#fff}
+  .plan ul{margin:0;padding-left:0}
+  .plan li{margin:4px 0}
+  .plan .go{margin-top:auto}
+  .plan .go .nes-btn{width:100%;margin:4px 0}
+  @media (max-width:960px){.price-grid{grid-template-columns:minmax(0,1fr);max-width:520px;margin:0 auto}}
+
+  /* FAQ */
+  .faq-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(24px,5vw,64px)}
+  .faq-list{display:grid;gap:18px}
+  .faq-list details{margin:0!important;padding:14px 18px!important}
+  .faq-list summary{cursor:pointer;font-weight:700;font-size:1.1rem;color:var(--px-ink);list-style:none;display:flex;justify-content:space-between;gap:12px}
+  .faq-list .is-dark summary{color:#fff}
+  .faq-list summary::-webkit-details-marker{display:none}
+  .faq-list summary::after{content:"+";font-weight:700;font-size:1.4rem;line-height:1}
+  .faq-list details[open] summary::after{content:"−"}
+  .faq-list details p{margin-top:10px}
+  @media (max-width:860px){.faq-grid{grid-template-columns:minmax(0,1fr)}}
+
+  /* CTA */
+  .cta{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);margin:0!important;padding:clamp(20px,4vw,48px)!important;background:linear-gradient(180deg,#1f6fd1,#124c94)!important;color:#fff;border-color:#212529}
+  .cta h2{color:#fff;font-size:clamp(18px,2.5vw,30px)}
+  .cta p.big{font-size:1.12rem;margin-top:16px;max-width:30em}
+  .cta ul{margin-top:18px}
+  .cta .eyebrow{color:#ffe08a!important}
+  .form{margin:0!important;display:grid;gap:14px;color:var(--px-text)}
+  .form h3{font-size:1.35rem}
+  .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+  .err{color:var(--px-red);font-weight:700;font-size:.95rem;min-height:1.2em}
+  [data-theme=dark] .err{color:#ff9a7a}
+  @media (max-width:900px){.cta{grid-template-columns:minmax(0,1fr)}}
+  @media (max-width:480px){.two{grid-template-columns:minmax(0,1fr)}}
+
+  footer{border-top:4px solid var(--px-line);padding:52px 0 32px;background:var(--px-bg)}
+  .foot{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(0,1fr));gap:28px}
+  .foot h4{font-size:1rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+  .foot ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+  .foot a{text-decoration:none;color:var(--px-text)}
+  .foot a:hover{color:var(--px-ink)}
+  .legal{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;margin-top:36px;padding-top:20px;border-top:2px dashed var(--px-line);font-size:1rem}
+  @media (max-width:860px){.foot{grid-template-columns:repeat(2,minmax(0,1fr))}.foot>div:first-child{grid-column:1/-1}}
+
+  /* toast */
+  .toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:1200;width:min(440px,calc(100vw - 32px));margin:0!important;padding:12px 16px!important;display:none;font-weight:700;color:var(--px-ink)}
+  .toast.show{display:block;animation:pop .2s steps(3)}
+  .toast.is-dark{color:#fff}
+  @keyframes pop{from{transform:translate(-50%,12px)}to{transform:translate(-50%,0)}}
+
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .5s steps(5),transform .5s steps(5)}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion: reduce){.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<a class="skip nes-btn is-warning" href="#utama">Lewati ke konten</a>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Pixelara, ke atas halaman">
+      <svg viewBox="0 0 12 12" aria-hidden="true" shape-rendering="crispEdges"><rect width="12" height="12" fill="#212529"/><rect x="1" y="1" width="10" height="10" fill="#ff8a2a"/><rect x="3" y="3" width="2" height="2" fill="#212529"/><rect x="7" y="3" width="2" height="2" fill="#212529"/><rect x="3" y="7" width="6" height="1" fill="#212529"/><rect x="4" y="8" width="4" height="1" fill="#212529"/><rect x="1" y="1" width="10" height="1" fill="#ffd27a"/></svg>
+      <span>Pixelara</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#fitur">Fitur</a></li>
+      <li><a href="#studio">Ruang uji</a></li>
+      <li><a href="#perjalanan">Petualangan</a></li>
+      <li><a href="#harga">Harga</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-act">
+      <button class="nes-btn sq" id="themeBtn" type="button" aria-label="Ganti tema terang/gelap">
+        <svg class="i-sun" width="22" height="22" viewBox="0 0 11 11" aria-hidden="true" shape-rendering="crispEdges" fill="#c9a800"><rect x="4" y="3" width="3" height="5"/><rect x="3" y="4" width="5" height="3"/><rect x="5" y="0" width="1" height="2"/><rect x="5" y="9" width="1" height="2"/><rect x="0" y="5" width="2" height="1"/><rect x="9" y="5" width="2" height="1"/><rect x="1" y="1" width="1" height="1"/><rect x="9" y="1" width="1" height="1"/><rect x="1" y="9" width="1" height="1"/><rect x="9" y="9" width="1" height="1"/></svg>
+        <svg class="i-moon" width="22" height="22" viewBox="0 0 11 11" aria-hidden="true" shape-rendering="crispEdges" fill="#3f3a7a"><rect x="3" y="1" width="4" height="1"/><rect x="2" y="2" width="3" height="1"/><rect x="1" y="3" width="3" height="5"/><rect x="2" y="8" width="3" height="1"/><rect x="3" y="9" width="5" height="1"/><rect x="5" y="8" width="4" height="1"/><rect x="8" y="7" width="2" height="1"/></svg>
+      </button>
+      <button class="nes-btn is-primary nav-cta" type="button" data-wish>Wishlist</button>
+      <button class="nes-btn sq menu-btn" id="menuBtn" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="mnav">
+        <svg width="20" height="20" viewBox="0 0 10 10" aria-hidden="true" shape-rendering="crispEdges" fill="currentColor"><rect x="1" y="2" width="8" height="1"/><rect x="1" y="5" width="8" height="1"/><rect x="1" y="8" width="8" height="1"/></svg>
+      </button>
+    </div>
+  </div>
+  <nav class="mnav" id="mnav" aria-label="Menu ponsel">
+    <ul>
+      <li><a href="#fitur">Fitur</a></li>
+      <li><a href="#studio">Ruang uji</a></li>
+      <li><a href="#perjalanan">Petualangan</a></li>
+      <li><a href="#harga">Harga</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#daftar">Daftar beta</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="utama">
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div>
+        <a href="#harga" class="nes-badge"><span class="is-warning">Rilis Desember</span></a>
+        <h1 class="ps">Jelajahi <span class="hl">Pulau Lentera</span>, satu piksel demi satu piksel.</h1>
+        <p class="lead">Pixelara adalah studio game indie dari Yogyakarta. Game pertama kami, <b>Pulau Lentera</b>, adalah petualangan retro tentang hutan voxel, gua kristal, dan kastil tua yang menunggu lenteranya kembali menyala.</p>
+        <div class="cta-row">
+          <button class="nes-btn is-primary ps" type="button" data-wish>Wishlist</button>
+          <a class="nes-btn ps" href="#studio">Coba demo</a>
+        </div>
+        <div class="hero-meta">
+          <div><b class="num">40+</b><span>jam petualangan</span></div>
+          <div><b class="num">12</b><span>bos unik</span></div>
+          <div><b class="num">4,9</b><span>rating playtest</span></div>
+        </div>
+      </div>
+      <div class="stage" id="heroStage">
+        <canvas id="heroCanvas" role="img" aria-label="Pulau voxel 3D bergaya piksel: pohon kotak, kastil batu, koin berputar, dan tokoh pahlawan yang berkeliling pulau"></canvas>
+        <div class="fallback" aria-hidden="true"></div>
+        <div class="hud">
+          <span class="chip"><i class="nes-icon coin is-small" aria-hidden="true"></i><span>Koin <b class="num" id="coinHero">0</b></span></span>
+          <span class="chip" id="heroMode">Siang · Normal</span>
+        </div>
+        <div class="stage-panel nes-container is-rounded" data-dk>
+          <fieldset class="picks" style="border:0;margin:0;padding:0;min-width:0">
+            <legend class="sr">Pilih karakter</legend>
+            <label><input type="radio" class="nes-radio" name="heroPick" value="0" checked data-dk><span>Ksatria</span></label>
+            <label><input type="radio" class="nes-radio" name="heroPick" value="1" data-dk><span>Penyihir</span></label>
+            <label><input type="radio" class="nes-radio" name="heroPick" value="2" data-dk><span>Pemanah</span></label>
+          </fieldset>
+          <button class="nes-btn is-success ps" type="button" data-jump>Lompat</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FITUR -->
+  <section class="sec alt" id="fitur">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div><span class="eyebrow">Kenapa Pulau Lentera</span><h2 class="ps">Retro di luar, modern di dalam.</h2></div>
+        <p>Grafis piksel dan musik chiptune yang hangat, dengan kenyamanan game modern: simpan otomatis, aksesibilitas lengkap, dan bisa dimainkan di ponsel lama sekalipun.</p>
+      </div>
+      <div class="feat-grid">
+        <div class="nes-container with-title is-rounded feat reveal" data-dk>
+          <p class="title">Jelajah</p>
+          <div class="ico"><i class="nes-icon star is-medium" aria-hidden="true"></i></div>
+          <h3>Pulau yang hidup</h3>
+          <p>Siang dan malam berganti, pohon tumbuh, dan warga pulau mengingat setiap bantuanmu.</p>
+        </div>
+        <div class="nes-container with-title is-rounded feat reveal" data-dk>
+          <p class="title">Koleksi</p>
+          <div class="ico"><i class="nes-icon coin is-medium" aria-hidden="true"></i></div>
+          <h3>Ratusan rahasia</h3>
+          <p>Koin, peta harta, dan resep kue lumpur tersembunyi di balik air terjun dan dinding retak.</p>
+        </div>
+        <div class="nes-container with-title is-rounded feat reveal" data-dk>
+          <p class="title">Ramah</p>
+          <div class="ico"><i class="nes-icon heart is-medium" aria-hidden="true"></i></div>
+          <h3>Untuk semua pemain</h3>
+          <p>Mode santai tanpa kalah, subtitle besar, dan kontrol yang bisa diatur ulang sepenuhnya.</p>
+        </div>
+        <div class="nes-container with-title is-rounded feat reveal" data-dk>
+          <p class="title">Tantang</p>
+          <div class="ico"><i class="nes-icon trophy is-medium" aria-hidden="true"></i></div>
+          <h3>Bos yang adil</h3>
+          <p>Setiap bos punya pola yang bisa dipelajari. Kalah? Coba lagi dari depan pintunya, bukan dari awal.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RUANG UJI: komponen NES.css mengendalikan 3D -->
+  <section class="sec studio" id="studio">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div><span class="eyebrow">Ruang uji</span><h2 class="ps">Mainkan pulaunya di sini.</h2></div>
+        <p>Ini potongan kecil dari mesin game kami. Setiap kontrol NES.css di panel kanan mengubah pulau 3D secara langsung: ganti karakter, naikkan kesulitan, nyalakan mode malam, lalu tekan Lompat.</p>
+      </div>
+      <div class="studio-grid">
+        <div class="stage" id="studioStage">
+          <canvas id="studioCanvas" role="img" aria-label="Pratinjau pulau voxel yang dikendalikan panel di sebelahnya"></canvas>
+          <div class="fallback" aria-hidden="true"></div>
+          <div class="hud">
+            <span class="chip"><i class="nes-icon coin is-small" aria-hidden="true"></i><span>Koin <b class="num" id="coinStudio">0</b></span></span>
+            <span class="chip"><span>Musuh <b class="num" id="enemyChip">3</b></span></span>
+          </div>
+        </div>
+        <div class="nes-container with-title is-rounded ctl" data-dk>
+          <p class="title">Panel uji</p>
+          <fieldset class="picks" style="border:0;margin:0;padding:0;min-width:0">
+            <legend><h3 class="ph">Pilih karakter</h3></legend>
+            <label><input type="radio" class="nes-radio" name="hero" value="0" checked data-dk><span>Ksatria · pedang &amp; perisai</span></label>
+            <label><input type="radio" class="nes-radio" name="hero" value="1" data-dk><span>Penyihir · tongkat kristal</span></label>
+            <label><input type="radio" class="nes-radio" name="hero" value="2" data-dk><span>Pemanah · busur kayu</span></label>
+          </fieldset>
+          <div>
+            <label for="diff"><h3 class="ph">Tingkat kesulitan</h3></label>
+            <div class="nes-select" data-dk>
+              <select id="diff">
+                <option value="0">Mudah · tanpa musuh</option>
+                <option value="1" selected>Normal · 3 slime</option>
+                <option value="2">Sulit · 6 slime</option>
+                <option value="3">Mustahil · 10 slime</option>
+              </select>
+            </div>
+          </div>
+          <div class="checks">
+            <label><input type="checkbox" class="nes-checkbox" id="night" data-dk><span>Mode malam</span></label>
+            <label><input type="checkbox" class="nes-checkbox" id="coinsOn" checked data-dk><span>Tampilkan koin</span></label>
+          </div>
+          <div>
+            <div class="meter"><span>Nyawa</span><span id="hpTxt" class="num">4 / 5</span></div>
+            <div class="hearts" id="hearts" aria-hidden="true"></div>
+          </div>
+          <div>
+            <div class="meter"><span>Koin terkumpul</span><span id="coinTxt" class="num">0 / 10</span></div>
+            <progress class="nes-progress is-warning" id="coinProg" value="0" max="10" aria-label="Koin terkumpul"></progress>
+          </div>
+          <div class="npc">
+            <svg viewBox="0 0 12 12" aria-hidden="true" shape-rendering="crispEdges"><rect x="3" y="1" width="6" height="2" fill="#7a4a2a"/><rect x="2" y="3" width="8" height="5" fill="#e0b08a"/><rect x="4" y="5" width="1" height="1" fill="#212529"/><rect x="7" y="5" width="1" height="1" fill="#212529"/><rect x="2" y="8" width="8" height="4" fill="#2f7d14"/></svg>
+            <div class="nes-balloon from-left" data-dk><p id="npcLine">Tiga slime sedang berkeliaran. Lompati mereka!</p></div>
+          </div>
+          <div class="btns">
+            <button class="nes-btn is-success ps" type="button" data-jump>Lompat</button>
+            <button class="nes-btn is-warning ps" type="button" id="shuffle">Acak pulau</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERITA GULIR ISOMETRIK -->
+  <section class="story" id="perjalanan" aria-label="Petualangan satu pemain di Pulau Lentera">
+    <div class="story-stage">
+      <canvas id="storyCanvas" role="img" aria-label="Peta isometrik petualangan: tokoh ksatria berjalan mengikuti jalur oranye dari desa awal, hutan, gua kristal, kastil, hingga peti harta di akhir saat halaman digulir"></canvas>
+      <div class="story-fallback" aria-hidden="true">
+        <svg viewBox="0 0 900 360" id="storySvg" shape-rendering="crispEdges">
+          <path d="M80 250 H250 V130 H450 V250 H650 V130 H820 V250" fill="none" stroke="#ff8a2a" stroke-width="10" stroke-dasharray="20 12"/>
+          <g><rect class="node on" x="50" y="220" width="60" height="60"/><rect class="node" x="220" y="100" width="60" height="60"/><rect class="node" x="420" y="220" width="60" height="60"/><rect class="node" x="620" y="100" width="60" height="60"/><rect class="node" x="790" y="220" width="60" height="60"/></g>
+        </svg>
+      </div>
+      <div class="story-ui">
+        <div class="wrap">
+          <div class="story-head nes-container is-rounded" data-dk>
+            <span class="eyebrow">Satu petualangan, lima babak</span>
+            <h2 class="ps">Dari desa kecil sampai peti harta.</h2>
+            <p>Gulir untuk mengikuti Raka si ksatria muda menyusuri jalan oranye Pulau Lentera.</p>
+          </div>
+          <div class="story-card nes-container is-rounded" id="storyCard" data-dk>
+            <progress class="nes-progress is-warning" id="storyProg" value="0" max="100" aria-hidden="true"></progress>
+            <div class="s-labels" aria-hidden="true"><span class="on">Mulai</span><span>Hutan</span><span>Gua</span><span>Kastil</span><span>Tamat</span></div>
+            <ol class="scene-steps" aria-live="polite">
+              <li class="scene-step on"><div class="n">01</div><h3>Mulai di desa nelayan</h3><p>Kakek penjaga mercusuar menitipkan lentera padam. Tugasmu: menyalakannya lagi di puncak kastil.</p></li>
+              <li class="scene-step"><div class="n">02</div><h3>Menembus hutan pinus</h3><p>Jamur raksasa, rubah penjual peta, dan teka-teki batang kayu. Simpan koin untuk sepatu bot.</p></li>
+              <li class="scene-step"><div class="n">03</div><h3>Gua kristal</h3><p>Gelap total, kecuali kristal yang menyala saat kamu bernyanyi. Ya, ada tombol bernyanyi.</p></li>
+              <li class="scene-step"><div class="n">04</div><h3>Kastil tua di tebing</h3><p>Lima lantai, tiga penjaga, satu bos naga kertas. Pola serangannya bisa dihafal, kok.</p></li>
+              <li class="scene-step"><div class="n">05</div><h3>Tamat, peti terbuka</h3><p>Lentera menyala, kapal nelayan pulang, dan peti harta berisi rahasia untuk permainan kedua.</p></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATISTIK + TESTIMONI + SPESIFIKASI -->
+  <section class="sec alt" id="testimoni">
+    <div class="wrap">
+      <div class="stats" id="stats">
+        <div class="nes-container is-rounded stat reveal" data-dk><b class="num" data-count="18400">0</b><span>pemain playtest</span></div>
+        <div class="nes-container is-rounded stat reveal" data-dk><b class="num"><span data-count="96">0</span>%</b><span>ingin main lagi</span></div>
+        <div class="nes-container is-rounded stat reveal" data-dk><b class="num" data-count="64">0</b><span>lagu chiptune orisinal</span></div>
+        <div class="nes-container is-rounded stat reveal" data-dk><b class="num" data-count="7">0</b><span>bahasa, termasuk Jawa</span></div>
+      </div>
+      <div class="sec-head reveal">
+        <div><span class="eyebrow">Kata para playtester</span><h2 class="ps">Sudah dicoba, sudah ketagihan.</h2></div>
+        <p>Komentar asli dari sesi playtest tertutup kami. Nama pemain fiktif untuk keperluan template.</p>
+      </div>
+      <div class="testi">
+        <div class="reveal">
+          <div class="nes-balloon from-left" data-dk><p>“Gua kristalnya bikin merinding. Saya sampai menyanyi beneran di depan layar.”</p></div>
+          <div class="who"><svg viewBox="0 0 10 10" aria-hidden="true" shape-rendering="crispEdges"><rect width="10" height="10" fill="#ff8a2a"/><rect x="2" y="1" width="6" height="3" fill="#3a2418"/><rect x="2" y="3" width="6" height="4" fill="#e0b08a"/><rect x="3" y="4" width="1" height="1" fill="#212529"/><rect x="6" y="4" width="1" height="1" fill="#212529"/><rect x="2" y="7" width="6" height="3" fill="#1f6fd1"/></svg><div><b>Laras Pratiwi</b><small>Playtester, Semarang</small></div></div>
+        </div>
+        <div class="reveal">
+          <div class="nes-balloon from-left" data-dk><p>“Bos naga kertasnya sulit tapi adil. Kalah lima kali, menang di percobaan keenam, puas sekali.”</p></div>
+          <div class="who"><svg viewBox="0 0 10 10" aria-hidden="true" shape-rendering="crispEdges"><rect width="10" height="10" fill="#2f7d14"/><rect x="2" y="1" width="6" height="2" fill="#212529"/><rect x="2" y="3" width="6" height="4" fill="#a86f48"/><rect x="3" y="4" width="1" height="1" fill="#212529"/><rect x="6" y="4" width="1" height="1" fill="#212529"/><rect x="2" y="7" width="6" height="3" fill="#f7d51d"/></svg><div><b>Bima Saputra</b><small>Speedrunner, Medan</small></div></div>
+        </div>
+        <div class="reveal">
+          <div class="nes-balloon from-left" data-dk><p>“Anak saya yang tujuh tahun bisa main mode santai, saya main mode sulit. Satu game, dua generasi.”</p></div>
+          <div class="who"><svg viewBox="0 0 10 10" aria-hidden="true" shape-rendering="crispEdges"><rect width="10" height="10" fill="#7c5cff"/><rect x="1" y="1" width="8" height="3" fill="#6b3a1e"/><rect x="2" y="3" width="6" height="4" fill="#f0c9a0"/><rect x="3" y="4" width="1" height="1" fill="#212529"/><rect x="6" y="4" width="1" height="1" fill="#212529"/><rect x="2" y="7" width="6" height="3" fill="#c8432b"/></svg><div><b>Sari Wulandari</b><small>Orang tua gamer, Makassar</small></div></div>
+        </div>
+      </div>
+      <div class="spec-wrap">
+        <div class="reveal">
+          <span class="eyebrow">Spesifikasi minimum</span>
+          <h2 class="ps" style="font-size:clamp(16px,2vw,24px);margin-top:12px">Jalan di laptop kuliahmu.</h2>
+          <p style="margin-top:12px">Kami menguji Pulau Lentera di perangkat bekas dari pasar loak. Kalau bisa membuka peramban modern, kemungkinan besar bisa main.</p>
+          <p style="margin-top:14px"><i class="nes-icon star is-small" aria-hidden="true"></i><i class="nes-icon star is-small" aria-hidden="true"></i><i class="nes-icon star is-small" aria-hidden="true"></i><i class="nes-icon star is-small" aria-hidden="true"></i><i class="nes-icon star is-half is-small" aria-hidden="true"></i> <b class="num">4,9 dari 5</b> rata-rata playtest</p>
+        </div>
+        <div class="nes-table-responsive reveal">
+          <table class="nes-table is-bordered" data-dk>
+            <caption class="sr">Spesifikasi minimum per platform</caption>
+            <thead><tr><th scope="col">Platform</th><th scope="col">RAM</th><th scope="col">Ruang</th></tr></thead>
+            <tbody>
+              <tr><td>PC Windows / Linux</td><td class="num">2 GB</td><td class="num">450 MB</td></tr>
+              <tr><td>Mac</td><td class="num">4 GB</td><td class="num">450 MB</td></tr>
+              <tr><td>Android</td><td class="num">3 GB</td><td class="num">380 MB</td></tr>
+              <tr><td>Konsol genggam</td><td>—</td><td class="num">410 MB</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HARGA -->
+  <section class="sec" id="harga">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div><span class="eyebrow">Pre-order</span><h2 class="ps">Pilih edisimu.</h2></div>
+        <p>Harga pre-order berlaku sampai hari rilis. Semua edisi mendapat pembaruan gratis selamanya, tanpa pembelian di dalam game.</p>
+      </div>
+      <div class="price-grid">
+        <div class="nes-container with-title is-rounded plan reveal" data-dk>
+          <p class="title">Standar</p>
+          <h3>Edisi Petualang</h3>
+          <p>Game lengkap untuk satu platform pilihanmu.</p>
+          <div class="price"><b class="num">Rp89.000</b></div>
+          <ul class="nes-list is-disc"><li>Game lengkap</li><li>Simpan di awan</li></ul>
+          <div class="go"><button class="nes-btn ps" type="button" data-wish data-plan="Edisi Petualang">Pilih</button></div>
+        </div>
+        <div class="nes-container with-title is-rounded plan best reveal" data-dk>
+          <p class="title">Terlaris</p>
+          <div class="row" style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3>Edisi Kolektor</h3><a href="#harga" class="nes-badge" style="margin:0"><span class="is-error">Hemat</span></a></div>
+          <p>Game, soundtrack, artbook digital, dan kostum lentera emas.</p>
+          <div class="price"><b class="num">Rp149.000</b></div>
+          <ul class="nes-list is-disc"><li>Semua isi Edisi Petualang</li><li>Soundtrack 64 lagu</li><li>Artbook 120 halaman</li></ul>
+          <div class="go"><button class="nes-btn is-primary ps" type="button" data-wish data-plan="Edisi Kolektor">Pilih</button></div>
+        </div>
+        <div class="nes-container with-title is-rounded plan reveal" data-dk>
+          <p class="title">Berdua</p>
+          <h3>Paket Sahabat</h3>
+          <p>Dua kode game, satu untukmu satu untuk temanmu.</p>
+          <div class="price"><b class="num">Rp159.000</b></div>
+          <ul class="nes-list is-disc"><li>Dua kode game</li><li>Mode koop lokal</li></ul>
+          <div class="go"><button class="nes-btn ps" type="button" data-wish data-plan="Paket Sahabat">Pilih</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec alt" id="faq">
+    <div class="wrap faq-grid">
+      <div class="reveal">
+        <span class="eyebrow">Pertanyaan umum</span>
+        <h2 class="ps" style="font-size:clamp(18px,2.5vw,30px);margin-top:12px">Ada yang mengganjal?</h2>
+        <p style="margin-top:14px">Tanya langsung di server komunitas kami, tim Pixelara biasanya membalas dalam sehari.</p>
+        <div class="nes-balloon from-left" style="margin-top:22px" data-dk><p>Psst, ada kode rahasia di halaman ini.</p></div>
+      </div>
+      <div class="faq-list reveal">
+        <details class="nes-container is-rounded" data-dk open><summary>Kapan Pulau Lentera dirilis?</summary><p>Desember 2026 untuk PC, Mac, dan Android. Versi konsol genggam menyusul tiga bulan kemudian.</p></details>
+        <details class="nes-container is-rounded" data-dk><summary>Apakah ada pembelian di dalam game?</summary><p>Tidak ada. Bayar sekali, semua konten dan pembaruan gratis selamanya.</p></details>
+        <details class="nes-container is-rounded" data-dk><summary>Bisa dimainkan tanpa internet?</summary><p>Bisa. Internet hanya dibutuhkan untuk simpan di awan dan papan skor mingguan.</p></details>
+        <details class="nes-container is-rounded" data-dk><summary>Apakah mendukung pengontrol?</summary><p>Ya, semua pengontrol umum didukung, dan tombolnya bisa diatur ulang sepenuhnya.</p></details>
+        <details class="nes-container is-rounded" data-dk><summary>Bagaimana cara ikut beta tertutup?</summary><p>Isi formulir di bawah. Kami mengirim kode beta bertahap, maksimal dua minggu setelah mendaftar.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA + FORM -->
+  <section class="sec" id="daftar">
+    <div class="wrap">
+      <div class="nes-container is-rounded cta reveal">
+        <div>
+          <span class="eyebrow">Beta tertutup</span>
+          <h2 class="ps" style="margin-top:12px">Jadi penjelajah pertama.</h2>
+          <p class="big">Kami membuka 2.000 kursi beta untuk pemain Indonesia. Mainkan bab pertama, kirim masukan, dan namamu masuk daftar kredit game.</p>
+          <ul class="nes-list is-circle"><li>Gratis, tanpa kartu kredit</li><li>Kode dikirim lewat email</li><li>Kostum eksklusif penguji beta</li></ul>
+        </div>
+        <form class="nes-container is-rounded form" id="betaForm" novalidate data-dk>
+          <h3>Daftar beta</h3>
+          <div class="two">
+            <div class="nes-field"><label for="bName">Nama panggilan</label><input id="bName" class="nes-input" required minlength="2" autocomplete="nickname" data-dk></div>
+            <div class="nes-field"><label for="bCity">Kota</label><input id="bCity" class="nes-input" autocomplete="address-level2" data-dk></div>
+          </div>
+          <div class="nes-field"><label for="bEmail">Email</label><input id="bEmail" type="email" class="nes-input" required autocomplete="email" placeholder="kamu@contoh.id" data-dk></div>
+          <div><label for="bPlat" style="font-weight:700;display:block;margin-bottom:4px">Platform utama</label>
+            <div class="nes-select" data-dk><select id="bPlat"><option value="pc">PC Windows / Linux</option><option value="mac">Mac</option><option value="android">Android</option></select></div></div>
+          <label><input type="checkbox" class="nes-checkbox" id="bAgree" required data-dk><span>Saya setuju dihubungi tim Pixelara.</span></label>
+          <p class="err" id="bErr" role="alert"></p>
+          <button class="nes-btn is-primary ps" type="submit">Kirim</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="brand" href="#top" aria-label="Pixelara, ke atas halaman"><svg viewBox="0 0 12 12" aria-hidden="true" shape-rendering="crispEdges"><rect width="12" height="12" fill="#212529"/><rect x="1" y="1" width="10" height="10" fill="#ff8a2a"/><rect x="3" y="3" width="2" height="2" fill="#212529"/><rect x="7" y="3" width="2" height="2" fill="#212529"/><rect x="3" y="7" width="6" height="1" fill="#212529"/><rect x="4" y="8" width="4" height="1" fill="#212529"/><rect x="1" y="1" width="10" height="1" fill="#ffd27a"/></svg><span>Pixelara</span></a>
+        <p style="margin-top:12px;max-width:320px">Studio game indie dari Yogyakarta. Merek, game, dan pemain di halaman ini fiktif.</p>
+      </div>
+      <div><h4>Game</h4><ul><li><a href="#fitur">Fitur</a></li><li><a href="#perjalanan">Petualangan</a></li><li><a href="#harga">Harga</a></li></ul></div>
+      <div><h4>Studio</h4><ul><li><a href="#daftar">Beta tertutup</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+      <div><h4>Kontak</h4><ul><li><a href="#daftar">halo@pixelara.contoh</a></li><li>Yogyakarta</li></ul></div>
+    </div>
+    <div class="legal">
+      <span>© 2026 Pixelara Studio. Merek fiktif untuk keperluan template.</span>
+      <span><i class="nes-icon heart is-small" aria-hidden="true"></i> Dibangun dengan NES.css + three.js</span>
+    </div>
+  </div>
+</footer>
+
+<!-- DIALOG WISHLIST (nes-dialog + form) -->
+<dialog class="nes-dialog is-rounded" id="wishDlg" aria-labelledby="wishTitle" data-dk>
+  <form method="dialog" id="wishForm" style="display:grid;gap:14px">
+    <p class="ps" id="wishTitle" style="font-size:14px;line-height:1.6;color:inherit">Masuk wishlist</p>
+    <p id="wishPlan">Kami kabari saat Pulau Lentera rilis, plus diskon pre-order.</p>
+    <div class="nes-field"><label for="wEmail">Email</label><input id="wEmail" type="email" class="nes-input" required autocomplete="email" data-dk></div>
+    <div><label for="wPlat" style="font-weight:700;display:block;margin-bottom:4px">Platform</label>
+      <div class="nes-select" data-dk><select id="wPlat"><option>PC Windows / Linux</option><option>Mac</option><option>Android</option></select></div></div>
+    <p class="err" id="wErr" role="alert"></p>
+    <menu style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;padding:0;margin:0">
+      <button class="nes-btn" value="cancel" formnovalidate type="submit" id="wCancel">Batal</button>
+      <button class="nes-btn is-primary" value="ok" type="submit" id="wOk">Simpan</button>
+    </menu>
+  </form>
+</dialog>
+
+<div class="toast nes-container is-rounded" id="toast" role="status" aria-live="polite" data-dk></div>
+
+<template id="islandFallback">
+  <svg viewBox="0 0 120 92" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+    <rect width="120" height="92" fill="#7ad0ff"/>
+    <rect y="60" width="120" height="32" fill="#2b7fd6"/>
+    <path d="M20 62 L60 42 L100 62 L60 82Z" fill="#e8d48a"/>
+    <path d="M28 60 L60 44 L92 60 L60 76Z" fill="#5fb03a"/>
+    <path d="M28 60 L60 76 V82 L28 66Z" fill="#7a4f2a"/><path d="M92 60 L60 76 V82 L92 66Z" fill="#5c3a1e"/>
+    <rect x="40" y="36" width="12" height="16" fill="#9aa0ad"/><rect x="40" y="33" width="3" height="3" fill="#9aa0ad"/><rect x="45" y="33" width="3" height="3" fill="#9aa0ad"/><rect x="50" y="33" width="2" height="3" fill="#9aa0ad"/>
+    <rect x="44" y="45" width="4" height="7" fill="#3a2a22"/><rect x="51" y="26" width="1" height="8" fill="#212529"/><rect x="52" y="26" width="5" height="3" fill="#c8432b"/>
+    <rect x="70" y="44" width="3" height="8" fill="#6b4226"/><rect x="66" y="36" width="11" height="9" fill="#2f7d14"/>
+    <rect x="58" y="52" width="4" height="7" fill="#1f6fd1"/><rect x="58" y="49" width="4" height="3" fill="#e0b08a"/>
+    <rect x="78" y="54" width="3" height="3" fill="#f7d51d"/><rect x="34" y="56" width="3" height="3" fill="#f7d51d"/>
+  </svg>
+</template>
+
+<script type="module">
+/* ================= UI (NES.css) ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const rmq = matchMedia('(prefers-reduced-motion: reduce)');
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const bus = new EventTarget();
+window.__pix = { bus };
+const root = document.documentElement;
+const isDark = () => root.dataset.theme === 'dark';
+
+/* toast bergaya NES */
+let toastT = 0;
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.remove('show'); void t.offsetWidth; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 4200); }
+
+/* --- tema: varian is-dark NES.css pada semua komponen bertanda data-dk --- */
+function setTheme(t, save = true){
+  if (t !== 'dark') t = 'light';
+  root.setAttribute('data-theme', t);
+  $$('[data-dk]').forEach(el => el.classList.toggle('is-dark', t === 'dark'));
+  $('meta[name="theme-color"]').content = t === 'dark' ? '#15172a' : '#fff6e0';
+  if (save) try { localStorage.setItem('pixelara-theme', t); } catch (e) {}
+  bus.dispatchEvent(new CustomEvent('theme', { detail: t }));
+}
+setTheme(root.dataset.theme, false);
+$('#themeBtn').addEventListener('click', () => setTheme(isDark() ? 'light' : 'dark'));
+const mnav = $('#mnav');
+$('#menuBtn').addEventListener('click', () => { const o = mnav.classList.toggle('open'); $('#menuBtn').setAttribute('aria-expanded', o); });
+$$('#mnav a').forEach(a => a.addEventListener('click', () => { mnav.classList.remove('open'); $('#menuBtn').setAttribute('aria-expanded', 'false'); }));
+
+/* --- state game bersama --- */
+const HEROES = ['Ksatria', 'Penyihir', 'Pemanah'];
+const DIFF = [{ n: 'Mudah', foes: 0, hp: 5, line: 'Pulau sedang damai. Santai saja, kumpulkan koinnya.' }, { n: 'Normal', foes: 3, hp: 4, line: 'Tiga slime sedang berkeliaran. Lompati mereka!' }, { n: 'Sulit', foes: 6, hp: 3, line: 'Enam slime! Perhatikan pola lompatannya.' }, { n: 'Mustahil', foes: 10, hp: 1, line: 'Sepuluh slime dan satu nyawa. Semoga beruntung, penjelajah.' }];
+const state = { hero: 0, diff: 1, night: false, coins: true, jump: 0, seed: 7, collected: 0 };
+window.__pix.state = state;
+function readouts(){
+  const d = DIFF[state.diff];
+  $('#heroMode').textContent = `${state.night ? 'Malam' : 'Siang'} · ${d.n}`;
+  $('#enemyChip').textContent = d.foes;
+  $('#hpTxt').textContent = `${d.hp} / 5`;
+  $('#hearts').innerHTML = Array.from({ length: 5 }, (_, i) => `<i class="nes-icon heart${i < d.hp ? '' : ' is-empty'}"></i>`).join('');
+  $('#npcLine').textContent = d.line;
+  $$('[data-night-stage]').forEach(s => s.dataset.night = state.night ? '1' : '0');
+}
+function syncControls(){
+  $$('input[name="hero"], input[name="heroPick"]').forEach(r => r.checked = +r.value === state.hero);
+  $('#diff').value = String(state.diff); $('#night').checked = state.night; $('#coinsOn').checked = state.coins;
+}
+function emit(){ readouts(); bus.dispatchEvent(new CustomEvent('state', { detail: state })); }
+function patch(p){ Object.assign(state, p); syncControls(); emit(); }
+$$('#heroStage, #studioStage').forEach(s => s.setAttribute('data-night-stage', ''));
+$$('input[name="hero"], input[name="heroPick"]').forEach(r => r.addEventListener('change', () => { if (r.checked) patch({ hero: +r.value }); }));
+$('#diff').addEventListener('change', e => { patch({ diff: +e.target.value }); toast(`Kesulitan: ${DIFF[state.diff].n}. ${DIFF[state.diff].foes ? DIFF[state.diff].foes + ' slime muncul!' : 'Pulau aman.'}`); });
+$('#night').addEventListener('change', e => patch({ night: e.target.checked }));
+$('#coinsOn').addEventListener('change', e => patch({ coins: e.target.checked }));
+$$('[data-jump]').forEach(b => b.addEventListener('click', () => patch({ jump: state.jump + 1 })));
+$('#shuffle').addEventListener('click', () => { patch({ seed: Math.floor(Math.random() * 900) + 11, collected: 0 }); toast('Pulau baru dibuat dari benih acak.'); });
+syncControls(); readouts();
+window.__pix.onCoin = n => { state.collected = n; $('#coinHero').textContent = $('#coinStudio').textContent = n; $('#coinTxt').textContent = `${Math.min(n, 10)} / 10`; $('#coinProg').value = Math.min(n, 10); };
+
+/* --- dialog wishlist (nes-dialog) --- */
+const dlg = $('#wishDlg');
+$$('[data-wish]').forEach(b => b.addEventListener('click', () => {
+  $('#wishPlan').textContent = b.dataset.plan ? `Kamu memilih ${b.dataset.plan}. Kami kabari saat pre-order dibuka.` : 'Kami kabari saat Pulau Lentera rilis, plus diskon pre-order.';
+  $('#wErr').textContent = '';
+  if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+}));
+$('#wishForm').addEventListener('submit', e => {
+  if (e.submitter && e.submitter.id === 'wCancel') return;
+  const em = $('#wEmail');
+  if (!em.checkValidity()) { e.preventDefault(); $('#wErr').textContent = 'Email belum valid.'; em.classList.add('is-error'); em.focus(); return; }
+  em.classList.remove('is-error'); toast('Tersimpan! Pulau Lentera ada di wishlist-mu.'); setTimeout(() => e.target.reset());
+});
+
+/* --- form beta --- */
+$('#betaForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const fields = [['#bName', 'Isi nama panggilan (minimal 2 huruf).'], ['#bEmail', 'Email belum valid.'], ['#bAgree', 'Centang persetujuan dulu, ya.']];
+  for (const [s, m] of fields) { const el = $(s); const ok = el.checkValidity(); el.classList.toggle('is-error', !ok && el.type !== 'checkbox'); if (!ok) { $('#bErr').textContent = m; el.focus(); return; } }
+  $('#bErr').textContent = ''; const nm = $('#bName').value.trim();
+  e.target.reset(); $$('.is-error', e.target).forEach(x => x.classList.remove('is-error'));
+  toast(`Terima kasih, ${nm}! Kode beta dikirim bertahap lewat email.`);
+});
+
+/* --- statistik berhitung + reveal --- */
+const statIO = new IntersectionObserver(es => es.forEach(en => {
+  if (!en.isIntersecting) return; statIO.unobserve(en.target);
+  $$('[data-count]', en.target).forEach(el => {
+    const end = +el.dataset.count, show = v => el.textContent = Math.round(v).toLocaleString('id-ID');
+    if (rmq.matches) return show(end);
+    const t0 = performance.now(); const step = now => { const p = Math.min(1, (now - t0) / 1200); show(end * (Math.floor(p * 12) / 12)); if (p < 1) requestAnimationFrame(step); }; requestAnimationFrame(step);
+  });
+}), { threshold: .3 });
+statIO.observe($('#stats'));
+const revIO = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); revIO.unobserve(en.target); } }), { rootMargin: '0px 0px -8% 0px' });
+$$('.reveal').forEach(el => revIO.observe(el));
+
+/* ================= 3D ================= */
+function webglOK(){ try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch (e) { return false; } }
+function showFallbacks(){
+  const tpl = $('#islandFallback');
+  ['#heroStage', '#studioStage'].forEach(s => { const st = $(s); st.classList.add('no-webgl'); const fb = st.querySelector('.fallback'); if (!fb.firstChild) fb.append(tpl.content.cloneNode(true)); });
+  $('#perjalanan').classList.add('no-webgl');
+}
+let THREE;
+try { if (!webglOK()) throw new Error('no-webgl'); THREE = await import('three'); } catch (err) { showFallbacks(); }
+
+const storySec = $('#perjalanan');
+function storyProgress(){ const r = storySec.getBoundingClientRect(); return clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1); }
+
+if (THREE) {
+  const PIX = 2; /* satu piksel render = 2 piksel CSS, lalu diperbesar dengan image-rendering: pixelated */
+  const PR = () => Math.min(window.devicePixelRatio || 1, 2) / (PIX * Math.min(window.devicePixelRatio || 1, 2)); // = 1/PIX, rasio piksel ≤ 2
+  const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+  const frames = window.__pix.frames = {};
+  function createLoop(el, frame, continuous){
+    let visible = false, raf = 0, last = 0, pending = true;
+    const L = { request(){ pending = true; kick(); } };
+    const run = () => visible && !document.hidden;
+    function tick(now){
+      if (!run()) { raf = 0; last = 0; return; }
+      raf = -1;
+      const dt = last ? Math.min((now - last) / 1000, .05) : .016; last = now; pending = false;
+      frames[el.id] = (frames[el.id] || 0) + 1;
+      frame(dt, now / 1000);
+      if (continuous() || pending) raf = requestAnimationFrame(tick); else { raf = 0; last = 0; }
+    }
+    function kick(){ if (!raf && run()) raf = requestAnimationFrame(tick); }
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) { pending = true; kick(); } }, { rootMargin: '80px' }).observe(el);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) { pending = true; kick(); } });
+    rmq.addEventListener('change', () => L.request());
+    return L;
+  }
+  function makeRenderer(canvas, alpha){
+    const r = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: !!alpha, powerPreference: 'high-performance' });
+    r.setPixelRatio(PR()); r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFShadowMap;
+    r.toneMapping = THREE.NoToneMapping; r.outputColorSpace = THREE.SRGBColorSpace;
+    if (alpha) r.setClearColor(0x000000, 0);
+    return r;
+  }
+  function watchSize(el, renderer, onSize){
+    const apply = () => { const w = Math.max(1, el.clientWidth), h = Math.max(1, el.clientHeight); renderer.setPixelRatio(PR()); renderer.setSize(w, h, false); onSize(w, h); };
+    new ResizeObserver(apply).observe(el); apply();
+  }
+  function rng(seed){ seed = Math.max(1, Math.floor(seed)) % 2147483647; return () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+  const lam = (c, extra = {}) => new THREE.MeshLambertMaterial({ color: c, ...extra });
+
+  /* tekstur piksel 16×16 dengan NearestFilter */
+  function pixTex(draw, seed = 3){
+    const c = document.createElement('canvas'); c.width = c.height = 16; const x = c.getContext('2d'); const r = rng(seed);
+    const px = (i, j, col) => { x.fillStyle = col; x.fillRect(i, j, 1, 1); };
+    const pick = a => a[Math.floor(r() * a.length)];
+    draw({ x, px, pick, r });
+    const t = new THREE.CanvasTexture(c); t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; t.generateMipmaps = false; t.colorSpace = THREE.SRGBColorSpace; return t;
+  }
+  const fill = (pal) => ({ px, pick }) => { for (let i = 0; i < 16; i++) for (let j = 0; j < 16; j++) px(i, j, pick(pal)); };
+  const T = {
+    grassTop: pixTex(fill(['#5fb03a', '#5fb03a', '#6cc444', '#4f9a30', '#7bd24f']), 4),
+    grassSide: pixTex(({ px, pick, r }) => { for (let i = 0; i < 16; i++) { const g = 3 + Math.floor(r() * 3); for (let j = 0; j < 16; j++) px(i, j, j < g ? pick(['#5fb03a', '#4f9a30', '#6cc444']) : pick(['#8a5a32', '#7a4f2a', '#9a6a3c', '#6e4524'])); } }, 5),
+    dirt: pixTex(fill(['#8a5a32', '#7a4f2a', '#9a6a3c', '#6e4524']), 6),
+    sand: pixTex(fill(['#ead48c', '#e2c97a', '#f2df9e', '#d8bd6a']), 7),
+    stone: pixTex(({ px, pick, r }) => { for (let i = 0; i < 16; i++) for (let j = 0; j < 16; j++) px(i, j, pick(['#9aa0ad', '#8b919e', '#a8aebb', '#9aa0ad'])); for (let k = 0; k < 6; k++) { const a = Math.floor(r() * 14), b = Math.floor(r() * 16); px(a, b, '#6f7480'); px(a + 1, b, '#6f7480'); } }, 8),
+    brick: pixTex(({ px, pick }) => { for (let j = 0; j < 16; j++) for (let i = 0; i < 16; i++) { const row = Math.floor(j / 4), off = row % 2 ? 4 : 0; const mortar = j % 4 === 3 || (i + off) % 8 === 7; px(i, j, mortar ? '#6f7480' : pick(['#b8bdc8', '#aab0bc', '#c2c7d1'])); } }, 9),
+    wood: pixTex(({ px, pick }) => { for (let i = 0; i < 16; i++) { const base = pick(['#6b4226', '#7a4f2a', '#5c3a1e']); for (let j = 0; j < 16; j++) px(i, j, i % 4 === 0 ? '#4a2e18' : base); } }, 10),
+    leaves: pixTex(fill(['#2f7d14', '#3a9419', '#256610', '#46a822', '#2f7d14']), 11),
+    water: pixTex(({ px, pick, r }) => { for (let i = 0; i < 16; i++) for (let j = 0; j < 16; j++) px(i, j, pick(['#2b7fd6', '#2f88e0', '#2777cc'])); for (let k = 0; k < 5; k++) { const a = Math.floor(r() * 12), b = Math.floor(r() * 16); for (let q = 0; q < 3; q++) px(a + q, b, '#8fd0ff'); } }, 12),
+  };
+  T.water.wrapS = T.water.wrapT = THREE.RepeatWrapping; T.water.repeat.set(14, 14);
+  const M = {
+    grass: [lam('#fff', { map: T.grassSide }), lam('#fff', { map: T.grassSide }), lam('#fff', { map: T.grassTop }), lam('#fff', { map: T.dirt }), lam('#fff', { map: T.grassSide }), lam('#fff', { map: T.grassSide })],
+    dirt: lam('#fff', { map: T.dirt }), sand: lam('#fff', { map: T.sand }), stone: lam('#fff', { map: T.stone }), brick: lam('#fff', { map: T.brick }),
+    wood: lam('#fff', { map: T.wood }), leaves: lam('#fff', { map: T.leaves }),
+    water: new THREE.MeshLambertMaterial({ map: T.water, transparent: true, opacity: .9 }),
+  };
+  const BOX = new THREE.BoxGeometry(1, 1, 1);
+
+  /* ---------- tokoh voxel (3 kelas) ---------- */
+  function makeHero(kind, scale = 1){
+    const g = new THREE.Group(); g.scale.setScalar(scale);
+    const C = [{ body: '#2b5fc7', legs: '#3a3f4b', acc: '#c8cdd8' }, { body: '#6a3fb5', legs: '#4a2a80', acc: '#f7d51d' }, { body: '#2f7d14', legs: '#5c3a1e', acc: '#8a5a32' }][kind];
+    const part = (w, h, d, c, x, y, z, parent = g) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), lam(c)); m.position.set(x, y, z); m.castShadow = true; parent.add(m); return m; };
+    const pivot = (x, y) => { const p = new THREE.Group(); p.position.set(x, y, 0); g.add(p); return p; };
+    const legL = pivot(-.13, .45), legR = pivot(.13, .45);
+    part(.2, .45, .22, C.legs, 0, -.22, 0, legL); part(.2, .45, .22, C.legs, 0, -.22, 0, legR);
+    part(.56, .55, .32, C.body, 0, .72, 0);
+    part(.6, .08, .34, '#3a2418', 0, .5, 0);
+    part(.46, .44, .42, '#e0b08a', 0, 1.22, 0);
+    part(.07, .07, .02, '#212529', -.1, 1.24, -.22); part(.07, .07, .02, '#212529', .1, 1.24, -.22);
+    const armL = pivot(-.36, .95), armR = pivot(.36, .95);
+    part(.16, .44, .18, C.body, 0, -.2, 0, armL); part(.16, .44, .18, C.body, 0, -.2, 0, armR);
+    if (kind === 0) { // ksatria: helm, jambul, pedang, perisai
+      part(.52, .2, .48, C.acc, 0, 1.46, 0); part(.52, .1, .06, C.acc, 0, 1.36, -.23);
+      part(.08, .22, .3, '#c8432b', 0, 1.64, .02);
+      part(.06, .55, .06, '#dfe3ea', 0, -.6, -.08, armR); part(.22, .05, .08, '#8a5a32', 0, -.35, -.08, armR);
+      part(.06, .42, .36, '#c8432b', -.1, -.22, 0, armL); part(.07, .18, .1, '#f7d51d', -.14, -.22, 0, armL);
+    } else if (kind === 1) { // penyihir: topi bertingkat, jubah, tongkat kristal
+      part(.6, .08, .56, C.body, 0, 1.47, 0); part(.4, .18, .38, C.body, 0, 1.6, 0); part(.26, .16, .24, C.body, 0, 1.76, .04); part(.12, .14, .12, C.body, 0, 1.9, .1);
+      part(.6, .4, .36, C.body, 0, .3, 0);
+      part(.06, 1.1, .06, '#8a5a32', 0, -.4, -.12, armR); const gem = part(.16, .16, .16, '#7cf0ff', 0, .2, -.12, armR); gem.material.emissive = new THREE.Color('#2bd6ff'); gem.material.emissiveIntensity = .7;
+    } else { // pemanah: tudung, busur, tabung panah
+      part(.52, .3, .5, C.body, 0, 1.4, .04); part(.3, .12, .1, C.body, 0, 1.6, .2);
+      part(.06, .7, .06, C.acc, -.05, -.25, -.12, armL); part(.06, .2, .06, C.acc, -.05, .14, -.04, armL); part(.06, .2, .06, C.acc, -.05, -.64, -.04, armL);
+      part(.2, .5, .2, '#8a5a32', .14, .82, .22); part(.04, .14, .04, '#f7f7f7', .1, 1.12, .22); part(.04, .14, .04, '#f7f7f7', .18, 1.12, .22);
+    }
+    return { g, legL, legR, armL, armR };
+  }
+  function makeSlime(){
+    const g = new THREE.Group();
+    const b = new THREE.Mesh(new THREE.BoxGeometry(.9, .7, .9), lam('#ff5d8f')); b.position.y = .35; b.castShadow = true; g.add(b);
+    const e1 = new THREE.Mesh(new THREE.BoxGeometry(.1, .14, .02), lam('#212529')); e1.position.set(-.18, .45, -.46); g.add(e1);
+    const e2 = e1.clone(); e2.position.x = .18; g.add(e2);
+    return { g, body: b };
+  }
+
+  /* ---------- pulau voxel (dipakai hero & ruang uji) ---------- */
+  function createIsland(canvas, stageEl, opts){
+    const renderer = makeRenderer(canvas, true);
+    const scene = new THREE.Scene();
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -100, 200);
+    const camDir = new THREE.Vector3(1, .82, 1).normalize();
+    const hemi = new THREE.HemisphereLight('#ffffff', '#6a7a8a', 1.6); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff3d6', 2.2); sun.position.set(14, 24, 8); sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16, near: 2, far: 70 }); sun.shadow.bias = -.001;
+    scene.add(sun);
+    const torchA = new THREE.PointLight('#ffb347', 0, 9, 1.5), torchB = new THREE.PointLight('#ffb347', 0, 9, 1.5); scene.add(torchA, torchB);
+    const world = new THREE.Group(); scene.add(world);
+    const water = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), M.water); water.rotation.x = -Math.PI / 2; water.position.y = .62; water.receiveShadow = true; world.add(water);
+    // bintang (malam)
+    const starGeo = new THREE.BufferGeometry(); { const a = []; const r = rng(99); for (let i = 0; i < 140; i++) { const th = r() * Math.PI * 2, ph = .15 + r() * 1.1; a.push(Math.cos(th) * Math.cos(ph) * 40, Math.sin(ph) * 40, Math.sin(th) * Math.cos(ph) * 40); } starGeo.setAttribute('position', new THREE.Float32BufferAttribute(a, 3)); }
+    const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: '#ffffff', size: 2, sizeAttenuation: false })); stars.visible = false; scene.add(stars);
+    // awan voxel
+    const clouds = []; { const r = rng(5); for (let i = 0; i < 4; i++) { const c = new THREE.Group(); for (let k = 0; k < 5; k++) { const b = new THREE.Mesh(BOX, lam('#ffffff')); b.scale.set(1.6 + r() * 1.6, .6, 1.2 + r()); b.position.set(k * 1.1 - 2.2, r() * .4, (r() - .5) * 1.2); c.add(b); } const o = -6 + i * 5; c.position.set(o - 9, 8.5 + r() * 1.5, -o - 9); clouds.push({ c, sp: .3 + r() * .3, o }); scene.add(c); } }
+
+    let terrain = null, H = null, ring = [], coins = [], slimes = [], windows = [], flag = null;
+    const RING_R = 4.2, CASTLE = { x0: -9, x1: -4, z0: -9, z1: -4 };
+    const heightOf = (x, z) => { const i = Math.round(x) + 11, j = Math.round(z) + 11; return H && H[i] && H[i][j] !== undefined ? H[i][j] : 0; };
+    function build(seed){
+      if (terrain) { world.remove(terrain); terrain.traverse(o => { if (o.isInstancedMesh) o.dispose(); }); }
+      terrain = new THREE.Group(); world.add(terrain);
+      const r = rng(seed * 13 + 1), s1 = r() * 6, s2 = r() * 6, s3 = r() * 6;
+      H = [];
+      const inCastle = (x, z) => x >= CASTLE.x0 && x <= CASTLE.x1 && z >= CASTLE.z0 && z <= CASTLE.z1;
+      for (let x = -11; x <= 11; x++) { H[x + 11] = []; for (let z = -11; z <= 11; z++) {
+        const d = Math.hypot(x, z * 1.06) / 10.6;
+        let h = (1 - Math.pow(d, 1.7)) * 4.3 + Math.sin(x * .55 + s1) * .9 + Math.cos(z * .5 + s2) * .8 + Math.sin((x + z) * .3 + s3) * .6;
+        h = Math.floor(h);
+        if (inCastle(x, z)) h = 3;
+        const rr = Math.hypot(x, z); if (Math.abs(rr - RING_R) < 1) h = Math.max(h, 2);
+        H[x + 11][z + 11] = clamp(h, 0, 6);
+      } }
+      const lists = { grass: [], dirt: [], sand: [], stone: [], brick: [], wood: [], leaves: [] };
+      const hAt = (x, z) => (x < -11 || x > 11 || z < -11 || z > 11) ? 0 : H[x + 11][z + 11];
+      for (let x = -11; x <= 11; x++) for (let z = -11; z <= 11; z++) {
+        const h = hAt(x, z); if (h < 1) continue;
+        const minN = Math.min(hAt(x + 1, z), hAt(x - 1, z), hAt(x, z + 1), hAt(x, z - 1));
+        for (let y = Math.max(0, Math.min(minN, h - 1)); y < h; y++) {
+          const top = y === h - 1;
+          const type = top ? (h === 1 ? 'sand' : h >= 6 ? 'stone' : 'grass') : (y >= h - 3 ? (h <= 2 ? 'sand' : 'dirt') : 'stone');
+          lists[type].push([x, y, z]);
+        }
+      }
+      // kastil di dataran tinggi
+      const cx0 = CASTLE.x0 + .5, cz0 = CASTLE.z0 + .5, base = 3;
+      for (let x = CASTLE.x0; x <= CASTLE.x1; x++) for (let z = CASTLE.z0; z <= CASTLE.z1; z++) {
+        const edge = x === CASTLE.x0 || x === CASTLE.x1 || z === CASTLE.z0 || z === CASTLE.z1;
+        const corner = (x === CASTLE.x0 || x === CASTLE.x1) && (z === CASTLE.z0 || z === CASTLE.z1);
+        if (corner) { for (let y = base; y < base + 5; y++) lists.brick.push([x, y, z]); continue; }
+        if (edge) { const door = (x === CASTLE.x1 && (z === -6 || z === -7)) && true; for (let y = base; y < base + 2; y++) if (!(door && y === base)) lists.brick.push([x, y, z]); if ((x + z) % 2 === 0) lists.brick.push([x, base + 2, z]); }
+      }
+      for (let x = -7; x <= -6; x++) for (let z = -7; z <= -6; z++) for (let y = base; y < base + 4; y++) lists.brick.push([x, y, z]);
+      // pohon
+      const trees = []; let tries = 0;
+      while (trees.length < 9 && tries++ < 600) {
+        const x = Math.floor(r() * 21) - 10, z = Math.floor(r() * 21) - 10, h = hAt(x, z), rr = Math.hypot(x, z);
+        // pohon hanya di sisi belakang/samping supaya tidak menutupi lintasan pahlawan dari sudut kamera
+        if (h < 2 || h > 4 || inCastle(x, z) || inCastle(x - 1, z - 1) || inCastle(x + 1, z + 1) || rr < RING_R + 1.8 || x + z > 1) continue;
+        if (trees.some(([a, b]) => Math.abs(a - x) + Math.abs(b - z) < 3)) continue;
+        trees.push([x, z]); const th = 2 + Math.floor(r() * 2);
+        for (let y = h; y < h + th; y++) lists.wood.push([x, y, z]);
+        for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) { lists.leaves.push([x + dx, h + th, z + dz]); if (Math.abs(dx) + Math.abs(dz) < 2) lists.leaves.push([x + dx, h + th + 1, z + dz]); }
+      }
+      const d = new THREE.Object3D();
+      Object.entries(lists).forEach(([k, arr]) => {
+        if (!arr.length) return;
+        const im = new THREE.InstancedMesh(BOX, M[k], arr.length);
+        arr.forEach(([x, y, z], i) => { d.position.set(x, y + .5, z); d.updateMatrix(); im.setMatrixAt(i, d.matrix); });
+        im.castShadow = k !== 'sand'; im.receiveShadow = true; terrain.add(im);
+      });
+      // jendela & obor kastil (menyala saat malam), bendera
+      windows = [];
+      [[-7.5, base + 2.5, -6.5], [-6.5, base + 2.5, -5.5], [-5.5, base + 2.5, -6.5 + 0]].forEach(([x, y, z], k) => { const w = new THREE.Mesh(new THREE.BoxGeometry(k === 2 ? .05 : .3, .4, k === 2 ? .3 : .05), new THREE.MeshBasicMaterial({ color: '#3a3f4b' })); w.position.set(k === 2 ? -5.47 : x, y, k === 2 ? -6.5 : (k === 0 ? -5.47 : -5.47)); w.position.x = k === 2 ? -5.47 : (k === 0 ? -7 : -6); terrain.add(w); windows.push(w); });
+      const pole = new THREE.Mesh(new THREE.BoxGeometry(.08, 2, .08), lam('#3a3f4b')); pole.position.set(-6.5, base + 5, -6.5); terrain.add(pole);
+      flag = new THREE.Mesh(new THREE.PlaneGeometry(1, .6, 4, 1), lam('#c8432b', { side: THREE.DoubleSide })); flag.position.set(-6, base + 5.6, -6.5); terrain.add(flag);
+      const roof = new THREE.Mesh(new THREE.ConeGeometry(1.7, 1.4, 4), lam('#c8432b')); roof.rotation.y = Math.PI / 4; roof.position.set(-6.5, base + 4.7, -6.5); roof.castShadow = true; terrain.add(roof);
+      torchA.position.set(CASTLE.x1 + .9, base + 1.6, -5.4); torchB.position.set(CASTLE.x1 + .9, base + 1.6, -7.6);
+      [torchA, torchB].forEach(t => { const f = new THREE.Mesh(new THREE.BoxGeometry(.2, .3, .2), new THREE.MeshBasicMaterial({ color: '#ffb347' })); f.position.copy(t.position); terrain.add(f); const s = new THREE.Mesh(new THREE.BoxGeometry(.1, .6, .1), lam('#5c3a1e')); s.position.copy(t.position).add(new THREE.Vector3(0, -.4, 0)); terrain.add(s); });
+      // lintasan pahlawan + koin + slime
+      ring = Array.from({ length: 72 }, (_, i) => { const a = i / 72 * Math.PI * 2; return new THREE.Vector3(Math.cos(a) * RING_R, 0, Math.sin(a) * RING_R); });
+      coins.forEach(c => terrain.remove(c.m)); coins = [];
+      const coinGeo = new THREE.CylinderGeometry(.32, .32, .1, 8), coinMat = lam('#f7d51d', { emissive: '#7a5a00', emissiveIntensity: .5 });
+      for (let i = 0; i < 10; i++) { const a = (i + .5) / 10 * Math.PI * 2; const m = new THREE.Mesh(coinGeo, coinMat); m.rotation.x = Math.PI / 2; const x = Math.cos(a) * RING_R, z = Math.sin(a) * RING_R; m.position.set(x, heightOf(x, z) + .9, z); m.castShadow = true; terrain.add(m); coins.push({ m, a, gone: 0 }); }
+      slimes = []; const sr = rng(seed + 3);
+      for (let i = 0; i < 10; i++) { const s = makeSlime(); const a = (i / 10) * Math.PI * 2 + .3; const x = Math.cos(a) * RING_R, z = Math.sin(a) * RING_R; s.g.position.set(x, heightOf(x, z), z); s.g.rotation.y = -a; s.a = a; s.ph = sr() * 6; s.g.visible = false; terrain.add(s.g); slimes.push(s); }
+      if (window.__pix.onCoin) window.__pix.onCoin(0);
+      collected = 0;
+    }
+
+    let heroIdx = -1, hero = null;
+    const heroes = [0, 1, 2].map(k => { const h = makeHero(k, 1.75); h.g.visible = false; world.add(h.g); return h; });
+    let ang = .2, heroY = 3, jumpStart = -1, lastJump = state.jump, lastSeed = -1, collected = 0, autoJumpCool = 0, aspect = 1, halfW = 12, halfH = 12;
+    function applyState(){
+      if (state.seed !== lastSeed) { lastSeed = state.seed; build(state.seed); }
+      if (state.hero !== heroIdx) { heroIdx = state.hero; heroes.forEach((h, i) => h.g.visible = i === heroIdx); hero = heroes[heroIdx]; }
+      if (flag) flag.material.color.set(['#c8432b', '#6a3fb5', '#2f7d14'][state.hero]); // bendera kastil mengikuti warna kelas pahlawan
+      slimes.forEach((s, i) => s.g.visible = i < DIFF[state.diff].foes);
+      coins.forEach(c => c.m.visible = state.coins && !c.gone);
+      const n = state.night;
+      hemi.intensity = n ? .35 : 1.6; hemi.color.set(n ? '#7f8cff' : '#ffffff'); sun.intensity = n ? .45 : 2.2; sun.color.set(n ? '#9fb0ff' : '#fff3d6');
+      torchA.intensity = torchB.intensity = n ? 14 : 0; stars.visible = n;
+      windows.forEach(w => w.material.color.set(n ? '#ffd27a' : '#3a3f4b'));
+      clouds.forEach(c => c.c.visible = !n);
+      M.water.color.set(n ? '#6a7ad0' : '#ffffff');
+      if (state.jump !== lastJump) { lastJump = state.jump; jumpStart = performance.now(); }
+      loop.request();
+    }
+    let vw = 1, vh = 1;
+    const hudEl = stageEl.querySelector('.hud'), panelEl = stageEl.querySelector('.stage-panel');
+    function applyFrame(){
+      const r = stageEl.getBoundingClientRect(); if (!r.height) return;
+      const a = hudEl ? hudEl.getBoundingClientRect().bottom - r.top : 0, b = panelEl ? panelEl.getBoundingClientRect().top - r.top : r.height;
+      const free = Math.max(120, b - a), fy = ((a + b) / 2) / r.height;
+      // muat pulau (lebar ~25 unit) di ruang kosong antara HUD dan panel
+      const needW = opts.fit || 25.5, needH = needW * .62;
+      const scale = Math.max(needW / 2 / aspect, needH / 2 * r.height / free);
+      halfH = scale; halfW = scale * aspect;
+      Object.assign(cam, { left: -halfW, right: halfW, top: 2 * halfH * fy, bottom: -2 * halfH * (1 - fy) }); cam.updateProjectionMatrix();
+    }
+    const loop = createLoop(canvas, (dt, t) => {
+      const still = rmq.matches, now = performance.now();
+      if (!still) { ang += dt * .32; T.water.offset.x = (T.water.offset.x + dt * .03) % 1; clouds.forEach(c => { c.o += dt * c.sp; if (c.o > 14) c.o = -14; c.c.position.x = c.o - 9; c.c.position.z = -c.o - 9; }); }
+      // pahlawan berjalan di lintasan, naik-turun mengikuti tinggi blok
+      const x = Math.cos(ang) * RING_R, z = Math.sin(ang) * RING_R, ground = heightOf(x, z);
+      heroY += (ground - heroY) * (still ? 1 : Math.min(1, dt * 10));
+      // lompat otomatis saat ada slime di depan
+      if (!still && now > autoJumpCool) slimes.forEach(s => { if (!s.g.visible) return; let da = ((s.a - ang) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2); if (da < .32 && jumpStart < 0) { jumpStart = now; autoJumpCool = now + 900; } });
+      let jy = 0;
+      if (jumpStart >= 0) { const jt = (now - jumpStart) / 650; if (jt >= 1) jumpStart = -1; else { jy = still ? 1.4 : 4 * 1.5 * jt * (1 - jt); loop.request(); } }
+      if (hero) {
+        hero.g.position.set(x, heroY + jy, z); hero.g.rotation.y = -ang - Math.PI;
+        const sw = still ? 0 : Math.sin(t * 9) * .7 * (jy > 0 ? 0 : 1);
+        hero.legL.rotation.x = jy > 0 ? -.6 : sw; hero.legR.rotation.x = jy > 0 ? .4 : -sw; hero.armL.rotation.x = jy > 0 ? -2.4 : -sw * .8; hero.armR.rotation.x = jy > 0 ? -2.4 : sw * .8;
+      }
+      coins.forEach(c => {
+        if (!still) c.m.rotation.z += dt * 3;
+        if (!c.gone && state.coins) { let da = Math.abs(((c.a - ang) % (Math.PI * 2) + Math.PI * 3) % (Math.PI * 2) - Math.PI); if (da > Math.PI - .12 && !still) { c.gone = now; c.m.visible = false; collected++; if (window.__pix.onCoin) window.__pix.onCoin(collected); } }
+        if (c.gone && now - c.gone > 7000) { c.gone = 0; c.m.visible = state.coins; }
+      });
+      slimes.forEach(s => { if (!s.g.visible) return; const hop = still ? 0 : Math.max(0, Math.sin(t * 4 + s.ph)) * .5; const x2 = Math.cos(s.a) * RING_R, z2 = Math.sin(s.a) * RING_R; s.g.position.y = heightOf(x2, z2) + hop; s.body.scale.set(1 + (hop ? 0 : .12), 1 - (hop ? 0 : .12), 1 + (hop ? 0 : .12)); });
+      if (flag && !still) { const p = flag.geometry.attributes.position; for (let i = 0; i < p.count; i++) { const fx = p.getX(i) + .5; p.setZ(i, Math.sin(t * 6 + fx * 4) * .12 * fx); } p.needsUpdate = true; }
+      world.rotation.y = still ? 0 : Math.sin(t * .15) * .18;
+      const target = new THREE.Vector3(0, 2, 0);
+      cam.position.copy(target).addScaledVector(camDir, 60); cam.lookAt(target);
+      renderer.render(scene, cam);
+    }, () => !rmq.matches);
+    watchSize(stageEl, renderer, (w, h) => { aspect = w / h; vw = w; vh = h; applyFrame(); loop.request(); });
+    [hudEl, panelEl].forEach(el => el && new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(el));
+    bus.addEventListener('state', applyState);
+    applyState();
+    requestAnimationFrame(() => stageEl.classList.add('ready'));
+    return { loop, renderer, scene, cam };
+  }
+
+  let heroV = null, studioV = null;
+  try {
+    heroV = createIsland($('#heroCanvas'), $('#heroStage'), { fit: 25 });
+    studioV = createIsland($('#studioCanvas'), $('#studioStage'), { fit: 24 });
+  } catch (e) { console.warn('WebGL gagal dimulai', e); showFallbacks(); }
+
+  /* ================= Cerita isometrik: satu petualangan ================= */
+  function createStory(){
+    const stage = $('.story-stage', storySec), canvas = $('#storyCanvas');
+    const renderer = makeRenderer(canvas, false);
+    const scene = new THREE.Scene();
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -100, 200);
+    const camDir = new THREE.Vector3(1, 1.1, 1).normalize(), camTarget = new THREE.Vector3();
+    const hemi = new THREE.HemisphereLight('#fff8ec', '#b8a890', 1.5); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff0dc', 2.2); sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, { left: -18, right: 18, top: 18, bottom: -18, near: 1, far: 80 }); sun.shadow.bias = -.001;
+    scene.add(sun, sun.target);
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(160, 90), lam('#f1e3c4')); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+    let grid = null;
+    const CLAY = new THREE.Color('#efe2c6');
+    const SP = [[-16, 4], [-6, -4], [3, 4], [12, -4], [21, 4]];
+    const stations = [];
+    const smat = (c, extra) => { const m = lam(c, extra); m.userData.target = new THREE.Color(c); m.color.copy(CLAY); return m; };
+    function add(g, mats, w, h, d, c, x, y, z, ry){ const m = smat(c); mats.push(m); const me = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m); me.position.set(x, y, z); if (ry) me.rotation.y = ry; me.castShadow = me.receiveShadow = true; g.add(me); return me; }
+    let crystals = [], chestLid = null, fireworks = [];
+    SP.forEach(([x, z], i) => {
+      const g = new THREE.Group(); g.position.set(x - 1.4, 0, z - 2.6); scene.add(g);
+      const mats = [];
+      add(g, mats, 5.2, .3, 5.2, '#5fb03a', 0, .15, 0); add(g, mats, 5.2, .5, 5.2, '#8a5a32', 0, -.25, 0);
+      const inner = new THREE.Group(); inner.position.y = .3; g.add(inner);
+      if (i === 0) { // mulai: rumah nelayan, papan, api unggun
+        add(inner, mats, 2, 1.4, 1.6, '#e8d4a8', -.4, .7, -1); add(inner, mats, 2.3, .3, 1.9, '#c8432b', -.4, 1.55, -1); add(inner, mats, 1.7, .3, 1.4, '#c8432b', -.4, 1.85, -1);
+        add(inner, mats, .45, .8, .05, '#6b4226', .1, .4, -.17); add(inner, mats, .4, .35, .05, '#7cc4ff', -1, .9, -.17);
+        add(inner, mats, .12, 1.2, .12, '#6b4226', 1.5, .6, .9); add(inner, mats, .9, .45, .08, '#e8d4a8', 1.5, 1.1, .9);
+        add(inner, mats, .7, .15, .7, '#5c3a1e', -1.4, .08, 1.3); add(inner, mats, .3, .4, .3, '#ff8a2a', -1.4, .35, 1.3); add(inner, mats, .18, .25, .18, '#f7d51d', -1.4, .6, 1.3);
+      } else if (i === 1) { // hutan: pohon voxel, jamur
+        [[-1.4, -1.2, 2.2], [.6, -1.6, 2.8], [1.6, .4, 1.8], [-1.6, .9, 2]].forEach(([px, pz, h]) => { add(inner, mats, .4, h, .4, '#6b4226', px, h / 2, pz); add(inner, mats, 1.5, 1, 1.5, '#2f7d14', px, h + .3, pz); add(inner, mats, .9, .6, .9, '#46a822', px, h + 1.05, pz); });
+        add(inner, mats, .2, .5, .2, '#f1e3c4', .2, .25, 1.2); add(inner, mats, .7, .3, .7, '#c8432b', .2, .6, 1.2); add(inner, mats, .12, .06, .12, '#ffffff', .05, .78, 1.05);
+      } else if (i === 2) { // gua: gundukan batu, mulut gua gelap, kristal
+        add(inner, mats, 3.6, 1.6, 2.6, '#8b919e', 0, .8, -.9); add(inner, mats, 2.6, 1, 2, '#9aa0ad', -.3, 2.1, -1.1); add(inner, mats, 1.2, .6, 1.2, '#a8aebb', -.6, 2.9, -1.2);
+        add(inner, mats, 1.2, 1.2, .1, '#1d1f2a', .5, .6, .42);
+        [[1.6, .2, .9, '#7cf0ff'], [-1.5, .2, 1, '#c77dff'], [1.9, .2, -.2, '#7cf0ff']].forEach(([px, py, pz, c]) => { const m = add(inner, mats, .3, .9, .3, c, px, py + .45, pz, .4); m.material.emissive = new THREE.Color(c); m.material.emissiveIntensity = 0; crystals.push(m); });
+      } else if (i === 3) { // kastil
+        add(inner, mats, 3.4, 1.8, 2.6, '#b8bdc8', 0, .9, -.8);
+        [[-1.7, -2.1], [1.7, -2.1], [-1.7, .5], [1.7, .5]].forEach(([px, pz]) => { add(inner, mats, .9, 2.8, .9, '#aab0bc', px, 1.4, pz); add(inner, mats, 1.1, .3, 1.1, '#c2c7d1', px, 2.95, pz); });
+        add(inner, mats, .8, 1, .1, '#3a2418', 0, .5, .52);
+        add(inner, mats, .06, 1.2, .06, '#3a3f4b', 1.7, 3.7, .5); add(inner, mats, .6, .35, .04, '#c8432b', 2.0, 4.1, .5);
+        add(inner, mats, .06, 1.2, .06, '#3a3f4b', -1.7, 3.7, -2.1); add(inner, mats, .6, .35, .04, '#1f6fd1', -1.4, 4.1, -2.1);
+      } else { // tamat: peti harta terbuka, piala, kembang api piksel
+        add(inner, mats, 1.4, .8, .9, '#8a5a32', 0, .4, -.6); add(inner, mats, 1.5, .12, 1, '#f7d51d', 0, .82, -.6);
+        chestLid = add(inner, mats, 1.4, .3, .9, '#8a5a32', 0, 1.05, -1.05); chestLid.geometry.translate(0, 0, .45); chestLid.position.z = -1.05;
+        add(inner, mats, .5, .2, .5, '#f7d51d', 0, .95, -.6);
+        add(inner, mats, .7, .2, .7, '#c9a800', 1.5, .1, 1); add(inner, mats, .2, .5, .2, '#f7d51d', 1.5, .45, 1); add(inner, mats, .6, .5, .6, '#f7d51d', 1.5, .95, 1);
+        add(inner, mats, .12, 1.8, .12, '#3a3f4b', -1.6, .9, 1.2); add(inner, mats, .8, .5, .04, '#2f7d14', -1.2, 1.55, 1.2);
+        const fwM = ['#ff8a2a', '#f7d51d', '#7cc4ff', '#c77dff']; for (let k = 0; k < 16; k++) { const m = new THREE.Mesh(new THREE.BoxGeometry(.18, .18, .18), new THREE.MeshBasicMaterial({ color: fwM[k % 4] })); m.visible = false; inner.add(m); fireworks.push({ m, a: k / 16 * Math.PI * 2, b: (k % 3) * .5 }); }
+      }
+      stations.push({ g, mats, inner, lit: 0 });
+    });
+    // jalur oranye kotak-kotak (manhattan)
+    const pts = [[-16, 4], [-11, 4], [-11, -4], [-6, -4], [-1, -4], [-1, 4], [3, 4], [7.5, 4], [7.5, -4], [12, -4], [16.5, -4], [16.5, 4], [21, 4]].map(([x, z]) => new THREE.Vector3(x, .32, z));
+    const path = new THREE.CurvePath(); const rad = 1.2; let curP = pts[0].clone();
+    for (let i = 1; i < pts.length - 1; i++) {
+      const p = pts[i], dIn = p.clone().sub(pts[i - 1]).normalize(), dOut = pts[i + 1].clone().sub(p).normalize();
+      if (dIn.dot(dOut) > .999) continue;
+      const a = p.clone().addScaledVector(dIn, -rad), b = p.clone().addScaledVector(dOut, rad);
+      path.add(new THREE.LineCurve3(curP.clone(), a)); path.add(new THREE.QuadraticBezierCurve3(a, p.clone(), b)); curP = b;
+    }
+    path.add(new THREE.LineCurve3(curP, pts[pts.length - 1].clone()));
+    // jalur sebagai ubin voxel: abu-abu dasar + oranye yang terisi sesuai gulir
+    const TL = Math.ceil(path.getLength() / .5), tileGeo = new THREE.BoxGeometry(.5, .14, .5);
+    const baseTiles = new THREE.InstancedMesh(tileGeo, lam('#d6c39c'), TL), progTiles = new THREE.InstancedMesh(new THREE.BoxGeometry(.52, .2, .52), lam('#ff8a2a', { emissive: '#ff6a00', emissiveIntensity: .25 }), TL);
+    { const d = new THREE.Object3D(); for (let i = 0; i < TL; i++) { const q = path.getPointAt(i / (TL - 1)); d.position.set(q.x, .1, q.z); d.updateMatrix(); baseTiles.setMatrixAt(i, d.matrix); d.position.y = .14; d.updateMatrix(); progTiles.setMatrixAt(i, d.matrix); } }
+    baseTiles.receiveShadow = true; progTiles.count = 0; scene.add(baseTiles, progTiles);
+    // dekorasi: semak dan batu kotak (instancing)
+    { const r = rng(21), deco = []; for (let x = -28; x <= 32; x += 2.2) for (const zb of [-11, 11.5]) { if (r() < .3) continue; deco.push([x + (r() - .5) * 1.4, zb + (r() - .5) * 3, r()]); }
+      const bush = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), lam('#ffffff'), deco.length); const d = new THREE.Object3D(), cols = ['#46a822', '#2f7d14', '#9aa0ad', '#5fb03a'].map(c => new THREE.Color(c));
+      deco.forEach(([x, z, q], i) => { const s = .6 + q * .9; d.position.set(x, s / 2, z); d.scale.set(s, s, s); d.rotation.y = 0; d.updateMatrix(); bush.setMatrixAt(i, d.matrix); bush.setColorAt(i, cols[i % 4]); });
+      bush.castShadow = true; scene.add(bush); }
+    const samples = 1200, stationU = SP.map(([x, z]) => { let best = 0, bd = 1e9; for (let s = 0; s <= samples; s++) { const q = path.getPointAt(s / samples); const dd = (q.x - x) ** 2 + (q.z - z) ** 2; if (dd < bd) { bd = dd; best = s / samples; } } return best; });
+    stationU[0] = 0; stationU[stationU.length - 1] = 1;
+    const H0 = makeHero(0, 1.25); const chr = H0.g; scene.add(chr); chr.rotation.order = 'YXZ';
+    const { legL, legR, armL, armR } = H0;
+
+    let lastT = 0, targetU = 0, shownU = 0, walkPhase = 0, step = -1, lastPos = new THREE.Vector3(), halfW = 10, halfH = 10, aspect = 1;
+    const sceneSteps = $$('.scene-step', storySec), labels = $$('.s-labels span', storySec), prog = $('#storyProg');
+    function mapProgress(p){ const n = SP.length - 1, u = clamp(p, 0, 1) * n, i = Math.min(n - 1, Math.floor(u)), f = u - i, w = smooth(.22, .82, f); return { u: stationU[i] + (stationU[i + 1] - stationU[i]) * w, step: w < .5 ? i : i + 1 }; }
+    function setProgress(p){
+      const m = mapProgress(p); targetU = m.u; prog.value = clamp(p, 0, 1) * 100;
+      if (m.step !== step) { step = m.step; sceneSteps.forEach((s, k) => s.classList.toggle('on', k === step)); labels.forEach((s, k) => s.classList.toggle('on', k <= step)); }
+      loop.request();
+    }
+    function themeColors(){
+      const dk = isDark(), bg = dk ? '#1d2038' : '#f6e8c8', b3 = dk ? '#2c3058' : '#e6d3a8';
+      scene.background = new THREE.Color(bg);
+      ground.material.color.set(bg).lerp(new THREE.Color(b3), .3);
+      if (grid) { scene.remove(grid); grid.geometry.dispose(); grid.material.dispose(); }
+      grid = new THREE.GridHelper(160, 160, b3, b3); grid.position.y = .01; scene.add(grid);
+      CLAY.set(dk ? '#3d4270' : '#efe2c6');
+      baseTiles.material.color.set(dk ? '#3a3f6a' : '#d6c39c');
+      hemi.intensity = dk ? 1.0 : 1.5; sun.intensity = dk ? 1.8 : 2.2;
+      hemi.color.set(dk ? '#c8ccff' : '#fff8ec'); hemi.groundColor.set(dk ? '#262a4a' : '#b8a890');
+      stations.forEach(s => s.lit === 0 && s.mats.forEach(m => m.color.copy(CLAY)));
+      loop.request();
+    }
+    const loop = createLoop(canvas, (dt, t) => {
+      const still = rmq.matches, camDt = Math.min(.12, (performance.now() - (lastT || performance.now())) / 1000 || dt); lastT = performance.now();
+      const k = still ? 1 : 1 - Math.exp(-camDt * 5);
+      shownU += (targetU - shownU) * k; if (Math.abs(targetU - shownU) > 1e-4) loop.request(); else shownU = targetU;
+      const pos = path.getPointAt(clamp(shownU, 0, 1)), tan = path.getTangentAt(clamp(shownU, 0, .9999));
+      const moved = pos.distanceTo(lastPos); lastPos.copy(pos); walkPhase += moved * 3.4;
+      const moving = clamp(moved * 25, 0, 1);
+      chr.position.set(pos.x, .3 + Math.abs(Math.sin(walkPhase)) * .12 * moving, pos.z);
+      if (moved > 1e-4) chr.rotation.y = Math.atan2(-tan.x, -tan.z);
+      const sw = Math.sin(walkPhase) * .8 * moving; legL.rotation.x = sw; legR.rotation.x = -sw; armL.rotation.x = -sw * .8; armR.rotation.x = sw * .8;
+      progTiles.count = Math.floor(shownU * (TL - 1)) + (shownU > 0 ? 1 : 0); progTiles.instanceMatrix.needsUpdate = true;
+      stations.forEach((s, i) => {
+        const goal = shownU >= stationU[i] - .004 ? 1 : 0, prev = s.lit;
+        s.lit += (goal - s.lit) * (still ? 1 : Math.min(1, camDt * 4)); if (Math.abs(goal - s.lit) > .002) loop.request(); else s.lit = goal;
+        if (prev !== s.lit) s.mats.forEach(m => m.color.copy(CLAY).lerp(m.userData.target, s.lit));
+        s.inner.scale.setScalar(.82 + .18 * s.lit);
+      });
+      crystals.forEach((c, i) => c.material.emissiveIntensity = stations[2].lit * (still ? .8 : .5 + .4 * Math.max(0, Math.sin(t * 3 + i * 2))));
+      if (chestLid) chestLid.rotation.x = -1.1 * stations[4].lit;
+      fireworks.forEach(f => { const on = stations[4].lit > .99; f.m.visible = on; if (on) { const ph = still ? .6 : ((t * .6 + f.b) % 1); const rr = .3 + ph * 1.6; f.m.position.set(Math.cos(f.a) * rr, 3 + ph * 1.2 + Math.sin(f.a) * rr, -.6); f.m.scale.setScalar(1 - ph * .7); } });
+      if (!still && stations.some((s, i) => (i === 2 || i === 4) && s.lit > 0)) loop.request();
+      const desired = new THREE.Vector3(pos.x, 0, pos.z);
+      if (aspect >= .9) desired.addScaledVector(new THREE.Vector3(1, 0, -1).normalize(), -halfW * .3);
+      if (camTarget.lengthSq() === 0) camTarget.copy(desired);
+      camTarget.lerp(desired, still ? 1 : 1 - Math.exp(-camDt * 3.5)); if (camTarget.distanceTo(desired) > .01) loop.request();
+      cam.position.copy(camTarget).addScaledVector(camDir, 60); cam.lookAt(camTarget);
+      sun.position.copy(camTarget).add(new THREE.Vector3(14, 26, 8)); sun.target.position.copy(camTarget);
+      renderer.render(scene, cam);
+    }, () => false);
+    /* Layar sempit: tokoh dibingkai di ruang kosong ANTARA kartu judul (atas) dan kartu langkah (bawah),
+       diukur dari DOM, memakai frustum ortografis asimetris. */
+    const headEl = stage.querySelector('.story-head'), card = stage.querySelector('#storyCard');
+    let frameY = .5;
+    function applyFrame(){
+      frameY = .5;
+      if (aspect < .9) {
+        const rr = stage.getBoundingClientRect(), a = headEl.getBoundingClientRect().bottom - rr.top, b = card.getBoundingClientRect().top - rr.top;
+        if (rr.height > 0 && b > a) frameY = clamp(((a + b) / 2 + 34) / rr.height, .2, .8);
+      }
+      Object.assign(cam, { left: -halfW, right: halfW, top: 2 * halfH * frameY, bottom: -2 * halfH * (1 - frameY) }); cam.updateProjectionMatrix();
+    }
+    watchSize(stage, renderer, (w, h) => { aspect = w / h; halfH = aspect < .9 ? 10.5 : 8.6; halfW = halfH * aspect; applyFrame(); loop.request(); });
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(headEl);
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(card);
+    if (document.fonts) document.fonts.ready.then(() => { applyFrame(); loop.request(); });
+    themeColors(); bus.addEventListener('theme', () => requestAnimationFrame(themeColors));
+    return { setProgress, loop, renderer, scene, cam, chr, frame: () => frameY };
+  }
+
+  let story = null;
+  try { story = createStory(); } catch (e) { console.warn('Cerita 3D gagal', e); storySec.classList.add('no-webgl'); }
+  window.__pix.views = { heroV, studioV, story };
+  if (story) { const upd = () => story.setProgress(storyProgress()); addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd(); }
+}
+
+/* fallback tanpa WebGL: teks cerita tetap mengikuti gulir */
+if (!window.__pix.views || !window.__pix.views.story) {
+  const nodes = $$('#storySvg .node'), sceneSteps = $$('.scene-step', storySec), labels = $$('.s-labels span', storySec), prog = $('#storyProg');
+  const upd = () => { const p = storyProgress(), n = Math.round(p * 4); prog.value = p * 100; sceneSteps.forEach((s, k) => s.classList.toggle('on', k === n)); labels.forEach((s, k) => s.classList.toggle('on', k <= n)); nodes.forEach((c, k) => c.classList.toggle('on', k <= n)); };
+  addEventListener('scroll', upd, { passive: true }); upd();
+}
+</script>
+</body>
+</html>

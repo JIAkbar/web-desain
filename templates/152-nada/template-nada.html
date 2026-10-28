@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="id" class="wa-dark" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nada — Festival &amp; Siaran Langsung untuk Band Indie Indonesia</title>
+<meta name="description" content="Nada adalah festival musik dan aplikasi siaran langsung untuk band indie Indonesia: daftar, soundcheck, manggung, tayang live, lalu rilis rekamannya. Template landing page Web Awesome + three.js.">
+<meta name="theme-color" content="#0d0a14">
+<script>
+  /* tema disimpan per pengunjung; kelas tema Web Awesome dipasang sebelum render */
+  (function(){var t;try{t=localStorage.getItem('nada-theme')}catch(e){}
+  if(t!=='light'&&t!=='dark'){t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'}
+  var h=document.documentElement;h.classList.remove('wa-dark','wa-light');h.classList.add('wa-'+t);h.setAttribute('data-theme',t);})();
+</script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Web Awesome 3.14.0 (inti gratis, lisensi MIT): tema + autoloader komponen -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.14.0/dist-cdn/styles/webawesome.css">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.14.0/dist-cdn/webawesome.loader.js"></script>
+<style>
+  /* ---------- Token merek + tema (menimpa token Web Awesome) ---------- */
+  :root,.wa-light,.wa-dark{
+    --nd-display:'Bricolage Grotesque','Outfit',system-ui,sans-serif;
+    --nd-sans:'Outfit',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --nd-orange:#ff7a2f;--nd-path:#ff7a2f;--nd-pink:#ff3d8b;--nd-teal:#1fc8b8;--nd-violet:#7c5cff;
+    --nd-r:20px;
+    --wa-font-family-body:var(--nd-sans);
+    --wa-font-family-heading:var(--nd-display);
+    --wa-font-family-code:var(--nd-sans);
+    --wa-font-family-longform:var(--nd-sans);
+    --wa-border-radius-scale:1.35;
+    --wa-color-brand-95:#fff2ea;--wa-color-brand-90:#ffe1cf;--wa-color-brand-80:#ffc19e;--wa-color-brand-70:#ff9d69;
+    --wa-color-brand-60:#ff7a3a;--wa-color-brand-50:#d24a12;--wa-color-brand-40:#b13d0d;--wa-color-brand-30:#8a2f0a;
+    --wa-color-brand-20:#5f2006;--wa-color-brand-10:#3a1303;--wa-color-brand-05:#260c02;
+    --wa-color-brand:#d24a12;--wa-color-brand-on:#fff;
+  }
+  .wa-light{
+    color-scheme:light;
+    --nd-bg:#fbf6f0;--nd-bg2:#f4ebe1;--nd-surface:#ffffff;--nd-ink:#1b1426;--nd-text:#584e66;--nd-line:#eadfd3;
+    --nd-glass:rgba(255,255,255,.74);--nd-shadow:0 30px 70px -36px rgba(40,20,60,.45);
+    --nd-sky:linear-gradient(180deg,#5b3f8f 0%,#c0628a 46%,#ffb27a 78%,#ffd9b0 100%);
+    --wa-color-surface-default:#ffffff;--wa-color-surface-raised:#ffffff;--wa-color-surface-lowered:#f4ebe1;--wa-color-surface-border:#e6d9cb;
+    --wa-color-text-normal:#1b1426;--wa-color-text-quiet:#584e66;--wa-color-text-link:#b13d0d;
+  }
+  .wa-dark{
+    color-scheme:dark;
+    --nd-bg:#0d0a14;--nd-bg2:#141020;--nd-surface:#1a1528;--nd-ink:#f7f1ff;--nd-text:#bdb3cc;--nd-line:#2b2341;
+    --nd-glass:rgba(18,14,30,.74);--nd-shadow:0 30px 70px -30px rgba(0,0,0,.85);
+    --nd-sky:linear-gradient(180deg,#07050f 0%,#160d2c 48%,#2d1438 80%,#3b1a2e 100%);
+    --wa-color-surface-default:#1a1528;--wa-color-surface-raised:#211a33;--wa-color-surface-lowered:#120e1c;--wa-color-surface-border:#2f2747;
+    --wa-color-text-normal:#f7f1ff;--wa-color-text-quiet:#bdb3cc;--wa-color-text-link:#ff9d69;
+  }
+  html{font-family:var(--nd-sans);background:var(--nd-bg);color:var(--nd-text);scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--nd-bg);color:var(--nd-text);overflow-x:clip;-webkit-font-smoothing:antialiased;font-size:1rem;line-height:1.6;transition:background-color .35s,color .35s}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+  /* tidak ada font monospace; angka selalu tabular dengan nol polos */
+  code,kbd,pre,samp{font-family:inherit;font-size:inherit}
+  .num,.price b,.stat b,.hero-meta b,.sn{font-variant-numeric:tabular-nums}
+  h1,h2,h3,h4{font-family:var(--nd-display);color:var(--nd-ink);letter-spacing:-.025em;line-height:1.05;margin:0}
+  p{margin:0}
+  a{color:inherit}
+  :focus-visible{outline:2px solid var(--nd-orange);outline-offset:3px}
+  [id]{scroll-margin-top:76px}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 16px}
+  @media (min-width:640px){.wrap{padding:0 28px}}
+  @media (min-width:1024px){.wrap{padding:0 40px}}
+  .skip{position:absolute;left:-999px;top:8px;z-index:1100;background:var(--nd-orange);color:#1b1426;padding:8px 14px;border-radius:10px;font-weight:700}
+  .skip:focus{left:12px}
+  .sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  /* sembunyikan komponen sebelum terdaftar supaya tidak berkedip */
+  wa-dialog:not(:defined),wa-drawer:not(:defined),wa-toast:not(:defined){display:none}
+  wa-slider:not(:defined),wa-radio-group:not(:defined),wa-switch:not(:defined),wa-rating:not(:defined),wa-tab-group:not(:defined),wa-color-picker:not(:defined),wa-carousel:not(:defined){visibility:hidden}
+
+  /* ---------- Web Awesome: sentuhan merek ---------- */
+  wa-button{--wa-form-control-height:44px}
+  wa-button::part(base){font-weight:700;letter-spacing:-.005em}
+  wa-button[variant=brand]::part(base){box-shadow:0 10px 26px -12px rgba(210,74,18,.7)}
+  wa-card{--spacing:22px;background:transparent}
+  wa-card::part(base){border-color:var(--nd-line)}
+  wa-badge{font-variant-numeric:tabular-nums}
+  wa-tag{font-weight:600}
+  wa-slider{--track-size:6px;--thumb-width:20px;--thumb-height:20px}
+  wa-slider::part(indicator){background:linear-gradient(90deg,var(--nd-orange),var(--nd-pink))}
+  wa-progress-bar{--track-height:8px;--indicator-color:linear-gradient(90deg,var(--nd-orange),var(--nd-pink))}
+  wa-progress-bar::part(indicator){background:linear-gradient(90deg,var(--nd-orange),var(--nd-pink))}
+  wa-switch{--width:44px;--height:24px;--thumb-size:18px}
+  wa-rating{--symbol-color-active:#ffb02e;--symbol-spacing:4px}
+  wa-details{--spacing:18px}
+  wa-details::part(summary){font-weight:700;color:var(--nd-ink);font-size:1.02rem}
+  wa-dialog{--width:min(560px,calc(100vw - 24px))}
+  wa-dialog::part(title){font-family:var(--nd-display);font-weight:800;font-size:1.45rem;color:var(--nd-ink)}
+  wa-drawer{--size:min(320px,86vw)}
+  wa-tab-group::part(nav){border-bottom-color:var(--nd-line)}
+  wa-tab::part(base){font-weight:700;padding:12px 14px}
+  wa-tab[active]::part(base){color:var(--nd-ink)}
+  wa-tab-group{--indicator-color:var(--nd-orange);--track-color:var(--nd-line)}
+  wa-carousel{--aspect-ratio:auto;--slide-gap:20px}
+  wa-carousel::part(pagination-item-active){background:var(--nd-orange)}
+  @media (max-width:640px){wa-carousel::part(navigation){display:none}}
+
+  /* ---------- Navbar ---------- */
+  .nav{position:sticky;top:0;z-index:50;background:color-mix(in oklab,var(--nd-bg) 80%,transparent);-webkit-backdrop-filter:saturate(1.4) blur(14px);backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid color-mix(in oklab,var(--nd-line) 80%,transparent)}
+  .nav .wrap{display:flex;align-items:center;gap:12px;height:66px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--nd-display);font-weight:800;font-size:1.32rem;color:var(--nd-ink);text-decoration:none;letter-spacing:-.03em;white-space:nowrap}
+  .brand svg{width:34px;height:34px;flex:0 0 auto}
+  .nav-links{display:flex;gap:4px;margin:0 auto;list-style:none;padding:0}
+  .nav-links a{display:block;padding:8px 12px;border-radius:999px;text-decoration:none;font-weight:600;font-size:.94rem;color:var(--nd-text)}
+  .nav-links a:hover{color:var(--nd-ink);background:color-mix(in oklab,var(--nd-ink) 7%,transparent)}
+  .nav-act{display:flex;align-items:center;gap:8px;margin-left:auto}
+  .icon-btn{width:42px;height:42px;border-radius:50%;display:inline-grid;place-items:center;border:1px solid var(--nd-line);background:transparent;color:var(--nd-ink);cursor:pointer;padding:0}
+  .icon-btn:hover{border-color:var(--nd-ink)}
+  .wa-light .i-sun,.wa-dark .i-moon{display:none}
+  .menu-btn{display:none}
+  @media (max-width:959px){.nav-links{display:none}.menu-btn{display:inline-grid}}
+  @media (max-width:400px){.nav-cta{display:none}}
+  .drawer-links{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+  .drawer-links a{display:block;padding:12px 4px;font-size:1.15rem;font-weight:700;text-decoration:none;color:var(--nd-ink);border-bottom:1px solid var(--nd-line)}
+
+  /* ---------- Hero ---------- */
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:.76rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--nd-orange)}
+  .eyebrow::before{content:"";width:24px;height:2px;background:currentColor;border-radius:2px}
+  .wa-light .eyebrow{color:#b13d0d}
+  .hero{padding:clamp(22px,4vw,56px) 0 clamp(48px,7vw,88px);position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:-20% -10% auto auto;width:60vw;height:60vw;max-width:820px;max-height:820px;background:radial-gradient(circle,color-mix(in oklab,var(--nd-pink) 22%,transparent),transparent 62%);pointer-events:none;z-index:0}
+  .hero .wrap{position:relative;z-index:1}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6.6fr);gap:clamp(24px,4vw,56px);align-items:center}
+  .hero h1{font-size:clamp(2.6rem,6vw,5.2rem);line-height:.96;margin:18px 0 18px;font-weight:800;letter-spacing:-.04em}
+  .hero h1 .grad{background:linear-gradient(92deg,var(--nd-orange),var(--nd-pink) 70%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{font-size:clamp(1.02rem,1.3vw,1.16rem);line-height:1.65;max-width:33em}
+  .cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+  .hero-meta{display:flex;flex-wrap:wrap;gap:14px 28px;margin-top:30px}
+  .hero-meta div{display:flex;flex-direction:column}
+  .hero-meta b{font-family:var(--nd-display);font-size:1.6rem;color:var(--nd-ink);line-height:1.1;font-weight:800}
+  .hero-meta span{font-size:.84rem}
+  .stage{position:relative;border-radius:calc(var(--nd-r) + 8px);overflow:hidden;isolation:isolate;background:var(--nd-sky);box-shadow:var(--nd-shadow);border:1px solid var(--nd-line)}
+  .stage canvas{display:block;width:100%;height:100%;opacity:0;transition:opacity .8s ease;touch-action:pan-y}
+  .stage.ready canvas{opacity:1}
+  .hero .stage{height:clamp(480px,76vh,700px)}
+  .stage .fallback{position:absolute;inset:0;display:none}
+  .stage.no-webgl .fallback{display:block}
+  .stage.no-webgl canvas{display:none}
+  .stage .fallback svg{width:100%;height:100%}
+  .glass{background:var(--nd-glass);-webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3);border:1px solid color-mix(in oklab,var(--nd-line) 70%,transparent);color:var(--nd-ink)}
+  .stage-top{position:absolute;top:14px;left:14px;right:14px;z-index:2;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;pointer-events:none}
+  .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;font-size:.8rem;font-weight:700;font-variant-numeric:tabular-nums;pointer-events:auto}
+  .stage-panel{position:absolute;left:14px;right:14px;bottom:14px;z-index:2;border-radius:var(--nd-r);padding:14px 16px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:12px 22px}
+  .stage-panel .lbl{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;display:flex;justify-content:space-between;gap:10px;color:var(--nd-ink)}
+  .stage-panel .lbl output{letter-spacing:0;font-size:.82rem;opacity:1;font-variant-numeric:tabular-nums}
+  @media (max-width:959px){.hero-grid{grid-template-columns:minmax(0,1fr)}.hero .stage{height:min(600px,78vh);min-height:470px}}
+  @media (max-width:560px){.stage-panel{grid-template-columns:minmax(0,1fr);padding:12px 14px}}
+
+  /* swatch radio (wa-radio appearance=button) */
+  .swatches{--gap:4px}
+  .swatches wa-radio{--wa-form-control-height:36px}
+  .swatches wa-radio::part(label){display:flex;align-items:center;gap:7px;font-weight:700;font-size:.82rem}
+  .sw{width:14px;height:14px;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 2px rgba(255,255,255,.55),0 0 0 1px rgba(0,0,0,.25);flex:0 0 auto}
+  @media (max-width:430px){.swatches .sw-l{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.swatches wa-radio::part(label){gap:0}}
+
+  /* ---------- Section ---------- */
+  .sec{padding:clamp(72px,10vw,124px) 0;position:relative}
+  .sec.alt{background:var(--nd-bg2)}
+  .sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px 48px;align-items:end;margin-bottom:clamp(30px,5vw,54px)}
+  .sec-head h2{font-size:clamp(2rem,4.3vw,3.4rem);margin-top:12px;font-weight:800;letter-spacing:-.035em}
+  .sec-head p{font-size:1.04rem;line-height:1.65}
+  @media (max-width:820px){.sec-head{grid-template-columns:minmax(0,1fr)}}
+
+  /* fitur */
+  .feat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+  .feat .ico{width:50px;height:50px;border-radius:15px;display:grid;place-items:center;background:color-mix(in oklab,var(--nd-orange) 15%,transparent);color:var(--nd-orange);margin-bottom:18px}
+  .feat h3{font-size:1.24rem;font-weight:800;margin:0 0 8px}
+  .feat p{font-size:.95rem;line-height:1.6;margin:0 0 14px}
+  .feat .tags{display:flex;flex-wrap:wrap;gap:6px}
+  @media (max-width:1060px){.feat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:600px){.feat-grid{grid-template-columns:minmax(0,1fr)}}
+
+  /* studio (komponen WA mengendalikan 3D) */
+  .studio-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:22px;align-items:stretch}
+  .studio .stage{height:clamp(500px,76vh,720px)}
+  .ctl-card::part(body){display:flex;flex-direction:column;gap:18px}
+  .ctl h3.ph{font-family:var(--nd-sans);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--nd-text);margin:0 0 8px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .ctl-stack{display:flex;flex-direction:column;gap:18px;padding-top:16px}
+  .switch-row{display:flex;flex-wrap:wrap;gap:12px 22px}
+  .switch-row wa-switch{font-weight:600;color:var(--nd-ink)}
+  .band-list{display:flex;flex-direction:column;gap:8px}
+  .band-list wa-radio{padding:10px 12px;border:1px solid var(--nd-line);border-radius:14px;width:100%;box-sizing:border-box}
+  .band-list wa-radio[checked]{border-color:var(--nd-orange);background:color-mix(in oklab,var(--nd-orange) 8%,transparent)}
+  .band-list wa-radio::part(label){width:100%}
+  .bl{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;flex-wrap:wrap}
+  .bl b{color:var(--nd-ink);font-weight:700}
+  .bl small{font-size:.8rem;font-variant-numeric:tabular-nums}
+  .energy{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--nd-ink);margin-bottom:6px}
+  @media (max-width:1060px){.studio-grid{grid-template-columns:minmax(0,1fr)}.studio .stage{height:min(540px,66vh);min-height:420px}}
+
+  /* ---------- Cerita isometrik ---------- */
+  .story{position:relative;height:520vh}
+  .story-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--nd-bg2)}
+  .story-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .story-fallback{position:absolute;inset:0;display:none;place-items:center;padding:24px}
+  .story.no-webgl .story-fallback{display:grid}
+  .story.no-webgl canvas{display:none}
+  .story-fallback svg{width:min(900px,100%);height:auto}
+  .story-fallback .node{fill:var(--nd-surface);stroke:var(--nd-line);stroke-width:2;transition:fill .4s}
+  .story-fallback .node.on{fill:var(--nd-path)}
+  .story-ui{position:absolute;inset:0;pointer-events:none;padding:86px 0 24px}
+  .story-ui .wrap{position:relative;height:100%;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+  .story-head{max-width:470px;width:fit-content;background:color-mix(in oklab,var(--nd-bg2) 80%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid color-mix(in oklab,var(--nd-line) 85%,transparent);border-radius:var(--nd-r);padding:18px 22px 20px;pointer-events:auto}
+  .story-head h2{font-size:clamp(1.7rem,3.3vw,2.7rem);margin:10px 0 0;font-weight:800;letter-spacing:-.035em}
+  .story-head p{margin:8px 0 0;font-size:.96rem}
+  .story-card{max-width:440px;pointer-events:auto;background:color-mix(in oklab,var(--nd-surface) 88%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid color-mix(in oklab,var(--nd-line) 85%,transparent);border-radius:var(--nd-r);padding:16px 20px 18px;box-shadow:0 20px 50px -30px rgba(14,10,30,.6)}
+  .s-labels{display:flex;justify-content:space-between;gap:4px;font-size:.7rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin:8px 0 2px;color:var(--nd-text)}
+  .s-labels span.on{color:var(--nd-orange)}
+  .wa-light .s-labels span.on{color:#b13d0d}
+  .scene-steps{position:relative;min-height:156px;margin:6px 0 0!important;padding:0!important;list-style:none}
+  .scene-step{margin:0!important;padding:0!important}
+  .scene-step{position:absolute;inset:0 0 auto 0;opacity:0;transform:translateY(14px);transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+  .scene-step.on{opacity:1;transform:none;pointer-events:auto}
+  .scene-step .n{font-family:var(--nd-display);font-weight:800;font-size:2.1rem;line-height:1;color:var(--nd-orange);font-variant-numeric:tabular-nums}
+  .wa-light .scene-step .n{color:#b13d0d}
+  .scene-step h3{font-family:var(--nd-sans);font-size:1.18rem;font-weight:700;margin:6px 0 6px;letter-spacing:-.01em}
+  .scene-step p{font-size:.93rem;line-height:1.55}
+  @media (max-width:760px){
+    .story-ui{padding:76px 0 14px}
+    .story-head{padding:12px 16px 14px}
+    .story-head h2{font-size:1.42rem}
+    .story-head p{display:none}
+    .story-card{max-width:none;padding:12px 14px 14px}
+    .s-labels{font-size:.6rem;letter-spacing:0}
+    .scene-steps{min-height:134px}
+    .scene-step .n{font-size:1.6rem}
+    .scene-step h3{font-size:1.04rem}
+    .scene-step p{font-size:.87rem}
+  }
+  @media (max-width:340px){.s-labels{display:none}}
+
+  /* statistik + testimoni */
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:clamp(40px,6vw,70px)}
+  .stat{padding:22px;border-radius:var(--nd-r);border:1px solid var(--nd-line);background:var(--nd-surface)}
+  .stat b{display:block;font-family:var(--nd-display);font-size:clamp(2rem,3.6vw,3rem);font-weight:800;color:var(--nd-ink);line-height:1;letter-spacing:-.03em}
+  .stat>span{font-size:.9rem}
+  @media (max-width:860px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:380px){.stat{padding:16px}}
+  .quote{border-radius:calc(var(--nd-r) + 6px);padding:clamp(22px,4vw,40px);background:linear-gradient(135deg,color-mix(in oklab,var(--nd-orange) 14%,transparent),transparent 60%),var(--nd-surface);border:1px solid var(--nd-line);height:100%;box-sizing:border-box}
+  .quote p{font-family:var(--nd-display);font-size:clamp(1.15rem,2vw,1.6rem);font-weight:700;color:var(--nd-ink);line-height:1.3;letter-spacing:-.02em;margin:12px 0 20px}
+  .who{display:flex;align-items:center;gap:12px}
+  .who b{display:block;color:var(--nd-ink)}
+  .who small{font-size:.84rem}
+  wa-avatar{--size:46px;--background-color:var(--nd-orange);--text-color:#1b1426}
+
+  /* harga */
+  .price-toggle{display:flex;justify-content:center;margin-bottom:30px}
+  .price-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:stretch}
+  .plan{height:100%}
+  .plan::part(base){height:100%}
+  .plan::part(body){display:flex;flex-direction:column;gap:12px;height:100%}
+  .plan.best::part(base){border-color:var(--nd-orange);box-shadow:0 0 0 1px var(--nd-orange),0 30px 60px -36px rgba(255,122,47,.6)}
+  .plan h3{font-size:1.3rem;font-weight:800}
+  .price b{font-family:var(--nd-display);font-size:2.3rem;font-weight:800;color:var(--nd-ink);letter-spacing:-.03em}
+  .price span{font-size:.88rem}
+  .plan ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:.94rem}
+  .plan li{display:flex;gap:10px}
+  .plan li svg{flex:0 0 auto;margin-top:4px;color:var(--nd-orange)}
+  .plan .go{margin-top:auto}
+  .plan .go wa-button{width:100%}
+  @media (max-width:960px){.price-grid{grid-template-columns:minmax(0,1fr);max-width:520px;margin:0 auto}}
+
+  /* FAQ */
+  .faq-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(24px,5vw,64px)}
+  .faq-list{display:grid;gap:10px}
+  @media (max-width:860px){.faq-grid{grid-template-columns:minmax(0,1fr)}}
+
+  /* CTA + form */
+  .cta{border-radius:calc(var(--nd-r) + 12px);overflow:hidden;position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);padding:clamp(24px,5vw,60px);
+    background:radial-gradient(80% 120% at 100% 0%,#ff9d5c 0%,#e8501a 32%,#7a1f3d 72%,#2a1033 100%);color:#fff}
+  .cta h2{color:#fff;font-size:clamp(2rem,4vw,3.2rem);font-weight:800;letter-spacing:-.035em}
+  .cta .eyebrow{color:#ffe1cf}
+  .cta p.big{font-size:1.06rem;opacity:.92;margin-top:16px;max-width:30em}
+  .cta-list{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:8px;font-weight:600}
+  .cta-list li{display:flex;gap:10px;align-items:center}
+  .form-card{background:var(--nd-surface);color:var(--nd-text);border-radius:var(--nd-r);padding:clamp(18px,3vw,28px);display:grid;gap:14px;box-shadow:0 30px 60px -30px rgba(0,0,0,.6)}
+  .form-card h3{font-size:1.3rem;font-weight:800}
+  .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+  @media (max-width:900px){.cta{grid-template-columns:minmax(0,1fr)}}
+  @media (max-width:480px){.two{grid-template-columns:minmax(0,1fr)}}
+
+  /* footer */
+  footer{border-top:1px solid var(--nd-line);padding:56px 0 34px}
+  .foot{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(0,1fr));gap:28px}
+  .foot h4{font-family:var(--nd-sans);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px}
+  .foot ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:.94rem}
+  .foot a{text-decoration:none;color:var(--nd-text)}
+  .foot a:hover{color:var(--nd-ink)}
+  .legal{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;margin-top:40px;padding-top:22px;border-top:1px solid var(--nd-line);font-size:.86rem}
+  .built{display:inline-flex;align-items:center;gap:8px}
+  .built::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--nd-orange)}
+  @media (max-width:860px){.foot{grid-template-columns:repeat(2,minmax(0,1fr))}.foot>div:first-child{grid-column:1/-1}}
+
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion: reduce){.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#utama">Lewati ke konten</a>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Nada, ke atas halaman">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff7a2f"/><stop offset="1" stop-color="#ff3d8b"/></linearGradient></defs><rect width="40" height="40" rx="12" fill="url(#lg)"/><path d="M10 26V14m5 16V10m5 18V12m5 14V16m5 6v-4" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>
+      Nada
+    </a>
+    <ul class="nav-links">
+      <li><a href="#fitur">Fitur</a></li>
+      <li><a href="#studio">Panggung</a></li>
+      <li><a href="#perjalanan">Perjalanan band</a></li>
+      <li><a href="#harga">Tiket</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-act">
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="Ganti tema terang/gelap">
+        <svg class="i-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="i-moon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z"/></svg>
+      </button>
+      <wa-button class="nav-cta" variant="brand" size="s" pill data-ticket>Beli tiket</wa-button>
+      <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="Buka menu" aria-controls="navDrawer">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<wa-drawer id="navDrawer" label="Menu" placement="end" light-dismiss>
+  <ul class="drawer-links">
+    <li><a href="#fitur">Fitur</a></li>
+    <li><a href="#studio">Panggung</a></li>
+    <li><a href="#perjalanan">Perjalanan band</a></li>
+    <li><a href="#harga">Tiket</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#daftar">Daftarkan band</a></li>
+  </ul>
+</wa-drawer>
+
+<main id="utama">
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div>
+        <wa-badge variant="brand" appearance="filled" pill attention="pulse">LIVE</wa-badge>
+        <span class="eyebrow" style="margin-left:10px">Nada Fest · Jakarta · 14–16 Nov</span>
+        <h1>Panggung indie, dari gang <span class="grad">sampai jutaan layar.</span></h1>
+        <p class="lead">Nada adalah festival musik sekaligus aplikasi siaran langsung untuk band indie Indonesia. Daftar, soundcheck, manggung, tayang live, lalu rilis rekamannya, semuanya di satu tempat.</p>
+        <div class="cta-row">
+          <wa-button variant="brand" size="l" pill data-ticket>Beli tiket festival</wa-button>
+          <wa-button appearance="outlined" size="l" pill href="#daftar">Daftarkan band-mu</wa-button>
+        </div>
+        <div class="hero-meta">
+          <div><b class="num">64</b><span>band, 3 panggung</span></div>
+          <div><b class="num">38</b><span>kota terhubung</span></div>
+          <div><b class="num">80%</b><span>bagi hasil ke band</span></div>
+        </div>
+      </div>
+      <div class="stage" id="heroStage">
+        <canvas id="heroCanvas" role="img" aria-label="Panggung festival 3D bergaya isometrik: menara speaker, rig lampu yang berdenyut mengikuti tempo, penonton, dan kabel oranye menuju meja mixing"></canvas>
+        <div class="fallback" aria-hidden="true"></div>
+        <div class="stage-top">
+          <span class="chip glass"><wa-badge variant="danger" pill attention="pulse">●</wa-badge> <span id="heroWatch" class="num">12.480</span> menonton</span>
+          <span class="chip glass" id="heroBand">Layang Senyap · Panggung Utama</span>
+        </div>
+        <div class="stage-panel glass">
+          <div>
+            <wa-slider id="heroBpm" min="70" max="170" step="1" value="118"><span slot="label" class="lbl"><span>Tempo lampu</span><output id="heroBpmOut" class="num">118 BPM</output></span></wa-slider>
+          </div>
+          <div>
+            <wa-radio-group id="heroColor" class="swatches" name="heroColor" value="senja" orientation="horizontal" size="s">
+              <span slot="label" class="lbl">Warna lampu</span>
+              <wa-radio appearance="button" value="senja"><span class="sw" style="--c:#ff7a2f"></span><span class="sw-l">Senja</span></wa-radio>
+              <wa-radio appearance="button" value="magenta"><span class="sw" style="--c:#ff3d8b"></span><span class="sw-l">Magenta</span></wa-radio>
+              <wa-radio appearance="button" value="toska"><span class="sw" style="--c:#1fc8b8"></span><span class="sw-l">Toska</span></wa-radio>
+              <wa-radio appearance="button" value="ungu"><span class="sw" style="--c:#7c5cff"></span><span class="sw-l">Ungu</span></wa-radio>
+            </wa-radio-group>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FITUR -->
+  <section class="sec alt" id="fitur">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div><span class="eyebrow">Kenapa Nada</span><h2>Semua yang band butuhkan untuk naik panggung.</h2></div>
+        <p>Kami membangun Nada bersama 200 band dari Medan sampai Kupang. Hasilnya satu aplikasi yang mengurus panggung, penonton, dan pendapatan, supaya kamu bisa fokus bermain.</p>
+      </div>
+      <div class="feat-grid">
+        <wa-card class="feat reveal">
+          <div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/></svg></div>
+          <h3>Siaran multi-kamera</h3>
+          <p>Tiga kamera, satu ponsel sebagai pengarah. Penonton di rumah bisa memilih sudut favoritnya sendiri.</p>
+          <div class="tags"><wa-tag size="s" variant="brand" appearance="filled-outlined" pill>Hingga 1080p</wa-tag><wa-tag size="s" pill>Latensi rendah</wa-tag></div>
+        </wa-card>
+        <wa-card class="feat reveal">
+          <div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9a2 2 0 0 0 0 6v3h18v-3a2 2 0 0 1 0-6V6H3z"/><path d="M14 6v12" stroke-dasharray="2 2"/></svg></div>
+          <h3>Tiket &amp; merch</h3>
+          <p>Jual tiket festival, tiket siaran, dan kaos band dari satu halaman. Pembeli bayar lewat QRIS atau e-wallet.</p>
+          <div class="tags"><wa-tag size="s" variant="brand" appearance="filled-outlined" pill>QRIS</wa-tag><wa-tag size="s" pill>Kode promo</wa-tag></div>
+        </wa-card>
+        <wa-card class="feat reveal">
+          <div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M10 19v-8M16 19V9M22 19H2"/><circle cx="16" cy="5" r="2"/></svg></div>
+          <h3>Bagi hasil transparan</h3>
+          <p>80% pendapatan tiket siaran langsung masuk ke rekening band setiap Jumat, lengkap dengan laporan per kota.</p>
+          <div class="tags"><wa-tag size="s" variant="brand" appearance="filled-outlined" pill>Cair mingguan</wa-tag></div>
+        </wa-card>
+        <wa-card class="feat reveal">
+          <div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v3M21 12h-3"/></svg></div>
+          <h3>Rilis rekaman live</h3>
+          <p>Audio multitrack direkam otomatis. Mixing ringan dari tim kami, lalu rilis ke platform streaming dalam tujuh hari.</p>
+          <div class="tags"><wa-tag size="s" variant="brand" appearance="filled-outlined" pill>Multitrack</wa-tag><wa-tag size="s" pill>Distribusi</wa-tag></div>
+        </wa-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- STUDIO PANGGUNG: komponen WA mengendalikan 3D -->
+  <section class="sec studio" id="studio">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div><span class="eyebrow">Ruang kendali panggung</span><h2>Atur panggungmu sendiri, langsung di layar.</h2></div>
+        <p>Inilah ruang kendali yang dipakai kru Nada saat siaran. Setiap kontrol Web Awesome di panel kanan mengubah panggung 3D secara langsung: tempo lampu, warna, penonton, konfeti, dan band yang tampil.</p>
+      </div>
+      <div class="studio-grid">
+        <div class="stage" id="studioStage">
+          <canvas id="studioCanvas" role="img" aria-label="Pratinjau panggung 3D yang dikendalikan panel di sebelahnya"></canvas>
+          <div class="fallback" aria-hidden="true"></div>
+          <div class="stage-top">
+            <span class="chip glass" id="studioChip">Kamera isometrik</span>
+            <span class="chip glass"><span>Energi</span>&nbsp;<b id="energyChip" class="num">78%</b></span>
+          </div>
+        </div>
+        <wa-card class="ctl-card ctl">
+          <wa-tab-group id="studioTabs">
+            <wa-tab slot="nav" panel="panggung">Panggung</wa-tab>
+            <wa-tab slot="nav" panel="lineup">Line-up</wa-tab>
+            <wa-tab-panel name="panggung">
+              <div class="ctl-stack">
+                <div>
+                  <wa-slider id="bpm" label="Tempo lampu (BPM)" hint="Seberapa cepat rig lampu dan penonton berdenyut." min="70" max="170" step="1" value="118" with-tooltip with-markers></wa-slider>
+                </div>
+                <div>
+                  <wa-radio-group id="color" class="swatches" name="color" value="senja" orientation="horizontal" size="s" label="Warna lampu panggung">
+                    <wa-radio appearance="button" value="senja"><span class="sw" style="--c:#ff7a2f"></span><span class="sw-l">Senja</span></wa-radio>
+                    <wa-radio appearance="button" value="magenta"><span class="sw" style="--c:#ff3d8b"></span><span class="sw-l">Magenta</span></wa-radio>
+                    <wa-radio appearance="button" value="toska"><span class="sw" style="--c:#1fc8b8"></span><span class="sw-l">Toska</span></wa-radio>
+                    <wa-radio appearance="button" value="ungu"><span class="sw" style="--c:#7c5cff"></span><span class="sw-l">Ungu</span></wa-radio>
+                  </wa-radio-group>
+                </div>
+                <div class="switch-row" style="align-items:center">
+                  <wa-color-picker id="picker" label="Warna kustom" value="#ff7a2f" swatches="#ff7a2f; #ff3d8b; #1fc8b8; #7c5cff; #ffd23f; #4ade80" without-format-toggle size="s"></wa-color-picker>
+                  <wa-switch id="crowd" checked>Penonton</wa-switch>
+                  <wa-switch id="confetti">Hujan konfeti</wa-switch>
+                </div>
+              </div>
+            </wa-tab-panel>
+            <wa-tab-panel name="lineup">
+              <div class="ctl-stack">
+                <wa-radio-group id="band" class="band-list" name="band" value="0" label="Band yang tampil (kamera beralih ke layar LED)">
+                  <wa-radio value="0"><span class="bl"><b>Layang Senyap</b><small>19.30 · Shoegaze</small></span></wa-radio>
+                  <wa-radio value="1"><span class="bl"><b>Kunang Beton</b><small>20.45 · Post-punk</small></span></wa-radio>
+                  <wa-radio value="2"><span class="bl"><b>Pesisir Neon</b><small>21.40 · Synth-pop</small></span></wa-radio>
+                  <wa-radio value="3"><span class="bl"><b>Rimba Dengung</b><small>22.35 · Stoner rock</small></span></wa-radio>
+                </wa-radio-group>
+                <div>
+                  <div class="energy"><span>Seberapa hype kamu?</span><span id="hypeOut" class="num">4 / 5</span></div>
+                  <wa-rating id="hype" label="Tingkat hype penonton" value="4" max="5"></wa-rating>
+                </div>
+              </div>
+            </wa-tab-panel>
+          </wa-tab-group>
+          <div>
+            <div class="energy"><span>Energi penonton</span><span id="energyOut" class="num">78%</span></div>
+            <wa-progress-bar id="energy" value="78" label="Energi penonton"></wa-progress-bar>
+          </div>
+          <div class="row">
+            <wa-button variant="brand" pill data-ticket>Pesan tiket band ini</wa-button>
+            <wa-button appearance="plain" pill id="resetBtn">Atur ulang</wa-button>
+          </div>
+        </wa-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERITA GULIR ISOMETRIK -->
+  <section class="story" id="perjalanan" aria-label="Perjalanan satu band di Nada">
+    <div class="story-stage">
+      <canvas id="storyCanvas" role="img" aria-label="Peta isometrik perjalanan band: tokoh musisi berjalan mengikuti jalur oranye dari meja pendaftaran, ruang soundcheck, panggung utama, studio siaran langsung, hingga toko rilisan saat halaman digulir"></canvas>
+      <div class="story-fallback" aria-hidden="true">
+        <svg viewBox="0 0 900 360" id="storySvg">
+          <path d="M80 250 L250 130 L450 250 L650 130 L820 250" fill="none" stroke="#ff7a2f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="14 12"/>
+          <g><circle class="node on" cx="80" cy="250" r="34"/><circle class="node" cx="250" cy="130" r="34"/><circle class="node" cx="450" cy="250" r="34"/><circle class="node" cx="650" cy="130" r="34"/><circle class="node" cx="820" cy="250" r="34"/></g>
+        </svg>
+      </div>
+      <div class="story-ui">
+        <div class="wrap">
+          <div class="story-head">
+            <span class="eyebrow">Satu band, lima babak</span>
+            <h2>Dari formulir sampai rilisan.</h2>
+            <p>Gulir untuk mengikuti Sekar, gitaris Layang Senyap, melewati lima pemberhentian di Nada.</p>
+          </div>
+          <div class="story-card" id="storyCard">
+            <wa-progress-bar id="storyProg" value="0" label="Kemajuan cerita" style="--track-height:6px"></wa-progress-bar>
+            <div class="s-labels" aria-hidden="true"><span class="on">Daftar</span><span>Soundcheck</span><span>Manggung</span><span>Live</span><span>Rilis</span></div>
+            <ol class="scene-steps" aria-live="polite">
+              <li class="scene-step on"><div class="n">01</div><h3>Daftar dalam sepuluh menit</h3><p>Unggah dua lagu demo, foto band, dan kota asal. Kurator Nada membalas dalam lima hari kerja.</p></li>
+              <li class="scene-step"><div class="n">02</div><h3>Soundcheck bersama kru</h3><p>Slot 30 menit di ruang latihan mitra. Sound engineer mencatat setelan dan menyimpannya untuk panggung.</p></li>
+              <li class="scene-step"><div class="n">03</div><h3>Manggung di festival</h3><p>Rig lampu, monitor, dan backline sudah siap. Kamu cukup bawa gitar dan semangat.</p></li>
+              <li class="scene-step"><div class="n">04</div><h3>Tayang live ke 38 kota</h3><p>Tiga kamera menyiarkan penampilanmu. Penonton di rumah membeli tiket siaran dan mengirim dukungan.</p></li>
+              <li class="scene-step"><div class="n">05</div><h3>Rilis rekaman live</h3><p>Audio multitrack di-mix ulang, lalu terbit di platform streaming dan rak vinyl toko mitra.</p></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATISTIK + TESTIMONI -->
+  <section class="sec alt" id="testimoni">
+    <div class="wrap">
+      <div class="stats" id="stats">
+        <div class="stat reveal"><b class="num" data-count="1240">0</b><span>band terdaftar sejak 2024</span></div>
+        <div class="stat reveal"><b class="num"><span data-count="38">0</span></b><span>kota dengan penonton siaran</span></div>
+        <div class="stat reveal"><b class="num"><span data-count="2.4" data-dec="1">0</span> jt</b><span>tiket siaran terjual</span></div>
+        <div class="stat reveal"><b class="num"><span data-count="80">0</span>%</b><span>pendapatan siaran untuk band</span></div>
+      </div>
+      <div class="sec-head reveal">
+        <div><span class="eyebrow">Kata para musisi</span><h2>Mereka sudah naik panggung lewat Nada.</h2></div>
+        <p>Semua nama band dan musisi di halaman ini fiktif, dibuat untuk keperluan template.</p>
+      </div>
+      <wa-carousel class="reveal" pagination navigation loop mouse-dragging slides-per-page="1" aria-label="Testimoni musisi">
+        <wa-carousel-item>
+          <div class="quote">
+            <wa-rating value="5" readonly label="Rating 5 dari 5" size="s"></wa-rating>
+            <p>“Pertama kali manggung di depan ribuan orang, dan ibu saya di Pontianak menonton langsung dari ponselnya. Bagi hasilnya masuk hari Jumat, tepat waktu.”</p>
+            <div class="who"><wa-avatar initials="SA" label="Sekar Ayuningtyas"></wa-avatar><div><b>Sekar Ayuningtyas</b><small>Gitaris, Layang Senyap · Bandung</small></div></div>
+          </div>
+        </wa-carousel-item>
+        <wa-carousel-item>
+          <div class="quote">
+            <wa-rating value="5" readonly label="Rating 5 dari 5" size="s"></wa-rating>
+            <p>“Soundcheck-nya serius. Setelan yang kami simpan di ruang latihan dipakai lagi di panggung, jadi kami tidak kaget waktu tampil.”</p>
+            <div class="who"><wa-avatar initials="DR" label="Dimas Raharjo" style="--background-color:#1fc8b8"></wa-avatar><div><b>Dimas Raharjo</b><small>Drummer, Kunang Beton · Surabaya</small></div></div>
+          </div>
+        </wa-carousel-item>
+        <wa-carousel-item>
+          <div class="quote">
+            <wa-rating value="4" readonly label="Rating 4 dari 5" size="s"></wa-rating>
+            <p>“Rekaman live kami terbit seminggu setelah festival. Lagu kedua sekarang jadi yang paling banyak diputar di katalog kami.”</p>
+            <div class="who"><wa-avatar initials="NW" label="Nadia Wulandari" style="--background-color:#7c5cff;--text-color:#fff"></wa-avatar><div><b>Nadia Wulandari</b><small>Vokalis, Pesisir Neon · Makassar</small></div></div>
+          </div>
+        </wa-carousel-item>
+      </wa-carousel>
+    </div>
+  </section>
+
+  <!-- HARGA -->
+  <section class="sec" id="harga">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div><span class="eyebrow">Tiket Nada Fest</span><h2>Datang langsung atau tonton dari rumah.</h2></div>
+        <p>Harga sudah termasuk pajak. Pembelian berempat otomatis hemat 15% dan tiketnya bisa dikirim ke teman lewat aplikasi.</p>
+      </div>
+      <div class="price-toggle reveal">
+        <wa-radio-group id="qty" name="qty" value="1" orientation="horizontal" label="Jumlah pembelian" class="swatches">
+          <wa-radio appearance="button" value="1">Satuan</wa-radio>
+          <wa-radio appearance="button" value="4">Berempat (hemat 15%)</wa-radio>
+        </wa-radio-group>
+      </div>
+      <div class="price-grid">
+        <wa-card class="plan reveal">
+          <h3>Siaran Online</h3>
+          <p>Tonton tiga panggung dari mana saja, siaran ulang 7 hari.</p>
+          <div class="price"><b class="num" data-price="49000">Rp49.000</b> <span>/ akses</span></div>
+          <ul>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Pilih sudut kamera sendiri</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Chat dan dukungan untuk band</li>
+          </ul>
+          <div class="go"><wa-button appearance="outlined" pill data-ticket data-plan="online">Pilih Siaran</wa-button></div>
+        </wa-card>
+        <wa-card class="plan best reveal">
+          <div class="row"><h3>Terusan 3 Hari</h3><wa-badge variant="brand" pill>Terlaris</wa-badge></div>
+          <p>Akses semua panggung 14–16 Nov plus siaran online gratis.</p>
+          <div class="price"><b class="num" data-price="450000">Rp450.000</b> <span>/ orang</span></div>
+          <ul>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Gelang RFID, keluar-masuk bebas</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Area depan panggung utama</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Kaos festival edisi terbatas</li>
+          </ul>
+          <div class="go"><wa-button variant="brand" pill data-ticket data-plan="terusan">Pilih Terusan</wa-button></div>
+        </wa-card>
+        <wa-card class="plan reveal">
+          <h3>Harian</h3>
+          <p>Pilih satu hari favoritmu, semua panggung terbuka.</p>
+          <div class="price"><b class="num" data-price="185000">Rp185.000</b> <span>/ orang</span></div>
+          <ul>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Masuk mulai pukul 14.00</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Bisa ditukar hari, maks. H-3</li>
+          </ul>
+          <div class="go"><wa-button appearance="outlined" pill data-ticket data-plan="harian">Pilih Harian</wa-button></div>
+        </wa-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec alt" id="faq">
+    <div class="wrap faq-grid">
+      <div class="reveal">
+        <span class="eyebrow">Pertanyaan umum</span>
+        <h2 style="font-size:clamp(2rem,4vw,3rem);margin-top:12px;font-weight:800">Masih ada yang bikin ragu?</h2>
+        <p style="margin-top:14px">Tim kami membalas di aplikasi setiap hari pukul 09.00–21.00 WIB.</p>
+        <wa-callout variant="brand" appearance="filled" style="margin-top:22px">Band yang lolos kurasi tidak dipungut biaya apa pun untuk tampil.</wa-callout>
+      </div>
+      <div class="faq-list reveal">
+        <wa-details name="faq" summary="Siapa saja yang boleh mendaftar sebagai band?" open>Semua band dan musisi solo independen di Indonesia, belum terikat kontrak label besar, dan punya minimal dua lagu orisinal.</wa-details>
+        <wa-details name="faq" summary="Bagaimana bagi hasil siaran dihitung?">80% pendapatan tiket siaran untuk slot band-mu masuk ke rekening band. Laporan per kota dan per hari bisa diunduh dari aplikasi.</wa-details>
+        <wa-details name="faq" summary="Apakah tiket bisa dipindahtangankan?">Bisa. Kirim tiket ke teman lewat aplikasi Nada hingga H-1, gratis. Nama pemegang tiket otomatis diperbarui.</wa-details>
+        <wa-details name="faq" summary="Kalau internet saya putus saat menonton?">Siaran melanjutkan dari titik terakhir, dan rekaman lengkap tersedia selama tujuh hari setelah festival.</wa-details>
+        <wa-details name="faq" summary="Siapa pemilik hak rekaman live?">Band. Nada hanya memegang lisensi distribusi non-eksklusif selama 12 bulan untuk rekaman yang kamu setujui.</wa-details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA + FORM -->
+  <section class="sec" id="daftar">
+    <div class="wrap">
+      <div class="cta reveal">
+        <div>
+          <span class="eyebrow">Kurasi gelombang 3 dibuka</span>
+          <h2 style="margin-top:12px">Band-mu berikutnya di panggung utama.</h2>
+          <p class="big">Kirim demo sebelum 30 November. Band terpilih tampil di Nada Fest berikutnya dan disiarkan ke seluruh Indonesia.</p>
+          <ul class="cta-list">
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Gratis, tanpa biaya pendaftaran</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Balasan kurator dalam 5 hari kerja</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Soundcheck dan backline disediakan</li>
+          </ul>
+        </div>
+        <form class="form-card" id="bandForm" novalidate>
+          <h3>Daftarkan band</h3>
+          <div class="two">
+            <wa-input name="band" label="Nama band" required minlength="2" autocomplete="organization"></wa-input>
+            <wa-input name="kota" label="Kota asal" required autocomplete="address-level2"></wa-input>
+          </div>
+          <wa-input name="email" type="email" label="Email kontak" required autocomplete="email" placeholder="band@contoh.id"></wa-input>
+          <wa-select name="genre" label="Genre utama" value="indie-pop">
+            <wa-option value="indie-pop">Indie pop</wa-option>
+            <wa-option value="rock">Rock / post-punk</wa-option>
+            <wa-option value="folk">Folk / akustik</wa-option>
+            <wa-option value="elektronik">Elektronik</wa-option>
+            <wa-option value="lainnya">Lainnya</wa-option>
+          </wa-select>
+          <wa-textarea name="demo" label="Tautan demo" rows="2" placeholder="Tempel tautan lagu demo kalian" required></wa-textarea>
+          <wa-checkbox name="setuju" required>Saya setuju dihubungi kurator Nada.</wa-checkbox>
+          <wa-button type="submit" variant="brand" pill>Kirim pendaftaran</wa-button>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="brand" href="#top" aria-label="Nada, ke atas halaman"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="12" fill="url(#lg)"/><path d="M10 26V14m5 16V10m5 18V12m5 14V16m5 6v-4" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>Nada</a>
+        <p style="margin-top:14px;max-width:320px;font-size:.94rem">Festival dan siaran langsung untuk band indie Indonesia. Merek, band, dan musisi di halaman ini fiktif.</p>
+      </div>
+      <div><h4>Festival</h4><ul><li><a href="#studio">Panggung</a></li><li><a href="#harga">Tiket</a></li><li><a href="#perjalanan">Perjalanan band</a></li></ul></div>
+      <div><h4>Band</h4><ul><li><a href="#daftar">Daftar</a></li><li><a href="#fitur">Bagi hasil</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+      <div><h4>Kontak</h4><ul><li><a href="#daftar">halo@nada.contoh</a></li><li>Jakarta Selatan</li></ul></div>
+    </div>
+    <div class="legal">
+      <span>© 2026 Nada Kolektif. Merek fiktif untuk keperluan template.</span>
+      <span class="built">Dibangun dengan Web Awesome + three.js</span>
+    </div>
+  </div>
+</footer>
+
+<!-- DIALOG TIKET -->
+<wa-dialog id="ticketDlg" label="Beli tiket Nada Fest" light-dismiss>
+  <form id="ticketForm" novalidate style="display:grid;gap:14px">
+    <wa-input name="nama" label="Nama lengkap" required minlength="3" autocomplete="name"></wa-input>
+    <wa-input name="email" type="email" label="Email" required autocomplete="email" hint="E-tiket dikirim ke email ini."></wa-input>
+    <div class="two">
+      <wa-select id="tType" name="jenis" label="Jenis tiket" value="terusan">
+        <wa-option value="harian">Harian</wa-option>
+        <wa-option value="terusan">Terusan 3 hari</wa-option>
+        <wa-option value="online">Siaran online</wa-option>
+      </wa-select>
+      <wa-number-input id="tQty" name="jumlah" label="Jumlah" value="1" min="1" max="8"></wa-number-input>
+    </div>
+    <wa-callout variant="neutral" appearance="filled" size="s"><span>Total: <b id="tTotal" class="num">Rp450.000</b></span></wa-callout>
+    <wa-checkbox name="setuju" required>Saya membaca syarat dan ketentuan festival.</wa-checkbox>
+  </form>
+  <wa-button slot="footer" appearance="plain" data-dialog="close">Batal</wa-button>
+  <wa-button slot="footer" variant="brand" pill id="ticketPay">Bayar dengan QRIS</wa-button>
+</wa-dialog>
+
+<wa-toast id="toaster" placement="bottom-center"></wa-toast>
+
+<template id="festFallback">
+  <svg viewBox="0 0 600 460" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="fbBeam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff7a2f" stop-opacity=".55"/><stop offset="1" stop-color="#ff7a2f" stop-opacity="0"/></linearGradient></defs>
+    <path d="M60 330 L300 210 L560 330 L300 450Z" fill="#2a2140"/>
+    <path d="M150 250 L300 175 L450 250 L300 325Z" fill="#3b3156"/>
+    <path d="M150 250 V270 L300 345 V325Z" fill="#241c38"/><path d="M450 250 V270 L300 345 V325Z" fill="#1c152d"/>
+    <path d="M190 120 L300 65 L410 120 V200 L300 255 L190 200Z" fill="#141022"/>
+    <path d="M205 128 L300 80 L395 128 V190 L300 238 L205 190Z" fill="#ff7a2f" opacity=".85"/>
+    <g fill="url(#fbBeam)"><path d="M220 110 L170 330 L250 330Z"/><path d="M300 90 L260 360 L340 360Z"/><path d="M380 110 L350 330 L430 330Z"/></g>
+    <g fill="#191524"><rect x="110" y="200" width="40" height="90"/><rect x="450" y="200" width="40" height="90"/></g>
+    <path d="M430 280 C460 320 420 360 470 390" stroke="#ff7a2f" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <rect x="455" y="385" width="50" height="22" fill="#4a3d66"/>
+    <g fill="#e9e1f7">
+      <circle cx="220" cy="330" r="7"/><circle cx="245" cy="345" r="7"/><circle cx="270" cy="360" r="7"/><circle cx="300" cy="372" r="7"/><circle cx="330" cy="358" r="7"/><circle cx="360" cy="342" r="7"/><circle cx="385" cy="330" r="7"/>
+      <circle cx="235" cy="365" r="7"/><circle cx="262" cy="382" r="7"/><circle cx="292" cy="396" r="7"/><circle cx="322" cy="388" r="7"/><circle cx="352" cy="372" r="7"/>
+    </g>
+  </svg>
+</template>
+
+<script type="module">
+/* ================= UI (Web Awesome) ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const rmq = matchMedia('(prefers-reduced-motion: reduce)');
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const fmtRp = n => 'Rp' + Math.round(n).toLocaleString('id-ID');
+const bus = new EventTarget();
+window.__nada = { bus };
+const root = document.documentElement;
+
+/* toast Web Awesome */
+async function toast(msg, variant = 'brand'){
+  try { await customElements.whenDefined('wa-toast'); await $('#toaster').create(msg, { variant, duration: 4200 }); }
+  catch (e) { console.info(msg); }
+}
+
+/* --- tema: kelas wa-light / wa-dark --- */
+function setTheme(t, save = true){
+  if (t !== 'light') t = 'dark';
+  root.classList.remove('wa-light', 'wa-dark'); root.classList.add('wa-' + t); root.setAttribute('data-theme', t);
+  $('meta[name="theme-color"]').content = t === 'dark' ? '#0d0a14' : '#fbf6f0';
+  if (save) try { localStorage.setItem('nada-theme', t); } catch (e) {}
+  bus.dispatchEvent(new CustomEvent('theme', { detail: t }));
+}
+$('#themeBtn').addEventListener('click', () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark'));
+
+/* --- menu ponsel (wa-drawer) --- */
+$('#menuBtn').addEventListener('click', () => { $('#navDrawer').open = true; });
+$$('#navDrawer a').forEach(a => a.addEventListener('click', () => { $('#navDrawer').open = false; }));
+
+/* --- state panggung bersama --- */
+const COLORS = { senja: '#ff7a2f', magenta: '#ff3d8b', toska: '#1fc8b8', ungu: '#7c5cff' };
+const BANDS = [
+  { name: 'Layang Senyap', stage: 'Panggung Utama', shirts: ['#f4ede4', '#2c2a3a', '#ff7a2f', '#7c5cff'], color: 'senja' },
+  { name: 'Kunang Beton', stage: 'Panggung Utama', shirts: ['#111111', '#d9d4cc', '#ff3d8b', '#444'], color: 'magenta' },
+  { name: 'Pesisir Neon', stage: 'Panggung Utama', shirts: ['#1fc8b8', '#ffd23f', '#ff3d8b', '#f4ede4'], color: 'toska' },
+  { name: 'Rimba Dengung', stage: 'Panggung Utama', shirts: ['#4a5d2e', '#7a4a2a', '#d9a441', '#222'], color: 'ungu' },
+];
+const state = { bpm: 118, color: COLORS.senja, colorKey: 'senja', crowd: true, confetti: false, band: 0, hype: 4, tab: 'panggung', burst: 0 };
+window.__nada.state = state;
+const energy = () => Math.round(clamp(((state.bpm - 70) / 100) * 45 + state.hype * 9 + (state.crowd ? 6 : -20) + (state.confetti ? 4 : 0), 5, 100));
+
+async function whenReady(...tags){ await Promise.all(tags.map(t => customElements.whenDefined(t))); }
+function readouts(){
+  $('#heroBpmOut').textContent = state.bpm + ' BPM';
+  const e = energy();
+  $('#energyOut').textContent = $('#energyChip').textContent = e + '%';
+  $('#energy').value = e;
+  $('#hypeOut').textContent = state.hype + ' / 5';
+  $('#heroBand').textContent = `${BANDS[state.band].name} · ${BANDS[state.band].stage}`;
+  $('#studioChip').textContent = state.tab === 'lineup' ? `Layar LED · ${BANDS[state.band].name}` : 'Kamera isometrik';
+}
+function syncControls(){
+  const set = (sel, prop, v) => { const el = $(sel); if (el && el[prop] !== v) el[prop] = v; };
+  set('#heroBpm', 'value', state.bpm); set('#bpm', 'value', state.bpm);
+  if (state.colorKey) { set('#heroColor', 'value', state.colorKey); set('#color', 'value', state.colorKey); }
+  else { set('#heroColor', 'value', ''); set('#color', 'value', ''); }
+  set('#picker', 'value', state.color);
+  set('#crowd', 'checked', state.crowd); set('#confetti', 'checked', state.confetti);
+  set('#band', 'value', String(state.band)); set('#hype', 'value', state.hype);
+}
+function emit(){ readouts(); bus.dispatchEvent(new CustomEvent('state', { detail: state })); }
+function patch(p){ Object.assign(state, p); syncControls(); emit(); }
+readouts();
+
+whenReady('wa-slider', 'wa-radio-group', 'wa-switch', 'wa-rating', 'wa-color-picker', 'wa-tab-group').then(() => {
+  ['#heroBpm', '#bpm'].forEach(s => $(s).addEventListener('input', e => patch({ bpm: Math.round(+e.target.value) })));
+  ['#heroColor', '#color'].forEach(s => $(s).addEventListener('change', e => { const k = e.target.value; if (COLORS[k]) patch({ colorKey: k, color: COLORS[k] }); }));
+  $('#picker').addEventListener('change', e => { const v = e.target.value; if (!v) return; const k = Object.keys(COLORS).find(c => COLORS[c].toLowerCase() === v.toLowerCase()) || ''; patch({ color: v, colorKey: k }); });
+  $('#crowd').addEventListener('change', e => { patch({ crowd: e.target.checked }); toast(e.target.checked ? 'Gerbang dibuka, penonton masuk!' : 'Area penonton dikosongkan untuk cek panggung.', 'neutral'); });
+  $('#confetti').addEventListener('change', e => patch({ confetti: e.target.checked }));
+  $('#band').addEventListener('change', e => { const i = +e.target.value; patch({ band: i, colorKey: BANDS[i].color, color: COLORS[BANDS[i].color] }); });
+  $('#hype').addEventListener('change', e => patch({ hype: Math.max(1, Math.round(+e.target.value || 1)) }));
+  $('#studioTabs').addEventListener('wa-tab-show', e => { const n = e.detail && e.detail.name; if (n) patch({ tab: n }); });
+  $('#resetBtn').addEventListener('click', () => patch({ bpm: 118, colorKey: 'senja', color: COLORS.senja, crowd: true, confetti: false, band: 0, hype: 4 }));
+  syncControls();
+});
+
+/* --- dialog tiket --- */
+const PRICE = { harian: 185000, terusan: 450000, online: 49000 };
+const dlg = $('#ticketDlg');
+function ticketTotal(){ const t = $('#tType').value || 'terusan', q = clamp(+$('#tQty').value || 1, 1, 8); const k = q >= 4 ? .85 : 1; $('#tTotal').textContent = fmtRp(PRICE[t] * q * k); }
+$$('[data-ticket]').forEach(b => b.addEventListener('click', async () => {
+  await customElements.whenDefined('wa-dialog');
+  if (b.dataset.plan) { await customElements.whenDefined('wa-select'); $('#tType').value = b.dataset.plan; }
+  const q = +($('#qty') && $('#qty').value) || 1; $('#tQty').value = q;
+  ticketTotal(); dlg.open = true;
+}));
+['#tType', '#tQty'].forEach(s => { $(s).addEventListener('change', ticketTotal); $(s).addEventListener('input', ticketTotal); });
+$('[data-dialog="close"]', dlg).addEventListener('click', () => { dlg.open = false; });
+$('#ticketPay').addEventListener('click', () => {
+  const f = $('#ticketForm');
+  if (!f.reportValidity()) return;
+  const nama = (new FormData(f).get('nama') || '').toString().trim().split(/\s+/)[0];
+  dlg.open = false; f.reset();
+  patch({ confetti: true, burst: state.burst + 1 });
+  toast(`Terima kasih, ${nama}! E-tiket dan kode QRIS sudah dikirim ke email.`, 'success');
+});
+
+/* --- harga: satuan / berempat --- */
+customElements.whenDefined('wa-radio-group').then(() => $('#qty').addEventListener('change', e => {
+  const k = +e.target.value === 4 ? 4 * .85 : 1;
+  $$('[data-price]').forEach(b => b.textContent = fmtRp(Math.round(+b.dataset.price * k / 1000) * 1000));
+  $$('.plan .price span').forEach(s => s.textContent = +e.target.value === 4 ? '/ 4 orang' : (s.closest('.plan').querySelector('[data-price="49000"]') ? '/ akses' : '/ orang'));
+}));
+
+/* --- form pendaftaran band --- */
+$('#bandForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const f = e.currentTarget;
+  if (!f.reportValidity()) { toast('Periksa lagi kolom yang belum terisi.', 'danger'); return; }
+  const band = (new FormData(f).get('band') || '').toString().trim();
+  f.reset(); toast(`Demo ${band} sudah kami terima. Kurator membalas dalam 5 hari kerja.`, 'success');
+});
+
+/* --- statistik berhitung + reveal --- */
+const statIO = new IntersectionObserver(es => es.forEach(en => {
+  if (!en.isIntersecting) return; statIO.unobserve(en.target);
+  $$('[data-count]', en.target).forEach(el => {
+    const end = +el.dataset.count, dec = +(el.dataset.dec || 0);
+    const show = v => el.textContent = v.toLocaleString('id-ID', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+    if (rmq.matches) return show(end);
+    const t0 = performance.now(); const step = now => { const p = Math.min(1, (now - t0) / 1400); show(end * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); }; requestAnimationFrame(step);
+  });
+}), { threshold: .3 });
+statIO.observe($('#stats'));
+const revIO = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); revIO.unobserve(en.target); } }), { rootMargin: '0px 0px -8% 0px' });
+$$('.reveal').forEach(el => revIO.observe(el));
+
+/* --- penonton bertambah --- */
+let watch = 12480;
+setInterval(() => { if (document.hidden || rmq.matches) return; watch += Math.round(Math.random() * 18 - 4); $('#heroWatch').textContent = watch.toLocaleString('id-ID'); }, 2400);
+
+/* ================= 3D ================= */
+function webglOK(){ try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch (e) { return false; } }
+function showFallbacks(){
+  const tpl = $('#festFallback');
+  ['#heroStage', '#studioStage'].forEach(s => { const st = $(s); st.classList.add('no-webgl'); const fb = st.querySelector('.fallback'); if (!fb.firstChild) fb.append(tpl.content.cloneNode(true)); });
+  $('#perjalanan').classList.add('no-webgl');
+}
+let THREE;
+try { if (!webglOK()) throw new Error('no-webgl'); THREE = await import('three'); } catch (err) { showFallbacks(); }
+
+const storySec = $('#perjalanan');
+function storyProgress(){ const r = storySec.getBoundingClientRect(); return clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1); }
+const isDark = () => root.dataset.theme === 'dark';
+
+if (THREE) {
+  const DPR = () => Math.min(window.devicePixelRatio || 1, 2);
+  const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+  const frames = window.__nada.frames = {};
+
+  /* loop render: berhenti di luar layar / tab tersembunyi; saat reduced-motion hanya menggambar bila diminta */
+  function createLoop(el, frame, continuous){
+    let visible = false, raf = 0, last = 0, pending = true;
+    const L = { request(){ pending = true; kick(); } };
+    const run = () => visible && !document.hidden;
+    function tick(now){
+      if (!run()) { raf = 0; last = 0; return; }
+      raf = -1;
+      const dt = last ? Math.min((now - last) / 1000, .05) : .016; last = now; pending = false;
+      frames[el.id] = (frames[el.id] || 0) + 1;
+      frame(dt, now / 1000);
+      if (continuous() || pending) raf = requestAnimationFrame(tick); else { raf = 0; last = 0; }
+    }
+    function kick(){ if (!raf && run()) raf = requestAnimationFrame(tick); }
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) { pending = true; kick(); } }, { rootMargin: '80px' }).observe(el);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) { pending = true; kick(); } });
+    rmq.addEventListener('change', () => L.request());
+    return L;
+  }
+  function makeRenderer(canvas, alpha){
+    const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: !!alpha, powerPreference: 'high-performance' });
+    r.setPixelRatio(DPR()); r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+    r.toneMapping = THREE.ACESFilmicToneMapping; r.outputColorSpace = THREE.SRGBColorSpace;
+    if (alpha) r.setClearColor(0x000000, 0);
+    return r;
+  }
+  function watchSize(el, renderer, onSize){
+    const apply = () => { const w = Math.max(1, el.clientWidth), h = Math.max(1, el.clientHeight); renderer.setPixelRatio(DPR()); renderer.setSize(w, h, false); onSize(w, h); };
+    new ResizeObserver(apply).observe(el); apply();
+  }
+  const std = (c, rough = .8, extra = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0, ...extra });
+  function rng(seed){ return () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+  function radialAlpha(){
+    const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d');
+    const g = x.createRadialGradient(64, 64, 10, 64, 64, 64); g.addColorStop(0, '#fff'); g.addColorStop(.62, '#fff'); g.addColorStop(1, '#000');
+    x.fillStyle = g; x.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c);
+  }
+  const GROUND_ALPHA = radialAlpha();
+
+  /* ---------- Panggung festival (dipakai hero & studio) ---------- */
+  function createFestival(canvas, stageEl, opts){
+    const renderer = makeRenderer(canvas, true);
+    const scene = new THREE.Scene();
+    const cam = new THREE.PerspectiveCamera(30, 1, .5, 200);
+    const hemi = new THREE.HemisphereLight('#c9c2ff', '#2a1f2f', 1.1); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#ffe0c2', 1.5); sun.position.set(12, 22, 14); sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16, near: 2, far: 70 }); sun.shadow.bias = -.0006; sun.shadow.normalBias = .03;
+    scene.add(sun);
+    const wash = new THREE.PointLight('#ff7a2f', 40, 26, 1.6); wash.position.set(0, 6, -1.5); scene.add(wash);
+
+    const ground = new THREE.Mesh(new THREE.CircleGeometry(26, 64), std('#2a2338', 1, { transparent: true, alphaMap: GROUND_ALPHA }));
+    ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+    const field = new THREE.Mesh(new THREE.PlaneGeometry(21, 13.5), std('#332a45', 1)); field.rotation.x = -Math.PI / 2; field.position.set(0, .01, 3.6); field.receiveShadow = true; scene.add(field);
+
+    const box = (w, h, d, mat, x, y, z, parent = scene) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y, z); m.castShadow = m.receiveShadow = true; parent.add(m); return m; };
+    const cyl = (rt, rb, h, mat, x, y, z, seg = 16, parent = scene) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg), mat); m.position.set(x, y, z); m.castShadow = true; parent.add(m); return m; };
+
+    // panggung
+    const mDeck = std('#2a2436', .7), mDeckTop = std('#3e3654', .6), mTruss = std('#9a96ad', .45, { metalness: .6 }), mBlack = std('#16131e', .7), mRoof = std('#1d1929', .8);
+    box(13.4, 1.2, 6.2, mDeck, 0, .6, -6.1); box(13, .08, 5.8, mDeckTop, 0, 1.24, -6.1);
+    box(3.2, .5, 1.2, mDeck, -3.5, .25, -2.5); box(3.2, .5, 1.2, mDeck, 3.5, .25, -2.5); // anak tangga monitor
+    [[-6.7, -3.2], [6.7, -3.2], [-6.7, -9], [6.7, -9]].forEach(([x, z]) => box(.32, 8.6, .32, mTruss, x, 4.3, z));
+    box(13.8, .34, .34, mTruss, 0, 8.4, -3.2); box(13.8, .34, .34, mTruss, 0, 8.4, -9); box(.34, .34, 6.1, mTruss, -6.7, 8.4, -6.1); box(.34, .34, 6.1, mTruss, 6.7, 8.4, -6.1);
+    box(14.4, .16, 6.8, mRoof, 0, 8.7, -6.1);
+    // layar LED
+    const led = document.createElement('canvas'); led.width = 512; led.height = 256; const lx = led.getContext('2d');
+    const ledTex = new THREE.CanvasTexture(led); ledTex.colorSpace = THREE.SRGBColorSpace; ledTex.anisotropy = 4;
+    box(9.6, 4.9, .3, mBlack, 0, 4.6, -8.75);
+    const screen = new THREE.Mesh(new THREE.PlaneGeometry(9.2, 4.5), new THREE.MeshBasicMaterial({ map: ledTex, toneMapped: false })); screen.position.set(0, 4.6, -8.58); scene.add(screen);
+    // rig lampu: 6 kepala + berkas cahaya additive
+    const fixtures = [], beams = [];
+    const beamGeo = new THREE.ConeGeometry(1.5, 10, 24, 1, true); beamGeo.translate(0, -5, 0);
+    for (let i = 0; i < 6; i++) {
+      const x = -5 + i * 2;
+      const g = new THREE.Group(); g.position.set(x, 7.95, -3.35); scene.add(g);
+      const head = new THREE.Mesh(new THREE.CylinderGeometry(.26, .34, .55, 14), mBlack); head.castShadow = true; g.add(head);
+      const lens = new THREE.Mesh(new THREE.CircleGeometry(.26, 16), new THREE.MeshBasicMaterial({ color: '#ffffff', toneMapped: false })); lens.rotation.x = Math.PI / 2; lens.position.y = -.28; g.add(lens);
+      const beam = new THREE.Mesh(beamGeo, new THREE.MeshBasicMaterial({ color: '#ff7a2f', transparent: true, opacity: .16, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, toneMapped: false }));
+      beam.position.y = -.25; g.add(beam);
+      fixtures.push({ g, lens, i }); beams.push(beam);
+    }
+    // menara speaker
+    const woofers = [], mCone = std('#2d2a36', .5), mDust = std('#4b4658', .6);
+    [-8.4, 8.4].forEach(x => {
+      for (let k = 0; k < 3; k++) {
+        box(2, 1.3, 1.6, mBlack, x, .65 + k * 1.32, -4.6);
+        const w = cyl(.46, .46, .1, mCone, x, .65 + k * 1.32, -3.78, 22); w.rotation.x = Math.PI / 2; woofers.push(w);
+        const d = cyl(.16, .16, .12, mDust, x, .65 + k * 1.32, -3.74, 12); d.rotation.x = Math.PI / 2; woofers.push(d);
+      }
+      box(1.8, .5, 1.4, mBlack, x, 5.4, -4.6); // line array kecil
+    });
+    // band di panggung
+    const skinM = std('#c98e64', .6), darkM = std('#1f1b29', .6);
+    const shirtMats = [0, 1, 2, 3].map(() => std('#ffffff', .7));
+    const bandG = new THREE.Group(); scene.add(bandG);
+    function person(parent, x, z, shirt, scale = 1){
+      const p = new THREE.Group(); p.position.set(x, 1.28, z); p.scale.setScalar(scale); parent.add(p);
+      const legs = new THREE.Mesh(new THREE.BoxGeometry(.42, .7, .26), darkM); legs.position.y = .35; legs.castShadow = true; p.add(legs);
+      const body = new THREE.Mesh(new THREE.CapsuleGeometry(.27, .5, 3, 10), shirt); body.position.y = 1.05; body.castShadow = true; p.add(body);
+      const head = new THREE.Mesh(new THREE.SphereGeometry(.23, 14, 10), skinM); head.position.y = 1.65; head.castShadow = true; p.add(head);
+      const hair = new THREE.Mesh(new THREE.SphereGeometry(.245, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2), darkM); hair.position.y = 1.68; p.add(hair);
+      return p;
+    }
+    const singer = person(bandG, 0, -4.1, shirtMats[0]);
+    const stand = cyl(.03, .03, 1.5, mTruss, 0, 2.0, -3.6, 6, bandG); const mic = cyl(.06, .06, .16, darkM, 0, 2.78, -3.68, 8, bandG); mic.rotation.x = .9;
+    const gtr = person(bandG, -3.2, -5.2, shirtMats[1]); gtr.rotation.y = .35;
+    const bass = person(bandG, 3.2, -5.2, shirtMats[2]); bass.rotation.y = -.35;
+    [gtr, bass].forEach((p, k) => { const gb = new THREE.Mesh(new THREE.BoxGeometry(.62, .34, .1), std(k ? '#d9a441' : '#ff3d8b', .4)); gb.position.set(.05, .9, .3); gb.rotation.z = .5; p.add(gb); const nk = new THREE.Mesh(new THREE.BoxGeometry(.7, .07, .05), darkM); nk.position.set(-.42, 1.12, .3); nk.rotation.z = .5; p.add(nk); });
+    box(3.2, .5, 2.4, mDeck, 0, 1.5, -7.3, bandG);
+    const drummer = person(bandG, 0, -7.6, shirtMats[3], .9); drummer.position.y = 1.75;
+    const mDrum = std('#e8e2f2', .5), mShell = std('#ff7a2f', .45);
+    const kick = cyl(.5, .5, .45, mShell, 0, 2.25, -6.8, 20, bandG); kick.rotation.x = Math.PI / 2;
+    [[-.75, 2.35, -6.9], [.75, 2.35, -6.9], [-.5, 2.75, -7.05], [.5, 2.75, -7.05]].forEach(([x, y, z]) => cyl(.25, .25, .25, mShell, x, y, z, 16, bandG));
+    [[-1.1, 3.1, -7.2], [1.1, 3.2, -7.3]].forEach(([x, y, z]) => { cyl(.42, .42, .02, std('#e0b84a', .3, { metalness: .7 }), x, y, z, 20, bandG); cyl(.02, .02, 1.4, mTruss, x, y - .7, z, 6, bandG); });
+    // monitor wedge
+    [-1.5, 1.5].forEach(x => { const w = box(1, .45, .7, mBlack, x, 1.5, -3.6); w.rotation.x = -.35; });
+    // pagar depan
+    for (let x = -6; x <= 6; x += 1.5) box(1.45, .9, .08, std('#8b879c', .5, { metalness: .4 }), x, .45, -2.2);
+    // meja mixing (FOH)
+    const foh = new THREE.Group(); foh.position.set(3.6, 0, 6.4); scene.add(foh);
+    box(3.4, .3, 2.6, mDeck, 0, .15, 0, foh);
+    const desk = box(2.4, .9, 1.1, mBlack, 0, .75, -.2, foh);
+    const deskTop = box(2.3, .06, 1.0, std('#3b3550', .5), 0, 1.24, -.2, foh); deskTop.rotation.x = .22;
+    const faderM = new THREE.MeshBasicMaterial({ color: '#ff7a2f', toneMapped: false });
+    for (let i = 0; i < 9; i++) { const f = new THREE.Mesh(new THREE.BoxGeometry(.08, .05, .16), faderM); f.position.set(-1 + i * .25, 1.3, -.2 + (i % 3) * .08); foh.add(f); }
+    [[-1.6, -1.2], [1.6, -1.2], [-1.6, 1.2], [1.6, 1.2]].forEach(([x, z]) => cyl(.05, .05, 3.2, mTruss, x, 1.75, z, 6, foh));
+    box(3.6, .12, 2.8, std('#f4ede4', .8), 0, 3.4, 0, foh);
+    const eng = person(foh, 0, .75, std('#ff7a2f', .7)); eng.position.y = .3; eng.rotation.y = Math.PI;
+    // kabel oranye panggung -> meja mixing + denyut sinyal
+    const cablePts = [[6.0, -3.4], [6.3, -1.4], [5.4, 1.4], [4.4, 3.9], [3.9, 5.1]].map(([x, z]) => new THREE.Vector3(x, .1, z));
+    const cable = new THREE.CatmullRomCurve3(cablePts);
+    const cableMat = new THREE.MeshStandardMaterial({ color: '#ff7a2f', emissive: '#ff7a2f', emissiveIntensity: .55, roughness: .45 });
+    const cableMesh = new THREE.Mesh(new THREE.TubeGeometry(cable, 80, .1, 8, false), cableMat); cableMesh.castShadow = true; scene.add(cableMesh);
+    const pulses = []; const pulseMat = new THREE.MeshBasicMaterial({ color: '#ffd2a8', toneMapped: false });
+    for (let i = 0; i < 4; i++) { const s = new THREE.Mesh(new THREE.SphereGeometry(.17, 10, 8), pulseMat); scene.add(s); pulses.push({ s, u: i / 4 }); }
+    const cableSamples = Array.from({ length: 60 }, (_, i) => cable.getPointAt(i / 59));
+
+    // penonton (instancing)
+    const r = rng(7), people = [];
+    for (let z = -1.4; z <= 9.8; z += .74) for (let x = -9.4; x <= 9.4; x += .74) {
+      const px = x + (r() - .5) * .45, pz = z + (r() - .5) * .45;
+      if ((px / 10.2) ** 2 + ((pz - 4) / 7.2) ** 2 > 1) continue;
+      if (px > 1.5 && px < 5.7 && pz > 4.7 && pz < 8) continue;
+      if (cableSamples.some(q => (q.x - px) ** 2 + (q.z - pz) ** 2 < .7)) continue;
+      if (r() < .16) continue;
+      people.push({ x: px, z: pz, off: r() * 2, s: .85 + r() * .3, hands: r(), rot: (r() - .5) * .6 });
+    }
+    const N = people.length;
+    const bodyGeo = new THREE.CapsuleGeometry(.2, .42, 2, 8), headGeo = new THREE.SphereGeometry(.15, 10, 8), handGeo = new THREE.SphereGeometry(.07, 6, 5);
+    const crowdBody = new THREE.InstancedMesh(bodyGeo, std('#ffffff', .75), N), crowdHead = new THREE.InstancedMesh(headGeo, std('#ffffff', .6), N), crowdHands = new THREE.InstancedMesh(handGeo, std('#ffffff', .6), N * 2);
+    crowdBody.castShadow = true; crowdHead.castShadow = true;
+    const SHIRTS = ['#f4ede4', '#2c2a3a', '#ff7a2f', '#7c5cff', '#1fc8b8', '#ff3d8b', '#ffd23f', '#3b5bdb', '#e9e1f7', '#55506a'].map(c => new THREE.Color(c));
+    const SKIN = ['#e0b08a', '#c98e64', '#a86f48', '#8a5a3a', '#f0c9a0'].map(c => new THREE.Color(c));
+    people.forEach((p, i) => { crowdBody.setColorAt(i, SHIRTS[i % SHIRTS.length]); const sk = SKIN[(i * 7) % SKIN.length]; crowdHead.setColorAt(i, sk); crowdHands.setColorAt(i * 2, sk); crowdHands.setColorAt(i * 2 + 1, sk); });
+    const crowdG = new THREE.Group(); crowdG.add(crowdBody, crowdHead, crowdHands); scene.add(crowdG);
+    // konfeti (instancing)
+    const CN = 260, conf = new THREE.InstancedMesh(new THREE.PlaneGeometry(.14, .22), new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, toneMapped: false }), CN);
+    const confData = []; const CC = ['#ff7a2f', '#ff3d8b', '#1fc8b8', '#ffd23f', '#7c5cff', '#ffffff'].map(c => new THREE.Color(c));
+    for (let i = 0; i < CN; i++) { confData.push({ x: (r() - .5) * 20, y: r() * 11, z: -3 + r() * 13, sp: .8 + r() * 1.2, rx: r() * 6, ry: r() * 6, w: r() * 6 }); conf.setColorAt(i, CC[i % CC.length]); }
+    conf.visible = false; scene.add(conf);
+
+    const dummy = new THREE.Object3D(), col = new THREE.Color();
+    let beat = 0, ledT = 0, confetti = 0, confOn = false, burstUntil = 0, lastBurst = state.burst;
+    function drawLED(pulse){
+      const c = new THREE.Color(state.color), hex = '#' + c.getHexString(), w = 512, h = 256;
+      const g = lx.createLinearGradient(0, 0, w, h); g.addColorStop(0, '#0b0814'); g.addColorStop(1, '#' + c.clone().multiplyScalar(.35).getHexString());
+      lx.fillStyle = g; lx.fillRect(0, 0, w, h);
+      lx.globalAlpha = .9; lx.fillStyle = hex;
+      const n = 24; for (let i = 0; i < n; i++) { const v = .25 + .75 * Math.abs(Math.sin(i * 1.7 + beat * 2.1)) * (.55 + .45 * pulse); const bh = v * 70; lx.fillRect(18 + i * 20, h - 16 - bh, 13, bh); }
+      lx.globalAlpha = 1;
+      lx.fillStyle = '#ff3d4f'; lx.beginPath(); lx.roundRect ? lx.roundRect(18, 18, 74, 30, 15) : lx.rect(18, 18, 74, 30); lx.fill();
+      lx.fillStyle = '#fff'; lx.font = '700 18px Outfit, system-ui, sans-serif'; lx.textBaseline = 'middle'; lx.fillText('LIVE', 33, 34);
+      const name = BANDS[state.band].name.toUpperCase(); let fs = 64; lx.font = `800 ${fs}px "Bricolage Grotesque", Outfit, sans-serif`;
+      while (lx.measureText(name).width > w - 130 && fs > 22) { fs -= 2; lx.font = `800 ${fs}px "Bricolage Grotesque", Outfit, sans-serif`; }
+      lx.fillStyle = '#fff'; lx.textAlign = 'center'; lx.fillText(name, w / 2, h / 2 + 6); lx.textAlign = 'left';
+      ledTex.needsUpdate = true;
+    }
+    function applyState(){
+      const c = new THREE.Color(state.color);
+      beams.forEach(b => b.material.color.copy(c)); fixtures.forEach(f => f.lens.material.color.copy(c).lerp(new THREE.Color('#ffffff'), .5));
+      wash.color.copy(c); cableMat.color.set('#ff7a2f');
+      BANDS[state.band].shirts.forEach((s, i) => shirtMats[i].color.set(s));
+      crowdG.visible = state.crowd;
+      if (state.burst !== lastBurst) { lastBurst = state.burst; burstUntil = performance.now() + 5000; }
+      confOn = state.confetti; conf.visible = confOn;
+      drawLED(.7);
+      loop.request();
+    }
+    function themeColors(){
+      const d = isDark();
+      ground.material.color.set(d ? '#221c30' : '#5a4870'); field.material.color.set(d ? '#2b2440' : '#6c5885');
+      hemi.intensity = d ? .9 : 1.5; hemi.color.set(d ? '#b8b0ff' : '#ffe6d6'); hemi.groundColor.set(d ? '#1a1424' : '#6b4a5a');
+      sun.intensity = d ? 1.1 : 2.0; sun.color.set(d ? '#c9c4ff' : '#ffcf9e');
+      loop.request();
+    }
+
+    // kamera: isometrik (panggung) atau depan layar LED (line-up)
+    const camPos = new THREE.Vector3(), camLook = new THREE.Vector3(), goalPos = new THREE.Vector3(), goalLook = new THREE.Vector3();
+    let aspect = 1, yawPtr = 0, yawGoal = 0, camInit = false;
+    function camGoal(){
+      const lineup = opts.followTab && state.tab === 'lineup';
+      const dir = lineup ? new THREE.Vector3(.18 + yawPtr * .4, .3, 1).normalize() : new THREE.Vector3(1.05 + yawPtr, .74, 1.25).normalize();
+      const look = lineup ? new THREE.Vector3(0, 3.6, -6) : new THREE.Vector3(0, 1.6, opts.lookZ || .6);
+      const R = lineup ? (aspect < .9 ? 5.6 : 7.2) : (opts.radius || 11.5) * (aspect < .9 ? .84 : 1);
+      const vf = THREE.MathUtils.degToRad(cam.fov) / 2, hf = Math.atan(Math.tan(vf) * aspect);
+      const dist = R / Math.sin(Math.min(vf, hf));
+      goalLook.copy(look); goalPos.copy(look).addScaledVector(dir, dist);
+    }
+    stageEl.addEventListener('pointermove', e => { if (e.pointerType !== 'mouse') return; const b = stageEl.getBoundingClientRect(); yawGoal = ((e.clientX - b.left) / b.width - .5) * .5; loop.request(); });
+    stageEl.addEventListener('pointerleave', () => { yawGoal = 0; loop.request(); });
+
+    const loop = createLoop(canvas, (dt, t) => {
+      const still = rmq.matches;
+      const bps = state.bpm / 60; if (!still) beat += dt * bps;
+      const ph = beat % 1, pulse = still ? .7 : Math.exp(-ph * 4.2);
+      const hype = state.hype / 5;
+      // lampu
+      beams.forEach((b, i) => {
+        const sway = still ? (i - 2.5) * .08 : Math.sin(beat * Math.PI * .5 + i * .9) * .32;
+        fixtures[i].g.rotation.set(-.42 + (still ? 0 : Math.cos(beat * .7 + i) * .12), 0, sway);
+        b.material.opacity = (isDark() ? .07 : .05) + .2 * pulse * (.6 + .4 * hype);
+      });
+      wash.intensity = 18 + 48 * pulse;
+      woofers.forEach((w, i) => { const s = 1 + (i % 2 ? .1 : .2) * pulse; w.scale.set(s, 1, s); });
+      singer.position.y = 1.28 + (still ? 0 : Math.abs(Math.sin(beat * Math.PI)) * .08);
+      gtr.rotation.z = still ? 0 : Math.sin(beat * Math.PI) * .06; bass.rotation.z = still ? 0 : -Math.sin(beat * Math.PI) * .06;
+      // penonton
+      if (crowdG.visible) {
+        const amp = .08 + .22 * hype;
+        people.forEach((p, i) => {
+          const b = still ? 0 : Math.abs(Math.sin((beat + p.off * .25) * Math.PI)) * amp;
+          dummy.position.set(p.x, .41 * p.s + b, p.z); dummy.rotation.set(0, p.rot, 0); dummy.scale.setScalar(p.s); dummy.updateMatrix(); crowdBody.setMatrixAt(i, dummy.matrix);
+          dummy.position.set(p.x, (.92) * p.s + b, p.z); dummy.updateMatrix(); crowdHead.setMatrixAt(i, dummy.matrix);
+          const up = p.hands < hype * .9 ? 1 : 0, hb = still ? .2 : Math.abs(Math.sin((beat + p.off * .25) * Math.PI)) * .18;
+          dummy.scale.setScalar(up ? p.s : 0.0001);
+          dummy.position.set(p.x - .2 * p.s, (1.2 + hb) * p.s + b, p.z); dummy.updateMatrix(); crowdHands.setMatrixAt(i * 2, dummy.matrix);
+          dummy.position.set(p.x + .2 * p.s, (1.2 + hb) * p.s + b, p.z); dummy.updateMatrix(); crowdHands.setMatrixAt(i * 2 + 1, dummy.matrix);
+        });
+        crowdBody.instanceMatrix.needsUpdate = crowdHead.instanceMatrix.needsUpdate = crowdHands.instanceMatrix.needsUpdate = true;
+      }
+      // konfeti
+      const showConf = confOn || performance.now() < burstUntil; conf.visible = showConf;
+      if (showConf) {
+        confData.forEach((c, i) => {
+          if (!still) { c.y -= dt * c.sp * 1.6; c.rx += dt * 3; c.ry += dt * 2.2; if (c.y < 0) c.y += 11; }
+          dummy.position.set(c.x + Math.sin(c.w + c.y) * .4, c.y, c.z); dummy.rotation.set(c.rx, c.ry, 0); dummy.scale.setScalar(1); dummy.updateMatrix(); conf.setMatrixAt(i, dummy.matrix);
+        });
+        conf.instanceMatrix.needsUpdate = true;
+      }
+      // sinyal di kabel
+      pulses.forEach(p => { if (!still) p.u = (p.u + dt * bps * .18) % 1; p.s.position.copy(cable.getPointAt(p.u)); p.s.position.y = .2; p.s.scale.setScalar(.8 + .5 * pulse); });
+      cableMat.emissiveIntensity = .35 + .5 * pulse;
+      // layar LED ±12 fps
+      ledT += dt; if (!still && ledT > .08) { ledT = 0; drawLED(pulse); }
+      // kamera
+      yawPtr += (yawGoal - yawPtr) * (still ? 1 : Math.min(1, dt * 3));
+      camGoal();
+      if (!camInit) { camPos.copy(goalPos); camLook.copy(goalLook); camInit = true; }
+      const k = still ? 1 : 1 - Math.exp(-dt * 3.2);
+      camPos.lerp(goalPos, k); camLook.lerp(goalLook, k);
+      if (camPos.distanceTo(goalPos) > .02) loop.request();
+      cam.position.copy(camPos); cam.lookAt(camLook);
+      renderer.render(scene, cam);
+    }, () => !rmq.matches);
+
+    /* bingkai: pusatkan panggung di ruang kosong antara chip atas dan panel kontrol bawah (diukur dari DOM) */
+    const topEl = stageEl.querySelector('.stage-top'), panelEl = stageEl.querySelector('.stage-panel');
+    let vw = 1, vh = 1;
+    function applyFrame(){
+      const r = stageEl.getBoundingClientRect(); if (!r.height) return;
+      const a = topEl ? topEl.getBoundingClientRect().bottom - r.top : 0, b = panelEl ? panelEl.getBoundingClientRect().top - r.top : r.height;
+      const off = b > a ? clamp(r.height / 2 - (a + b) / 2, -r.height * .25, r.height * .25) : 0;
+      cam.aspect = aspect; cam.setViewOffset(vw, vh, 0, Math.round(off * vh / r.height), vw, vh); cam.updateProjectionMatrix();
+    }
+    watchSize(stageEl, renderer, (w, h) => { aspect = w / h; vw = w; vh = h; applyFrame(); loop.request(); });
+    [topEl, panelEl].forEach(el => el && new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(el));
+    bus.addEventListener('state', applyState);
+    bus.addEventListener('theme', themeColors);
+    if (document.fonts) document.fonts.ready.then(() => drawLED(.7));
+    themeColors(); applyState();
+    requestAnimationFrame(() => stageEl.classList.add('ready'));
+    return { loop, renderer, scene, cam };
+  }
+
+  let heroV = null, studioV = null;
+  try {
+    heroV = createFestival($('#heroCanvas'), $('#heroStage'), { radius: 11.4, lookZ: .6 });
+    studioV = createFestival($('#studioCanvas'), $('#studioStage'), { radius: 11, lookZ: .4, followTab: true });
+  } catch (e) { console.warn('WebGL gagal dimulai', e); showFallbacks(); }
+
+  /* ================= Cerita isometrik: perjalanan satu band ================= */
+  function createStory(){
+    const stage = $('.story-stage', storySec), canvas = $('#storyCanvas');
+    const renderer = makeRenderer(canvas, false);
+    const scene = new THREE.Scene();
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -100, 200);
+    const camDir = new THREE.Vector3(1, 1.1, 1).normalize(), camTarget = new THREE.Vector3();
+    const hemi = new THREE.HemisphereLight('#fff4ec', '#c8b4a6', 1.3); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff0dc', 2.4); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+    Object.assign(sun.shadow.camera, { left: -18, right: 18, top: 18, bottom: -18, near: 1, far: 80 }); sun.shadow.bias = -.0005; sun.shadow.normalBias = .03;
+    scene.add(sun, sun.target);
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(160, 90), std('#efe6da', 1)); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+    let grid = null;
+
+    const CLAY = new THREE.Color('#ece2d8');
+    const SP = [[-16, 4], [-6, -4], [3, 4], [12, -4], [21, 4]];
+    const stations = [];
+    const smat = (c, extra) => { const m = std(c, .8, extra); m.userData.target = new THREE.Color(c); m.color.copy(CLAY); return m; };
+    function add(g, mats, geo, c, x, y, z, rot){ const m = smat(c); mats.push(m); const me = new THREE.Mesh(geo, m); me.position.set(x, y, z); if (rot) me.rotation.set(rot[0] || 0, rot[1] || 0, rot[2] || 0); me.castShadow = me.receiveShadow = true; g.add(me); return me; }
+    const B = (w, h, d) => new THREE.BoxGeometry(w, h, d), C = (rt, rb, h, s = 20) => new THREE.CylinderGeometry(rt, rb, h, s), Sph = (r, s = 12) => new THREE.SphereGeometry(r, s, Math.max(6, s * .6 | 0));
+    const beamsS = []; let phoneMat = null, vinyl = null;
+    SP.forEach(([x, z], i) => {
+      const g = new THREE.Group(); g.position.set(x - 1.4, 0, z - 2.6); scene.add(g);
+      const mats = [];
+      add(g, mats, C(2.8, 2.9, .26, 44), '#f8cdb4', 0, .13, 0);
+      const inner = new THREE.Group(); inner.position.y = .26; g.add(inner);
+      if (i === 0) { // daftar: meja, laptop, banner, tanaman
+        add(inner, mats, B(2.2, .1, 1.0), '#c89b6d', 0, .9, -.3); [[-1, -.7], [1, -.7], [-1, .1], [1, .1]].forEach(([px, pz]) => add(inner, mats, B(.08, .85, .08), '#4a3326', px, .43, pz));
+        add(inner, mats, B(.8, .04, .55), '#2b2836', -.2, .97, -.3); add(inner, mats, B(.8, .5, .04), '#2b2836', -.2, 1.22, -.56, [-.2, 0, 0]);
+        add(inner, mats, B(.7, .4, .01), '#ff9d69', -.2, 1.22, -.535, [-.2, 0, 0]);
+        add(inner, mats, B(.5, .04, .36), '#ffffff', .65, .97, -.15);
+        add(inner, mats, B(.08, 2.4, .08), '#3a3445', 1.6, 1.2, -1.2); add(inner, mats, B(.08, 2.4, .08), '#3a3445', -1.6, 1.2, -1.2);
+        add(inner, mats, B(3.2, .8, .06), '#ff7a2f', 0, 2.1, -1.2);
+        [-.9, -.3, .3, .9].forEach((bx, k) => add(inner, mats, B(.12, .2 + (k % 2) * .25, .02), '#ffffff', bx, 2.1, -1.16));
+        add(inner, mats, C(.3, .24, .5, 12), '#f6f1ea', -1.7, .25, 1.1); add(inner, mats, new THREE.IcosahedronGeometry(.48, 0), '#5f8f52', -1.7, .85, 1.1);
+      } else if (i === 1) { // soundcheck: ampli, mic, drum kecil, monitor
+        add(inner, mats, B(3.4, .2, 2.4), '#5a4a6e', 0, .1, -.4);
+        add(inner, mats, B(1.0, 1.0, .6), '#2b2836', -1.1, .7, -1.1); add(inner, mats, C(.3, .3, .05, 18), '#7c7690', -1.1, .7, -.79, [Math.PI / 2, 0, 0]);
+        add(inner, mats, B(.9, .2, .62), '#d9a441', -1.1, 1.3, -1.1);
+        add(inner, mats, C(.35, .35, .45, 18), '#ff3d8b', .9, .55, -.9, [Math.PI / 2, 0, 0]);
+        add(inner, mats, C(.2, .2, .2, 14), '#ff3d8b', .45, .75, -1.05); add(inner, mats, C(.32, .32, .02, 16), '#e0b84a', 1.4, 1.2, -1.2);
+        add(inner, mats, C(.025, .025, 1.3, 6), '#3a3445', .1, .85, .2); add(inner, mats, C(.05, .05, .14, 8), '#2b2836', .1, 1.52, .15, [.8, 0, 0]);
+        add(inner, mats, B(.8, .35, .5), '#2b2836', .1, .37, .9, [-.35, 0, 0]);
+        add(inner, mats, B(.6, .55, .1), '#3a3445', 1.7, .5, .9); add(inner, mats, B(.5, .35, .02), '#1fc8b8', 1.7, .55, .96);
+      } else if (i === 2) { // manggung: panggung, truss, lampu, speaker
+        add(inner, mats, B(3.6, .55, 2.6), '#3e3654', 0, .27, -.5);
+        [[-1.7, -1.7], [1.7, -1.7], [-1.7, .7], [1.7, .7]].forEach(([px, pz]) => add(inner, mats, B(.12, 3, .12), '#9a96ad', px, 1.5, pz));
+        add(inner, mats, B(3.6, .14, .14), '#9a96ad', 0, 3, .7); add(inner, mats, B(3.6, .14, .14), '#9a96ad', 0, 3, -1.7);
+        add(inner, mats, B(3, 1.4, .08), '#ff7a2f', 0, 1.6, -1.7);
+        [-1.2, 0, 1.2].forEach(px => { add(inner, mats, C(.12, .16, .3, 10), '#2b2836', px, 2.8, .7); const b = new THREE.Mesh(new THREE.ConeGeometry(.6, 2.4, 16, 1, true), new THREE.MeshBasicMaterial({ color: '#ffb27a', transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide })); b.position.set(px, 1.55, .95); b.rotation.x = -.35; inner.add(b); beamsS.push(b); });
+        add(inner, mats, B(.7, 1.6, .6), '#2b2836', -2.3, .8, .2); add(inner, mats, B(.7, 1.6, .6), '#2b2836', 2.3, .8, .2);
+        add(inner, mats, C(.025, .025, 1.1, 6), '#3a3445', 0, 1.1, .3);
+      } else if (i === 3) { // live: kamera di tripod, ponsel besar, menara antena
+        const tri = new THREE.Group(); tri.position.set(-1.0, 0, .9); inner.add(tri);
+        [0, 2.1, 4.2].forEach(a => add(tri, mats, C(.03, .03, 1.3, 6), '#2b2622', Math.cos(a) * .22, .62, Math.sin(a) * .22, [Math.sin(a) * .3, 0, -Math.cos(a) * .3]));
+        add(tri, mats, B(.5, .34, .3), '#2b2836', 0, 1.4, 0); add(tri, mats, C(.12, .14, .3, 14), '#11101a', .05, 1.4, -.28, [Math.PI / 2, 0, 0]);
+        add(tri, mats, Sph(.07, 8), '#ff3d4f', .2, 1.62, .05);
+        add(inner, mats, B(.95, 1.8, .12), '#1d1a26', .7, 1.2, -.9);
+        const scr = add(inner, mats, B(.82, 1.6, .02), '#ff3d8b', .7, 1.2, -.83); phoneMat = scr.material; phoneMat.emissive = new THREE.Color('#ff3d8b'); phoneMat.emissiveIntensity = 0;
+        add(inner, mats, C(.04, .04, .4, 6), '#3a3445', .7, .2, -.9);
+        add(inner, mats, C(.05, .09, 3.2, 8), '#9a96ad', -1.6, 1.6, -1.1);
+        [2.2, 2.7, 3.1].forEach((y, k) => add(inner, mats, new THREE.TorusGeometry(.25 + k * .14, .025, 6, 24), '#ff7a2f', -1.6, y, -1.1, [Math.PI / 2, 0, 0]));
+        add(inner, mats, new THREE.TorusGeometry(.42, .06, 8, 28), '#fff4d6', 1.7, 1.2, .6, [0, -.6, 0]); add(inner, mats, C(.03, .03, 1.2, 6), '#3a3445', 1.7, .6, .6);
+      } else { // rilis: rak vinyl, turntable, podium tangga lagu
+        add(inner, mats, B(2.8, 2.2, .5), '#c89b6d', 0, 1.1, -1.4);
+        [.55, 1.25, 1.9].forEach(y => add(inner, mats, B(2.6, .06, .46), '#8a6446', 0, y - .25, -1.36));
+        ['#ff7a2f', '#1fc8b8', '#7c5cff', '#ff3d8b', '#ffd23f', '#2b2836'].forEach((c, k) => add(inner, mats, B(.08, .5, .44), c, -1.1 + k * .42, .55 + (k % 2) * .7, -1.36));
+        add(inner, mats, B(1.4, .5, 1.0), '#2b2836', -.6, .25, .6); const plat = add(inner, mats, C(.44, .44, .05, 28), '#11101a', -.6, .53, .6);
+        vinyl = add(inner, mats, C(.16, .16, .06, 18), '#ff7a2f', -.6, .55, .6); vinyl.userData.plat = plat;
+        [[.8, .5], [1.3, .8], [1.8, .35]].forEach(([px, h], k) => add(inner, mats, B(.46, h, .46), k === 1 ? '#ffd23f' : '#e9e1f7', px, h / 2, .7));
+      }
+      stations.push({ g, mats, inner, lit: 0 });
+    });
+
+    // jalur oranye (manhattan, sudut membulat)
+    const pts = [[-16, 4], [-11, 4], [-11, -4], [-6, -4], [-1, -4], [-1, 4], [3, 4], [7.5, 4], [7.5, -4], [12, -4], [16.5, -4], [16.5, 4], [21, 4]].map(([x, z]) => new THREE.Vector3(x, .3, z));
+    const path = new THREE.CurvePath(); const rad = 1.4; let curP = pts[0].clone();
+    for (let i = 1; i < pts.length - 1; i++) {
+      const p = pts[i], dIn = p.clone().sub(pts[i - 1]).normalize(), dOut = pts[i + 1].clone().sub(p).normalize();
+      if (dIn.dot(dOut) > .999) continue;
+      const a = p.clone().addScaledVector(dIn, -rad), b = p.clone().addScaledVector(dOut, rad);
+      path.add(new THREE.LineCurve3(curP.clone(), a)); path.add(new THREE.QuadraticBezierCurve3(a, p.clone(), b)); curP = b;
+    }
+    path.add(new THREE.LineCurve3(curP, pts[pts.length - 1].clone()));
+    const TS = 700, RS = 6;
+    const baseMat = std('#d8c9b8', .9);
+    const baseTube = new THREE.Mesh(new THREE.TubeGeometry(path, TS, .12, RS, false), baseMat); baseTube.receiveShadow = true; scene.add(baseTube);
+    const progTube = new THREE.Mesh(new THREE.TubeGeometry(path, TS, .2, RS, false), new THREE.MeshStandardMaterial({ color: '#ff7a2f', emissive: '#ff7a2f', emissiveIntensity: .35, roughness: .5 }));
+    progTube.geometry.setDrawRange(0, 0); scene.add(progTube);
+    SP.forEach(([x, z]) => { const d = new THREE.Mesh(new THREE.CylinderGeometry(.42, .42, .08, 20), std('#ff7a2f', .6)); d.position.set(x, .05, z); scene.add(d); });
+
+    // dekorasi: tiang lampu kecil, bendera, kotak hardcase, jauh dari jalur (instancing)
+    { const r = rng(17), poleGeo = new THREE.CylinderGeometry(.06, .08, 2.2, 6), bulbGeo = new THREE.SphereGeometry(.16, 8, 6), caseGeo = new THREE.BoxGeometry(.9, .45, .55);
+      const poles = [], cases = [];
+      for (let x = -28; x <= 32; x += 2.4) for (const zb of [-11, 11.5]) { if (r() < .25) continue; const px = x + (r() - .5) * 1.4, pz = zb + (r() - .5) * 3; (r() < .55 ? poles : cases).push([px, pz, r()]); }
+      const poleM = new THREE.InstancedMesh(poleGeo, std('#4a4458', .7), poles.length), bulbM = new THREE.InstancedMesh(bulbGeo, new THREE.MeshStandardMaterial({ color: '#ffd9a8', emissive: '#ffb066', emissiveIntensity: .6 }), poles.length), caseM = new THREE.InstancedMesh(caseGeo, std('#ffffff', .7), cases.length);
+      const d = new THREE.Object3D(), cc = ['#3a3445', '#ff7a2f', '#7c5cff', '#1fc8b8', '#d9a441'].map(c => new THREE.Color(c));
+      poles.forEach(([x, z], i) => { d.position.set(x, 1.1, z); d.rotation.set(0, 0, 0); d.updateMatrix(); poleM.setMatrixAt(i, d.matrix); d.position.y = 2.3; d.updateMatrix(); bulbM.setMatrixAt(i, d.matrix); });
+      cases.forEach(([x, z, q], i) => { d.position.set(x, .23, z); d.rotation.set(0, q * 3, 0); d.updateMatrix(); caseM.setMatrixAt(i, d.matrix); caseM.setColorAt(i, cc[i % cc.length]); });
+      poleM.castShadow = caseM.castShadow = true; scene.add(poleM, bulbM, caseM);
+    }
+
+    const samples = 1200, stationU = SP.map(([x, z]) => { let best = 0, bd = 1e9; for (let s = 0; s <= samples; s++) { const q = path.getPointAt(s / samples); const d = (q.x - x) ** 2 + (q.z - z) ** 2; if (d < bd) { bd = d; best = s / samples; } } return best; });
+    stationU[0] = 0; stationU[stationU.length - 1] = 1;
+
+    // tokoh: Sekar si gitaris (kupluk, jaket, gitar di punggung)
+    const chr = new THREE.Group(); chr.scale.setScalar(1.25); scene.add(chr);
+    const jacket = std('#7c5cff', .7), skin = std('#c98e64', .6), dark = std('#231f2e', .6), beanie = std('#ff7a2f', .8);
+    const torso = new THREE.Mesh(new THREE.CapsuleGeometry(.3, .45, 4, 12), jacket); torso.position.y = 1.15; torso.castShadow = true; chr.add(torso);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(.24, 16, 12), skin); head.position.y = 1.78; head.castShadow = true; chr.add(head);
+    const hat = new THREE.Mesh(new THREE.SphereGeometry(.255, 16, 10, 0, Math.PI * 2, 0, Math.PI / 2), beanie); hat.position.y = 1.83; chr.add(hat);
+    const pom = new THREE.Mesh(new THREE.SphereGeometry(.07, 8, 6), beanie); pom.position.y = 2.1; chr.add(pom);
+    [-.09, .09].forEach(ex => { const e = new THREE.Mesh(new THREE.SphereGeometry(.035, 8, 6), dark); e.position.set(ex, 1.78, -.22); chr.add(e); });
+    const guitar = new THREE.Group(); guitar.position.set(0, 1.2, .34); guitar.rotation.z = .55; chr.add(guitar);
+    const gb1 = new THREE.Mesh(new THREE.SphereGeometry(.24, 14, 10), std('#d9a441', .5)); gb1.scale.set(1, 1.15, .4); gb1.position.y = -.2; gb1.castShadow = true; guitar.add(gb1);
+    const gb2 = new THREE.Mesh(new THREE.SphereGeometry(.18, 14, 10), std('#d9a441', .5)); gb2.scale.set(1, 1, .4); gb2.position.y = .1; guitar.add(gb2);
+    const neck = new THREE.Mesh(new THREE.BoxGeometry(.07, .7, .05), dark); neck.position.y = .5; guitar.add(neck);
+    function limb(w, h, x, y, mat){ const piv = new THREE.Group(); piv.position.set(x, y, 0); const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, w), mat); m.position.y = -h / 2; m.castShadow = true; piv.add(m); chr.add(piv); return piv; }
+    const legL = limb(.13, .62, -.13, .72, dark), legR = limb(.13, .62, .13, .72, dark), armL = limb(.1, .5, -.38, 1.42, jacket), armR = limb(.1, .5, .38, 1.42, jacket);
+    armL.rotation.z = -.25; armR.rotation.z = .25;
+    chr.rotation.order = 'YXZ';
+
+    let lastT = 0, targetU = 0, shownU = 0, walkPhase = 0, step = -1, lastPos = new THREE.Vector3(), halfW = 10, halfH = 10, aspect = 1;
+    const sceneSteps = $$('.scene-step', storySec), labels = $$('.s-labels span', storySec), prog = $('#storyProg');
+    function mapProgress(p){ const n = SP.length - 1, u = clamp(p, 0, 1) * n, i = Math.min(n - 1, Math.floor(u)), f = u - i, w = smooth(.22, .82, f); return { u: stationU[i] + (stationU[i + 1] - stationU[i]) * w, step: w < .5 ? i : i + 1 }; }
+    function setProgress(p){
+      const m = mapProgress(p); targetU = m.u; prog.value = clamp(p, 0, 1) * 100;
+      if (m.step !== step) { step = m.step; sceneSteps.forEach((s, k) => s.classList.toggle('on', k === step)); labels.forEach((s, k) => s.classList.toggle('on', k <= step)); }
+      loop.request();
+    }
+    function themeColors(){
+      const d = isDark(), bg = d ? '#141020' : '#f4ebe1', b3 = d ? '#2b2341' : '#e6d8c9';
+      scene.background = new THREE.Color(bg);
+      ground.material.color.set(bg).lerp(new THREE.Color(b3), .25);
+      if (grid) { scene.remove(grid); grid.geometry.dispose(); grid.material.dispose(); }
+      grid = new THREE.GridHelper(160, 80, b3, b3); grid.material.transparent = true; grid.material.opacity = .7; grid.position.y = .01; scene.add(grid);
+      CLAY.set(d ? '#3b3356' : '#efe5d9');
+      baseMat.color.set(b3).lerp(new THREE.Color(d ? '#ffffff' : '#000000'), .12);
+      hemi.intensity = d ? .85 : 1.3; sun.intensity = d ? 2.0 : 2.4;
+      hemi.color.set(d ? '#d2c8ff' : '#fff4ec'); hemi.groundColor.set(d ? '#221b33' : '#c8b4a6');
+      stations.forEach(s => s.lit === 0 && s.mats.forEach(m => m.color.copy(CLAY)));
+      loop.request();
+    }
+    const loop = createLoop(canvas, (dt, t) => {
+      const still = rmq.matches, camDt = Math.min(.12, (performance.now() - (lastT || performance.now())) / 1000 || dt); lastT = performance.now();
+      const k = still ? 1 : 1 - Math.exp(-camDt * 5);
+      shownU += (targetU - shownU) * k; if (Math.abs(targetU - shownU) > 1e-4) loop.request(); else shownU = targetU;
+      const pos = path.getPointAt(clamp(shownU, 0, 1)), tan = path.getTangentAt(clamp(shownU, 0, .9999));
+      const moved = pos.distanceTo(lastPos); lastPos.copy(pos); walkPhase += moved * 3.4;
+      const moving = clamp(moved * 25, 0, 1);
+      chr.position.set(pos.x, Math.abs(Math.sin(walkPhase)) * .1 * moving, pos.z);
+      if (moved > 1e-4) chr.rotation.y = Math.atan2(-tan.x, -tan.z);
+      const sw = Math.sin(walkPhase) * .75 * moving; legL.rotation.x = sw; legR.rotation.x = -sw; armL.rotation.x = -sw * .8; armR.rotation.x = sw * .8;
+      progTube.geometry.setDrawRange(0, Math.floor(shownU * TS) * RS * 6);
+      stations.forEach((s, i) => {
+        const goal = shownU >= stationU[i] - .004 ? 1 : 0, prev = s.lit;
+        s.lit += (goal - s.lit) * (still ? 1 : Math.min(1, camDt * 4)); if (Math.abs(goal - s.lit) > .002) loop.request(); else s.lit = goal;
+        if (prev !== s.lit) s.mats.forEach(m => m.color.copy(CLAY).lerp(m.userData.target, s.lit));
+        s.inner.scale.setScalar(.82 + .18 * s.lit);
+      });
+      // panggung menyala, ponsel siaran berkedip, vinyl berputar
+      const pl = stations[2].lit;
+      beamsS.forEach((b, i) => { b.material.opacity = pl * (still ? .22 : .14 + .12 * Math.max(0, Math.sin(t * 5 + i * 2))); });
+      if (phoneMat) phoneMat.emissiveIntensity = stations[3].lit * (still ? .6 : .45 + .25 * Math.sin(t * 3));
+      if (vinyl && !still) { vinyl.userData.plat.rotation.y += dt * 3 * stations[4].lit; vinyl.rotation.y += dt * 3 * stations[4].lit; }
+      if (!still && (pl > 0 || stations[3].lit > 0 || stations[4].lit > 0)) loop.request();
+      const desired = new THREE.Vector3(pos.x, 0, pos.z);
+      if (aspect >= .9) desired.addScaledVector(new THREE.Vector3(1, 0, -1).normalize(), -halfW * .3);
+      if (camTarget.lengthSq() === 0) camTarget.copy(desired);
+      camTarget.lerp(desired, still ? 1 : 1 - Math.exp(-camDt * 3.5)); if (camTarget.distanceTo(desired) > .01) loop.request();
+      cam.position.copy(camTarget).addScaledVector(camDir, 60); cam.lookAt(camTarget);
+      sun.position.copy(camTarget).add(new THREE.Vector3(14, 26, 8)); sun.target.position.copy(camTarget);
+      renderer.render(scene, cam);
+    }, () => false);
+
+    /* Layar sempit: tokoh dibingkai di ruang kosong ANTARA kartu judul (atas) dan kartu langkah (bawah),
+       diukur dari DOM, memakai frustum ortografis asimetris. */
+    const headEl = stage.querySelector('.story-head'), card = stage.querySelector('#storyCard');
+    let frameY = .5;
+    function applyFrame(){
+      frameY = .5;
+      if (aspect < .9) {
+        const rr = stage.getBoundingClientRect(), a = headEl.getBoundingClientRect().bottom - rr.top, b = card.getBoundingClientRect().top - rr.top;
+        if (rr.height > 0 && b > a) frameY = clamp(((a + b) / 2 + 34) / rr.height, .2, .8); // +34 px: titik pusat di kaki, tubuh setinggi ~70 px
+      }
+      Object.assign(cam, { left: -halfW, right: halfW, top: 2 * halfH * frameY, bottom: -2 * halfH * (1 - frameY) }); cam.updateProjectionMatrix();
+    }
+    watchSize(stage, renderer, (w, h) => { aspect = w / h; halfH = aspect < .9 ? 10.5 : 8.6; halfW = halfH * aspect; applyFrame(); loop.request(); });
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(headEl);
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(card);
+    if (document.fonts) document.fonts.ready.then(() => { applyFrame(); loop.request(); });
+    themeColors(); bus.addEventListener('theme', () => requestAnimationFrame(themeColors));
+    return { setProgress, loop, renderer, scene, cam, chr, frame: () => frameY };
+  }
+
+  let story = null;
+  try { story = createStory(); } catch (e) { console.warn('Cerita 3D gagal', e); storySec.classList.add('no-webgl'); }
+  window.__nada.views = { heroV, studioV, story };
+  if (story) { const upd = () => story.setProgress(storyProgress()); addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); customElements.whenDefined('wa-progress-bar').then(upd); upd(); }
+}
+
+/* fallback tanpa WebGL: teks cerita tetap mengikuti gulir */
+if (!window.__nada.views || !window.__nada.views.story) {
+  const nodes = $$('#storySvg .node'), sceneSteps = $$('.scene-step', storySec), labels = $$('.s-labels span', storySec), prog = $('#storyProg');
+  const upd = () => { const p = storyProgress(), n = Math.round(p * 4); prog.value = p * 100; sceneSteps.forEach((s, k) => s.classList.toggle('on', k === n)); labels.forEach((s, k) => s.classList.toggle('on', k <= n)); nodes.forEach((c, k) => c.classList.toggle('on', k <= n)); };
+  addEventListener('scroll', upd, { passive: true }); upd();
+}
+</script>
+</body>
+</html>
