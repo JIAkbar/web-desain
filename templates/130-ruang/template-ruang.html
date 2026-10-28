@@ -175,6 +175,8 @@
   .row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
   .panel sl-radio-group::part(form-control-input){flex-wrap:wrap}
   .panel sl-radio-button::part(button){padding-inline:12px}
+  /* HP kecil (≤400 px): tombol radio lebih rapat supaya grup tidak melewati layar */
+  @media (max-width:400px){sl-radio-button::part(button){padding-inline:9px;font-size:.8rem}.controls{grid-template-columns:minmax(0,1fr)}sl-radio-group::part(button-group__base){flex-wrap:wrap;row-gap:6px}}
   .swatches{display:flex;gap:8px;align-items:center}
   .readout{display:flex;gap:8px;flex-wrap:wrap}
   .meters{display:grid;gap:14px;font-size:.86rem;color:var(--muted)}
@@ -1296,7 +1298,6 @@ if (THREE) {
       const desired = new THREE.Vector3(pos.x, 0, pos.z);
       const right = new THREE.Vector3(1, 0, -1).normalize();
       if (aspect >= .9) desired.addScaledVector(right, -halfW * .32);
-      else { const upW = new THREE.Vector3(0, 1, 0).applyQuaternion(cam.quaternion); upW.y = 0; desired.addScaledVector(upW.normalize(), -halfH * .55); }
       if (camTarget.lengthSq() === 0) camTarget.copy(desired);
       camTarget.lerp(desired, rmq.matches ? 1 : 1 - Math.exp(-dt * 3.5));
       if (camTarget.distanceTo(desired) > .01) loop.request();
@@ -1304,10 +1305,25 @@ if (THREE) {
       sun.position.copy(camTarget).add(new THREE.Vector3(14, 26, 8)); sun.target.position.copy(camTarget);
       renderer.render(scene, cam);
     }, () => false);
+    // Di layar sempit, tokoh ditaruh di tengah ruang kosong antara kartu judul (atas) dan kartu langkah (bawah),
+    // dengan frustum asimetris, supaya tidak lewat di belakang salah satu kartu.
+    let frameY = .5;
+    const storyHead = stage.querySelector('.story-head'), storySteps = stage.querySelector('.steps');
+    function applyFrame() {
+      if (!halfH) return;
+      frameY = .5;
+      if (aspect < .9 && storyHead && storySteps) {
+        const r = stage.getBoundingClientRect(), a = storyHead.getBoundingClientRect().bottom - r.top, b = storySteps.getBoundingClientRect().top - r.top;
+        if (r.height > 0 && b > a) frameY = Math.min(.8, Math.max(.2, (a + b) / 2 / r.height));
+      }
+      Object.assign(cam, { left: -halfW, right: halfW, top: 2 * halfH * frameY, bottom: -2 * halfH * (1 - frameY) });
+      cam.updateProjectionMatrix();
+    }
     watchSize(stage, renderer, (w, h) => {
       aspect = w / h; halfH = aspect < .9 ? 12.5 : 10.5; halfW = halfH * aspect;
-      Object.assign(cam, { left: -halfW, right: halfW, top: halfH, bottom: -halfH }); cam.updateProjectionMatrix(); loop.request();
+      applyFrame(); loop.request();
     });
+    if (document.fonts) document.fonts.ready.then(() => { applyFrame(); loop.request(); });
     themeColors(); bus.addEventListener('theme', themeColors);
     return { setProgress, loop, renderer, scene, cam };
   }

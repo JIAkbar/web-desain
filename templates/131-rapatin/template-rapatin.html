@@ -1074,14 +1074,28 @@ if (THREE) {
       });
       const desired = new THREE.Vector3(pos.x, 0, pos.z);
       if (aspect >= .9) desired.addScaledVector(new THREE.Vector3(1, 0, -1).normalize(), -halfW * .32);
-      else { const up = new THREE.Vector3(0, 1, 0).applyQuaternion(cam.quaternion); up.y = 0; desired.addScaledVector(up.normalize(), -halfH * .55); }
       if (camTarget.lengthSq() === 0) camTarget.copy(desired);
       camTarget.lerp(desired, RM ? 1 : 1 - Math.exp(-dt * 3.5)); if (camTarget.distanceTo(desired) > .01) loop.request();
       cam.position.copy(camTarget).addScaledVector(camDir, 60); cam.lookAt(camTarget);
       sun.position.copy(camTarget).add(new THREE.Vector3(14, 26, 8)); sun.target.position.copy(camTarget);
       renderer.render(scene, cam);
     }, () => false);
-    watchSize(stage, renderer, (w, h) => { aspect = w / h; halfH = aspect < .9 ? 9.5 : 8.2; halfW = halfH * aspect; Object.assign(cam, { left: -halfW, right: halfW, top: halfH, bottom: -halfH }); cam.updateProjectionMatrix(); loop.request(); });
+    // Di layar sempit, tokoh ditaruh di tengah ruang kosong antara kartu judul (atas) dan kartu langkah (bawah),
+    // dengan frustum asimetris, supaya tidak lewat di belakang salah satu kartu.
+    let frameY = .5;
+    const storyHead = stage.querySelector('.story-head'), storySteps = stage.querySelector('.steps');
+    function applyFrame() {
+      if (!halfH) return;
+      frameY = .5;
+      if (aspect < .9 && storyHead && storySteps) {
+        const r = stage.getBoundingClientRect(), a = storyHead.getBoundingClientRect().bottom - r.top, b = storySteps.getBoundingClientRect().top - r.top;
+        if (r.height > 0 && b > a) frameY = Math.min(.8, Math.max(.2, (a + b) / 2 / r.height));
+      }
+      Object.assign(cam, { left: -halfW, right: halfW, top: 2 * halfH * frameY, bottom: -2 * halfH * (1 - frameY) });
+      cam.updateProjectionMatrix();
+    }
+    watchSize(stage, renderer, (w, h) => { aspect = w / h; halfH = aspect < .9 ? 9.5 : 8.2; halfW = halfH * aspect; applyFrame(); loop.request(); });
+    if (document.fonts) document.fonts.ready.then(() => { applyFrame(); loop.request(); });
     themeColors(); bus.addEventListener('theme', themeColors);
     return { setProgress, loop };
   }
