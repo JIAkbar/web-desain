@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lapor Warga — Laporkan Masalah Lingkungan, Kawal Sampai Beres</title>
+<meta name="description" content="Lapor Warga adalah platform komunitas independen untuk melaporkan jalan rusak, lampu jalan mati, sampah menumpuk, dan drainase tersumbat di kota-kota Indonesia, lalu mengawalnya sampai selesai.">
+<meta name="theme-color" content="#f6f4ee">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/",
+  "govuk-frontend": "https://cdn.jsdelivr.net/npm/govuk-frontend@5.14.0/dist/govuk/govuk-frontend.min.js"
+} }
+</script>
+<script>
+  /* tema terang/gelap dipasang sebelum render */
+  (function(){var t;try{t=localStorage.getItem('laporwarga-theme')}catch(e){}
+  if(t!=='light'&&t!=='dark'){t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}
+  document.documentElement.setAttribute('data-theme',t);})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- GOV.UK Frontend 5.14.0 (MIT). Logo mahkota, wordmark, dan font GDS Transport TIDAK dipakai. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/govuk-frontend@5.14.0/dist/govuk/govuk-frontend.min.css">
+<style>
+  /* ---------- Token merek (GOV.UK Frontend v5 tidak punya token warna CSS, jadi pakai variabel sendiri) ---------- */
+  :root{
+    --font:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+    --bg:#f6f4ee;--bg-2:#efebe2;--surface:#ffffff;--surface-2:#f3f0e8;
+    --ink:#141b1f;--ink-2:#4e5a60;--line:#dcd6ca;--line-strong:#2b3439;
+    --brand:#0d6e5f;--brand-hover:#0a5a4e;--brand-ink:#0b6153;--brand-soft:#d8eee8;--brand-shadow:#063b33;--on-brand:#ffffff;
+    --accent:#f0772f;--focus:#ffd23f;--danger:#c4351c;--ok:#13794a;
+    --shadow:0 30px 80px -40px rgba(20,40,40,.45);
+    --radius:18px;
+  }
+  [data-theme=dark]{
+    --bg:#0d1315;--bg-2:#11191b;--surface:#162023;--surface-2:#1c282b;
+    --ink:#e8eeec;--ink-2:#a1b0ac;--line:#2a383b;--line-strong:#9db0ab;
+    --brand:#35b9a2;--brand-hover:#4cc9b3;--brand-ink:#6fd8c4;--brand-soft:#173a35;--brand-shadow:#0f5d50;--on-brand:#06201b;
+    --danger:#ff7d61;--ok:#3cbf7d;
+    --shadow:0 30px 80px -40px rgba(0,0,0,.8);
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;background:var(--bg)}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:1rem;line-height:1.55;overflow-x:clip;-webkit-font-smoothing:antialiased;transition:background-color .35s,color .35s}
+  /* font sendiri untuk semua komponen GOV.UK (bukan GDS Transport) */
+  [class*="govuk-"]{font-family:var(--font)!important}
+  input,select,textarea,button{font-family:inherit}
+  code,kbd,pre,samp{font-family:inherit}
+  .num,.price b,.stat b,.mini b{font-variant-numeric:tabular-nums}
+  h1,h2,h3,h4{margin:0}
+  p{margin:0}
+  .wrap{width:min(1200px,100% - 32px);margin-inline:auto}
+  :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+  section{scroll-margin-top:76px}
+  .display{font-weight:800;letter-spacing:-.03em;line-height:1.04;color:var(--ink)}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:.76rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--brand-ink)}
+  .eyebrow::before{content:"";width:22px;height:3px;border-radius:3px;background:var(--accent)}
+  .weak{color:var(--ink-2)}
+  .sec{padding:clamp(72px,10vw,128px) 0}
+  .alt{background:var(--bg-2)}
+  .sec-head{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px 48px;align-items:end;margin-bottom:clamp(32px,5vw,56px)}
+  .sec-head h2{font-size:clamp(2rem,4.4vw,3.3rem);margin-top:14px}
+  @media (max-width:820px){.sec-head{grid-template-columns:minmax(0,1fr)}}
+
+  /* ---------- Penyesuaian komponen GOV.UK ke token merek ---------- */
+  .govuk-body,.govuk-body-l,.govuk-body-s,.govuk-heading-xl,.govuk-heading-l,.govuk-heading-m,.govuk-heading-s,.govuk-label,.govuk-list,.govuk-details,.govuk-inset-text,.govuk-summary-list,.govuk-task-list__name-and-hint,.govuk-task-list__status,.govuk-fieldset__legend,.govuk-error-summary,.govuk-notification-banner__content,.govuk-accordion__section-button,.govuk-tabs__title,.govuk-tabs__list-item::before{color:var(--ink)}
+  .govuk-hint,.govuk-task-list__hint,.govuk-task-list__status--cannot-start-yet,.govuk-accordion__section-summary{color:var(--ink-2)}
+  .govuk-link:link,.govuk-link:visited{color:var(--brand-ink)}
+  .govuk-link:hover{color:var(--ink)}
+  .govuk-link:focus,.govuk-link:active{color:#0b0c0c}
+  .govuk-input,.govuk-select,.govuk-textarea{background:var(--surface);color:var(--ink);border-color:var(--line-strong);border-radius:8px}
+  .govuk-select{min-width:0;width:100%}
+  .govuk-input--error,.govuk-select--error,.govuk-textarea--error{border-color:var(--danger)}
+  .govuk-form-group--error{border-left-color:var(--danger)}
+  .govuk-error-message{color:var(--danger)}
+  .govuk-checkboxes--small .govuk-checkboxes__item:hover .govuk-checkboxes__input:not(:disabled)+.govuk-checkboxes__label::before,
+  .govuk-radios--small .govuk-radios__item:hover .govuk-radios__input:not(:disabled)+.govuk-radios__label::before{box-shadow:0 0 0 10px var(--line)}
+  .govuk-checkboxes__label::before{border-radius:4px}
+  .govuk-frontend-supported .govuk-tabs__list{border-bottom-color:var(--line)}
+  .govuk-frontend-supported .govuk-tabs__list-item{background:var(--surface-2);border-radius:10px 10px 0 0}
+  .govuk-frontend-supported .govuk-tabs__list-item--selected{background:var(--surface);border-color:var(--line)}
+  .govuk-frontend-supported .govuk-tabs__tab:link,.govuk-frontend-supported .govuk-tabs__tab:visited{color:var(--ink)}
+  .govuk-frontend-supported .govuk-tabs__tab:hover{color:var(--brand-ink)}
+  .govuk-frontend-supported .govuk-tabs__panel{border-color:var(--line);background:var(--surface);border-radius:0 0 12px 12px}
+  .govuk-tabs__tab:link,.govuk-tabs__tab:visited{color:var(--brand-ink)}
+  .govuk-frontend-supported .govuk-accordion{border-bottom-color:var(--line)}
+  .govuk-frontend-supported .govuk-accordion__section-button{border-top-color:var(--line);color:var(--ink)}
+  .govuk-frontend-supported .govuk-accordion__section-button:hover{background:var(--surface-2);color:var(--ink)}
+  .govuk-frontend-supported .govuk-accordion__section-button:hover .govuk-accordion__section-toggle-text{color:var(--ink)}
+  .govuk-frontend-supported .govuk-accordion__section-button:hover .govuk-accordion-nav__chevron,
+  .govuk-frontend-supported .govuk-accordion__show-all:hover .govuk-accordion-nav__chevron{background:var(--ink);color:var(--ink)}
+  .govuk-frontend-supported .govuk-accordion__section-button:hover .govuk-accordion-nav__chevron::after,
+  .govuk-frontend-supported .govuk-accordion__show-all:hover .govuk-accordion-nav__chevron::after{color:var(--surface-2)}
+  .govuk-frontend-supported .govuk-accordion__show-all,.govuk-frontend-supported .govuk-accordion__section-toggle{color:var(--brand-ink)}
+  .govuk-frontend-supported .govuk-accordion__show-all:hover{background:var(--surface-2);box-shadow:0 -2px var(--surface-2),0 4px var(--surface-2);color:var(--ink)}
+  .govuk-frontend-supported .govuk-accordion__show-all:hover .govuk-accordion__section-toggle-text{color:var(--ink)}
+  .govuk-summary-list__row{border-bottom-color:var(--line)}
+  .govuk-task-list__item,.govuk-task-list__item:first-child{border-color:var(--line)}
+  .govuk-task-list__item--with-link:hover{background:var(--surface-2)}
+  .govuk-details__summary{color:var(--brand-ink)}
+  .govuk-details__summary:hover{color:var(--ink)}
+  .govuk-details__text{border-left-color:var(--line)}
+  .govuk-inset-text{border-left-color:var(--accent);background:color-mix(in srgb,var(--accent) 7%,transparent);border-radius:0 10px 10px 0}
+  .govuk-notification-banner{border-color:var(--brand);background:var(--brand);border-radius:12px;overflow:hidden}
+  .govuk-notification-banner__title{color:var(--on-brand)}
+  .govuk-notification-banner__content{background:var(--surface);color:var(--ink)}
+  .govuk-notification-banner--success{border-color:var(--ok);background:var(--ok)}
+  .govuk-notification-banner--success .govuk-notification-banner__title{color:#fff}
+  .govuk-panel--confirmation{background:var(--ok);color:#fff;border-radius:14px}
+  .govuk-error-summary{border-color:var(--danger);border-radius:12px;background:var(--surface)}
+  .govuk-error-summary__list a:link,.govuk-error-summary__list a:visited,.govuk-error-summary__list a:hover{color:var(--danger)}
+  .govuk-button{background:var(--brand);color:var(--on-brand);box-shadow:0 3px 0 var(--brand-shadow);border-radius:10px;font-weight:700}
+  .govuk-button:hover{background:var(--brand-hover)}
+  .govuk-button:link,.govuk-button:visited,.govuk-button:hover,.govuk-button:active{color:var(--on-brand)}
+  .govuk-button--secondary{background:var(--surface-2);box-shadow:0 3px 0 var(--line);color:var(--ink)}
+  .govuk-button--secondary:hover{background:var(--line)}
+  .govuk-button--secondary:link,.govuk-button--secondary:visited,.govuk-button--secondary:hover,.govuk-button--secondary:active{color:var(--ink)}
+  .govuk-button--warning{background:var(--accent);box-shadow:0 3px 0 #9a4313;color:#fff}
+  .govuk-button--warning:link,.govuk-button--warning:visited,.govuk-button--warning:hover,.govuk-button--warning:active{color:#fff}
+  .govuk-button--warning:hover{background:#d9661f}
+  .govuk-tag{border-radius:999px;padding-inline:10px;font-weight:700;max-width:none;font-size:.84rem}
+  [data-theme=dark] .govuk-tag{filter:saturate(1.1) brightness(.92)}
+  .govuk-section-break--visible{border-bottom-color:var(--line)}
+
+  /* ---------- Catatan komunitas + Nav ---------- */
+  .note-bar{background:var(--ink);color:var(--bg);font-size:.82rem;padding:7px 0;text-align:center}
+  .note-bar b{color:var(--focus)}
+  .site-nav{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 84%,transparent);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--line)}
+  .nav-in{display:flex;align-items:center;gap:16px;min-height:68px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.14rem;color:var(--ink);text-decoration:none;white-space:nowrap;letter-spacing:-.02em;margin-right:auto}
+  .brand svg{width:34px;height:34px;flex:0 0 auto}
+  .brand small{display:block;font-weight:700;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-2);line-height:1}
+  .nav-links{display:flex;gap:4px;list-style:none;margin:0;padding:0}
+  .nav-links a{display:block;padding:8px 12px;border-radius:999px;color:var(--ink);text-decoration:none;font-weight:600;font-size:.95rem}
+  .nav-links a:hover{background:var(--surface-2)}
+  .icon-btn{display:inline-grid;place-items:center;width:42px;height:42px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;flex:0 0 auto}
+  .icon-btn:hover{background:var(--surface-2)}
+  .icon-btn svg{width:20px;height:20px}
+  .theme-ico-sun{display:none}
+  [data-theme=dark] .theme-ico-sun{display:block}
+  [data-theme=dark] .theme-ico-moon{display:none}
+  .nav-cta{margin:0!important;font-size:1rem!important;padding:9px 14px 8px!important}
+  .burger{display:none}
+  @media (max-width:960px){
+    .burger{display:inline-grid}
+    .nav-links{display:none;position:absolute;left:0;right:0;top:100%;flex-direction:column;background:var(--surface);border-bottom:1px solid var(--line);padding:10px 16px 16px;box-shadow:0 30px 40px -30px rgba(0,0,0,.4)}
+    .nav-links.open{display:flex}
+    .nav-links a{padding:12px}
+  }
+  @media (max-width:520px){.nav-cta{display:none!important}.brand small{display:none}}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:clamp(28px,5vw,64px) 0 36px}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(24px,4vw,56px);align-items:center}
+  .hero h1{font-size:clamp(2.35rem,5.3vw,4.3rem);margin:18px 0 20px}
+  .hero h1 em{font-style:normal;color:var(--brand-ink);background:linear-gradient(transparent 64%,color-mix(in srgb,var(--accent) 38%,transparent) 64%)}
+  .lead{font-size:clamp(1.02rem,1.3vw,1.16rem);max-width:33em;color:var(--ink-2)}
+  .hero .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+  .hero .actions .govuk-button{margin:0}
+  .mini{display:grid;grid-template-columns:repeat(3,minmax(0,auto));justify-content:start;gap:12px 30px;padding-top:22px;margin-top:30px;border-top:1px solid var(--line)}
+  .mini b{display:block;font-size:1.6rem;font-weight:800;letter-spacing:-.02em;color:var(--ink)}
+  .mini span{font-size:.84rem;color:var(--ink-2)}
+  @media (max-width:420px){.mini{gap:10px 16px}.mini b{font-size:1.25rem}}
+  .stage{position:relative;border-radius:calc(var(--radius) + 8px);overflow:hidden;isolation:isolate;background:linear-gradient(170deg,var(--surface),var(--bg-2));border:1px solid var(--line);box-shadow:var(--shadow)}
+  .stage canvas{display:block;width:100%;height:100%;opacity:0;transition:opacity .8s ease}
+  .stage.ready canvas{opacity:1}
+  .hero .stage{height:clamp(460px,74vh,680px)}
+  .stage .fallback{position:absolute;inset:0;display:none;place-items:center;padding:20px}
+  .stage.no-webgl .fallback{display:grid}
+  .stage.no-webgl canvas{display:none}
+  .glass{background:color-mix(in srgb,var(--surface) 80%,transparent);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border:1px solid color-mix(in srgb,var(--line) 70%,transparent);color:var(--ink)}
+  .stage-top{position:absolute;top:14px;left:14px;right:14px;z-index:2;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;pointer-events:none}
+  .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;font-size:.78rem;font-weight:700;font-variant-numeric:tabular-nums;max-width:100%}
+  .chip .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 30%,transparent);flex:0 0 auto}
+  .stage-panel{position:absolute;left:14px;right:14px;bottom:14px;z-index:2;border-radius:16px;padding:12px 14px 4px}
+  .stage-panel .govuk-fieldset__legend{font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin-bottom:4px}
+  .stage-panel .govuk-form-group{margin:0}
+  .cat-row{display:flex;flex-wrap:wrap;gap:0 18px}
+  .cat-row .govuk-checkboxes__item{margin-bottom:4px}
+  .cat-row .govuk-checkboxes__label{font-size:.92rem;font-weight:600;display:inline-flex;align-items:center;gap:6px;max-width:none;white-space:nowrap;padding-right:4px}
+  .sw{width:10px;height:10px;border-radius:50%;display:inline-block;flex:0 0 auto}
+  @media (max-width:900px){.hero-grid{grid-template-columns:minmax(0,1fr)}.hero .stage{height:min(560px,74vh);min-height:440px}}
+  @media (max-width:420px){.cat-row{display:grid;grid-template-columns:1fr 1fr;gap:0 6px}.cat-row .govuk-checkboxes__label{font-size:.84rem}}
+
+  /* ---------- Fitur ---------- */
+  .feat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+  .feat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;display:flex;flex-direction:column;gap:8px}
+  .feat .ico{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:var(--brand-soft);color:var(--brand-ink);margin-bottom:10px}
+  .feat .ico svg{width:24px;height:24px}
+  .feat h3{font-size:1.14rem;font-weight:800;letter-spacing:-.01em}
+  .feat p{font-size:.95rem;color:var(--ink-2)}
+  .feat .govuk-tag{align-self:flex-start;margin-top:auto}
+  @media (max-width:1000px){.feat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:600px){.feat-grid{grid-template-columns:minmax(0,1fr)}}
+
+  /* ---------- Peta laporan (komponen GOV.UK menggerakkan 3D) ---------- */
+  .map-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:20px;align-items:start}
+  .map .stage{height:clamp(500px,78vh,720px);position:sticky;top:88px}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;min-width:0}
+  .panel .govuk-tabs{margin:0}
+  .panel .govuk-tabs__panel{margin-bottom:0}
+  .panel .govuk-frontend-supported .govuk-tabs__panel{padding:20px}
+  .govuk-frontend-supported .panel .govuk-tabs__panel{padding:20px 18px}
+  .govuk-frontend-supported .panel .govuk-tabs__list-item{padding:10px 14px}
+  .govuk-frontend-supported .panel .govuk-tabs__list-item--selected{padding:14px 13px 16px}
+  .panel .govuk-notification-banner{margin-bottom:18px}
+  .panel .govuk-notification-banner__content{padding:12px 14px}
+  .panel .govuk-notification-banner__heading{font-size:1rem;margin:0}
+  .panel .govuk-label,.panel .govuk-fieldset__legend{font-size:1rem}
+  .panel .govuk-hint,.panel .govuk-details,.panel .govuk-body,.panel .govuk-inset-text{font-size:.94rem}
+  .panel .sw{margin-right:8px}
+  .panel .govuk-fieldset__legend--s{font-weight:800}
+  .legend-dots{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.85rem;color:var(--ink-2);margin-top:8px}
+  .legend-dots span{display:inline-flex;align-items:center;gap:6px}
+  .ring{width:12px;height:12px;border-radius:50%;border:3px solid currentColor;display:inline-block}
+  .panel .govuk-summary-list{font-size:.95rem;margin-bottom:16px}
+  .panel .govuk-summary-list__key,.panel .govuk-summary-list__value{padding-top:8px;padding-bottom:8px}
+  .panel .govuk-task-list{font-size:.95rem}
+  .panel .govuk-task-list__item{padding-top:8px;padding-bottom:8px}
+  .panel .govuk-panel{padding:22px 18px;margin-bottom:16px}
+  .panel .govuk-panel__title{font-size:1.6rem;margin-bottom:10px}
+  .panel .govuk-panel__body{font-size:1.05rem}
+  .panel .govuk-button{margin-bottom:0}
+  .btn-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .map-legend{position:absolute;left:14px;bottom:14px;z-index:2;border-radius:14px;padding:10px 12px;display:grid;gap:4px;font-size:.78rem;font-weight:700}
+  .map-legend span{display:flex;align-items:center;gap:8px}
+  @media (max-width:1020px){.map-grid{grid-template-columns:minmax(0,1fr)}.map .stage{position:relative;top:0;height:min(520px,66vh);min-height:400px}}
+  @media (max-width:520px){.map-legend{display:none}}
+
+  /* ---------- Cerita gulir isometrik ---------- */
+  .story{position:relative;height:520vh;background:var(--bg-2)}
+  .story-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+  .story-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .story-fallback{position:absolute;inset:0;display:none;place-items:center;padding:24px}
+  .story.no-webgl .story-fallback{display:grid}
+  .story.no-webgl canvas{display:none}
+  .story-fallback svg{width:min(900px,100%);height:auto}
+  .story-fallback .node{fill:var(--surface);stroke:var(--line);stroke-width:3;transition:fill .4s}
+  .story-fallback .node.on{fill:var(--accent)}
+  .story-ui{position:absolute;inset:0;pointer-events:none;padding:92px 0 28px}
+  .story-ui .wrap{position:relative;height:100%;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+  .story-head{max-width:470px;width:fit-content;background:color-mix(in srgb,var(--bg-2) 84%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:var(--radius);padding:18px 22px 20px;pointer-events:auto}
+  .story-head h2{font-size:clamp(1.7rem,3.3vw,2.7rem);margin-top:10px}
+  .story-card{max-width:450px;pointer-events:auto;background:color-mix(in srgb,var(--surface) 88%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:var(--radius);padding:16px 20px 18px;box-shadow:0 20px 50px -30px rgba(10,40,40,.5)}
+  .tlm{position:relative;margin:0 0 12px}
+  .tlm::before{content:"";position:absolute;left:10%;right:10%;top:13px;height:3px;border-radius:3px;background:var(--line)}
+  .tlm .fill{position:absolute;left:10%;top:13px;height:3px;border-radius:3px;background:var(--accent);width:0;transition:width .4s}
+  .timeline-mini{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;list-style:none;margin:0;padding:0;position:relative}
+  .timeline-mini li{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.7rem;font-weight:700;color:var(--ink-2);text-align:center}
+  .timeline-mini .govuk-tag{font-size:.74rem;padding:2px 8px;margin:0;font-variant-numeric:tabular-nums;transition:background-color .3s,color .3s}
+  .timeline-mini li.on{color:var(--ink)}
+  .timeline-mini li.on .govuk-tag{background:var(--accent);color:#fff}
+  .scene-steps{position:relative;min-height:142px;list-style:none;margin:0;padding:0}
+  .scene-step{position:absolute;inset:0 0 auto 0;opacity:0;transform:translateY(14px);transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+  .scene-step.on{opacity:1;transform:none;pointer-events:auto}
+  .scene-step h3{font-size:1.25rem;font-weight:800;margin:2px 0 6px;color:var(--ink)}
+  .scene-step p{font-size:.93rem;color:var(--ink-2)}
+  .scene-step .govuk-tag{margin-top:10px;font-size:.8rem}
+  @media (max-width:760px){
+    .story-ui{padding:80px 0 14px}
+    .story-head{padding:12px 16px 14px}
+    .story-head h2{font-size:1.42rem}
+    .story-head p{display:none}
+    .story-card{max-width:none;padding:12px 14px 14px}
+    .timeline-mini .tl-lbl{display:none}
+    .scene-steps{min-height:112px}
+    .scene-step h3{font-size:1.06rem}
+    .scene-step p{font-size:.86rem}
+    .scene-step .govuk-tag{display:none}
+  }
+
+  /* ---------- Statistik + testimoni ---------- */
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;border-block:1px solid var(--line);padding:30px 0;margin-bottom:clamp(40px,6vw,72px)}
+  .stat b{display:block;font-size:clamp(2rem,4vw,3.1rem);font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--ink)}
+  .stat span{display:block;margin-top:8px;font-size:.78rem;letter-spacing:.12em;font-weight:800;text-transform:uppercase;color:var(--ink-2)}
+  @media (max-width:768px){.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 12px}}
+  .quotes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+  .quote{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;display:flex;flex-direction:column;gap:16px}
+  .quote .govuk-inset-text{margin:0;font-size:1rem}
+  .who{display:flex;align-items:center;gap:12px;margin-top:auto}
+  .avatar{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;flex:0 0 auto}
+  .who b{display:block}
+  .who small{color:var(--ink-2)}
+  @media (max-width:900px){.quotes{grid-template-columns:minmax(0,1fr)}}
+
+  /* ---------- Program ---------- */
+  .plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:stretch}
+  .plan{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:26px;display:flex;flex-direction:column}
+  .plan.hot{border:2px solid var(--brand);box-shadow:var(--shadow)}
+  .plan h3{font-size:1.35rem;font-weight:800}
+  .plan .top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+  .price{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;margin:16px 0}
+  .price b{font-size:clamp(1.9rem,3vw,2.4rem);font-weight:800;letter-spacing:-.03em;line-height:1;color:var(--ink)}
+  .plan ul{list-style:none;padding:0;margin:4px 0 24px;display:grid;gap:10px;font-size:.95rem}
+  .plan li{display:flex;gap:10px;align-items:flex-start}
+  .plan li svg{flex:0 0 auto;width:18px;height:18px;margin-top:3px;color:var(--ok)}
+  .plan .govuk-button{margin:auto 0 0;width:100%}
+  @media (max-width:900px){.plans{grid-template-columns:minmax(0,1fr)}}
+
+  /* ---------- FAQ ---------- */
+  .faq-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(24px,5vw,64px)}
+  .faq .govuk-accordion__section-heading-text{font-size:1.08rem;font-weight:700}
+  .faq .govuk-accordion__section-content .govuk-body{color:var(--ink-2);font-size:1.02rem}
+  @media (max-width:820px){.faq-grid{grid-template-columns:minmax(0,1fr)}}
+
+  /* ---------- CTA ---------- */
+  .cta{border-radius:calc(var(--radius) + 12px);padding:clamp(24px,6vw,72px);position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px;align-items:center;
+    background:radial-gradient(120% 140% at 100% 0%,#1f9b85 0%,#0d6e5f 46%,#073e36 100%);color:#fff}
+  .cta::after{content:"";position:absolute;right:-60px;bottom:-60px;width:260px;height:260px;border-radius:50%;border:40px solid rgba(240,119,47,.35);pointer-events:none}
+  .cta h2{font-weight:800;font-size:clamp(2rem,4.2vw,3.2rem);letter-spacing:-.03em;line-height:1.05;color:#fff}
+  .cta .cbox{background:var(--surface);color:var(--ink);border-radius:var(--radius);padding:24px;position:relative;z-index:1}
+  .cta .cbox .govuk-button{margin-bottom:0;width:100%}
+  .cta .govuk-tag{margin:0}
+  @media (max-width:820px){.cta{grid-template-columns:minmax(0,1fr)}}
+
+  .toasts{position:fixed;right:12px;bottom:12px;z-index:90;display:grid;gap:8px;max-width:min(380px,calc(100vw - 24px))}
+  .toast{background:var(--ink);color:var(--bg);border-radius:12px;padding:12px 16px;font-size:.92rem;box-shadow:0 16px 40px -16px rgba(0,0,0,.5);border-left:5px solid var(--accent)}
+  .site-footer{padding:64px 0 32px;background:var(--bg-2);border-top:1px solid var(--line);margin-top:clamp(72px,10vw,120px)}
+  .site-footer h4{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--ink-2);margin-bottom:12px}
+  .site-footer a:not(.brand){display:block;padding:3px 0;color:var(--ink);text-decoration:none}
+  .site-footer a:not(.brand):hover{color:var(--brand-ink);text-decoration:underline}
+  .foot-grid{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));gap:28px}
+  .foot-bottom{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;margin-top:40px;padding-top:20px;border-top:1px solid var(--line);font-size:.84rem;color:var(--ink-2)}
+  @media (max-width:820px){.foot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.foot-grid > div:first-child{grid-column:span 2}}
+  .vh{position:absolute!important;width:1px!important;height:1px!important;margin:0!important;padding:0!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;border:0!important;white-space:nowrap!important}
+</style>
+</head>
+<body>
+<script>document.body.className+=' js-enabled'+('noModule' in HTMLScriptElement.prototype?' govuk-frontend-supported':'');</script>
+<a href="#main" class="govuk-skip-link" data-module="govuk-skip-link">Lewati ke konten utama</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo" viewBox="0 0 34 34"><path d="M6 3h22a5 5 0 0 1 5 5v14a5 5 0 0 1-5 5H15l-7 5v-5H6a5 5 0 0 1-5-5V8a5 5 0 0 1 5-5z" fill="currentColor"/><path d="M17 7.5a5.5 5.5 0 0 0-5.5 5.5c0 4 5.5 9.5 5.5 9.5s5.5-5.5 5.5-9.5A5.5 5.5 0 0 0 17 7.5z" fill="#fff"/><circle cx="17" cy="13" r="2.3" fill="#f0772f"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<div class="note-bar" role="note"><div class="wrap"><b>Platform komunitas independen.</b> Lapor Warga bukan situs atau layanan resmi pemerintah.</div></div>
+<header class="site-nav">
+  <nav class="wrap nav-in" aria-label="Navigasi utama">
+    <a class="brand" href="#top" aria-label="Lapor Warga, ke atas">
+      <svg style="color:var(--brand)"><use href="#logo"/></svg>
+      <span>Lapor Warga<small>Komunitas · Independen</small></span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#fitur">Cara kerja</a></li>
+      <li><a href="#peta">Peta laporan</a></li>
+      <li><a href="#alur">Alur laporan</a></li>
+      <li><a href="#program">Program</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <button class="icon-btn" type="button" data-theme-toggle aria-label="Ganti tema terang/gelap" aria-pressed="false">
+      <svg class="theme-ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      <svg class="theme-ico-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <a href="#peta" class="govuk-button nav-cta" data-goto-lapor>Buat laporan</a>
+    <button class="icon-btn burger" type="button" id="burger" aria-label="Buka menu" aria-expanded="false" aria-controls="navLinks">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </nav>
+</header>
+
+<main id="main">
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div>
+        <strong class="govuk-tag govuk-tag--turquoise">Aktif di 38 kota · 1.380 relawan</strong>
+        <h1 class="display">Lubang di jalan? <em>Laporkan</em>, kami kawal sampai beres.</h1>
+        <p class="lead">Foto, tandai lokasi, kirim. Relawan Lapor Warga memverifikasi laporanmu, meneruskannya ke instansi yang berwenang, dan terus memantau sampai jalan mulus, lampu menyala, dan sampah terangkut.</p>
+        <div class="actions">
+          <a href="#peta" class="govuk-button govuk-button--start" data-goto-lapor draggable="false" role="button">
+            Buat laporan
+            <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false"><path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"/></svg>
+          </a>
+          <a href="#alur" class="govuk-button govuk-button--secondary" role="button">Lihat alurnya</a>
+        </div>
+        <div class="mini">
+          <div><b>48.210</b><span>laporan masuk</span></div>
+          <div><b>72%</b><span>sudah selesai</span></div>
+          <div><b>9 hari</b><span>median penyelesaian</span></div>
+        </div>
+      </div>
+      <div class="stage" id="heroStage">
+        <canvas id="heroCanvas" role="img" aria-label="Model 3D isometrik sebuah lingkungan kota: jalan, rumah, pasar, masjid, dan kanal, dengan pin laporan berwarna yang muncul di titik masalah"></canvas>
+        <div class="fallback" aria-hidden="true"></div>
+        <div class="stage-top">
+          <span class="chip glass"><span class="dot"></span><span id="heroChip">Memuat laporan…</span></span>
+          <span class="chip glass num" id="heroCount">0 pin</span>
+        </div>
+        <div class="stage-panel glass">
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend">Tampilkan kategori</legend>
+              <div class="govuk-checkboxes govuk-checkboxes--small cat-row" data-module="govuk-checkboxes" id="heroCats"></div>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CARA KERJA -->
+  <section class="sec" id="fitur">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Cara kerja</span><h2 class="display">Dari keluhan di grup WhatsApp menjadi tiket yang dikawal.</h2></div>
+        <p class="weak">Lapor Warga dijalankan oleh relawan dan pengurus RT/RW. Kami tidak menggantikan kanal resmi, tetapi memastikan laporanmu sampai ke sana dengan bukti lengkap, lalu tidak dilupakan.</p>
+      </div>
+      <div class="feat-grid">
+        <article class="feat">
+          <div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12.5" r="3.4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8.5 6l1.5-2h4l1.5 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+          <h3>Lapor 30 detik</h3><p>Foto, titik lokasi otomatis, dan kategori. Bisa tanpa akun, bisa anonim.</p>
+          <strong class="govuk-tag govuk-tag--green">Tanpa unduh aplikasi</strong>
+        </article>
+        <article class="feat">
+          <div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5M8.5 11l2 2 3.5-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>Diverifikasi relawan</h3><p>Laporan ganda digabung, foto dicek, tingkat urgensi diberi oleh relawan lokal.</p>
+          <strong class="govuk-tag govuk-tag--blue">Rata-rata 3 jam</strong>
+        </article>
+        <article class="feat">
+          <div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l17-7-6 17-3-7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+          <h3>Diteruskan ke yang berwenang</h3><p>Kami kirim ke kanal pengaduan resmi kota dan mencatat nomor tiketnya untukmu.</p>
+          <strong class="govuk-tag govuk-tag--purple">Ada jejak lengkap</strong>
+        </article>
+        <article class="feat">
+          <div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <h3>Data terbuka</h3><p>Statistik per kelurahan bisa diunduh siapa saja untuk advokasi dan liputan.</p>
+          <strong class="govuk-tag govuk-tag--orange">CSV &amp; API</strong>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PETA LAPORAN -->
+  <section class="sec alt map" id="peta">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Peta laporan</span><h2 class="display">Saring, pilih wilayah, kirim laporan.</h2></div>
+        <p class="weak">Semua kontrol di panel ini adalah komponen GOV.UK Frontend yang menggerakkan adegan three.js: kotak centang menampilkan atau menyembunyikan pin, tombol radio menyaring status, pilihan kecamatan menggerakkan kamera, dan formulir menjatuhkan pin baru ke peta.</p>
+      </div>
+      <div class="map-grid">
+        <div class="stage" id="mapStage">
+          <canvas id="mapCanvas" role="img" aria-label="Peta 3D interaktif berisi pin laporan; kamera berpindah ke kecamatan yang dipilih"></canvas>
+          <div class="fallback" aria-hidden="true"></div>
+          <div class="stage-top"><span class="chip glass" id="mapChip">Seluruh kota</span><span class="chip glass num" id="mapCount">0 laporan tampil</span></div>
+          <div class="map-legend glass" aria-hidden="true">
+            <span><i class="ring" style="color:#ffffff;background:#e4572e"></i>Baru</span>
+            <span><i class="ring" style="color:#f5a524"></i>Dikerjakan</span>
+            <span><i class="ring" style="color:#2fb36b"></i>Selesai</span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="govuk-notification-banner" role="region" aria-labelledby="nbTitle" data-module="govuk-notification-banner" id="nb">
+            <div class="govuk-notification-banner__header"><h3 class="govuk-notification-banner__title" id="nbTitle">Ringkas</h3></div>
+            <div class="govuk-notification-banner__content"><p class="govuk-notification-banner__heading" id="nbText" aria-live="polite">Memuat…</p></div>
+          </div>
+
+          <div class="govuk-tabs" data-module="govuk-tabs" id="mapTabs">
+            <h3 class="govuk-tabs__title">Panel peta</h3>
+            <ul class="govuk-tabs__list">
+              <li class="govuk-tabs__list-item govuk-tabs__list-item--selected"><a class="govuk-tabs__tab" href="#tab-saring">Saring</a></li>
+              <li class="govuk-tabs__list-item"><a class="govuk-tabs__tab" href="#tab-lapor">Lapor</a></li>
+              <li class="govuk-tabs__list-item"><a class="govuk-tabs__tab" href="#tab-ringkas">Ringkasan</a></li>
+            </ul>
+
+            <div class="govuk-tabs__panel" id="tab-saring">
+              <div class="govuk-form-group">
+                <label class="govuk-label govuk-label--s" for="fDistrict">Kecamatan</label>
+                <div class="govuk-hint" id="fDistrictHint">Kamera akan bergerak ke wilayah yang dipilih.</div>
+                <select class="govuk-select" id="fDistrict" aria-describedby="fDistrictHint" data-district></select>
+              </div>
+              <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Kategori</legend>
+                  <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes" id="mapCats"></div>
+                </fieldset>
+              </div>
+              <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Status</legend>
+                  <div class="govuk-radios govuk-radios--small govuk-radios--inline" data-module="govuk-radios" id="fStatus">
+                    <div class="govuk-radios__item"><input class="govuk-radios__input" id="st-semua" name="status" type="radio" value="semua" checked><label class="govuk-label govuk-radios__label" for="st-semua">Semua</label></div>
+                    <div class="govuk-radios__item"><input class="govuk-radios__input" id="st-baru" name="status" type="radio" value="baru"><label class="govuk-label govuk-radios__label" for="st-baru">Baru</label></div>
+                    <div class="govuk-radios__item"><input class="govuk-radios__input" id="st-proses" name="status" type="radio" value="proses"><label class="govuk-label govuk-radios__label" for="st-proses">Dikerjakan</label></div>
+                    <div class="govuk-radios__item"><input class="govuk-radios__input" id="st-selesai" name="status" type="radio" value="selesai"><label class="govuk-label govuk-radios__label" for="st-selesai">Selesai</label></div>
+                  </div>
+                </fieldset>
+              </div>
+              <details class="govuk-details">
+                <summary class="govuk-details__summary"><span class="govuk-details__summary-text">Cara membaca pin di peta</span></summary>
+                <div class="govuk-details__text">Warna kepala pin menunjukkan kategori. Cincin di dasar pin menunjukkan status: putih berdenyut untuk laporan baru, kuning untuk yang sedang dikerjakan, hijau untuk yang selesai. Data di peta ini adalah contoh.</div>
+              </details>
+              <div class="btn-row">
+                <button type="button" class="govuk-button govuk-button--secondary" id="resetMap" data-module="govuk-button">Atur ulang</button>
+              </div>
+            </div>
+
+            <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="tab-lapor">
+              <div id="formWrap">
+                <div id="errSlot"></div>
+                <form id="reportForm" novalidate>
+                  <div class="govuk-form-group" id="g-kat">
+                    <fieldset class="govuk-fieldset" aria-describedby="kat-hint">
+                      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Apa masalahnya?</legend>
+                      <div class="govuk-hint" id="kat-hint">Pilih satu kategori.</div>
+                      <div class="govuk-radios govuk-radios--small" data-module="govuk-radios" id="rKat"></div>
+                    </fieldset>
+                  </div>
+                  <div class="govuk-form-group" id="g-kec">
+                    <label class="govuk-label govuk-label--s" for="rKec">Kecamatan</label>
+                    <select class="govuk-select" id="rKec" name="kec">
+                      <option value="">Pilih kecamatan</option>
+                    </select>
+                  </div>
+                  <div class="govuk-form-group" id="g-lok">
+                    <label class="govuk-label govuk-label--s" for="rLok">Lokasi atau patokan</label>
+                    <div class="govuk-hint" id="rLokHint">Contoh: Jl. Melati depan warung Bu Sri</div>
+                    <input class="govuk-input" id="rLok" name="lok" type="text" autocomplete="off" aria-describedby="rLokHint">
+                  </div>
+                  <div class="govuk-form-group">
+                    <label class="govuk-label govuk-label--s" for="rKet">Keterangan <span class="weak" style="font-weight:400">(opsional)</span></label>
+                    <textarea class="govuk-textarea" id="rKet" name="ket" rows="3"></textarea>
+                  </div>
+                  <div class="govuk-inset-text" style="margin-top:0">Data di sini adalah simulasi. Laporan sungguhan memerlukan foto dan titik GPS.</div>
+                  <button type="submit" class="govuk-button" data-module="govuk-button">Kirim laporan</button>
+                </form>
+              </div>
+              <div id="doneWrap" hidden>
+                <div class="govuk-panel govuk-panel--confirmation" tabindex="-1" id="donePanel">
+                  <h3 class="govuk-panel__title">Laporan terkirim</h3>
+                  <div class="govuk-panel__body">Nomor laporan<br><strong id="doneId" class="num">LW-0000</strong></div>
+                </div>
+                <p class="govuk-body">Pin barumu sudah jatuh di peta. Relawan di <b id="doneKec">—</b> akan memverifikasinya dalam beberapa jam.</p>
+                <div class="btn-row">
+                  <button type="button" class="govuk-button" id="seeProgress">Lihat progres</button>
+                  <button type="button" class="govuk-button govuk-button--secondary" id="againBtn">Lapor lagi</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="tab-ringkas">
+              <h4 class="govuk-heading-s" style="margin-bottom:8px">Wilayah: <span id="sumArea">Seluruh kota</span></h4>
+              <dl class="govuk-summary-list" id="sumList"></dl>
+              <h4 class="govuk-heading-s" style="margin-bottom:8px">Progres laporan <span id="taskId" class="num">LW-0398</span></h4>
+              <ul class="govuk-task-list" id="taskList"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERITA: ALUR SATU LAPORAN -->
+  <section class="story" id="alur" aria-label="Alur satu laporan di Lapor Warga">
+    <div class="story-stage">
+      <canvas id="storyCanvas" role="img" aria-label="Peta isometrik perjalanan satu laporan: Bu Rina berjalan mengikuti jalur oranye dari titik lapor, verifikasi relawan, diteruskan ke instansi, dikerjakan, hingga selesai saat halaman digulir"></canvas>
+      <div class="story-fallback" aria-hidden="true">
+        <svg viewBox="0 0 900 360" id="storySvg">
+          <path d="M80 250 L250 130 L450 250 L650 130 L820 250" fill="none" stroke="#f0772f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="14 12"/>
+          <g><circle class="node on" cx="80" cy="250" r="34"/><circle class="node" cx="250" cy="130" r="34"/><circle class="node" cx="450" cy="250" r="34"/><circle class="node" cx="650" cy="130" r="34"/><circle class="node" cx="820" cy="250" r="34"/></g>
+        </svg>
+      </div>
+      <div class="story-ui">
+        <div class="wrap">
+          <div class="story-head">
+            <span class="eyebrow">Alur laporan</span>
+            <h2 class="display">Ikuti satu lubang jalan sampai tertambal.</h2>
+            <p class="weak" style="margin-top:8px;font-size:.95rem">Gulir untuk melihat apa yang terjadi pada laporan Bu Rina di setiap tahap.</p>
+          </div>
+          <div class="story-card" id="storyCard">
+            <div class="tlm" aria-hidden="true"><span class="fill" id="tlFill"></span>
+            <ol class="timeline-mini" id="tlMini">
+              <li class="on"><strong class="govuk-tag govuk-tag--grey">1</strong><span class="tl-lbl">Lapor</span></li>
+              <li><strong class="govuk-tag govuk-tag--grey">2</strong><span class="tl-lbl">Diverifikasi</span></li>
+              <li><strong class="govuk-tag govuk-tag--grey">3</strong><span class="tl-lbl">Diteruskan</span></li>
+              <li><strong class="govuk-tag govuk-tag--grey">4</strong><span class="tl-lbl">Dikerjakan</span></li>
+              <li><strong class="govuk-tag govuk-tag--grey">5</strong><span class="tl-lbl">Selesai</span></li>
+            </ol></div>
+            <ol class="scene-steps" aria-live="polite">
+              <li class="scene-step on"><h3>Lapor · Senin 07.40</h3><p>Bu Rina memotret lubang di Jl. Melati, lokasi tertandai otomatis. Laporan terkirim kurang dari satu menit.</p><strong class="govuk-tag govuk-tag--red">Foto + titik lokasi</strong></li>
+              <li class="scene-step"><h3>Diverifikasi · Senin 10.15</h3><p>Relawan kelurahan mengecek foto, menggabungkan 4 laporan serupa, dan memberi tingkat urgensi tinggi.</p><strong class="govuk-tag govuk-tag--blue">4 laporan digabung</strong></li>
+              <li class="scene-step"><h3>Diteruskan · Senin 13.00</h3><p>Laporan dikirim ke kanal pengaduan resmi kota lengkap dengan peta dan riwayat. Nomor tiket dicatat.</p><strong class="govuk-tag govuk-tag--purple">Tiket tercatat</strong></li>
+              <li class="scene-step"><h3>Dikerjakan · Hari ke-6</h3><p>Petugas menambal jalan. Warga sekitar mengirim foto progres sebagai bukti di linimasa laporan.</p><strong class="govuk-tag govuk-tag--yellow">Foto progres warga</strong></li>
+              <li class="scene-step"><h3>Selesai · Hari ke-9</h3><p>Bu Rina mengonfirmasi jalan sudah mulus. Laporan ditutup dan masuk ke statistik terbuka kelurahan.</p><strong class="govuk-tag govuk-tag--green">Dikonfirmasi pelapor</strong></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATISTIK + TESTIMONI -->
+  <section class="sec" id="dampak">
+    <div class="wrap">
+      <div class="stats" id="stats" aria-label="Statistik Lapor Warga">
+        <div class="stat"><b class="num" data-count="48210">0</b><span>Laporan masuk</span></div>
+        <div class="stat"><b class="num" data-count="34711">0</b><span>Laporan selesai</span></div>
+        <div class="stat"><b class="num" data-count="1380">0</b><span>Relawan aktif</span></div>
+        <div class="stat"><b class="num" data-count="38">0</b><span>Kota terjangkau</span></div>
+      </div>
+      <div class="quotes">
+        <figure class="quote" style="margin:0">
+          <blockquote class="govuk-inset-text" style="margin:0">“Lampu di gang kami mati tiga bulan. Setelah dilaporkan bareng tetangga dan dikawal relawan, dua minggu kemudian sudah menyala.”</blockquote>
+          <figcaption class="who"><span class="avatar" style="background:#0d6e5f">DS</span><span><b>Dewi Saraswati</b><small>Warga, Denpasar</small></span></figcaption>
+        </figure>
+        <figure class="quote" style="margin:0">
+          <blockquote class="govuk-inset-text" style="margin:0">“Sebagai ketua RW, saya akhirnya punya rekap rapi untuk rapat di kelurahan. Bukan lagi tangkapan layar grup WhatsApp.”</blockquote>
+          <figcaption class="who"><span class="avatar" style="background:#f0772f">HS</span><span><b>Hendra Simanjuntak</b><small>Ketua RW, Medan</small></span></figcaption>
+        </figure>
+        <figure class="quote" style="margin:0">
+          <blockquote class="govuk-inset-text" style="margin:0">“Data terbukanya kami pakai untuk liputan soal drainase. Setiap angka bisa ditelusuri ke laporan aslinya.”</blockquote>
+          <figcaption class="who"><span class="avatar" style="background:#7c5ce0">NA</span><span><b>Nadia Azzahra</b><small>Jurnalis data, Makassar</small></span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRAM -->
+  <section class="sec alt" id="program">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Program</span><h2 class="display">Gratis untuk warga. Selamanya.</h2></div>
+        <p class="weak">Operasional kami didanai donasi publik dan program mitra untuk organisasi yang butuh dasbor serta data lebih dalam.</p>
+      </div>
+      <div class="plans">
+        <article class="plan">
+          <div class="top"><h3>Warga</h3><strong class="govuk-tag govuk-tag--grey">Perorangan</strong></div>
+          <div class="price"><b>Gratis</b><span class="weak">tanpa akun</span></div>
+          <ul><li><svg><use href="#i-check"/></svg>Lapor tanpa batas</li><li><svg><use href="#i-check"/></svg>Notifikasi progres via WhatsApp</li><li><svg><use href="#i-check"/></svg>Opsi lapor anonim</li></ul>
+          <a href="#peta" class="govuk-button govuk-button--secondary" data-goto-lapor>Mulai melapor</a>
+        </article>
+        <article class="plan hot">
+          <div class="top"><h3>Komunitas RT/RW</h3><strong class="govuk-tag govuk-tag--green">Paling diminati</strong></div>
+          <div class="price"><b>Gratis</b><span class="weak">didanai donasi</span></div>
+          <ul><li><svg><use href="#i-check"/></svg>Dasbor wilayah RT/RW</li><li><svg><use href="#i-check"/></svg>Rekap bulanan siap rapat</li><li><svg><use href="#i-check"/></svg>Pelatihan relawan verifikator</li><li><svg><use href="#i-check"/></svg>Grup pendamping per kota</li></ul>
+          <a href="#gabung" class="govuk-button">Daftarkan komunitas</a>
+        </article>
+        <article class="plan">
+          <div class="top"><h3>Mitra Organisasi</h3><strong class="govuk-tag govuk-tag--purple">LSM · kampus · media</strong></div>
+          <div class="price"><b class="num">Rp 1.200.000</b><span class="weak">/ bulan</span></div>
+          <ul><li><svg><use href="#i-check"/></svg>API data terbuka tanpa batas</li><li><svg><use href="#i-check"/></svg>Analisis tren per kelurahan</li><li><svg><use href="#i-check"/></svg>Laporan riset kustom</li></ul>
+          <a href="#gabung" class="govuk-button govuk-button--secondary">Hubungi tim mitra</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec faq" id="faq">
+    <div class="wrap faq-grid">
+      <div><span class="eyebrow">FAQ</span><h2 class="display" style="font-size:clamp(2rem,3.6vw,2.8rem);margin-top:14px">Pertanyaan yang sering muncul.</h2><p class="weak" style="margin-top:14px">Belum terjawab? Tulis ke relawan kami di halo@laporwarga.test.</p></div>
+      <div class="govuk-accordion" data-module="govuk-accordion" id="faqAcc"
+        data-i18n.show-all-sections="Buka semua" data-i18n.hide-all-sections="Tutup semua"
+        data-i18n.show-section="Buka" data-i18n.hide-section="Tutup"
+        data-i18n.show-section-aria-label="Buka bagian ini" data-i18n.hide-section-aria-label="Tutup bagian ini">
+        <div class="govuk-accordion__section govuk-accordion__section--expanded">
+          <div class="govuk-accordion__section-header"><h3 class="govuk-accordion__section-heading"><span class="govuk-accordion__section-button" id="faqAcc-heading-1">Apakah Lapor Warga situs pemerintah?</span></h3></div>
+          <div id="faqAcc-content-1" class="govuk-accordion__section-content"><p class="govuk-body">Bukan. Lapor Warga adalah platform komunitas independen yang dikelola relawan. Kami meneruskan laporan ke kanal pengaduan resmi, tetapi tidak mewakili instansi mana pun.</p></div>
+        </div>
+        <div class="govuk-accordion__section">
+          <div class="govuk-accordion__section-header"><h3 class="govuk-accordion__section-heading"><span class="govuk-accordion__section-button" id="faqAcc-heading-2">Apakah identitas pelapor aman?</span></h3></div>
+          <div id="faqAcc-content-2" class="govuk-accordion__section-content"><p class="govuk-body">Nama dan nomor teleponmu tidak pernah ditampilkan publik. Kamu juga bisa melapor secara anonim; yang terlihat hanya foto, kategori, dan titik lokasi.</p></div>
+        </div>
+        <div class="govuk-accordion__section">
+          <div class="govuk-accordion__section-header"><h3 class="govuk-accordion__section-heading"><span class="govuk-accordion__section-button" id="faqAcc-heading-3">Bagaimana kalau laporan tidak ditindaklanjuti?</span></h3></div>
+          <div id="faqAcc-content-3" class="govuk-accordion__section-content"><p class="govuk-body">Setelah 14 hari tanpa progres, relawan mengirim pengingat dan membawa rekapnya ke forum warga. Laporan yang mandek tetap terlihat di peta sebagai bahan advokasi.</p></div>
+        </div>
+        <div class="govuk-accordion__section">
+          <div class="govuk-accordion__section-header"><h3 class="govuk-accordion__section-heading"><span class="govuk-accordion__section-button" id="faqAcc-heading-4">Apa saja yang bisa dilaporkan?</span></h3></div>
+          <div id="faqAcc-content-4" class="govuk-accordion__section-content"><p class="govuk-body">Masalah fasilitas umum: jalan rusak, lampu jalan mati, sampah menumpuk, drainase tersumbat, trotoar rusak, dan pohon tumbang. Keadaan darurat tetap harus ke nomor darurat 112.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="wrap" id="gabung">
+    <div class="cta">
+      <div>
+        <h2>Jadi relawan verifikator di kotamu.</h2>
+        <p style="margin-top:14px;opacity:.9;max-width:30em">Dua jam seminggu, dari ponsel. Kami latih cara mengecek foto, menggabungkan laporan, dan menulis tindak lanjut yang jelas.</p>
+        <p style="margin-top:18px;display:flex;flex-wrap:wrap;gap:8px"><strong class="govuk-tag govuk-tag--orange">Pelatihan gratis</strong><strong class="govuk-tag govuk-tag--turquoise">Sertifikat relawan</strong></p>
+      </div>
+      <form class="cbox" id="joinForm" novalidate>
+        <div class="govuk-form-group" id="g-jn">
+          <label class="govuk-label govuk-label--s" for="jName">Nama</label>
+          <input class="govuk-input" id="jName" name="nama" type="text" autocomplete="name">
+        </div>
+        <div class="govuk-form-group" id="g-jm">
+          <label class="govuk-label govuk-label--s" for="jMail">Email</label>
+          <input class="govuk-input" id="jMail" name="email" type="email" autocomplete="email" spellcheck="false">
+        </div>
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="jCity">Kota</label>
+          <select class="govuk-select" id="jCity" name="kota"><option>Jakarta</option><option>Bandung</option><option>Semarang</option><option>Surabaya</option><option>Medan</option><option>Makassar</option><option>Denpasar</option><option>Kota lain</option></select>
+        </div>
+        <button type="submit" class="govuk-button" data-module="govuk-button">Daftar jadi relawan</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div><a class="brand" href="#top"><svg style="color:var(--brand)"><use href="#logo"/></svg><span>Lapor Warga<small>Komunitas · Independen</small></span></a><p class="weak" style="margin-top:12px;max-width:28em">Platform komunitas independen untuk melaporkan dan mengawal masalah fasilitas umum. Bukan situs resmi pemerintah dan tidak berafiliasi dengan instansi mana pun.</p></div>
+      <div><h4>Platform</h4><a href="#fitur">Cara kerja</a><a href="#peta">Peta laporan</a><a href="#alur">Alur laporan</a></div>
+      <div><h4>Komunitas</h4><a href="#program">Program</a><a href="#gabung">Jadi relawan</a><a href="#faq">FAQ</a></div>
+      <div><h4>Kontak</h4><a href="#gabung">halo@laporwarga.test</a><a href="#faq">Kebijakan privasi</a></div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Lapor Warga. Merek fiktif untuk contoh template.</span>
+      <span>Dibangun dengan GOV.UK Frontend (MIT) + three.js · tanpa afiliasi pemerintah</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<template id="cityFallback">
+  <svg viewBox="0 0 400 300" width="88%" role="presentation">
+    <path d="M200 40 380 140 200 240 20 140z" fill="#b9cc98"/><path d="M20 140v18l180 100v-18zM380 140v18L200 258v-18z" fill="#a58866"/>
+    <path d="M110 90 290 190M290 90 110 190" stroke="#4a4f57" stroke-width="16"/>
+    <path d="M150 80l30 16-30 17-30-17z" fill="#f0e3c9"/><path d="M120 96v-20l30-16v20zM150 60l30 16" fill="#d0573a"/>
+    <path d="M250 180l30 16-30 17-30-17z" fill="#f0e3c9"/>
+    <g><path d="M160 150c0-10 16-10 16 0 0 8-8 18-8 18s-8-10-8-18z" fill="#e4572e"/><path d="M230 112c0-10 16-10 16 0 0 8-8 18-8 18s-8-10-8-18z" fill="#f2b705"/><path d="M262 150c0-10 16-10 16 0 0 8-8 18-8 18s-8-10-8-18z" fill="#7c5ce0"/></g>
+  </svg>
+</template>
+
+<script type="module">
+/* ================= UI (GOV.UK Frontend) ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const rmq = matchMedia('(prefers-reduced-motion: reduce)');
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const bus = new EventTarget();
+window.__laporwarga = { bus };
+const root = document.documentElement;
+
+const CAT = {
+  jalan: { name: 'Jalan rusak', color: '#e4572e', tag: 'govuk-tag--red' },
+  lampu: { name: 'Lampu mati', color: '#f2b705', tag: 'govuk-tag--yellow' },
+  sampah: { name: 'Sampah', color: '#7c5ce0', tag: 'govuk-tag--purple' },
+  drainase: { name: 'Drainase', color: '#2f8fe0', tag: 'govuk-tag--blue' },
+};
+const STATUS = { baru: { name: 'Baru', ring: '#ffffff' }, proses: { name: 'Dikerjakan', ring: '#f5a524' }, selesai: { name: 'Selesai', ring: '#2fb36b' } };
+const DIST = {
+  semua: { name: 'Seluruh kota', t: [0, 0, -1], z: 1 },
+  kotalama: { name: 'Kota Lama', t: [-11, 0, -11], z: 1.85 },
+  sukamaju: { name: 'Sukamaju', t: [11, 0, -11], z: 1.85 },
+  pasarbaru: { name: 'Pasar Baru', t: [-11, 0, 10], z: 1.85 },
+  tepian: { name: 'Tepian Kali', t: [11, 0, 12], z: 1.85 },
+};
+const distOf = (x, z) => x < 0 ? (z < 0 ? 'kotalama' : 'pasarbaru') : (z < 0 ? 'sukamaju' : 'tepian');
+function rng(seed){ return () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+
+/* --- laporan contoh: titik di sepanjang jalan --- */
+const ROADS = [ // [x0,z0,x1,z1,halfWidth]
+  [-21, 0, 21, 0, 1.3], [0, -21, 0, 17.4, 1.3], [-21, -11, 21, -11, .9], [-21, 11, 21, 11, .9], [-11, -21, -11, 17.4, .9], [11, -21, 11, 17.4, .9],
+];
+function roadPoint(r, inDist){
+  for (let tries = 0; tries < 200; tries++) {
+    const R = ROADS[Math.floor(r() * ROADS.length)], t = .04 + r() * .92;
+    let x = R[0] + (R[2] - R[0]) * t, z = R[1] + (R[3] - R[1]) * t;
+    const horiz = R[1] === R[3], off = (r() < .5 ? -1 : 1) * (R[4] * (.35 + r() * .9));
+    if (horiz) z += off; else x += off;
+    if (Math.abs(x) < 1.8 && Math.abs(z) < 1.8) continue;
+    if (inDist && distOf(x, z) !== inDist) continue;
+    if (state && state.reports.some(p => (p.x - x) ** 2 + (p.z - z) ** 2 < 5.5)) continue;
+    return [x, z];
+  }
+  return [inDist ? DIST[inDist].t[0] + 1.5 : 2, inDist ? DIST[inDist].t[2] + 1.5 : 2];
+}
+const state = { cats: { jalan: true, lampu: true, sampah: true, drainase: true }, status: 'semua', district: 'semua', reports: [], lastId: 'LW-0398', lastStage: 2 };
+{
+  const r = rng(42), cats = Object.keys(CAT), sts = ['baru', 'baru', 'proses', 'proses', 'selesai', 'selesai', 'selesai'];
+  for (let i = 0; i < 30; i++) { const [x, z] = roadPoint(r); state.reports.push({ id: 'LW-' + String(360 + i).padStart(4, '0'), x, z, cat: cats[Math.floor(r() * cats.length)], status: sts[Math.floor(r() * sts.length)], dist: distOf(x, z) }); }
+}
+const DEFAULTS = { cats: { ...state.cats }, status: 'semua', district: 'semua' };
+const visibleReport = p => state.cats[p.cat] && (state.status === 'semua' || p.status === state.status);
+
+/* --- tema --- */
+function setTheme(t, save = true){
+  root.setAttribute('data-theme', t);
+  $('meta[name="theme-color"]').content = t === 'dark' ? '#0d1315' : '#f6f4ee';
+  $$('[data-theme-toggle]').forEach(b => b.setAttribute('aria-pressed', String(t === 'dark')));
+  if (save) try { localStorage.setItem('laporwarga-theme', t); } catch (e) {}
+  bus.dispatchEvent(new CustomEvent('theme', { detail: t }));
+}
+setTheme(root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light', false);
+$$('[data-theme-toggle]').forEach(b => b.addEventListener('click', () => setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark')));
+
+/* --- menu --- */
+const burger = $('#burger'), navLinks = $('#navLinks');
+function setMenu(open){ navLinks.classList.toggle('open', open); burger.setAttribute('aria-expanded', String(open)); burger.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu'); }
+burger.addEventListener('click', () => setMenu(!navLinks.classList.contains('open')));
+$$('#navLinks a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+
+function toast(msg){ const n = document.createElement('div'); n.className = 'toast'; n.setAttribute('role', 'status'); n.textContent = msg; $('#toasts').append(n); setTimeout(() => { n.style.transition = 'opacity .4s'; n.style.opacity = '0'; setTimeout(() => n.remove(), 400); }, 4200); }
+
+/* --- bangun kontrol dari data --- */
+const catBox = (prefix, k) => `<div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="${prefix}-${k}" type="checkbox" value="${k}" data-cat="${k}" checked><label class="govuk-label govuk-checkboxes__label" for="${prefix}-${k}"><span class="sw" style="background:${CAT[k].color}" aria-hidden="true"></span>${CAT[k].name}</label></div>`;
+$('#heroCats').innerHTML = Object.keys(CAT).map(k => catBox('hc', k)).join('');
+$('#mapCats').innerHTML = Object.keys(CAT).map(k => catBox('mc', k)).join('');
+$('#rKat').innerHTML = Object.keys(CAT).map(k => `<div class="govuk-radios__item"><input class="govuk-radios__input" id="rk-${k}" name="kat" type="radio" value="${k}"><label class="govuk-label govuk-radios__label" for="rk-${k}">${CAT[k].name}</label></div>`).join('');
+$('#fDistrict').innerHTML = Object.entries(DIST).map(([k, d]) => `<option value="${k}">${d.name}</option>`).join('');
+$('#rKec').innerHTML += Object.entries(DIST).filter(([k]) => k !== 'semua').map(([k, d]) => `<option value="${k}">${d.name}</option>`).join('');
+
+/* GOV.UK Frontend: initAll() dari build modul ES */
+let GF = null;
+try { GF = await import('govuk-frontend'); GF.initAll(); } catch (e) { console.warn('GOV.UK Frontend JS tidak termuat', e); }
+
+function selectTab(id){ const a = $(`#mapTabs .govuk-tabs__tab[href="#${id}"]`); if (a && $('.govuk-frontend-supported #mapTabs .govuk-tabs__list') && getComputedStyle($('#mapTabs .govuk-tabs__list-item')).float === 'left') a.click(); }
+
+/* --- readout --- */
+const STAGES = ['Diterima', 'Diverifikasi relawan', 'Diteruskan ke instansi', 'Dikerjakan', 'Selesai'];
+function readouts(){
+  const vis = state.reports.filter(visibleReport);
+  const inD = p => state.district === 'semua' || p.dist === state.district;
+  const d = DIST[state.district], visD = vis.filter(inD), allD = state.reports.filter(inD);
+  const cnt = s => allD.filter(p => p.status === s).length;
+  $('#heroCount').textContent = vis.length + ' pin';
+  $('#mapCount').textContent = visD.length + ' laporan tampil';
+  $('#mapChip').textContent = d.name;
+  const nNew = cnt('baru');
+  $('#nbText').textContent = state.district === 'semua' ? `${nNew} laporan baru menunggu verifikasi di seluruh kota.` : `${d.name}: ${nNew} laporan baru menunggu verifikasi.`;
+  $('#sumArea').textContent = d.name;
+  const done = cnt('selesai');
+  const rows = [['Total laporan', allD.length], ['Baru', `<strong class="govuk-tag govuk-tag--red">${nNew}</strong>`], ['Dikerjakan', `<strong class="govuk-tag govuk-tag--yellow">${cnt('proses')}</strong>`], ['Selesai', `<strong class="govuk-tag govuk-tag--green">${done}</strong>`], ['Tingkat selesai', allD.length ? Math.round(done / allD.length * 100) + '%' : '—']];
+  $('#sumList').innerHTML = rows.map(([k, v]) => `<div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">${k}</dt><dd class="govuk-summary-list__value num">${v}</dd></div>`).join('');
+  $('#taskId').textContent = state.lastId;
+  $('#taskList').innerHTML = STAGES.map((s, i) => {
+    const st = i < state.lastStage ? ['govuk-tag--green', 'Selesai'] : i === state.lastStage ? ['govuk-tag--blue', 'Berjalan'] : null;
+    return `<li class="govuk-task-list__item"><div class="govuk-task-list__name-and-hint"><div>${s}</div></div><div class="govuk-task-list__status${st ? '' : ' govuk-task-list__status--cannot-start-yet'}">${st ? `<strong class="govuk-tag ${st[0]}">${st[1]}</strong>` : 'Menunggu'}</div></li>`;
+  }).join('');
+}
+function syncControls(){
+  $$('[data-cat]').forEach(c => c.checked = !!state.cats[c.dataset.cat]);
+  $$('#fStatus input').forEach(r => r.checked = r.value === state.status);
+  $('#fDistrict').value = state.district;
+}
+function emit(){ readouts(); bus.dispatchEvent(new CustomEvent('state', { detail: state })); }
+$$('[data-cat]').forEach(c => c.addEventListener('change', () => { state.cats[c.dataset.cat] = c.checked; syncControls(); emit(); }));
+$$('#fStatus input').forEach(r => r.addEventListener('change', () => { if (r.checked) { state.status = r.value; emit(); } }));
+$('#fDistrict').addEventListener('change', e => { state.district = e.target.value; emit(); });
+$('#resetMap').addEventListener('click', () => { state.cats = { ...DEFAULTS.cats }; state.status = 'semua'; state.district = 'semua'; syncControls(); emit(); toast('Saringan peta dikembalikan ke awal.'); });
+$$('[data-goto-lapor]').forEach(a => a.addEventListener('click', () => { setMenu(false); setTimeout(() => selectTab('tab-lapor'), 50); }));
+
+/* --- formulir lapor: ringkasan galat GOV.UK + validasi --- */
+const form = $('#reportForm');
+function fieldError(groupId, inputEl, msg){
+  const g = $('#' + groupId); g.classList.toggle('govuk-form-group--error', !!msg);
+  const old = g.querySelector('.govuk-error-message'); if (old) old.remove();
+  if (inputEl) { inputEl.classList.toggle(inputEl.tagName === 'SELECT' ? 'govuk-select--error' : 'govuk-input--error', !!msg); }
+  const host = g.querySelector('fieldset') || g;
+  const desc = host.getAttribute('aria-describedby') || (inputEl && inputEl.getAttribute('aria-describedby')) || '';
+  const target = g.querySelector('fieldset') || inputEl;
+  if (msg) {
+    const p = document.createElement('p'); p.className = 'govuk-error-message'; p.id = groupId + '-error'; p.innerHTML = `<span class="govuk-visually-hidden">Galat:</span> ${esc(msg)}`;
+    const anchor = g.querySelector('.govuk-radios') || inputEl; anchor.before(p);
+    if (target) target.setAttribute('aria-describedby', (desc.replace(groupId + '-error', '').trim() + ' ' + p.id).trim());
+  } else if (target) target.setAttribute('aria-describedby', desc.replace(groupId + '-error', '').trim());
+}
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const kat = form.querySelector('input[name=kat]:checked'), kec = $('#rKec'), lok = $('#rLok');
+  const errs = [];
+  if (!kat) errs.push(['g-kat', null, 'Pilih kategori masalah', 'rk-jalan']);
+  if (!kec.value) errs.push(['g-kec', kec, 'Pilih kecamatan lokasi masalah', 'rKec']);
+  if (lok.value.trim().length < 5) errs.push(['g-lok', lok, lok.value.trim() ? 'Lokasi atau patokan minimal 5 karakter' : 'Tulis lokasi atau patokan', 'rLok']);
+  ['g-kat', 'g-kec', 'g-lok'].forEach(id => fieldError(id, id === 'g-kec' ? kec : id === 'g-lok' ? lok : null, ''));
+  errs.forEach(([g, el, m]) => fieldError(g, el, m));
+  const slot = $('#errSlot'); slot.innerHTML = '';
+  if (errs.length) {
+    slot.innerHTML = `<div class="govuk-error-summary" data-module="govuk-error-summary"><div role="alert"><h2 class="govuk-error-summary__title">Ada yang perlu diperbaiki</h2><div class="govuk-error-summary__body"><ul class="govuk-list govuk-error-summary__list">${errs.map(([, , m, href]) => `<li><a href="#${href}">${esc(m)}</a></li>`).join('')}</ul></div></div></div>`;
+    const es = slot.firstElementChild;
+    if (GF && GF.ErrorSummary) { try { new GF.ErrorSummary(es); } catch (er) { es.setAttribute('tabindex', '-1'); es.focus(); } } else { es.setAttribute('tabindex', '-1'); es.focus(); }
+    return;
+  }
+  const [x, z] = roadPoint(Math.random, kec.value);
+  const n = 412 + state.reports.length - 30;
+  const rep = { id: 'LW-' + String(n).padStart(4, '0'), x, z, cat: kat.value, status: 'baru', dist: kec.value, fresh: true };
+  state.reports.push(rep); state.lastId = rep.id; state.lastStage = 1;
+  state.cats[rep.cat] = true; if (state.status !== 'semua' && state.status !== 'baru') state.status = 'semua';
+  state.district = kec.value; syncControls();
+  $('#doneId').textContent = rep.id; $('#doneKec').textContent = DIST[kec.value].name;
+  $('#formWrap').hidden = true; $('#doneWrap').hidden = false; $('#donePanel').focus({ preventScroll: true });
+  const nb = $('#nb'); nb.classList.add('govuk-notification-banner--success'); nb.setAttribute('role', 'alert'); $('#nbTitle').textContent = 'Berhasil';
+  emit();
+  $('#nbText').textContent = `Laporan ${rep.id} (${CAT[rep.cat].name}) masuk di ${DIST[rep.dist].name}.`;
+  bus.dispatchEvent(new CustomEvent('newpin', { detail: rep }));
+  form.reset();
+});
+$('#againBtn').addEventListener('click', () => {
+  $('#doneWrap').hidden = true; $('#formWrap').hidden = false; $('#errSlot').innerHTML = '';
+  const nb = $('#nb'); nb.classList.remove('govuk-notification-banner--success'); nb.setAttribute('role', 'region'); $('#nbTitle').textContent = 'Ringkas'; readouts();
+  $('#rk-jalan').focus();
+});
+$('#seeProgress').addEventListener('click', () => selectTab('tab-ringkas'));
+
+/* --- formulir relawan --- */
+$('#joinForm').addEventListener('submit', e => {
+  e.preventDefault(); const f = e.target, nm = $('#jName'), ml = $('#jMail');
+  const eN = nm.value.trim().length < 2 ? 'Tulis namamu' : '', eM = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(ml.value.trim()) ? '' : 'Masukkan alamat email yang valid, misalnya nama@contoh.id';
+  fieldError('g-jn', nm, eN); fieldError('g-jm', ml, eM);
+  if (eN) return nm.focus(); if (eM) return ml.focus();
+  toast(`Terima kasih, ${nm.value.trim().split(/\s+/)[0]}! Jadwal pelatihan relawan ${f.kota.value} kami kirim ke ${ml.value.trim()}.`); f.reset();
+});
+
+/* --- statistik --- */
+const statIO = new IntersectionObserver(es => es.forEach(en => {
+  if (!en.isIntersecting) return; statIO.unobserve(en.target);
+  $$('[data-count]', en.target).forEach(el => {
+    const end = Number(el.dataset.count), show = v => el.textContent = Math.round(v).toLocaleString('id-ID');
+    if (rmq.matches) return show(end);
+    const t0 = performance.now(); const step = now => { const p = Math.min(1, (now - t0) / 1400); show(end * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); }; requestAnimationFrame(step);
+  });
+}), { threshold: .3 });
+statIO.observe($('#stats'));
+syncControls(); readouts();
+
+/* warna token -> rgb untuk three.js */
+const probe = document.createElement('i'); probe.style.display = 'none'; document.body.append(probe);
+const pc = document.createElement('canvas'); pc.width = pc.height = 1; const pctx = pc.getContext('2d', { willReadFrequently: true });
+function themeColor(v){ probe.style.color = `var(${v})`; const c = getComputedStyle(probe).color; pctx.clearRect(0, 0, 1, 1); pctx.fillStyle = '#888'; pctx.fillStyle = c; pctx.fillRect(0, 0, 1, 1); const d = pctx.getImageData(0, 0, 1, 1).data; return `rgb(${d[0]},${d[1]},${d[2]})`; }
+const isDark = () => root.getAttribute('data-theme') === 'dark';
+
+/* ================= 3D ================= */
+function webglOK(){ try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch (e) { return false; } }
+const storySec = $('#alur');
+function showFallbacks(){
+  const tpl = $('#cityFallback');
+  ['#heroStage', '#mapStage'].forEach(s => { const st = $(s); st.classList.add('no-webgl'); const fb = st.querySelector('.fallback'); if (!fb.firstChild) fb.append(tpl.content.cloneNode(true)); });
+  storySec.classList.add('no-webgl');
+  $('#heroChip').textContent = 'Pratinjau statis';
+}
+let THREE;
+try { if (!webglOK()) throw new Error('no-webgl'); THREE = await import('three'); } catch (err) { showFallbacks(); }
+function storyProgress(){ const r = storySec.getBoundingClientRect(); return clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1); }
+const tlItems = $$('#tlMini li'), sceneSteps = $$('.scene-step', storySec);
+function setStepUI(n){
+  sceneSteps.forEach((s, k) => s.classList.toggle('on', k === n));
+  tlItems.forEach((li, k) => li.classList.toggle('on', k <= n));
+  $('#tlFill').style.width = (n / 4 * 80) + '%';
+}
+
+if (THREE) {
+  const DPR = () => Math.min(window.devicePixelRatio || 1, 2);
+  const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+  const backOut = t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+  const bounceOut = t => { const n = 7.5625, d = 2.75; if (t < 1 / d) return n * t * t; if (t < 2 / d) return n * (t -= 1.5 / d) * t + .75; if (t < 2.5 / d) return n * (t -= 2.25 / d) * t + .9375; return n * (t -= 2.625 / d) * t + .984375; };
+  const frames = window.__laporwarga.frames = {};
+  function createLoop(el, frame, continuous){
+    let visible = false, raf = 0, last = 0, pending = true, aliveUntil = 0;
+    const L = { request(){ pending = true; kick(); }, keepAlive(ms){ aliveUntil = Math.max(aliveUntil, performance.now() + ms); kick(); } };
+    const run = () => visible && !document.hidden;
+    function tick(now){
+      if (!run()) { raf = 0; last = 0; return; }
+      raf = -1; const dt = last ? Math.min((now - last) / 1000, .1) : .016; last = now; pending = false;
+      frames[el.id] = (frames[el.id] || 0) + 1; frame(dt, now / 1000);
+      if (continuous() || pending || now < aliveUntil) raf = requestAnimationFrame(tick); else { raf = 0; last = 0; }
+    }
+    function kick(){ if (!raf && run()) raf = requestAnimationFrame(tick); }
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) { pending = true; kick(); } }, { rootMargin: '80px' }).observe(el);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) { pending = true; kick(); } });
+    rmq.addEventListener('change', () => L.request());
+    return L;
+  }
+  function makeRenderer(canvas){
+    const r = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+    r.setPixelRatio(DPR()); r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+    r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.05; r.outputColorSpace = THREE.SRGBColorSpace; return r;
+  }
+  function watchSize(el, renderer, onSize){ const apply = () => { const w = Math.max(1, el.clientWidth), h = Math.max(1, el.clientHeight); renderer.setPixelRatio(DPR()); renderer.setSize(w, h, false); onSize(w, h); }; new ResizeObserver(apply).observe(el); apply(); }
+  const std = (c, rough = .85, extra = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0, ...extra });
+  function box(parent, w, h, d, mat, x, y, z, o = {}){ const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y, z); m.castShadow = o.cast !== false; m.receiveShadow = true; if (o.ry) m.rotation.y = o.ry; parent.add(m); return m; }
+  const hipRoof = (w, d, h, mat) => { const geo = new THREE.ConeGeometry(1, 1, 4); geo.rotateY(Math.PI / 4); const r = new THREE.Mesh(geo, mat); r.scale.set((w / 2 + .3) / .7071, h, (d / 2 + .3) / .7071); r.castShadow = true; return r; };
+
+  /* ---------- tokoh low-poly ---------- */
+  function makePerson(o = {}){
+    const g = new THREE.Group(); g.scale.setScalar(o.s || 1);
+    const shirt = std(o.shirt || '#0d6e5f', .8), pants = std(o.pants || '#2b3440', .85), skin = std('#c99a76', .8), cover = std(o.hijab || '#231a15', .9);
+    const body = new THREE.Mesh(new THREE.BoxGeometry(.52, .62, .3), shirt); body.position.y = 1.15; body.castShadow = true; g.add(body);
+    const hip = new THREE.Mesh(new THREE.BoxGeometry(.54, .22, .32), pants); hip.position.y = .8; g.add(hip);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(.23, 16, 12), skin); head.position.set(0, 1.72, .02); head.castShadow = true; g.add(head);
+    if (o.hijab) { const h = new THREE.Mesh(new THREE.SphereGeometry(.27, 16, 12, 0, Math.PI * 2, 0, Math.PI * .62), cover); h.position.set(0, 1.74, -.03); h.rotation.x = -.35; g.add(h); const drape = new THREE.Mesh(new THREE.CylinderGeometry(.2, .36, .34, 16), cover); drape.position.set(0, 1.46, -.01); g.add(drape); }
+    else { const hr = new THREE.Mesh(new THREE.SphereGeometry(.25, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2), cover); hr.position.y = 1.76; g.add(hr); }
+    if (o.bag) { const bag = new THREE.Mesh(new THREE.BoxGeometry(.4, .46, .2), std(o.bag, .8)); bag.position.set(0, 1.2, -.26); bag.castShadow = true; g.add(bag); }
+    function limb(mat, w, h, x, y){ const piv = new THREE.Group(); piv.position.set(x, y, 0); const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, w), mat); m.position.y = -h / 2; m.castShadow = true; piv.add(m); g.add(piv); return piv; }
+    const legL = limb(pants, .18, .72, -.13, .78), legR = limb(pants, .18, .72, .13, .78), armL = limb(shirt, .13, .55, -.34, 1.4), armR = limb(shirt, .13, .55, .34, 1.4);
+    if (o.phone) { const ph = new THREE.Mesh(new THREE.BoxGeometry(.1, .18, .03), std('#1d2228', .4)); ph.position.set(0, -.55, .08); armR.add(ph); }
+    return { g, legL, legR, armL, armR };
+  }
+
+  /* ---------- pin laporan ---------- */
+  const PIN = { head: null, tip: null, ring: null, mats: {}, ringMats: {} };
+  function pinAssets(){
+    if (PIN.head) return PIN;
+    PIN.head = new THREE.SphereGeometry(.62, 22, 16); PIN.tip = new THREE.ConeGeometry(.52, 1.5, 22); PIN.tip.rotateX(Math.PI); PIN.dot = new THREE.SphereGeometry(.24, 14, 10);
+    PIN.ring = new THREE.RingGeometry(.62, .95, 32); PIN.ring.rotateX(-Math.PI / 2);
+    PIN.white = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: .4, emissive: '#ffffff', emissiveIntensity: .25 });
+    Object.entries(CAT).forEach(([k, c]) => PIN.mats[k] = new THREE.MeshStandardMaterial({ color: c.color, roughness: .38, emissive: c.color, emissiveIntensity: .16 }));
+    Object.entries(STATUS).forEach(([k, s]) => PIN.ringMats[k] = new THREE.MeshBasicMaterial({ color: s.ring, transparent: true, opacity: .95, depthWrite: false }));
+    return PIN;
+  }
+  function makePin(rep){
+    const P = pinAssets(), g = new THREE.Group(); g.position.set(rep.x, 0, rep.z);
+    const inner = new THREE.Group(); g.add(inner);
+    const tip = new THREE.Mesh(P.tip, P.mats[rep.cat]); tip.position.y = 1.4; tip.castShadow = true; inner.add(tip);
+    const head = new THREE.Mesh(P.head, P.mats[rep.cat]); head.position.y = 2.35; head.castShadow = true; inner.add(head);
+    const dot = new THREE.Mesh(P.dot, P.white); dot.position.set(.26, 2.48, .26); inner.add(dot);
+    const ring = new THREE.Mesh(P.ring, P.ringMats[rep.status]); ring.position.y = .09; ring.renderOrder = 2; g.add(ring);
+    g.scale.setScalar(.001); g.visible = false;
+    return { rep, g, inner, ring, a: 0, goal: 0, delay: 0, drop: rep.fresh ? 1 : 0, ph: Math.random() * 6 };
+  }
+
+  /* ---------- kota isometrik low-poly ---------- */
+  function buildCity(){
+    const C = new THREE.Group(); const r = rng(7);
+    const M = {
+      grass: std('#b6c994', 1), soil: std('#a58866', 1), soilD: std('#8a6d4f', 1), walk: std('#e7e1d4', .95), asphalt: std('#4a4f57', .9), line: std('#f4efe2', .8),
+      water: new THREE.MeshStandardMaterial({ color: '#4fa3c7', roughness: .25, metalness: .1, emissive: '#2a6f8f', emissiveIntensity: .15 }), bank: std('#c2ae8a', 1), stone: std('#9c9a92', .9),
+      walls: ['#f3e9d6', '#f6d9c4', '#d9e7d3', '#d6e3ee', '#efe2b8', '#f1d1d1'].map(c => std(c, .9)),
+      roofs: ['#c9563a', '#b8462f', '#5a6b7c', '#d3713e', '#7a4b3a'].map(c => std(c, .75)),
+      win: new THREE.MeshStandardMaterial({ color: '#8fb6cf', roughness: .3, emissive: '#ffcf73', emissiveIntensity: 0 }),
+      trunk: std('#7d5f45', .9, { flatShading: true }), leaf: std('#5f9a4c', .9, { flatShading: true }), leaf2: std('#86b866', .9, { flatShading: true }),
+      dome: std('#2c8f7a', .5), white: std('#f7f4ec', .85), pole: std('#5b6168', .5, { metalness: .3 }),
+      lamp: new THREE.MeshStandardMaterial({ color: '#fff3d0', emissive: '#ffd27a', emissiveIntensity: .3 }),
+      awn: ['#e4572e', '#2f8fe0', '#f2b705', '#2fb36b'].map(c => std(c, .8)), park: std('#8fbf72', 1),
+    };
+    const plinth = new THREE.Mesh(new THREE.BoxGeometry(46, 2, 46), [M.soil, M.soil, M.grass, M.soilD, M.soil, M.soilD]); plinth.position.y = -1; plinth.receiveShadow = true; C.add(plinth);
+    // kanal di sisi selatan
+    box(C, 46, .06, 3.4, M.bank, 0, .01, 19.6, { cast: false });
+    const water = box(C, 46, .08, 2.6, M.water, 0, .02, 19.6, { cast: false });
+    // jalan + trotoar
+    ROADS.forEach(([x0, z0, x1, z1, hw]) => {
+      const horiz = z0 === z1, len = horiz ? Math.abs(x1 - x0) + 2 : Math.abs(z1 - z0) + 2, cx = (x0 + x1) / 2, cz = (z0 + z1) / 2;
+      box(C, horiz ? len : hw * 2 + 1.1, .05, horiz ? hw * 2 + 1.1 : len, M.walk, cx, .025, cz, { cast: false });
+      box(C, horiz ? len : hw * 2, .07, horiz ? hw * 2 : len, M.asphalt, cx, .045, cz, { cast: false });
+    });
+    // marka putus-putus di jalan utama (instanced)
+    const dashes = []; const tm = new THREE.Matrix4(), q = new THREE.Quaternion(), one = new THREE.Vector3(1, 1, 1);
+    for (let t = -21; t <= 21; t += 1.6) { if (Math.abs(t) > 1.6) { dashes.push(tm.compose(new THREE.Vector3(t, .085, 0), q.identity(), one).clone()); if (t < 17.5) dashes.push(tm.compose(new THREE.Vector3(0, .085, t), q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2), one).clone()); } }
+    const dm = new THREE.InstancedMesh(new THREE.BoxGeometry(.8, .02, .12), M.line, dashes.length); dashes.forEach((m, i) => dm.setMatrixAt(i, m)); dm.receiveShadow = true; C.add(dm);
+    // jembatan di atas kanal
+    [0, -11, 11].forEach(x => { const w = x === 0 ? 3.2 : 2.4; box(C, w, .18, 4, M.asphalt, x, .12, 19.6); box(C, .12, .5, 4, M.stone, x - w / 2, .4, 19.6); box(C, .12, .5, 4, M.stone, x + w / 2, .4, 19.6); });
+    // jendela instanced
+    const winM = [];
+    function addWindows(x, z, w, d, floors, fh){
+      for (let f = 0; f < floors; f++) { const y = f * fh + fh * .55;
+        for (let xx = -w / 2 + .6; xx <= w / 2 - .5; xx += .95) winM.push(tm.compose(new THREE.Vector3(x + xx, y, z + d / 2 + .02), q.identity(), one).clone());
+        for (let zz = -d / 2 + .6; zz <= d / 2 - .5; zz += .95) winM.push(tm.compose(new THREE.Vector3(x + w / 2 + .02, y, z + zz), q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2), one).clone()); }
+    }
+    function house(x, z, w, d, h){
+      const wall = M.walls[Math.floor(r() * M.walls.length)], roof = M.roofs[Math.floor(r() * M.roofs.length)];
+      box(C, w, h, d, wall, x, h / 2, z); const rf = hipRoof(w, d, .9 + r() * .5, roof); rf.position.set(x, h + rf.scale.y / 2, z); C.add(rf);
+      addWindows(x, z, w, d, 1, h);
+    }
+    function tree(x, z, s = 1){ const h = (.8 + r() * .8) * s; const t = new THREE.Mesh(new THREE.CylinderGeometry(.1, .14, h, 6), M.trunk); t.position.set(x, h / 2, z); t.castShadow = true; C.add(t); const c = new THREE.Mesh(new THREE.IcosahedronGeometry((.65 + r() * .45) * s, 0), r() > .5 ? M.leaf : M.leaf2); c.position.set(x, h + .5 * s, z); c.rotation.set(r(), r(), r()); c.castShadow = true; C.add(c); }
+    const XS = [[-22.2, -12.4], [-9.6, -2.2], [2.2, 9.6], [12.4, 22.2]], ZS = [[-22.2, -12.4], [-9.6, -2.2], [2.2, 9.6], [12.4, 17.4]];
+    const KIND = { '1,0': 'mosque', '0,2': 'market', '1,2': 'ruko', '1,3': 'ruko', '2,1': 'park', '3,0': 'school' };
+    XS.forEach(([x0, x1], i) => ZS.forEach(([z0, z1], j) => {
+      const kind = KIND[i + ',' + j] || 'houses', cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, W = x1 - x0, D = z1 - z0;
+      if (kind === 'houses') {
+        const nx = 2, nz = D > 6 ? 2 : 1;
+        for (let a = 0; a < nx; a++) for (let b = 0; b < nz; b++) { if (r() < .12) { tree(x0 + (a + .5) * W / nx, z0 + (b + .5) * D / nz); continue; }
+          const w = 2.4 + r() * 1.1, d = 2.2 + r() * 1.0, h = 1.5 + r() * .9; house(x0 + (a + .5) * W / nx + (r() - .5) * .5, z0 + (b + .5) * D / nz + (r() - .5) * .4, w, d, h); }
+        if (r() < .7) tree(x0 + .6, z1 - .6, .8);
+      } else if (kind === 'mosque') {
+        box(C, 5.4, 2.6, 5.4, M.white, cx, 1.3, cz); addWindows(cx, cz, 5.4, 5.4, 1, 2.6);
+        box(C, 6, .25, 6, M.stone, cx, 2.72, cz);
+        const dome = new THREE.Mesh(new THREE.SphereGeometry(2.1, 24, 14, 0, Math.PI * 2, 0, Math.PI / 2), M.dome); dome.position.set(cx, 2.84, cz); dome.castShadow = true; C.add(dome);
+        const fin = new THREE.Mesh(new THREE.ConeGeometry(.12, .7, 8), M.line); fin.position.set(cx, 5.3, cz); C.add(fin);
+        const mn = new THREE.Mesh(new THREE.CylinderGeometry(.32, .38, 7.2, 10), M.white); mn.position.set(x1 - .7, 3.6, z0 + .7); mn.castShadow = true; C.add(mn);
+        const md = new THREE.Mesh(new THREE.SphereGeometry(.42, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2), M.dome); md.position.set(x1 - .7, 7.2, z0 + .7); C.add(md);
+      } else if (kind === 'market') {
+        for (let k = 0; k < 3; k++) { const z = z0 + 1.3 + k * (D - 2.6) / 2; box(C, W - 1, .14, 1.8, M.roofs[2], cx, 1.9, z); [-1, 1].forEach(s => box(C, .12, 1.9, .12, M.pole, cx + s * (W / 2 - .8), .95, z));
+          for (let s = 0; s < 4; s++) box(C, 1.2, .6, 1, M.awn[(s + k) % 4], x0 + 1.4 + s * (W - 2.4) / 3, .3, z, { cast: false }); }
+      } else if (kind === 'ruko') {
+        const n = 4, uw = (W - .4) / n;
+        for (let k = 0; k < n; k++) { const x = x0 + .2 + uw * (k + .5), h = 3.6 + (k % 2) * .5; box(C, uw - .08, h, D * .62, M.walls[(k + 2) % M.walls.length], x, h / 2, cz - D * .12); box(C, uw - .08, .2, D * .62 + .1, M.roofs[2], x, h + .1, cz - D * .12);
+          const aw = box(C, uw - .2, .08, 1, M.awn[k % 4], x, 1.7, cz + D * .19 + .4); aw.rotation.x = .25; addWindows(x, cz - D * .12, uw - .08, D * .62, 2, 1.8); }
+      } else if (kind === 'park') {
+        box(C, W, .06, D, M.park, cx, .03, cz, { cast: false });
+        const pond = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, .06, 28), M.water); pond.position.set(cx + 1, .07, cz + .8); pond.scale.z = .7; C.add(pond);
+        for (let k = 0; k < 7; k++) tree(x0 + .8 + r() * (W - 1.6), z0 + .8 + r() * (D - 1.6), 1.05);
+        box(C, 1.4, .2, .4, M.trunk, cx - 2, .3, cz + 2.6);
+      } else if (kind === 'school') {
+        box(C, W - 1.4, 2.8, 3, M.walls[3], cx, 1.4, z0 + 2); addWindows(cx, z0 + 2, W - 1.4, 3, 2, 1.4);
+        const rf = hipRoof(W - 1.4, 3, 1.1, M.roofs[0]); rf.position.set(cx, 2.8 + .55, z0 + 2); C.add(rf);
+        box(C, W - 2, .05, 3.4, M.park, cx, .03, z1 - 2.2, { cast: false });
+        const pole = new THREE.Mesh(new THREE.CylinderGeometry(.05, .06, 4, 8), M.pole); pole.position.set(x0 + .9, 2, z1 - 1); C.add(pole);
+      }
+    }));
+    // pepohonan tepi kanal dan tepi papan
+    for (let x = -21.5; x <= 21.5; x += 2.2) { if ([0, -11, 11].some(b => Math.abs(x - b) < 1.9)) continue; tree(x + (r() - .5) * .6, 22 + (r() - .5) * .4, .8); if (r() < .5) tree(x + (r() - .5), 17.9, .7); }
+    // lampu jalan
+    const lamps = [];
+    for (let t = -19; t <= 19; t += 6.3) { [[t, 1.95], [1.95, t]].forEach(([x, z]) => { if (z > 17 || Math.abs(x) < 2.5 && Math.abs(z) < 2.5) return; box(C, .08, 2.4, .08, M.pole, x, 1.2, z); const l = new THREE.Mesh(new THREE.SphereGeometry(.17, 10, 8), M.lamp); l.position.set(x, 2.45, z); C.add(l); lamps.push(l); }); }
+    const wins = new THREE.InstancedMesh(new THREE.BoxGeometry(.48, .56, .05), M.win, winM.length); winM.forEach((m, i) => wins.setMatrixAt(i, m)); C.add(wins);
+    return { root: C, M, water };
+  }
+
+  function createCityView(canvas, stageEl, opts){
+    const renderer = makeRenderer(canvas);
+    const scene = new THREE.Scene(); const S = buildCity(); scene.add(S.root);
+    const hemi = new THREE.HemisphereLight('#eef6ff', '#a08c6c', 1.25); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff3df', 2.6); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+    Object.assign(sun.shadow.camera, { left: -32, right: 32, top: 32, bottom: -32, near: 1, far: 140 }); sun.shadow.bias = -.0005; sun.shadow.normalBias = .03;
+    sun.position.set(20, 34, 10); scene.add(sun, sun.target);
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -200, 400);
+    const DIR = new THREE.Vector3(1, 1.05, 1).normalize();
+    const cur = { t: new THREE.Vector3(...DIST.semua.t), z: 1 }, goal = { t: cur.t.clone(), z: 1 };
+    let aspect = 1, halfH = 20; const pointer = { x: 0, tx: 0 };
+    const pins = new Map(); let simT = 0, simN = 0; const sims = [];
+    function addPin(rep, delay = 0){ const p = makePin(rep); p.delay = delay; scene.add(p.g); pins.set(rep.id, p); return p; }
+    state.reports.forEach((rep, i) => addPin(rep, opts.hero && !rmq.matches ? .4 + i * .07 : 0));
+    let clock = 0;
+    function apply(){
+      pins.forEach(p => p.goal = (p.rep.sim ? state.cats[p.rep.cat] && p.rep.alive : visibleReport(p.rep)) ? 1 : 0);
+      const d = DIST[opts.hero ? 'semua' : state.district] || DIST.semua; goal.t.set(...d.t); goal.z = d.z;
+      loop.keepAlive(2000); loop.request();
+    }
+    function applyTheme(){
+      const dark = isDark();
+      scene.background = new THREE.Color(themeColor('--bg-2')).lerp(new THREE.Color(dark ? '#1b3040' : '#cfe6f0'), .45);
+      hemi.intensity = dark ? .75 : 1.25; sun.intensity = dark ? 1.5 : 2.6; sun.color.set(dark ? '#bcd0ff' : '#fff3df');
+      S.M.win.emissiveIntensity = dark ? 1.4 : 0; S.M.lamp.emissiveIntensity = dark ? 2.6 : .3;
+      renderer.toneMappingExposure = dark ? 1.0 : 1.05; loop.request();
+    }
+    if (opts.hero) {
+      stageEl.addEventListener('pointermove', e => { const b = stageEl.getBoundingClientRect(); pointer.tx = ((e.clientX - b.left) / b.width - .5) * 2; loop.request(); });
+      stageEl.addEventListener('pointerleave', () => { pointer.tx = 0; loop.request(); });
+    }
+    const tmpDir = new THREE.Vector3(), Y = new THREE.Vector3(0, 1, 0);
+    const loop = createLoop(canvas, (dt, t) => {
+      const still = rmq.matches, k = still ? 1 : 1 - Math.exp(-dt * 3.2); clock += dt;
+      cur.t.lerp(goal.t, k); cur.z += (goal.z - cur.z) * k;
+      if (cur.t.distanceTo(goal.t) > .01 || Math.abs(goal.z - cur.z) > .002) loop.request();
+      // pin: muncul dengan pantulan, hilang mengecil, jatuh dari langit untuk laporan baru
+      let busy = false;
+      pins.forEach((p, id) => {
+        if (clock < p.delay && !still) { busy = true; return; }
+        const prev = p.a; p.a = still ? p.goal : clamp(p.a + (p.goal > p.a ? dt * 2.4 : -dt * 3.2), 0, 1);
+        if (p.a !== prev) busy = true;
+        const s = p.goal ? backOut(p.a) : p.a * p.a; p.g.visible = p.a > .001; p.g.scale.setScalar(Math.max(.001, s));
+        if (p.drop > 0) { p.drop = still ? 0 : Math.max(0, p.drop - dt * 1.1); p.inner.position.y = (1 - bounceOut(1 - p.drop)) * 16; busy = true; }
+        else p.inner.position.y = still ? 0 : Math.sin(t * 2.2 + p.ph) * .12;
+        if (p.rep.status === 'baru' && !still) { const w = (t * 1.2) % 1; p.ring.scale.setScalar(1 + w * .9); } else p.ring.scale.setScalar(1);
+        if (p.rep.sim) p.goal = p.rep.alive && state.cats[p.rep.cat] ? 1 : 0;
+        if (p.rep.sim && !p.rep.alive && p.a === 0) { scene.remove(p.g); pins.delete(id); }
+      });
+      PIN.ringMats.baru.opacity = still ? .95 : .55 + .4 * (1 - ((t * 1.2) % 1));
+      // hero: laporan warga baru muncul berkala (simulasi)
+      if (opts.hero && !still && clock > 3) {
+        simT += dt;
+        if (simT > 3.4) { simT = 0; sims.forEach(s => { if (clock - s.born > 10) s.alive = false; });
+          const live = sims.filter(s => s.alive);
+          if (live.length < 3) { const cats = Object.keys(CAT).filter(c => state.cats[c]); if (cats.length) { const rr = Math.random, [x, z] = roadPoint(rr); const rep = { id: 'SIM-' + (++simN), x, z, cat: cats[Math.floor(rr() * cats.length)], status: 'baru', dist: distOf(x, z), sim: true, alive: true, born: clock }; sims.push(rep); const p = addPin(rep); p.goal = 1; $('#heroChip').textContent = `Baru saja: ${CAT[rep.cat].name} · ${DIST[rep.dist].name}`; } }
+          for (let i = sims.length - 1; i >= 0; i--) if (!sims[i].alive && !pins.has(sims[i].id)) sims.splice(i, 1);
+        }
+      }
+      if (busy) loop.request();
+      pointer.x += (pointer.tx - pointer.x) * (1 - Math.exp(-dt * 3)); if (Math.abs(pointer.tx - pointer.x) > .002) loop.request();
+      tmpDir.copy(DIR).applyAxisAngle(Y, pointer.x * .16 + (opts.hero && !still ? Math.sin(t * .14) * .07 : 0));
+      const hh = halfH / cur.z, hw = hh * aspect; Object.assign(cam, { left: -hw, right: hw, top: hh * (1 - padF), bottom: -hh * (1 + padF) }); cam.updateProjectionMatrix();
+      cam.position.copy(cur.t).addScaledVector(tmpDir, 100); cam.lookAt(cur.t);
+      S.water.material.emissiveIntensity = still ? .15 : .15 + Math.sin(t * 1.5) * .05;
+      renderer.render(scene, cam);
+      if (!stageEl.classList.contains('ready')) stageEl.classList.add('ready');
+    }, () => !rmq.matches);
+    /* ruang bebas: pusat kota dibingkai di atas panel kaca (hero) / di bawah chip (peta), diukur dari DOM */
+    let padF = 0; const panelEl = stageEl.querySelector('.stage-panel') || stageEl.querySelector('.map-legend'), topEl = stageEl.querySelector('.stage-top');
+    function measure(){ const H = stageEl.clientHeight || 1; const pb = panelEl && panelEl.offsetParent ? panelEl.offsetHeight + 14 : 0, pt = topEl ? topEl.offsetHeight + 14 : 0; padF = (pb - pt) / H; }
+    watchSize(stageEl, renderer, (w, h) => { aspect = w / h; halfH = aspect < .75 ? 30 / Math.max(aspect, .45) * .62 : aspect < 1.1 ? 27 : 24; measure(); loop.request(); });
+    if (panelEl) new ResizeObserver(() => { measure(); loop.request(); }).observe(panelEl);
+    function newPin(rep){ const p = addPin(rep); p.drop = rmq.matches ? 0 : 1; apply(); }
+    applyTheme(); apply();
+    return { apply, applyTheme, newPin, loop, renderer, scene, camera: cam, pins };
+  }
+
+  let heroV = null, mapV = null;
+  try {
+    heroV = createCityView($('#heroCanvas'), $('#heroStage'), { hero: true });
+    mapV = createCityView($('#mapCanvas'), $('#mapStage'), { hero: false });
+    $('#heroChip').textContent = `${state.reports.filter(p => p.status === 'baru').length} laporan baru hari ini`;
+    bus.addEventListener('state', () => { heroV.apply(); mapV.apply(); });
+    bus.addEventListener('newpin', e => { heroV.newPin(e.detail); mapV.newPin(e.detail); });
+    bus.addEventListener('theme', () => requestAnimationFrame(() => { heroV.applyTheme(); mapV.applyTheme(); }));
+  } catch (e) { console.warn('WebGL gagal dimulai', e); showFallbacks(); }
+
+  /* ================= Cerita isometrik: alur satu laporan ================= */
+  function createStory(){
+    const stage = $('.story-stage', storySec), canvas = $('#storyCanvas');
+    const renderer = makeRenderer(canvas); const scene = new THREE.Scene();
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -100, 200);
+    const camDir = new THREE.Vector3(1, 1.1, 1).normalize(), camTarget = new THREE.Vector3();
+    const hemi = new THREE.HemisphereLight('#f4f8ff', '#b9b3a6', 1.3); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff3df', 2.4); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+    Object.assign(sun.shadow.camera, { left: -18, right: 18, top: 18, bottom: -18, near: 1, far: 80 }); sun.shadow.bias = -.0005; sun.shadow.normalBias = .03; scene.add(sun, sun.target);
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(160, 90), std('#eef1f6', 1)); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+    let grid = null;
+    const CLAY = new THREE.Color('#e9ecf2');
+    const SP = [[-16, 4], [-6, -4], [3, 4], [12, -4], [21, 4]];
+    const stations = [];
+    const smat = c => { const m = std(c, .8); m.userData.target = new THREE.Color(c); m.color.copy(CLAY); return m; };
+    function add(g, mats, geo, c, x, y, z, rot){ const m = smat(c); mats.push(m); const me = new THREE.Mesh(geo, m); me.position.set(x, y, z); if (rot) me.rotation.set(rot[0] || 0, rot[1] || 0, rot[2] || 0); me.castShadow = me.receiveShadow = true; g.add(me); return me; }
+    const B = (w, h, d) => new THREE.BoxGeometry(w, h, d), Cy = (rt, rb, h, s = 20) => new THREE.CylinderGeometry(rt, rb, h, s), Sph = (r, s = 14) => new THREE.SphereGeometry(r, s, Math.max(6, s * .6 | 0));
+    function storyPin(inner, mats, c, x, z, s = 1){ const tip = new THREE.ConeGeometry(.32 * s, .9 * s, 16); tip.rotateX(Math.PI); add(inner, mats, tip, c, x, .9 * s, z); add(inner, mats, Sph(.38 * s), c, x, 1.5 * s, z); add(inner, mats, Sph(.15 * s, 10), '#ffffff', x + .17 * s, 1.58 * s, z + .17 * s); }
+    function cone(inner, mats, x, z){ add(inner, mats, new THREE.ConeGeometry(.22, .6, 14), '#f0772f', x, .32, z); add(inner, mats, B(.46, .05, .46), '#f0772f', x, .03, z); add(inner, mats, Cy(.15, .17, .08, 14), '#ffffff', x, .36, z); }
+    SP.forEach(([x, z], i) => {
+      const g = new THREE.Group(); g.position.set(x - 1.4, 0, z - 2.6); scene.add(g);
+      const mats = []; add(g, mats, Cy(2.9, 3.0, .26, 44), '#cfe2dc', 0, .13, 0);
+      const inner = new THREE.Group(); inner.position.y = .26; g.add(inner);
+      if (i === 0) { // lapor: lubang jalan + ponsel raksasa
+        add(inner, mats, B(4.6, .08, 2.2), '#4a4f57', 0, .04, .4); for (let k = 0; k < 4; k++) add(inner, mats, B(.6, .02, .1), '#f4efe2', -1.8 + k * 1.2, .09, .4);
+        add(inner, mats, Cy(.55, .45, .1, 10), '#23262b', .4, .06, .5); add(inner, mats, Cy(.3, .25, .12, 8), '#1a1c20', .55, .07, .3);
+        cone(inner, mats, -.6, 1.2);
+        add(inner, mats, B(1.1, 1.9, .14), '#1d2228', -1.1, 1.3, -1.2, [0, .5, 0]); add(inner, mats, B(.92, 1.6, .02), '#d8eee8', -1.07, 1.32, -1.12, [0, .5, 0]);
+        storyPin(inner, mats, '#e4572e', -1.02, -1.0, .55);
+        storyPin(inner, mats, '#e4572e', .5, .5, 1.1);
+      } else if (i === 1) { // diverifikasi: meja relawan, laptop, papan foto, centang
+        add(inner, mats, B(2.4, .08, 1.2), '#d9b98c', -.2, .78, .2); [[-1.3, -.3], [-1.3, .7], [.9, -.3], [.9, .7]].forEach(([a, b]) => add(inner, mats, B(.08, .78, .08), '#3a3f4b', a, .39, b));
+        add(inner, mats, B(.9, .05, .6), '#3a3f4b', -.4, .85, .25); add(inner, mats, B(.9, .6, .04), '#3a3f4b', -.4, 1.15, -.05, [-.2, 0, 0]); add(inner, mats, B(.8, .5, .02), '#9fd3c7', -.4, 1.16, -.02, [-.2, 0, 0]);
+        add(inner, mats, B(2.6, 1.6, .1), '#ffffff', 0, 1.9, -1.5); [['#e4572e', -.8, 2.2], ['#f2b705', 0, 2.2], ['#7c5ce0', .8, 2.2], ['#2f8fe0', -.8, 1.6], ['#e4572e', 0, 1.6], ['#2fb36b', .8, 1.6]].forEach(([c, a, b]) => add(inner, mats, B(.6, .45, .03), c, a, b, -1.43));
+        [-1, 1].forEach(s => add(inner, mats, B(.08, 1.9, .08), '#3a3f4b', s * 1.2, .95, -1.55));
+        const ck = new THREE.Group(); ck.position.set(1.5, 1.7, .9); inner.add(ck); add(ck, mats, B(.22, .7, .22), '#2fb36b', -.22, -.1, 0, [0, 0, .7]); add(ck, mats, B(.22, 1.3, .22), '#2fb36b', .3, .15, 0, [0, 0, -.6]);
+        add(inner, mats, new THREE.TorusGeometry(.32, .07, 8, 20), '#3a3f4b', 1.2, .98, .25, [Math.PI / 2, 0, 0]); add(inner, mats, B(.1, .1, .5), '#8c6a4f', 1.4, .9, .55, [0, -.6, 0]);
+      } else if (i === 2) { // diteruskan: kantor generik + kotak surat + pesawat kertas
+        add(inner, mats, B(3, 1.8, 1.7), '#f3e9d6', -.2, .9, -.6); add(inner, mats, B(3.3, .2, 2), '#5a6b7c', -.2, 1.9, -.6);
+        for (let k = 0; k < 4; k++) add(inner, mats, Cy(.1, .1, 1.6, 10), '#ffffff', -1.4 + k * .8, .8, .35);
+        add(inner, mats, B(.7, 1.0, .06), '#7a4f32', -.2, .5, .27);
+        add(inner, mats, B(.08, .9, .08), '#3a3f4b', 1.7, .45, 1.1); add(inner, mats, B(.5, .4, .7), '#e4572e', 1.7, 1.05, 1.1);
+        const plane = new THREE.Group(); plane.position.set(.4, 3.1, .8); plane.rotation.set(0, -.8, .25); inner.add(plane);
+        const wing = new THREE.ConeGeometry(.55, 1.6, 3); wing.rotateZ(-Math.PI / 2); add(plane, mats, wing, '#ffffff', 0, 0, 0).scale.set(1, .25, 1);
+        for (let k = 0; k < 4; k++) add(inner, mats, Sph(.07, 8), '#f0772f', 1.6 - k * .35, 2.2 + k * .22, 1.1 - k * .08);
+      } else if (i === 3) { // dikerjakan: alat pemadat, kerucut, pembatas
+        add(inner, mats, B(4.6, .08, 2.2), '#4a4f57', 0, .04, .2); add(inner, mats, B(1.6, .03, 1.1), '#1a1c20', -.4, .1, .2);
+        const roller = new THREE.Group(); roller.position.set(.9, 0, -.1); roller.rotation.y = -.15; inner.add(roller);
+        add(roller, mats, Cy(.42, .42, 1.2, 18), '#5a6168', -.8, .46, 0, [Math.PI / 2, 0, 0]); add(roller, mats, B(1.4, .6, 1.0), '#f2b705', .2, .65, 0); add(roller, mats, B(.7, .65, .8), '#f2b705', .35, 1.27, 0); add(roller, mats, B(.6, .05, .9), '#3a3f4b', .35, 1.62, 0);
+        add(roller, mats, Cy(.3, .3, .3, 14), '#2b2f38', .7, .3, .45, [Math.PI / 2, 0, 0]); add(roller, mats, Cy(.3, .3, .3, 14), '#2b2f38', .7, .3, -.45, [Math.PI / 2, 0, 0]);
+        cone(inner, mats, -2, 1.1); cone(inner, mats, -1.2, 1.25); cone(inner, mats, 2, 1.1);
+        for (let k = 0; k < 5; k++) add(inner, mats, B(.4, .25, .1), k % 2 ? '#ffffff' : '#f0772f', -1.6 + k * .4, .75, -1.2); [-1.8, .2].forEach(a => add(inner, mats, B(.08, .8, .08), '#3a3f4b', a, .4, -1.2));
+      } else { // selesai: jalan mulus, lampu menyala, bangku, pin hijau
+        add(inner, mats, B(4.6, .08, 2.2), '#4a4f57', 0, .04, .4); for (let k = 0; k < 4; k++) add(inner, mats, B(.6, .02, .1), '#f4efe2', -1.8 + k * 1.2, .09, .4);
+        add(inner, mats, B(.1, 2.6, .1), '#3a3f4b', 1.6, 1.3, -1.0); add(inner, mats, B(.6, .08, .12), '#3a3f4b', 1.35, 2.6, -1.0); const lm = add(inner, mats, Sph(.2, 12), '#ffd27a', 1.1, 2.5, -1.0); lm.material.emissive = new THREE.Color('#ffc65a'); lm.material.emissiveIntensity = 0; lm.userData.glow = true;
+        add(inner, mats, B(1.4, .1, .45), '#8c6a4f', -.6, .45, -1.1); [-1.2, 0].forEach(a => add(inner, mats, B(.08, .45, .4), '#3a3f4b', a, .22, -1.1)); add(inner, mats, B(1.4, .4, .08), '#8c6a4f', -.6, .7, -1.33);
+        [[-1.9, -1.4], [2.1, 1.6]].forEach(([a, b]) => { add(inner, mats, Cy(.1, .14, 1.2, 6), '#8c6a4f', a, .6, b); add(inner, mats, new THREE.IcosahedronGeometry(.7, 0), '#5f9a4c', a, 1.5, b); });
+        storyPin(inner, mats, '#2fb36b', .3, .5, 1.1);
+      }
+      stations.push({ g, mats, inner, lit: 0 });
+    });
+    // jalur oranye
+    const pts = [[-16, 4], [-11, 4], [-11, -4], [-6, -4], [-1, -4], [-1, 4], [3, 4], [7.5, 4], [7.5, -4], [12, -4], [16.5, -4], [16.5, 4], [21, 4]].map(([x, z]) => new THREE.Vector3(x, .3, z));
+    const path = new THREE.CurvePath(); const rad = 1.4; let cur = pts[0].clone();
+    for (let i = 1; i < pts.length - 1; i++) { const p = pts[i], dIn = p.clone().sub(pts[i - 1]).normalize(), dOut = pts[i + 1].clone().sub(p).normalize(); if (dIn.dot(dOut) > .999) continue; const a = p.clone().addScaledVector(dIn, -rad), b = p.clone().addScaledVector(dOut, rad); path.add(new THREE.LineCurve3(cur.clone(), a)); path.add(new THREE.QuadraticBezierCurve3(a, p.clone(), b)); cur = b; }
+    path.add(new THREE.LineCurve3(cur, pts[pts.length - 1].clone()));
+    const TS = 700, RS = 6, baseMat = std('#cfd5e0', .9);
+    scene.add(new THREE.Mesh(new THREE.TubeGeometry(path, TS, .12, RS, false), baseMat));
+    const progTube = new THREE.Mesh(new THREE.TubeGeometry(path, TS, .2, RS, false), new THREE.MeshStandardMaterial({ color: '#f0772f', emissive: '#f0772f', emissiveIntensity: .35, roughness: .5 })); progTube.geometry.setDrawRange(0, 0); scene.add(progTube);
+    SP.forEach(([x, z]) => { const d = new THREE.Mesh(new THREE.CylinderGeometry(.42, .42, .08, 20), std('#f0772f', .6)); d.position.set(x, .05, z); scene.add(d); });
+    { const r = rng(23), trunkM = std('#8c6a4f', .9, { flatShading: true }), leafA = std('#5f9a4c', .9, { flatShading: true }), leafB = std('#86b866', .9, { flatShading: true }), houseM = ['#f3e9d6', '#f6d9c4', '#d6e3ee'].map(c => std(c, .9)), roofM = std('#c9563a', .75);
+      for (let x = -28; x <= 32; x += 2.6) for (const zb of [-11, 11.5]) { const v = r(); if (v < .25) continue; const px = x + (r() - .5) * 1.6, pz = zb + (r() - .5) * 3;
+        if (v < .4) { const w = 1.6 + r() * .6; const h = new THREE.Mesh(new THREE.BoxGeometry(w, 1.2, w), houseM[Math.floor(r() * 3)]); h.position.set(px, .6, pz); h.castShadow = h.receiveShadow = true; scene.add(h); const rf = hipRoof(w, w, .7, roofM); rf.position.set(px, 1.2 + .35, pz); scene.add(rf); }
+        else if (v < .75) { const h = 1.2 + r() * 1.4; const t = new THREE.Mesh(new THREE.CylinderGeometry(.12, .16, h, 6), trunkM); t.position.set(px, h / 2, pz); t.castShadow = true; scene.add(t); const c = new THREE.Mesh(new THREE.IcosahedronGeometry(.8 + r() * .5, 0), r() > .5 ? leafA : leafB); c.position.set(px, h + .5, pz); c.castShadow = true; scene.add(c); }
+        else { const b = new THREE.Mesh(new THREE.IcosahedronGeometry(.45 + r() * .4, 0), r() > .5 ? leafA : leafB); b.position.set(px, .35, pz); b.castShadow = true; scene.add(b); } } }
+    const samples = 1200, stationU = SP.map(([x, z]) => { let best = 0, bd = 1e9; for (let s = 0; s <= samples; s++) { const q = path.getPointAt(s / samples); const d = (q.x - x) ** 2 + (q.z - z) ** 2; if (d < bd) { bd = d; best = s / samples; } } return best; });
+    stationU[0] = 0; stationU[stationU.length - 1] = 1;
+    // tokoh: Bu Rina berkerudung, ponsel di tangan
+    const rina = makePerson({ shirt: '#0d6e5f', pants: '#2b3440', hijab: '#f0772f', phone: true, s: 1.5 }); scene.add(rina.g); const chr = rina.g;
+
+    let lastT = 0, targetU = 0, shownU = 0, walkPhase = 0, step = -1, lastPos = new THREE.Vector3(), halfW = 10, halfH = 10, aspect = 1;
+    function mapProgress(p){ const n = SP.length - 1, u = clamp(p, 0, 1) * n, i = Math.min(n - 1, Math.floor(u)), f = u - i, w = smooth(.22, .82, f); return { u: stationU[i] + (stationU[i + 1] - stationU[i]) * w, step: w < .5 ? i : i + 1 }; }
+    function setProgress(p){ const m = mapProgress(p); targetU = m.u; if (m.step !== step) { step = m.step; setStepUI(step); } loop.request(); }
+    function themeColors(){
+      const bg = themeColor('--bg-2'), b3 = themeColor('--line'), dark = isDark();
+      scene.background = new THREE.Color(bg); ground.material.color.set(bg).lerp(new THREE.Color(b3), .2);
+      if (grid) { scene.remove(grid); grid.geometry.dispose(); grid.material.dispose(); }
+      grid = new THREE.GridHelper(160, 80, b3, b3); grid.material.transparent = true; grid.material.opacity = .6; grid.position.y = .01; scene.add(grid);
+      CLAY.set(b3).lerp(new THREE.Color(dark ? '#c9d3d0' : '#ffffff'), dark ? .3 : .45);
+      baseMat.color.set(b3).lerp(new THREE.Color(dark ? '#ffffff' : '#000000'), .1);
+      hemi.intensity = dark ? .8 : 1.3; sun.intensity = dark ? 1.9 : 2.4;
+      stations.forEach(s => s.lit === 0 && s.mats.forEach(m => m.color.copy(CLAY)));
+      loop.request();
+    }
+    const loop = createLoop(canvas, (dt) => {
+      const still = rmq.matches, now = performance.now(), cdt = Math.min(.12, lastT ? (now - lastT) / 1000 : dt); lastT = now;
+      const k = still ? 1 : 1 - Math.exp(-cdt * 5);
+      shownU += (targetU - shownU) * k; if (Math.abs(targetU - shownU) > 1e-4) loop.request(); else shownU = targetU;
+      const pos = path.getPointAt(clamp(shownU, 0, 1)), tan = path.getTangentAt(clamp(shownU, 0, .9999));
+      const moved = pos.distanceTo(lastPos); lastPos.copy(pos); walkPhase += moved * 3.2;
+      const moving = clamp(moved * 25, 0, 1);
+      chr.position.set(pos.x, Math.abs(Math.sin(walkPhase)) * .08 * moving, pos.z);
+      if (moved > 1e-4) chr.rotation.y = Math.atan2(tan.x, tan.z);
+      const sw = Math.sin(walkPhase) * .7 * moving; rina.legL.rotation.x = sw; rina.legR.rotation.x = -sw; rina.armL.rotation.x = -sw * .8; rina.armR.rotation.x = sw * .5 - .5;
+      progTube.geometry.setDrawRange(0, Math.floor(shownU * TS) * RS * 6);
+      stations.forEach((s, i) => { const goal = shownU >= stationU[i] - .004 ? 1 : 0, prev = s.lit; s.lit += (goal - s.lit) * (still ? 1 : Math.min(1, cdt * 4)); if (Math.abs(goal - s.lit) > .002) loop.request(); else s.lit = goal; if (prev !== s.lit) s.mats.forEach(m => { m.color.copy(CLAY).lerp(m.userData.target, s.lit); if (m.emissive && i === 4 && m.emissiveIntensity !== undefined && m.userData.target.getHexString() === 'ffd27a') m.emissiveIntensity = 2.2 * s.lit; }); s.inner.scale.setScalar(.82 + .18 * s.lit); });
+      const desired = new THREE.Vector3(pos.x, 0, pos.z);
+      if (aspect >= .9) desired.addScaledVector(new THREE.Vector3(1, 0, -1).normalize(), -halfW * .3);
+      if (camTarget.lengthSq() === 0) camTarget.copy(desired);
+      camTarget.lerp(desired, still ? 1 : 1 - Math.exp(-cdt * 3.5)); if (camTarget.distanceTo(desired) > .01) loop.request();
+      cam.position.copy(camTarget).addScaledVector(camDir, 60); cam.lookAt(camTarget);
+      sun.position.copy(camTarget).add(new THREE.Vector3(14, 26, 8)); sun.target.position.copy(camTarget);
+      renderer.render(scene, cam);
+    }, () => false);
+    /* Layar sempit: tokoh dibingkai di ruang kosong ANTARA kartu judul dan kartu langkah (diukur dari DOM), frustum ortografis asimetris */
+    const head = stage.querySelector('.story-head'), card = stage.querySelector('#storyCard');
+    let frameY = .5;
+    function applyFrame(){
+      frameY = .5;
+      if (aspect < .9) { const r = stage.getBoundingClientRect(), a = head.getBoundingClientRect().bottom - r.top, b = card.getBoundingClientRect().top - r.top; if (r.height > 0 && b > a) frameY = clamp(((a + b) / 2 + 30) / r.height, .2, .8); }
+      Object.assign(cam, { left: -halfW, right: halfW, top: 2 * halfH * frameY, bottom: -2 * halfH * (1 - frameY) }); cam.updateProjectionMatrix();
+    }
+    watchSize(stage, renderer, (w, h) => { aspect = w / h; halfH = aspect < .9 ? 10.5 : 8.6; halfW = halfH * aspect; applyFrame(); loop.request(); });
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(head);
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(card);
+    if (document.fonts) document.fonts.ready.then(() => { applyFrame(); loop.request(); });
+    themeColors(); bus.addEventListener('theme', () => requestAnimationFrame(themeColors));
+    return { setProgress, loop, renderer, scene, cam, chr };
+  }
+  let story = null;
+  try { story = createStory(); } catch (e) { console.warn('Cerita 3D gagal', e); storySec.classList.add('no-webgl'); }
+  window.__laporwarga.views = { heroV, mapV, story };
+  if (story) { const upd = () => story.setProgress(storyProgress()); addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd(); }
+}
+if (!window.__laporwarga.views || !window.__laporwarga.views.story) {
+  const nodes = $$('#storySvg .node');
+  const upd = () => { const n = Math.round(storyProgress() * 4); setStepUI(n); nodes.forEach((c, k) => c.classList.toggle('on', k <= n)); };
+  addEventListener('scroll', upd, { passive: true }); upd();
+}
+</script>
+</body>
+</html>
