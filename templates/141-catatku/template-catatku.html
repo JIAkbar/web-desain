@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catatku — Aplikasi Catatan &amp; Jurnal yang Tenang</title>
+<meta name="description" content="Catatku menangkap ide yang lewat, merapikannya, menghubungkan catatan yang saling terkait, dan membantumu menulis hal yang penting. Tanpa iklan, tanpa notifikasi berisik.">
+<meta name="theme-color" content="#fbfaf6">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script>
+  /* tema Pico (data-theme) + warna buku disimpan per pengunjung; dipasang sebelum render */
+  (function(){var t,c;try{t=localStorage.getItem('catatku-theme');c=localStorage.getItem('catatku-colour')}catch(e){}
+  if(t!=='light'&&t!=='dark'){t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}
+  document.documentElement.setAttribute('data-theme',t);
+  window.__ckColour={jade:1,blue:1,violet:1,pumpkin:1}[c]?c:'jade';})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,500&family=Figtree:wght@400;500;600;700;800&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<!-- Pico CSS v2 (MIT) — tema warna resmi pico.<warna>.min.css -->
+<link rel="stylesheet" id="picoTheme" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.jade.min.css">
+<script>
+  (function(){var c=window.__ckColour;if(c!=='jade'){document.getElementById('picoTheme').href='https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.'+c+'.min.css';}})();
+</script>
+<style>
+  /* ---------- Token Pico: font, tanpa monospace ---------- */
+  :root:root{
+    --ck-serif:'Newsreader',Georgia,'Times New Roman',serif;
+    --ck-sans:'Figtree',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --pico-font-family-sans-serif:var(--ck-sans);
+    --pico-font-family-monospace:var(--ck-sans);
+    --pico-font-family:var(--ck-sans);
+    --pico-border-radius:.7rem;
+    --pico-font-weight:400;
+    --ck-path:#f07a3c;
+    --ck-r:20px;
+  }
+  /* latar terang bernuansa kertas, gelap bernuansa tinta */
+  :root:not([data-theme=dark]),[data-theme=light]{
+    --pico-background-color:#fbfaf6;--pico-card-background-color:#ffffff;--pico-card-sectioning-background-color:#f6f3ec;
+    --ck-bg2:#f4f1e9;--ck-ink:#1f2421;--ck-line:#e6e1d6;--ck-glass:rgba(255,255,255,.74);--ck-shadow:0 30px 70px -38px rgba(30,40,35,.45);
+    --pico-color:#3d4541;--pico-muted-color:#6b716c;--pico-h1-color:#1f2421;--pico-h2-color:#1f2421;--pico-h3-color:#1f2421;--pico-h4-color:#1f2421;
+  }
+  :root[data-theme=dark]{
+    --pico-background-color:#12161a;--pico-card-background-color:#1a2026;--pico-card-sectioning-background-color:#1e252c;
+    --ck-bg2:#161b20;--ck-ink:#eef0ec;--ck-line:#2a323a;--ck-glass:rgba(20,26,31,.74);--ck-shadow:0 30px 70px -30px rgba(0,0,0,.8);
+    --pico-color:#c3c9c6;--pico-muted-color:#93a09b;--pico-h1-color:#eef0ec;--pico-h2-color:#eef0ec;--pico-h3-color:#eef0ec;--pico-h4-color:#eef0ec;
+  }
+  code,kbd,pre,samp{--pico-font-family:var(--ck-sans);font-family:inherit}
+  kbd{font-size:.8em;padding:.15em .45em;border-radius:.35rem}
+  .num,.price b,.stat b,output{font-variant-numeric:tabular-nums}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+  body{background:var(--pico-background-color);overflow-x:clip;-webkit-font-smoothing:antialiased;transition:background-color .35s,color .35s}
+  body>header,body>main,body>footer{padding-block:0}
+  section{margin-bottom:0}
+  h1,h2,h3,.serif{font-family:var(--ck-serif);font-weight:500;letter-spacing:-.02em}
+  [id]{scroll-margin-top:72px}
+  .skip{position:absolute;left:-999px;top:8px;z-index:200}
+  .skip:focus{left:12px}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:.74rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--pico-primary)}
+  .eyebrow::before{content:"";width:24px;height:2px;background:currentColor;border-radius:2px}
+  .sec{padding:clamp(72px,10vw,124px) 0}
+  .alt{background:var(--ck-bg2)}
+  .sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px 48px;align-items:end;margin-bottom:clamp(30px,5vw,54px)}
+  .sec-head h2{font-size:clamp(2rem,4.2vw,3.2rem);line-height:1.06;margin:12px 0 0}
+  .sec-head p{margin:0;color:var(--pico-muted-color)}
+  @media (max-width:820px){.sec-head{grid-template-columns:minmax(0,1fr)}}
+  .muted{color:var(--pico-muted-color)}
+  mark{--pico-mark-background-color:color-mix(in oklab,var(--pico-primary-background) 18%,transparent);--pico-mark-color:var(--ck-ink);border-radius:.4rem;padding:.1rem .45rem}
+
+  /* ---------- Nav ---------- */
+  .site-head{position:sticky;top:0;z-index:50;background:color-mix(in oklab,var(--pico-background-color) 82%,transparent);backdrop-filter:saturate(1.3) blur(14px);-webkit-backdrop-filter:saturate(1.3) blur(14px);border-bottom:1px solid color-mix(in oklab,var(--ck-line) 85%,transparent)}
+  .site-head nav{min-height:64px}
+  .site-head nav ul{margin-block:0}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--ck-serif);font-weight:600;font-size:1.35rem;color:var(--ck-ink)!important;text-decoration:none;white-space:nowrap;letter-spacing:-.02em}
+  .brand svg{width:32px;height:32px;flex:0 0 auto;color:var(--pico-primary-background)}
+  .nav-links a{font-weight:600;font-size:.95rem}
+  .nav-links a[aria-current]{color:var(--pico-primary)}
+  .site-head .icon-btn{width:42px;height:42px;padding:0!important;border-radius:50%;display:inline-grid;place-items:center}
+  .icon-btn svg{width:20px;height:20px}
+  [data-theme=light] .i-sun,[data-theme=dark] .i-moon{display:none}
+  .nav-cta{padding:.45rem 1rem;font-size:.92rem}
+  .mobile-only{display:none!important}
+  @media (max-width:1023px){.nav-links{display:none!important}.mobile-only{display:block!important}}
+  @media (max-width:520px){.site-head .nav-cta{display:none}}
+  @media (max-width:480px){.site-head nav ul:last-child{margin-right:0}.site-head nav ul:first-child{margin-left:0}.site-head nav li{padding-inline:4px}}
+  details.dropdown.menu summary{border-radius:50%;width:42px;height:42px;padding:0;display:grid;place-items:center}
+  details.dropdown.menu summary::after{display:none}
+  details.dropdown.menu summary + ul{min-width:220px}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:clamp(20px,4vw,52px) 0 clamp(48px,7vw,84px)}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6.2fr);gap:clamp(24px,4vw,56px);align-items:center}
+  .hero hgroup{margin-bottom:0}
+  .hero h1{font-size:clamp(2.6rem,6vw,5rem);line-height:.98;margin:18px 0 18px;letter-spacing:-.035em}
+  .hero h1 em{font-style:italic;color:var(--pico-primary)}
+  .hero hgroup p{font-size:clamp(1rem,1.3vw,1.14rem);line-height:1.65;max-width:34em;color:var(--pico-muted-color)}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+  .hero-cta [role=button]{margin:0}
+  .trust{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:28px;padding-top:20px;border-top:1px solid var(--ck-line);font-size:.9rem;color:var(--pico-muted-color)}
+  .trust b{color:var(--ck-ink);font-variant-numeric:tabular-nums}
+  .pill{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:999px;font-size:.8rem;font-weight:600;background:color-mix(in oklab,var(--pico-primary-background) 12%,transparent);color:var(--pico-primary)}
+  .stage{position:relative;border-radius:calc(var(--ck-r) + 8px);overflow:hidden;isolation:isolate;background:radial-gradient(120% 90% at 50% 10%,color-mix(in oklab,var(--pico-primary-background) 12%,var(--pico-card-sectioning-background-color)) 0%,var(--pico-card-sectioning-background-color) 70%);box-shadow:var(--ck-shadow);border:1px solid var(--ck-line)}
+  .stage canvas{display:block;width:100%;height:100%;opacity:0;transition:opacity .8s ease}
+  .stage.ready canvas{opacity:1}
+  .hero .stage{height:clamp(460px,72vh,660px)}
+  .stage .fallback{position:absolute;inset:0;display:none;place-items:center;padding:24px}
+  .stage.no-webgl .fallback{display:grid}
+  .stage.no-webgl canvas{display:none}
+  .stage .fallback svg{width:min(420px,90%);height:auto}
+  .glass{background:var(--ck-glass);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border:1px solid color-mix(in oklab,var(--pico-card-background-color) 50%,transparent)}
+  .stage-top{position:absolute;top:14px;left:14px;right:14px;z-index:2;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;pointer-events:none}
+  .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;font-size:.8rem;font-weight:600;color:var(--ck-ink);font-variant-numeric:tabular-nums;pointer-events:auto}
+  .chip .dot{width:8px;height:8px;border-radius:50%;background:var(--pico-primary-background);box-shadow:0 0 0 4px color-mix(in oklab,var(--pico-primary-background) 25%,transparent)}
+  .stage-panel{position:absolute;left:14px;right:14px;bottom:14px;z-index:2;border-radius:var(--ck-r);padding:12px 14px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 18px}
+  .lbl{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--pico-muted-color);display:block;margin-bottom:6px}
+  .stage-panel label{margin:0}
+  @media (max-width:959px){.hero-grid{grid-template-columns:minmax(0,1fr)}.hero .stage{height:min(540px,72vh);min-height:440px}}
+
+  /* swatch di dalam role=group */
+  .swatches{margin:0;width:auto}
+  .swatches button{display:inline-flex;align-items:center;gap:7px;padding:.42rem .8rem;font-size:.86rem;font-weight:600}
+  .swatches button .sw{width:12px;height:12px;border-radius:50%;flex:0 0 auto;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.7)}
+  .swatches button[aria-pressed=false]{--pico-background-color:transparent;--pico-color:var(--ck-ink);--pico-border-color:var(--ck-line)}
+  @media (max-width:420px){.swatches button{padding:.42rem .6rem}.swatches .swl{display:none}}
+  input[role=switch]{margin-inline-end:.5rem}
+
+  /* ---------- Fitur ---------- */
+  .feat{margin:0;height:100%;display:flex;flex-direction:column}
+  .feat .ico{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:color-mix(in oklab,var(--pico-primary-background) 14%,transparent);color:var(--pico-primary);margin-bottom:16px}
+  .feat .ico svg{width:24px;height:24px}
+  .feat h3{font-size:1.4rem;margin-bottom:8px}
+  .feat p{color:var(--pico-muted-color);font-size:.97rem}
+  .feat footer{margin-top:auto;font-size:.88rem}
+  .grid-4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--pico-grid-column-gap)}
+  @media (max-width:1100px){.grid-4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:600px){.grid-4{grid-template-columns:minmax(0,1fr)}}
+
+  /* ---------- Meja tulis (Pico mengendalikan 3D) ---------- */
+  .desk-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:22px;align-items:stretch}
+  .desk .stage{height:clamp(480px,74vh,700px)}
+  .panel{margin:0;display:flex;flex-direction:column;gap:18px}
+  .panel .row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .panel .row > label{margin:0}
+  .panel fieldset{margin-bottom:10px}
+  .panel select{margin-bottom:0}
+  .panel input[type=range]{margin-bottom:0}
+  .ticks{display:flex;justify-content:space-between;font-size:.74rem;color:var(--pico-muted-color);margin-top:-2px}
+  .panel progress{margin-bottom:4px}
+  .panel footer{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:auto}
+  .panel footer [role=button],.panel footer button{margin:0}
+  .panel details.dropdown{margin:0}
+  .panel details.dropdown summary{margin:0}
+  @media (max-width:1060px){.desk-grid{grid-template-columns:minmax(0,1fr)}.desk .stage{height:min(520px,64vh);min-height:400px}}
+
+  /* ---------- Cerita isometrik ---------- */
+  .story{position:relative;height:520vh}
+  .story-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--ck-bg2)}
+  .story-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .story-fallback{position:absolute;inset:0;display:none;place-items:center;padding:24px}
+  .story.no-webgl .story-fallback{display:grid}
+  .story.no-webgl canvas{display:none}
+  .story-fallback svg{width:min(900px,100%);height:auto}
+  .story-fallback .node{fill:var(--pico-card-background-color);stroke:var(--ck-line);stroke-width:2;transition:fill .4s}
+  .story-fallback .node.on{fill:var(--ck-path)}
+  .story-ui{position:absolute;inset:0;pointer-events:none;padding:84px 0 24px}
+  .story-ui .container{position:relative;height:100%;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+  .story-head{max-width:470px;width:fit-content;background:color-mix(in oklab,var(--ck-bg2) 82%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid color-mix(in oklab,var(--ck-line) 85%,transparent);border-radius:var(--ck-r);padding:18px 22px 20px;pointer-events:auto}
+  .story-head h2{font-size:clamp(1.7rem,3.3vw,2.7rem);line-height:1.05;margin:10px 0 0}
+  .story-head p{margin:8px 0 0;font-size:.95rem;color:var(--pico-muted-color)}
+  .story-card{max-width:440px;margin:0;pointer-events:auto;background:color-mix(in oklab,var(--pico-card-background-color) 88%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid color-mix(in oklab,var(--ck-line) 85%,transparent);border-radius:var(--ck-r);padding:16px 20px 18px}
+  .story-card progress{margin:0 0 6px;height:6px}
+  .s-labels{display:flex;justify-content:space-between;gap:4px;font-size:.7rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--pico-muted-color);margin:6px 0 0}
+  .s-labels span.on{color:var(--pico-primary)}
+  .scene-steps{position:relative;min-height:162px;margin:6px 0 0;padding:0;list-style:none}
+  .scene-steps li{list-style:none}
+  .scene-step{position:absolute;inset:0 0 auto 0;opacity:0;transform:translateY(14px);transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+  .scene-step.on{opacity:1;transform:none;pointer-events:auto}
+  .scene-step .n{font-family:var(--ck-serif);font-size:2.2rem;line-height:1;color:var(--pico-primary);font-variant-numeric:tabular-nums}
+  .scene-step h3{font-family:var(--ck-sans);font-size:1.15rem;font-weight:700;margin:6px 0 6px;letter-spacing:0}
+  .scene-step p{font-size:.92rem;margin:0;color:var(--pico-muted-color)}
+  @media (max-width:760px){
+    .story-ui{padding:74px 0 14px}
+    .story-head{padding:12px 16px 14px}
+    .story-head h2{font-size:1.45rem}
+    .story-head p{display:none}
+    .story-card{max-width:none;padding:12px 14px 14px}
+    .s-labels{font-size:.6rem;letter-spacing:0}
+    .scene-steps{min-height:136px}
+    .scene-step .n{font-size:1.7rem}
+    .scene-step h3{font-size:1.02rem}
+    .scene-step p{font-size:.86rem}
+  }
+  @media (max-width:340px){.s-labels{display:none}}
+
+  /* ---------- Statistik + testimoni ---------- */
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:0 0 56px;padding:0;overflow:hidden}
+  .stat{padding:22px 24px;border-left:1px solid var(--ck-line)}
+  .stat:first-child{border-left:0}
+  .stat b{display:block;font-family:var(--ck-serif);font-weight:500;font-size:clamp(2.1rem,3.6vw,3rem);color:var(--ck-ink);line-height:1.05;letter-spacing:-.02em}
+  .stat span{font-size:.9rem;color:var(--pico-muted-color)}
+  @media (max-width:820px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat:nth-child(3){border-left:0}.stat:nth-child(n+3){border-top:1px solid var(--ck-line)}}
+  .quotes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--pico-grid-column-gap)}
+  @media (max-width:960px){.quotes{grid-template-columns:minmax(0,1fr)}}
+  .quote{margin:0;display:flex;flex-direction:column}
+  .quote blockquote{margin:0 0 16px;padding:0;border:0;font-family:var(--ck-serif);font-size:1.18rem;line-height:1.5;color:var(--ck-ink)}
+  .quote blockquote footer{display:none}
+  .quote footer{margin-top:auto;display:flex;align-items:center;gap:12px}
+  .avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;flex:0 0 auto;font-size:.9rem}
+  .quote footer small{display:block;color:var(--pico-muted-color)}
+
+  /* ---------- Harga ---------- */
+  .plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--pico-grid-column-gap);align-items:stretch}
+  @media (max-width:960px){.plans{grid-template-columns:minmax(0,1fr)}}
+  .plan{margin:0;display:flex;flex-direction:column}
+  .plan h3{font-size:1.6rem;margin:0}
+  .price{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;margin:10px 0 4px}
+  .price b{font-family:var(--ck-serif);font-weight:500;font-size:clamp(2rem,3vw,2.5rem);color:var(--ck-ink);letter-spacing:-.02em;line-height:1}
+  .plan ul{padding:0;margin:14px 0 18px}
+  .plan li{list-style:none;display:flex;gap:10px;align-items:flex-start;font-size:.95rem}
+  .plan li svg{width:18px;height:18px;flex:0 0 auto;margin-top:3px;color:var(--pico-primary)}
+  .plan.hot{outline:2px solid var(--pico-primary-background);outline-offset:-2px}
+  .plan footer{margin-top:auto}
+  .plan footer [role=button]{width:100%;margin:0}
+  .billing{display:flex;justify-content:center;margin-bottom:30px}
+  .billing [role=group]{width:auto;margin:0}
+  .billing button{padding:.5rem 1.1rem;font-size:.92rem}
+  .billing button[aria-pressed=false]{--pico-background-color:transparent;--pico-color:var(--ck-ink);--pico-border-color:var(--ck-line)}
+  .overflow-auto{margin-top:34px}
+  table td,table th{font-size:.92rem}
+
+  /* ---------- FAQ ---------- */
+  .faq details{border-bottom:1px solid var(--ck-line);padding:4px 0 10px;margin-bottom:10px}
+  .faq summary{font-weight:600;color:var(--ck-ink)}
+  .faq details p{color:var(--pico-muted-color)}
+
+  /* ---------- CTA ---------- */
+  .cta{border-radius:calc(var(--ck-r) + 10px);padding:clamp(26px,5vw,64px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:start;
+    background:radial-gradient(120% 120% at 100% 0%,color-mix(in oklab,var(--pico-primary-background) 55%,#fff6dc) 0%,var(--pico-primary-background) 45%,color-mix(in oklab,var(--pico-primary-background) 55%,#0d1512) 100%);color:#fff}
+  .cta h2{color:#fff;font-size:clamp(2rem,4.4vw,3.2rem);line-height:1.05;margin:12px 0 14px}
+  .cta .eyebrow{color:#fff;opacity:.85}
+  .cta p{color:rgba(255,255,255,.9)}
+  .cta form{margin:0}
+  .cta form article{margin:0}
+  .cta ul{padding:0;margin:20px 0 0}
+  .cta ul li{list-style:none;display:flex;gap:10px;align-items:center;color:#fff;font-weight:600}
+  .cta ul li svg{width:18px;height:18px;flex:0 0 auto}
+  @media (max-width:900px){.cta{grid-template-columns:minmax(0,1fr)}}
+  @media (max-width:480px){.cta{padding:24px 16px}.hero-cta [role=button]{flex:1 1 100%;text-align:center}}
+
+  footer.site{border-top:1px solid var(--ck-line);padding:56px 0 34px}
+  footer.site h4{font-family:var(--ck-sans);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin:0 0 12px}
+  footer.site ul{padding:0;margin:0}
+  footer.site li{list-style:none;font-size:.94rem;margin-bottom:6px}
+  footer.site a{text-decoration:none;color:var(--pico-muted-color)}
+  footer.site a:hover{color:var(--ck-ink)}
+  .foot-grid{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(0,1fr));gap:28px}
+  @media (max-width:820px){.foot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.foot-grid>:first-child{grid-column:1/-1}}
+  .foot-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:.86rem;color:var(--pico-muted-color);border-top:1px solid var(--ck-line);margin-top:34px;padding-top:18px}
+
+  /* toast (Pico tidak punya toast: memakai article) */
+  .toasts{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:300;display:grid;gap:8px;width:min(420px,calc(100vw - 24px))}
+  .toasts article{margin:0;padding:12px 16px;font-size:.94rem;box-shadow:0 18px 40px -20px rgba(0,0,0,.45);border-left:4px solid var(--pico-primary-background);transition:opacity .4s}
+  dialog article{max-width:min(560px,calc(100vw - 24px))}
+  dialog article footer{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+  dialog article footer button{width:auto;margin:0!important}
+</style>
+</head>
+<body>
+<a class="skip" role="button" href="#main">Lewati ke konten</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="logo" viewBox="0 0 32 32"><rect x="1" y="1" width="30" height="30" rx="9" fill="currentColor"/><path d="M10 8h10.5a2 2 0 0 1 2 2v14H12a2 2 0 0 1-2-2z" fill="#fff"/><path d="M13 13h6M13 16.5h6M13 20h3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M22.5 8.5v15.5" stroke="rgba(0,0,0,.18)" stroke-width="1.4"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<header class="site-head">
+  <nav class="container" aria-label="Navigasi utama">
+    <ul>
+      <li><a class="brand" href="#top" aria-label="Catatku, ke atas"><svg aria-hidden="true"><use href="#logo"/></svg>Catatku</a></li>
+    </ul>
+    <ul class="nav-links">
+      <li><a href="#fitur" class="secondary">Fitur</a></li><li><a href="#meja" class="secondary">Meja 3D</a></li><li><a href="#alur" class="secondary">Alur ide</a></li><li><a href="#cerita" class="secondary">Cerita</a></li><li><a href="#harga" class="secondary">Harga</a></li><li><a href="#faq" class="secondary">FAQ</a></li>
+    </ul>
+    <ul>
+      <li><button class="icon-btn outline secondary" type="button" id="themeBtn" aria-label="Ganti tema terang/gelap" data-tooltip="Tema terang/gelap" data-placement="bottom">
+        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button></li>
+      <li><a class="nav-cta" role="button" href="#mulai">Coba gratis</a></li>
+      <li class="mobile-only">
+        <details class="dropdown menu" id="mobileMenu">
+          <summary class="outline secondary" role="button" aria-label="Buka menu"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+          <ul dir="rtl">
+            <li><a href="#fitur">Fitur</a></li><li><a href="#meja">Meja 3D</a></li><li><a href="#alur">Alur ide</a></li><li><a href="#cerita">Cerita</a></li><li><a href="#harga">Harga</a></li><li><a href="#faq">FAQ</a></li><li><a href="#mulai">Coba gratis</a></li>
+          </ul>
+        </details>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="container hero-grid">
+      <div>
+        <span class="pill">Baru: mode fokus dengan lampu meja</span>
+        <hgroup>
+          <h1>Tempat tenang untuk <em>pikiranmu.</em></h1>
+          <p>Catatku menangkap ide yang lewat, merapikannya tanpa kamu sadari, lalu membantumu menulis hal yang benar-benar penting. Tanpa iklan, tanpa notifikasi berisik.</p>
+        </hgroup>
+        <div class="hero-cta">
+          <a role="button" href="#mulai">Mulai menulis, gratis</a>
+          <a role="button" class="secondary outline" href="#meja">Lihat meja 3D</a>
+        </div>
+        <div class="trust">
+          <span><b>120 ribu</b> penulis</span><span><b>4,8</b> rating toko aplikasi</span><span>Sinkron di <b>3</b> perangkat</span>
+        </div>
+      </div>
+      <div class="stage" id="heroStage">
+        <canvas id="heroCanvas" role="img" aria-label="Tumpukan buku catatan 3D di atas meja: satu buku terbuka dengan halaman yang mengipas dan berbalik, kartu indeks melayang, pensil, cangkir, dan lampu meja"></canvas>
+        <div class="fallback" aria-hidden="true"></div>
+        <div class="stage-top">
+          <span class="chip glass"><span class="dot"></span><span id="heroChip">Buku Giok · kertas bergaris</span></span>
+          <span class="chip glass num" id="heroPages">12 halaman</span>
+        </div>
+        <div class="stage-panel glass">
+          <div>
+            <span class="lbl" id="heroColLbl">Warna buku</span>
+            <div role="group" class="swatches" aria-labelledby="heroColLbl" data-colours></div>
+          </div>
+          <label for="heroFocus"><input type="checkbox" role="switch" id="heroFocus" data-focus> Mode fokus</label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FITUR -->
+  <section class="sec alt" id="fitur">
+    <div class="container">
+      <div class="sec-head">
+        <div><span class="eyebrow">Kenapa Catatku</span><h2>Dibuat untuk berpikir, bukan untuk sibuk.</h2></div>
+        <p>Kami membuang semua yang membuat aplikasi catatan terasa seperti kantor: tanpa feed, tanpa angka “terakhir dilihat”, tanpa badge merah. Yang tersisa hanya kertas, pena, dan ide-idemu.</p>
+      </div>
+      <div class="grid-4">
+        <article class="feat">
+          <div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9.5 19h5M10.5 21.5h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <h3>Tangkap kilat</h3>
+          <p>Tekan <kbd>Ctrl</kbd> + <kbd>J</kbd> di mana saja, atau ketuk widget di ponsel. Ide masuk ke kotak masuk dalam dua detik.</p>
+          <footer><span data-tooltip="Juga bisa lewat pesan suara">Suara, foto, teks</span></footer>
+        </article>
+        <article class="feat">
+          <div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <h3>Rapi sendiri</h3>
+          <p>Catatan diberi label dan dikelompokkan otomatis berdasarkan topik. Kamu cukup menyetujui, tidak perlu menyusun folder.</p>
+          <footer><mark>Hemat 40 menit per minggu</mark></footer>
+        </article>
+        <article class="feat">
+          <div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="8" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="10" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8.3 7l7.4.6M7 8.3l2.2 7.4M16.3 10l-4.6 6" stroke="currentColor" stroke-width="2"/></svg></div>
+          <h3>Saling terhubung</h3>
+          <p>Ketik <kbd>[[</kbd> untuk menautkan catatan. Peta ide menunjukkan hubungan yang tidak kamu sadari sebelumnya.</p>
+          <footer><span data-tooltip="Tautan balik dibuat otomatis">Tautan dua arah</span></footer>
+        </article>
+        <article class="feat">
+          <div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+          <h3>Privat sejak awal</h3>
+          <p>Jurnal pribadi dienkripsi di perangkatmu. Kami tidak bisa membacanya, dan tidak pernah menjual data.</p>
+          <footer><span data-tooltip="Enkripsi ujung ke ujung untuk jurnal">Terenkripsi E2E</span></footer>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEJA 3D: komponen Pico menggerakkan adegan -->
+  <section class="sec desk" id="meja">
+    <div class="container">
+      <div class="sec-head">
+        <div><span class="eyebrow">Meja tulis 3D</span><h2>Atur mejamu, rasakan bedanya.</h2></div>
+        <p>Semua kontrol di panel adalah elemen Pico CSS biasa: grup tombol memilih warna sampul (dan tema warna halaman), slider mengipas halaman, select mengganti jenis kertas, dan sakelar menyalakan mode fokus dengan lampu meja.</p>
+      </div>
+      <div class="desk-grid">
+        <div class="stage" id="deskStage">
+          <canvas id="deskCanvas" role="img" aria-label="Meja tulis 3D: buku catatan terbuka dengan halaman yang bisa dikipas, jenis kertas yang bisa diganti, dan lampu meja untuk mode fokus"></canvas>
+          <div class="fallback" aria-hidden="true"></div>
+          <div class="stage-top">
+            <span class="chip glass" id="deskChip">Kertas bergaris · fokus mati</span>
+            <span class="chip glass num" id="deskFan">Kipas 35%</span>
+          </div>
+        </div>
+        <article class="panel">
+          <div>
+            <span class="lbl" id="deskColLbl">Warna sampul</span>
+            <div role="group" class="swatches" aria-labelledby="deskColLbl" data-colours></div>
+          </div>
+          <div>
+            <div class="row"><label for="fan" class="lbl" style="margin:0">Kipas halaman</label><output id="fanOut" for="fan" class="num">35%</output></div>
+            <input type="range" id="fan" min="0" max="100" step="1" value="35" aria-describedby="deskFan">
+            <div class="ticks" aria-hidden="true"><span>Rapat</span><span>Terbuka</span><span>Mengipas</span></div>
+          </div>
+          <div>
+            <label for="paper" class="lbl">Jenis kertas <span data-tooltip="Tekstur halaman di model 3D" style="text-transform:none;letter-spacing:0;border-bottom:0">ⓘ</span></label>
+            <select id="paper" name="paper" aria-label="Jenis kertas">
+              <option value="garis" selected>Bergaris</option>
+              <option value="kotak">Kotak-kotak</option>
+              <option value="titik">Titik (dot grid)</option>
+              <option value="polos">Polos</option>
+            </select>
+          </div>
+          <fieldset style="margin:8px 0 0">
+            <label for="deskFocus" data-tooltip="Redupkan ruangan, nyalakan lampu meja" data-placement="top" style="border-bottom:0;width:fit-content"><input type="checkbox" role="switch" id="deskFocus" data-focus> Mode fokus</label>
+            <label for="autoFlip"><input type="checkbox" role="switch" id="autoFlip" checked> Balik halaman otomatis</label>
+          </fieldset>
+          <div>
+            <div class="row"><span class="lbl" style="margin:0">Halaman terisi</span><small class="num" id="filledOut">5 dari 12</small></div>
+            <progress id="filled" value="5" max="12"></progress>
+          </div>
+          <footer>
+            <button type="button" id="writeBtn">Tulis di halaman</button>
+            <details class="dropdown" id="shareDd">
+              <summary role="button" class="secondary outline">Bagikan</summary>
+              <ul>
+                <li><a href="#" data-share="tautan">Salin tautan baca</a></li>
+                <li><a href="#" data-share="PDF">Ekspor PDF</a></li>
+                <li><a href="#" data-share="email">Kirim ke email</a></li>
+              </ul>
+            </details>
+          </footer>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERITA GULIR ISOMETRIK -->
+  <section class="story" id="alur" aria-label="Alur sebuah ide di Catatku">
+    <div class="story-stage">
+      <canvas id="storyCanvas" role="img" aria-label="Peta isometrik alur ide: tokoh bola lampu berjalan mengikuti jalur oranye dari tangkap, rapikan, hubungkan, tulis, hingga bagikan saat halaman digulir"></canvas>
+      <div class="story-fallback" aria-hidden="true">
+        <svg viewBox="0 0 900 360" id="storySvg">
+          <path d="M80 250 L250 130 L450 250 L650 130 L820 250" fill="none" stroke="#f07a3c" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="14 12"/>
+          <g><circle class="node on" cx="80" cy="250" r="34"/><circle class="node" cx="250" cy="130" r="34"/><circle class="node" cx="450" cy="250" r="34"/><circle class="node" cx="650" cy="130" r="34"/><circle class="node" cx="820" cy="250" r="34"/></g>
+        </svg>
+      </div>
+      <div class="story-ui">
+        <div class="container">
+          <div class="story-head">
+            <span class="eyebrow">Alur sebuah ide</span>
+            <h2>Dari kilasan sampai tulisan utuh.</h2>
+            <p>Gulir untuk mengikuti si Ide melewati lima pemberhentian di Catatku.</p>
+          </div>
+          <article class="story-card" id="storyCard">
+            <progress id="storyProg" value="0" max="4" aria-hidden="true"></progress>
+            <div class="s-labels" aria-hidden="true"><span class="on">Tangkap</span><span>Rapikan</span><span>Hubungkan</span><span>Tulis</span><span>Bagikan</span></div>
+            <ol class="scene-steps" aria-live="polite">
+              <li class="scene-step on"><div class="n">01</div><h3>Tangkap sebelum hilang</h3><p>Ide muncul saat antre kopi. Satu ketukan di widget, dan ia aman di kotak masuk, lengkap dengan lokasi dan waktunya.</p></li>
+              <li class="scene-step"><div class="n">02</div><h3>Rapikan tanpa repot</h3><p>Malamnya Catatku menyarankan label “Proyek kebun” dan memindahkannya ke rak yang tepat. Kamu tinggal setuju.</p></li>
+              <li class="scene-step"><div class="n">03</div><h3>Hubungkan yang serupa</h3><p>Tiga catatan lama tentang kompos muncul di peta ide. Benang merahnya baru terlihat sekarang.</p></li>
+              <li class="scene-step"><div class="n">04</div><h3>Tulis dengan tenang</h3><p>Mode fokus meredupkan semua kecuali halamanmu. Draf pertama selesai dalam satu sesi pagi.</p></li>
+              <li class="scene-step"><div class="n">05</div><h3>Bagikan bila siap</h3><p>Kirim sebagai tautan baca, PDF, atau email. Hanya catatan yang kamu pilih yang meninggalkan mejamu.</p></li>
+            </ol>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATISTIK + TESTIMONI -->
+  <section class="sec" id="cerita">
+    <div class="container">
+      <article class="stats" id="stats">
+        <div class="stat"><b data-count="120" data-suffix=" rb">0</b><span>penulis aktif</span></div>
+        <div class="stat"><b data-count="38" data-suffix=" jt">0</b><span>catatan tersimpan</span></div>
+        <div class="stat"><b>4,8</b><span>rating dari 9.400 ulasan</span></div>
+        <div class="stat"><b>Nol</b><span>iklan, selamanya</span></div>
+      </article>
+      <div class="sec-head" style="margin-bottom:28px">
+        <div><span class="eyebrow">Cerita pengguna</span><h2>Lebih sedikit aplikasi, lebih banyak tulisan.</h2></div>
+        <p>Dari mahasiswa tingkat akhir sampai penulis buku anak, mereka memakai Catatku untuk hal yang sama: berpikir lebih jernih.</p>
+      </div>
+      <div class="quotes">
+        <article class="quote"><blockquote>“Skripsi saya akhirnya selesai. Peta ide membantu saya melihat bab yang ternyata saling mengulang.”</blockquote>
+          <footer><span class="avatar" style="background:#2f8f6b">AS</span><span><b>Ayu Safitri</b><small>Mahasiswi, Semarang</small></span></footer></article>
+        <article class="quote"><blockquote>“Mode fokus dengan lampu meja itu kedengarannya sepele, tapi sekarang jadi ritual menulis saya tiap pagi.”</blockquote>
+          <footer><span class="avatar" style="background:#7a52c7">HK</span><span><b>Hendra Kusuma</b><small>Penulis buku anak, Bogor</small></span></footer></article>
+        <article class="quote"><blockquote>“Tim kami pindah dari tiga aplikasi ke satu. Catatan rapat langsung tertaut ke dokumen proyeknya.”</blockquote>
+          <footer><span class="avatar" style="background:#e0702a">LW</span><span><b>Lestari Wulandari</b><small>Manajer produk, Jakarta</small></span></footer></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- HARGA -->
+  <section class="sec alt" id="harga">
+    <div class="container">
+      <div class="sec-head">
+        <div><span class="eyebrow">Harga</span><h2>Gratis untuk berpikir. Bayar kalau butuh lebih.</h2></div>
+        <p>Semua paket mendapat sinkronisasi, enkripsi jurnal, dan ekspor tanpa batas. Bayar tahunan untuk hemat 20%.</p>
+      </div>
+      <div class="billing">
+        <div role="group" aria-label="Periode tagihan" id="billing">
+          <button type="button" data-k="1" aria-pressed="true">Bulanan</button>
+          <button type="button" data-k="0.8" aria-pressed="false">Tahunan −20%</button>
+        </div>
+      </div>
+      <div class="plans">
+        <article class="plan">
+          <header><h3>Kertas</h3><small class="muted">Untuk mulai membiasakan diri.</small></header>
+          <div class="price"><b>Gratis</b></div><small class="muted">selamanya</small>
+          <ul><li><svg><use href="#i-check"/></svg>Catatan tanpa batas di 2 perangkat</li><li><svg><use href="#i-check"/></svg>Kotak masuk &amp; label otomatis</li><li><svg><use href="#i-check"/></svg>Ekspor Markdown dan PDF</li></ul>
+          <footer><a role="button" class="secondary outline" href="#mulai" data-plan="Kertas">Mulai gratis</a></footer>
+        </article>
+        <article class="plan hot">
+          <header><div class="row" style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center"><h3>Jurnal</h3><mark>Paling dipilih</mark></div><small class="muted">Untuk penulis dan pemikir harian.</small></header>
+          <div class="price"><b data-price="39000">Rp 39.000</b><span class="muted">/ bulan</span></div><small class="muted" data-note>ditagih bulanan</small>
+          <ul><li><svg><use href="#i-check"/></svg>Semua fitur Kertas, perangkat tanpa batas</li><li><svg><use href="#i-check"/></svg>Peta ide &amp; tautan dua arah</li><li><svg><use href="#i-check"/></svg>Mode fokus dan statistik menulis</li><li><svg><use href="#i-check"/></svg>Riwayat versi 1 tahun</li></ul>
+          <footer><a role="button" href="#mulai" data-plan="Jurnal">Coba 14 hari gratis</a></footer>
+        </article>
+        <article class="plan">
+          <header><h3>Perpustakaan</h3><small class="muted">Untuk tim 3–50 orang.</small></header>
+          <div class="price"><b data-price="69000">Rp 69.000</b><span class="muted">/ orang / bulan</span></div><small class="muted" data-note>ditagih bulanan</small>
+          <ul><li><svg><use href="#i-check"/></svg>Ruang bersama dan izin per rak</li><li><svg><use href="#i-check"/></svg>Catatan rapat tertaut ke proyek</li><li><svg><use href="#i-check"/></svg>SSO dan log audit</li></ul>
+          <footer><a role="button" class="secondary outline" href="#mulai" data-plan="Perpustakaan">Hubungi kami</a></footer>
+        </article>
+      </div>
+      <div class="overflow-auto">
+        <table class="striped">
+          <thead><tr><th scope="col">Fitur</th><th scope="col">Kertas</th><th scope="col">Jurnal</th><th scope="col">Perpustakaan</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Perangkat</th><td>2</td><td>Tanpa batas</td><td>Tanpa batas</td></tr>
+            <tr><th scope="row">Peta ide</th><td>—</td><td>Ya</td><td>Ya</td></tr>
+            <tr><th scope="row">Riwayat versi</th><td>7 hari</td><td>1 tahun</td><td>Tanpa batas</td></tr>
+            <tr><th scope="row">Ruang tim</th><td>—</td><td>—</td><td>Ya</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec faq" id="faq">
+    <div class="container" style="max-width:860px">
+      <span class="eyebrow">FAQ</span>
+      <h2 style="font-size:clamp(2rem,4.2vw,3rem);line-height:1.05;margin:12px 0 26px">Pertanyaan yang sering masuk</h2>
+      <details name="faq" open><summary>Apakah catatan saya bisa dibaca tim Catatku?</summary><p>Tidak untuk jurnal pribadi: isinya dienkripsi di perangkatmu sebelum disinkronkan. Catatan biasa juga tidak pernah dibaca manusia, kecuali kamu meminta bantuan dukungan secara eksplisit.</p></details>
+      <details name="faq"><summary>Bisakah saya pindah dari aplikasi catatan lain?</summary><p>Bisa. Impor dari Markdown, HTML, dan format ekspor aplikasi catatan populer. Tautan antarcatatan dipertahankan sebisa mungkin.</p></details>
+      <details name="faq"><summary>Apakah Catatku bekerja tanpa internet?</summary><p>Ya. Semua catatan tersimpan lokal lebih dulu, lalu disinkronkan begitu perangkatmu kembali daring.</p></details>
+      <details name="faq"><summary>Bagaimana kalau saya berhenti berlangganan?</summary><p>Catatanmu tetap milikmu. Akun turun ke paket Kertas, dan semua catatan bisa diekspor kapan saja.</p></details>
+      <details name="faq"><summary>Apakah ada diskon pelajar?</summary><p>Ada. Pelajar dan guru mendapat paket Jurnal dengan potongan 50% setelah verifikasi email sekolah atau kampus.</p></details>
+    </div>
+  </section>
+
+  <!-- CTA + FORM -->
+  <section class="sec" id="mulai" style="padding-top:0">
+    <div class="container">
+      <div class="cta">
+        <div>
+          <span class="eyebrow">Mulai sekarang</span>
+          <h2>Kosongkan kepala, isi halamanmu.</h2>
+          <p>Daftar dalam satu menit. Kami kirim tautan masuk ke emailmu, tanpa kata sandi yang harus diingat.</p>
+          <ul><li><svg><use href="#i-check"/></svg>Gratis selamanya untuk paket Kertas</li><li><svg><use href="#i-check"/></svg>Tanpa kartu kredit</li><li><svg><use href="#i-check"/></svg>Ekspor semua catatan kapan saja</li></ul>
+        </div>
+        <form id="signupForm" novalidate>
+          <article>
+            <label for="sName">Nama panggilan
+              <input id="sName" name="nama" type="text" autocomplete="given-name" required minlength="2" placeholder="Ayu" aria-describedby="sNameHelp">
+              <small id="sNameHelp">Dipakai untuk menyapamu di halaman pertama.</small>
+            </label>
+            <label for="sEmail">Email
+              <input id="sEmail" name="email" type="email" autocomplete="email" required placeholder="ayu@contoh.id" aria-describedby="sEmailHelp">
+              <small id="sEmailHelp">Tautan masuk dikirim ke alamat ini.</small>
+            </label>
+            <label for="sUse">Paling sering dipakai untuk
+              <select id="sUse" name="pakai"><option>Jurnal pribadi</option><option>Kuliah &amp; riset</option><option>Menulis buku atau artikel</option><option>Catatan kerja tim</option></select>
+            </label>
+            <fieldset>
+              <label for="sAgree"><input type="checkbox" id="sAgree" name="setuju" required> Saya setuju dengan ketentuan layanan.</label>
+            </fieldset>
+            <button type="submit" id="signupBtn" style="width:100%;margin:0">Kirim tautan masuk</button>
+          </article>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="#top"><svg aria-hidden="true"><use href="#logo"/></svg>Catatku</a>
+        <p class="muted" style="max-width:30em;margin-top:14px;font-size:.94rem">Aplikasi catatan dan jurnal yang tenang, dibuat oleh tim kecil di Yogyakarta.</p>
+      </div>
+      <div><h4>Produk</h4><ul><li><a href="#fitur">Fitur</a></li><li><a href="#meja">Meja 3D</a></li><li><a href="#harga">Harga</a></li></ul></div>
+      <div><h4>Sumber</h4><ul><li><a href="#alur">Alur ide</a></li><li><a href="#cerita">Cerita pengguna</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+      <div><h4>Kontak</h4><ul><li><a href="#mulai">Daftar</a></li><li><span class="muted">halo@catatku.example</span></li></ul></div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 Catatku. Merek fiktif untuk keperluan template.</span><span>Dibangun dengan Pico CSS + three.js</span></div>
+  </div>
+</footer>
+
+<!-- Dialog Pico: menulis di halaman 3D -->
+<dialog id="writeDlg" aria-labelledby="writeTitle">
+  <article>
+    <header>
+      <button aria-label="Tutup" rel="prev" type="button" data-close></button>
+      <h3 id="writeTitle" style="margin:0">Tulis di halaman kiri</h3>
+    </header>
+    <form id="writeForm">
+      <label for="wText">Catatanmu
+        <textarea id="wText" name="teks" rows="4" maxlength="140" required placeholder="Contoh: Kompos dari ampas kopi, coba minggu depan" aria-describedby="wHelp"></textarea>
+        <small id="wHelp">Maksimal 140 karakter. Tulisan tangan akan muncul di model 3D.</small>
+      </label>
+    </form>
+    <footer>
+      <button type="button" class="secondary" data-close>Batal</button>
+      <button type="submit" form="writeForm">Tulis</button>
+    </footer>
+  </article>
+</dialog>
+
+<!-- Dialog Pico: konfirmasi pendaftaran -->
+<dialog id="doneDlg" aria-labelledby="doneTitle">
+  <article>
+    <header><button aria-label="Tutup" rel="prev" type="button" data-close></button><h3 id="doneTitle" style="margin:0">Cek emailmu</h3></header>
+    <p id="doneText">Tautan masuk sudah dikirim.</p>
+    <footer><button type="button" data-close>Siap</button></footer>
+  </article>
+</dialog>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<template id="bookFallback">
+  <svg viewBox="0 0 400 300" role="presentation">
+    <ellipse cx="200" cy="262" rx="170" ry="22" fill="rgba(0,0,0,.08)"/>
+    <rect x="70" y="190" width="200" height="34" rx="6" fill="#c7a77d"/><rect x="80" y="160" width="200" height="34" rx="6" fill="#7a52c7"/>
+    <path d="M60 140 L200 120 L340 140 L340 170 L200 152 L60 170Z" fill="#2f8f6b"/>
+    <path d="M70 136 L200 118 L200 150 L70 164Z" fill="#fffaf0"/><path d="M200 118 L330 136 L330 164 L200 150Z" fill="#fbf5e8"/>
+    <g stroke="#9bb7d4" stroke-width="2"><path d="M90 140 L190 128M90 148 L190 136M90 156 L190 144"/><path d="M210 128 L310 140M210 136 L310 148M210 144 L310 156"/></g>
+  </svg>
+</template>
+
+<script type="module">
+/* ================= UI (Pico CSS) ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const rmq = matchMedia('(prefers-reduced-motion: reduce)');
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const fmtRp = n => 'Rp ' + Math.round(n).toLocaleString('id-ID');
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const bus = new EventTarget();
+window.__catatku = { bus };
+const root = document.documentElement;
+
+function toast(msg){
+  const el = document.createElement('article'); el.setAttribute('role', 'status'); el.textContent = msg; $('#toasts').append(el);
+  setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 400); }, 3800);
+}
+
+/* --- tema Pico: data-theme light/dark --- */
+function setTheme(t, save = true){
+  if (t !== 'dark') t = 'light';
+  root.setAttribute('data-theme', t);
+  $('meta[name="theme-color"]').content = t === 'dark' ? '#12161a' : '#fbfaf6';
+  if (save) try { localStorage.setItem('catatku-theme', t); } catch (e) {}
+  bus.dispatchEvent(new CustomEvent('theme', { detail: t }));
+}
+setTheme(root.getAttribute('data-theme'), false);
+$('#themeBtn').addEventListener('click', () => setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+
+/* --- menu seluler (details.dropdown) --- */
+const mm = $('#mobileMenu');
+$$('#mobileMenu a').forEach(a => a.addEventListener('click', () => mm.open = false));
+document.addEventListener('click', e => { $$('details.dropdown[open]').forEach(d => { if (!d.contains(e.target)) d.open = false; }); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') $$('details.dropdown[open]').forEach(d => { d.open = false; d.querySelector('summary').focus(); }); });
+
+/* --- tautan nav aktif (aria-current) --- */
+const navLinks = $$('.nav-links a');
+const secIO = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) navLinks.forEach(a => a.toggleAttribute('aria-current', a.getAttribute('href') === '#' + en.target.id)); }), { rootMargin: '-45% 0px -50% 0px' });
+['fitur', 'meja', 'alur', 'cerita', 'harga', 'faq'].forEach(id => secIO.observe(document.getElementById(id)));
+
+/* --- warna buku = tema warna Pico (pico.<warna>.min.css) --- */
+const COLOURS = { jade: { name: 'Giok', hex: '#2f8f6b' }, blue: { name: 'Biru', hex: '#3a62c9' }, violet: { name: 'Ungu', hex: '#7a52c7' }, pumpkin: { name: 'Labu', hex: '#e0702a' } };
+const PAPERS = { garis: 'bergaris', kotak: 'kotak-kotak', titik: 'titik', polos: 'polos' };
+const state = { colour: window.__ckColour || 'jade', fan: 35, paper: 'garis', focus: false, flip: true, note: 'Ide: kebun kecil di atap\nkompos dari ampas kopi', filled: 5 };
+window.__catatku.state = state;
+$$('[data-colours]').forEach(g => {
+  g.innerHTML = Object.entries(COLOURS).map(([k, c]) => `<button type="button" data-colour="${k}" aria-pressed="false" aria-label="Sampul ${c.name}"><span class="sw" style="background:${c.hex}"></span><span class="swl">${c.name}</span></button>`).join('');
+});
+const picoLink = () => $('#picoTheme');
+let themeSwap = 0;
+function swapPicoColour(c){
+  const href = `https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.${c}.min.css`, old = picoLink();
+  if (old.href === href) return;
+  const id = ++themeSwap, link = document.createElement('link'); link.rel = 'stylesheet'; link.href = href;
+  link.onload = () => { if (id !== themeSwap) { link.remove(); return; } old.remove(); link.id = 'picoTheme'; bus.dispatchEvent(new CustomEvent('theme', { detail: root.getAttribute('data-theme') })); };
+  link.onerror = () => link.remove();
+  old.after(link);
+}
+function syncControls(){
+  $$('[data-colour]').forEach(b => { const on = b.dataset.colour === state.colour; b.setAttribute('aria-pressed', on); b.classList.toggle('secondary', !on); b.classList.toggle('outline', !on); });
+  $$('[data-focus]').forEach(s => s.checked = state.focus);
+  $('#fan').value = state.fan; $('#paper').value = state.paper; $('#autoFlip').checked = state.flip;
+}
+function readouts(){
+  const c = COLOURS[state.colour];
+  $('#heroChip').textContent = `Buku ${c.name} · kertas ${PAPERS[state.paper]}`;
+  $('#deskChip').textContent = `Kertas ${PAPERS[state.paper]} · fokus ${state.focus ? 'menyala' : 'mati'}`;
+  $('#deskFan').textContent = `Kipas ${state.fan}%`; $('#fanOut').textContent = state.fan + '%';
+  $('#fan').setAttribute('aria-valuetext', `${state.fan} persen`);
+  $('#filled').value = state.filled; $('#filledOut').textContent = `${state.filled} dari 12`;
+  $('#heroPages').textContent = `${state.filled} dari 12 halaman terisi`;
+}
+function emit(){ readouts(); bus.dispatchEvent(new CustomEvent('state', { detail: state })); }
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-colour]'); if (!b) return;
+  state.colour = b.dataset.colour; syncControls(); emit(); swapPicoColour(state.colour);
+  try { localStorage.setItem('catatku-colour', state.colour); } catch (err) {}
+});
+$$('[data-focus]').forEach(s => s.addEventListener('change', () => { state.focus = s.checked; syncControls(); emit(); }));
+$('#fan').addEventListener('input', e => { state.fan = +e.target.value; emit(); });
+$('#paper').addEventListener('change', e => { state.paper = e.target.value; emit(); });
+$('#autoFlip').addEventListener('change', e => { state.flip = e.target.checked; emit(); });
+syncControls(); readouts();
+
+/* --- dialog Pico --- */
+function openDlg(d){ root.classList.add('modal-is-open'); d.showModal(); }
+function closeDlg(d){ d.close(); }
+$$('dialog').forEach(d => {
+  d.addEventListener('close', () => root.classList.remove('modal-is-open'));
+  d.addEventListener('click', e => { if (e.target === d || e.target.closest('[data-close]')) closeDlg(d); });
+});
+const writeDlg = $('#writeDlg');
+$('#writeBtn').addEventListener('click', () => { $('#wText').value = state.note.replace(/\n/g, ' '); $('#wText').removeAttribute('aria-invalid'); openDlg(writeDlg); });
+$('#writeForm').addEventListener('submit', e => {
+  e.preventDefault(); const t = $('#wText');
+  if (!t.value.trim()) { t.setAttribute('aria-invalid', 'true'); t.focus(); return; }
+  state.note = t.value.trim(); state.filled = Math.min(12, state.filled + 1);
+  closeDlg(writeDlg); emit(); toast('Tulisanmu muncul di halaman kiri buku 3D.');
+});
+$$('[data-share]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); $('#shareDd').open = false; toast(a.dataset.share === 'tautan' ? 'Tautan baca disalin ke papan klip.' : `Catatan disiapkan untuk dikirim lewat ${a.dataset.share}.`); }));
+
+/* --- harga: bulanan / tahunan (role=group) --- */
+$$('#billing button').forEach(b => b.addEventListener('click', () => {
+  $$('#billing button').forEach(x => { const on = x === b; x.setAttribute('aria-pressed', on); x.classList.toggle('secondary', !on); x.classList.toggle('outline', !on); });
+  const k = +b.dataset.k;
+  $$('[data-price]').forEach(p => p.textContent = fmtRp(Math.round(+p.dataset.price * k / 1000) * 1000));
+  $$('[data-note]').forEach(n => n.textContent = k < 1 ? 'per bulan, ditagih tahunan' : 'ditagih bulanan');
+}));
+$$('#billing button').forEach(x => { const on = x.getAttribute('aria-pressed') === 'true'; x.classList.toggle('secondary', !on); x.classList.toggle('outline', !on); });
+$$('[data-plan]').forEach(a => a.addEventListener('click', () => { const u = $('#sUse'); if (a.dataset.plan === 'Perpustakaan') u.value = 'Catatan kerja tim'; }));
+
+/* --- angka statistik --- */
+const statIO = new IntersectionObserver(es => es.forEach(en => {
+  if (!en.isIntersecting) return; statIO.unobserve(en.target);
+  $$('[data-count]', en.target).forEach(el => {
+    const end = +el.dataset.count, suf = el.dataset.suffix || '', show = v => el.textContent = Math.round(v).toLocaleString('id-ID') + suf;
+    if (rmq.matches) return show(end);
+    const t0 = performance.now(); const step = now => { const p = Math.min(1, (now - t0) / 1400); show(end * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); }; requestAnimationFrame(step);
+  });
+}), { threshold: .3 });
+statIO.observe($('#stats'));
+
+/* --- formulir daftar: status validasi Pico (aria-invalid) + aria-busy --- */
+const sForm = $('#signupForm');
+const fields = [[$('#sName'), 'Tulis nama panggilan, minimal 2 huruf.', 'Dipakai untuk menyapamu di halaman pertama.'], [$('#sEmail'), 'Alamat email belum valid, contoh: ayu@contoh.id', 'Tautan masuk dikirim ke alamat ini.']];
+function checkField([el, bad, good]){
+  const ok = el.checkValidity(); el.setAttribute('aria-invalid', ok ? 'false' : 'true');
+  const help = document.getElementById(el.getAttribute('aria-describedby')); if (help) help.textContent = ok ? good : bad;
+  return ok;
+}
+fields.forEach(f => { f[0].addEventListener('blur', () => { if (f[0].value) checkField(f); }); f[0].addEventListener('input', () => { if (f[0].getAttribute('aria-invalid') === 'true') checkField(f); }); });
+$('#sAgree').addEventListener('change', e => e.target.setAttribute('aria-invalid', e.target.checked ? 'false' : 'true'));
+sForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const ok = fields.map(checkField).every(Boolean), agree = $('#sAgree').checked;
+  $('#sAgree').setAttribute('aria-invalid', agree ? 'false' : 'true');
+  if (!ok || !agree) { (fields.find(f => !f[0].checkValidity()) || [$('#sAgree')])[0].focus(); return; }
+  const btn = $('#signupBtn'); btn.setAttribute('aria-busy', 'true'); btn.disabled = true; btn.textContent = 'Mengirim…';
+  setTimeout(() => {
+    btn.removeAttribute('aria-busy'); btn.disabled = false; btn.textContent = 'Kirim tautan masuk';
+    $('#doneText').textContent = `Halo ${$('#sName').value.trim()}, tautan masuk sudah dikirim ke ${$('#sEmail').value.trim()}. Buka dalam 15 menit ya.`;
+    openDlg($('#doneDlg')); sForm.reset(); $$('[aria-invalid]', sForm).forEach(x => x.removeAttribute('aria-invalid'));
+  }, rmq.matches ? 50 : 900);
+});
+
+/* warna token Pico -> rgb untuk three.js, lewat kanvas 1x1 */
+const probe = document.createElement('i'); probe.style.display = 'none'; document.body.append(probe);
+const pc = document.createElement('canvas'); pc.width = pc.height = 1; const pctx = pc.getContext('2d', { willReadFrequently: true });
+function themeColor(v){
+  probe.style.color = `var(${v})`; const c = getComputedStyle(probe).color;
+  pctx.clearRect(0, 0, 1, 1); pctx.fillStyle = '#888'; pctx.fillStyle = c; pctx.fillRect(0, 0, 1, 1);
+  const d = pctx.getImageData(0, 0, 1, 1).data; return `rgb(${d[0]},${d[1]},${d[2]})`;
+}
+
+/* ================= 3D ================= */
+function webglOK(){ try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch (e) { return false; } }
+function showFallbacks(){
+  const tpl = $('#bookFallback');
+  ['#heroStage', '#deskStage'].forEach(s => { const st = $(s); st.classList.add('no-webgl'); const fb = st.querySelector('.fallback'); if (!fb.firstChild) fb.append(tpl.content.cloneNode(true)); });
+  $('#alur').classList.add('no-webgl');
+}
+let THREE, RoundedBoxGeometry;
+try {
+  if (!webglOK()) throw new Error('no-webgl');
+  THREE = await import('three');
+  ({ RoundedBoxGeometry } = await import('three/addons/geometries/RoundedBoxGeometry.js'));
+} catch (err) { showFallbacks(); }
+
+const storySec = $('#alur');
+function storyProgress(){ const r = storySec.getBoundingClientRect(); return clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1); }
+
+if (THREE) {
+  const DPR = () => Math.min(window.devicePixelRatio || 1, 2);
+  const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+  const frames = window.__catatku.frames = {};
+  const isDark = () => root.getAttribute('data-theme') === 'dark';
+
+  function createLoop(el, frame, continuous){
+    let visible = false, raf = 0, last = 0, pending = true, aliveUntil = 0;
+    const L = { request(){ pending = true; kick(); }, keepAlive(ms){ aliveUntil = Math.max(aliveUntil, performance.now() + ms); kick(); } };
+    const run = () => visible && !document.hidden;
+    function tick(now){
+      if (!run()) { raf = 0; last = 0; return; }
+      raf = -1;
+      const dt = last ? Math.min((now - last) / 1000, .1) : .016; last = now; pending = false;
+      frames[el.id] = (frames[el.id] || 0) + 1;
+      frame(dt, now / 1000);
+      if (continuous() || pending || now < aliveUntil) raf = requestAnimationFrame(tick); else { raf = 0; last = 0; }
+    }
+    function kick(){ if (!raf && run()) raf = requestAnimationFrame(tick); }
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) { pending = true; kick(); } }, { rootMargin: '80px' }).observe(el);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) { pending = true; kick(); } });
+    rmq.addEventListener('change', () => L.request());
+    return L;
+  }
+  function makeRenderer(canvas){
+    const r = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+    r.setPixelRatio(DPR()); r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+    r.toneMapping = THREE.ACESFilmicToneMapping; r.outputColorSpace = THREE.SRGBColorSpace;
+    return r;
+  }
+  function watchSize(el, renderer, onSize){
+    const apply = () => { const w = Math.max(1, el.clientWidth), h = Math.max(1, el.clientHeight); renderer.setPixelRatio(DPR()); renderer.setSize(w, h, false); onSize(w, h); };
+    new ResizeObserver(apply).observe(el); apply();
+  }
+  const std = (c, rough = .85, extra = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0, ...extra });
+  function rng(seed){ return () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+  function softTexture(){
+    const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d');
+    const g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.4, 'rgba(255,255,255,.4)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+    x.fillStyle = g; x.fillRect(0, 0, 64, 64); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+  }
+  const SOFT = softTexture();
+
+  /* ---- tekstur kertas: bergaris / kotak / titik / polos (+ tulisan tangan) ---- */
+  const PW = 256, PH = 360;
+  function drawPaper(ctx, type, note){
+    ctx.fillStyle = '#fbf6ea'; ctx.fillRect(0, 0, PW, PH);
+    const g = ctx.createLinearGradient(0, 0, PW, 0); g.addColorStop(0, 'rgba(120,100,70,.10)'); g.addColorStop(.08, 'rgba(120,100,70,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, PW, PH);
+    ctx.strokeStyle = 'rgba(70,110,170,.7)'; ctx.fillStyle = 'rgba(60,95,150,.75)'; ctx.lineWidth = 2;
+    if (type === 'garis') { for (let y = 46; y < PH - 10; y += 18) { ctx.beginPath(); ctx.moveTo(10, y); ctx.lineTo(PW - 10, y); ctx.stroke(); } ctx.strokeStyle = 'rgba(210,80,70,.55)'; ctx.beginPath(); ctx.moveTo(36, 0); ctx.lineTo(36, PH); ctx.stroke(); }
+    if (type === 'kotak') { ctx.strokeStyle = 'rgba(70,110,170,.5)'; for (let x = 8; x < PW; x += 16) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, PH); ctx.stroke(); } for (let y = 8; y < PH; y += 16) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(PW, y); ctx.stroke(); } }
+    if (type === 'titik') { for (let x = 12; x < PW; x += 16) for (let y = 12; y < PH; y += 16) { ctx.beginPath(); ctx.arc(x, y, 2.2, 0, 6.29); ctx.fill(); } }
+    if (note !== undefined) {
+      ctx.fillStyle = '#23324a'; ctx.font = '600 31px Caveat, "Segoe Script", cursive'; ctx.textBaseline = 'alphabetic';
+      const words = note.replace(/\n/g, ' \n ').split(' '); let line = '', y = 42; const lines = [];
+      for (const w of words) { if (w === '\n') { lines.push(line); line = ''; continue; } const t = line ? line + ' ' + w : w; if (ctx.measureText(t).width > PW - 60 && line) { lines.push(line); line = w; } else line = t; }
+      if (line) lines.push(line);
+      lines.slice(0, 8).forEach((l, i) => { ctx.fillText(l, 42, y + i * 38); });
+      ctx.strokeStyle = 'rgba(224,112,42,.85)'; ctx.lineWidth = 3; ctx.beginPath(); const yy = y + Math.min(lines.length, 8) * 38 - 18; ctx.moveTo(42, yy); ctx.quadraticCurveTo(120, yy + 8, 200, yy - 2); ctx.stroke();
+    }
+  }
+  function paperTex(type, note){ const c = document.createElement('canvas'); c.width = PW; c.height = PH; const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; const ctx = c.getContext('2d'); drawPaper(ctx, type, note); return { t, ctx }; }
+
+  /* halaman: polyline melengkung di sekitar punggung buku (sumbu z) */
+  const PG_W = 1.7, PG_D = 2.4, SEG = 14;
+  function pageGeo(){ const g = new THREE.PlaneGeometry(PG_W, PG_D, SEG, 1); g.rotateX(-Math.PI / 2); g.translate(PG_W / 2, 0, 0); return g; }
+  function bendPage(geo, angle, curl){
+    const p = geo.attributes.position, uv = geo.attributes.uv; let x = 0, y = 0;
+    const xs = [], ys = []; const dx = PG_W / SEG;
+    for (let k = 0; k <= SEG; k++) { xs.push(x); ys.push(y); const th = angle + curl * (k / SEG); x += Math.cos(th) * dx; y += Math.sin(th) * dx; }
+    for (let i = 0; i < p.count; i++) { const k = Math.round(uv.getX(i) * SEG); p.setX(i, xs[k]); p.setY(i, ys[k]); }
+    p.needsUpdate = true; geo.computeVertexNormals();
+  }
+
+  function buildDesk(){
+    const root = new THREE.Group();
+    const M = {
+      desk: std('#d8c3a3', .8), deskEdge: std('#b99c74', .8),
+      cover: std('#2f8f6b', .55),
+      cover2: std('#c7a77d', .7), cover3: std('#5a6573', .6),
+      block: std('#f6efe0', .95), band: std('#2b2622', .6),
+      pencil: std('#f2b134', .6), wood: std('#e9c99a', .8), lead: std('#3a3631', .5), eraser: std('#e88a8a', .8), metal: std('#b9b2a8', .3, { metalness: .8 }),
+      mug: std('#f4efe6', .35), tea: std('#8a5a2e', .3),
+      lampBody: std('#2f3438', .45, { metalness: .4 }), bulb: std('#fff4d6', .4, { emissive: '#ffd58a', emissiveIntensity: 0 }),
+    };
+    const add = (g, geo, mat, x, y, z) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = m.receiveShadow = true; g.add(m); return m; };
+    // meja
+    const desk = add(root, new RoundedBoxGeometry(10, .36, 6.4, 3, .14), M.desk, 0, -.18, 0);
+    // tumpukan buku tertutup (kiri belakang)
+    const stack = new THREE.Group(); stack.position.set(-3.05, 0, -.9); stack.rotation.y = .28; root.add(stack);
+    const stackCovers = [];
+    [[M.cover3, 0, .0], [M.cover2, .36, .12], [M.cover, .72, -.1]].forEach(([mat, y, ry], k) => {
+      const nb = new THREE.Group(); nb.position.y = y; nb.rotation.y = ry; stack.add(nb);
+      add(nb, new RoundedBoxGeometry(1.85, .06, 2.5, 2, .025), mat, 0, .03, 0);
+      add(nb, new THREE.BoxGeometry(1.75, .22, 2.4), M.block, .03, .17, 0);
+      add(nb, new RoundedBoxGeometry(1.85, .06, 2.5, 2, .025), mat, 0, .31, 0);
+      if (k === 2) add(nb, new THREE.BoxGeometry(.06, .36, 2.52), M.band, .6, .17, 0);
+      stackCovers.push(mat);
+    });
+    // buku terbuka
+    const book = new THREE.Group(); book.position.set(.35, 0, .45); book.rotation.y = -.12; root.add(book);
+    add(book, new RoundedBoxGeometry(1.86, .05, 2.6, 2, .02), M.cover, -.95, .025, 0);
+    add(book, new RoundedBoxGeometry(1.86, .05, 2.6, 2, .02), M.cover, .95, .025, 0);
+    add(book, new THREE.BoxGeometry(.14, .06, 2.6), M.cover, 0, .03, 0);
+    add(book, new THREE.BoxGeometry(1.72, .1, 2.42), M.block, -.9, .1, 0);
+    add(book, new THREE.BoxGeometry(1.72, .1, 2.42), M.block, .9, .1, 0);
+    const left = paperTex('garis', state.note), right = paperTex('garis');
+    const leftM = std('#ffffff', .95, { map: left.t }), rightM = std('#ffffff', .95, { map: right.t });
+    const lp = add(book, new THREE.PlaneGeometry(1.7, 2.4), leftM, -.9, .152, 0); lp.rotation.x = -Math.PI / 2;
+    const rp = add(book, new THREE.PlaneGeometry(1.7, 2.4), rightM, .9, .152, 0); rp.rotation.x = -Math.PI / 2;
+    const pagesG = new THREE.Group(); pagesG.position.set(0, .16, 0); book.add(pagesG);
+    const pageMat = std('#ffffff', .95, { map: right.t, side: THREE.DoubleSide });
+    const pages = [];
+    // halaman kiri teratas memuat tulisan tangan; sisi belakang bidang terlihat terbalik, jadi teksturnya dicerminkan
+    const noteTex = left.t.clone(); noteTex.wrapS = THREE.RepeatWrapping; noteTex.repeat.x = -1; noteTex.needsUpdate = true;
+    const noteMat = std('#ffffff', .95, { map: noteTex, side: THREE.DoubleSide });
+    for (let i = 0; i < 12; i++) { const g = pageGeo(); const m = new THREE.Mesh(g, pageMat); m.castShadow = true; m.receiveShadow = true; pagesG.add(m); pages.push({ m, g, a: 0, curl: 0 }); }
+    const flipG = pageGeo(); const flipM = new THREE.Mesh(flipG, pageMat); flipM.castShadow = true; pagesG.add(flipM);
+    // pita pembatas
+    const ribbon = add(book, new THREE.BoxGeometry(.06, .01, 1.0), std('#d24a3a', .6), .05, .17, 1.55);
+    // kartu indeks melayang
+    const cards = []; const CARD_COL = ['#f7d36b', '#f4a3a8', '#9ad8b8', '#9cc4f0'];
+    CARD_COL.forEach((c, k) => {
+      const cv = document.createElement('canvas'); cv.width = 128; cv.height = 88; const x = cv.getContext('2d');
+      x.fillStyle = c; x.fillRect(0, 0, 128, 88); x.strokeStyle = 'rgba(0,0,0,.18)'; x.lineWidth = 3; for (let y = 26; y < 80; y += 14) { x.beginPath(); x.moveTo(12, y); x.lineTo(12 + 60 + (k * 23 + y) % 40, y); x.stroke(); }
+      const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace;
+      const m = add(root, new THREE.BoxGeometry(.9, .025, .62), std('#ffffff', .85, { map: t }), 0, 0, 0);
+      const a = k / 4 * Math.PI * 2 + .5; m.userData = { a, r: 2.25 + (k % 2) * .35, y: 1.25 + k * .22, ph: k * 1.3 };
+      cards.push(m);
+    });
+    // pensil
+    const pencil = new THREE.Group(); pencil.position.set(1.95, .06, 1.75); pencil.rotation.y = .9; root.add(pencil);
+    add(pencil, new THREE.CylinderGeometry(.055, .055, 1.5, 6), M.pencil, 0, 0, 0).rotation.z = Math.PI / 2;
+    add(pencil, new THREE.ConeGeometry(.055, .2, 6), M.wood, .85, 0, 0).rotation.z = -Math.PI / 2;
+    add(pencil, new THREE.ConeGeometry(.02, .06, 6), M.lead, .96, 0, 0).rotation.z = -Math.PI / 2;
+    add(pencil, new THREE.CylinderGeometry(.058, .058, .1, 8), M.metal, -.78, 0, 0).rotation.z = Math.PI / 2;
+    add(pencil, new THREE.CylinderGeometry(.055, .055, .12, 8), M.eraser, -.88, 0, 0).rotation.z = Math.PI / 2;
+    // cangkir teh
+    const mug = new THREE.Group(); mug.position.set(-2.4, 0, 1.75); root.add(mug);
+    const mugPts = [[0, 0], [.3, 0], [.33, .03], [.35, .55], [.32, .55], [.3, .06], [0, .06]].map(([r, y]) => new THREE.Vector2(r, y));
+    add(mug, new THREE.LatheGeometry(mugPts, 36), M.mug, 0, 0, 0);
+    add(mug, new THREE.TorusGeometry(.14, .035, 8, 18, Math.PI * 1.2), M.mug, .36, .3, 0).rotation.z = -Math.PI * .6;
+    add(mug, new THREE.CircleGeometry(.3, 24), M.tea, 0, .46, 0).rotation.x = -Math.PI / 2;
+    const steam = []; const r = rng(4); const steamMat = new THREE.SpriteMaterial({ map: SOFT, color: '#ffffff', transparent: true, depthWrite: false, opacity: .3 });
+    for (let k = 0; k < 10; k++) { const s = new THREE.Sprite(steamMat.clone()); s.userData = { t: k / 10, x: (r() - .5) * .2, ph: r() * 6 }; mug.add(s); steam.push(s); }
+    // lampu meja
+    const lamp = new THREE.Group(); lamp.position.set(2.9, 0, -1.7); root.add(lamp);
+    add(lamp, new THREE.CylinderGeometry(.42, .48, .1, 28), M.lampBody, 0, .05, 0);
+    const arm1 = add(lamp, new THREE.CylinderGeometry(.04, .04, 1.9, 10), M.lampBody, -.25, 1.0, .18); arm1.rotation.set(.2, 0, .28);
+    add(lamp, new THREE.SphereGeometry(.08, 12, 8), M.lampBody, -.52, 1.9, .37);
+    const arm2 = add(lamp, new THREE.CylinderGeometry(.035, .035, 1.4, 10), M.lampBody, -1.05, 2.15, .62); arm2.rotation.set(-.35, 0, 1.15);
+    const shadeG = new THREE.Group(); shadeG.position.set(-1.65, 2.35, .9); lamp.add(shadeG);
+    const shade = add(shadeG, new THREE.ConeGeometry(.42, .55, 28, 1, true), new THREE.MeshStandardMaterial({ color: '#2f3438', roughness: .45, metalness: .4, side: THREE.DoubleSide }), 0, 0, 0);
+    const bulb = add(shadeG, new THREE.SphereGeometry(.15, 16, 12), M.bulb, 0, -.12, 0); bulb.castShadow = false;
+    shadeG.lookAt(new THREE.Vector3(.8, -3, 2.6).add(shadeG.position)); shadeG.rotateX(-Math.PI / 2);
+    return { root, M, desk, stackCovers, book, pages, flipG, flipM, left, right, leftM, rightM, cards, steam, lamp, shadeG, bulb, pagesG, noteTex, noteMat, pageMat };
+  }
+
+  function createDeskView(canvas, stageEl, opts){
+    const renderer = makeRenderer(canvas); renderer.toneMappingExposure = 1.1;
+    const scene = new THREE.Scene();
+    const S = buildDesk(); scene.add(S.root);
+    const hemi = new THREE.HemisphereLight('#fffaf0', '#b9a58a', 1.3); scene.add(hemi);
+    const key = new THREE.DirectionalLight('#fff4e2', 2.4); key.position.set(-4, 8, 4); key.castShadow = true; key.shadow.mapSize.set(1024, 1024);
+    Object.assign(key.shadow.camera, { left: -6, right: 6, top: 6, bottom: -6, near: 1, far: 30 }); key.shadow.bias = -.0005; key.shadow.normalBias = .02; scene.add(key);
+    const spot = new THREE.SpotLight('#ffd9a0', 0, 14, .62, .55, 1.2);
+    const tgt = new THREE.Object3D(); tgt.position.set(.4, 0, .5); scene.add(tgt); spot.target = tgt;
+    S.lamp.updateMatrixWorld(true); S.shadeG.getWorldPosition(spot.position); scene.add(spot);
+    const camera = new THREE.PerspectiveCamera(36, 1, .1, 100);
+    const target = new THREE.Vector3(0, .4, .2);
+    const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+    let aspect = 1, cur = { ...state }, fan = state.fan / 100, fanGoal = fan, focus = 0, focusGoal = 0, flipT = 0, coverCol = new THREE.Color(COLOURS[state.colour].hex), coverGoal = coverCol.clone();
+    const bg = new THREE.Color(), bgFocus = new THREE.Color('#14110d'), bgBase = new THREE.Color();
+    function applyTheme(){
+      bgBase.set(themeColor('--pico-card-sectioning-background-color'));
+      const dark = isDark();
+      S.M.desk.color.set(dark ? '#5a4a38' : '#d8c3a3');
+      hemi.groundColor.set(dark ? '#3a3026' : '#b9a58a');
+      loop.request();
+    }
+    function layoutPages(){
+      // kipas: 0 = halaman rapat (separuh kiri, separuh kanan), 1 = mengipas penuh membentuk busur
+      const n = S.pages.length;
+      S.pages.forEach((p, i) => {
+        const flatA = i < n / 2 ? Math.PI - .03 - i * .004 : .03 + (n - i) * .004;
+        const fanA = .22 + (i + .5) / n * (Math.PI - .44);
+        const a = flatA + (fanA - flatA) * fan;
+        const curl = (Math.cos(a)) * -.35 * fan;
+        bendPage(p.g, a, curl);
+        p.m.material = a > Math.PI / 2 ? S.noteMat : S.pageMat; // halaman yang terbaring di kiri memuat tulisan tangan
+      });
+    }
+    function apply(s){
+      const paperChanged = s.paper !== cur.paper || s.note !== cur.note;
+      cur = { ...s };
+      fanGoal = s.fan / 100; focusGoal = s.focus ? 1 : 0; coverGoal.set(COLOURS[s.colour].hex);
+      if (paperChanged) { drawPaper(S.left.ctx, s.paper, s.note); drawPaper(S.right.ctx, s.paper); S.left.t.needsUpdate = S.right.t.needsUpdate = S.noteTex.needsUpdate = true; }
+      loop.keepAlive(1800); loop.request();
+    }
+    if (opts.hero) {
+      stageEl.addEventListener('pointermove', e => { const b = stageEl.getBoundingClientRect(); pointer.tx = ((e.clientX - b.left) / b.width - .5) * 2; pointer.ty = ((e.clientY - b.top) / b.height - .5) * 2; loop.request(); });
+      stageEl.addEventListener('pointerleave', () => { pointer.tx = pointer.ty = 0; loop.request(); });
+    }
+    const loop = createLoop(canvas, (dt, t) => {
+      const still = rmq.matches, k = still ? 1 : 1 - Math.exp(-dt * 5);
+      fan += (fanGoal - fan) * k; if (Math.abs(fanGoal - fan) > .002) loop.request(); else fan = fanGoal;
+      focus += (focusGoal - focus) * k; if (Math.abs(focusGoal - focus) > .002) loop.request(); else focus = focusGoal;
+      coverCol.lerp(coverGoal, k); S.M.cover.color.copy(coverCol);
+      layoutPages();
+      // halaman yang berbalik
+      const T = still ? 0 : t;
+      if (cur.flip && !still) { flipT = (flipT + dt * .32) % 1; const e = smooth(.05, .85, flipT); const a = .04 + e * (Math.PI - .08); bendPage(S.flipG, a, -Math.sin(e * Math.PI) * .9); S.flipM.visible = true; loop.request(); }
+      else { S.flipM.visible = false; }
+      // fokus: ruangan redup, lampu meja menyala
+      hemi.intensity = 1.3 - 1.12 * focus; key.intensity = 2.4 - 2.2 * focus;
+      spot.intensity = 26 * focus; S.M.bulb.emissiveIntensity = 3.2 * focus;
+      bg.copy(bgBase).lerp(bgFocus, focus * .85); scene.background = bg;
+      // kartu melayang, uap teh
+      S.cards.forEach(c => { const u = c.userData; const a = u.a + T * .12; c.position.set(Math.cos(a) * u.r + .2, u.y + Math.sin(T * 1.1 + u.ph) * .1, Math.sin(a) * u.r * .7 - .2); c.rotation.set(.35 + Math.sin(T * .7 + u.ph) * .15, -a + 1.2, Math.sin(T * .9 + u.ph) * .2); });
+      S.steam.forEach(s => { const u = s.userData; const l = still ? u.t : (u.t + T * .2) % 1; s.position.set(u.x + Math.sin(T * 1.4 + u.ph + l * 4) * .08 * l, .55 + l * 1.0, 0); const sc = .14 + l * .32; s.scale.set(sc, sc, sc); s.material.opacity = .3 * Math.sin(Math.PI * l) * (1 - focus * .5); });
+      // kamera
+      if (opts.hero) { const kk = 1 - Math.exp(-dt * 3); pointer.x += (pointer.tx - pointer.x) * kk; pointer.y += (pointer.ty - pointer.y) * kk; }
+      const narrow = aspect < .8, dist = narrow ? (opts.hero ? 12.5 : 11.2) : aspect < 1.1 ? 10.5 : 9.2;
+      const az = (opts.hero ? .35 + Math.sin(T * .15) * .12 + pointer.x * .25 : .25 + Math.sin(T * .1) * .06), el = .78 - (opts.hero ? pointer.y * .08 : 0);
+      camera.position.set(target.x + Math.sin(az) * Math.cos(el) * dist, target.y + Math.sin(el) * dist, target.z + Math.cos(az) * Math.cos(el) * dist);
+      const lt = target.clone(); if (narrow) lt.z += opts.hero ? 1.0 : .7; camera.lookAt(lt);
+      renderer.render(scene, camera);
+      if (!stageEl.classList.contains('ready')) stageEl.classList.add('ready');
+    }, () => !rmq.matches);
+    watchSize(stageEl, renderer, (w, h) => { aspect = w / h; camera.aspect = aspect; camera.fov = aspect < .8 ? 40 : 36; camera.updateProjectionMatrix(); loop.request(); });
+    applyTheme(); apply(state);
+    if (document.fonts) document.fonts.load('600 31px Caveat').then(() => { drawPaper(S.left.ctx, cur.paper, cur.note); S.left.t.needsUpdate = S.noteTex.needsUpdate = true; loop.request(); }).catch(() => {});
+    return { apply, applyTheme, loop, renderer, scene, camera };
+  }
+
+  let heroV = null, deskV = null;
+  try {
+    heroV = createDeskView($('#heroCanvas'), $('#heroStage'), { hero: true });
+    deskV = createDeskView($('#deskCanvas'), $('#deskStage'), { hero: false });
+    bus.addEventListener('state', e => { heroV.apply(e.detail); deskV.apply(e.detail); });
+    bus.addEventListener('theme', () => requestAnimationFrame(() => { heroV.applyTheme(); deskV.applyTheme(); }));
+  } catch (e) { console.warn('WebGL gagal dimulai', e); showFallbacks(); }
+
+  /* ================= Cerita isometrik: alur sebuah ide ================= */
+  function createStory(){
+    const stage = $('.story-stage', storySec), canvas = $('#storyCanvas');
+    const renderer = makeRenderer(canvas);
+    const scene = new THREE.Scene();
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -100, 200);
+    const camDir = new THREE.Vector3(1, 1.1, 1).normalize(), camTarget = new THREE.Vector3();
+    const hemi = new THREE.HemisphereLight('#fff7ec', '#c9b79f', 1.3); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff1dc', 2.5); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+    Object.assign(sun.shadow.camera, { left: -18, right: 18, top: 18, bottom: -18, near: 1, far: 80 }); sun.shadow.bias = -.0005; sun.shadow.normalBias = .03;
+    scene.add(sun, sun.target);
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(160, 90), std('#efe7da', 1)); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+    let grid = null;
+
+    const CLAY = new THREE.Color('#ece3d6');
+    const SP = [[-16, 4], [-6, -4], [3, 4], [12, -4], [21, 4]];
+    const stations = [];
+    const smat = c => { const m = std(c, .8); m.userData.target = new THREE.Color(c); m.color.copy(CLAY); return m; };
+    function add(g, mats, geo, c, x, y, z, rot){ const m = smat(c); mats.push(m); const me = new THREE.Mesh(geo, m); me.position.set(x, y, z); if (rot) me.rotation.set(rot[0] || 0, rot[1] || 0, rot[2] || 0); me.castShadow = me.receiveShadow = true; g.add(me); return me; }
+    const B = (w, h, d) => new THREE.BoxGeometry(w, h, d), C = (rt, rb, h, s = 20) => new THREE.CylinderGeometry(rt, rb, h, s), Sph = (r, s = 12) => new THREE.SphereGeometry(r, s, Math.max(6, s * .6 | 0)), Ico = r => new THREE.IcosahedronGeometry(r, 0);
+    const floaters = [];
+    SP.forEach(([x, z], i) => {
+      const g = new THREE.Group(); g.position.set(x - 1.4, 0, z - 2.6); scene.add(g);
+      const mats = [];
+      add(g, mats, C(2.8, 2.9, .26, 44), '#d6eadf', 0, .13, 0);
+      const inner = new THREE.Group(); inner.position.y = .26; g.add(inner);
+      const r = rng(31 + i);
+      if (i === 0) { // tangkap: ponsel di dudukan + kotak masuk + catatan melayang
+        add(inner, mats, B(.9, .2, .7), '#3a3631', -.4, .1, -.4); add(inner, mats, new RoundedBoxGeometry(1.1, 2.0, .12, 2, .06), '#2b2f36', -.4, 1.15, -.55, [-.18, 0, 0]);
+        add(inner, mats, B(.94, 1.7, .01), '#9ad8b8', -.4, 1.17, -.48, [-.18, 0, 0]);
+        add(inner, mats, B(1.2, .35, .9), '#c7a77d', 1.1, .18, .6); add(inner, mats, B(1.0, .06, .7), '#fbf6ea', 1.1, .38, .6);
+        ['#f7d36b', '#f4a3a8', '#9cc4f0'].forEach((c, k) => { const m = add(inner, mats, B(.55, .02, .4), c, .3 + k * .5, 1.6 + k * .45, .3 - k * .2, [.4, k, .2]); floaters.push({ m, y: m.position.y, ph: k * 1.7 }); });
+      } else if (i === 1) { // rapikan: rak dengan map berwarna + kotak arsip
+        add(inner, mats, B(2.2, 2.2, .7), '#c7a77d', -.2, 1.1, -.9); add(inner, mats, B(2.0, .08, .62), '#a8875c', -.2, .75, -.85); add(inner, mats, B(2.0, .08, .62), '#a8875c', -.2, 1.5, -.85);
+        ['#2f8f6b', '#e0702a', '#3a62c9', '#7a52c7', '#f2b134', '#d24a3a'].forEach((c, k) => { add(inner, mats, B(.16, .5, .5), c, -1.0 + k * .22, 1.05, -.8, [0, 0, (k % 3 - 1) * .06]); add(inner, mats, B(.16, .5, .5), ['#9ad8b8', '#f4a3a8', '#9cc4f0'][k % 3], -1.0 + k * .26, 1.8, -.8); });
+        add(inner, mats, B(.8, .55, .6), '#e9e2d6', 1.2, .28, .6); add(inner, mats, B(.8, .55, .6), '#e9e2d6', 1.2, .83, .6); add(inner, mats, B(.3, .12, .02), '#2f8f6b', 1.2, .9, .91);
+      } else if (i === 2) { // hubungkan: graf simpul dengan benang
+        const nodes = [[-1.2, 1.4, -.8], [.2, 2.1, -1.0], [1.3, 1.2, -.3], [-.3, .9, .7], [.9, 2.3, .6]];
+        nodes.forEach(([nx, ny, nz], k) => { add(inner, mats, C(.03, .03, ny, 6), '#8c8478', nx, ny / 2, nz); add(inner, mats, Sph(.26, 16), ['#2f8f6b', '#e0702a', '#3a62c9', '#f2b134', '#7a52c7'][k], nx, ny, nz); });
+        [[0, 1], [1, 2], [0, 3], [3, 2], [1, 4], [4, 2]].forEach(([a, b]) => { const A = new THREE.Vector3(...nodes[a]), Bv = new THREE.Vector3(...nodes[b]); const len = A.distanceTo(Bv); const m = add(inner, mats, C(.03, .03, len, 6), '#d24a3a', (A.x + Bv.x) / 2, (A.y + Bv.y) / 2, (A.z + Bv.z) / 2); m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), Bv.clone().sub(A).normalize()); });
+      } else if (i === 3) { // tulis: meja, buku terbuka, pena, lampu
+        add(inner, mats, B(2.6, .1, 1.4), '#c7a77d', 0, 1.0, -.3); [[-1.2, -.9], [1.2, -.9], [-1.2, .3], [1.2, .3]].forEach(([px, pz]) => add(inner, mats, B(.08, .95, .08), '#5a3a2a', px, .48, pz));
+        add(inner, mats, B(.8, .04, 1.0), '#2f8f6b', -.42, 1.08, -.3, [0, 0, .06]); add(inner, mats, B(.8, .04, 1.0), '#2f8f6b', .42, 1.08, -.3, [0, 0, -.06]);
+        add(inner, mats, B(.74, .02, .92), '#fbf6ea', -.4, 1.11, -.3, [0, 0, .06]); add(inner, mats, B(.74, .02, .92), '#fbf6ea', .4, 1.11, -.3, [0, 0, -.06]);
+        add(inner, mats, C(.03, .03, .8, 8), '#2b2622', .5, 1.16, .35, [0, .6, Math.PI / 2]);
+        add(inner, mats, C(.03, .03, .9, 6), '#2b2622', 1.0, 1.5, -.8, [0, 0, .3]); add(inner, mats, C(.06, .22, .24, 12), '#e0702a', .85, 1.95, -.75);
+        add(inner, mats, C(.12, .1, .2, 12), '#f4efe6', -1.0, 1.15, .1);
+      } else { // bagikan: kotak surat + pesawat kertas
+        add(inner, mats, C(.06, .06, 1.2, 8), '#3a3631', .6, .6, .4); add(inner, mats, B(.7, .5, .9), '#d24a3a', .6, 1.42, .4); add(inner, mats, C(.35, .35, .9, 16, 1), '#d24a3a', .6, 1.67, .4, [Math.PI / 2, 0, 0]);
+        add(inner, mats, B(.04, .5, .14), '#f2b134', .97, 1.75, .5);
+        const plane = () => { const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute([0, 0, -.5, -.35, 0, .4, 0, .05, .3, 0, 0, -.5, 0, .05, .3, .35, 0, .4, 0, 0, -.5, 0, -.15, .3, 0, .05, .3], 3)); geo.computeVertexNormals(); return geo; };
+        [[-.9, 1.6, -.6], [-.2, 2.4, -.9], [-1.3, 2.6, .4]].forEach(([px, py, pz], k) => { const m = add(inner, mats, plane(), '#fbf6ea', px, py, pz, [0, -.8 + k * .3, 0]); m.material.side = THREE.DoubleSide; floaters.push({ m, y: py, ph: k * 2.1 }); });
+        add(inner, mats, Ico(.45), '#4f8a4a', -1.5, .5, -1.2); add(inner, mats, C(.3, .24, .5, 12), '#f4efe6', -1.5, .1, -1.2);
+      }
+      stations.push({ g, mats, inner, lit: 0 });
+    });
+
+    // jalur oranye (manhattan dengan sudut membulat)
+    const pts = [[-16, 4], [-11, 4], [-11, -4], [-6, -4], [-1, -4], [-1, 4], [3, 4], [7.5, 4], [7.5, -4], [12, -4], [16.5, -4], [16.5, 4], [21, 4]].map(([x, z]) => new THREE.Vector3(x, .3, z));
+    const path = new THREE.CurvePath(); const rad = 1.4; let curP = pts[0].clone();
+    for (let i = 1; i < pts.length - 1; i++) {
+      const p = pts[i], dIn = p.clone().sub(pts[i - 1]).normalize(), dOut = pts[i + 1].clone().sub(p).normalize();
+      if (dIn.dot(dOut) > .999) continue;
+      const a = p.clone().addScaledVector(dIn, -rad), b = p.clone().addScaledVector(dOut, rad);
+      path.add(new THREE.LineCurve3(curP.clone(), a)); path.add(new THREE.QuadraticBezierCurve3(a, p.clone(), b)); curP = b;
+    }
+    path.add(new THREE.LineCurve3(curP, pts[pts.length - 1].clone()));
+    const TS = 700, RS = 6;
+    const baseMat = std('#d8cbb7', .9);
+    const baseTube = new THREE.Mesh(new THREE.TubeGeometry(path, TS, .12, RS, false), baseMat); baseTube.receiveShadow = true; scene.add(baseTube);
+    const progTube = new THREE.Mesh(new THREE.TubeGeometry(path, TS, .2, RS, false), new THREE.MeshStandardMaterial({ color: '#f07a3c', emissive: '#f07a3c', emissiveIntensity: .35, roughness: .5 }));
+    progTube.geometry.setDrawRange(0, 0); scene.add(progTube);
+    SP.forEach(([x, z]) => { const d = new THREE.Mesh(new THREE.CylinderGeometry(.42, .42, .08, 20), std('#f07a3c', .6)); d.position.set(x, .05, z); scene.add(d); });
+
+    // pemandangan: pohon bulat dan semak
+    { const r = rng(11), trunkM = std('#8c6a4f', .9, { flatShading: true }), leafA = std('#7fae7a', .9, { flatShading: true }), leafB = std('#a7c89a', .9, { flatShading: true });
+      for (let x = -28; x <= 32; x += 2.6) for (const zb of [-11, 11.5]) {
+        if (r() < .3) continue; const px = x + (r() - .5) * 1.6, pz = zb + (r() - .5) * 3;
+        if (r() < .55) { const h = 1.2 + r() * 1.4; const t = new THREE.Mesh(new THREE.CylinderGeometry(.12, .16, h, 6), trunkM); t.position.set(px, h / 2, pz); t.castShadow = true; scene.add(t);
+          const c = new THREE.Mesh(new THREE.IcosahedronGeometry(.8 + r() * .5, 1), r() > .5 ? leafA : leafB); c.position.set(px, h + .5, pz); c.castShadow = true; scene.add(c); }
+        else { const b = new THREE.Mesh(new THREE.IcosahedronGeometry(.45 + r() * .4, 1), r() > .5 ? leafA : leafB); b.position.set(px, .35, pz); b.castShadow = true; scene.add(b); }
+      } }
+
+    const samples = 1200, stationU = SP.map(([x, z]) => { let best = 0, bd = 1e9; for (let s = 0; s <= samples; s++) { const q = path.getPointAt(s / samples); const d = (q.x - x) ** 2 + (q.z - z) ** 2; if (d < bd) { bd = d; best = s / samples; } } return best; });
+    stationU[0] = 0; stationU[stationU.length - 1] = 1;
+
+    // tokoh: si Ide (bola lampu yang makin terang)
+    const chr = new THREE.Group(); chr.scale.setScalar(1.25); scene.add(chr);
+    const glassM = new THREE.MeshPhysicalMaterial({ color: '#fff3c4', roughness: .2, clearcoat: 1, emissive: '#ffcf5a', emissiveIntensity: .15 });
+    const bulbB = new THREE.Mesh(new THREE.SphereGeometry(.46, 24, 18), glassM); bulbB.position.y = 1.62; bulbB.castShadow = true; chr.add(bulbB);
+    const neck = new THREE.Mesh(new THREE.CylinderGeometry(.24, .3, .3, 18), glassM); neck.position.y = 1.2; chr.add(neck);
+    const capM = std('#9aa1a8', .35, { metalness: .7 });
+    [0, 1, 2].forEach(k => { const ring = new THREE.Mesh(new THREE.CylinderGeometry(.23 - k * .015, .23 - k * .015, .07, 16), capM); ring.position.y = 1.02 - k * .08; ring.castShadow = true; chr.add(ring); });
+    const tip = new THREE.Mesh(new THREE.SphereGeometry(.09, 10, 8), std('#3a3631', .5)); tip.position.y = .82; chr.add(tip);
+    const fil = new THREE.Mesh(new THREE.TorusGeometry(.12, .02, 6, 16, Math.PI), std('#e0702a', .5, { emissive: '#ff8a3a', emissiveIntensity: .6 })); fil.position.y = 1.6; chr.add(fil);
+    const black = std('#1d1a17', .4);
+    [-.15, .15].forEach(ex => { const e = new THREE.Mesh(new THREE.SphereGeometry(.05, 10, 8), black); e.position.set(ex, 1.68, -.43); chr.add(e); });
+    const smile = new THREE.Mesh(new THREE.TorusGeometry(.08, .018, 6, 12, Math.PI), black); smile.position.set(0, 1.52, -.44); smile.rotation.z = Math.PI; chr.add(smile);
+    const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: SOFT, color: '#ffd76a', transparent: true, depthWrite: false, opacity: .25 })); halo.position.y = 1.62; halo.scale.setScalar(1.8); chr.add(halo);
+    const limbMat = std('#2b2622', .8);
+    function limb(w, h, x, y){ const piv = new THREE.Group(); piv.position.set(x, y, 0); const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, w), limbMat); m.position.y = -h / 2; m.castShadow = true; piv.add(m); chr.add(piv); return piv; }
+    const legL = limb(.1, .62, -.13, .78), legR = limb(.1, .62, .13, .78), armL = limb(.08, .48, -.42, 1.5), armR = limb(.08, .48, .42, 1.5);
+    armL.rotation.z = -.5; armR.rotation.z = .5;
+    chr.rotation.order = 'YXZ';
+
+    let lastT = 0, targetU = 0, shownU = 0, walkPhase = 0, step = -1, lastPos = new THREE.Vector3(), halfW = 10, halfH = 10, aspect = 1;
+    const sceneSteps = $$('.scene-step', storySec), labels = $$('.s-labels span', storySec), prog = $('#storyProg');
+    function mapProgress(p){ const n = SP.length - 1, u = clamp(p, 0, 1) * n, i = Math.min(n - 1, Math.floor(u)), f = u - i, w = smooth(.22, .82, f); return { u: stationU[i] + (stationU[i + 1] - stationU[i]) * w, step: w < .5 ? i : i + 1 }; }
+    function setProgress(p){
+      const m = mapProgress(p); targetU = m.u; prog.value = clamp(p, 0, 1) * 4;
+      if (m.step !== step) { step = m.step; sceneSteps.forEach((s, k) => s.classList.toggle('on', k === step)); labels.forEach((s, k) => s.classList.toggle('on', k <= step)); }
+      loop.request();
+    }
+    function themeColors(){
+      const dark = isDark(), bg = themeColor('--ck-bg2'), b3 = themeColor('--ck-line');
+      scene.background = new THREE.Color(bg);
+      ground.material.color.set(bg).lerp(new THREE.Color(b3), .25);
+      if (grid) { scene.remove(grid); grid.geometry.dispose(); grid.material.dispose(); }
+      grid = new THREE.GridHelper(160, 80, b3, b3); grid.material.transparent = true; grid.material.opacity = .7; grid.position.y = .01; scene.add(grid);
+      CLAY.set(dark ? '#38434a' : '#ece6db');
+      baseMat.color.set(b3).lerp(new THREE.Color(dark ? '#ffffff' : '#000000'), .12);
+      hemi.intensity = dark ? .85 : 1.3; sun.intensity = dark ? 2.0 : 2.5;
+      hemi.color.set(dark ? '#d6e2dc' : '#fff7ec'); hemi.groundColor.set(dark ? '#1c2328' : '#c9b79f');
+      stations.forEach(s => s.lit === 0 && s.mats.forEach(m => m.color.copy(CLAY)));
+      loop.request();
+    }
+    const loop = createLoop(canvas, (dt, t) => {
+      const still = rmq.matches, camDt = Math.min(.12, (performance.now() - (lastT || performance.now())) / 1000 || dt); lastT = performance.now();
+      const k = still ? 1 : 1 - Math.exp(-camDt * 5);
+      shownU += (targetU - shownU) * k; if (Math.abs(targetU - shownU) > 1e-4) loop.request(); else shownU = targetU;
+      const pos = path.getPointAt(clamp(shownU, 0, 1)), tan = path.getTangentAt(clamp(shownU, 0, .9999));
+      const moved = pos.distanceTo(lastPos); lastPos.copy(pos); walkPhase += moved * 3.4;
+      const moving = clamp(moved * 25, 0, 1);
+      chr.position.set(pos.x, Math.abs(Math.sin(walkPhase)) * .1 * moving, pos.z);
+      if (moved > 1e-4) chr.rotation.y = Math.atan2(-tan.x, -tan.z);
+      const sw = Math.sin(walkPhase) * .75 * moving; legL.rotation.x = sw; legR.rotation.x = -sw; armL.rotation.x = -sw * .8; armR.rotation.x = sw * .8;
+      // ide makin terang di sepanjang jalur
+      glassM.emissiveIntensity = .15 + shownU * 1.1; halo.material.opacity = .2 + shownU * .5; halo.scale.setScalar(1.6 + shownU * 1.2);
+      progTube.geometry.setDrawRange(0, Math.floor(shownU * TS) * RS * 6);
+      stations.forEach((s, i) => {
+        const goal = shownU >= stationU[i] - .004 ? 1 : 0, prev = s.lit;
+        s.lit += (goal - s.lit) * (still ? 1 : Math.min(1, camDt * 4)); if (Math.abs(goal - s.lit) > .002) loop.request(); else s.lit = goal;
+        if (prev !== s.lit) s.mats.forEach(m => m.color.copy(CLAY).lerp(m.userData.target, s.lit));
+        s.inner.scale.setScalar(.82 + .18 * s.lit);
+      });
+      if (!still) { floaters.forEach(f => { f.m.position.y = f.y + Math.sin(t * 1.4 + f.ph) * .12; }); loop.request(); }
+      const desired = new THREE.Vector3(pos.x, 0, pos.z);
+      if (aspect >= .9) desired.addScaledVector(new THREE.Vector3(1, 0, -1).normalize(), -halfW * .3);
+      if (camTarget.lengthSq() === 0) camTarget.copy(desired);
+      camTarget.lerp(desired, still ? 1 : 1 - Math.exp(-camDt * 3.5)); if (camTarget.distanceTo(desired) > .01) loop.request();
+      cam.position.copy(camTarget).addScaledVector(camDir, 60); cam.lookAt(camTarget);
+      sun.position.copy(camTarget).add(new THREE.Vector3(14, 26, 8)); sun.target.position.copy(camTarget);
+      renderer.render(scene, cam);
+    }, () => false);
+
+    /* Layar sempit: tokoh dibingkai di ruang kosong ANTARA kartu judul (atas) dan kartu langkah (bawah),
+       diukur dari DOM, memakai frustum ortografis asimetris. */
+    const headEl = stage.querySelector('.story-head'), card = stage.querySelector('#storyCard');
+    let frameY = .5;
+    function applyFrame(){
+      frameY = .5;
+      if (aspect < .9) {
+        const r = stage.getBoundingClientRect(), a = headEl.getBoundingClientRect().bottom - r.top, b = card.getBoundingClientRect().top - r.top;
+        if (r.height > 0 && b > a) frameY = clamp(((a + b) / 2 + 34) / r.height, .2, .8);
+      }
+      Object.assign(cam, { left: -halfW, right: halfW, top: 2 * halfH * frameY, bottom: -2 * halfH * (1 - frameY) }); cam.updateProjectionMatrix();
+    }
+    watchSize(stage, renderer, (w, h) => { aspect = w / h; halfH = aspect < .9 ? 10.5 : 8.6; halfW = halfH * aspect; applyFrame(); loop.request(); });
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(headEl);
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(card);
+    if (document.fonts) document.fonts.ready.then(() => { applyFrame(); loop.request(); });
+    themeColors(); bus.addEventListener('theme', () => requestAnimationFrame(themeColors));
+    return { setProgress, loop, renderer, scene, cam, chr, frame: () => frameY };
+  }
+
+  let story = null;
+  try { story = createStory(); } catch (e) { console.warn('Cerita 3D gagal', e); storySec.classList.add('no-webgl'); }
+  window.__catatku.views = { heroV, deskV, story };
+  if (story) { const upd = () => story.setProgress(storyProgress()); addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd(); }
+}
+
+/* fallback tanpa WebGL: teks cerita tetap mengikuti gulir */
+if (!window.__catatku.views || !window.__catatku.views.story) {
+  const nodes = $$('#storySvg .node'), sceneSteps = $$('.scene-step', storySec), labels = $$('.s-labels span', storySec), prog = $('#storyProg');
+  const upd = () => { const p = storyProgress(), n = Math.round(p * 4); prog.value = p * 4; sceneSteps.forEach((s, k) => s.classList.toggle('on', k === n)); labels.forEach((s, k) => s.classList.toggle('on', k <= n)); nodes.forEach((c, k) => c.classList.toggle('on', k <= n)); };
+  addEventListener('scroll', upd, { passive: true }); upd();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lensa — Trip Foto &amp; Workshop Fotografi Keliling Indonesia</title>
+<meta name="description" content="Lensa mengajak grup kecil fotografer ke Bromo, Raja Ampat, Labuan Bajo, dan Danau Toba. Mentor profesional, golden hour terjadwal, kurasi, dan pameran karya di akhir trip.">
+<meta name="theme-color" content="#fbf8f4">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script>
+  /* tema terang/gelap disimpan per pengunjung; dipasang sebelum render supaya tidak berkedip */
+  (function(){var t;try{t=localStorage.getItem('lensa-theme')}catch(e){}
+  if(t!=='light'&&t!=='dark'){t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}
+  document.documentElement.setAttribute('data-theme',t);})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,600;0,700;0,800;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- UIkit 3 (MIT): CSS, JS, dan ikon -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.25.26/dist/css/uikit.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/uikit@3.25.26/dist/js/uikit.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/uikit@3.25.26/dist/js/uikit-icons.min.js"></script>
+<style>
+  /* ---------- Token merek + tema ---------- */
+  :root{
+    --lx-display:'Urbanist','Plus Jakarta Sans',system-ui,sans-serif;
+    --lx-sans:'Plus Jakarta Sans',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --lx-coral:#ef5d2f;--lx-coral-d:#d24a1f;--lx-path:#f07a3c;--lx-sea:#0f8b8d;
+    --lx-r:18px;
+  }
+  [data-theme=light]{
+    color-scheme:light;
+    --lx-bg:#fbf8f4;--lx-bg2:#f3ede5;--lx-surface:#ffffff;--lx-ink:#14213d;--lx-text:#4c5367;--lx-line:#e7dfd4;
+    --lx-glass:rgba(255,255,255,.72);--lx-shadow:0 30px 70px -36px rgba(20,33,61,.45);
+  }
+  [data-theme=dark]{
+    color-scheme:dark;
+    --lx-bg:#0c1322;--lx-bg2:#111a2d;--lx-surface:#16213a;--lx-ink:#f4efe8;--lx-text:#b4bbcc;--lx-line:#24314c;
+    --lx-glass:rgba(14,22,40,.72);--lx-shadow:0 30px 70px -30px rgba(0,0,0,.8);
+  }
+  html{font-family:var(--lx-sans);color:var(--lx-text);background:var(--lx-bg);scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+  body{background:var(--lx-bg);color:var(--lx-text);overflow-x:clip;-webkit-font-smoothing:antialiased;transition:background-color .35s,color .35s}
+  /* tidak ada font monospace sama sekali (termasuk font kode bawaan UIkit) */
+  code,kbd,pre,samp,:not(pre)>code,:not(pre)>kbd,:not(pre)>samp{font-family:inherit;font-size:inherit;color:inherit;background:none;padding:0;white-space:normal}
+  .num,.uk-countdown-number,.lx-price b,.lx-stat b{font-variant-numeric:tabular-nums}
+  h1,h2,h3,h4,.uk-h1,.uk-h2,.uk-h3,.uk-h4,.uk-heading-medium,.uk-heading-small,.uk-card-title{font-family:var(--lx-display);color:var(--lx-ink);letter-spacing:-.02em}
+  .uk-light h1,.uk-light h2,.uk-light h3,.uk-light h4,.uk-light .uk-card-title,.uk-section-secondary:not(.uk-preserve-color) h2,.uk-section-secondary:not(.uk-preserve-color) h3,.uk-section-secondary:not(.uk-preserve-color) h4,.uk-card-secondary .uk-card-title,.uk-card-secondary h3,.uk-card-secondary h4{color:var(--lx-ink)}
+  .uk-container{padding-left:16px;padding-right:16px}
+  @media (min-width:640px){.uk-container{padding-left:28px;padding-right:28px}}
+  @media (min-width:960px){.uk-container{padding-left:40px;padding-right:40px}}
+  :focus-visible{outline:2px solid var(--lx-coral)!important;outline-offset:3px}
+  .skip{position:absolute;left:-999px;top:8px;z-index:1100}
+  .skip:focus{left:12px}
+  [id]{scroll-margin-top:70px}
+  .muted{color:var(--lx-text)}
+
+  /* ---------- UIkit: penyesuaian warna merek (berlaku juga di mode inverse) ---------- */
+  .uk-section-default{background:var(--lx-bg)}
+  .uk-section-muted{background:var(--lx-bg2)}
+  .uk-section-secondary{background:var(--lx-bg)}
+  .uk-section-secondary.lx-alt{background:var(--lx-bg2)}
+  .uk-card-default{background:var(--lx-surface);box-shadow:0 1px 2px rgba(20,33,61,.05),0 18px 40px -26px rgba(20,33,61,.35);border:1px solid var(--lx-line);color:var(--lx-text)}
+  .uk-card-secondary{background:var(--lx-surface);border:1px solid var(--lx-line);box-shadow:0 18px 40px -26px rgba(0,0,0,.8)}
+  .uk-card{border-radius:var(--lx-r)}
+  .uk-card-media-top,.uk-card-media-top>*{border-radius:var(--lx-r) var(--lx-r) 0 0}
+  .uk-button{border-radius:999px;font-weight:700;text-transform:none;letter-spacing:0;font-size:.95rem}
+  .uk-button-primary,.uk-light .uk-button-primary,.uk-section-secondary .uk-button-primary,.uk-card-secondary .uk-button-primary{background:var(--lx-coral)!important;color:#fff!important;border-color:transparent!important}
+  .uk-button-primary:hover,.uk-button-primary:focus-visible{background:var(--lx-coral-d)!important}
+  .uk-button-default{border-color:var(--lx-line);color:var(--lx-ink)}
+  .uk-button-default:hover{border-color:var(--lx-ink);color:var(--lx-ink)}
+  [data-theme=dark] .uk-button-default{border-color:#34425f!important;color:var(--lx-ink)!important;background:transparent!important}
+  [data-theme=dark] .uk-button-default:hover{border-color:var(--lx-ink)!important}
+  .uk-button-default.uk-active{background:var(--lx-ink)!important;color:var(--lx-bg)!important;border-color:var(--lx-ink)!important}
+  .uk-subnav>*>*{text-transform:none!important}
+  .uk-subnav-pill>*>a{border-radius:999px;font-weight:700;font-size:.86rem;padding:6px 14px;color:var(--lx-ink)!important}
+  .uk-subnav-pill>.uk-active>a,.uk-light .uk-subnav-pill>.uk-active>a,.uk-section-secondary .uk-subnav-pill>.uk-active>a,.uk-card-secondary .uk-subnav-pill>.uk-active>a{background:var(--lx-coral)!important;color:#fff!important}
+  .uk-tab>*>a{text-transform:none;font-weight:700;font-size:.92rem;padding:8px 12px;color:var(--lx-text)!important}
+  .uk-tab>.uk-active>a{border-color:var(--lx-coral)!important;color:var(--lx-ink)!important}
+  .uk-tab::before{border-color:var(--lx-line)!important}
+  :root .uk-label.uk-label{background:var(--lx-coral);color:#fff;border-radius:999px;text-transform:none;font-weight:700;font-size:.74rem;padding:2px 10px}
+  :root .uk-label.uk-label.lx-sea{background:var(--lx-sea);color:#fff}
+  :root .uk-label.uk-label.lx-soft{background:color-mix(in oklab,var(--lx-coral) 15%,transparent);color:var(--lx-coral)}
+  [data-theme=dark] .uk-label.uk-label.lx-soft{color:#ff9a72}
+  :root .uk-badge.uk-badge.uk-badge{background:var(--lx-coral)!important;color:#fff!important;font-variant-numeric:tabular-nums}
+  .uk-text-primary{color:var(--lx-coral)!important}
+  .uk-dotnav>*>*{border-color:var(--lx-text)!important}
+  .uk-dotnav>.uk-active>*{background:var(--lx-coral)!important;border-color:var(--lx-coral)!important}
+  .uk-range::-webkit-slider-thumb{background:var(--lx-coral)!important;border:3px solid #fff;width:20px;height:20px;margin-top:-8px;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+  .uk-range::-moz-range-thumb{background:var(--lx-coral)!important;border:3px solid #fff;width:16px;height:16px}
+  .uk-range::-webkit-slider-runnable-track{background:var(--lx-line)!important;height:4px;border-radius:4px}
+  .uk-range::-moz-range-track{background:var(--lx-line)!important;height:4px;border-radius:4px}
+  .uk-input,.uk-select,.uk-textarea{border-radius:12px;background:var(--lx-surface)!important;border-color:var(--lx-line)!important;color:var(--lx-ink)!important}
+  .uk-select:not([multiple]):not([size]){background-color:var(--lx-surface)!important}
+  .uk-input:focus,.uk-select:focus,.uk-textarea:focus{border-color:var(--lx-coral)!important}
+  .uk-form-danger,.uk-form-danger:focus{border-color:#e0452b!important;color:var(--lx-ink)!important}
+  .uk-form-success{border-color:#2a9d6a!important}
+  .uk-form-label{color:var(--lx-ink)!important;font-weight:700;font-size:.86rem}
+  .uk-checkbox,.uk-radio{border-color:var(--lx-text)!important;background-color:transparent}
+  .uk-checkbox:checked,.uk-radio:checked{background-color:var(--lx-coral)!important;border-color:var(--lx-coral)!important}
+  /* checkbox UIkit sebagai sakelar */
+  .uk-checkbox.lx-switch{width:44px;height:24px;border-radius:999px;border:0!important;margin:0;flex:0 0 auto;cursor:pointer;
+    background:radial-gradient(circle at 12px 50%,#fff 0 8px,transparent 9px),#b9bfcc!important;transition:background .25s}
+  .uk-checkbox.lx-switch:checked{background:radial-gradient(circle at calc(100% - 12px) 50%,#fff 0 8px,transparent 9px),var(--lx-coral)!important}
+  [data-theme=dark] .uk-checkbox.lx-switch:not(:checked){background:radial-gradient(circle at 12px 50%,#fff 0 8px,transparent 9px),#3b4866!important}
+  .uk-accordion>li{border:1px solid var(--lx-line);border-radius:14px;padding:14px 18px;margin-top:10px!important;background:var(--lx-surface)}
+  .uk-accordion-title{font-family:var(--lx-sans);font-weight:700;font-size:1rem;color:var(--lx-ink)!important}
+  .uk-accordion-content{margin-top:10px}
+  .uk-progress{height:6px;border-radius:6px;background:var(--lx-line)}
+  .uk-progress::-webkit-progress-value{background:var(--lx-path)}
+  .uk-progress::-moz-progress-bar{background:var(--lx-path)}
+  .uk-modal-dialog{border-radius:var(--lx-r);overflow:hidden;background:var(--lx-surface);color:var(--lx-text)}
+  .uk-modal-title{font-family:var(--lx-display);color:var(--lx-ink)}
+  .uk-modal-close-default{color:var(--lx-ink)}
+  .uk-notification-message{border-radius:14px;background:var(--lx-surface);color:var(--lx-ink);box-shadow:0 18px 40px -20px rgba(0,0,0,.45);border:1px solid var(--lx-line);font-size:.95rem}
+  .uk-notification-message-success{border-left:4px solid #2a9d6a}
+  .uk-notification-message-primary{border-left:4px solid var(--lx-coral)}
+  .uk-notification-message-danger{border-left:4px solid #e0452b;color:var(--lx-ink)}
+  .uk-notification{max-width:calc(100vw - 24px)}
+  .uk-notification-top-center{top:76px}
+  @media (max-width:639px){.uk-notification-top-center{width:calc(100vw - 24px);left:12px;margin-left:0}}
+  .uk-offcanvas-bar{background:#0f1830}
+  .uk-offcanvas-bar .uk-nav-default>li>a{font-size:1.1rem;font-weight:700;padding:10px 0;color:rgba(255,255,255,.8)}
+  .uk-icon-button{background:color-mix(in oklab,var(--lx-coral) 14%,transparent);color:var(--lx-coral)}
+
+  /* ---------- Navbar ---------- */
+  .lx-nav{background:color-mix(in oklab,var(--lx-bg) 82%,transparent)!important;backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid color-mix(in oklab,var(--lx-line) 80%,transparent)}
+  .lx-nav .uk-navbar-nav>li>a,.lx-nav .uk-navbar-item,.lx-nav .uk-navbar-toggle{min-height:64px;font-family:var(--lx-sans);text-transform:none;font-size:.92rem;font-weight:600;color:var(--lx-text);padding:0 12px}
+  .lx-nav .uk-navbar-nav>li.uk-active>a,.lx-nav .uk-navbar-nav>li>a:hover{color:var(--lx-ink)}
+  .lx-nav .uk-navbar-nav>li>a{position:relative}
+  .lx-nav .uk-navbar-nav>li.uk-active>a::after{content:"";position:absolute;left:12px;right:12px;bottom:0;height:2px;border-radius:2px;background:var(--lx-coral)}
+  .lx-nav .uk-navbar-toggle{color:var(--lx-ink)}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--lx-display);font-weight:800;font-size:1.25rem;color:var(--lx-ink)!important;text-decoration:none!important;letter-spacing:-.02em;white-space:nowrap}
+  .brand svg{width:32px;height:32px;flex:0 0 auto}
+  .brand small{display:block;font-family:var(--lx-sans);font-weight:600;font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;opacity:.6;line-height:1}
+  .lx-icon-btn{width:40px;height:40px;border-radius:50%;display:inline-grid;place-items:center;border:1px solid var(--lx-line);background:transparent;color:var(--lx-ink);cursor:pointer;padding:0}
+  .lx-icon-btn:hover{border-color:var(--lx-ink)}
+  [data-theme=light] .i-sun,[data-theme=dark] .i-moon{display:none}
+  @media (max-width:959px){.lx-nav .uk-navbar-item{padding:0 6px}}
+  @media (max-width:360px){.brand small{display:none}}
+
+  /* ---------- Hero ---------- */
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:.74rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--lx-coral)}
+  .eyebrow::before{content:"";width:24px;height:2px;background:currentColor;border-radius:2px}
+  .hero{padding:clamp(20px,4vw,52px) 0 clamp(40px,6vw,72px)}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6.4fr);gap:clamp(24px,4vw,56px);align-items:center}
+  .hero h1{font-size:clamp(2.5rem,5.8vw,4.9rem);line-height:.98;margin:16px 0 18px;font-weight:800;letter-spacing:-.035em}
+  .hero h1 em{font-style:italic;color:var(--lx-coral);font-weight:700}
+  .lead{font-size:clamp(1rem,1.3vw,1.13rem);line-height:1.65;max-width:34em}
+  .cd-card{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;margin-top:30px;padding:16px 18px;border-radius:var(--lx-r);border:1px solid var(--lx-line);background:var(--lx-surface)}
+  .cd-card .lbl{font-size:.74rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--lx-text)}
+  .cd-card .lbl b{color:var(--lx-ink);letter-spacing:0;text-transform:none;font-size:.95rem;display:block;margin-top:2px}
+  .uk-countdown-number{font-family:var(--lx-display);font-weight:800;font-size:1.9rem;line-height:1;color:var(--lx-ink)}
+  .uk-countdown-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--lx-text);margin-top:4px}
+  .uk-countdown-separator{font-size:1.4rem;line-height:1.3;color:var(--lx-text)}
+  @media (max-width:420px){.uk-countdown-number{font-size:1.5rem}.cd-card{padding:14px}}
+  .stage{position:relative;border-radius:calc(var(--lx-r) + 10px);overflow:hidden;isolation:isolate;background:linear-gradient(180deg,#3f80d6 0%,#9fd0f0 60%,#e9f3fa 100%);box-shadow:var(--lx-shadow);border:1px solid var(--lx-line)}
+  .stage canvas{display:block;width:100%;height:100%;opacity:0;transition:opacity .8s ease}
+  .stage.ready canvas{opacity:1}
+  .hero .stage{height:clamp(460px,74vh,680px)}
+  .stage .fallback{position:absolute;inset:0;display:none}
+  .stage.no-webgl .fallback{display:block}
+  .stage.no-webgl canvas{display:none}
+  .stage .fallback svg{width:100%;height:100%}
+  .glass{background:var(--lx-glass);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border:1px solid color-mix(in oklab,var(--lx-surface) 50%,transparent);color:var(--lx-ink)}
+  .stage-top{position:absolute;top:14px;left:14px;right:14px;z-index:2;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;pointer-events:none}
+  .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;font-size:.78rem;font-weight:700;font-variant-numeric:tabular-nums;pointer-events:auto}
+  .chip .dot{width:8px;height:8px;border-radius:50%;background:var(--lx-coral);box-shadow:0 0 0 4px color-mix(in oklab,var(--lx-coral) 28%,transparent)}
+  .stage-panel{position:absolute;left:14px;right:14px;bottom:14px;z-index:2;border-radius:var(--lx-r);padding:12px 14px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 18px}
+  .stage-panel .lbl{font-size:.66rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;opacity:.75;display:block;margin-bottom:6px}
+  .stage-panel .uk-subnav{margin:0 0 0 -6px}
+  .stage-panel .uk-subnav>*{padding-left:6px}
+  .stage-panel .uk-subnav>*>a{padding:5px 12px;font-size:.82rem}
+  .stage-panel .tod{flex:1 1 180px;max-width:280px}
+  .tod-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .tod-row output{font-size:.8rem;font-weight:800;font-variant-numeric:tabular-nums}
+  @media (max-width:959px){.hero-grid{grid-template-columns:minmax(0,1fr)}.hero .stage{height:min(560px,72vh);min-height:460px}}
+  @media (max-width:480px){.stage-panel{padding:10px 12px}.stage-panel .tod{max-width:none}}
+
+  /* ---------- Section head ---------- */
+  .sec{padding:clamp(72px,10vw,124px) 0}
+  .sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px 48px;align-items:end;margin-bottom:clamp(30px,5vw,54px)}
+  .sec-head h2{font-size:clamp(2rem,4.2vw,3.3rem);line-height:1.04;margin:12px 0 0;font-weight:800;letter-spacing:-.03em}
+  .sec-head p{margin:0;font-size:1.02rem;line-height:1.65}
+  @media (max-width:820px){.sec-head{grid-template-columns:minmax(0,1fr)}}
+
+  /* ---------- Fitur ---------- */
+  .feat .uk-card-body{padding:26px}
+  .feat .ico{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;background:color-mix(in oklab,var(--lx-coral) 13%,transparent);color:var(--lx-coral);margin-bottom:18px}
+  .feat h3{font-size:1.28rem;font-weight:800;margin:0 0 8px}
+  .feat p{margin:0 0 16px;font-size:.95rem;line-height:1.6}
+
+  /* ---------- Studio (komponen UIkit menggerakkan 3D) ---------- */
+  .studio-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:22px;align-items:stretch}
+  .studio .stage{height:clamp(480px,74vh,700px)}
+  .panel .uk-card-body{padding:24px;display:flex;flex-direction:column;gap:20px}
+  .panel h3.ph{font-family:var(--lx-sans);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--lx-text);margin:0 0 8px}
+  .panel .row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  #destSw>li.uk-active{animation:lxFade .35s ease}
+  @keyframes lxFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .dest-info h4{font-size:1.35rem;font-weight:800;margin:6px 0 4px}
+  .dest-info p{margin:0;font-size:.92rem;line-height:1.55}
+  .dest-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .ticks{display:flex;justify-content:space-between;font-size:.72rem;opacity:.75;margin-top:6px;font-variant-numeric:tabular-nums}
+  .uk-button-group .uk-button{border-radius:0}
+  .uk-button-group .uk-button:first-child{border-radius:999px 0 0 999px}
+  .uk-button-group .uk-button:last-child{border-radius:0 999px 999px 0}
+  .uk-button-small{font-size:.82rem;padding:0 14px}
+  .switch-row{display:flex;align-items:center;gap:12px;font-weight:700;color:var(--lx-ink);cursor:pointer;font-size:.95rem}
+  .switch-row small{display:block;font-weight:500;color:var(--lx-text);font-size:.8rem}
+  @media (max-width:1060px){.studio-grid{grid-template-columns:minmax(0,1fr)}.studio .stage{height:min(520px,64vh);min-height:400px}}
+
+  /* ---------- Cerita isometrik ---------- */
+  .story{position:relative;height:520vh}
+  .story-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--lx-bg2)}
+  .story-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .story-fallback{position:absolute;inset:0;display:none;place-items:center;padding:24px}
+  .story.no-webgl .story-fallback{display:grid}
+  .story.no-webgl canvas{display:none}
+  .story-fallback svg{width:min(900px,100%);height:auto}
+  .story-fallback .node{fill:var(--lx-surface);stroke:var(--lx-line);stroke-width:2;transition:fill .4s}
+  .story-fallback .node.on{fill:var(--lx-path)}
+  .story-ui{position:absolute;inset:0;pointer-events:none;padding:84px 0 24px}
+  .story-ui .uk-container{position:relative;height:100%;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+  .story-head{max-width:470px;width:fit-content;background:color-mix(in oklab,var(--lx-bg2) 82%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid color-mix(in oklab,var(--lx-line) 85%,transparent);border-radius:var(--lx-r);padding:18px 22px 20px;pointer-events:auto}
+  .story-head h2{font-size:clamp(1.7rem,3.3vw,2.7rem);line-height:1.04;margin:10px 0 0;font-weight:800;letter-spacing:-.03em}
+  .story-head p{margin:8px 0 0;font-size:.95rem}
+  .story-card{max-width:440px;pointer-events:auto;background:color-mix(in oklab,var(--lx-surface) 88%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid color-mix(in oklab,var(--lx-line) 85%,transparent);border-radius:var(--lx-r);padding:16px 20px 18px;box-shadow:0 20px 50px -30px rgba(14,22,40,.55)}
+  .s-labels{display:flex;justify-content:space-between;gap:4px;font-size:.7rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;margin:8px 0 2px;color:var(--lx-text)}
+  .s-labels span.on{color:var(--lx-coral)}
+  .scene-steps{position:relative;min-height:156px;margin:6px 0 0;padding:0;list-style:none}
+  .scene-step{position:absolute;inset:0 0 auto 0;opacity:0;transform:translateY(14px);transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+  .scene-step.on{opacity:1;transform:none;pointer-events:auto}
+  .scene-step .n{font-family:var(--lx-display);font-weight:800;font-size:2.1rem;line-height:1;color:var(--lx-coral);font-variant-numeric:tabular-nums}
+  .scene-step h3{font-family:var(--lx-sans);font-size:1.18rem;font-weight:800;margin:6px 0 6px}
+  .scene-step p{font-size:.92rem;margin:0;line-height:1.55}
+  @media (max-width:760px){
+    .story-ui{padding:74px 0 14px}
+    .story-head{padding:12px 16px 14px}
+    .story-head h2{font-size:1.42rem}
+    .story-head p{display:none}
+    .story-card{max-width:none;padding:12px 14px 14px}
+    .s-labels{font-size:.6rem;letter-spacing:0}
+    .scene-steps{min-height:132px}
+    .scene-step .n{font-size:1.6rem}
+    .scene-step h3{font-size:1.03rem}
+    .scene-step p{font-size:.86rem}
+  }
+  @media (max-width:340px){.s-labels{display:none}}
+
+  /* ---------- Galeri ---------- */
+  .gal{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:clamp(150px,17vw,230px);gap:14px}
+  .gal .shot{position:relative;border:0;padding:0;margin:0;border-radius:16px;overflow:hidden;cursor:zoom-in;background:#223;display:block;width:100%;height:100%;text-align:left}
+  .gal .shot svg{width:100%;height:100%;display:block;transition:transform .6s ease}
+  .gal .shot:hover svg{transform:scale(1.05)}
+  .gal .shot .cap{position:absolute;left:10px;bottom:10px;right:10px;display:flex;justify-content:space-between;gap:6px;align-items:flex-end;color:#fff;font-size:.78rem;font-weight:700;text-shadow:0 1px 8px rgba(0,0,0,.5)}
+  .gal .shot .cap span:last-child{font-weight:600;opacity:.85;font-variant-numeric:tabular-nums}
+  .gal .w2{grid-column:span 2}.gal .h2{grid-row:span 2}
+  @media (max-width:820px){.gal{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:150px}.gal .h2{grid-row:span 2}}
+  @media (max-width:420px){.gal .cap span:last-child{display:none}}
+  .shot-modal svg,.shot-modal img{width:100%;height:auto;display:block;aspect-ratio:16/10;object-fit:cover}
+  .exif{display:flex;flex-wrap:wrap;gap:6px}
+
+  /* ---------- Statistik + testimoni ---------- */
+  .lx-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--lx-line);border-radius:var(--lx-r);background:var(--lx-surface);margin-bottom:56px}
+  .lx-stat{padding:22px 24px;border-left:1px solid var(--lx-line)}
+  .lx-stat:first-child{border-left:0}
+  .lx-stat b{display:block;font-family:var(--lx-display);font-weight:800;font-size:clamp(2rem,3.4vw,2.8rem);color:var(--lx-ink);line-height:1.05;letter-spacing:-.02em}
+  .lx-stat span{font-size:.88rem}
+  @media (max-width:820px){.lx-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.lx-stat:nth-child(3){border-left:0}.lx-stat:nth-child(n+3){border-top:1px solid var(--lx-line)}}
+  .quote .uk-card-body{display:flex;flex-direction:column;gap:16px;height:100%;box-sizing:border-box}
+  .quote blockquote{margin:0;font-size:1.02rem;line-height:1.6;color:var(--lx-ink);font-style:normal}
+  .quote figcaption{display:flex;align-items:center;gap:12px;margin-top:auto}
+  .avatar{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;flex:0 0 auto}
+  .uk-slider-items>li{padding-bottom:6px}
+  .uk-slider-items .uk-card{height:100%}
+  .stars{color:#f2a33a;letter-spacing:2px;font-size:1rem}
+  .slider-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:22px}
+  .slider-nav .uk-slidenav{color:var(--lx-ink);border:1px solid var(--lx-line);border-radius:50%;width:44px;height:44px;padding:0;display:inline-grid;place-items:center}
+
+  /* ---------- Harga ---------- */
+  .lx-price{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;margin:6px 0 4px}
+  .lx-price b{font-family:var(--lx-display);font-size:clamp(1.9rem,3vw,2.4rem);font-weight:800;color:var(--lx-ink);letter-spacing:-.03em;line-height:1}
+  .plan .uk-card-body{display:flex;flex-direction:column;gap:14px;height:100%;box-sizing:border-box}
+  .plan ul{list-style:none;padding:0;margin:0;display:grid;gap:10px;font-size:.93rem}
+  .plan li{display:flex;gap:10px;align-items:flex-start}
+  .plan li .uk-icon{color:#2a9d6a;flex:0 0 auto;margin-top:2px}
+  .plan.hot{outline:2px solid var(--lx-coral);outline-offset:-2px}
+  .plan .uk-button{margin-top:auto}
+
+  /* ---------- CTA + form ---------- */
+  .cta{border-radius:calc(var(--lx-r) + 12px);padding:clamp(26px,5vw,64px);position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(24px,4vw,56px);align-items:start;
+    background:radial-gradient(120% 120% at 0% 0%,#ff9a62 0%,var(--lx-coral) 34%,#7c2c4f 78%,#2a1c46 100%);color:#fff}
+  .cta h2{color:#fff!important;font-size:clamp(2rem,4.4vw,3.3rem);line-height:1.04;font-weight:800;letter-spacing:-.03em;margin:12px 0 14px}
+  .cta .eyebrow{color:#ffe1cf}
+  .cta p{color:rgba(255,255,255,.88)}
+  .cta form{background:var(--lx-surface);color:var(--lx-text);border-radius:var(--lx-r);padding:clamp(18px,3vw,28px);box-shadow:0 30px 60px -30px rgba(0,0,0,.5)}
+  .cta .ticks-list{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:10px}
+  .cta .ticks-list li{display:flex;gap:10px;align-items:center;color:#fff;font-weight:600}
+  .field-msg{font-size:.78rem;color:#e0452b;margin-top:4px;min-height:0}
+  @media (max-width:900px){.cta{grid-template-columns:minmax(0,1fr)}}
+  @media (max-width:480px){.cta{padding:24px 16px}.hero-cta .uk-button{flex:1 1 100%;justify-content:center}}
+
+  footer.site{border-top:1px solid var(--lx-line);padding:56px 0 34px;background:var(--lx-bg)}
+  footer.site a{color:var(--lx-text)}
+  footer.site a:hover{color:var(--lx-ink)}
+  footer.site h4{font-family:var(--lx-sans);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;font-weight:800;margin:0 0 12px}
+  footer.site ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:.92rem}
+  .foot-grid{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(0,1fr));gap:28px}
+  @media (max-width:820px){.foot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.foot-grid>:first-child{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<a class="skip uk-button uk-button-primary uk-button-small" href="#main">Lewati ke konten</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="logo" viewBox="0 0 32 32"><rect x="1" y="1" width="30" height="30" rx="10" fill="#ef5d2f"/><circle cx="16" cy="16" r="8" fill="none" stroke="#fff" stroke-width="2.2"/><circle cx="16" cy="16" r="3.2" fill="#fff"/><path d="M8 9.5l3 2.4M24 9.5l-3 2.4M16 4.5v3.6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<!-- NAV: navbar + sticky + scrollspy-nav + offcanvas -->
+<div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky; show-on-up: false" style="z-index:980;position:relative">
+  <nav class="uk-navbar-container lx-nav" aria-label="Navigasi utama">
+    <div class="uk-container">
+      <div uk-navbar>
+        <div class="uk-navbar-left">
+          <a class="brand uk-navbar-item uk-logo" href="#top" aria-label="Lensa, ke atas" style="padding-left:0">
+            <svg aria-hidden="true"><use href="#logo"/></svg>
+            <span>Lensa<small>Trip foto · Nusantara</small></span>
+          </a>
+        </div>
+        <div class="uk-navbar-center uk-visible@l">
+          <ul class="uk-navbar-nav" uk-scrollspy-nav="closest: li; scroll: false; offset: 90">
+            <li><a href="#fitur">Fitur</a></li><li><a href="#studio">Studio 3D</a></li><li><a href="#perjalanan">Perjalanan</a></li><li><a href="#galeri">Galeri</a></li><li><a href="#harga">Harga</a></li><li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="uk-navbar-right">
+          <div class="uk-navbar-item" style="padding-right:0;gap:8px">
+            <button class="lx-icon-btn" type="button" id="themeBtn" aria-label="Ganti tema terang/gelap" uk-tooltip="title: Tema terang/gelap; pos: bottom">
+              <svg class="i-moon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><svg class="i-sun" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+            <a class="uk-button uk-button-primary uk-button-small uk-visible@s" href="#daftar">Daftar trip</a>
+            <a class="uk-navbar-toggle uk-hidden@l lx-icon-btn" href="#offnav" uk-toggle aria-label="Buka menu" style="min-height:40px;padding:0"><span uk-navbar-toggle-icon></span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<div id="offnav" uk-offcanvas="overlay: true; flip: true; mode: slide">
+  <div class="uk-offcanvas-bar">
+    <button class="uk-offcanvas-close" type="button" uk-close aria-label="Tutup menu"></button>
+    <p class="brand" style="color:#fff!important;margin-top:4px"><svg aria-hidden="true"><use href="#logo"/></svg>Lensa</p>
+    <ul class="uk-nav uk-nav-default uk-margin-medium-top">
+      <li><a href="#fitur">Fitur</a></li><li><a href="#studio">Studio 3D</a></li><li><a href="#perjalanan">Perjalanan</a></li><li><a href="#galeri">Galeri</a></li><li><a href="#harga">Harga</a></li><li><a href="#faq">FAQ</a></li>
+    </ul>
+    <a class="uk-button uk-button-primary uk-width-1-1 uk-margin-medium-top" href="#daftar">Daftar trip</a>
+  </div>
+</div>
+
+<main id="main">
+  <!-- HERO -->
+  <section class="hero uk-section-default" data-tone="default" id="top">
+    <div class="uk-container uk-container-large hero-grid">
+      <div>
+        <span class="uk-label lx-soft">Batch 2026 · tersisa 7 kursi</span>
+        <h1>Pulang membawa <em>foto terbaik</em> hidupmu.</h1>
+        <p class="lead">Lensa mengajak grup kecil berisi maksimal 12 fotografer ke Bromo, Raja Ampat, Labuan Bajo, dan Danau Toba. Mentor profesional mendampingi dari golden hour pertama sampai pameran karya di akhir trip.</p>
+        <div class="uk-flex uk-flex-wrap hero-cta" style="gap:12px;margin-top:26px">
+          <a class="uk-button uk-button-primary uk-button-large" href="#harga">Lihat jadwal trip <span uk-icon="arrow-right"></span></a>
+          <a class="uk-button uk-button-default uk-button-large" href="#studio">Coba studio 3D</a>
+        </div>
+        <div class="cd-card">
+          <div class="lbl">Berangkat berikutnya<b id="cdDest">Bromo · Jawa Timur</b></div>
+          <div class="uk-grid-small uk-child-width-auto" uk-grid id="heroCountdown" role="timer" aria-label="Hitung mundur keberangkatan">
+            <div><div class="uk-countdown-number uk-countdown-days"></div><div class="uk-countdown-label uk-text-center">Hari</div></div>
+            <div class="uk-countdown-separator">:</div>
+            <div><div class="uk-countdown-number uk-countdown-hours"></div><div class="uk-countdown-label uk-text-center">Jam</div></div>
+            <div class="uk-countdown-separator">:</div>
+            <div><div class="uk-countdown-number uk-countdown-minutes"></div><div class="uk-countdown-label uk-text-center">Menit</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="stage" id="heroStage">
+        <canvas id="heroCanvas" role="img" aria-label="Pulau-pulau low-poly melayang di atas awan: Bromo, Raja Ampat, Labuan Bajo, dan Danau Toba, dengan drone kamera yang mengorbit pulau terpilih"></canvas>
+        <div class="fallback" aria-hidden="true"></div>
+        <div class="stage-top">
+          <span class="chip glass"><span class="dot"></span><span id="heroChip">Bromo · Jawa Timur</span></span>
+          <span class="chip glass num" id="heroTime">05.30 · Golden hour</span>
+        </div>
+        <div class="stage-panel glass">
+          <div>
+            <span class="lbl" id="heroDestLbl">Destinasi</span>
+            <ul class="uk-subnav uk-subnav-pill" uk-switcher="connect: #heroSw" id="heroPills" aria-labelledby="heroDestLbl">
+              <li><a href="#">Bromo</a></li><li><a href="#">Raja Ampat</a></li><li><a href="#">Labuan Bajo</a></li><li><a href="#">Toba</a></li>
+            </ul>
+            <ul class="uk-switcher uk-hidden" id="heroSw" aria-hidden="true"><li></li><li></li><li></li><li></li></ul>
+          </div>
+          <div class="tod">
+            <div class="tod-row"><label class="lbl" for="heroTod" style="margin:0">Waktu</label><output id="heroTodOut" for="heroTod">05.30</output></div>
+            <input class="uk-range" type="range" id="heroTod" min="0" max="100" step="1" value="16" aria-describedby="heroTime">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FITUR -->
+  <section class="sec uk-section-muted" data-tone="muted" id="fitur">
+    <div class="uk-container uk-container-large">
+      <div class="sec-head">
+        <div><span class="eyebrow">Kenapa Lensa</span><h2>Trip yang dirancang di sekitar cahaya, bukan jadwal bus.</h2></div>
+        <p>Itinerary kami dihitung dari posisi matahari di tiap lokasi. Kamu tiba di spot yang tepat 20 menit sebelum golden hour, dengan mentor yang sudah memotret tempat itu puluhan kali.</p>
+      </div>
+      <div class="uk-grid-match uk-child-width-1-2@s uk-child-width-1-4@l" uk-grid uk-scrollspy="cls: uk-animation-slide-bottom-small; target: > div > .uk-card; delay: 90">
+        <div><article class="uk-card uk-card-default feat" data-card><div class="uk-card-body">
+          <div class="ico"><span uk-icon="icon: users; ratio: 1.25"></span></div>
+          <h3>Maksimal 12 orang</h3><p>Grup kecil berarti tiap peserta mendapat tempat berdiri terbaik dan sesi review empat mata.</p>
+          <span class="uk-label lx-sea">1 mentor : 6 peserta</span>
+        </div></article></div>
+        <div><article class="uk-card uk-card-default feat" data-card><div class="uk-card-body">
+          <div class="ico"><span uk-icon="icon: camera; ratio: 1.25"></span></div>
+          <h3>Mentor berpengalaman</h3><p>Fotografer lanskap dan dokumenter dengan karya di majalah perjalanan dan pameran nasional.</p>
+          <span class="uk-label">Workshop harian</span>
+        </div></article></div>
+        <div><article class="uk-card uk-card-default feat" data-card><div class="uk-card-body">
+          <div class="ico"><span uk-icon="icon: clock; ratio: 1.25"></span></div>
+          <h3>Golden hour terjadwal</h3><p>Jam berangkat dihitung dari sudut matahari dan cuaca, jadi kamu tidak pernah terlambat untuk cahaya terbaik.</p>
+          <span class="uk-label lx-soft">Pukul 05.10 di Bromo</span>
+        </div></article></div>
+        <div><article class="uk-card uk-card-default feat" data-card><div class="uk-card-body">
+          <div class="ico"><span uk-icon="icon: image; ratio: 1.25"></span></div>
+          <h3>Kurasi &amp; pameran</h3><p>Lima karya terbaikmu dikurasi, dicetak fine art, lalu dipamerkan di galeri mitra dan daring.</p>
+          <span class="uk-label lx-sea">Cetak A3 gratis</span>
+        </div></article></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STUDIO 3D: komponen UIkit menggerakkan adegan -->
+  <section class="sec studio uk-section-default" data-tone="default" id="studio">
+    <div class="uk-container uk-container-large">
+      <div class="sec-head">
+        <div><span class="eyebrow">Studio lokasi 3D</span><h2>Intip lokasi sebelum berangkat.</h2></div>
+        <p>Setiap kontrol di panel adalah komponen UIkit asli. Tab memilih pulau dan kamera terbang ke sana, slider mengatur jam sehingga langit dan cahaya ikut berubah, grup tombol mengganti lensa, dan sakelar mengubah lintasan drone.</p>
+      </div>
+      <div class="studio-grid">
+        <div class="stage" id="prevStage">
+          <canvas id="prevCanvas" role="img" aria-label="Pratinjau 3D lokasi trip: pulau terpilih, langit sesuai jam, dan lintasan drone kamera"></canvas>
+          <div class="fallback" aria-hidden="true"></div>
+          <div class="stage-top">
+            <span class="chip glass"><span class="dot"></span><span id="prevChip">Bromo · lensa 35 mm</span></span>
+            <span class="chip glass num" id="prevTime">05.30 · Golden hour</span>
+          </div>
+        </div>
+        <div class="uk-card uk-card-default panel" data-card>
+          <div class="uk-card-body">
+            <div>
+              <h3 class="ph" id="destTabLbl">Destinasi</h3>
+              <ul uk-tab="connect: #destSw" id="destTabs" aria-labelledby="destTabLbl" style="margin-bottom:14px">
+                <li><a href="#">Bromo</a></li><li><a href="#">Raja Ampat</a></li><li><a href="#">Labuan Bajo</a></li><li><a href="#">Toba</a></li>
+              </ul>
+              <ul class="uk-switcher dest-info" id="destSw">
+                <li>
+                  <div class="dest-meta"><span class="uk-label">3 hari 2 malam</span><span class="uk-label lx-sea">Sunrise &amp; milky way</span></div>
+                  <h4>Bromo · Jawa Timur</h4>
+                  <p>Kaldera berpasir, kabut lautan awan, dan Semeru yang berasap di kejauhan. Spot Penanjakan dicapai pukul 04.10.</p>
+                  <ul uk-accordion style="margin-top:10px"><li><a class="uk-accordion-title" href="#">Itinerary singkat</a><div class="uk-accordion-content"><p class="uk-margin-remove">Hari 1 kumpul di Malang · Hari 2 sunrise Penanjakan, kawah, savana · Hari 3 review &amp; editing.</p></div></li></ul>
+                </li>
+                <li>
+                  <div class="dest-meta"><span class="uk-label">6 hari 5 malam</span><span class="uk-label lx-sea">Drone &amp; bawah air</span></div>
+                  <h4>Raja Ampat · Papua Barat Daya</h4>
+                  <p>Gugusan pulau karst berbentuk jamur di atas laguna toska. Sesi drone dipandu di Piaynemo dan Pasir Timbul.</p>
+                  <ul uk-accordion style="margin-top:10px"><li><a class="uk-accordion-title" href="#">Itinerary singkat</a><div class="uk-accordion-content"><p class="uk-margin-remove">Sorong · Waisai · Piaynemo · Kampung Arborek · snorkeling dengan housing kamera · review harian.</p></div></li></ul>
+                </li>
+                <li>
+                  <div class="dest-meta"><span class="uk-label">4 hari 3 malam</span><span class="uk-label lx-sea">Live on board</span></div>
+                  <h4>Labuan Bajo · NTT</h4>
+                  <p>Bukit keemasan Padar, tiga teluk berwarna berbeda, dan kapal pinisi sebagai studio terapung.</p>
+                  <ul uk-accordion style="margin-top:10px"><li><a class="uk-accordion-title" href="#">Itinerary singkat</a><div class="uk-accordion-content"><p class="uk-margin-remove">Naik pinisi · sunrise Padar · Pink Beach · ranger Komodo · sunset Kalong.</p></div></li></ul>
+                </li>
+                <li>
+                  <div class="dest-meta"><span class="uk-label">4 hari 3 malam</span><span class="uk-label lx-sea">Budaya &amp; lanskap</span></div>
+                  <h4>Danau Toba · Sumatera Utara</h4>
+                  <p>Danau vulkanik raksasa, Pulau Samosir, rumah bolon bergonjong, dan kabut pagi di bukit pinus.</p>
+                  <ul uk-accordion style="margin-top:10px"><li><a class="uk-accordion-title" href="#">Itinerary singkat</a><div class="uk-accordion-content"><p class="uk-margin-remove">Parapat · Tuktuk · Huta Siallagan · Bukit Holbung · potret warga dan tenun ulos.</p></div></li></ul>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <div class="row"><h3 class="ph" style="margin:0"><label for="tod">Jam di lokasi</label></h3><span class="uk-badge num" id="todOut" style="padding:0 10px">05.30</span></div>
+              <input class="uk-range" type="range" id="tod" min="0" max="100" step="1" value="16" style="margin-top:10px">
+              <div class="ticks" aria-hidden="true"><span>04.30</span><span>Siang</span><span>19.30</span></div>
+            </div>
+            <div class="row">
+              <div>
+                <h3 class="ph" id="lensLbl">Lensa</h3>
+                <div class="uk-button-group" role="group" aria-labelledby="lensLbl" id="lensGroup">
+                  <button class="uk-button uk-button-default uk-button-small" type="button" data-lens="16" aria-pressed="false">16 mm</button>
+                  <button class="uk-button uk-button-default uk-button-small uk-active" type="button" data-lens="35" aria-pressed="true">35 mm</button>
+                  <button class="uk-button uk-button-default uk-button-small" type="button" data-lens="85" aria-pressed="false">85 mm</button>
+                </div>
+              </div>
+              <label class="switch-row" for="droneEight"><input class="uk-checkbox lx-switch" type="checkbox" id="droneEight"><span>Lintasan angka 8<small>Drone sinematik</small></span></label>
+            </div>
+            <div class="row" style="margin-top:auto">
+              <div><span class="uk-text-small">Mulai dari</span><div class="lx-price" style="margin:0"><b id="destPrice">Rp 2.450.000</b></div></div>
+              <div class="uk-flex uk-flex-wrap" style="gap:8px">
+                <button class="uk-button uk-button-default" type="button" id="snapBtn"><span uk-icon="camera"></span> Ambil foto</button>
+                <a class="uk-button uk-button-primary" href="#daftar" id="bookDest">Pesan kursi</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERITA GULIR ISOMETRIK -->
+  <section class="story" id="perjalanan" aria-label="Perjalanan satu trip Lensa">
+    <div class="story-stage">
+      <canvas id="storyCanvas" role="img" aria-label="Peta isometrik satu trip: tokoh fotografer berjalan mengikuti jalur oranye dari meja pendaftaran, titik kumpul, gunung untuk hunting foto, meja editing, hingga galeri pameran saat halaman digulir"></canvas>
+      <div class="story-fallback" aria-hidden="true">
+        <svg viewBox="0 0 900 360" id="storySvg">
+          <path d="M80 250 L250 130 L450 250 L650 130 L820 250" fill="none" stroke="#f07a3c" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="14 12"/>
+          <g><circle class="node on" cx="80" cy="250" r="34"/><circle class="node" cx="250" cy="130" r="34"/><circle class="node" cx="450" cy="250" r="34"/><circle class="node" cx="650" cy="130" r="34"/><circle class="node" cx="820" cy="250" r="34"/></g>
+        </svg>
+      </div>
+      <div class="story-ui">
+        <div class="uk-container uk-container-large">
+          <div class="story-head">
+            <span class="eyebrow">Satu trip, lima babak</span>
+            <h2>Dari formulir sampai dinding galeri.</h2>
+            <p>Gulir untuk mengikuti Raka, peserta batch Bromo, melewati lima pemberhentian.</p>
+          </div>
+          <div class="story-card" id="storyCard">
+            <progress class="uk-progress" id="storyProg" value="0" max="4" aria-hidden="true" style="margin:0"></progress>
+            <div class="s-labels" aria-hidden="true"><span class="on">Daftar</span><span>Kumpul</span><span>Hunting</span><span>Editing</span><span>Pameran</span></div>
+            <ol class="scene-steps" aria-live="polite">
+              <li class="scene-step on"><div class="n">01</div><h3>Daftar dalam lima menit</h3><p class="muted">Pilih trip, isi level kemampuan dan kamera yang kamu bawa. Mentor membalas dengan daftar perlengkapan pribadi.</p></li>
+              <li class="scene-step"><div class="n">02</div><h3>Kumpul di titik temu</h3><p class="muted">Jip 4×4 menjemput di Malang pukul 01.30. Briefing komposisi dan setelan kamera dilakukan di perjalanan.</p></li>
+              <li class="scene-step"><div class="n">03</div><h3>Hunting di golden hour</h3><p class="muted">Tripod berdiri 20 menit sebelum matahari terbit. Mentor berkeliling membantu bracketing dan filter ND.</p></li>
+              <li class="scene-step"><div class="n">04</div><h3>Editing bersama mentor</h3><p class="muted">Sore hari kita kurasi bersama: memilih frame terkuat, color grading, lalu review empat mata.</p></li>
+              <li class="scene-step"><div class="n">05</div><h3>Pameran karya peserta</h3><p class="muted">Lima foto terbaikmu dicetak fine art dan dipamerkan di galeri mitra di Jakarta selama dua minggu.</p></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALERI (modal mirip lightbox) -->
+  <section class="sec uk-section-muted" data-tone="muted" id="galeri">
+    <div class="uk-container uk-container-large">
+      <div class="sec-head">
+        <div><span class="eyebrow">Karya peserta</span><h2>Diambil oleh peserta, bukan oleh kami.</h2></div>
+        <p>Semua foto di bawah dibuat peserta batch 2025 di trip yang sama yang bisa kamu ikuti. Klik untuk melihat detail dan setelan kameranya.</p>
+      </div>
+      <div class="gal" id="gallery" uk-scrollspy="cls: uk-animation-fade; target: > .shot; delay: 70"></div>
+    </div>
+  </section>
+
+  <!-- STATISTIK + TESTIMONI (slider) -->
+  <section class="sec uk-section-default" data-tone="default" id="testimoni">
+    <div class="uk-container uk-container-large">
+      <div class="lx-stats" id="stats">
+        <div class="lx-stat"><b data-count="1240">0</b><span>alumni sejak 2019</span></div>
+        <div class="lx-stat"><b data-count="38">0</b><span>trip per tahun</span></div>
+        <div class="lx-stat"><b>4,9</b><span>dari 860 ulasan</span></div>
+        <div class="lx-stat"><b data-count="214">0</b><span>karya dipamerkan</span></div>
+      </div>
+      <div class="sec-head" style="margin-bottom:28px">
+        <div><span class="eyebrow">Cerita alumni</span><h2>“Saya baru paham cahaya setelah ikut Lensa.”</h2></div>
+        <p>Geser untuk membaca pengalaman peserta dari berbagai level, dari pemula dengan kamera ponsel sampai fotografer pernikahan.</p>
+      </div>
+      <div uk-slider="finite: true" id="quotes" aria-label="Testimoni peserta" role="region">
+        <div class="uk-slider-container" style="padding:4px 2px">
+          <ul class="uk-slider-items uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m uk-grid">
+            <li><figure class="uk-card uk-card-default quote" data-card style="margin:0"><div class="uk-card-body">
+              <div class="stars" role="img" aria-label="Rating 5 dari 5">★★★★★</div>
+              <blockquote>“Mentornya sabar sekali. Hari kedua saya sudah berani memotret manual, dan foto sunrise Bromo saya masuk pameran.”</blockquote>
+              <figcaption><span class="avatar" style="background:#ef5d2f">DA</span><span><b class="uk-display-block" style="color:var(--lx-ink)">Dewi Anggraini</b><span class="uk-text-small">Guru, Yogyakarta · Bromo 2025</span></span></figcaption>
+            </div></figure></li>
+            <li><figure class="uk-card uk-card-default quote" data-card style="margin:0"><div class="uk-card-body">
+              <div class="stars" role="img" aria-label="Rating 5 dari 5">★★★★★</div>
+              <blockquote>“Live on board di pinisi itu luar biasa. Bangun, keluar kabin, dan Padar sudah ada di depan mata dengan cahaya pagi.”</blockquote>
+              <figcaption><span class="avatar" style="background:#0f8b8d">RS</span><span><b class="uk-display-block" style="color:var(--lx-ink)">Rizky Saputra</b><span class="uk-text-small">Arsitek, Bandung · Labuan Bajo 2025</span></span></figcaption>
+            </div></figure></li>
+            <li><figure class="uk-card uk-card-default quote" data-card style="margin:0"><div class="uk-card-body">
+              <div class="stars" role="img" aria-label="Rating 5 dari 5">★★★★★</div>
+              <blockquote>“Sesi drone di Piaynemo dipandu detail, termasuk izin terbang. Saya pulang dengan portofolio yang akhirnya terasa utuh.”</blockquote>
+              <figcaption><span class="avatar" style="background:#6a4c9c">MT</span><span><b class="uk-display-block" style="color:var(--lx-ink)">Maria Tampubolon</b><span class="uk-text-small">Fotografer lepas, Medan · Raja Ampat</span></span></figcaption>
+            </div></figure></li>
+            <li><figure class="uk-card uk-card-default quote" data-card style="margin:0"><div class="uk-card-body">
+              <div class="stars" role="img" aria-label="Rating 4 dari 5">★★★★☆</div>
+              <blockquote>“Jadwalnya padat dan bangun pagi terus, tapi sepadan. Review empat mata di sore hari adalah bagian favorit saya.”</blockquote>
+              <figcaption><span class="avatar" style="background:#d9902a">BH</span><span><b class="uk-display-block" style="color:var(--lx-ink)">Bagus Hartono</b><span class="uk-text-small">Insinyur, Surabaya · Toba 2025</span></span></figcaption>
+            </div></figure></li>
+            <li><figure class="uk-card uk-card-default quote" data-card style="margin:0"><div class="uk-card-body">
+              <div class="stars" role="img" aria-label="Rating 5 dari 5">★★★★★</div>
+              <blockquote>“Datang cuma bawa ponsel, pulang dengan cara melihat yang berbeda. Kelompoknya kecil, jadi tidak pernah rebutan spot.”</blockquote>
+              <figcaption><span class="avatar" style="background:#2a6fb0">NP</span><span><b class="uk-display-block" style="color:var(--lx-ink)">Nadia Putri</b><span class="uk-text-small">Mahasiswi, Makassar · Bromo 2025</span></span></figcaption>
+            </div></figure></li>
+          </ul>
+        </div>
+        <div class="slider-nav">
+          <ul class="uk-slider-nav uk-dotnav" aria-label="Pilih testimoni"></ul>
+          <div class="uk-flex" style="gap:8px">
+            <a class="uk-slidenav" href="#" uk-slidenav-previous uk-slider-item="previous" aria-label="Testimoni sebelumnya"></a>
+            <a class="uk-slidenav" href="#" uk-slidenav-next uk-slider-item="next" aria-label="Testimoni berikutnya"></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HARGA -->
+  <section class="sec uk-section-muted" data-tone="muted" id="harga">
+    <div class="uk-container uk-container-large">
+      <div class="sec-head">
+        <div><span class="eyebrow">Harga &amp; jadwal</span><h2>Semua sudah termasuk, kecuali kameramu.</h2></div>
+        <p>Harga mencakup penginapan, transportasi lokal, makan, izin lokasi, mentor, dan cetak karya. Daftar berdua untuk hemat 8%.</p>
+      </div>
+      <div class="uk-flex uk-flex-center" style="margin-bottom:30px">
+        <ul class="uk-subnav uk-subnav-pill" uk-switcher id="periodPills" aria-label="Jumlah peserta">
+          <li><a href="#" data-k="1">Per orang</a></li><li><a href="#" data-k="0.92">Daftar berdua −8%</a></li>
+        </ul>
+      </div>
+      <div class="uk-grid-match uk-child-width-1-3@m" uk-grid uk-scrollspy="cls: uk-animation-slide-bottom-small; target: > div > .uk-card; delay: 90">
+        <div><article class="uk-card uk-card-default plan" data-card><div class="uk-card-body">
+          <div><h3 class="uk-card-title uk-margin-remove">Akhir Pekan</h3><p class="uk-margin-small-top uk-margin-remove-bottom">Bromo, 3 hari 2 malam. Cocok untuk pemula.</p></div>
+          <div class="lx-price"><b data-price="2450000">Rp 2.450.000</b><span>/ orang</span></div>
+          <ul><li><span uk-icon="check"></span>Jip 4×4 dan penginapan di Cemoro Lawang</li><li><span uk-icon="check"></span>2 sesi golden hour + 1 sesi milky way</li><li><span uk-icon="check"></span>Review karya bersama mentor</li></ul>
+          <a class="uk-button uk-button-default" href="#daftar" data-plan="bromo">Pilih Akhir Pekan</a>
+        </div></article></div>
+        <div><article class="uk-card uk-card-default plan hot" data-card><div class="uk-card-body">
+          <div class="uk-flex uk-flex-between uk-flex-middle uk-flex-wrap" style="gap:8px"><h3 class="uk-card-title uk-margin-remove">Ekspedisi</h3><span class="uk-label">Paling dipilih</span></div>
+          <p class="uk-margin-remove">Labuan Bajo di atas pinisi, 4 hari 3 malam.</p>
+          <div class="lx-price"><b data-price="7800000">Rp 7.800.000</b><span>/ orang</span></div>
+          <ul><li><span uk-icon="check"></span>Kabin pinisi berpendingin, makan di kapal</li><li><span uk-icon="check"></span>Sunrise Padar dan sunset Pulau Kalong</li><li><span uk-icon="check"></span>Sesi drone berizin + editing harian</li><li><span uk-icon="check"></span>Cetak fine art A3 dan pameran</li></ul>
+          <a class="uk-button uk-button-primary" href="#daftar" data-plan="bajo">Pilih Ekspedisi</a>
+        </div></article></div>
+        <div><article class="uk-card uk-card-default plan" data-card><div class="uk-card-body">
+          <div><h3 class="uk-card-title uk-margin-remove">Kelas Privat</h3><p class="uk-margin-small-top uk-margin-remove-bottom">Mentor pribadi di lokasi pilihanmu.</p></div>
+          <div class="lx-price"><b data-price="1250000">Rp 1.250.000</b><span>/ hari</span></div>
+          <ul><li><span uk-icon="check"></span>Jadwal fleksibel, 1 sampai 3 peserta</li><li><span uk-icon="check"></span>Rencana spot dan perizinan</li><li><span uk-icon="check"></span>Sesi editing daring setelah trip</li></ul>
+          <a class="uk-button uk-button-default" href="#daftar" data-plan="privat">Pilih Kelas Privat</a>
+        </div></article></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec uk-section-default" data-tone="default" id="faq">
+    <div class="uk-container" style="max-width:860px">
+      <div style="margin-bottom:26px"><span class="eyebrow">FAQ</span><h2 style="font-size:clamp(2rem,4.2vw,3.1rem);font-weight:800;line-height:1.05;margin:12px 0 0">Pertanyaan yang sering masuk</h2></div>
+      <ul uk-accordion="collapsible: true">
+        <li class="uk-open"><a class="uk-accordion-title" href="#">Saya pemula dan hanya punya kamera ponsel. Boleh ikut?</a><div class="uk-accordion-content"><p>Boleh. Trip Akhir Pekan dirancang untuk pemula. Kamu juga bisa menyewa kamera mirrorless dan lensa dari kami mulai Rp 175.000 per hari.</p></div></li>
+        <li><a class="uk-accordion-title" href="#">Bagaimana kalau cuaca buruk saat golden hour?</a><div class="uk-accordion-content"><p>Setiap trip punya hari cadangan. Kalau sunrise tertutup awan, mentor memindahkan sesi ke pagi berikutnya atau ke spot alternatif yang tetap fotogenik.</p></div></li>
+        <li><a class="uk-accordion-title" href="#">Apakah drone boleh dibawa?</a><div class="uk-accordion-content"><p>Boleh di lokasi yang mengizinkan. Kami mengurus izin terbang di Raja Ampat dan Labuan Bajo, dan menjelaskan aturan di Taman Nasional Bromo Tengger Semeru.</p></div></li>
+        <li><a class="uk-accordion-title" href="#">Bisakah membayar dengan cicilan?</a><div class="uk-accordion-content"><p>Bisa. Uang muka 30% saat mendaftar, sisanya paling lambat 21 hari sebelum berangkat. Cicilan 0% tersedia hingga 6 bulan.</p></div></li>
+        <li><a class="uk-accordion-title" href="#">Bagaimana kebijakan pembatalan?</a><div class="uk-accordion-content"><p>Pembatalan lebih dari 30 hari sebelum berangkat dikembalikan penuh. Setelahnya, kursi bisa dialihkan ke teman atau ke trip lain tanpa biaya.</p></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CTA + FORM -->
+  <section class="sec uk-section-default" data-tone="default" id="daftar" style="padding-top:0">
+    <div class="uk-container uk-container-large">
+      <div class="cta">
+        <div>
+          <span class="eyebrow">Daftar trip</span>
+          <h2>Simpan kursimu sebelum kuota penuh.</h2>
+          <p>Isi formulir singkat ini. Tim Lensa menghubungimu lewat WhatsApp dalam 1×24 jam untuk konfirmasi jadwal dan uang muka.</p>
+          <ul class="ticks-list"><li><span uk-icon="check"></span>Tanpa biaya pendaftaran</li><li><span uk-icon="check"></span>Uang muka 30%, cicilan 0%</li><li><span uk-icon="check"></span>Kuota maksimal 12 orang per trip</li></ul>
+        </div>
+        <form id="bookForm" class="uk-form-stacked" novalidate>
+          <div class="uk-grid-small uk-child-width-1-2@s" uk-grid>
+            <div><label class="uk-form-label" for="fName">Nama lengkap</label><div class="uk-form-controls"><input class="uk-input" id="fName" name="nama" type="text" autocomplete="name" required minlength="3" placeholder="Raka Pratama"><div class="field-msg" id="fNameMsg" aria-live="polite"></div></div></div>
+            <div><label class="uk-form-label" for="fPhone">Nomor WhatsApp</label><div class="uk-form-controls"><input class="uk-input" id="fPhone" name="wa" type="tel" autocomplete="tel" required pattern="^(\+62|0)8[0-9]{8,12}$" placeholder="0812xxxxxxxx"><div class="field-msg" id="fPhoneMsg" aria-live="polite"></div></div></div>
+            <div><label class="uk-form-label" for="fTrip">Trip</label><div class="uk-form-controls"><select class="uk-select" id="fTrip" name="trip"><option value="bromo">Bromo · Akhir Pekan</option><option value="raja">Raja Ampat · Ekspedisi</option><option value="bajo">Labuan Bajo · Ekspedisi</option><option value="toba">Danau Toba · Budaya</option><option value="privat">Kelas Privat</option></select></div></div>
+            <div><label class="uk-form-label" for="fLevel">Pengalaman</label><div class="uk-form-controls"><select class="uk-select" id="fLevel" name="level"><option>Pemula (ponsel / mode otomatis)</option><option>Menengah (sudah manual)</option><option>Mahir (pernah dibayar)</option></select></div></div>
+            <div class="uk-width-1-1"><label class="uk-form-label" for="fNote">Catatan</label><div class="uk-form-controls"><textarea class="uk-textarea" id="fNote" name="catatan" rows="2" placeholder="Contoh: berangkat berdua, perlu sewa lensa tele"></textarea></div></div>
+            <div class="uk-width-1-1"><label class="uk-flex" style="gap:10px;align-items:flex-start;font-size:.88rem;cursor:pointer"><input class="uk-checkbox" type="checkbox" id="fAgree" required style="margin-top:2px;flex:0 0 auto"> <span>Saya setuju dihubungi tim Lensa lewat WhatsApp.</span></label><div class="field-msg" id="fAgreeMsg" aria-live="polite"></div></div>
+            <div class="uk-width-1-1"><button class="uk-button uk-button-primary uk-width-1-1 uk-button-large" type="submit">Kirim pendaftaran</button></div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site uk-section-default" data-tone="default">
+  <div class="uk-container uk-container-large">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="#top"><svg aria-hidden="true"><use href="#logo"/></svg>Lensa</a>
+        <p style="max-width:30em;margin-top:14px;font-size:.92rem">Trip foto dan workshop fotografi untuk grup kecil, keliling Indonesia sejak 2019. Kantor: Jl. Cendana 18, Malang.</p>
+      </div>
+      <div><h4>Trip</h4><ul><li><a href="#studio">Bromo</a></li><li><a href="#studio">Raja Ampat</a></li><li><a href="#studio">Labuan Bajo</a></li><li><a href="#studio">Danau Toba</a></li></ul></div>
+      <div><h4>Lensa</h4><ul><li><a href="#fitur">Tentang kami</a></li><li><a href="#galeri">Galeri alumni</a></li><li><a href="#harga">Harga</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+      <div><h4>Kontak</h4><ul><li><a href="#daftar">Daftar trip</a></li><li><span>halo@lensa.example</span></li><li><span class="num">+62 812 0000 0000</span></li></ul></div>
+    </div>
+    <hr style="border-color:var(--lx-line);margin:34px 0 18px">
+    <div class="uk-flex uk-flex-between uk-flex-wrap" style="gap:10px;font-size:.84rem">
+      <span>© 2026 Lensa. Merek fiktif untuk keperluan template.</span>
+      <span>Dibangun dengan UIkit + three.js</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Modal foto (mirip lightbox) -->
+<div id="shotModal" class="uk-flex-top" uk-modal>
+  <div class="uk-modal-dialog uk-margin-auto-vertical shot-modal" style="width:min(920px,calc(100vw - 24px))">
+    <button class="uk-modal-close-default" type="button" uk-close aria-label="Tutup"></button>
+    <div id="shotMedia"></div>
+    <div class="uk-modal-body" style="padding:20px 24px">
+      <h3 class="uk-modal-title" id="shotTitle" style="font-size:1.5rem;margin:0 0 6px">Judul</h3>
+      <p id="shotBy" style="margin:0 0 12px"></p>
+      <div class="exif" id="shotExif"></div>
+    </div>
+  </div>
+</div>
+
+<template id="islandFallback">
+  <svg viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice" role="presentation">
+    <defs><linearGradient id="fbSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d5a9e"/><stop offset=".65" stop-color="#f7a27a"/><stop offset="1" stop-color="#ffd9b0"/></linearGradient></defs>
+    <rect width="600" height="600" fill="url(#fbSky)"/>
+    <circle cx="430" cy="300" r="46" fill="#ffe7b8" opacity=".9"/>
+    <g fill="#fff" opacity=".85"><ellipse cx="120" cy="470" rx="140" ry="34"/><ellipse cx="420" cy="500" rx="190" ry="40"/><ellipse cx="300" cy="540" rx="260" ry="40"/></g>
+    <path d="M150 360 L300 360 L250 470 L200 470Z" fill="#6f5a4a"/><ellipse cx="225" cy="360" rx="80" ry="18" fill="#cdbb9a"/>
+    <path d="M175 360 L210 300 L240 300 L275 360Z" fill="#8f8379"/><path d="M380 330 L470 330 L440 410 L410 410Z" fill="#6f5a4a"/><ellipse cx="425" cy="330" rx="48" ry="11" fill="#2bb3c0"/>
+    <g fill="#4f8a4a"><circle cx="410" cy="318" r="10"/><circle cx="440" cy="322" r="8"/></g>
+  </svg>
+</template>
+
+<script type="module">
+/* ================= UI (UIkit) ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const rmq = matchMedia('(prefers-reduced-motion: reduce)');
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const fmtRp = n => 'Rp ' + Math.round(n).toLocaleString('id-ID');
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const bus = new EventTarget();
+window.__lensa = { bus };
+const notify = (message, status = 'success') => UIkit.notification({ message: esc(message), status, pos: 'top-center', timeout: 4200 });
+
+/* --- tema: kelas inverse UIkit (section/card default <-> secondary) + token --- */
+const root = document.documentElement;
+function applyTone(dark){
+  $$('[data-tone]').forEach(el => {
+    const tone = el.dataset.tone;
+    el.classList.toggle('uk-section-default', !dark && tone === 'default');
+    el.classList.toggle('uk-section-muted', !dark && tone === 'muted');
+    el.classList.toggle('uk-section-secondary', dark);
+    el.classList.toggle('lx-alt', dark && tone === 'muted');
+  });
+  $$('[data-card]').forEach(el => { el.classList.toggle('uk-card-default', !dark); el.classList.toggle('uk-card-secondary', dark); });
+  $('.lx-nav').classList.toggle('uk-light', dark);
+  $('#shotModal .uk-modal-dialog').classList.toggle('uk-light', dark);
+}
+function setTheme(t, save = true){
+  if (t !== 'dark') t = 'light';
+  root.setAttribute('data-theme', t); applyTone(t === 'dark');
+  $('meta[name="theme-color"]').content = t === 'dark' ? '#0c1322' : '#fbf8f4';
+  if (save) try { localStorage.setItem('lensa-theme', t); } catch (e) {}
+  bus.dispatchEvent(new CustomEvent('theme', { detail: t }));
+}
+setTheme(root.getAttribute('data-theme'), false);
+$('#themeBtn').addEventListener('click', () => setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+$$('#offnav a').forEach(a => a.addEventListener('click', () => UIkit.offcanvas('#offnav').hide()));
+
+/* --- data destinasi --- */
+const DEST = [
+  { id: 'bromo', name: 'Bromo', prov: 'Jawa Timur', price: 2450000, days: 12, trip: 'bromo' },
+  { id: 'raja', name: 'Raja Ampat', prov: 'Papua Barat Daya', price: 14900000, days: 26, trip: 'raja' },
+  { id: 'bajo', name: 'Labuan Bajo', prov: 'NTT', price: 7800000, days: 19, trip: 'bajo' },
+  { id: 'toba', name: 'Danau Toba', prov: 'Sumatera Utara', price: 4650000, days: 33, trip: 'toba' },
+];
+const state = { dest: 0, tod: 16, lens: 35, eight: false };
+window.__lensa.state = state;
+const pad = n => String(n).padStart(2, '0');
+function todHours(v){ return 4.5 + v / 100 * 15; }
+function todLabel(v){
+  const h = todHours(v), hh = Math.floor(h), mm = Math.round((h - hh) * 60 / 10) * 10;
+  const t = `${pad(hh + (mm === 60 ? 1 : 0))}.${pad(mm === 60 ? 0 : mm)}`;
+  const tag = h < 5.4 ? 'Blue hour' : h < 7 ? 'Golden hour' : h < 10 ? 'Pagi' : h < 15 ? 'Siang terik' : h < 17.2 ? 'Sore' : h < 18.4 ? 'Golden hour' : 'Blue hour';
+  return { t, tag };
+}
+
+/* --- countdown UIkit: tanggal dihitung relatif supaya selalu di masa depan --- */
+const cdEl = $('#heroCountdown');
+let cdDest = -1;
+function setCountdown(i){
+  if (cdDest === i) return; cdDest = i;
+  const d = new Date(); d.setDate(d.getDate() + DEST[i].days); d.setHours(1, 30, 0, 0);
+  const c = UIkit.getComponent(cdEl, 'countdown'); if (c) c.$destroy();
+  UIkit.countdown(cdEl, { date: d.toISOString() });
+  $('#cdDest').textContent = `${DEST[i].name} · ${DEST[i].prov}`;
+}
+
+/* --- sinkronisasi kontrol --- */
+const heroPills = $('#heroPills'), destTabs = $('#destTabs');
+function syncControls(from){
+  // tampilkan tujuan yang sama di switcher lain, setelah komponen pemicu selesai memperbarui indeksnya
+  setTimeout(() => {
+    const hs = UIkit.switcher(heroPills), ts = UIkit.tab(destTabs);
+    if (from !== 'hero' && hs && hs.index() !== state.dest) hs.show(state.dest);
+    if (from !== 'tab' && ts && ts.index() !== state.dest) ts.show(state.dest);
+  });
+  $('#tod').value = state.tod; $('#heroTod').value = state.tod;
+  $('#droneEight').checked = state.eight;
+  $$('#lensGroup [data-lens]').forEach(b => { const on = +b.dataset.lens === state.lens; b.classList.toggle('uk-active', on); b.setAttribute('aria-pressed', on); });
+}
+function readouts(){
+  const d = DEST[state.dest], L = todLabel(state.tod);
+  $('#heroChip').textContent = `${d.name} · ${d.prov}`;
+  $('#prevChip').textContent = `${d.name} · lensa ${state.lens} mm`;
+  $('#heroTime').textContent = $('#prevTime').textContent = `${L.t} · ${L.tag}`;
+  $('#todOut').textContent = $('#heroTodOut').textContent = L.t;
+  $('#destPrice').textContent = fmtRp(d.price);
+  $('#tod').setAttribute('aria-valuetext', `${L.t}, ${L.tag}`); $('#heroTod').setAttribute('aria-valuetext', `${L.t}, ${L.tag}`);
+  setCountdown(state.dest);
+}
+function emit(){ readouts(); bus.dispatchEvent(new CustomEvent('state', { detail: state })); }
+function onSwitch(container, from){
+  container.addEventListener('show', e => {
+    if (e.target.parentElement !== container) return;
+    const i = [...container.children].indexOf(e.target);
+    if (i < 0 || i === state.dest) return;
+    state.dest = i; syncControls(from); emit();
+  });
+}
+onSwitch($('#heroSw'), 'hero'); onSwitch($('#destSw'), 'tab');
+// klik langsung pada item juga mengubah state (tidak bergantung pada urutan event komponen)
+[[heroPills, 'hero'], [destTabs, 'tab']].forEach(([list, from]) => list.addEventListener('click', e => {
+  const li = e.target.closest('li'); if (!li || li.parentElement !== list) return;
+  const i = [...list.children].indexOf(li); if (i < 0 || i === state.dest) return;
+  state.dest = i; syncControls(from); emit();
+}));
+['#tod', '#heroTod'].forEach(s => $(s).addEventListener('input', e => { state.tod = +e.target.value; syncControls(); emit(); }));
+$('#droneEight').addEventListener('change', e => { state.eight = e.target.checked; emit(); notify(state.eight ? 'Drone beralih ke lintasan angka 8 sinematik.' : 'Drone kembali mengorbit pulau.', 'primary'); });
+$$('#lensGroup [data-lens]').forEach(b => b.addEventListener('click', () => { state.lens = +b.dataset.lens; syncControls(); emit(); }));
+$('#bookDest').addEventListener('click', () => { $('#fTrip').value = DEST[state.dest].trip; });
+$$('[data-plan]').forEach(a => a.addEventListener('click', () => { $('#fTrip').value = a.dataset.plan; }));
+syncControls(); readouts();
+
+/* --- harga: per orang / berdua --- */
+$('#periodPills').addEventListener('click', e => {
+  const a = e.target.closest('a[data-k]'); if (!a) return; const k = +a.dataset.k;
+  $$('[data-price]').forEach(b => b.textContent = fmtRp(Math.round(+b.dataset.price * k / 1000) * 1000));
+});
+
+/* --- statistik berhitung --- */
+const statIO = new IntersectionObserver(es => es.forEach(en => {
+  if (!en.isIntersecting) return; statIO.unobserve(en.target);
+  $$('[data-count]', en.target).forEach(el => {
+    const end = +el.dataset.count, show = v => el.textContent = Math.round(v).toLocaleString('id-ID');
+    if (rmq.matches) return show(end);
+    const t0 = performance.now(); const step = now => { const p = Math.min(1, (now - t0) / 1400); show(end * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); }; requestAnimationFrame(step);
+  });
+}), { threshold: .3 });
+statIO.observe($('#stats'));
+
+/* --- galeri: ilustrasi SVG buatan sendiri (tanpa gambar eksternal) + modal UIkit --- */
+const SHOTS = [
+  { k: 'volcano', title: 'Lautan awan Bromo', by: 'Dewi Anggraini', loc: 'Penanjakan, Bromo', exif: ['f/8', '1/250 s', 'ISO 100', '70 mm'], sky: ['#3b4f8f', '#f59a6b', '#ffd7a8'], cls: 'w2 h2' },
+  { k: 'karst', title: 'Piaynemo dari udara', by: 'Maria Tampubolon', loc: 'Raja Ampat', exif: ['f/2.8', '1/1000 s', 'ISO 100', 'Drone'], sky: ['#3e8fd8', '#9fd6ee', '#dff3fa'], cls: '' },
+  { k: 'hills', title: 'Tiga teluk Padar', by: 'Rizky Saputra', loc: 'Pulau Padar, NTT', exif: ['f/11', '1/125 s', 'ISO 200', '16 mm'], sky: ['#f08a5d', '#f7c08a', '#fde7c3'], cls: '' },
+  { k: 'lake', title: 'Kabut pagi Samosir', by: 'Bagus Hartono', loc: 'Bukit Holbung, Toba', exif: ['f/5.6', '1/60 s', 'ISO 400', '35 mm'], sky: ['#8aa7c4', '#c9d6df', '#eef1f2'], cls: 'w2' },
+  { k: 'stars', title: 'Bima Sakti di kaldera', by: 'Nadia Putri', loc: 'Savana Bromo', exif: ['f/1.8', '20 s', 'ISO 3200', '14 mm'], sky: ['#060b1d', '#17214a', '#3a2f5e'], cls: '' },
+  { k: 'boat', title: 'Pinisi saat senja', by: 'Rizky Saputra', loc: 'Pulau Kalong, NTT', exif: ['f/4', '1/500 s', 'ISO 100', '85 mm'], sky: ['#3a2a5e', '#e2626a', '#ffb070'], cls: '' },
+];
+function shotSVG(s, i){
+  const id = 'g' + i + Math.random().toString(36).slice(2, 6);
+  const [a, b, c] = s.sky;
+  let body = '';
+  if (s.k === 'volcano') body = `<circle cx="470" cy="190" r="34" fill="#fff1c9" opacity=".95"/><path d="M0 250 L120 200 L220 240 L330 140 L360 140 L470 230 L640 210 L640 400 L0 400Z" fill="#5d4a5e" opacity=".55"/><path d="M60 300 L230 170 L270 170 L420 300Z" fill="#6c5a52"/><path d="M200 300 L262 220 L300 230 L360 300Z" fill="#3e3a3a"/><path d="M0 300 C120 270 220 320 340 290 S560 300 640 280 L640 400 L0 400Z" fill="#fff" opacity=".9"/><path d="M0 340 C140 320 260 360 400 330 S560 350 640 330 L640 400 L0 400Z" fill="#f4e6dc"/><g fill="#fff" opacity=".7"><path d="M250 160 c-14 -20 10 -30 -2 -52" stroke="#fff" stroke-width="10" fill="none" stroke-linecap="round" opacity=".6"/></g>`;
+  if (s.k === 'karst') body = `<rect y="0" width="640" height="400" fill="#27b7c4"/><path d="M0 0 H640 V120 C520 160 420 90 300 130 S80 110 0 150Z" fill="#1d8fb0" opacity=".6"/>${[[120,150,60],[260,230,46],[420,170,70],[530,270,40],[340,320,52],[90,300,38]].map(([x,y,r])=>`<ellipse cx="${x}" cy="${y+8}" rx="${r*1.1}" ry="${r*.5}" fill="#7be0d6" opacity=".7"/><ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r*.72}" fill="#2f7d3c"/><ellipse cx="${x-r*.25}" cy="${y-r*.2}" rx="${r*.5}" ry="${r*.32}" fill="#4fa04a"/>`).join('')}`;
+  if (s.k === 'hills') body = `<circle cx="140" cy="120" r="30" fill="#fff4d6"/><path d="M0 230 L640 230 L640 400 L0 400Z" fill="#2fa7b8"/><path d="M0 260 C80 170 150 160 230 230 C300 150 380 120 470 210 C530 170 600 180 640 220 L640 400 L0 400Z" fill="#b59a4a"/><path d="M0 300 C90 230 170 240 250 300 C330 230 420 220 500 290 C560 250 610 260 640 280 L640 400 L0 400Z" fill="#8f7a35"/><path d="M180 320 C230 300 280 300 330 330 C300 350 220 350 180 320Z" fill="#f5a3a3"/><path d="M380 330 C430 300 480 310 520 340 C480 360 420 360 380 330Z" fill="#f2e2b8"/>`;
+  if (s.k === 'lake') body = `<path d="M0 210 L640 210 L640 400 L0 400Z" fill="#6d8fa6"/><path d="M60 230 C200 200 380 205 520 240 C400 260 200 262 60 230Z" fill="#7b9a6a"/><path d="M0 150 L90 110 L170 150 L260 100 L360 150 L460 120 L560 160 L640 130 L640 215 L0 215Z" fill="#7d93a8" opacity=".7"/><g transform="translate(300 160)"><rect x="-40" y="20" width="80" height="34" fill="#5a3a2a"/><path d="M-62 26 C-40 -14 -20 0 0 -6 C20 0 40 -14 62 26 Z" fill="#3b2a24"/><path d="M-22 30 h44 v6 h-44z" fill="#e2c26a"/></g><rect width="640" height="400" fill="#fff" opacity=".18"/>`;
+  if (s.k === 'stars') body = `${Array.from({length:70},(_,k)=>`<circle cx="${(k*97)%640}" cy="${(k*53)%260}" r="${k%7?1:1.8}" fill="#fff" opacity="${.4+((k*31)%60)/100}"/>`).join('')}<path d="M80 0 C220 120 380 140 640 60 L640 120 C400 210 200 190 40 30Z" fill="#b9a6ff" opacity=".18"/><path d="M0 300 L150 230 L210 250 L330 170 L360 170 L480 260 L640 240 L640 400 L0 400Z" fill="#0a0d18"/><circle cx="420" cy="310" r="4" fill="#ffcc7a"/><path d="M420 310 l-30 60 M420 310 l30 60 M420 310 v62" stroke="#0a0d18" stroke-width="4"/>`;
+  if (s.k === 'boat') body = `<circle cx="320" cy="250" r="54" fill="#ffd38a"/><path d="M0 250 L640 250 L640 400 L0 400Z" fill="#3a2d58"/><path d="M0 270 H640" stroke="#ffb070" stroke-width="3" opacity=".6"/><g transform="translate(320 250)"><path d="M-90 0 L90 0 L70 22 L-80 22Z" fill="#1d1426"/><path d="M-30 0 V-110 M30 0 V-95" stroke="#1d1426" stroke-width="4"/><path d="M-30 -104 L-30 -8 L-88 -8Z M30 -90 L30 -8 L80 -8Z" fill="#1d1426" opacity=".92"/></g><path d="M160 300 h320" stroke="#ffd38a" stroke-width="4" opacity=".5"/><path d="M200 320 h240" stroke="#ffd38a" stroke-width="3" opacity=".35"/>`;
+  return `<svg viewBox="0 0 640 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset=".6" stop-color="${b}"/><stop offset="1" stop-color="${c}"/></linearGradient></defs><rect width="640" height="400" fill="url(#${id})"/>${body}</svg>`;
+}
+const gal = $('#gallery');
+gal.innerHTML = SHOTS.map((s, i) => `<button type="button" class="shot ${s.cls}" data-shot="${i}" aria-label="Buka foto: ${esc(s.title)} oleh ${esc(s.by)}">${shotSVG(s, i)}<span class="cap"><span>${esc(s.title)}</span><span>${esc(s.exif[0])} · ${esc(s.exif[1])}</span></span></button>`).join('');
+function openShot({ media, title, by, exif }){
+  $('#shotMedia').innerHTML = media; $('#shotTitle').textContent = title; $('#shotBy').textContent = by;
+  $('#shotExif').innerHTML = exif.map(x => `<span class="uk-label lx-soft num">${esc(x)}</span>`).join('');
+  UIkit.modal('#shotModal').show();
+}
+gal.addEventListener('click', e => {
+  const b = e.target.closest('[data-shot]'); if (!b) return; const s = SHOTS[+b.dataset.shot];
+  openShot({ media: shotSVG(s, 'm' + b.dataset.shot), title: s.title, by: `${s.by} · ${s.loc}`, exif: s.exif });
+});
+
+/* --- formulir pendaftaran: validasi dengan kelas UIkit --- */
+const form = $('#bookForm');
+function check(el, msgEl, msg){
+  const ok = el.checkValidity();
+  if (el.type !== 'checkbox') { el.classList.toggle('uk-form-danger', !ok); el.classList.toggle('uk-form-success', ok); }
+  el.setAttribute('aria-invalid', ok ? 'false' : 'true');
+  if (msgEl) msgEl.textContent = ok ? '' : msg;
+  return ok;
+}
+const rules = [[$('#fName'), $('#fNameMsg'), 'Tulis nama lengkap, minimal 3 huruf.'], [$('#fPhone'), $('#fPhoneMsg'), 'Gunakan format 08xxxxxxxxxx atau +628xxxxxxxxx.'], [$('#fAgree'), $('#fAgreeMsg'), 'Centang persetujuan agar kami bisa menghubungimu.']];
+rules.forEach(([el, m, msg]) => {
+  el.addEventListener(el.type === 'checkbox' ? 'change' : 'blur', () => check(el, m, msg));
+  // pesan error hilang begitu isian valid saat mengetik, supaya tata letak tidak bergeser ketika fokus pindah
+  if (el.type !== 'checkbox') el.addEventListener('input', () => { if (el.getAttribute('aria-invalid') === 'true') check(el, m, msg); });
+});
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const ok = rules.map(r => check(...r)).every(Boolean);
+  if (!ok) { rules.find(([el]) => !el.checkValidity())[0].focus(); notify('Periksa lagi kolom yang ditandai merah.', 'danger'); return; }
+  const nama = $('#fName').value.trim().split(/\s+/)[0], trip = $('#fTrip').selectedOptions[0].text;
+  notify(`Terima kasih, ${nama}! Pendaftaran ${trip} kami konfirmasi lewat WhatsApp.`);
+  form.reset(); $$('.uk-form-success', form).forEach(x => x.classList.remove('uk-form-success'));
+});
+
+/* ================= 3D ================= */
+function webglOK(){ try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch (e) { return false; } }
+function showFallbacks(){
+  const tpl = $('#islandFallback');
+  ['#heroStage', '#prevStage'].forEach(s => { const st = $(s); st.classList.add('no-webgl'); const fb = st.querySelector('.fallback'); if (!fb.firstChild) fb.append(tpl.content.cloneNode(true)); });
+  $('#perjalanan').classList.add('no-webgl');
+  $('#snapBtn').disabled = true;
+}
+let THREE, RoundedBoxGeometry;
+try {
+  if (!webglOK()) throw new Error('no-webgl');
+  THREE = await import('three');
+  ({ RoundedBoxGeometry } = await import('three/addons/geometries/RoundedBoxGeometry.js'));
+} catch (err) { showFallbacks(); }
+
+const storySec = $('#perjalanan');
+function storyProgress(){ const r = storySec.getBoundingClientRect(); return clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1); }
+
+if (THREE) {
+  const DPR = () => Math.min(window.devicePixelRatio || 1, 2);
+  const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+  const frames = window.__lensa.frames = {};
+  const isDark = () => root.getAttribute('data-theme') === 'dark';
+
+  /* loop render: berhenti saat di luar layar / tab tersembunyi; sesuai permintaan saat reduced-motion */
+  function createLoop(el, frame, continuous){
+    let visible = false, raf = 0, last = 0, pending = true, aliveUntil = 0;
+    const L = { request(){ pending = true; kick(); }, keepAlive(ms){ aliveUntil = Math.max(aliveUntil, performance.now() + ms); kick(); } };
+    const run = () => visible && !document.hidden;
+    function tick(now){
+      if (!run()) { raf = 0; last = 0; return; }
+      raf = -1;
+      const dt = last ? Math.min((now - last) / 1000, .05) : .016; last = now; pending = false;
+      frames[el.id] = (frames[el.id] || 0) + 1;
+      frame(dt, now / 1000);
+      if (continuous() || pending || now < aliveUntil) raf = requestAnimationFrame(tick); else { raf = 0; last = 0; }
+    }
+    function kick(){ if (!raf && run()) raf = requestAnimationFrame(tick); }
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) { pending = true; kick(); } }, { rootMargin: '80px' }).observe(el);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) { pending = true; kick(); } });
+    rmq.addEventListener('change', () => L.request());
+    return L;
+  }
+  function makeRenderer(canvas){
+    const r = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+    r.setPixelRatio(DPR()); r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+    r.toneMapping = THREE.ACESFilmicToneMapping; r.outputColorSpace = THREE.SRGBColorSpace;
+    return r;
+  }
+  function watchSize(el, renderer, onSize){
+    const apply = () => { const w = Math.max(1, el.clientWidth), h = Math.max(1, el.clientHeight); renderer.setPixelRatio(DPR()); renderer.setSize(w, h, false); onSize(w, h); };
+    new ResizeObserver(apply).observe(el); apply();
+  }
+  const std = (c, rough = .85, extra = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0, ...extra });
+  const flat = (c, rough = .9, extra = {}) => std(c, rough, { flatShading: true, ...extra });
+  function rng(seed){ return () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+  const hash3 = (x, y, z) => { const s = Math.sin(x * 12.9898 + y * 78.233 + z * 37.719) * 43758.5453; return s - Math.floor(s); };
+  function jitter(geo, amt, keepTop){
+    const p = geo.attributes.position;
+    for (let i = 0; i < p.count; i++) {
+      const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+      if (keepTop !== undefined && y >= keepTop) continue;
+      const h = hash3(+x.toFixed(3), +y.toFixed(3), +z.toFixed(3)), h2 = hash3(+z.toFixed(3), +x.toFixed(3), +y.toFixed(3));
+      p.setXYZ(i, x + (h - .5) * amt, y + (h2 - .5) * amt * .6, z + (h2 - .5) * amt);
+    }
+    geo.computeVertexNormals(); return geo;
+  }
+  function softTexture(){
+    const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d');
+    const g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.4, 'rgba(255,255,255,.45)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+    x.fillStyle = g; x.fillRect(0, 0, 64, 64); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+  }
+  const SOFT = softTexture();
+
+  /* ---- waktu: langit, matahari, cahaya ---- */
+  const KEYS = [ // jam, langit atas, cakrawala, warna matahari, intensitas matahari, malam
+    [4.5, '#0f1733', '#3b3567', '#6d7bc4', .25, 1],
+    [5.4, '#26346b', '#c0707a', '#ff9a6b', .6, .55],
+    [6.2, '#3f63a8', '#ffb07a', '#ffb27a', 1.5, .1],
+    [8.0, '#4d8fd9', '#bfe1f4', '#fff0d8', 2.4, 0],
+    [12, '#3a86dc', '#d6eefb', '#ffffff', 2.9, 0],
+    [15.5, '#4b8ed6', '#e4ecf0', '#fff1d6', 2.5, 0],
+    [17.4, '#4c5d9e', '#ffb06e', '#ffb070', 1.6, .05],
+    [18.4, '#3a3170', '#ff7f6a', '#ff8a5b', .7, .35],
+    [19.5, '#0d1430', '#3e2d5c', '#6d7bc4', .25, 1],
+  ].map(([h, a, b, s, i, n]) => ({ h, top: new THREE.Color(a), hor: new THREE.Color(b), sun: new THREE.Color(s), i, n }));
+  function skyAt(v, out){
+    const h = todHours(v); let k = 0; while (k < KEYS.length - 2 && h > KEYS[k + 1].h) k++;
+    const A = KEYS[k], B = KEYS[k + 1], f = smooth(0, 1, clamp((h - A.h) / (B.h - A.h), 0, 1));
+    out.top.copy(A.top).lerp(B.top, f); out.hor.copy(A.hor).lerp(B.hor, f); out.sun.copy(A.sun).lerp(B.sun, f);
+    out.i = A.i + (B.i - A.i) * f; out.night = A.n + (B.n - A.n) * f;
+    const ang = (h - 6) / 12 * Math.PI; // 0 = timur, pi = barat
+    out.dir.set(Math.cos(ang) * .9, Math.max(-.15, Math.sin(ang)) * .95 + .08, -.35).normalize();
+    return out;
+  }
+
+  /* ---- dunia pulau melayang ---- */
+  const ISLANDS = [
+    { id: 'bromo', pos: [0, 0, 0], r: 3.2 },
+    { id: 'raja', pos: [11, 1.2, -6], r: 3.0 },
+    { id: 'bajo', pos: [-10.5, -.4, -7.5], r: 3.1 },
+    { id: 'toba', pos: [1.5, .8, -15], r: 3.1 },
+  ];
+  function buildWorld(){
+    const root = new THREE.Group();
+    const M = {
+      rock: flat('#8a6f5a'), rockD: flat('#5f4b3e'), soil: flat('#6e5340'),
+      sand: flat('#d9c49b'), ash: flat('#b2a59a'), ashD: flat('#7d736c'), crater: flat('#3b3330'),
+      grass: flat('#79a85a'), grassD: flat('#5d8f47'), gold: flat('#c4b35c'), gold2: flat('#a99a46'),
+      sea: flat('#2bb7c3', .35, { metalness: .05 }), seaD: flat('#1e8fae', .3), lake: flat('#2f6f9b', .3),
+      leaf: flat('#3f8a45'), leaf2: flat('#58a34f'), pine: flat('#2f6b4a'), trunk: flat('#7a5a40'),
+      wood: flat('#8b5e3c'), woodD: flat('#5a3a2a'), white: flat('#f5f2ea'), roof: flat('#3b2a24'), gold3: flat('#e2c26a'),
+      win: std('#ffd27a', .6, { emissive: '#ffb347', emissiveIntensity: 0 }),
+      cloud: std('#ffffff', 1, { flatShading: true, emissive: '#ffffff', emissiveIntensity: .32 }), lizard: flat('#6b6a4a'),
+    };
+    const islands = [];
+    function base(r, topMat){
+      const g = new THREE.Group();
+      const top = new THREE.Mesh(jitter(new THREE.CylinderGeometry(r, r * .93, .5, 11, 1), .12, .2), topMat); top.position.y = -.25; top.receiveShadow = true; top.castShadow = true; g.add(top);
+      const soil = new THREE.Mesh(jitter(new THREE.CylinderGeometry(r * .94, r * .86, .45, 11, 1), .15), M.soil); soil.position.y = -.72; g.add(soil);
+      const under = new THREE.Mesh(jitter(new THREE.ConeGeometry(r * .87, r * 1.55, 11, 3), .35), M.rock); under.rotation.x = Math.PI; under.position.y = -.95 - r * .775; g.add(under);
+      const r2 = rng(Math.round(r * 100));
+      for (let k = 0; k < 3; k++) { const s = .3 + r2() * .35; const b = new THREE.Mesh(new THREE.DodecahedronGeometry(s, 0), k % 2 ? M.rock : M.rockD); const a = r2() * 6.28; b.position.set(Math.cos(a) * r * .6, -1.8 - r2() * r * .9, Math.sin(a) * r * .6); g.add(b); }
+      return g;
+    }
+    const add = (g, geo, mat, x, y, z, s) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); if (s) m.scale.set(s[0], s[1], s[2]); m.castShadow = true; m.receiveShadow = true; g.add(m); return m; };
+    const smoke = [];
+    const lights = [];
+    // Bromo: lautan pasir, kawah, Batok bergerigi, Semeru berasap, pura kecil
+    {
+      const I = ISLANDS[0], g = base(I.r, M.sand); g.position.set(...I.pos); root.add(g);
+      const prof = [[2.0, 0], [1.6, .55], [1.05, 1.25], [.82, 1.42], [.62, 1.28], [.32, .95], [0, .95]].map(([a, b]) => new THREE.Vector2(a, b));
+      add(g, new THREE.LatheGeometry(prof, 13), M.ash, -.7, 0, .3);
+      add(g, new THREE.CircleGeometry(.34, 10), M.crater, -.7, .96, .3).rotation.x = -Math.PI / 2;
+      const bat = new THREE.ConeGeometry(1.0, 1.55, 18, 1); { const p = bat.attributes.position; for (let i = 0; i < p.count; i++) { if (p.getY(i) < .7) { const a = Math.atan2(p.getZ(i), p.getX(i)); const k = (Math.round((a + Math.PI) / (Math.PI * 2) * 18) % 2) ? .82 : 1; p.setX(i, p.getX(i) * k); p.setZ(i, p.getZ(i) * k); } } bat.computeVertexNormals(); }
+      add(g, bat, M.grassD, 1.35, .77, 1.05);
+      add(g, jitter(new THREE.CylinderGeometry(.12, 1.4, 2.6, 10, 2), .1, 1.2), M.ashD, -.2, 1.3, -1.9);
+      add(g, new THREE.CylinderGeometry(1.3, 1.3, .02, 10), M.sand, 1.7, .01, -.6);
+      const pura = new THREE.Group(); pura.position.set(1.85, 0, -.9); g.add(pura);
+      [[.5, .14], [.4, .12], [.3, .1], [.2, .08]].forEach(([w, h], k) => add(pura, new THREE.BoxGeometry(w, h, w), k ? M.roof : M.woodD, 0, .07 + k * .17, 0));
+      add(pura, new THREE.BoxGeometry(.18, .26, .18), M.win, .38, .13, .25);
+      lights.push(M.win);
+      const sm = new THREE.SpriteMaterial({ map: SOFT, color: '#e9e4df', transparent: true, depthWrite: false, opacity: .5 });
+      for (let k = 0; k < 10; k++) { const s = new THREE.Sprite(sm.clone()); g.add(s); smoke.push({ s, ox: -.7, oy: 1.0, oz: .3, ph: k / 10, big: 1 }); }
+      for (let k = 0; k < 6; k++) { const s = new THREE.Sprite(sm.clone()); g.add(s); smoke.push({ s, ox: -.2, oy: 2.6, oz: -1.9, ph: k / 6, big: .8 }); }
+      islands.push(g);
+    }
+    // Raja Ampat: laguna toska + pulau karst jamur, dermaga, rumah panggung
+    {
+      const I = ISLANDS[1], g = base(I.r, M.sea); g.position.set(...I.pos); root.add(g);
+      add(g, new THREE.CylinderGeometry(I.r * .97, I.r * .97, .04, 22), M.seaD, 0, .0, 0, [1, 1, 1]).position.y = -.02;
+      const r = rng(7);
+      [[-1.2, -.6, .9], [.9, -1.1, .75], [.2, .9, 1.0], [1.6, .7, .55], [-1.5, 1.2, .6], [-.3, -1.8, .5]].forEach(([x, z, s]) => {
+        add(g, jitter(new THREE.CylinderGeometry(.42 * s, .26 * s, .7 * s, 7), .05), M.rock, x, .3 * s, z);
+        const cap = add(g, new THREE.DodecahedronGeometry(.66 * s, 0), r() > .5 ? M.leaf : M.leaf2, x, .78 * s, z); cap.scale.set(1, .72, 1); cap.rotation.y = r() * 3;
+      });
+      add(g, new THREE.BoxGeometry(1.6, .05, .32), M.wood, 1.9, .2, -1.6).rotation.y = .6;
+      const hut = new THREE.Group(); hut.position.set(2.4, 0, -2.0); g.add(hut);
+      [[-.2, -.2], [.2, -.2], [-.2, .2], [.2, .2]].forEach(([x, z]) => add(hut, new THREE.CylinderGeometry(.03, .03, .4, 5), M.woodD, x, .2, z));
+      add(hut, new THREE.BoxGeometry(.55, .32, .55), M.wood, 0, .56, 0);
+      add(hut, new THREE.ConeGeometry(.5, .4, 4), M.roof, 0, .92, 0).rotation.y = Math.PI / 4;
+      add(hut, new THREE.BoxGeometry(.12, .14, .02), M.win, 0, .58, .28);
+      islands.push(g);
+    }
+    // Labuan Bajo: bukit keemasan, teluk, pinisi, komodo
+    {
+      const I = ISLANDS[2], g = base(I.r, M.gold); g.position.set(...I.pos); root.add(g);
+      add(g, new THREE.CylinderGeometry(1.25, 1.25, .04, 16), M.sea, 1.55, .01, 1.35);
+      add(g, new THREE.CylinderGeometry(.55, .55, .045, 12), flat('#f2b6b0'), .6, .01, 1.8);
+      [[-1, -.6, [1.8, 1.0, 1.1], M.gold], [.3, -1.3, [1.4, 1.35, 1.0], M.gold2], [-1.6, .9, [1.0, .7, 1.0], M.gold2], [.8, .1, [.9, .55, .8], M.grassD]].forEach(([x, z, s, m]) => {
+        const h = add(g, new THREE.IcosahedronGeometry(1, 0), m, x, 0, z, s); h.rotation.y = x;
+      });
+      const boat = new THREE.Group(); boat.position.set(1.7, .06, 1.5); boat.rotation.y = -.7; g.add(boat);
+      const hull = new THREE.BoxGeometry(1.25, .26, .42, 4, 1, 1); { const p = hull.attributes.position; for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i); const t = Math.abs(x) / .625; p.setZ(i, p.getZ(i) * (1 - Math.pow(t, 3) * .85) * (y < 0 ? .7 : 1)); if (y > 0) p.setY(i, y + t * t * .12); } hull.computeVertexNormals(); }
+      add(boat, hull, M.woodD, 0, .12, 0);
+      add(boat, new THREE.BoxGeometry(.5, .18, .3), M.white, -.1, .34, 0);
+      add(boat, new THREE.BoxGeometry(.12, .1, .02), M.win, -.1, .36, .16);
+      [[-.25, 1.05], [.3, .85]].forEach(([x, h]) => { add(boat, new THREE.CylinderGeometry(.018, .018, h, 5), M.woodD, x, .25 + h / 2, 0);
+        const sh = new THREE.Shape(); sh.moveTo(0, 0); sh.lineTo(0, h * .82); sh.lineTo(-h * .5, .05); sh.closePath();
+        const sail = add(boat, new THREE.ShapeGeometry(sh), new THREE.MeshStandardMaterial({ color: '#f4efe4', side: THREE.DoubleSide, roughness: .9 }), x, .35, .01); sail.castShadow = true; });
+      const kom = new THREE.Group(); kom.position.set(-.3, .02, 1.6); kom.rotation.y = .9; g.add(kom);
+      add(kom, new THREE.BoxGeometry(.5, .12, .16), M.lizard, 0, .1, 0);
+      add(kom, new THREE.BoxGeometry(.16, .1, .12), M.lizard, .32, .12, 0);
+      add(kom, new THREE.ConeGeometry(.07, .5, 5), M.lizard, -.48, .08, 0).rotation.z = Math.PI / 2;
+      [[.15, .1], [.15, -.1], [-.15, .1], [-.15, -.1]].forEach(([x, z]) => add(kom, new THREE.BoxGeometry(.05, .08, .05), M.lizard, x, .03, z));
+      lights.push(M.win);
+      islands.push(g);
+    }
+    // Danau Toba: danau, Samosir, rumah bolon, pinus
+    {
+      const I = ISLANDS[3], g = base(I.r, M.grass); g.position.set(...I.pos); root.add(g);
+      add(g, new THREE.CylinderGeometry(2.0, 2.0, .04, 18), M.lake, .3, .01, .2);
+      const sam = add(g, new THREE.DodecahedronGeometry(.9, 0), M.grassD, .5, -.25, .3); sam.scale.set(1.2, .45, .8);
+      const house = new THREE.Group(); house.position.set(-1.9, 0, -1.2); house.rotation.y = .5; g.add(house);
+      [[-.32, -.18], [.32, -.18], [-.32, .18], [.32, .18]].forEach(([x, z]) => add(house, new THREE.CylinderGeometry(.04, .04, .35, 5), M.woodD, x, .17, z));
+      add(house, new THREE.BoxGeometry(.85, .3, .5), M.wood, 0, .5, 0);
+      add(house, new THREE.BoxGeometry(.6, .06, .02), M.gold3, 0, .55, .26);
+      const roofG = new THREE.CylinderGeometry(.42, .42, 1.3, 3, 4); roofG.rotateZ(Math.PI / 2); roofG.rotateX(Math.PI / 6 * 3);
+      { const p = roofG.attributes.position; for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i); const e = Math.pow(Math.abs(x) / .65, 2); if (y > -.05) p.setY(i, y + e * .38); } roofG.computeVertexNormals(); }
+      const rf = add(house, roofG, M.roof, 0, .88, 0);
+      add(house, new THREE.BoxGeometry(.14, .12, .02), M.win, .2, .48, .26);
+      const r = rng(19);
+      for (let k = 0; k < 9; k++) { const a = -1.4 + k * .45 + r() * .2, d = 2.3 + r() * .5; const px = Math.cos(a) * d, pz = -Math.abs(Math.sin(a) * d) * .9 + (k % 3) * .3;
+        add(g, new THREE.CylinderGeometry(.05, .07, .4, 5), M.trunk, px, .2, pz); const s = .7 + r() * .5;
+        add(g, new THREE.ConeGeometry(.32 * s, .75 * s, 6), M.pine, px, .5 + .3 * s, pz); add(g, new THREE.ConeGeometry(.24 * s, .55 * s, 6), M.pine, px, .8 + .45 * s, pz); }
+      islands.push(g);
+    }
+    // awan di bawah dan sekitar pulau
+    const clouds = []; { const r = rng(42);
+      for (let k = 0; k < 34; k++) { const c = new THREE.Group(); const n = 3 + (r() * 3 | 0);
+        for (let j = 0; j < n; j++) { const m = new THREE.Mesh(new THREE.IcosahedronGeometry(.7 + r() * .7, 1), M.cloud); m.position.set(j * .9 - n * .45, r() * .3, (r() - .5) * .8); m.scale.y = .62; c.add(m); }
+        c.position.set(-26 + r() * 52, -6 - r() * 4, -32 + r() * 40); c.userData = { v: .15 + r() * .25, x0: c.position.x }; c.scale.setScalar(.8 + r() * .9); root.add(c); clouds.push(c); } }
+    // laut jauh di bawah
+    const sea = new THREE.Mesh(new THREE.PlaneGeometry(260, 260), std('#2a7fa8', .4)); sea.rotation.x = -Math.PI / 2; sea.position.y = -14; root.add(sea);
+    return { root, M, islands, smoke, clouds, sea, lights };
+  }
+
+  function buildDrone(){
+    const d = new THREE.Group();
+    const dark = std('#2b2f36', .5, { metalness: .3 }), grey = std('#8d939c', .5, { metalness: .3 });
+    const body = new THREE.Mesh(new RoundedBoxGeometry(.5, .14, .62, 2, .05), std('#e9ecef', .45)); body.castShadow = true; d.add(body);
+    const top = new THREE.Mesh(new RoundedBoxGeometry(.32, .08, .4, 2, .03), dark); top.position.y = .09; d.add(top);
+    const rotors = [];
+    [[1, 1], [1, -1], [-1, 1], [-1, -1]].forEach(([sx, sz]) => {
+      const arm = new THREE.Mesh(new THREE.BoxGeometry(.5, .05, .06), dark); arm.position.set(sx * .3, .02, sz * .3); arm.rotation.y = -sx * sz * Math.PI / 4; d.add(arm);
+      const mot = new THREE.Mesh(new THREE.CylinderGeometry(.05, .05, .1, 10), grey); mot.position.set(sx * .48, .06, sz * .48); d.add(mot);
+      const rot = new THREE.Group(); rot.position.set(sx * .48, .12, sz * .48); d.add(rot);
+      const blade = new THREE.Mesh(new THREE.BoxGeometry(.5, .01, .05), dark); rot.add(blade);
+      const blade2 = blade.clone(); blade2.rotation.y = Math.PI / 2; rot.add(blade2);
+      const disc = new THREE.Mesh(new THREE.CircleGeometry(.26, 20), new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: .16, depthWrite: false, side: THREE.DoubleSide })); disc.rotation.x = -Math.PI / 2; rot.add(disc);
+      rotors.push(rot);
+    });
+    const gimbal = new THREE.Group(); gimbal.position.set(0, -.12, -.26); d.add(gimbal);
+    const cam = new THREE.Mesh(new RoundedBoxGeometry(.16, .12, .14, 2, .02), dark); gimbal.add(cam);
+    const lens = new THREE.Mesh(new THREE.CylinderGeometry(.045, .05, .06, 14), std('#11141a', .2, { metalness: .6 })); lens.rotation.x = Math.PI / 2; lens.position.z = -.08; gimbal.add(lens);
+    const ledF = new THREE.Mesh(new THREE.SphereGeometry(.03, 8, 6), new THREE.MeshBasicMaterial({ color: '#ff5a36' })); ledF.position.set(0, 0, -.32); d.add(ledF);
+    const ledB = new THREE.Mesh(new THREE.SphereGeometry(.03, 8, 6), new THREE.MeshBasicMaterial({ color: '#4fe08a' })); ledB.position.set(0, 0, .32); d.add(ledB);
+    // kerucut pandang kamera drone
+    const cone = new THREE.Mesh(new THREE.ConeGeometry(.9, 2.6, 4, 1, true), new THREE.MeshBasicMaterial({ color: '#ffb48a', transparent: true, opacity: .12, depthWrite: false, side: THREE.DoubleSide }));
+    cone.geometry.translate(0, -1.3, 0); cone.geometry.rotateX(-Math.PI / 2); cone.geometry.rotateZ(Math.PI / 4); cone.rotation.x = Math.PI; gimbal.add(cone);
+    return { d, rotors, gimbal, ledF };
+  }
+
+  function createIslandView(canvas, stageEl, opts){
+    const renderer = makeRenderer(canvas); renderer.toneMappingExposure = 1.15;
+    const scene = new THREE.Scene();
+    const W = buildWorld(); scene.add(W.root);
+    const D = buildDrone(); D.d.scale.setScalar(.85); scene.add(D.d);
+    // langit (shader gradasi + cahaya matahari)
+    const skyU = { top: { value: new THREE.Color() }, hor: { value: new THREE.Color() }, sunCol: { value: new THREE.Color() }, sunDir: { value: new THREE.Vector3(0, 1, 0) }, night: { value: 0 } };
+    const sky = new THREE.Mesh(new THREE.SphereGeometry(150, 32, 16), new THREE.ShaderMaterial({
+      uniforms: skyU, side: THREE.BackSide, depthWrite: false, fog: false, toneMapped: false,
+      vertexShader: 'varying vec3 vW; void main(){ vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }',
+      fragmentShader: 'uniform vec3 top; uniform vec3 hor; uniform vec3 sunCol; uniform vec3 sunDir; uniform float night; varying vec3 vW;\n' +
+        'void main(){ vec3 d = normalize(vW - cameraPosition); float h = clamp(d.y * 1.6 + .32, 0., 1.); vec3 c = mix(hor, top, pow(h, .75));\n' +
+        ' float s = max(dot(d, normalize(sunDir)), 0.); c += sunCol * (pow(s, 12.) * .35 + pow(s, 600.) * 2.2) * (1. - night * .8);\n' +
+        ' gl_FragColor = vec4(c, 1.0);\n #include <colorspace_fragment>\n}'
+    }));
+    sky.renderOrder = -1; scene.add(sky);
+    // bintang
+    const starGeo = new THREE.BufferGeometry(); { const r = rng(3), a = [];
+      for (let k = 0; k < 600; k++) { const u = r() * 2 - 1, th = r() * 6.283, y = Math.abs(u) * .9 + .1, rr = Math.sqrt(1 - y * y); a.push(Math.cos(th) * rr * 120, y * 120, Math.sin(th) * rr * 120); }
+      starGeo.setAttribute('position', new THREE.Float32BufferAttribute(a, 3)); }
+    const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: '#ffffff', size: 1.4, sizeAttenuation: false, transparent: true, opacity: 0, depthWrite: false, fog: false }));
+    scene.add(stars);
+    const hemi = new THREE.HemisphereLight('#cfe6ff', '#6b5a4a', 1.1); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff2dc', 2.5); sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, { left: -7, right: 7, top: 7, bottom: -7, near: 1, far: 60 }); sun.shadow.bias = -.0006; sun.shadow.normalBias = .03;
+    scene.add(sun, sun.target);
+    scene.fog = new THREE.Fog('#d6eefb', 20, 58);
+    // jalur drone (garis putus-putus oranye)
+    const pathMat = new THREE.LineDashedMaterial({ color: '#ff7a45', dashSize: .35, gapSize: .22, transparent: true, opacity: .9, fog: false });
+    let pathLine = null;
+    const SK = { top: new THREE.Color(), hor: new THREE.Color(), sun: new THREE.Color(), dir: new THREE.Vector3(), i: 1, night: 0 };
+    const camera = new THREE.PerspectiveCamera(46, 1, .1, 400);
+    const camTarget = new THREE.Vector3(...ISLANDS[0].pos), goal = new THREE.Vector3(), lookT = new THREE.Vector3();
+    let aspect = 1, fov = 46, fovGoal = 46, flyFrom = 1, droneT = 0, cur = { ...state };
+    const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+    const LENS = { 16: 74, 35: 46, 85: 22 };
+
+    function dronePos(t, out){
+      const I = ISLANDS[cur.dest], R = I.r + 1.5, cx = I.pos[0], cy = I.pos[1] + 2.4, cz = I.pos[2];
+      if (cur.eight) { out.set(cx + Math.sin(t) * R * 1.25, cy + Math.sin(t * 2) * .35, cz + Math.sin(t) * Math.cos(t) * R * 1.1); }
+      else out.set(cx + Math.cos(t) * R, cy + Math.sin(t * 3) * .12, cz + Math.sin(t) * R);
+      return out;
+    }
+    function rebuildPath(){
+      if (pathLine) { scene.remove(pathLine); pathLine.geometry.dispose(); }
+      const pts = []; const v = new THREE.Vector3();
+      for (let k = 0; k <= 160; k++) pts.push(dronePos(k / 160 * Math.PI * 2, v).clone());
+      pathLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), pathMat); pathLine.computeLineDistances(); scene.add(pathLine);
+    }
+    function applyTime(){
+      skyAt(cur.tod, SK);
+      skyU.top.value.copy(SK.top); skyU.hor.value.copy(SK.hor); skyU.sunCol.value.copy(SK.sun); skyU.sunDir.value.copy(SK.dir); skyU.night.value = SK.night;
+      sun.color.copy(SK.sun); sun.intensity = SK.i;
+      hemi.color.copy(SK.top).lerp(new THREE.Color('#ffffff'), .45); hemi.groundColor.copy(SK.hor).multiplyScalar(.6); hemi.intensity = .7 + SK.i * .3;
+      scene.fog.color.copy(SK.hor);
+      stars.material.opacity = SK.night * .9;
+      W.lights.forEach(m => m.emissiveIntensity = SK.night * 2.2);
+      W.M.cloud.color.set('#ffffff').lerp(SK.hor, .35);
+      W.sea.material.color.set('#3b8fb5').lerp(SK.hor, .5);
+    }
+    function apply(s){
+      const destChanged = s.dest !== cur.dest, pathChanged = destChanged || s.eight !== cur.eight;
+      cur = { ...s };
+      fovGoal = LENS[s.lens] || 46;
+      if (destChanged) flyFrom = Math.max(1, camTarget.distanceTo(new THREE.Vector3(...ISLANDS[s.dest].pos)));
+      if (pathChanged || !pathLine) rebuildPath();
+      applyTime();
+      loop.keepAlive(2600); loop.request();
+    }
+    if (opts.hero) {
+      stageEl.addEventListener('pointermove', e => { const b = stageEl.getBoundingClientRect(); pointer.tx = ((e.clientX - b.left) / b.width - .5) * 2; pointer.ty = ((e.clientY - b.top) / b.height - .5) * 2; loop.request(); });
+      stageEl.addEventListener('pointerleave', () => { pointer.tx = pointer.ty = 0; loop.request(); });
+    }
+    const dpos = new THREE.Vector3(), dnext = new THREE.Vector3();
+    const loop = createLoop(canvas, (dt, t) => {
+      const still = rmq.matches, k = still ? 1 : 1 - Math.exp(-dt * 2.2);
+      const I = ISLANDS[cur.dest]; goal.set(I.pos[0], I.pos[1] + .4, I.pos[2]);
+      camTarget.lerp(goal, k); const remain = camTarget.distanceTo(goal); if (remain > .01) loop.request(); else camTarget.copy(goal);
+      fov += (fovGoal - fov) * (still ? 1 : 1 - Math.exp(-dt * 4)); if (Math.abs(fovGoal - fov) > .05) loop.request(); else fov = fovGoal;
+      const hump = Math.sin(Math.PI * clamp(1 - remain / flyFrom, 0, 1)) * (remain > .01 ? 3 : 0);
+      if (opts.hero) { const kk = 1 - Math.exp(-dt * 3); pointer.x += (pointer.tx - pointer.x) * kk; pointer.y += (pointer.ty - pointer.y) * kk; }
+      const T = still ? 0 : t;
+      const narrow = aspect < .8;
+      const dist = (narrow ? 15.5 : aspect < 1.1 ? 13 : 11.5) * (46 / Math.max(1, fov)) ** .15;
+      const az = .62 + (opts.hero ? Math.sin(T * .12) * .18 + pointer.x * .28 : Math.sin(T * .08) * .1), el = .36 + (opts.hero ? -pointer.y * .1 : 0);
+      camera.fov = fov * (narrow ? 1.12 : 1); camera.aspect = aspect; camera.updateProjectionMatrix();
+      camera.position.set(camTarget.x + Math.sin(az) * Math.cos(el) * dist, camTarget.y + Math.sin(el) * dist + hump, camTarget.z + Math.cos(az) * Math.cos(el) * dist);
+      lookT.copy(camTarget); lookT.y -= narrow ? (opts.hero ? 2.1 : 1.0) : (opts.hero ? .7 : .2); camera.lookAt(lookT);
+      sky.position.copy(camera.position);
+      sun.position.copy(camTarget).addScaledVector(SK.dir, 30); sun.target.position.copy(camTarget);
+      // drone
+      droneT = still ? 1.1 : droneT + dt * (cur.eight ? .42 : .55);
+      dronePos(droneT, dpos); dronePos(droneT + .05, dnext);
+      D.d.position.copy(dpos); D.d.lookAt(dnext); D.d.rotateY(Math.PI); D.d.rotateX(still ? 0 : -.12);
+      D.gimbal.lookAt(I.pos[0], I.pos[1] + .3, I.pos[2]); D.gimbal.rotateY(Math.PI);
+      D.rotors.forEach((r, i) => r.rotation.y = still ? i : r.rotation.y + dt * 40);
+      D.ledF.material.color.setHSL(.03, 1, still ? .55 : .35 + .25 * (Math.sin(t * 6) > 0 ? 1 : 0));
+      // asap & awan
+      W.smoke.forEach(o => { const l = still ? o.ph : (o.ph + T * .12) % 1; o.s.position.set(o.ox + Math.sin(l * 5 + o.ph * 9) * .25, o.oy + l * 2.2 * o.big, o.oz + l * .4); const sc = (.35 + l * 1.3) * o.big; o.s.scale.set(sc, sc, sc); o.s.material.opacity = .55 * Math.sin(Math.PI * l); });
+      W.clouds.forEach(c => { c.position.x = still ? c.userData.x0 : -26 + ((c.userData.x0 + 26 + T * c.userData.v) % 52); });
+      W.islands.forEach((g, i) => { g.position.y = ISLANDS[i].pos[1] + (still ? 0 : Math.sin(T * .6 + i * 1.7) * .12); });
+      renderer.render(scene, camera);
+      if (!stageEl.classList.contains('ready')) stageEl.classList.add('ready');
+    }, () => !rmq.matches);
+    watchSize(stageEl, renderer, (w, h) => { aspect = w / h; loop.request(); });
+    apply(state);
+    function snapshot(){ renderer.render(scene, camera); return renderer.domElement.toDataURL('image/jpeg', .9); }
+    return { apply, loop, renderer, scene, camera, snapshot };
+  }
+
+  let heroV = null, prevV = null;
+  try {
+    heroV = createIslandView($('#heroCanvas'), $('#heroStage'), { hero: true });
+    prevV = createIslandView($('#prevCanvas'), $('#prevStage'), { hero: false });
+    bus.addEventListener('state', e => { heroV.apply(e.detail); prevV.apply(e.detail); });
+    $('#snapBtn').addEventListener('click', () => {
+      const L = todLabel(state.tod), d = DEST[state.dest];
+      openShot({ media: `<img src="${prevV.snapshot()}" alt="Tangkapan pratinjau 3D ${esc(d.name)} pukul ${L.t}">`, title: `Pratinjau ${d.name}, ${L.t}`, by: `${L.tag} · drone ${state.eight ? 'lintasan angka 8' : 'orbit'}`, exif: [`${state.lens} mm`, L.t, d.prov] });
+      notify('Foto pratinjau diambil dari studio 3D.', 'primary');
+    });
+  } catch (e) { console.warn('WebGL gagal dimulai', e); showFallbacks(); }
+
+  /* ================= Cerita isometrik: satu trip ================= */
+  function createStory(){
+    const stage = $('.story-stage', storySec), canvas = $('#storyCanvas');
+    const renderer = makeRenderer(canvas);
+    const scene = new THREE.Scene();
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -100, 200);
+    const camDir = new THREE.Vector3(1, 1.1, 1).normalize(), camTarget = new THREE.Vector3();
+    const hemi = new THREE.HemisphereLight('#fff7ec', '#c9b79f', 1.3); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff1dc', 2.5); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+    Object.assign(sun.shadow.camera, { left: -18, right: 18, top: 18, bottom: -18, near: 1, far: 80 }); sun.shadow.bias = -.0005; sun.shadow.normalBias = .03;
+    scene.add(sun, sun.target);
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(160, 90), std('#efe7da', 1)); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+    let grid = null;
+
+    const CLAY = new THREE.Color('#ece3d6');
+    const SP = [[-16, 4], [-6, -4], [3, 4], [12, -4], [21, 4]];
+    const stations = [];
+    const smat = c => { const m = std(c, .8); m.userData.target = new THREE.Color(c); m.color.copy(CLAY); return m; };
+    function add(g, mats, geo, c, x, y, z, rot){ const m = smat(c); mats.push(m); const me = new THREE.Mesh(geo, m); me.position.set(x, y, z); if (rot) me.rotation.set(rot[0] || 0, rot[1] || 0, rot[2] || 0); me.castShadow = me.receiveShadow = true; g.add(me); return me; }
+    const B = (w, h, d) => new THREE.BoxGeometry(w, h, d), C = (rt, rb, h, s = 20) => new THREE.CylinderGeometry(rt, rb, h, s), Sph = (r, s = 12) => new THREE.SphereGeometry(r, s, Math.max(6, s * .6 | 0)), Ico = r => new THREE.IcosahedronGeometry(r, 0);
+    const smoke = []; let screenMat = null;
+    SP.forEach(([x, z], i) => {
+      const g = new THREE.Group(); g.position.set(x - 1.4, 0, z - 2.6); scene.add(g);
+      const mats = [];
+      add(g, mats, C(2.8, 2.9, .26, 44), '#f6d2b8', 0, .13, 0);
+      const inner = new THREE.Group(); inner.position.y = .26; g.add(inner);
+      const r = rng(31 + i);
+      if (i === 0) { // daftar: meja pendaftaran, laptop, banner, tanaman
+        add(inner, mats, B(2.2, .1, 1.0), '#c89b6d', 0, .9, -.3); [[-1, -.7], [1, -.7], [-1, .1], [1, .1]].forEach(([px, pz]) => add(inner, mats, B(.08, .85, .08), '#5a3a2a', px, .43, pz));
+        add(inner, mats, B(.8, .04, .55), '#2b2f36', -.2, .97, -.3); add(inner, mats, B(.8, .5, .04), '#2b2f36', -.2, 1.22, -.56, [-.2, 0, 0]);
+        add(inner, mats, B(.7, .4, .01), '#5fb4e6', -.2, 1.22, -.535, [-.2, 0, 0]);
+        add(inner, mats, B(.22, .3, .22), '#ef5d2f', .7, 1.1, -.2); add(inner, mats, C(.06, .06, .12, 12), '#2b2f36', .7, 1.12, -.08, [Math.PI / 2, 0, 0]);
+        add(inner, mats, B(.08, 2.4, .08), '#3a3631', 1.6, 1.2, -1.2); add(inner, mats, B(.08, 2.4, .08), '#3a3631', -1.6, 1.2, -1.2);
+        add(inner, mats, B(3.2, .8, .06), '#ef5d2f', 0, 2.1, -1.2); add(inner, mats, Sph(.22, 12), '#ffffff', -1.0, 2.1, -1.16);
+        add(inner, mats, C(.3, .24, .5, 12), '#f6f1ea', -1.7, .25, 1.1); add(inner, mats, Ico(.48), '#4f8a4a', -1.7, .85, 1.1);
+      } else if (i === 1) { // kumpul: jip 4x4, koper, papan titik temu
+        const jeep = new THREE.Group(); jeep.position.set(-.1, 0, -.3); jeep.rotation.y = .3; inner.add(jeep);
+        add(jeep, mats, B(2.4, .6, 1.2), '#2f7d6b', 0, .6, 0); add(jeep, mats, B(1.4, .55, 1.15), '#2f7d6b', -.35, 1.15, 0);
+        add(jeep, mats, B(1.3, .38, 1.17), '#cfe9f2', -.35, 1.2, 0); add(jeep, mats, B(.06, .38, 1.0), '#cfe9f2', .36, 1.2, 0);
+        [[-.8, .62], [.8, .62], [-.8, -.62], [.8, -.62]].forEach(([px, pz]) => add(jeep, mats, C(.32, .32, .22, 16), '#2b2622', px, .32, pz, [Math.PI / 2, 0, 0]));
+        add(jeep, mats, B(.9, .12, .9), '#5a3a2a', -.35, 1.5, 0); add(jeep, mats, B(.5, .3, .4), '#e6b05c', -.4, 1.72, 0);
+        add(inner, mats, B(.5, .7, .3), '#ef5d2f', 1.5, .35, .9); add(inner, mats, B(.45, .55, .28), '#4a6fa5', 1.0, .28, 1.3);
+        add(inner, mats, B(.07, 2.2, .07), '#3a3631', -1.7, 1.1, 1.0); add(inner, mats, B(.9, .5, .05), '#f2b134', -1.7, 1.9, 1.0);
+      } else if (i === 2) { // hunting: gunung berapi mini, tripod + kamera
+        add(inner, mats, C(.55, 2.0, 2.0, 10), '#8f8379', -.5, 1.0, -.7);
+        add(inner, mats, C(.5, .5, .06, 10), '#3b3330', -.5, 2.0, -.7);
+        add(inner, mats, C(.6, 1.2, 1.0, 14), '#6f8f4e', 1.2, .5, -.9);
+        for (let c = 0; c < 4; c++) { const s = new THREE.Mesh(Sph(.25, 10), new THREE.MeshStandardMaterial({ color: '#e7e1da', transparent: true, opacity: .6, roughness: 1 })); s.position.set(-.5, 2.2, -.7); inner.add(s); smoke.push({ s, ph: c / 4 }); }
+        const tri = new THREE.Group(); tri.position.set(.9, 0, 1.1); inner.add(tri);
+        [0, 2.1, 4.2].forEach(a => add(tri, mats, C(.03, .03, 1.3, 6), '#2b2622', Math.cos(a) * .22, .62, Math.sin(a) * .22, [Math.sin(a) * .3, 0, -Math.cos(a) * .3]));
+        add(tri, mats, B(.36, .24, .2), '#2b2622', 0, 1.35, 0); add(tri, mats, C(.09, .1, .22, 14), '#11141a', 0, 1.35, -.18, [Math.PI / 2, 0, 0]);
+        [[-1.6, 1.3], [1.8, -.2], [-1.1, .7]].forEach(([px, pz]) => add(inner, mats, Ico(.25 + r() * .2), '#9b8f86', px, .15, pz));
+      } else if (i === 3) { // editing: meja, monitor, lampu, kursi, cangkir
+        add(inner, mats, B(2.6, .1, 1.2), '#e9e2d6', 0, 1.0, -.3); [[-1.2, -.8], [1.2, -.8], [-1.2, .2], [1.2, .2]].forEach(([px, pz]) => add(inner, mats, B(.08, .95, .08), '#3a3631', px, .48, pz));
+        add(inner, mats, B(1.4, .85, .06), '#2b2f36', -.2, 1.65, -.7); const scr = add(inner, mats, B(1.28, .72, .01), '#ffb07a', -.2, 1.65, -.665);
+        screenMat = scr.material; screenMat.emissive = new THREE.Color('#ff8a5b'); screenMat.emissiveIntensity = 0;
+        add(inner, mats, B(.08, .3, .08), '#2b2f36', -.2, 1.2, -.7); add(inner, mats, B(.7, .03, .25), '#55575a', -.2, 1.07, -.1);
+        add(inner, mats, C(.03, .03, .7, 6), '#3a3631', 1.0, 1.4, -.6, [0, 0, .3]); add(inner, mats, C(.05, .2, .2, 12), '#ef5d2f', .88, 1.78, -.6);
+        add(inner, mats, C(.1, .09, .18, 12), '#ffffff', .8, 1.14, .05);
+        const ch = new THREE.Group(); ch.position.set(-.2, 0, .9); inner.add(ch); add(ch, mats, B(.7, .1, .6), '#4a6fa5', 0, .6, 0); add(ch, mats, B(.7, .7, .08), '#4a6fa5', 0, 1.0, .3); add(ch, mats, C(.05, .05, .55, 6), '#3a3631', 0, .3, 0);
+      } else { // pameran: dinding galeri + bingkai foto, bangku, lampu sorot
+        add(inner, mats, B(3.0, 2.2, .14), '#f4efe8', 0, 1.1, -1.3); add(inner, mats, B(.14, 2.2, 2.4), '#f4efe8', -1.5, 1.1, -.2);
+        [['#f59a6b', -.8], ['#2bb7c3', .1], ['#6a4c9c', .95]].forEach(([c, px], k) => { add(inner, mats, B(.72, .52 + (k % 2) * .2, .05), '#2b2622', px, 1.3, -1.2); add(inner, mats, B(.6, .4 + (k % 2) * .2, .02), c, px, 1.3, -1.17); });
+        [['#c4b35c', .2], ['#3b4f8f', -.6]].forEach(([c, pz]) => { add(inner, mats, B(.05, .6, .7), '#2b2622', -1.4, 1.3, pz); add(inner, mats, B(.02, .48, .58), c, -1.37, 1.3, pz); });
+        add(inner, mats, B(1.4, .14, .45), '#8b5e3c', .3, .45, .5); [[-.3], [.9]].forEach(([px]) => add(inner, mats, B(.1, .38, .4), '#3a3631', px, .19, .5));
+        add(inner, mats, C(.05, .05, 2.6, 6), '#3a3631', 1.6, 1.3, .9); add(inner, mats, C(.12, .25, .3, 12), '#2b2622', 1.5, 2.55, .7, [.6, 0, 0]);
+        add(inner, mats, C(.3, .24, .5, 12), '#f6f1ea', 1.3, .25, -.6); add(inner, mats, Ico(.45), '#4f8a4a', 1.3, .85, -.6);
+      }
+      stations.push({ g, mats, inner, lit: 0 });
+    });
+
+    // jalur oranye (manhattan dengan sudut membulat)
+    const pts = [[-16, 4], [-11, 4], [-11, -4], [-6, -4], [-1, -4], [-1, 4], [3, 4], [7.5, 4], [7.5, -4], [12, -4], [16.5, -4], [16.5, 4], [21, 4]].map(([x, z]) => new THREE.Vector3(x, .3, z));
+    const path = new THREE.CurvePath(); const rad = 1.4; let curP = pts[0].clone();
+    for (let i = 1; i < pts.length - 1; i++) {
+      const p = pts[i], dIn = p.clone().sub(pts[i - 1]).normalize(), dOut = pts[i + 1].clone().sub(p).normalize();
+      if (dIn.dot(dOut) > .999) continue;
+      const a = p.clone().addScaledVector(dIn, -rad), b = p.clone().addScaledVector(dOut, rad);
+      path.add(new THREE.LineCurve3(curP.clone(), a)); path.add(new THREE.QuadraticBezierCurve3(a, p.clone(), b)); curP = b;
+    }
+    path.add(new THREE.LineCurve3(curP, pts[pts.length - 1].clone()));
+    const TS = 700, RS = 6;
+    const baseMat = std('#d8cbb7', .9);
+    const baseTube = new THREE.Mesh(new THREE.TubeGeometry(path, TS, .12, RS, false), baseMat); baseTube.receiveShadow = true; scene.add(baseTube);
+    const progTube = new THREE.Mesh(new THREE.TubeGeometry(path, TS, .2, RS, false), new THREE.MeshStandardMaterial({ color: '#f07a3c', emissive: '#f07a3c', emissiveIntensity: .35, roughness: .5 }));
+    progTube.geometry.setDrawRange(0, 0); scene.add(progTube);
+    SP.forEach(([x, z]) => { const d = new THREE.Mesh(new THREE.CylinderGeometry(.42, .42, .08, 20), std('#f07a3c', .6)); d.position.set(x, .05, z); scene.add(d); });
+
+    // pemandangan: pohon dan batu jauh dari jalur
+    { const r = rng(11), trunkM = std('#8c6a4f', .9, { flatShading: true }), leafA = std('#6f9a5a', .9, { flatShading: true }), leafB = std('#93b37b', .9, { flatShading: true }), rockM = std('#b8ada2', .9, { flatShading: true });
+      for (let x = -28; x <= 32; x += 2.6) for (const zb of [-11, 11.5]) {
+        if (r() < .3) continue; const px = x + (r() - .5) * 1.6, pz = zb + (r() - .5) * 3;
+        if (r() < .5) { const h = 1.2 + r() * 1.4; const t = new THREE.Mesh(new THREE.CylinderGeometry(.12, .16, h, 6), trunkM); t.position.set(px, h / 2, pz); t.castShadow = true; scene.add(t);
+          const c = new THREE.Mesh(new THREE.ConeGeometry(.8 + r() * .4, 1.8, 7), r() > .5 ? leafA : leafB); c.position.set(px, h + .6, pz); c.castShadow = true; scene.add(c); }
+        else { const b = new THREE.Mesh(new THREE.DodecahedronGeometry(.4 + r() * .4, 0), r() > .6 ? rockM : leafB); b.position.set(px, .3, pz); b.castShadow = true; scene.add(b); }
+      } }
+
+    const samples = 1200, stationU = SP.map(([x, z]) => { let best = 0, bd = 1e9; for (let s = 0; s <= samples; s++) { const q = path.getPointAt(s / samples); const d = (q.x - x) ** 2 + (q.z - z) ** 2; if (d < bd) { bd = d; best = s / samples; } } return best; });
+    stationU[0] = 0; stationU[stationU.length - 1] = 1;
+
+    // tokoh: Raka si fotografer (topi, rompi, kamera di dada)
+    const chr = new THREE.Group(); chr.scale.setScalar(1.25); scene.add(chr);
+    const vest = std('#2f7d6b', .7), skin = std('#c98e64', .6), dark = std('#2b2622', .6), hatM = std('#e6b05c', .8);
+    const torso = new THREE.Mesh(new THREE.CapsuleGeometry(.3, .45, 4, 12), vest); torso.position.y = 1.15; torso.castShadow = true; chr.add(torso);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(.24, 16, 12), skin); head.position.y = 1.78; head.castShadow = true; chr.add(head);
+    const brim = new THREE.Mesh(new THREE.CylinderGeometry(.36, .36, .03, 18), hatM); brim.position.y = 1.92; chr.add(brim);
+    const crown = new THREE.Mesh(new THREE.CylinderGeometry(.2, .24, .16, 16), hatM); crown.position.y = 2.0; chr.add(crown);
+    [-.09, .09].forEach(ex => { const e = new THREE.Mesh(new THREE.SphereGeometry(.035, 8, 6), dark); e.position.set(ex, 1.8, -.22); chr.add(e); });
+    const camBody = new THREE.Mesh(new THREE.BoxGeometry(.3, .2, .14), dark); camBody.position.set(0, 1.2, -.33); chr.add(camBody);
+    const camLens = new THREE.Mesh(new THREE.CylinderGeometry(.07, .08, .14, 12), std('#11141a', .3, { metalness: .5 })); camLens.rotation.x = Math.PI / 2; camLens.position.set(0, 1.2, -.46); chr.add(camLens);
+    const flash = new THREE.Sprite(new THREE.SpriteMaterial({ map: SOFT, color: '#fff6d8', transparent: true, depthWrite: false, opacity: 0 })); flash.position.set(.1, 1.36, -.6); flash.scale.setScalar(1.4); chr.add(flash);
+    const strap = new THREE.Mesh(new THREE.TorusGeometry(.26, .018, 6, 20, Math.PI), std('#ef5d2f', .7)); strap.position.set(0, 1.26, -.12); strap.rotation.x = -.3; chr.add(strap);
+    function limb(w, h, x, y, mat){ const piv = new THREE.Group(); piv.position.set(x, y, 0); const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, w), mat); m.position.y = -h / 2; m.castShadow = true; piv.add(m); chr.add(piv); return piv; }
+    const legL = limb(.13, .62, -.13, .72, dark), legR = limb(.13, .62, .13, .72, dark), armL = limb(.1, .5, -.38, 1.42, vest), armR = limb(.1, .5, .38, 1.42, vest);
+    armL.rotation.z = -.25; armR.rotation.z = .25;
+    chr.rotation.order = 'YXZ';
+
+    let lastT = 0, targetU = 0, shownU = 0, walkPhase = 0, step = -1, lastPos = new THREE.Vector3(), halfW = 10, halfH = 10, aspect = 1;
+    const sceneSteps = $$('.scene-step', storySec), labels = $$('.s-labels span', storySec), prog = $('#storyProg');
+    function mapProgress(p){ const n = SP.length - 1, u = clamp(p, 0, 1) * n, i = Math.min(n - 1, Math.floor(u)), f = u - i, w = smooth(.22, .82, f); return { u: stationU[i] + (stationU[i + 1] - stationU[i]) * w, step: w < .5 ? i : i + 1 }; }
+    function setProgress(p){
+      const m = mapProgress(p); targetU = m.u; prog.value = clamp(p, 0, 1) * 4;
+      if (m.step !== step) { step = m.step; sceneSteps.forEach((s, k) => s.classList.toggle('on', k === step)); labels.forEach((s, k) => s.classList.toggle('on', k <= step)); }
+      loop.request();
+    }
+    function themeColors(){
+      const dark = isDark(), bg = dark ? '#111a2d' : '#f3ede5', b3 = dark ? '#24314c' : '#e3d8ca';
+      scene.background = new THREE.Color(bg);
+      ground.material.color.set(bg).lerp(new THREE.Color(b3), .25);
+      if (grid) { scene.remove(grid); grid.geometry.dispose(); grid.material.dispose(); }
+      grid = new THREE.GridHelper(160, 80, b3, b3); grid.material.transparent = true; grid.material.opacity = .7; grid.position.y = .01; scene.add(grid);
+      CLAY.set(dark ? '#3a4766' : '#efe6da');
+      baseMat.color.set(b3).lerp(new THREE.Color(dark ? '#ffffff' : '#000000'), .12);
+      hemi.intensity = dark ? .85 : 1.3; sun.intensity = dark ? 2.0 : 2.5;
+      hemi.color.set(dark ? '#c9d6ff' : '#fff7ec'); hemi.groundColor.set(dark ? '#20283c' : '#c9b79f');
+      stations.forEach(s => s.lit === 0 && s.mats.forEach(m => m.color.copy(CLAY)));
+      loop.request();
+    }
+    const loop = createLoop(canvas, (dt, t) => {
+      const still = rmq.matches, camDt = Math.min(.12, (performance.now() - (lastT || performance.now())) / 1000 || dt); lastT = performance.now();
+      const k = still ? 1 : 1 - Math.exp(-camDt * 5);
+      shownU += (targetU - shownU) * k; if (Math.abs(targetU - shownU) > 1e-4) loop.request(); else shownU = targetU;
+      const pos = path.getPointAt(clamp(shownU, 0, 1)), tan = path.getTangentAt(clamp(shownU, 0, .9999));
+      const moved = pos.distanceTo(lastPos); lastPos.copy(pos); walkPhase += moved * 3.4;
+      const moving = clamp(moved * 25, 0, 1);
+      chr.position.set(pos.x, Math.abs(Math.sin(walkPhase)) * .1 * moving, pos.z);
+      if (moved > 1e-4) chr.rotation.y = Math.atan2(-tan.x, -tan.z);
+      const sw = Math.sin(walkPhase) * .75 * moving; legL.rotation.x = sw; legR.rotation.x = -sw; armL.rotation.x = -sw * .8; armR.rotation.x = sw * .8;
+      progTube.geometry.setDrawRange(0, Math.floor(shownU * TS) * RS * 6);
+      stations.forEach((s, i) => {
+        const goal = shownU >= stationU[i] - .004 ? 1 : 0, prev = s.lit;
+        s.lit += (goal - s.lit) * (still ? 1 : Math.min(1, camDt * 4)); if (Math.abs(goal - s.lit) > .002) loop.request(); else s.lit = goal;
+        if (prev !== s.lit) s.mats.forEach(m => m.color.copy(CLAY).lerp(m.userData.target, s.lit));
+        s.inner.scale.setScalar(.82 + .18 * s.lit);
+      });
+      // kilat kamera saat berada di stasiun hunting; layar editing menyala
+      const atHunt = step === 2 && Math.abs(shownU - stationU[2]) < .02;
+      flash.material.opacity = atHunt && !still ? (Math.sin(t * 2.2) > .9 ? 1 : 0) : 0;
+      if (screenMat) screenMat.emissiveIntensity = stations[3].lit * .6;
+      if (!still) { smoke.forEach(o => { const l = (o.ph + t * .22) % 1; o.s.position.set(-.5 + Math.sin(l * 6) * .15, 2.2 + l * 1.5, -.7); o.s.scale.setScalar(.6 + l * 1.4); o.s.material.opacity = .55 * (1 - l) * stations[2].lit; }); loop.request(); }
+      const desired = new THREE.Vector3(pos.x, 0, pos.z);
+      if (aspect >= .9) desired.addScaledVector(new THREE.Vector3(1, 0, -1).normalize(), -halfW * .3);
+      if (camTarget.lengthSq() === 0) camTarget.copy(desired);
+      camTarget.lerp(desired, still ? 1 : 1 - Math.exp(-camDt * 3.5)); if (camTarget.distanceTo(desired) > .01) loop.request();
+      cam.position.copy(camTarget).addScaledVector(camDir, 60); cam.lookAt(camTarget);
+      sun.position.copy(camTarget).add(new THREE.Vector3(14, 26, 8)); sun.target.position.copy(camTarget);
+      renderer.render(scene, cam);
+    }, () => false);
+
+    /* Layar sempit: tokoh dibingkai di ruang kosong ANTARA kartu judul (atas) dan kartu langkah (bawah),
+       diukur dari DOM, memakai frustum ortografis asimetris. */
+    const headEl = stage.querySelector('.story-head'), card = stage.querySelector('#storyCard');
+    let frameY = .5;
+    function applyFrame(){
+      frameY = .5;
+      if (aspect < .9) {
+        const r = stage.getBoundingClientRect(), a = headEl.getBoundingClientRect().bottom - r.top, b = card.getBoundingClientRect().top - r.top;
+        if (r.height > 0 && b > a) frameY = clamp(((a + b) / 2 + 34) / r.height, .2, .8); // +34 px: titik pusat di kaki, tubuh setinggi ~70 px
+      }
+      Object.assign(cam, { left: -halfW, right: halfW, top: 2 * halfH * frameY, bottom: -2 * halfH * (1 - frameY) }); cam.updateProjectionMatrix();
+    }
+    watchSize(stage, renderer, (w, h) => { aspect = w / h; halfH = aspect < .9 ? 10.5 : 8.6; halfW = halfH * aspect; applyFrame(); loop.request(); });
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(headEl);
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(card);
+    if (document.fonts) document.fonts.ready.then(() => { applyFrame(); loop.request(); });
+    themeColors(); bus.addEventListener('theme', () => requestAnimationFrame(themeColors));
+    return { setProgress, loop, renderer, scene, cam, chr, frame: () => frameY };
+  }
+
+  let story = null;
+  try { story = createStory(); } catch (e) { console.warn('Cerita 3D gagal', e); storySec.classList.add('no-webgl'); }
+  window.__lensa.views = { heroV, prevV, story };
+  if (story) { const upd = () => story.setProgress(storyProgress()); addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd(); }
+}
+
+/* fallback tanpa WebGL: teks cerita tetap mengikuti gulir */
+if (!window.__lensa.views || !window.__lensa.views.story) {
+  const nodes = $$('#storySvg .node'), sceneSteps = $$('.scene-step', storySec), labels = $$('.s-labels span', storySec), prog = $('#storyProg');
+  const upd = () => { const p = storyProgress(), n = Math.round(p * 4); prog.value = p * 4; sceneSteps.forEach((s, k) => s.classList.toggle('on', k === n)); labels.forEach((s, k) => s.classList.toggle('on', k <= n)); nodes.forEach((c, k) => c.classList.toggle('on', k <= n)); };
+  addEventListener('scroll', upd, { passive: true }); upd();
+}
+</script>
+</body>
+</html>
