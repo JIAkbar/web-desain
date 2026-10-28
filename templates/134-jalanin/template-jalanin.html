@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jalanin — Ojek, Makan, Kirim dalam Satu Aplikasi</title>
+<meta name="description" content="Jalanin adalah super-app Indonesia untuk ojek, pesan makan, dan kirim paket. Tarif jelas di depan, driver terdekat, dan lacak perjalanan secara langsung.">
+<meta name="theme-color" content="#f4f6f1">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script>
+  // Ionic: mode iOS + palet gelap bawaan Ionic (kelas .ion-palette-dark di <html>)
+  window.Ionic = { config: { mode: 'ios', animated: !matchMedia('(prefers-reduced-motion: reduce)').matches } };
+  (function(){var t;try{t=localStorage.getItem('jalanin-theme')}catch(e){}
+  if(t!=='light'&&t!=='dark'){t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}
+  if(t==='dark')document.documentElement.classList.add('ion-palette-dark');})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core@8.8.19/css/ionic.bundle.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core@8.8.19/css/palettes/dark.class.css">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core@8.8.19/dist/ionic/ionic.esm.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<style>
+  :root{
+    --font:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --ion-font-family:var(--font);
+    --ion-default-font:var(--font);
+    --ion-color-primary:#0c9a6a;--ion-color-primary-rgb:12,154,106;--ion-color-primary-contrast:#ffffff;--ion-color-primary-contrast-rgb:255,255,255;--ion-color-primary-shade:#0a875d;--ion-color-primary-tint:#24a479;
+    --ion-color-secondary:#ff7a2f;--ion-color-secondary-rgb:255,122,47;--ion-color-secondary-contrast:#ffffff;--ion-color-secondary-contrast-rgb:255,255,255;--ion-color-secondary-shade:#e06b29;--ion-color-secondary-tint:#ff8744;
+    --page-bg:#f4f6f1;--bg-2:#eaeee7;--surface:#ffffff;
+    --ink:#0f1a14;--ink-2:#2f3d35;--muted:#5a6a61;--line:#dde4dd;
+    --brand:#0c9a6a;--brand-fg:#0a875d;--orange:#ff7a2f;--leaf:#c9f27a;
+    --shadow:0 1px 2px rgba(15,30,20,.06),0 14px 34px -16px rgba(15,40,25,.25);
+    --shadow-lg:0 40px 90px -40px rgba(10,50,30,.45);
+    --r:22px;
+    --ion-color-success:#0a875d;--ion-color-success-rgb:10,135,93;--ion-color-success-contrast:#ffffff;--ion-color-success-contrast-rgb:255,255,255;--ion-color-success-shade:#08774f;--ion-color-success-tint:#23936d;
+    --ion-background-color:var(--page-bg);--ion-background-color-rgb:244,246,241;
+    --ion-item-background:var(--surface);--ion-card-background:var(--surface);
+    --ion-toolbar-background:var(--surface);
+    --ion-text-color:var(--ink);--ion-text-color-rgb:15,26,20;
+    color-scheme:light;
+  }
+  :root.ion-palette-dark,:root.ion-palette-dark.ios,:root.ion-palette-dark.md{
+    --page-bg:#09100c;--bg-2:#0f1813;--surface:#141e18;
+    --ink:#ecf3ee;--ink-2:#c8d4cc;--muted:#97a89e;--line:#24322a;
+    --brand-fg:#3ddc9f;
+    --ion-color-primary:#2fd396;--ion-color-primary-rgb:47,211,150;--ion-color-primary-contrast:#03140c;--ion-color-primary-contrast-rgb:3,20,12;--ion-color-primary-shade:#29ba84;--ion-color-primary-tint:#44d7a1;
+    --ion-color-secondary:#ff8b45;--ion-color-secondary-rgb:255,139,69;--ion-color-secondary-contrast:#1a0a00;--ion-color-secondary-contrast-rgb:26,10,0;--ion-color-secondary-shade:#e07a3d;--ion-color-secondary-tint:#ff9758;
+    --ion-background-color:#09100c;--ion-background-color-rgb:9,16,12;
+    --ion-item-background:#141e18;--ion-card-background:#141e18;--ion-toolbar-background:#141e18;
+    --ion-text-color:#ecf3ee;--ion-text-color-rgb:236,243,238;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -16px rgba(0,0,0,.75);
+    --shadow-lg:0 40px 90px -40px rgba(0,0,0,.9);
+    color-scheme:dark;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{height:auto;scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  /* Ionic mengunci body untuk aplikasi layar penuh; landing page perlu gulir dokumen biasa */
+  body{position:static;height:auto;max-height:none;overflow:visible;overflow-x:clip;transform:none;touch-action:auto;overscroll-behavior-y:auto;-webkit-user-drag:auto;
+    margin:0;font-family:var(--font);background:var(--page-bg);color:var(--ink);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased;transition:background-color .3s,color .3s;font-variant-numeric:normal;font-feature-settings:"zero" 0}
+  code,kbd,pre,samp{font-family:inherit}
+  svg,canvas{display:block;max-width:100%}
+  a{color:inherit}
+  h1,h2,h3,h4{margin:0;line-height:1.1;letter-spacing:-.025em;font-family:var(--font)}
+  p{margin:0}
+  .num{font-variant-numeric:tabular-nums}
+  .wrap{width:min(1240px,100% - 32px);margin-inline:auto}
+  :focus-visible{outline:2px solid var(--brand-fg);outline-offset:3px;border-radius:8px}
+  .skip{position:absolute;left:-999px;top:8px;z-index:100;background:var(--ink);color:var(--page-bg);padding:8px 14px;border-radius:8px}
+  .skip:focus{left:12px}
+  .ico{width:20px;height:20px;flex:0 0 auto}
+  ion-button{--border-radius:14px;font-weight:700;letter-spacing:0;text-transform:none;margin:0}
+  ion-button.lg{height:52px;--padding-start:22px;--padding-end:22px;font-size:1rem}
+  ion-segment{max-width:100%}
+  ion-segment-button{min-width:0;--padding-start:10px;--padding-end:10px;font-weight:700;text-transform:none;letter-spacing:0}
+  ion-chip{font-weight:600;margin:0}
+  ion-chip[aria-checked="true"]{--background:var(--ion-color-primary);--color:var(--ion-color-primary-contrast);border-color:var(--ion-color-primary)}
+  ion-chip[aria-checked="false"]{--color:var(--ink-2);border-color:var(--line)}
+  ion-card{margin:0;border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--line)}
+  ion-card-title{font-weight:800;letter-spacing:-.02em;font-size:1.28rem;line-height:1.2;color:var(--ink)}
+  ion-card-subtitle{font-weight:700;letter-spacing:.06em;color:var(--brand-fg)}
+  .pt{margin-left:-.1em}
+  ion-badge{font-weight:700;font-variant-numeric:tabular-nums}
+
+  /* nav */
+  .nav{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--page-bg) 82%,transparent);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+  .nav .wrap{display:flex;align-items:center;gap:14px;height:66px}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;font-size:1.15rem;letter-spacing:-.03em;min-width:0}
+  .brand svg{width:32px;height:32px;flex:0 0 auto}
+  .nav-links{display:flex;gap:2px;margin-left:auto}
+  .nav-links a{text-decoration:none;color:var(--muted);font-weight:600;font-size:.92rem;padding:8px 12px;border-radius:10px}
+  .nav-links a:hover{color:var(--ink);background:var(--bg-2)}
+  .nav-actions{display:flex;gap:6px;align-items:center;flex:0 0 auto}
+  .icon-btn{--padding-start:10px;--padding-end:10px;height:40px}
+  .only-mobile{display:none!important}
+  @media (max-width:940px){.nav-links{display:none}.nav-actions{margin-left:auto}.only-mobile{display:inline-block!important}}
+  @media (max-width:560px){.hide-sm{display:none!important}}
+  .menu-list a{text-decoration:none}
+
+  /* hero */
+  .hero{padding:clamp(26px,5vw,60px) 0 36px;position:relative}
+  .hero::before{content:"";position:absolute;inset:-66px 0 auto;height:760px;background:radial-gradient(55% 60% at 85% 20%,color-mix(in srgb,var(--brand) 18%,transparent),transparent 70%),radial-gradient(40% 50% at 5% 15%,rgba(255,122,47,.14),transparent 70%);pointer-events:none;z-index:-1}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,4vw,56px);align-items:center}
+  .hero h1{font-size:clamp(2.45rem,5.6vw,4.7rem);font-weight:800;letter-spacing:-.05em;line-height:1;margin:18px 0 20px}
+  .grad{background:linear-gradient(100deg,var(--brand-fg) 10%,#7bcf3f 55%,var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{font-size:clamp(1rem,1.3vw,1.14rem);color:var(--muted);max-width:33em}
+  .where{margin:26px 0 12px;max-width:470px;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:8px 8px 12px;box-shadow:var(--shadow)}
+  .where ion-searchbar{--background:var(--bg-2);--border-radius:14px;--box-shadow:none;padding:0 0 8px;--color:var(--ink);--placeholder-color:var(--muted);--icon-color:var(--muted);min-height:0}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 4px}
+  .hero-cta{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 22px}
+  .trust{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:.86rem;color:var(--muted)}
+  .stack{display:flex}
+  .stack ion-avatar{width:34px;height:34px;margin-left:-6px;letter-spacing:-.02em;box-shadow:0 0 0 2px var(--page-bg);display:grid;place-items:center;color:#fff;font-weight:800;font-size:.64rem}
+  .stack ion-avatar:first-child{margin-left:0}
+
+  .stage{position:relative;border-radius:28px;overflow:hidden;background:linear-gradient(165deg,#e6f6ee 0%,#cfeedd 45%,#fbe7d6 100%);box-shadow:var(--shadow-lg);border:1px solid color-mix(in srgb,var(--line) 80%,transparent);isolation:isolate}
+  .stage::after{content:"";position:absolute;inset:0;z-index:0;background:radial-gradient(70% 60% at 70% 10%,#24306b 0%,#0d1430 55%,#070b18 100%);opacity:var(--night,0);pointer-events:none}
+  :root.ion-palette-dark .stage{background:linear-gradient(165deg,#0f2a20 0%,#0b2219 50%,#2a1a10 100%)}
+  .stage canvas{position:relative;z-index:1;width:100%;height:100%;opacity:0;transition:opacity .8s}
+  .stage.ready canvas{opacity:1}
+  .hero .stage{height:clamp(460px,74vh,680px)}
+  .fallback{position:absolute;inset:0;z-index:1;display:none}
+  .no-webgl .fallback{display:block}.no-webgl canvas{display:none}
+  .overlay-top{position:absolute;z-index:3;top:14px;left:14px;right:14px;display:flex;justify-content:center;pointer-events:none}
+  .glass{background:color-mix(in srgb,var(--surface) 76%,transparent);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border:1px solid color-mix(in srgb,var(--line) 70%,transparent);box-shadow:var(--shadow);border-radius:16px}
+  .overlay-top .glass{pointer-events:auto;padding:4px;width:min(360px,100%)}
+  .overlay-top ion-segment{--background:transparent}
+  .trip{position:absolute;z-index:3;left:14px;bottom:14px;display:flex;align-items:center;gap:12px;padding:10px 14px 10px 10px;max-width:calc(100% - 28px)}
+  .trip .dot{width:38px;height:38px;border-radius:12px;background:var(--brand);display:grid;place-items:center;color:#fff;flex:0 0 auto}
+  .trip b{display:block;font-size:.92rem;line-height:1.2}
+  .trip span{display:block;font-size:.78rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .trip div{min-width:0}
+  .trip ion-badge{margin-left:auto;flex:0 0 auto}
+  @media (max-width:980px){.hero-grid{grid-template-columns:minmax(0,1fr)}.hero .stage{height:min(600px,74vh);min-height:470px}}
+
+  /* sections */
+  section{scroll-margin-top:74px}
+  .sec{padding:clamp(70px,10vw,124px) 0}
+  .kicker{display:inline-flex;align-items:center;gap:8px;font-size:.8rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand-fg)}
+  .kicker::before{content:"";width:18px;height:3px;border-radius:2px;background:var(--orange)}
+  .sec-head{max-width:760px;margin-bottom:clamp(32px,5vw,54px)}
+  .sec-head.center{text-align:center;margin-inline:auto}
+  .sec-head h2{font-size:clamp(2rem,4.3vw,3.35rem);font-weight:800;letter-spacing:-.045em;margin-top:12px}
+  .sec-head p{color:var(--muted);margin-top:14px;font-size:1.05rem}
+
+  .features{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+  .features ion-card{display:flex;flex-direction:column}
+  .features ion-card-content{display:flex;flex-direction:column;gap:12px;flex:1;font-size:.95rem;color:var(--muted)}
+  .f-ico{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;margin:20px 20px 0}
+  .f-ico svg{width:26px;height:26px}
+  .f-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:6px}
+  @media (max-width:1060px){.features{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:600px){.features{grid-template-columns:minmax(0,1fr)}}
+
+  /* control (DS drives 3D) */
+  .control{background:var(--bg-2)}
+  .control-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:20px;align-items:stretch}
+  .control .stage{height:clamp(480px,72vh,660px)}
+  .panel{margin:0;height:100%}
+  .panel ion-card-content{display:flex;flex-direction:column;gap:18px;padding:22px}
+  .panel h3{font-size:.76rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:800;margin:0 0 8px}
+  .panel ion-range{--bar-height:6px;--bar-border-radius:6px;--knob-size:24px;--bar-background-active:var(--ion-color-primary);padding:0}
+  .range-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .panel ion-list{border-radius:16px;overflow:hidden;border:1px solid var(--line);margin:0;padding:0}
+  .panel ion-item{--min-height:44px;font-size:.92rem;--background:var(--bg-2)}
+  .panel ion-note{font-variant-numeric:tabular-nums;font-weight:700;color:var(--ink)}
+  .panel ion-toggle{width:100%;font-weight:600}
+  @media (max-width:1000px){.control-grid{grid-template-columns:minmax(0,1fr)}.control .stage{height:min(540px,64vh);min-height:420px}}
+
+  /* story */
+  .story{position:relative;height:520vh}
+  .story-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--page-bg)}
+  .story-stage canvas{position:absolute;inset:0;width:100%;height:100%}
+  .story-fallback{position:absolute;inset:0;display:none;place-items:center;padding:24px}
+  .story.no-webgl .story-fallback{display:grid}.story.no-webgl canvas{display:none}
+  .story-fallback svg{width:min(900px,100%);height:auto}
+  .story-fallback .node{fill:var(--surface);stroke:var(--line);stroke-width:2;transition:fill .4s}
+  .story-fallback .node.on{fill:var(--orange)}
+  .story-ui{position:absolute;inset:0;pointer-events:none;padding:90px 0 28px}
+  .story-ui .wrap{height:100%;display:flex;flex-direction:column;justify-content:space-between}
+  /* judul cerita di atas kartu tembus pandang (84% warna latar + blur) supaya tidak tertimpa objek 3D */
+  .story-head{max-width:470px;width:fit-content;background:color-mix(in srgb,var(--page-bg) 84%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid color-mix(in srgb,var(--line) 70%,transparent);border-radius:22px;padding:18px 22px 20px}
+  .story-head h2{font-size:clamp(1.75rem,3.4vw,2.8rem);font-weight:800;letter-spacing:-.045em;margin-top:10px}
+  .story-head p{color:var(--muted);margin-top:10px}
+  .steps{position:relative;max-width:420px;min-height:236px;list-style:none;margin:0;padding:0}
+  .step{position:absolute;left:0;right:0;bottom:0;opacity:0;transform:translateY(18px);transition:opacity .45s,transform .45s}
+  .step.on{opacity:1;transform:none}
+  .step-card{background:color-mix(in srgb,var(--surface) 92%,transparent);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+  .step .n{display:inline-flex;align-items:center;gap:10px;font-size:.8rem;font-weight:800;color:var(--orange);letter-spacing:.07em;font-variant-numeric:tabular-nums}
+  .step h3{font-size:1.32rem;margin:10px 0 8px;font-weight:800}
+  .step p{font-size:.93rem;color:var(--muted)}
+  .step .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+  .story-progress{display:flex;align-items:center;gap:14px;margin-top:14px;font-size:.8rem;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+  .story-progress ion-progress-bar{flex:0 0 160px;height:6px;border-radius:6px}
+  @media (prefers-reduced-motion: reduce){.step{transition:none}}
+  @media (max-width:760px){.story-ui{padding:78px 0 14px}.story-head{padding:13px 16px}.story-head h2{font-size:1.45rem}.story-head p{display:none}.steps{max-width:none;min-height:200px}.step-card{padding:16px 18px}.step h3{font-size:1.1rem;margin:6px 0}.step p{font-size:.87rem}.step .tags{margin-top:10px}}
+
+  /* stats & testimonials */
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:clamp(40px,6vw,64px)}
+  .stat{padding:24px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line)}
+  .stat b{display:block;font-size:clamp(2rem,4vw,3.1rem);font-weight:800;letter-spacing:-.045em;line-height:1;font-variant-numeric:tabular-nums}
+  .stat span{display:block;margin-top:10px;color:var(--muted);font-size:.9rem}
+  @media (max-width:820px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat{padding:18px}}
+  .testi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .testi ion-card-content{display:flex;flex-direction:column;gap:16px;height:100%;padding:24px}
+  .testi blockquote{margin:0;font-size:1rem;color:var(--ink-2)}
+  .testi .who{margin-top:auto;display:flex;align-items:center;gap:12px;font-size:.88rem}
+  .testi .who b{display:block;color:var(--ink)}.testi .who span{color:var(--muted);font-size:.8rem}
+  .testi ion-avatar{width:42px;height:42px;display:grid;place-items:center;color:#fff;font-weight:800;flex:0 0 auto}
+  .stars{color:#f5a524;letter-spacing:2px;font-size:1rem}
+  @media (max-width:960px){.testi{grid-template-columns:minmax(0,1fr)}}
+
+  /* pricing */
+  .bill{display:flex;justify-content:center;align-items:center;gap:12px;margin-bottom:30px;flex-wrap:wrap}
+  .bill ion-segment{width:260px}
+  .prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch}
+  .plan{display:flex;flex-direction:column}
+  .plan ion-card-content{display:flex;flex-direction:column;gap:18px;padding:26px;flex:1}
+  .plan.hot{border:2px solid var(--ion-color-primary);box-shadow:var(--shadow-lg)}
+  .plan h3{font-size:1.25rem;font-weight:800;color:var(--ink)}
+  .plan .price{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .plan .price b{font-size:clamp(2rem,3.4vw,2.6rem);font-weight:800;letter-spacing:-.045em;line-height:1}
+  .plan .price span{color:var(--muted);font-size:.88rem}
+  .plan ul{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:.93rem;color:var(--ink-2)}
+  .plan li{display:flex;gap:10px;align-items:flex-start}
+  .plan li svg{color:var(--ion-color-primary);margin-top:3px;width:18px;height:18px;flex:0 0 auto}
+  .plan ion-button{margin-top:auto;width:100%}
+  .plan .old{text-decoration:line-through;color:var(--muted);font-size:.9rem;min-height:1.4em;font-variant-numeric:tabular-nums}
+  @media (max-width:960px){.prices{grid-template-columns:minmax(0,1fr)}}
+
+  /* faq */
+  .faq-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:30px 60px}
+  .faq-grid ion-accordion-group{border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:var(--surface)}
+  .faq-grid ion-item{--background:var(--surface);font-weight:700;--padding-start:20px}
+  .faq-a{color:var(--muted);font-size:.95rem;padding:0 20px 18px}
+  @media (max-width:860px){.faq-grid{grid-template-columns:minmax(0,1fr)}}
+
+  /* cta */
+  .cta{border-radius:32px;padding:clamp(28px,6vw,76px);background:radial-gradient(90% 120% at 100% 0%,#ff7a2f 0%,#0c9a6a 42%,#05301f 100%);color:#fff;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:30px;align-items:center;position:relative;overflow:hidden}
+  .cta h2{font-size:clamp(1.9rem,4.2vw,3.3rem);font-weight:800;letter-spacing:-.045em}
+  .cta p{opacity:.88;margin-top:14px;max-width:30em}
+  .cta-form{display:grid;gap:12px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:20px}
+  .cta-form ion-input{--background:#fff;--color:#0f1a14;--placeholder-color:#5a6a61;--border-radius:12px;--padding-start:14px;--highlight-color-focused:#0c9a6a;color:#0f1a14}
+  .cta-form small{opacity:.82}
+  .cta-form ion-button{--background:#0f1a14;--color:#fff;--background-hover:#000}
+  .apps{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+  .apps span{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:12px;background:rgba(0,0,0,.25);font-size:.85rem;font-weight:700}
+  @media (max-width:860px){.cta{grid-template-columns:minmax(0,1fr)}}
+
+  /* modal form */
+  .form{display:grid;gap:14px;padding-bottom:16px}
+  .form ion-input,.form ion-select{--border-radius:12px}
+  .err{color:#d63a3a;font-size:.88rem;min-height:1.2em;margin:0}
+  @media (min-width:768px){ion-modal#signup{--width:520px;--height:min(720px,92vh);--border-radius:24px}}
+  .form ion-input,.form ion-select{background:var(--bg-2);border-radius:14px;--padding-start:14px;--padding-end:14px;--highlight-color-focused:var(--ion-color-primary)}
+  .form ion-checkbox{padding:6px 2px}
+  /* overlay Ionic memakai position:absolute (mengandalkan body fixed); di halaman yang bisa digulir harus fixed */
+  ion-modal,ion-popover,ion-toast,ion-action-sheet,ion-alert,ion-picker,ion-loading,ion-select-modal{position:fixed!important}
+  ion-modal#signup ion-toolbar{--background:var(--surface)}
+  .plan-pill{display:inline-flex;margin-bottom:6px}
+
+  footer{padding:70px 0 34px;border-top:1px solid var(--line);margin-top:clamp(72px,10vw,120px)}
+  .foot-grid{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));gap:30px}
+  .foot-grid h4{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+  .foot-grid a{display:block;text-decoration:none;padding:4px 0;font-size:.93rem}
+  .foot-grid a:hover{color:var(--brand-fg)}
+  .foot-grid p{color:var(--muted);font-size:.92rem;margin-top:12px;max-width:26em}
+  .foot-bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.84rem;color:var(--muted)}
+  .built{display:inline-flex;align-items:center;gap:8px}.built i{width:6px;height:6px;border-radius:50%;background:var(--orange)}
+  @media (max-width:820px){.foot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.foot-grid>div:first-child{grid-column:span 2}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Lewati ke konten</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="logo" viewBox="0 0 32 32"><rect width="32" height="32" rx="10" fill="#0c9a6a"/><path d="M9 21.5c3.5 0 3.5-11 7-11s3.5 11 7 11" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/><circle cx="23" cy="21.5" r="2.6" fill="#ff7a2f"/></symbol>
+  <symbol id="i-check" viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 20 20"><path d="M15.5 12.6A6.5 6.5 0 0 1 7.4 4.5a6.5 6.5 0 1 0 8.1 8.1z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3.4" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.3 4.3l1.4 1.4M14.3 14.3l1.4 1.4M4.3 15.7l1.4-1.4M14.3 5.7l1.4-1.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 20 20"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="i-scooter" viewBox="0 0 24 24"><circle cx="6" cy="17" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="17" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9 17h5l3-7h-3M14 6h3l1 4M6 14l3-4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-food" viewBox="0 0 24 24"><path d="M4 11h16a8 8 0 0 1-16 0zM12 3v4M8 5v2M16 5v2M3 20h18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9zM4 7.5l8 4.5 8-4.5M12 12v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18M16 14.5h2M6 6l9-3 1 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.5" fill="currentColor"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5.5c0 4.4-3 8-7 9.5-4-1.5-7-5.1-7-9.5V6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</defs></svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Jalanin, kembali ke atas"><svg aria-hidden="true"><use href="#logo"/></svg>Jalanin</a>
+    <nav class="nav-links" aria-label="Navigasi utama">
+      <a href="#layanan">Layanan</a><a href="#kota">Kota 3D</a><a href="#alur">Alur pesanan</a><a href="#harga">Jalanin Plus</a><a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-actions">
+      <ion-button id="themeBtn" class="icon-btn" fill="clear" color="dark" aria-label="Ganti tema terang atau gelap"><svg class="ico" aria-hidden="true"><use href="#i-moon"/></svg></ion-button>
+      <ion-button class="hide-sm" fill="solid" data-open-signup>Daftar gratis</ion-button>
+      <ion-button id="menuBtn" class="only-mobile icon-btn" fill="clear" color="dark" aria-label="Buka menu"><svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg></ion-button>
+    </div>
+  </div>
+</header>
+
+<ion-modal id="menu" aria-label="Menu navigasi">
+  <ion-header><ion-toolbar><ion-title>Menu</ion-title></ion-toolbar></ion-header>
+  <ion-content>
+    <ion-list class="menu-list" lines="full">
+      <ion-item href="#layanan" detail="true"><ion-label>Layanan</ion-label></ion-item>
+      <ion-item href="#kota" detail="true"><ion-label>Kota 3D</ion-label></ion-item>
+      <ion-item href="#alur" detail="true"><ion-label>Alur pesanan</ion-label></ion-item>
+      <ion-item href="#harga" detail="true"><ion-label>Jalanin Plus</ion-label></ion-item>
+      <ion-item href="#faq" detail="true"><ion-label>FAQ</ion-label></ion-item>
+    </ion-list>
+    <div style="padding:16px"><ion-button expand="block" data-open-signup>Daftar gratis</ion-button></div>
+  </ion-content>
+</ion-modal>
+
+<main id="main">
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div>
+        <ion-badge color="secondary">Baru · Kirim Kilat 60 menit sekota</ion-badge>
+        <h1>Ke mana pun<span class="pt">,</span> <span class="grad" style="white-space:nowrap">Jalanin aja<span class="pt">.</span></span></h1>
+        <p class="lead">Satu aplikasi untuk ojek, pesan makan, dan kirim paket. Tarif terlihat sebelum pesan, driver terdekat dalam hitungan menit, dan perjalanan bisa kamu lacak di peta langsung.</p>
+        <div class="where">
+          <ion-searchbar id="search" placeholder="Mau ke mana hari ini?" aria-label="Cari tujuan" show-clear-button="focus" search-icon="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path d='M221 64a157 157 0 1 0 0 314 157 157 0 0 0 0-314zm0 32a125 125 0 1 1 0 250 125 125 0 0 1 0-250zm113 247 22-22 110 110-22 22z'/></svg>"></ion-searchbar>
+          <div class="chips dest-chips" role="radiogroup" aria-label="Tujuan cepat" data-group="hero"></div>
+        </div>
+        <div class="hero-cta">
+          <ion-button class="lg" data-open-signup>Unduh &amp; daftar gratis</ion-button>
+          <ion-button class="lg" fill="outline" id="toCity">Coba kota 3D</ion-button>
+        </div>
+        <div class="trust">
+          <div class="stack" aria-hidden="true"><ion-avatar style="background:#0c9a6a">RS</ion-avatar><ion-avatar style="background:#ff7a2f">AN</ion-avatar><ion-avatar style="background:#5b6cf0">DP</ion-avatar><ion-avatar style="background:#c2489a">MW</ion-avatar></div>
+          <span><b class="num">2,4 juta</b> perjalanan setiap minggu di 38 kota</span>
+          <span aria-label="Rating 4,9 dari 5"><span class="stars" aria-hidden="true">★★★★★</span> <b class="num" style="color:var(--ink)">4,9</b></span>
+        </div>
+      </div>
+      <div class="stage" id="heroStage">
+        <canvas id="heroCanvas" role="img" aria-label="Adegan 3D: ponsel melayang di atas kota isometrik low-poly, motor Jalanin bergerak di sepanjang rute oranye menuju tujuan"></canvas>
+        <div class="fallback" aria-hidden="true"></div>
+        <div class="overlay-top"><div class="glass">
+          <ion-segment id="heroSeg" class="mode-seg" value="ojek" aria-label="Pilih layanan">
+            <ion-segment-button value="ojek"><ion-label>Ojek</ion-label></ion-segment-button>
+            <ion-segment-button value="makan"><ion-label>Makan</ion-label></ion-segment-button>
+            <ion-segment-button value="kirim"><ion-label>Kirim</ion-label></ion-segment-button>
+          </ion-segment>
+        </div></div>
+        <div class="trip glass" aria-live="polite">
+          <span class="dot" aria-hidden="true"><svg class="ico" id="tripIcon"><use href="#i-scooter"/></svg></span>
+          <div><b id="tripTitle">Raka menuju kamu</b><span id="tripSub">B 4821 JLN · ★ 4,9 · Stasiun → Kantor</span></div>
+          <ion-badge color="primary" id="tripEta" class="num">6 mnt</ion-badge>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="sec" id="layanan">
+    <div class="wrap">
+      <div class="sec-head"><span class="kicker">Layanan</span><h2>Satu aplikasi, semua urusan jalan beres.</h2><p>Dirancang untuk ritme kota Indonesia: jam pulang kantor yang padat, gang sempit, dan makan siang yang harus datang sebelum rapat.</p></div>
+      <div class="features">
+        <ion-card>
+          <div class="f-ico" style="background:color-mix(in srgb,#0c9a6a 14%,transparent);color:var(--brand-fg)"><svg aria-hidden="true"><use href="#i-scooter"/></svg></div>
+          <ion-card-header><ion-card-title>Driver tiba rata-rata 4 menit</ion-card-title><ion-card-subtitle>Jalanin Ojek</ion-card-subtitle></ion-card-header>
+          <ion-card-content><p>Helm bersih, jas hujan tersedia, dan rute yang menghindari macet secara otomatis.</p><div class="f-foot"><ion-badge color="primary">Mulai Rp 8.000</ion-badge><ion-button size="small" fill="clear" data-mode="ojek">Lihat di peta</ion-button></div></ion-card-content>
+        </ion-card>
+        <ion-card>
+          <div class="f-ico" style="background:color-mix(in srgb,#ff7a2f 16%,transparent);color:#e0631c"><svg aria-hidden="true"><use href="#i-food"/></svg></div>
+          <ion-card-header><ion-card-title>120 ribu warung dan resto</ion-card-title><ion-card-subtitle>Jalanin Makan</ion-card-subtitle></ion-card-header>
+          <ion-card-content><p>Dari nasi uduk pagi sampai martabak tengah malam. Tas termal menjaga makanan tetap hangat.</p><div class="f-foot"><ion-badge color="secondary">Ongkir mulai Rp 5.000</ion-badge><ion-button size="small" fill="clear" data-mode="makan">Lihat di peta</ion-button></div></ion-card-content>
+        </ion-card>
+        <ion-card>
+          <div class="f-ico" style="background:color-mix(in srgb,#5b6cf0 15%,transparent);color:#5b6cf0"><svg aria-hidden="true"><use href="#i-box"/></svg></div>
+          <ion-card-header><ion-card-title>Paket sampai di hari yang sama</ion-card-title><ion-card-subtitle>Jalanin Kirim</ion-card-subtitle></ion-card-header>
+          <ion-card-content><p>Motor untuk dokumen, mobil boks untuk barang besar. Foto bukti terima langsung masuk ke aplikasi.</p><div class="f-foot"><ion-badge color="tertiary">Asuransi s.d. Rp 10 jt</ion-badge><ion-button size="small" fill="clear" data-mode="kirim">Lihat di peta</ion-button></div></ion-card-content>
+        </ion-card>
+        <ion-card>
+          <div class="f-ico" style="background:color-mix(in srgb,#c2489a 14%,transparent);color:#c2489a"><svg aria-hidden="true"><use href="#i-wallet"/></svg></div>
+          <ion-card-header><ion-card-title>Bayar tanpa uang pas</ion-card-title><ion-card-subtitle>JalaninPay</ion-card-subtitle></ion-card-header>
+          <ion-card-content><p>Isi saldo dari bank atau minimarket, bagi tagihan dengan teman, dan dapat cashback tiap minggu.</p><div class="f-foot"><ion-badge color="medium">Cashback 10%</ion-badge><ion-button size="small" fill="clear" id="payBtn">Cek promo</ion-button></div></ion-card-content>
+        </ion-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTROL: Ionic drives 3D -->
+  <section class="sec control" id="kota">
+    <div class="wrap">
+      <div class="sec-head"><span class="kicker">Kota 3D interaktif</span><h2>Atur kotanya, lihat Jalanin beradaptasi.</h2><p>Setiap kontrol di panel adalah komponen Ionic asli yang menggerakkan adegan three.js: ganti layanan, padatkan lalu lintas, nyalakan malam, dan pilih tujuan.</p></div>
+      <div class="control-grid">
+        <div class="stage" id="cityStage">
+          <canvas id="cityCanvas" role="img" aria-label="Kota isometrik 3D yang dapat diatur: layanan, kepadatan lalu lintas, mode malam, dan tujuan perjalanan"></canvas>
+          <div class="fallback" aria-hidden="true"></div>
+          <div class="trip glass" aria-live="polite">
+            <span class="dot" aria-hidden="true"><svg class="ico"><use href="#i-pin"/></svg></span>
+            <div><b id="cityTitle">Stasiun → Kantor</b><span id="citySub">Lalu lintas sedang</span></div>
+          </div>
+        </div>
+        <ion-card class="panel">
+          <ion-card-content>
+            <div>
+              <h3 id="segLbl">Layanan</h3>
+              <ion-segment id="panelSeg" class="mode-seg" value="ojek" aria-labelledby="segLbl">
+                <ion-segment-button value="ojek"><ion-label>Ojek</ion-label></ion-segment-button>
+                <ion-segment-button value="makan"><ion-label>Makan</ion-label></ion-segment-button>
+                <ion-segment-button value="kirim"><ion-label>Kirim</ion-label></ion-segment-button>
+              </ion-segment>
+            </div>
+            <div>
+              <div class="range-head"><h3 id="trafficLbl" style="margin:0">Kepadatan lalu lintas</h3><ion-badge color="medium" id="trafficVal" class="num">40%</ion-badge></div>
+              <ion-range id="traffic" min="0" max="100" step="5" value="40" aria-labelledby="trafficLbl"></ion-range>
+            </div>
+            <ion-toggle id="night" justify="space-between">Mode malam</ion-toggle>
+            <div>
+              <h3 id="destLbl">Tujuan</h3>
+              <div class="chips dest-chips" role="radiogroup" aria-labelledby="destLbl" data-group="panel" style="padding:0"></div>
+            </div>
+            <ion-list lines="inset" aria-label="Ringkasan perjalanan">
+              <ion-item><ion-label>Jarak</ion-label><ion-note slot="end" id="tKm">4,4 km</ion-note></ion-item>
+              <ion-item><ion-label>Estimasi tiba</ion-label><ion-note slot="end" id="tEta">12 mnt</ion-note></ion-item>
+              <ion-item><ion-label><span id="tFareLbl">Tarif</span></ion-label><ion-note slot="end" id="tFare">Rp 19.000</ion-note></ion-item>
+            </ion-list>
+            <ion-button expand="block" id="orderBtn">Pesan sekarang</ion-button>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section class="story" id="alur" aria-label="Alur pesanan Jalanin">
+    <div class="story-stage">
+      <canvas id="storyCanvas" role="img" aria-label="Peta isometrik: motor Jalanin melaju dari meja ke meja mengikuti garis oranye, dari pesan, dijemput, di jalan, sampai, hingga memberi rating"></canvas>
+      <div class="story-fallback" aria-hidden="true"><svg viewBox="0 0 900 360" id="storySvg"><path d="M80 250 L250 130 L450 250 L650 130 L820 250" fill="none" stroke="var(--orange)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="14 12"/><g><circle class="node on" cx="80" cy="250" r="34"/><circle class="node" cx="250" cy="130" r="34"/><circle class="node" cx="450" cy="250" r="34"/><circle class="node" cx="650" cy="130" r="34"/><circle class="node" cx="820" cy="250" r="34"/></g></svg></div>
+      <div class="story-ui">
+        <div class="wrap">
+          <div class="story-head"><span class="kicker">Alur pesanan</span><h2>Dari ketuk “Pesan” sampai bintang lima.</h2><p>Gulir dan ikuti Raka menjalankan satu pesanan.</p></div>
+          <div>
+            <ol class="steps">
+              <li class="step on" data-step="0"><div class="step-card"><span class="n">01 · PESAN</span><h3>Tarif pasti sebelum pesan</h3><p>Pilih tujuan, lihat harga final, lalu ketuk Pesan. Tidak ada biaya kejutan di akhir perjalanan.</p><div class="tags"><ion-chip outline>Tarif di depan</ion-chip><ion-chip outline>3 detik</ion-chip></div></div></li>
+              <li class="step" data-step="1"><div class="step-card"><span class="n">02 · DIJEMPUT</span><h3>Driver terdekat menjemput</h3><p>Raka berjarak 900 m. Kamu melihat plat, foto, dan helm cadangan yang sudah disiapkan.</p><div class="tags"><ion-chip outline>Driver terverifikasi</ion-chip><ion-chip outline>4 menit</ion-chip></div></div></li>
+              <li class="step" data-step="2"><div class="step-card"><span class="n">03 · DI JALAN</span><h3>Rute pintar, bebas macet</h3><p>Jalanin membaca kepadatan lalu lintas setiap 30 detik dan memilih jalan tikus yang aman.</p><div class="tags"><ion-chip outline>Lacak langsung</ion-chip><ion-chip outline>Bagikan perjalanan</ion-chip></div></div></li>
+              <li class="step" data-step="3"><div class="step-card"><span class="n">04 · SAMPAI</span><h3>Tiba tepat di depan pintu</h3><p>Titik antar presisi sampai lobi gedung. Pembayaran otomatis terpotong dari JalaninPay.</p><div class="tags"><ion-chip outline>Bayar otomatis</ion-chip><ion-chip outline>Struk digital</ion-chip></div></div></li>
+              <li class="step" data-step="4"><div class="step-card"><span class="n">05 · RATING</span><h3>Beri bintang, beri tip</h3><p>Rating membantu driver terbaik mendapat order lebih banyak. Tip 100% masuk ke dompet driver.</p><div class="tags"><ion-chip outline color="secondary">★ 5,0</ion-chip><ion-chip outline>Tip 100% untuk driver</ion-chip></div></div></li>
+            </ol>
+            <div class="story-progress"><ion-progress-bar id="storyBar" value="0" aria-label="Kemajuan alur pesanan"></ion-progress-bar><span id="storyCount">Langkah 1 dari 5</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS + TESTIMONIALS -->
+  <section class="sec" id="testimoni">
+    <div class="wrap">
+      <div class="sec-head center"><span class="kicker">Dipercaya warga kota</span><h2>Angka yang bergerak setiap hari.</h2></div>
+      <div class="stats" id="stats">
+        <div class="stat"><b data-count="38" data-suffix=" kota">0</b><span>dari Medan sampai Jayapura</span></div>
+        <div class="stat"><b data-count="185" data-suffix=" rb">0</b><span>mitra driver aktif</span></div>
+        <div class="stat"><b data-count="4" data-suffix=" mnt">0</b><span>rata-rata waktu jemput</span></div>
+        <div class="stat"><b data-count="98" data-suffix="%">0</b><span>pesanan makan tiba hangat</span></div>
+      </div>
+      <div class="testi">
+        <ion-card><ion-card-content><span class="stars" aria-label="5 dari 5 bintang">★★★★★</span><blockquote>“Jam lima sore di Sudirman biasanya saya pasrah. Sekarang tarifnya jelas dari awal dan drivernya tahu jalan tembus.”</blockquote><div class="who"><ion-avatar style="background:#0c9a6a">AN</ion-avatar><div><b>Ayu Nirmala</b><span>Karyawan swasta · Jakarta Selatan</span></div></div></ion-card-content></ion-card>
+        <ion-card><ion-card-content><span class="stars" aria-label="5 dari 5 bintang">★★★★★</span><blockquote>“Warung saya dulu cuma ramai siang. Sejak gabung Jalanin Makan, pesanan malam naik dua kali lipat.”</blockquote><div class="who"><ion-avatar style="background:#ff7a2f">BS</ion-avatar><div><b>Bu Sri Rahayu</b><span>Pemilik warung gudeg · Yogyakarta</span></div></div></ion-card-content></ion-card>
+        <ion-card><ion-card-content><span class="stars" aria-label="5 dari 5 bintang">★★★★★</span><blockquote>“Sebagai mitra, saya suka tip-nya masuk utuh dan pencairannya instan. Order juga merata, tidak cuma ke yang dekat pusat.”</blockquote><div class="who"><ion-avatar style="background:#5b6cf0">RS</ion-avatar><div><b>Raka Saputra</b><span>Mitra driver sejak 2021 · Bandung</span></div></div></ion-card-content></ion-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="sec" id="harga" style="background:var(--bg-2)">
+    <div class="wrap">
+      <div class="sec-head center"><span class="kicker">Jalanin Plus</span><h2>Langganan hemat untuk yang sering jalan.</h2><p>Gratis ongkir, diskon perjalanan, dan prioritas driver. Batalkan kapan saja dari aplikasi.</p></div>
+      <div class="bill">
+        <ion-segment id="billSeg" value="bulan" aria-label="Periode tagihan">
+          <ion-segment-button value="bulan"><ion-label>Bulanan</ion-label></ion-segment-button>
+          <ion-segment-button value="tahun"><ion-label>Tahunan</ion-label></ion-segment-button>
+        </ion-segment>
+        <ion-badge color="primary">Hemat 20% tahunan</ion-badge>
+      </div>
+      <div class="prices">
+        <ion-card class="plan"><ion-card-content>
+          <div><h3>Jalan Biasa</h3><p style="color:var(--muted);margin-top:6px">Untuk sesekali pesan.</p></div>
+          <div><div class="old"></div><div class="price"><b>Rp 0</b><span>selamanya</span></div></div>
+          <ul><li><svg><use href="#i-check"/></svg>Ojek, Makan, Kirim tanpa langganan</li><li><svg><use href="#i-check"/></svg>Tarif terlihat sebelum pesan</li><li><svg><use href="#i-check"/></svg>Bagikan perjalanan ke keluarga</li></ul>
+          <ion-button fill="outline" data-open-signup data-plan="biasa">Unduh gratis</ion-button>
+        </ion-card-content></ion-card>
+        <ion-card class="plan hot"><ion-card-content>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3>Plus</h3><ion-badge color="secondary">Paling laris</ion-badge></div>
+          <p style="color:var(--muted);margin-top:-10px">Untuk komuter harian.</p>
+          <div><div class="old num" data-old="29000"></div><div class="price"><b class="num" data-m="29000" data-y="23000">Rp 29.000</b><span>/ bulan</span></div></div>
+          <ul><li><svg><use href="#i-check"/></svg>Gratis ongkir 30x Jalanin Makan</li><li><svg><use href="#i-check"/></svg>Diskon ojek 15% setiap perjalanan</li><li><svg><use href="#i-check"/></svg>Prioritas driver di jam sibuk</li><li><svg><use href="#i-check"/></svg>Asuransi perjalanan</li></ul>
+          <ion-button data-open-signup data-plan="plus">Coba 30 hari gratis</ion-button>
+        </ion-card-content></ion-card>
+        <ion-card class="plan"><ion-card-content>
+          <div><h3>Keluarga</h3><p style="color:var(--muted);margin-top:6px">Satu langganan, lima akun.</p></div>
+          <div><div class="old num" data-old="69000"></div><div class="price"><b class="num" data-m="69000" data-y="55000">Rp 69.000</b><span>/ bulan</span></div></div>
+          <ul><li><svg><use href="#i-check"/></svg>Semua manfaat Plus untuk 5 orang</li><li><svg><use href="#i-check"/></svg>Antar jemput anak dengan driver tetap</li><li><svg><use href="#i-check"/></svg>Laporan perjalanan bulanan</li></ul>
+          <ion-button fill="outline" data-open-signup data-plan="keluarga">Pilih Keluarga</ion-button>
+        </ion-card-content></ion-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec" id="faq">
+    <div class="wrap faq-grid">
+      <div class="sec-head" style="margin:0"><span class="kicker">FAQ</span><h2>Pertanyaan yang sering ditanya.</h2><p>Belum terjawab? Tim bantuan kami siaga 24 jam lewat chat di aplikasi.</p></div>
+      <ion-accordion-group value="q1">
+        <ion-accordion value="q1"><ion-item slot="header"><ion-label class="ion-text-wrap">Apakah tarif bisa berubah setelah saya pesan?</ion-label></ion-item><div class="faq-a" slot="content">Tidak. Harga yang kamu lihat sebelum pesan adalah harga final, termasuk biaya parkir dan tol yang sudah diperkirakan.</div></ion-accordion>
+        <ion-accordion value="q2"><ion-item slot="header"><ion-label class="ion-text-wrap">Bagaimana Jalanin menjaga keamanan penumpang?</ion-label></ion-item><div class="faq-a" slot="content">Semua driver melewati verifikasi identitas dan SKCK. Ada tombol darurat, rekam suara opsional, dan fitur bagikan perjalanan ke kontak tepercaya.</div></ion-accordion>
+        <ion-accordion value="q3"><ion-item slot="header"><ion-label class="ion-text-wrap">Metode pembayaran apa saja yang didukung?</ion-label></ion-item><div class="faq-a" slot="content">JalaninPay, transfer bank, kartu debit dan kredit, QRIS, serta tunai untuk ojek dan makan.</div></ion-accordion>
+        <ion-accordion value="q4"><ion-item slot="header"><ion-label class="ion-text-wrap">Bisakah saya mendaftar sebagai mitra driver atau merchant?</ion-label></ion-item><div class="faq-a" slot="content">Bisa. Pendaftaran mitra sepenuhnya daring; verifikasi dokumen selesai dalam 2 hari kerja.</div></ion-accordion>
+        <ion-accordion value="q5"><ion-item slot="header"><ion-label class="ion-text-wrap">Apa yang terjadi jika paket saya rusak?</ion-label></ion-item><div class="faq-a" slot="content">Setiap pengiriman Jalanin Kirim otomatis diasuransikan hingga Rp 10 juta. Ajukan klaim dari riwayat pesanan dengan foto barang.</div></ion-accordion>
+      </ion-accordion-group>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="wrap" id="daftar" style="scroll-margin-top:90px">
+    <div class="cta">
+      <div>
+        <h2>Pesanan pertamamu, ongkir kami yang tanggung.</h2>
+        <p>Daftar dengan email, dapatkan voucher Rp 25.000 untuk ojek, makan, atau kirim paket di 38 kota.</p>
+        <div class="apps" aria-hidden="true"><span>iOS</span><span>Android</span><span>Web</span></div>
+      </div>
+      <form class="cta-form" id="ctaForm" novalidate>
+        <ion-input id="ctaEmail" type="email" label="Email" label-placement="stacked" placeholder="nama@email.com" autocomplete="email" inputmode="email" fill="solid" style="--background:#fff;border-radius:12px"></ion-input>
+        <ion-button type="submit" expand="block" class="lg">Klaim voucher</ion-button>
+        <small>Gratis. Tanpa kartu kredit. Bisa berhenti kapan saja.</small>
+      </form>
+    </div>
+  </section>
+</main>
+
+<ion-modal id="signup" aria-labelledby="suTitle">
+  <ion-header><ion-toolbar><ion-title id="suTitle">Buat akun Jalanin</ion-title><ion-buttons slot="end"><ion-button id="signupClose" fill="clear">Tutup</ion-button></ion-buttons></ion-toolbar></ion-header>
+  <ion-content class="ion-padding">
+    <ion-badge color="primary" class="plan-pill" id="planName">Jalan Biasa · gratis</ion-badge>
+    <form class="form" id="signupForm" novalidate>
+      <ion-input id="suName" label="Nama lengkap" label-placement="floating" fill="outline" autocomplete="name" required></ion-input>
+      <ion-input id="suEmail" type="email" label="Email" label-placement="floating" fill="outline" autocomplete="email" inputmode="email" required></ion-input>
+      <ion-input id="suPhone" type="tel" label="Nomor ponsel" label-placement="floating" fill="outline" autocomplete="tel" inputmode="tel" placeholder="08xx xxxx xxxx"></ion-input>
+      <ion-select id="suCity" label="Kota" label-placement="floating" fill="outline" interface="popover" value="jakarta">
+        <ion-select-option value="jakarta">Jakarta</ion-select-option><ion-select-option value="bandung">Bandung</ion-select-option><ion-select-option value="surabaya">Surabaya</ion-select-option><ion-select-option value="medan">Medan</ion-select-option><ion-select-option value="makassar">Makassar</ion-select-option><ion-select-option value="denpasar">Denpasar</ion-select-option>
+      </ion-select>
+      <ion-select id="suFav" label="Layanan paling sering" label-placement="floating" fill="outline" interface="popover" value="ojek">
+        <ion-select-option value="ojek">Ojek</ion-select-option><ion-select-option value="makan">Makan</ion-select-option><ion-select-option value="kirim">Kirim</ion-select-option>
+      </ion-select>
+      <ion-checkbox id="suAgree" label-placement="end" justify="start">Saya setuju dengan Syarat &amp; Ketentuan</ion-checkbox>
+      <p class="err" id="suError" role="alert"></p>
+      <ion-button expand="block" type="submit" class="lg" id="signupSubmit">Daftar &amp; klaim voucher</ion-button>
+    </form>
+  </ion-content>
+</ion-modal>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div><a class="brand" href="#top"><svg aria-hidden="true"><use href="#logo"/></svg>Jalanin</a><p>Super-app mobilitas buatan Indonesia. Ojek, makan, dan kirim paket dengan tarif jujur.</p></div>
+      <div><h4>Layanan</h4><a href="#layanan">Ojek</a><a href="#layanan">Makan</a><a href="#layanan">Kirim</a></div>
+      <div><h4>Mitra</h4><a href="#faq">Jadi driver</a><a href="#faq">Daftar merchant</a><a href="#alur">Cara kerja</a></div>
+      <div><h4>Perusahaan</h4><a href="#top">Tentang kami</a><a href="#top">Karier</a><a href="#top">halo@jalanin.example</a></div>
+    </div>
+    <div class="foot-bottom"><span class="num">© 2026 Jalanin. Merek fiktif untuk template.</span><span class="built"><i></i>Dibangun dengan Ionic Framework + three.js</span></div>
+  </div>
+</footer>
+
+<template id="cityFallback">
+  <svg viewBox="0 0 600 520" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" role="img" aria-label="Ilustrasi kota dan ponsel (WebGL tidak tersedia)">
+    <polygon points="300,170 560,320 300,470 40,320" fill="#cfe3d8"/>
+    <polygon points="40,320 300,470 300,500 40,350" fill="#8b6b4a"/><polygon points="560,320 300,470 300,500 560,350" fill="#6e5238"/>
+    <path d="M120 320 L300 216 L480 320" fill="none" stroke="#3d434b" stroke-width="22"/><path d="M200 366 L380 262" fill="none" stroke="#3d434b" stroke-width="22"/>
+    <path d="M120 320 L300 216 L420 285" fill="none" stroke="#ff7a2f" stroke-width="6" stroke-linecap="round"/>
+    <g><polygon points="330,300 370,277 370,200 330,223" fill="#d6dcef"/><polygon points="290,277 330,300 330,223 290,200" fill="#b9c3e0"/><polygon points="290,200 330,177 370,200 330,223" fill="#eef1fb"/></g>
+    <g><polygon points="200,330 230,313 230,268 200,285" fill="#f4d6c6"/><polygon points="170,313 200,330 200,285 170,268" fill="#e3b9a3"/></g>
+    <rect x="390" y="40" width="130" height="250" rx="26" fill="#0f1a14"/><rect x="400" y="52" width="110" height="226" rx="18" fill="#ffffff"/>
+    <rect x="410" y="70" width="90" height="80" rx="10" fill="#e6f6ee"/><path d="M420 130 L450 95 L490 110" stroke="#ff7a2f" stroke-width="4" fill="none"/>
+    <rect x="410" y="165" width="90" height="12" rx="6" fill="#dde4dd"/><rect x="410" y="185" width="60" height="12" rx="6" fill="#dde4dd"/><rect x="410" y="240" width="90" height="26" rx="10" fill="#0c9a6a"/>
+  </svg>
+</template>
+
+<script type="module">
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const rmq = matchMedia('(prefers-reduced-motion: reduce)');
+const htmlEl = document.documentElement;
+const bus = new EventTarget();
+window.__jalanin = { bus };
+const fmtRp = n => 'Rp ' + Math.round(n).toLocaleString('id-ID');
+const fmt1 = n => n.toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const isDark = () => htmlEl.classList.contains('ion-palette-dark');
+
+/* ---------- theme: Ionic dark palette class ---------- */
+const themeBtn = $('#themeBtn');
+function syncTheme(){ themeBtn.querySelector('use').setAttribute('href', isDark() ? '#i-sun' : '#i-moon'); $('meta[name="theme-color"]').content = isDark() ? '#09100c' : '#f4f6f1'; }
+syncTheme();
+themeBtn.addEventListener('click', () => {
+  htmlEl.classList.toggle('ion-palette-dark'); const d = isDark();
+  try { localStorage.setItem('jalanin-theme', d ? 'dark' : 'light'); } catch (e) {}
+  syncTheme(); setNight(d); bus.dispatchEvent(new Event('theme'));
+});
+
+/* ---------- toast (ion-toast) ---------- */
+async function toast(message, color = 'dark'){
+  const t = document.createElement('ion-toast');
+  Object.assign(t, { message, duration: 3200, position: 'top', color, buttons: [{ text: 'Tutup', role: 'cancel' }] });
+  document.body.appendChild(t); t.addEventListener('didDismiss', () => t.remove());
+  await customElements.whenDefined('ion-toast'); t.present();
+}
+
+/* ---------- menu (ion-modal sheet) ---------- */
+const menu = $('#menu');
+customElements.whenDefined('ion-modal').then(() => { menu.breakpoints = [0, .62, .9]; menu.initialBreakpoint = .62; });
+$('#menuBtn').addEventListener('click', () => menu.present());
+$$('#menu ion-item').forEach(it => it.addEventListener('click', e => {
+  e.preventDefault(); const t = document.querySelector(it.getAttribute('href'));
+  menu.dismiss().then(() => t?.scrollIntoView({ behavior: rmq.matches ? 'auto' : 'smooth' }));
+}));
+
+/* ---------- signup modal ---------- */
+const dlg = $('#signup');
+const planLabels = { biasa: 'Jalan Biasa · gratis', plus: 'Plus · 30 hari gratis', keluarga: 'Keluarga · 5 akun' };
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-open-signup]'); if (!t) return;
+  $('#planName').textContent = planLabels[t.dataset.plan] || planLabels.biasa; $('#suError').textContent = '';
+  menu.dismiss?.(); dlg.present();
+});
+$('#signupClose').addEventListener('click', () => dlg.dismiss());
+const emailOk = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+$('#signupForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = String($('#suName').value || '').trim(), email = String($('#suEmail').value || '').trim(), agree = $('#suAgree').checked;
+  const err = !name ? 'Nama lengkap wajib diisi.' : !emailOk(email) ? 'Masukkan email yang valid.' : !agree ? 'Centang persetujuan Syarat & Ketentuan.' : '';
+  $('#suError').textContent = err;
+  if (err) { (!name ? $('#suName') : !emailOk(email) ? $('#suEmail') : $('#suAgree')).setFocus?.(); return; }
+  dlg.dismiss(); ['#suName', '#suEmail', '#suPhone'].forEach(s => $(s).value = ''); $('#suAgree').checked = false;
+  toast(`Selamat datang, ${name.split(' ')[0]}! Voucher Rp 25.000 sudah masuk ke ${email}.`, 'success');
+});
+$('#ctaForm').addEventListener('submit', e => {
+  e.preventDefault(); const v = String($('#ctaEmail').value || '').trim();
+  if (!emailOk(v)) { toast('Email belum valid. Contoh: nama@email.com', 'warning'); $('#ctaEmail').setFocus?.(); return; }
+  $('#suEmail').value = v; $('#planName').textContent = planLabels.biasa; dlg.present();
+});
+
+/* ---------- pricing (ion-segment) ---------- */
+$('#billSeg').addEventListener('ionChange', e => {
+  const yearly = e.detail.value === 'tahun';
+  $$('[data-m]').forEach(b => b.textContent = fmtRp(yearly ? b.dataset.y : b.dataset.m));
+  $$('.old[data-old]').forEach(o => o.textContent = yearly ? fmtRp(o.dataset.old) : '');
+});
+
+/* ---------- stats ---------- */
+const statIO = new IntersectionObserver(es => es.forEach(en => {
+  if (!en.isIntersecting) return; statIO.unobserve(en.target);
+  $$('[data-count]', en.target).forEach(el => {
+    const end = +el.dataset.count, suf = el.dataset.suffix || '';
+    const show = v => el.textContent = Math.round(v).toLocaleString('id-ID') + suf;
+    if (rmq.matches) return show(end);
+    const t0 = performance.now(); const st = now => { const p = Math.min(1, (now - t0) / 1400); show(end * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(st); }; requestAnimationFrame(st);
+  });
+}), { threshold: .3 });
+statIO.observe($('#stats'));
+
+/* ---------- shared scene state ---------- */
+const R = [-12, -4, 4, 12];
+const PLACES = {
+  start: { ojek: { name: 'Stasiun', p: [-12, 12] }, makan: { name: 'Pujasera', p: [4, -12] }, kirim: { name: 'Gudang', p: [-12, 4] } },
+  dest: { kantor: { name: 'Kantor', p: [12, -4] }, kampus: { name: 'Kampus', p: [-4, 12] }, mall: { name: 'Mall', p: [12, 12] }, rumah: { name: 'Rumah', p: [-12, -4] } }
+};
+const MODES = { ojek: { label: 'Ojek', icon: '#i-scooter', who: 'Raka menuju kamu', base: 8000, perKm: 2500, fare: 'Tarif ojek' }, makan: { label: 'Makan', icon: '#i-food', who: 'Pesananmu sedang diantar', base: 5000, perKm: 2000, fare: 'Ongkos kirim' }, kirim: { label: 'Kirim', icon: '#i-box', who: 'Paket dalam perjalanan', base: 12000, perKm: 3500, fare: 'Tarif kirim' } };
+const state = { mode: 'ojek', dest: 'kantor', traffic: 40, night: isDark() };
+function routePoints(mode, dest){
+  const [sx, sz] = PLACES.start[mode].p, [dx, dz] = PLACES.dest[dest].p;
+  let pts;
+  if (mode === 'makan') pts = [[sx, sz], [sx, dz], [dx, dz]];
+  else if (mode === 'kirim') { const mx = 4; pts = [[sx, sz], [mx, sz], [mx, dz], [dx, dz]]; }
+  else pts = [[sx, sz], [dx, sz], [dx, dz]];
+  return pts.filter((p, i) => i === 0 || p[0] !== pts[i - 1][0] || p[1] !== pts[i - 1][1]);
+}
+function trip(){
+  const pts = routePoints(state.mode, state.dest); let len = 0;
+  for (let i = 1; i < pts.length; i++) len += Math.abs(pts[i][0] - pts[i - 1][0]) + Math.abs(pts[i][1] - pts[i - 1][1]);
+  const km = Math.max(1.2, len * .11), m = MODES[state.mode];
+  const eta = Math.round(km * (2 + 3.2 * state.traffic / 100)) + (state.mode === 'makan' ? 8 : 2);
+  const fare = Math.round((m.base + m.perKm * km * (1 + state.traffic / 400)) / 500) * 500;
+  return { pts, len, km, eta, fare };
+}
+const trafficWord = v => v < 25 ? 'Lancar' : v < 60 ? 'Ramai lancar' : v < 85 ? 'Padat' : 'Macet total';
+function syncUI(){
+  const t = trip(), m = MODES[state.mode], from = PLACES.start[state.mode].name, to = PLACES.dest[state.dest].name;
+  $('#tripTitle').textContent = m.who; $('#tripSub').textContent = `B 4821 JLN · ★ 4,9 · ${from} → ${to}`;
+  $('#tripEta').textContent = `${t.eta} mnt`; $('#tripIcon use').setAttribute('href', m.icon);
+  $('#cityTitle').textContent = `${m.label}: ${from} → ${to}`; $('#citySub').textContent = `${trafficWord(state.traffic)} · ${state.night ? 'malam' : 'siang'} · ${t.eta} mnt`;
+  $('#tKm').textContent = `${fmt1(t.km)} km`; $('#tEta').textContent = `${t.eta} mnt`; $('#tFare').textContent = fmtRp(t.fare); $('#tFareLbl').textContent = m.fare;
+  $('#trafficVal').textContent = `${state.traffic}%`; $('#trafficVal').color = state.traffic >= 85 ? 'danger' : state.traffic >= 60 ? 'warning' : 'medium';
+  $$('.mode-seg').forEach(s => { if (s.value !== state.mode) s.value = state.mode; });
+  $$('.dest-chips ion-chip').forEach(c => { const on = c.dataset.dest === state.dest; c.setAttribute('aria-checked', on); c.tabIndex = on ? 0 : -1; c.outline = !on; });
+  const nt = $('#night'); if (nt.checked !== state.night) nt.checked = state.night;
+}
+const emit = () => { syncUI(); bus.dispatchEvent(new CustomEvent('state', { detail: state })); };
+function setNight(v){ state.night = v; emit(); }
+
+// destination chips (ion-chip as radio)
+$$('.dest-chips').forEach(g => {
+  Object.entries(PLACES.dest).forEach(([k, d]) => {
+    const c = document.createElement('ion-chip'); c.dataset.dest = k; c.setAttribute('role', 'radio'); c.textContent = d.name;
+    c.addEventListener('click', () => { state.dest = k; emit(); });
+    c.addEventListener('keydown', e => {
+      const keys = Object.keys(PLACES.dest), i = keys.indexOf(state.dest);
+      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); state.dest = k; emit(); }
+      else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); state.dest = keys[(i + (e.key === 'ArrowRight' ? 1 : keys.length - 1)) % keys.length]; emit(); g.querySelector(`[data-dest="${state.dest}"]`).focus(); }
+    });
+    g.append(c);
+  });
+});
+$$('.mode-seg').forEach(s => s.addEventListener('ionChange', e => { const v = e.detail.value; if (v && v !== state.mode) { state.mode = v; emit(); } }));
+const range = $('#traffic');
+range.addEventListener('ionInput', e => { state.traffic = Math.round(+e.detail.value); emit(); });
+$('#night').addEventListener('ionChange', e => { if (e.detail.checked !== state.night) setNight(e.detail.checked); });
+$('#search').addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const q = String(e.currentTarget.value || '').trim().toLowerCase(); if (!q) return;
+  const hit = Object.entries(PLACES.dest).find(([k, d]) => d.name.toLowerCase().includes(q) || k.includes(q));
+  if (hit) { state.dest = hit[0]; emit(); toast(`Rute ke ${hit[1].name} siap. Tarif ${fmtRp(trip().fare)}.`, 'primary'); }
+  else toast('Di demo ini coba: Kantor, Kampus, Mall, atau Rumah.', 'medium');
+});
+$$('[data-mode]').forEach(b => b.addEventListener('click', () => { state.mode = b.dataset.mode; emit(); $('#kota').scrollIntoView({ behavior: rmq.matches ? 'auto' : 'smooth' }); }));
+$('#toCity').addEventListener('click', () => $('#kota').scrollIntoView({ behavior: rmq.matches ? 'auto' : 'smooth' }));
+$('#orderBtn').addEventListener('click', () => { const t = trip(); toast(`${MODES[state.mode].label} ke ${PLACES.dest[state.dest].name} dipesan · ${fmtRp(t.fare)} · tiba ±${t.eta} mnt`, 'success'); });
+$('#payBtn').addEventListener('click', () => toast('Cashback 10% aktif untuk 3 transaksi JalaninPay minggu ini.', 'primary'));
+Promise.all(['ion-chip', 'ion-segment', 'ion-toggle', 'ion-badge'].map(n => customElements.whenDefined(n))).then(syncUI);
+syncUI();
+
+/* ================= 3D ================= */
+function webglOK(){ try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch (e) { return false; } }
+function showFallbacks(){ const tpl = $('#cityFallback'); ['#heroStage', '#cityStage'].forEach(s => { const st = $(s); st.classList.add('no-webgl'); const fb = st.querySelector('.fallback'); if (!fb.firstChild) fb.append(tpl.content.cloneNode(true)); }); $('#alur').classList.add('no-webgl'); }
+let THREE, RoundedBoxGeometry;
+try { if (!webglOK()) throw new Error('no-webgl'); THREE = await import('three'); ({ RoundedBoxGeometry } = await import('three/addons/geometries/RoundedBoxGeometry.js')); } catch (e) { showFallbacks(); }
+
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+const storySec = $('#alur'), svgNodes = $$('#storySvg .node');
+function textProgress(p){ const n = Math.round(clamp(p, 0, 1) * 4); $$('.step', storySec).forEach((s, k) => s.classList.toggle('on', k === n)); svgNodes.forEach((c, k) => c.classList.toggle('on', k <= n)); $('#storyBar').value = p; $('#storyCount').textContent = `Langkah ${n + 1} dari 5`; }
+
+if (THREE) {
+  const gsap = window.gsap;
+  if (gsap && window.ScrollTrigger) gsap.registerPlugin(window.ScrollTrigger);
+  const DPR = () => Math.min(window.devicePixelRatio || 1, 2);
+  const frames = window.__jalanin.frames = {};
+  // render loop that pauses when off-screen or tab hidden
+  function createLoop(el, frame, continuous){
+    let visible = false, raf = 0, last = 0, pending = true;
+    const L = { request(){ pending = true; kick(); } };
+    const run = () => visible && !document.hidden;
+    function tick(now){
+      if (!run()) { raf = 0; last = 0; return; }
+      raf = -1;
+      const dt = last ? Math.min((now - last) / 1000, .05) : .016; last = now; pending = false;
+      frames[el.id] = (frames[el.id] || 0) + 1;
+      frame(dt, now / 1000);
+      if (continuous() || pending) raf = requestAnimationFrame(tick); else { raf = 0; last = 0; }
+    }
+    function kick(){ if (!raf && run()) raf = requestAnimationFrame(tick); }
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) L.request(); }, { rootMargin: '80px' }).observe(el);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) L.request(); });
+    rmq.addEventListener('change', () => L.request());
+    return L;
+  }
+  function makeRenderer(canvas, alpha){
+    const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: !!alpha, powerPreference: 'high-performance' });
+    r.setPixelRatio(DPR()); r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+    r.toneMapping = THREE.ACESFilmicToneMapping; r.outputColorSpace = THREE.SRGBColorSpace; if (alpha) r.setClearColor(0x000000, 0);
+    return r;
+  }
+  function watchSize(el, renderer, onSize){ const apply = () => { const w = Math.max(1, el.clientWidth), h = Math.max(1, el.clientHeight); renderer.setPixelRatio(DPR()); renderer.setSize(w, h, false); onSize(w, h); }; new ResizeObserver(apply).observe(el); apply(); }
+  const std = (c, rough = .75, extra = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0, ...extra });
+  function box(parent, w, h, d, mat, x, y, z, o = {}){ const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y, z); m.castShadow = o.cast !== false; m.receiveShadow = true; if (o.rx) m.rotation.x = o.rx; if (o.ry) m.rotation.y = o.ry; if (o.rz) m.rotation.z = o.rz; parent.add(m); return m; }
+  function rng(seed){ let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+  function buildPath(pts, rad, y){
+    const P = pts.map(([x, z]) => new THREE.Vector3(x, y, z));
+    const path = new THREE.CurvePath(); let cur = P[0].clone();
+    for (let i = 1; i < P.length - 1; i++) { const p = P[i], dIn = p.clone().sub(P[i - 1]).normalize(), dOut = P[i + 1].clone().sub(p).normalize(); if (dIn.dot(dOut) > .999) continue; const r = Math.min(rad, p.distanceTo(P[i - 1]) / 2, p.distanceTo(P[i + 1]) / 2); const a = p.clone().addScaledVector(dIn, -r), b = p.clone().addScaledVector(dOut, r); path.add(new THREE.LineCurve3(cur.clone(), a)); path.add(new THREE.QuadraticBezierCurve3(a, p.clone(), b)); cur = b; }
+    path.add(new THREE.LineCurve3(cur, P[P.length - 1].clone()));
+    return path;
+  }
+
+  /* ---- shared vehicles & figures ---- */
+  const COL = { brand: '#0c9a6a', brandDark: '#08724e', orange: '#ff7a2f', dark: '#1d2621', tire: '#20232a', skin: '#c99a76', white: '#f5f7f4' };
+  function figure(parent, shirt, x, y, z, helmet){
+    const g = new THREE.Group(); g.position.set(x, y, z); parent.add(g);
+    const b = new THREE.Mesh(new THREE.CapsuleGeometry(.24, .42, 4, 10), std(shirt, .8)); b.position.y = .55; b.castShadow = true; g.add(b);
+    const h = new THREE.Mesh(new THREE.SphereGeometry(.22, 16, 12), std(COL.skin, .7)); h.position.y = 1.12; h.castShadow = true; g.add(h);
+    if (helmet) { const hm = new THREE.Mesh(new THREE.SphereGeometry(.27, 16, 10, 0, Math.PI * 2, 0, Math.PI * .62), std(helmet, .35)); hm.position.y = 1.14; hm.castShadow = true; g.add(hm); }
+    else { const hair = new THREE.Mesh(new THREE.SphereGeometry(.235, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2), std('#1f1a17', .9)); hair.position.y = 1.15; g.add(hair); }
+    return g;
+  }
+  function makeVehicle(kind){
+    const g = new THREE.Group(); const wheels = []; const lights = [];
+    const wheel = (x, y, z, r = .3) => { const w = new THREE.Mesh(new THREE.CylinderGeometry(r, r, .2, 18), std(COL.tire, .9)); w.rotation.z = Math.PI / 2; w.position.set(x, y, z); w.castShadow = true; g.add(w); wheels.push(w); const hub = new THREE.Mesh(new THREE.CylinderGeometry(r * .45, r * .45, .22, 10), std('#c9ced6', .3, { metalness: .4 })); hub.rotation.z = Math.PI / 2; hub.position.set(x, y, z); g.add(hub); };
+    const headlight = (x, y, z, w = .16) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, .12, .06), new THREE.MeshStandardMaterial({ color: '#fff6d8', emissive: '#ffe9a8', emissiveIntensity: .4 })); m.position.set(x, y, z); g.add(m); lights.push(m); };
+    if (kind === 'kirim') {
+      box(g, 1.25, 1.25, 1.9, std(COL.white, .6), 0, 1.05, -.35);
+      box(g, 1.27, .22, 1.92, std(COL.brand, .5), 0, .9, -.35, { cast: false });
+      box(g, 1.2, .95, .95, std(COL.brand, .45), 0, .88, 1.05);
+      box(g, 1.1, .42, .05, std('#9fd3ff', .1, { metalness: .2 }), 0, 1.1, 1.53, { cast: false });
+      box(g, 1.3, .2, 2.9, std(COL.dark, .8), 0, .38, .1);
+      wheel(-.62, .32, .9); wheel(.62, .32, .9); wheel(-.62, .32, -.8); wheel(.62, .32, -.8);
+      headlight(-.42, .72, 1.54); headlight(.42, .72, 1.54);
+      const logo = new THREE.Mesh(new THREE.CircleGeometry(.24, 20), std(COL.orange, .5)); logo.position.set(.635, 1.2, -.35); logo.rotation.y = Math.PI / 2; g.add(logo);
+      const logo2 = logo.clone(); logo2.position.x = -.635; logo2.rotation.y = -Math.PI / 2; g.add(logo2);
+    } else {
+      const body = new THREE.Mesh(new RoundedBoxGeometry(.52, .42, 1.45, 3, .14), std(COL.brand, .45)); body.position.set(0, .62, -.05); body.castShadow = true; g.add(body);
+      box(g, .5, .62, .2, std(COL.brand, .45), 0, .88, .62, { rx: -.25 });
+      box(g, .44, .12, .7, std(COL.dark, .8), 0, .9, -.3);
+      box(g, .7, .06, .06, std(COL.dark, .6), 0, 1.25, .66);
+      box(g, .06, .4, .06, std(COL.dark, .6), 0, 1.05, .7, { rx: -.3 });
+      wheel(0, .3, .62); wheel(0, .3, -.62);
+      headlight(0, 1.0, .74, .22);
+      const rider = figure(g, COL.brand, 0, .62, -.12, COL.brand); rider.rotation.x = .12;
+      const visor = new THREE.Mesh(new THREE.BoxGeometry(.3, .12, .05), std('#1b2a33', .2)); visor.position.set(0, 1.78, .14); g.add(visor);
+      if (kind === 'ojek') { const p = figure(g, '#5b6cf0', 0, .66, -.62, COL.white); p.rotation.x = .05; g.userData.passenger = p; }
+      if (kind === 'makan') {
+        const bag = new THREE.Mesh(new RoundedBoxGeometry(.72, .66, .62, 2, .08), std(COL.orange, .55)); bag.position.set(0, 1.42, -.72); bag.castShadow = true; g.add(bag);
+        box(g, .74, .08, .64, std(COL.white, .6), 0, 1.5, -.72, { cast: false });
+      }
+    }
+    g.userData.wheels = wheels; g.userData.lights = lights;
+    return g;
+  }
+
+  /* ---- window textures ---- */
+  function windowTex(lit){
+    const c = document.createElement('canvas'); c.width = 64; c.height = 64; const x = c.getContext('2d'); const r = rng(lit ? 7 : 3);
+    x.fillStyle = lit ? '#000' : '#ffffff'; x.fillRect(0, 0, 64, 64);
+    for (let row = 0; row < 4; row++) for (let col = 0; col < 3; col++) {
+      if (lit) { x.fillStyle = r() > .45 ? '#ffd88a' : '#000'; } else x.fillStyle = '#8aa1b4';
+      x.fillRect(6 + col * 20, 5 + row * 16, 12, 9);
+    }
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.magFilter = THREE.LinearFilter; t.anisotropy = 4;
+    return t;
+  }
+  const WIN = windowTex(false), WIN_LIT = windowTex(true);
+
+  /* ---- phone screen texture ---- */
+  function roundRect(x, X, Y, W, H, R){ x.beginPath(); x.moveTo(X + R, Y); x.arcTo(X + W, Y, X + W, Y + H, R); x.arcTo(X + W, Y + H, X, Y + H, R); x.arcTo(X, Y + H, X, Y, R); x.arcTo(X, Y, X + W, Y, R); x.closePath(); }
+  function drawPhone(cv, u){
+    const x = cv.getContext('2d'), W = cv.width, H = cv.height, F = "'Plus Jakarta Sans', system-ui, sans-serif", t = trip(), m = MODES[state.mode];
+    const dark = state.night, bg = dark ? '#0f1713' : '#f6f8f4', fg = dark ? '#ecf3ee' : '#0f1a14', sub = dark ? '#97a89e' : '#5a6a61', card = dark ? '#1a2620' : '#ffffff';
+    x.clearRect(0, 0, W, H); x.fillStyle = bg; x.fillRect(0, 0, W, H);
+    x.fillStyle = fg; x.font = `700 22px ${F}`; x.textBaseline = 'middle'; x.fillText('09.41', 40, 40);
+    x.fillStyle = fg; roundRect(x, W - 92, 30, 46, 20, 6); x.fill(); x.fillStyle = bg; roundRect(x, W - 88, 34, 30, 12, 3); x.fill();
+    x.fillStyle = '#0c9a6a'; roundRect(x, 36, 86, 48, 48, 14); x.fill(); x.strokeStyle = '#fff'; x.lineWidth = 5; x.lineCap = 'round'; x.beginPath(); x.moveTo(48, 118); x.bezierCurveTo(58, 118, 58, 100, 64, 100); x.bezierCurveTo(70, 100, 70, 118, 74, 118); x.stroke();
+    x.fillStyle = fg; x.font = `800 34px ${F}`; x.fillText('Jalanin', 98, 112);
+    x.fillStyle = sub; x.font = `600 20px ${F}`; x.fillText('Halo, Dimas · Saldo Rp 182.500', 40, 166);
+    // map
+    const mx = 30, my = 196, mw = W - 60, mh = 380; roundRect(x, mx, my, mw, mh, 26); x.save(); x.clip();
+    x.fillStyle = dark ? '#16241d' : '#dcefe2'; x.fillRect(mx, my, mw, mh);
+    const map = (px, pz) => [mx + mw / 2 + px / 17 * (mw / 2 - 10), my + mh / 2 + pz / 17 * (mh / 2 - 10)];
+    x.strokeStyle = dark ? '#2c3a33' : '#ffffff'; x.lineWidth = 12;
+    R.forEach(r => { let [a, b] = map(r, -17), [c, d] = map(r, 17); x.beginPath(); x.moveTo(a, b); x.lineTo(c, d); x.stroke(); [a, b] = map(-17, r); [c, d] = map(17, r); x.beginPath(); x.moveTo(a, b); x.lineTo(c, d); x.stroke(); });
+    x.strokeStyle = '#ff7a2f'; x.lineWidth = 8; x.lineJoin = 'round'; x.beginPath(); t.pts.forEach((p, i) => { const [a, b] = map(p[0], p[1]); i ? x.lineTo(a, b) : x.moveTo(a, b); }); x.stroke();
+    const s0 = map(...t.pts[0]), s1 = map(...t.pts[t.pts.length - 1]);
+    x.fillStyle = '#0c9a6a'; x.beginPath(); x.arc(s0[0], s0[1], 13, 0, 7); x.fill(); x.fillStyle = '#ff7a2f'; x.beginPath(); x.arc(s1[0], s1[1], 15, 0, 7); x.fill(); x.fillStyle = '#fff'; x.beginPath(); x.arc(s1[0], s1[1], 6, 0, 7); x.fill();
+    if (u != null) { // live vehicle dot
+      let rem = u * t.len, k = 1; for (; k < t.pts.length; k++) { const a = t.pts[k - 1], b = t.pts[k], L = Math.abs(b[0] - a[0]) + Math.abs(b[1] - a[1]); if (rem <= L) break; rem -= L; }
+      k = Math.min(k, t.pts.length - 1); const a = t.pts[k - 1], b = t.pts[k], L = Math.max(1e-6, Math.abs(b[0] - a[0]) + Math.abs(b[1] - a[1])), f = clamp(rem / L, 0, 1);
+      const [vx, vy] = map(a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f);
+      x.fillStyle = 'rgba(12,154,106,.25)'; x.beginPath(); x.arc(vx, vy, 26, 0, 7); x.fill(); x.fillStyle = '#0c9a6a'; x.beginPath(); x.arc(vx, vy, 13, 0, 7); x.fill(); x.strokeStyle = '#fff'; x.lineWidth = 4; x.stroke();
+    }
+    x.restore();
+    // trip card
+    const cy = 600; x.fillStyle = card; roundRect(x, 30, cy, W - 60, 250, 26); x.fill();
+    x.fillStyle = sub; x.font = `700 18px ${F}`; x.fillText(m.label.toUpperCase() + ' · ' + PLACES.start[state.mode].name.toUpperCase() + ' → ' + PLACES.dest[state.dest].name.toUpperCase(), 54, cy + 38);
+    x.fillStyle = fg; x.font = `800 30px ${F}`; x.fillText(m.who, 54, cy + 82);
+    x.fillStyle = '#0c9a6a'; x.font = `800 58px ${F}`; x.fillText(`${t.eta}`, 54, cy + 150); const ew = x.measureText(`${t.eta}`).width;
+    x.fillStyle = sub; x.font = `700 24px ${F}`; x.fillText('mnt', 62 + ew, cy + 158);
+    x.fillStyle = fg; x.font = `800 30px ${F}`; x.textAlign = 'right'; x.fillText(fmtRp(t.fare), W - 54, cy + 150); x.textAlign = 'left';
+    x.fillStyle = dark ? '#24322a' : '#e7ede7'; roundRect(x, 54, cy + 190, W - 108, 14, 7); x.fill();
+    x.fillStyle = '#ff7a2f'; roundRect(x, 54, cy + 190, Math.max(14, (W - 108) * (u ?? .5)), 14, 7); x.fill();
+    // button
+    x.fillStyle = '#0c9a6a'; roundRect(x, 30, 878, W - 60, 76, 24); x.fill();
+    x.fillStyle = '#fff'; x.font = `800 26px ${F}`; x.textAlign = 'center'; x.fillText('Lacak perjalanan', W / 2, 917); x.textAlign = 'left';
+    x.fillStyle = sub; roundRect(x, W / 2 - 70, H - 28, 140, 8, 4); x.fill();
+  }
+
+  /* ---- the city ---- */
+  function createCity(canvas, stageEl, opts){
+    const renderer = makeRenderer(canvas, true);
+    const scene = new THREE.Scene();
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -200, 400);
+    const camDir = new THREE.Vector3(1, 1.08, 1).normalize();
+    const hemi = new THREE.HemisphereLight('#ffffff', '#9fb3a6', 1.7); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff3df', 2.5); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+    Object.assign(sun.shadow.camera, { left: -26, right: 26, top: 26, bottom: -26, near: 1, far: 120 }); sun.shadow.bias = -.0006; sun.shadow.normalBias = .04;
+    sun.position.set(20, 36, 12); scene.add(sun, sun.target);
+    const city = new THREE.Group(); scene.add(city);
+    const rand = rng(42);
+    // island
+    const asphalt = std('#3c424a', .92);
+    const top = new THREE.Mesh(new RoundedBoxGeometry(34, 1.2, 34, 2, .5), asphalt); top.position.y = -.6; top.receiveShadow = true; city.add(top);
+    const soil = new THREE.Mesh(new RoundedBoxGeometry(33.4, 2.6, 33.4, 2, .6), std('#8b6b4a', 1)); soil.position.y = -2; city.add(soil);
+    const grassEdge = new THREE.Mesh(new RoundedBoxGeometry(34.2, .3, 34.2, 2, .14), std('#7fbf6a', .9)); grassEdge.position.y = -1.1; city.add(grassEdge);
+    // dashes
+    const dashGeo = new THREE.BoxGeometry(.14, .03, .7), dashMat = new THREE.MeshStandardMaterial({ color: '#f3f1e7', roughness: .6 });
+    const dashPos = [];
+    R.forEach(r => { for (let s = -16; s <= 16; s += 1.4) { if (R.some(q => Math.abs(q - s) < 1.3)) continue; dashPos.push([r, s, 0], [s, r, 1]); } });
+    const dashes = new THREE.InstancedMesh(dashGeo, dashMat, dashPos.length); const dm = new THREE.Object3D();
+    dashPos.forEach(([a, b, h], i) => { dm.position.set(h ? a : a, .02, h ? b : b); if (h) { dm.position.set(a, .02, b); dm.rotation.set(0, Math.PI / 2, 0); } else { dm.position.set(a, .02, b); dm.rotation.set(0, 0, 0); } dm.updateMatrix(); dashes.setMatrixAt(i, dm.matrix); });
+    city.add(dashes);
+    // crosswalk stripes around intersections
+    const zebra = []; R.forEach(a => R.forEach(b => { for (let k = -2; k <= 2; k++) { zebra.push([a + k * .32, b + 1.25, 0], [a + k * .32, b - 1.25, 0], [a + 1.25, b + k * .32, 1], [a - 1.25, b + k * .32, 1]); } }));
+    const zeb = new THREE.InstancedMesh(new THREE.BoxGeometry(.18, .025, .5), dashMat, zebra.length);
+    zebra.forEach(([x, z, h], i) => { dm.position.set(x, .02, z); dm.rotation.set(0, h ? Math.PI / 2 : 0, 0); dm.updateMatrix(); zeb.setMatrixAt(i, dm.matrix); }); city.add(zeb);
+    // blocks
+    const RW = 1.9, edges = [-16.6, ...R, 16.6];
+    const sidewalk = std('#e5e7df', .9), grass = std('#9fd17f', .95), roofMat = std('#c9ccd1', .8);
+    const PAL = ['#f2e6cc', '#e8d3bf', '#cfe3d8', '#d5dcef', '#f3d4c3', '#e2e6ea', '#f6efe3', '#d9ead0'];
+    const winMats = [];
+    const lampBulbs = [];
+    function building(parent, x, z, w, d, h, color, o = {}){
+      const tex = WIN.clone(); tex.repeat.set(Math.max(1, Math.round(w / 1.4)), Math.max(1, Math.round(h / 1.1))); tex.needsUpdate = true;
+      const etex = WIN_LIT.clone(); etex.repeat.copy(tex.repeat); etex.offset.set(rand(), rand()); etex.needsUpdate = true;
+      const side = new THREE.MeshStandardMaterial({ color, map: tex, emissive: '#ffcf7a', emissiveMap: etex, emissiveIntensity: 0, roughness: .8 });
+      winMats.push(side);
+      const rmat = o.roof || roofMat;
+      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), [side, side, rmat, rmat, side, side]); m.position.set(x, .22 + h / 2, z); m.castShadow = true; m.receiveShadow = true; parent.add(m);
+      if (!o.flat) { box(parent, w * .3, .35, d * .3, std('#aeb3ba', .7), x + w * .18, .22 + h + .17, z - d * .15); if (rand() > .5) box(parent, .5, .5, .5, std('#7b8694', .6), x - w * .22, .22 + h + .25, z + d * .2); }
+      return m;
+    }
+    const treeGeo = new THREE.IcosahedronGeometry(.62, 0), trunkGeo = new THREE.CylinderGeometry(.09, .12, .6, 6);
+    const trees = [];
+    const tree = (x, z, s = 1) => trees.push([x, z, s]);
+    function house(parent, x, z, rot, color){
+      const g = new THREE.Group(); g.position.set(x, .22, z); g.rotation.y = rot; parent.add(g);
+      box(g, 1.9, 1.3, 1.7, std(color, .85), 0, .65, 0);
+      const roof = new THREE.Mesh(new THREE.ConeGeometry(1.55, .95, 4), std('#c8553d', .7)); roof.position.y = 1.78; roof.rotation.y = Math.PI / 4; roof.scale.set(1, 1, .92); roof.castShadow = true; g.add(roof);
+      box(g, .4, .7, .06, std('#6b4a32', .8), 0, .35, .86);
+      const win = new THREE.MeshStandardMaterial({ color: '#9fd3ff', emissive: '#ffcf7a', emissiveIntensity: 0 }); winMats.push(win);
+      box(g, .38, .32, .06, win, -.55, .82, .86, { cast: false }); box(g, .38, .32, .06, win, .55, .82, .86, { cast: false });
+    }
+    const special = {
+      '2,2': (g, b) => { // park + fountain
+        box(g, b.w - .4, .1, b.d - .4, grass, 0, .27, 0, { cast: false });
+        const f = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.6, .4, 24), std('#d8dbd4', .7)); f.position.y = .45; f.castShadow = true; g.add(f);
+        const w = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, .1, 24), new THREE.MeshStandardMaterial({ color: '#58b7e8', roughness: .15, emissive: '#1b6f9a', emissiveIntensity: .2 })); w.position.y = .62; g.add(w);
+        const col = new THREE.Mesh(new THREE.CylinderGeometry(.16, .22, 1.6, 10), std('#eef0ea', .6)); col.position.y = 1.4; col.castShadow = true; g.add(col);
+        const crown = new THREE.Mesh(new THREE.ConeGeometry(.42, .6, 8), std('#f2c14e', .4, { metalness: .3 })); crown.position.y = 2.45; g.add(crown);
+        [[-2, -2], [2, -2], [-2, 2], [2, 2], [0, -2.4], [-2.4, 0]].forEach(([x, z]) => tree(b.cx + x, b.cz + z, 1));
+        box(g, b.w - .4, .02, .7, std('#e9dcc0', .9), 0, .33, 0, { cast: false }); box(g, .7, .02, b.d - .4, std('#e9dcc0', .9), 0, .33, 0, { cast: false });
+      },
+      '3,1': (g, b) => { // kantor tower
+        building(g, -1, -1, 3.2, 3.2, 11, '#bfd3ea', { roof: std('#9fb3c8', .5) });
+        box(g, 1.2, 1.2, 1.2, std('#e8edf3', .5), -1, .22 + 11.6, -1); const ant = new THREE.Mesh(new THREE.CylinderGeometry(.05, .05, 2, 6), std('#7b8694', .5)); ant.position.set(-1, 13.6, -1); g.add(ant);
+        const beacon = new THREE.Mesh(new THREE.SphereGeometry(.16, 10, 8), new THREE.MeshStandardMaterial({ color: '#ff5a4a', emissive: '#ff3a2a', emissiveIntensity: 1 })); beacon.position.set(-1, 14.65, -1); g.add(beacon); lampBulbs.push(beacon);
+        building(g, 1.6, 1.6, 2.2, 2.2, 4, PAL[5]); tree(b.cx + 1.8, b.cz - 1.8, .9); tree(b.cx - 1.8, b.cz + 1.9, .9);
+      },
+      '1,2': (g, b) => { // kampus
+        box(g, 4.6, 2.2, 2.2, std('#f1e3c6', .85), 0, 1.32, -1.2); const roof = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 1.3, 4.8, 3, 1), std('#b6513a', .75)); roof.rotation.z = Math.PI / 2; roof.rotation.x = Math.PI / 2 + Math.PI / 6; roof.scale.set(1, 1, .55); roof.position.set(0, 2.9, -1.2); roof.castShadow = true; g.add(roof);
+        for (let k = -2; k <= 2; k++) box(g, .22, 1.9, .22, std('#ffffff', .6), k * .95, 1.17, .05);
+        box(g, 4.4, .08, 2.2, std('#3f9c53', .9), 0, .27, 1.7, { cast: false }); box(g, 2.6, .02, .06, std('#ffffff', .6), 0, .32, 1.7, { cast: false });
+        tree(b.cx - 2.4, b.cz + 2.4); tree(b.cx + 2.4, b.cz + 2.4);
+      },
+      '3,3': (g, b) => { // mall
+        building(g, 0, -.4, 5.2, 4.2, 3.4, '#f4d8c8', { roof: std('#d8c2b4', .7) });
+        box(g, 5.25, .5, .2, std(COL.orange, .5), 0, 2.9, 1.72); box(g, 1.8, 1.2, .2, std('#9fd3ff', .15), 0, .82, 1.72, { cast: false });
+        const dome = new THREE.Mesh(new THREE.SphereGeometry(1.1, 18, 10, 0, Math.PI * 2, 0, Math.PI / 2), std('#cfe8f6', .15, { metalness: .2 })); dome.position.set(0, 3.62, -.4); dome.castShadow = true; g.add(dome);
+        [[-2.4, 2.4], [2.4, 2.4]].forEach(([x, z]) => tree(b.cx + x, b.cz + z, .8));
+      },
+      '1,1': (g, b) => { house(g, -1.5, -1.4, 0, '#f6efe3'); house(g, 1.5, -1.4, 0, '#d9ead0'); house(g, -1.5, 1.6, Math.PI, '#f3d4c3'); house(g, 1.5, 1.6, Math.PI, '#d5dcef'); tree(b.cx, b.cz, .7); },
+      '1,3': (g, b) => { // stasiun
+        box(g, 5.2, 1.4, 2, std('#eae4d6', .8), 0, .92, -1.4);
+        const roof = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, 5.6, 16, 1, false, 0, Math.PI), std('#4f7fa8', .5)); roof.rotation.z = Math.PI / 2; roof.position.set(0, 1.62, -1.4); roof.scale.set(1, 1, .6); roof.castShadow = true; g.add(roof);
+        box(g, 5.6, .3, 1.2, std('#c9ccd1', .8), 0, .37, 1.2); box(g, 5.6, .06, .1, std('#ffd34d', .5), 0, .53, .7, { cast: false });
+        const clock = new THREE.Mesh(new THREE.CylinderGeometry(.35, .35, .08, 20), std('#ffffff', .4)); clock.rotation.x = Math.PI / 2; clock.position.set(0, 2.1, -.3); g.add(clock);
+      },
+      '2,1': (g, b) => { // pujasera
+        [[-1.6, -1.5], [1.6, -1.5], [-1.6, 1.5], [1.6, 1.5]].forEach(([x, z], k) => {
+          box(g, 1.8, .9, 1.4, std(PAL[k + 1], .85), x, .67, z);
+          const aw = new THREE.Mesh(new THREE.BoxGeometry(2.0, .12, .9), std(k % 2 ? COL.orange : '#ffcf5a', .6)); aw.position.set(x, 1.28, z + .75); aw.rotation.x = .35; aw.castShadow = true; g.add(aw);
+        });
+        [[0, 0], [0, -.9], [0, .9]].forEach(([x, z]) => { const tb = new THREE.Mesh(new THREE.CylinderGeometry(.35, .35, .06, 14), std('#ffffff', .6)); tb.position.set(x, .62, z); g.add(tb); const um = new THREE.Mesh(new THREE.ConeGeometry(.6, .3, 10), std(COL.brand, .6)); um.position.set(x, 1.3, z); um.castShadow = true; g.add(um); });
+      },
+      '0,2': (g, b) => { // gudang
+        box(g, b.w - .6, 1.8, 5.6, std('#c7d0d6', .8), 0, 1.12, 0);
+        const roof = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.4, 5.6, 3, 1), std('#8996a3', .7)); roof.rotation.x = Math.PI / 2; roof.rotation.z = Math.PI / 2; roof.scale.set(.32, 1, 1); roof.position.y = 2.2; g.add(roof);
+        for (let k = -1; k <= 1; k++) box(g, .08, 1.2, 1.2, std('#5b6670', .8), b.w / 2 - .28, .82, k * 1.6, { cast: false });
+        box(g, .5, .5, .5, std('#c9a26b', .9), b.w / 2 - .1, .47, 2.4); box(g, .5, .5, .5, std('#c9a26b', .9), b.w / 2 - .1, .47, 1.8);
+      }
+    };
+    for (let i = 0; i < 5; i++) for (let j = 0; j < 5; j++) {
+      const x0 = edges[i] + (i === 0 ? 0 : RW / 2), x1 = edges[i + 1] - (i === 4 ? 0 : RW / 2), z0 = edges[j] + (j === 0 ? 0 : RW / 2), z1 = edges[j + 1] - (j === 4 ? 0 : RW / 2);
+      const b = { cx: (x0 + x1) / 2, cz: (z0 + z1) / 2, w: x1 - x0, d: z1 - z0 };
+      const g = new THREE.Group(); g.position.set(b.cx, 0, b.cz); city.add(g);
+      const slab = new THREE.Mesh(new THREE.BoxGeometry(b.w, .22, b.d), sidewalk); slab.position.y = .11; slab.receiveShadow = true; g.add(slab);
+      const key = `${i},${j}`;
+      if (special[key]) { special[key](g, b); continue; }
+      const edge = i === 0 || i === 4 || j === 0 || j === 4;
+      if (!edge) {
+        const lw = b.w / 2 - .5, ld = b.d / 2 - .5;
+        [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sz]) => {
+          if (rand() < .14) { tree(b.cx + sx * lw / 2, b.cz + sz * ld / 2, 1.1); return; }
+          const center = 1 - (Math.abs(b.cx) + Math.abs(b.cz)) / 24, h = 1.6 + rand() * 4.5 * (.5 + center);
+          building(g, sx * (lw / 2 + .2), sz * (ld / 2 + .2), lw - .2, ld - .2, h, PAL[Math.floor(rand() * PAL.length)]);
+        });
+      } else {
+        const along = b.w > b.d ? 'x' : 'z', L = Math.max(b.w, b.d), n = Math.max(1, Math.floor(L / 2.4));
+        for (let k = 0; k < n; k++) {
+          const t = -L / 2 + (k + .5) * (L / n), px = along === 'x' ? t : 0, pz = along === 'z' ? t : 0;
+          if (rand() < .45) tree(b.cx + px, b.cz + pz, .8 + rand() * .4);
+          else building(g, px, pz, Math.min(1.9, b.w - .5), Math.min(1.9, b.d - .5), .9 + rand() * 1.4, PAL[Math.floor(rand() * PAL.length)], { flat: true });
+        }
+      }
+    }
+    // trees (instanced)
+    const foliage = new THREE.InstancedMesh(treeGeo, std('#4fa85a', .85, { flatShading: true }), trees.length), trunks = new THREE.InstancedMesh(trunkGeo, std('#7a5a3c', .9), trees.length);
+    foliage.castShadow = true; trunks.castShadow = true;
+    trees.forEach(([x, z, s], i) => { dm.rotation.set(0, i, 0); dm.scale.set(s, s * 1.15, s); dm.position.set(x, .22 + .55 * s + .55 * s, z); dm.updateMatrix(); foliage.setMatrixAt(i, dm.matrix); dm.scale.set(s, s, s); dm.position.set(x, .22 + .3 * s, z); dm.updateMatrix(); trunks.setMatrixAt(i, dm.matrix); });
+    const tc = new THREE.Color(); trees.forEach((_, i) => foliage.setColorAt(i, tc.set(['#4fa85a', '#64b65a', '#3f9a63', '#7cc06a'][i % 4])));
+    city.add(foliage, trunks);
+    // street lamps at intersections
+    const poleGeo = new THREE.CylinderGeometry(.05, .06, 1.7, 6), bulbGeo = new THREE.SphereGeometry(.14, 10, 8), poleMat = std('#5d6670', .5);
+    R.forEach(a => R.forEach(b => { const x = a + 1.15, z = b + 1.15; const p = new THREE.Mesh(poleGeo, poleMat); p.position.set(x, .85 + .22, z); p.castShadow = true; city.add(p); const bl = new THREE.Mesh(bulbGeo, new THREE.MeshStandardMaterial({ color: '#fff3d0', emissive: '#ffd27a', emissiveIntensity: 0 })); bl.position.set(x, 1.95, z); city.add(bl); lampBulbs.push(bl); }));
+    // traffic cars
+    const CAR_COLORS = ['#e24b4b', '#3d7be0', '#f2c14e', '#ffffff', '#8c95a3', '#2f3a45', '#6bc1a8', '#f08bb0'];
+    const cars = [];
+    for (let i = 0; i < 30; i++) {
+      const g = new THREE.Group(); city.add(g);
+      const c = CAR_COLORS[i % CAR_COLORS.length];
+      const bd = new THREE.Mesh(new RoundedBoxGeometry(.8, .42, 1.6, 2, .12), std(c, .45)); bd.position.y = .36; bd.castShadow = true; g.add(bd);
+      box(g, .7, .34, .85, std('#2a3440', .2, { metalness: .2 }), 0, .7, -.1);
+      const hl = new THREE.Mesh(new THREE.BoxGeometry(.6, .1, .04), new THREE.MeshStandardMaterial({ color: '#fff6d8', emissive: '#ffe9a8', emissiveIntensity: .2 })); hl.position.set(0, .4, .81); g.add(hl);
+      const vertical = i % 2 === 0, road = R[(i * 7 + (i >> 1)) % 4], dir = (i % 4 < 2) ? 1 : -1;
+      cars.push({ g, hl, vertical, road, dir, t: -16 + (i * 7.3) % 32, speed: 2.2 + (i % 5) * .35, s: 0 });
+    }
+    // route + vehicle
+    const routeMat = new THREE.MeshStandardMaterial({ color: '#ff7a2f', emissive: '#ff6a1a', emissiveIntensity: .55, roughness: .45 });
+    let route = null, routeGeo = null, path = null, routeLen = 1; const TS = 220, RS = 8;
+    const pinMat = c => new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: .35, roughness: .4 });
+    function pin(c){ const g = new THREE.Group(); const cone = new THREE.Mesh(new THREE.ConeGeometry(.42, 1.1, 18), pinMat(c)); cone.rotation.x = Math.PI; cone.position.y = 1.4; cone.castShadow = true; g.add(cone); const ball = new THREE.Mesh(new THREE.SphereGeometry(.55, 20, 14), pinMat(c)); ball.position.y = 2.1; ball.castShadow = true; g.add(ball); const dot = new THREE.Mesh(new THREE.SphereGeometry(.22, 12, 10), new THREE.MeshBasicMaterial({ color: '#ffffff' })); dot.position.set(0, 2.1, 0); dot.scale.set(1, 1, 1); g.add(dot); const ring = new THREE.Mesh(new THREE.RingGeometry(.7, .9, 32), new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: .5, side: THREE.DoubleSide })); ring.rotation.x = -Math.PI / 2; ring.position.y = .05; g.add(ring); g.userData.ring = ring; city.add(g); return g; }
+    const pinA = pin('#0c9a6a'), pinB = pin('#ff7a2f');
+    function rebuildRoute(){
+      const t = trip(); path = buildPath(t.pts, 1.6, .12); routeLen = path.getLength();
+      if (route) { city.remove(route); routeGeo.dispose(); }
+      routeGeo = new THREE.TubeGeometry(path, TS, .2, RS, false); route = new THREE.Mesh(routeGeo, routeMat); city.add(route);
+      pinA.position.set(t.pts[0][0], 0, t.pts[0][1]); const e = t.pts[t.pts.length - 1]; pinB.position.set(e[0], 0, e[1]);
+    }
+    const vehicles = { ojek: makeVehicle('ojek'), makan: makeVehicle('makan'), kirim: makeVehicle('kirim') };
+    Object.values(vehicles).forEach(v => { v.scale.setScalar(.001); city.add(v); v.traverse(o => { if (o.isMesh) o.castShadow = true; }); });
+    // phone
+    let phone = null, phoneTex = null, phoneCv = null;
+    if (opts.phone) {
+      phone = new THREE.Group(); scene.add(phone);
+      const body = new THREE.Mesh(new RoundedBoxGeometry(4.2, 8.4, .42, 4, .5), new THREE.MeshPhysicalMaterial({ color: '#111814', roughness: .3, metalness: .5, clearcoat: 1 })); body.castShadow = true; phone.add(body);
+      phoneCv = document.createElement('canvas'); phoneCv.width = 512; phoneCv.height = 1040; drawPhone(phoneCv, .3);
+      phoneTex = new THREE.CanvasTexture(phoneCv); phoneTex.colorSpace = THREE.SRGBColorSpace; phoneTex.anisotropy = 8;
+      const scr = new THREE.Mesh(new THREE.PlaneGeometry(3.86, 7.84), new THREE.MeshBasicMaterial({ map: phoneTex, toneMapped: false })); scr.position.z = .215; phone.add(scr);
+      const notch = new THREE.Mesh(new RoundedBoxGeometry(1.1, .3, .05, 2, .14), std('#000', .3)); notch.position.set(0, 3.68, .23); phone.add(notch);
+      const cam = new THREE.Mesh(new RoundedBoxGeometry(1.3, 1.3, .1, 3, .3), std('#1d2621', .3, { metalness: .5 })); cam.position.set(-1.1, 3, -.25); phone.add(cam);
+    }
+    // state application
+    let night = state.night ? 1 : 0, mode = state.mode, routeKey = '', u = 0, hold = 0, aspect = 1, halfW = 20, halfH = 16, phoneTimer = 0;
+    const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+    stageEl.addEventListener('pointermove', e => { const r = stageEl.getBoundingClientRect(); pointer.tx = ((e.clientX - r.left) / r.width - .5) * 2; pointer.ty = ((e.clientY - r.top) / r.height - .5) * 2; });
+    stageEl.addEventListener('pointerleave', () => { pointer.tx = 0; pointer.ty = 0; });
+    const target = new THREE.Vector3(), right = new THREE.Vector3(), up = new THREE.Vector3(), tilt = new THREE.Quaternion(), eul = new THREE.Euler(), tmpV = new THREE.Vector3();
+    const dayBg = new THREE.Color('#3c424a'), nightBg = new THREE.Color('#262b33');
+    let first = true;
+    const loop = createLoop(canvas, (dt, time) => {
+      const RM = rmq.matches;
+      const key = state.mode + state.dest; if (key !== routeKey) { routeKey = key; rebuildRoute(); u = 0; hold = 0; if (RM) u = .55; }
+      mode = state.mode;
+      // vehicles pop
+      Object.entries(vehicles).forEach(([k, v]) => { const tgt = k === mode ? 1.75 : .001; const s = v.scale.x + (tgt - v.scale.x) * (RM || first ? 1 : 1 - Math.exp(-dt * 9)); v.scale.setScalar(Math.max(.001, s)); v.visible = s > .02; });
+      // move along route
+      const tr = state.traffic / 100;
+      if (!RM) { if (hold > 0) { hold -= dt; if (hold <= 0) u = 0; } else { u += dt * (6.5 * (1 - .6 * tr)) / routeLen; if (u >= 1) { u = 1; hold = 1.4; } } }
+      const uu = clamp(u, 0, 1), pos = path.getPointAt(uu), tan = path.getTangentAt(Math.min(uu, .999));
+      const v = vehicles[mode]; v.position.set(pos.x + tan.z * .42, (RM ? 0 : Math.abs(Math.sin(time * 18)) * .03), pos.z - tan.x * .42); v.rotation.y = Math.atan2(tan.x, tan.z);
+      v.userData.wheels.forEach(w => { if (!RM && hold <= 0) w.rotation.x += dt * 12; });
+      route.geometry.setDrawRange(Math.floor(uu * TS) * RS * 6, Infinity);
+      [pinA, pinB].forEach((p, k) => { const b = RM ? 0 : Math.sin(time * 3 + k) * .18; p.children[0].position.y = 1.4 + b; p.children[1].position.y = 2.1 + b; p.children[2].position.y = 2.1 + b; const rs = RM ? 1 : 1 + ((time * .8 + k * .5) % 1) * .9; p.userData.ring.scale.setScalar(rs); p.userData.ring.material.opacity = RM ? .5 : .55 * (1 - ((time * .8 + k * .5) % 1)); });
+      // traffic
+      const want = Math.round(tr * cars.length);
+      cars.forEach((c, i) => {
+        const on = i < want ? 1 : 0; c.s += (on - c.s) * (RM || first ? 1 : 1 - Math.exp(-dt * 5));
+        if (!RM) { c.t += c.dir * c.speed * (1 - .5 * tr) * dt; if (c.t > 16.2) c.t = -16.2; if (c.t < -16.2) c.t = 16.2; }
+        const edge = 1 - smooth(14.8, 16.2, Math.abs(c.t)), lane = c.dir * .48;
+        if (c.vertical) { c.g.position.set(c.road + lane, .02, c.t); c.g.rotation.y = c.dir > 0 ? 0 : Math.PI; }
+        else { c.g.position.set(c.t, .02, c.road - lane); c.g.rotation.y = c.dir > 0 ? Math.PI / 2 : -Math.PI / 2; }
+        const s = Math.max(.001, c.s * edge * 1.2); c.g.scale.setScalar(s); c.g.visible = s > .01;
+        c.hl.material.emissiveIntensity = .2 + night * 2.2;
+      });
+      // night
+      night += ((state.night ? 1 : 0) - night) * (RM || first ? 1 : 1 - Math.exp(-dt * 3));
+      hemi.intensity = 1.7 - 1.3 * night; hemi.color.set(night > .5 ? '#9fb2ff' : '#ffffff'); sun.intensity = 2.5 - 2.1 * night; sun.color.setRGB(1, .95 - .1 * night, .87 + .13 * night);
+      winMats.forEach(m => m.emissiveIntensity = night * 1.25);
+      lampBulbs.forEach(b => b.material.emissiveIntensity = .4 + night * 3);
+      Object.values(vehicles).forEach(vv => vv.userData.lights.forEach(l => l.material.emissiveIntensity = .4 + night * 3));
+      routeMat.emissiveIntensity = .55 + night * .9; asphalt.color.copy(dayBg).lerp(nightBg, night);
+      stageEl.style.setProperty('--night', night.toFixed(3));
+      // camera (iso ortho) with gentle parallax
+      pointer.x += (pointer.tx - pointer.x) * (RM ? 1 : .05); pointer.y += (pointer.ty - pointer.y) * (RM ? 1 : .05);
+      const sway = RM ? 0 : Math.sin(time * .25) * .06;
+      const dir = tmpV.copy(camDir).applyAxisAngle(new THREE.Vector3(0, 1, 0), sway + pointer.x * .08 * (RM ? 0 : 1));
+      target.set(opts.phone && aspect >= 1 ? 2.2 : 0, opts.phone && aspect < 1 ? 3.6 : 0, opts.phone && aspect >= 1 ? -2.2 : 0);
+      cam.position.copy(target).addScaledVector(dir, 90); cam.position.y -= pointer.y * 3 * (RM ? 0 : 1); cam.lookAt(target);
+      cam.updateMatrixWorld();
+      // phone in screen space
+      if (phone) {
+        right.setFromMatrixColumn(cam.matrixWorld, 0); up.setFromMatrixColumn(cam.matrixWorld, 1);
+        const wide = aspect >= 1;
+        const ph = wide ? halfH * .84 : halfH * .54; phone.scale.setScalar(ph / 8.4);
+        const bob = RM ? 0 : Math.sin(time * 1.3) * .35;
+        phone.position.copy(target).addScaledVector(right, wide ? halfW * .52 : halfW * .4).addScaledVector(up, (wide ? halfH * .12 : halfH * .5) + bob).addScaledVector(camDir, 30);
+        eul.set(.1 + pointer.y * .08, -.26 + pointer.x * .18 + (RM ? 0 : Math.sin(time * .7) * .05), .04);
+        tilt.setFromEuler(eul); phone.quaternion.copy(cam.quaternion).multiply(tilt);
+        phoneTimer -= dt; if (phoneTimer <= 0 || first) { phoneTimer = .2; drawPhone(phoneCv, uu); phoneTex.needsUpdate = true; }
+      }
+      renderer.render(scene, cam);
+      first = false;
+      if (!stageEl.classList.contains('ready')) stageEl.classList.add('ready');
+    }, () => !rmq.matches);
+    watchSize(stageEl, renderer, (w, h) => {
+      aspect = w / h;
+      if (opts.phone) { halfW = aspect >= 1 ? 22.5 : 19; halfH = halfW / aspect; if (aspect < 1) { halfH = Math.max(halfH, 24); halfW = halfH * aspect; } }
+      else { halfW = aspect >= 1.3 ? 21 : aspect >= 1 ? 18.5 : 15.5; halfH = halfW / aspect; if (aspect >= 1 && halfH < 15) { halfH = 15; halfW = halfH * aspect; } }
+      Object.assign(cam, { left: -halfW, right: halfW, top: halfH, bottom: -halfH }); cam.updateProjectionMatrix(); loop.request();
+    });
+    bus.addEventListener('state', () => loop.request());
+    document.fonts?.ready.then(() => loop.request());
+    return { loop, renderer, scene, cam };
+  }
+
+  let heroV, cityV;
+  try { heroV = createCity($('#heroCanvas'), $('#heroStage'), { phone: true }); cityV = createCity($('#cityCanvas'), $('#cityStage'), { phone: false }); }
+  catch (e) { console.warn('WebGL gagal', e); showFallbacks(); }
+
+  /* ================= isometric scroll story ================= */
+  function createStory(){
+    const section = storySec, stage = $('.story-stage', section), canvas = $('#storyCanvas');
+    const renderer = makeRenderer(canvas, false);
+    const scene = new THREE.Scene();
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -100, 200);
+    const camDir = new THREE.Vector3(1, 1.1, 1).normalize(), camTarget = new THREE.Vector3();
+    const hemi = new THREE.HemisphereLight('#ffffff', '#c3d6c9', 1.45); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff6e8', 2.4); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+    Object.assign(sun.shadow.camera, { left: -18, right: 18, top: 18, bottom: -18, near: 1, far: 80 }); sun.shadow.bias = -.0005; sun.shadow.normalBias = .03;
+    scene.add(sun, sun.target);
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(160, 90), std('#eef2ec', 1)); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+    let gridRef = new THREE.GridHelper(160, 80, '#dbe3dc', '#e4eae4'); gridRef.position.y = .01; scene.add(gridRef);
+    const CLAY = new THREE.Color('#f3f5f1');
+    const SP = [[-16, 4], [-6, -4], [3, 4], [12, -4], [21, 4]];
+    const stations = [];
+    const sm = c => { const m = std(c, .75); m.userData.target = new THREE.Color(c); m.color.copy(CLAY); return m; };
+    let waiting = null, arrived = null;
+    SP.forEach(([x, z], i) => {
+      const g = new THREE.Group(); g.position.set(x, 0, z); scene.add(g); const mats = [];
+      const inner = new THREE.Group(); inner.position.y = .2; g.add(inner);
+      const B = (w, h, d, c, px, py, pz, o) => { const m = sm(c); mats.push(m); return box(inner, w, h, d, m, px, py, pz, o); };
+      const Mx = (geo, c, px, py, pz) => { const m = sm(c); mats.push(m); const me = new THREE.Mesh(geo, m); me.position.set(px, py, pz); me.castShadow = true; me.receiveShadow = true; inner.add(me); return me; };
+      const pad = new THREE.Mesh(new RoundedBoxGeometry(5.6, .24, 5.6, 2, .1), sm('#dff1e6')); mats.push(pad.material); pad.position.y = .12; pad.receiveShadow = true; g.add(pad);
+      const person = (shirt, px, pz) => { const p = new THREE.Group(); p.position.set(px, 0, pz); inner.add(p); const b = Mx(new THREE.CapsuleGeometry(.24, .42, 4, 10), shirt, 0, .55, 0); const h = Mx(new THREE.SphereGeometry(.22, 14, 10), '#c99a76', 0, 1.12, 0); p.add(b, h); b.position.set(0, .55, 0); h.position.set(0, 1.12, 0); return p; };
+      if (i === 0) { // pesan: rumah + ponsel raksasa
+        B(2.2, 1.6, 2, '#f6efe3', -1.1, .8, -.8); const roof = Mx(new THREE.ConeGeometry(1.75, 1, 4), '#c8553d', -1.1, 2.1, -.8); roof.rotation.y = Math.PI / 4;
+        const ph = Mx(new RoundedBoxGeometry(1.3, 2.5, .2, 3, .16), '#111814', 1.1, 1.45, .2); ph.rotation.y = -.5;
+        const scr = Mx(new THREE.PlaneGeometry(1.1, 2.2), '#0c9a6a', 0, 0, 0); scr.position.set(1.1 + Math.sin(-.5) * .11, 1.45, .2 + Math.cos(-.5) * .11); scr.rotation.y = -.5;
+        B(.7, .22, .05, '#ffffff', 1.1 + Math.sin(-.5) * .13, .8, .2 + Math.cos(-.5) * .13, { ry: -.5 });
+        const ping = Mx(new THREE.TorusGeometry(.35, .07, 8, 24), '#ff7a2f', 1.1, 3.1, .2); g.userData.spin = ping;
+        person('#5b6cf0', .1, 1.2);
+      } else if (i === 1) { // dijemput: halte
+        B(3.2, .1, 1.4, '#0c9a6a', 0, 2.1, -.6); B(.1, 2, .1, '#3a4540', -1.5, 1.05, -1.2); B(.1, 2, .1, '#3a4540', 1.5, 1.05, -1.2); B(3, 1.2, .06, '#bfe3f2', 0, 1.2, -1.25);
+        B(2.4, .12, .5, '#8b6b4a', 0, .55, -.95); B(.6, .9, .06, '#ff7a2f', -1.9, 1.4, .4); B(.06, 1.6, .06, '#3a4540', -1.9, .8, .4);
+        waiting = person('#5b6cf0', .6, .3); const helmet = Mx(new THREE.SphereGeometry(.24, 14, 8, 0, Math.PI * 2, 0, Math.PI * .6), '#ffffff', 1.2, .62, .5); g.userData.helmet = helmet;
+      } else if (i === 2) { // di jalan
+        B(5.2, .04, 2.2, '#3c424a', 0, .03, .4, { cast: false }); for (let k = -2; k <= 2; k++) B(.6, .02, .12, '#f3f1e7', k * 1, .06, .4, { cast: false });
+        B(.12, 2.6, .12, '#3a4540', -1.8, 1.3, -1.2); B(.42, 1.1, .4, '#2a302d', -1.8, 2.9, -1.2);
+        const lights = ['#e24b4b', '#f2c14e', '#3fbf6a'].map((c, k) => Mx(new THREE.SphereGeometry(.13, 12, 10), c, -1.8, 3.25 - k * .34, -.98)); g.userData.lights = lights;
+        B(1.6, .5, .8, '#3d7be0', 1.2, .45, -1.4); B(.9, .36, .7, '#2a3440', 1.1, .85, -1.4);
+        Mx(new THREE.IcosahedronGeometry(.6, 0), '#4fa85a', 1.9, 1.2, 1.9); B(.14, .6, .14, '#7a5a3c', 1.9, .3, 1.9);
+        Mx(new THREE.IcosahedronGeometry(.5, 0), '#64b65a', -2, 1, 1.9); B(.12, .5, .12, '#7a5a3c', -2, .25, 1.9);
+      } else if (i === 3) { // sampai: gedung kantor
+        B(3, 3.6, 2.2, '#d5dcef', 0, 1.8, -1.1); for (let r = 0; r < 3; r++) for (let c = 0; c < 4; c++) B(.42, .5, .04, '#8aa1b4', -1.05 + c * .7, 1.2 + r * .9, .02, { cast: false });
+        B(1, 1, .06, '#9fd3ff', 0, .55, .03, { cast: false }); B(3.4, .2, .6, '#0c9a6a', 0, 1.0, .25);
+        B(.5, .4, .5, '#c9a26b', 1.6, .2, 1.1);
+        arrived = person('#5b6cf0', -.9, 1.1);
+      } else { // rating: podium bintang
+        B(3.2, .6, 2.2, '#ffffff', 0, .3, -.4); B(2.4, .5, 1.6, '#f6efe3', 0, .85, -.4);
+        const shape = new THREE.Shape(); for (let k = 0; k < 10; k++) { const a = k / 10 * Math.PI * 2 - Math.PI / 2, r = k % 2 ? .19 : .42; const px = Math.cos(a) * r, py = -Math.sin(a) * r; k ? shape.lineTo(px, py) : shape.moveTo(px, py); }
+        const sg = new THREE.ExtrudeGeometry(shape, { depth: .14, bevelEnabled: true, bevelSize: .03, bevelThickness: .03, bevelSegments: 1 });
+        const stars = []; for (let k = 0; k < 5; k++) { const s = Mx(sg, '#f5a524', -1.6 + k * .8, 2 + Math.sin(k / 4 * Math.PI) * .45, -.4); stars.push(s); }
+        g.userData.stars = stars;
+        const tr = Mx(new THREE.CylinderGeometry(.3, .15, .5, 16), '#f2c14e', 0, 1.35, -.4); const tb = Mx(new THREE.CylinderGeometry(.18, .25, .2, 12), '#f2c14e', 0, 1.15, -.4);
+        person('#0c9a6a', 1.8, 1.1);
+      }
+      stations.push({ g, mats, inner, lit: 0 });
+    });
+    // path between desks
+    const pts = [[-16, 4], [-11, 4], [-11, -4], [-6, -4], [-1, -4], [-1, 4], [3, 4], [7.5, 4], [7.5, -4], [12, -4], [16.5, -4], [16.5, 4], [21, 4]].map(([x, z]) => [x, z + 2.4]);
+    const path = buildPath(pts, 1.3, .3);
+    const TS = 700, RS = 6;
+    scene.add(new THREE.Mesh(new THREE.TubeGeometry(path, TS, .12, RS, false), std('#cfd8d0', .9)));
+    const prog = new THREE.Mesh(new THREE.TubeGeometry(path, TS, .19, RS, false), new THREE.MeshStandardMaterial({ color: '#ff7a2f', emissive: '#ff7a2f', emissiveIntensity: .45, roughness: .5 })); prog.geometry.setDrawRange(0, 0); scene.add(prog);
+    pts.forEach(([x, z]) => { const d = new THREE.Mesh(new THREE.CylinderGeometry(.32, .32, .08, 18), std('#ff7a2f', .6)); d.position.set(x, .05, z); scene.add(d); });
+    const samples = 1200, stationU = SP.map(([x, z]) => { let best = 0, bd = 1e9; for (let s = 0; s <= samples; s++) { const q = path.getPointAt(s / samples); const d = (q.x - x) ** 2 + (q.z - (z + 2.4)) ** 2; if (d < bd) { bd = d; best = s / samples; } } return best; });
+    stationU[0] = 0; stationU[4] = 1;
+    // the rider
+    const chr = makeVehicle('ojek'); chr.scale.setScalar(1.05); scene.add(chr); chr.traverse(o => { if (o.isMesh) o.castShadow = true; });
+    const passenger = chr.userData.passenger;
+
+    let targetU = 0, shownU = 0, step = 0, halfW = 10, halfH = 10, aspect = 1; const lastPos = new THREE.Vector3();
+    const steps = $$('.step', section);
+    function setProgress(p){
+      const n = 4, uu = clamp(p, 0, 1) * n, i = Math.min(n - 1, Math.floor(uu)), f = uu - i, w = smooth(.22, .82, f);
+      targetU = stationU[i] + (stationU[i + 1] - stationU[i]) * w; const s = w < .5 ? i : i + 1;
+      if (s !== step) { step = s; steps.forEach((el, k) => el.classList.toggle('on', k === s)); $('#storyCount').textContent = `Langkah ${s + 1} dari 5`; }
+      $('#storyBar').value = clamp(p, 0, 1); loop.request();
+    }
+    function themeColors(){
+      const d = isDark();
+      scene.background = new THREE.Color(d ? '#09100c' : '#f4f6f1'); ground.material.color.set(d ? '#0f1813' : '#eef2ec');
+      scene.remove(gridRef); gridRef.geometry.dispose(); gridRef.material.dispose(); gridRef = new THREE.GridHelper(160, 80, d ? '#1c2a22' : '#dbe3dc', d ? '#152019' : '#e4eae4'); gridRef.position.y = .01; scene.add(gridRef);
+      CLAY.set(d ? '#c9d3cc' : '#f3f5f1'); hemi.intensity = d ? .85 : 1.45; sun.intensity = d ? 1.8 : 2.4;
+      stations.forEach(s => s.mats.forEach(m => m.color.copy(CLAY).lerp(m.userData.target, s.lit)));
+      loop.request();
+    }
+    const loop = createLoop(canvas, (dt, time) => {
+      const RM = rmq.matches;
+      shownU += (targetU - shownU) * (RM ? 1 : 1 - Math.exp(-dt * 5)); if (Math.abs(targetU - shownU) > 1e-4) loop.request(); else shownU = targetU;
+      const u = clamp(shownU, 0, 1), pos = path.getPointAt(u), tan = path.getTangentAt(Math.min(u, .9999));
+      const moved = pos.distanceTo(lastPos); lastPos.copy(pos);
+      chr.position.set(pos.x, 0, pos.z); if (moved > 1e-4) chr.rotation.y = Math.atan2(tan.x, tan.z);
+      chr.userData.wheels.forEach(w => w.rotation.x += moved * 3.3);
+      const pickedUp = u >= stationU[1] - .01, dropped = u >= stationU[3] - .01;
+      passenger.visible = pickedUp && !dropped; if (waiting) waiting.visible = !pickedUp; if (arrived) arrived.visible = dropped;
+      if (stations[1].g.userData.helmet) stations[1].g.userData.helmet.visible = !pickedUp;
+      prog.geometry.setDrawRange(0, Math.floor(u * TS) * RS * 6);
+      stations.forEach((s, i) => {
+        const goal = u >= stationU[i] - .004 ? 1 : 0, prev = s.lit; s.lit += (goal - s.lit) * (RM ? 1 : Math.min(1, dt * 4));
+        if (Math.abs(goal - s.lit) > .002) loop.request(); else s.lit = goal;
+        if (prev !== s.lit) s.mats.forEach(m => m.color.copy(CLAY).lerp(m.userData.target, s.lit));
+        s.inner.scale.setScalar(.82 + .18 * s.lit);
+        const ud = s.g.userData;
+        if (ud.spin) { ud.spin.rotation.x = Math.PI / 2; ud.spin.rotation.z = u * 20; ud.spin.position.y = 3.1 + s.lit * .3; }
+        if (ud.lights) { const ph = Math.floor(clamp((u - stationU[2] + .06) * 30, 0, 2)); ud.lights.forEach((l, k) => l.scale.setScalar(k === 2 - ph || s.lit < .5 && k === 0 ? 1.35 : .85)); }
+        if (ud.stars) ud.stars.forEach((st, k) => { const on = clamp((u - stationU[4] + .045 - k * .006) * 120, 0, 1); st.scale.setScalar(.4 + .6 * Math.max(on, s.lit * 0)); st.rotation.y = (1 - on) * 2; });
+      });
+      const desired = new THREE.Vector3(pos.x, 0, pos.z);
+      if (aspect >= .9) desired.addScaledVector(new THREE.Vector3(1, 0, -1).normalize(), -halfW * .3);
+      if (camTarget.lengthSq() === 0) camTarget.copy(desired);
+      camTarget.lerp(desired, RM ? 1 : 1 - Math.exp(-dt * 3.5)); if (camTarget.distanceTo(desired) > .01) loop.request();
+      cam.position.copy(camTarget).addScaledVector(camDir, 60); cam.lookAt(camTarget);
+      sun.position.copy(camTarget).add(new THREE.Vector3(14, 26, 8)); sun.target.position.copy(camTarget);
+      renderer.render(scene, cam);
+    }, () => false);
+    // Di layar sempit, motor dibingkai di ruang kosong ANTARA kartu judul (atas) dan kartu langkah (bawah):
+    // posisi kedua kartu diukur dari DOM lalu dipakai untuk frustum ortografik asimetris.
+    let frameY = .5;
+    const storyHead = stage.querySelector('.story-head'), storySteps = stage.querySelector('.steps');
+    function applyFrame(){
+      if (!halfH) return;
+      frameY = .5;
+      if (aspect < .9 && storyHead && storySteps) {
+        const r = stage.getBoundingClientRect(), a = storyHead.getBoundingClientRect().bottom - r.top, b = storySteps.getBoundingClientRect().top - r.top;
+        if (r.height > 0 && b > a) frameY = Math.min(.8, Math.max(.2, (a + b) / 2 / r.height + .025));
+      }
+      Object.assign(cam, { left: -halfW, right: halfW, top: 2 * halfH * frameY, bottom: -2 * halfH * (1 - frameY) });
+      cam.updateProjectionMatrix();
+    }
+    window.__jalanin.storyFrame = () => frameY;
+    watchSize(stage, renderer, (w, h) => { aspect = w / h; if (aspect < .9) { halfW = Math.max(6.6, 9 * aspect); halfH = halfW / aspect; } else { halfH = 8.2; halfW = halfH * aspect; } applyFrame(); loop.request(); });
+    if (document.fonts) document.fonts.ready.then(() => { applyFrame(); loop.request(); });
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(storyHead);
+    themeColors(); bus.addEventListener('theme', themeColors);
+    return { setProgress, loop };
+  }
+  let story = null;
+  try { story = createStory(); } catch (e) { console.warn('Story WebGL gagal', e); storySec.classList.add('no-webgl'); }
+  const onProg = p => story ? story.setProgress(p) : textProgress(p);
+  if (gsap && window.ScrollTrigger) { window.ScrollTrigger.create({ trigger: storySec, start: 'top top', end: 'bottom bottom', onUpdate: s => onProg(s.progress) }); }
+  else { const upd = () => { const r = storySec.getBoundingClientRect(); onProg(clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1)); }; addEventListener('scroll', upd, { passive: true }); upd(); }
+  window.__jalanin.views = { heroV, cityV, story };
+} else {
+  const upd = () => { const r = storySec.getBoundingClientRect(); textProgress(clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1)); };
+  addEventListener('scroll', upd, { passive: true }); upd();
+}
+</script>
+</body>
+</html>
