@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="kopiloka">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kopiloka — Roastery Kopi Spesialti Nusantara</title>
+<meta name="description" content="Kopiloka menyangrai biji kopi spesialti dari kebun mitra di Gayo, Kintamani, Toraja, dan Flores. Racik secangkir kopimu di model 3D interaktif, lalu pesan biji segar langsung dari roastery.">
+<meta name="theme-color" content="#f7efe4">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script>
+  /* tema daisyUI disimpan per pengunjung; dipasang sebelum render supaya tidak berkedip */
+  (function(){var t;try{t=localStorage.getItem('kopiloka-theme')}catch(e){}
+  var ok={kopiloka:1,espresso:1,retro:1,sunset:1};
+  if(!ok[t]){t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'espresso':'kopiloka'}
+  document.documentElement.setAttribute('data-theme',t);})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- daisyUI 5 (MIT) + tema bawaan, Tailwind CSS v4 browser build (MIT) -->
+<link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.43/daisyui.css" rel="stylesheet" type="text/css">
+<link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.43/themes.css" rel="stylesheet" type="text/css">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.11/dist/index.global.js"></script>
+<style type="text/tailwindcss">
+  @theme {
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+    --font-mono: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  }
+</style>
+<style>
+  /* ---------- Tema kustom daisyUI ---------- */
+  :root:has(input.theme-controller[value=kopiloka]:checked),[data-theme=kopiloka]{
+    color-scheme:light;
+    --color-base-100:oklch(98.4% .012 78);--color-base-200:oklch(95.6% .022 74);--color-base-300:oklch(90.5% .036 68);--color-base-content:oklch(29% .045 45);
+    --color-primary:oklch(52% .135 45);--color-primary-content:oklch(98% .01 70);
+    --color-secondary:oklch(36% .06 42);--color-secondary-content:oklch(95% .02 70);
+    --color-accent:oklch(60% .11 150);--color-accent-content:oklch(98% .01 150);
+    --color-neutral:oklch(30% .035 45);--color-neutral-content:oklch(94% .015 70);
+    --color-info:oklch(62% .12 235);--color-info-content:oklch(98% .01 235);
+    --color-success:oklch(58% .12 155);--color-success-content:oklch(98% .01 155);
+    --color-warning:oklch(78% .15 75);--color-warning-content:oklch(30% .06 60);
+    --color-error:oklch(58% .19 25);--color-error-content:oklch(98% .01 25);
+    --radius-selector:1rem;--radius-field:.8rem;--radius-box:1.4rem;--size-selector:.25rem;--size-field:.25rem;--border:1px;--depth:1;--noise:0;
+  }
+  :root:has(input.theme-controller[value=espresso]:checked),[data-theme=espresso]{
+    color-scheme:dark;
+    --color-base-100:oklch(21% .018 48);--color-base-200:oklch(18% .016 48);--color-base-300:oklch(26% .022 48);--color-base-content:oklch(91% .028 76);
+    --color-primary:oklch(73% .13 62);--color-primary-content:oklch(22% .04 45);
+    --color-secondary:oklch(56% .07 45);--color-secondary-content:oklch(96% .02 70);
+    --color-accent:oklch(70% .12 150);--color-accent-content:oklch(20% .03 150);
+    --color-neutral:oklch(30% .022 48);--color-neutral-content:oklch(90% .02 70);
+    --color-info:oklch(72% .11 235);--color-info-content:oklch(20% .03 235);
+    --color-success:oklch(72% .13 155);--color-success-content:oklch(20% .03 155);
+    --color-warning:oklch(80% .14 78);--color-warning-content:oklch(24% .05 60);
+    --color-error:oklch(68% .17 25);--color-error-content:oklch(20% .04 25);
+    --radius-selector:1rem;--radius-field:.8rem;--radius-box:1.4rem;--size-selector:.25rem;--size-field:.25rem;--border:1px;--depth:1;--noise:0;
+  }
+
+  /* ---------- Dasar ---------- */
+  :root{--kl-serif:'Fraunces',Georgia,'Times New Roman',serif;--kl-sans:'Plus Jakarta Sans',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  body{font-family:var(--kl-sans);background:var(--color-base-100);color:var(--color-base-content);overflow-x:clip;-webkit-font-smoothing:antialiased;transition:background-color .35s,color .35s}
+  /* tidak ada font monospace sama sekali */
+  code,kbd,pre,samp{font-family:inherit}
+  .num,.stat-value,.price b{font-variant-numeric:tabular-nums}
+  .serif{font-family:var(--kl-serif);font-weight:500;letter-spacing:-.025em}
+  .wrap{width:min(1240px,100% - 32px);margin-inline:auto}
+  :focus-visible{outline:2px solid var(--color-primary);outline-offset:3px}
+  .skip{position:absolute;left:-999px;top:8px;z-index:100}
+  .skip:focus{left:12px}
+  section{scroll-margin-top:72px}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:.76rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--color-primary)}
+  .eyebrow::before{content:"";width:24px;height:1.5px;background:currentColor}
+  .muted{color:color-mix(in oklab,var(--color-base-content) 68%,transparent)}
+  .sec{padding:clamp(72px,10vw,128px) 0}
+  .sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px 48px;align-items:end;margin-bottom:clamp(32px,5vw,56px)}
+  .sec-head h2{font-family:var(--kl-serif);font-weight:500;font-size:clamp(2rem,4.2vw,3.35rem);letter-spacing:-.03em;line-height:1.06;margin-top:14px}
+  @media (max-width:820px){.sec-head{grid-template-columns:minmax(0,1fr)}}
+
+  /* ---------- Nav ---------- */
+  .nav{position:sticky;top:0;z-index:40;background:color-mix(in oklab,var(--color-base-100) 80%,transparent);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid color-mix(in oklab,var(--color-base-300) 80%,transparent)}
+  .nav .navbar{min-height:64px;padding-inline:0;gap:8px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.01em;font-size:1.08rem;white-space:nowrap}
+  .brand svg{width:32px;height:32px;flex:0 0 auto}
+  .brand small{display:block;font-weight:600;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;opacity:.6;line-height:1}
+  .nav-links a{font-weight:600;font-size:.92rem}
+  .nav details.dropdown > summary{list-style:none}
+  .nav details.dropdown > summary::-webkit-details-marker{display:none}
+  @media (max-width:360px){.brand small{display:none}}
+
+  /* ---------- Hero ---------- */
+  .hero-k{padding:clamp(24px,5vw,60px) 0 32px}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(24px,4vw,56px);align-items:center}
+  .hero-k h1{font-family:var(--kl-serif);font-weight:500;font-size:clamp(2.45rem,5.6vw,4.7rem);letter-spacing:-.035em;line-height:1.02;margin:18px 0 18px}
+  .hero-k h1 em{font-style:italic;color:var(--color-primary)}
+  .lead{font-size:clamp(1rem,1.3vw,1.14rem);max-width:34em}
+  .mini-stats{display:grid;grid-template-columns:repeat(3,minmax(0,auto));justify-content:start;gap:12px 28px;padding-top:22px;margin-top:30px;border-top:1px solid var(--color-base-300)}
+  .mini-stats b{display:block;font-size:1.55rem;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .mini-stats span{font-size:.82rem}
+  @media (max-width:420px){.mini-stats{gap:10px 16px}.mini-stats b{font-size:1.25rem}}
+  .stage{position:relative;border-radius:calc(var(--radius-box) + 8px);overflow:hidden;isolation:isolate;
+    background:radial-gradient(110% 80% at 50% 18%,color-mix(in oklab,var(--color-primary) 16%,var(--color-base-200)) 0%,var(--color-base-200) 55%,var(--color-base-300) 100%);
+    box-shadow:0 30px 80px -34px color-mix(in oklab,var(--color-secondary) 70%,transparent);border:1px solid var(--color-base-300)}
+  .stage canvas{display:block;width:100%;height:100%;opacity:0;transition:opacity .8s ease}
+  .stage.ready canvas{opacity:1}
+  .hero-k .stage{height:clamp(440px,72vh,660px)}
+  .stage .fallback{position:absolute;inset:0;display:none;place-items:center;padding:24px}
+  .stage.no-webgl .fallback{display:grid}
+  .stage.no-webgl canvas{display:none}
+  .glass{background:color-mix(in oklab,var(--color-base-100) 74%,transparent);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border:1px solid color-mix(in oklab,var(--color-base-100) 60%,transparent)}
+  .stage-top{position:absolute;top:14px;left:14px;right:14px;z-index:2;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;pointer-events:none}
+  .stage-top > *{pointer-events:auto}
+  .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;font-size:.78rem;font-weight:700;font-variant-numeric:tabular-nums}
+  @media (max-width:640px),(pointer:coarse){.drag-hint{display:none}}
+  .chip .dot{width:8px;height:8px;border-radius:50%;background:var(--color-primary);box-shadow:0 0 0 4px color-mix(in oklab,var(--color-primary) 25%,transparent)}
+  .stage-panel{position:absolute;left:14px;right:14px;bottom:14px;z-index:2;border-radius:var(--radius-box);padding:12px 14px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px}
+  .stage-panel .lbl{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;opacity:.7;display:block;margin-bottom:6px}
+  .join.wrap-ok{flex-wrap:wrap}
+  @media (max-width:900px){.hero-grid{grid-template-columns:minmax(0,1fr)}.hero-k .stage{height:min(540px,70vh);min-height:420px}}
+
+  /* ---------- Fitur ---------- */
+  .feat .ico{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:color-mix(in oklab,var(--color-primary) 14%,transparent);color:var(--color-primary)}
+  .feat .ico svg{width:24px;height:24px}
+  .feat .card-body{gap:10px}
+
+  /* ---------- Racik (konfigurator) ---------- */
+  .racik{background:var(--color-base-200)}
+  .racik-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px;align-items:stretch}
+  .racik .stage{height:clamp(460px,72vh,680px)}
+  .panel{min-width:0}
+  .panel .card-body{gap:18px}
+  .panel h3{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:800;opacity:.7;margin-bottom:8px}
+  .panel .row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .panel .stats{width:100%}
+  .panel .stat{padding:12px 14px}
+  .panel .stat-value{font-size:1.35rem}
+  .range-ticks{display:flex;justify-content:space-between;font-size:.72rem;opacity:.65;padding-inline:4px;margin-top:4px;font-variant-numeric:tabular-nums}
+  @media (max-width:980px){.racik-grid{grid-template-columns:minmax(0,1fr)}.racik .stage{height:min(500px,62vh);min-height:380px}}
+  @media (max-width:420px){.panel .stats{grid-auto-flow:row}.panel .stats .stat{border-inline-start:0;border-top:1px dashed var(--color-base-300)}.panel .stats .stat:first-child{border-top:0}
+    .join.tight .btn{padding-inline:.6rem;font-size:.78rem}}
+
+  /* ---------- Cerita isometrik ---------- */
+  .story{position:relative;height:520vh;background:var(--color-base-200)}
+  .story-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+  .story-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .story-fallback{position:absolute;inset:0;display:none;place-items:center;padding:24px}
+  .story.no-webgl .story-fallback{display:grid}
+  .story.no-webgl canvas{display:none}
+  .story-fallback svg{width:min(900px,100%);height:auto}
+  .story-fallback .node{fill:var(--color-base-100);stroke:var(--color-base-300);stroke-width:2;transition:fill .4s}
+  .story-fallback .node.on{fill:#e8743f}
+  .story-ui{position:absolute;inset:0;pointer-events:none;padding:88px 0 28px}
+  .story-ui .wrap{position:relative;height:100%;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+  /* judul di atas kartu tembus pandang: objek 3D tidak pernah menutupi teks */
+  .story-head{max-width:460px;width:fit-content;background:color-mix(in oklab,var(--color-base-200) 84%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid color-mix(in oklab,var(--color-base-300) 80%,transparent);border-radius:var(--radius-box);padding:18px 22px 20px;pointer-events:auto}
+  .story-head h2{font-family:var(--kl-serif);font-weight:500;font-size:clamp(1.7rem,3.3vw,2.8rem);letter-spacing:-.03em;line-height:1.06;margin-top:10px}
+  .story-card{max-width:440px;pointer-events:auto;background:color-mix(in oklab,var(--color-base-100) 86%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid color-mix(in oklab,var(--color-base-300) 80%,transparent);border-radius:var(--radius-box);padding:16px 20px 18px;box-shadow:0 20px 50px -30px rgba(40,20,10,.5)}
+  .story-card .steps{width:100%;font-size:.72rem;font-weight:700;overflow:visible}
+  .story-card .steps .step{min-width:0}
+  .scene-steps{position:relative;min-height:150px;margin-top:6px}
+  .scene-step{position:absolute;inset:0 0 auto 0;opacity:0;transform:translateY(14px);transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+  .scene-step.on{opacity:1;transform:none;pointer-events:auto}
+  .scene-step .n{font-family:var(--kl-serif);font-size:2.2rem;line-height:1;color:var(--color-primary);font-variant-numeric:tabular-nums}
+  .scene-step h3{font-size:1.22rem;font-weight:800;margin:6px 0 6px}
+  .scene-step p{font-size:.92rem}
+  @media (max-width:760px){
+    .story-ui{padding:76px 0 14px}
+    .story-head{padding:12px 16px 14px}
+    .story-head h2{font-size:1.45rem}
+    .story-head p{display:none}
+    .story-card{max-width:none;padding:12px 14px 14px}
+    .story-card .steps .slbl{display:none}
+    .scene-steps{min-height:128px}
+    .scene-step .n{font-size:1.7rem}
+    .scene-step h3{font-size:1.05rem}
+    .scene-step p{font-size:.86rem}
+  }
+
+  /* ---------- Produk ---------- */
+  .pouch{aspect-ratio:4/3;display:grid;place-items:center;border-radius:calc(var(--radius-box) - 6px);margin:10px 10px 0}
+  .pouch svg{width:46%;height:auto;filter:drop-shadow(0 14px 18px rgba(40,20,10,.25))}
+  .tabs-box{flex-wrap:wrap}
+  .tab-content{padding-top:22px}
+
+  /* ---------- Harga ---------- */
+  .price{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+  .price b{font-size:clamp(1.9rem,3vw,2.4rem);font-weight:800;letter-spacing:-.03em;line-height:1}
+  .plan ul{display:grid;gap:10px;font-size:.92rem}
+  .plan li{display:flex;gap:10px;align-items:flex-start}
+  .plan li svg{flex:0 0 auto;width:18px;height:18px;margin-top:2px;color:var(--color-success)}
+  .plan.hot{outline:2px solid var(--color-primary);outline-offset:-2px}
+
+  /* ---------- CTA ---------- */
+  .cta{border-radius:calc(var(--radius-box) + 12px);padding:clamp(32px,6vw,76px);position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:28px;align-items:center;
+    background:radial-gradient(120% 140% at 100% 0%,color-mix(in oklab,var(--color-primary) 85%,white) 0%,var(--color-primary) 40%,var(--color-secondary) 100%);color:var(--color-primary-content)}
+  .cta h2{font-family:var(--kl-serif);font-weight:500;font-size:clamp(2rem,4.4vw,3.4rem);letter-spacing:-.03em;line-height:1.05}
+  .cta svg.beans{position:absolute;right:-30px;bottom:-40px;width:340px;opacity:.16;pointer-events:none}
+  @media (max-width:820px){.cta{grid-template-columns:minmax(0,1fr)}}
+
+  .toast{max-width:calc(100vw - 24px);z-index:80}
+  .toast .alert{white-space:normal}
+  footer.site{border-top:1px solid var(--color-base-300);margin-top:clamp(72px,10vw,120px)}
+</style>
+</head>
+<body>
+<a class="skip btn btn-neutral btn-sm" href="#main">Lewati ke konten</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo" viewBox="0 0 32 32"><rect x="1" y="1" width="30" height="30" rx="10" fill="currentColor"/><path d="M16 7.5c-4.4 0-7.5 3.9-7.5 8.5s3.1 8.5 7.5 8.5 7.5-3.9 7.5-8.5S20.4 7.5 16 7.5Z" fill="none" stroke="var(--color-base-100)" stroke-width="2"/><path d="M16.8 8c-2.6 2.4-2.6 5.4-.8 8s1.8 5.6-.8 8" fill="none" stroke="var(--color-base-100)" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="pouch" viewBox="0 0 120 150"><path d="M18 22h84l6 112a8 8 0 0 1-8 8H20a8 8 0 0 1-8-8z" fill="currentColor"/><path d="M14 22h92v10H14z" fill="rgba(0,0,0,.18)"/><rect x="30" y="58" width="60" height="50" rx="8" fill="#fbf4ea"/><ellipse cx="60" cy="76" rx="9" ry="12" fill="#5a3420"/><path d="M61 65c-4 4-4 8-1 11s3 8-1 11" stroke="#fbf4ea" stroke-width="2" fill="none"/><rect x="40" y="94" width="40" height="5" rx="2.5" fill="#c9a27a"/><path d="M50 12h20l4 10H46z" fill="rgba(0,0,0,.25)"/></symbol>
+  </defs>
+</svg>
+
+<header class="nav">
+  <div class="wrap navbar">
+    <div class="flex-1 min-w-0">
+      <a class="brand" href="#top" aria-label="Kopiloka, ke atas">
+        <svg style="color:var(--color-primary)"><use href="#logo"/></svg>
+        <span>Kopiloka<small>Roastery · Nusantara</small></span>
+      </a>
+    </div>
+    <nav class="nav-links hidden lg:flex" aria-label="Navigasi utama">
+      <ul class="menu menu-horizontal px-1 gap-1">
+        <li><a href="#keunggulan">Keunggulan</a></li><li><a href="#racik">Racik 3D</a></li><li><a href="#perjalanan">Perjalanan biji</a></li><li><a href="#produk">Produk</a></li><li><a href="#langganan">Langganan</a></li><li><a href="#faq">FAQ</a></li>
+      </ul>
+    </nav>
+    <div class="flex items-center gap-1 flex-none">
+      <button class="btn btn-ghost btn-circle swap swap-rotate" id="themeBtn" type="button" aria-label="Ganti tema terang/gelap" title="Ganti tema terang/gelap">
+        <svg class="swap-off w-5 h-5" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <svg class="swap-on w-5 h-5" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <button class="btn btn-primary btn-sm hidden sm:inline-flex" type="button" data-order>Pesan biji</button>
+      <details class="dropdown dropdown-end lg:hidden" id="mobileMenu">
+        <summary class="btn btn-ghost btn-circle" aria-label="Buka menu">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </summary>
+        <ul class="menu dropdown-content bg-base-100 rounded-box z-50 mt-3 w-60 p-2 shadow-xl border border-base-300">
+          <li><a href="#keunggulan">Keunggulan</a></li><li><a href="#racik">Racik 3D</a></li><li><a href="#perjalanan">Perjalanan biji</a></li><li><a href="#produk">Produk</a></li><li><a href="#langganan">Langganan</a></li><li><a href="#faq">FAQ</a></li>
+          <li class="mt-1"><button class="btn btn-primary btn-sm" type="button" data-order>Pesan biji</button></li>
+        </ul>
+      </details>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <!-- HERO -->
+  <section class="hero-k" id="top">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="badge badge-primary badge-soft font-semibold">Disangrai tiap Senin &amp; Kamis · Bandung</span>
+        <h1>Kopi Nusantara, <em>disangrai</em> minggu ini.</h1>
+        <p class="lead muted">Kopiloka bekerja langsung dengan 48 kebun mitra di Gayo, Kintamani, Toraja, dan Flores. Biji kami sangrai dalam batch kecil, lalu dikirim paling lambat 72 jam setelah keluar dari mesin.</p>
+        <div class="flex flex-wrap gap-3 mt-7">
+          <button class="btn btn-primary btn-lg" type="button" data-order>Pesan biji segar
+            <svg class="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <a class="btn btn-outline btn-lg" href="#racik">Racik di 3D</a>
+        </div>
+        <div class="mini-stats">
+          <div><b>48</b><span class="muted">kebun mitra</span></div>
+          <div><b>72 jam</b><span class="muted">dari sangrai ke rumah</span></div>
+          <div><b>4,9</b><span class="muted">dari 3.200 ulasan</span></div>
+        </div>
+      </div>
+      <div class="stage" id="heroStage">
+        <canvas id="heroCanvas" role="img" aria-label="Model 3D cangkir keramik berisi kopi dengan uap mengepul dan biji kopi sangrai yang mengorbit; warna biji, isi cangkir, dan mode es atau panas dapat diatur"></canvas>
+        <div class="fallback" aria-hidden="true"></div>
+        <div class="stage-top">
+          <span class="chip glass"><span class="dot"></span><span id="heroChip">Gayo · sangrai sedang</span></span>
+          <span class="chip glass num" id="heroPrice">Rp 32.000</span>
+        </div>
+        <div class="stage-panel glass">
+          <div>
+            <span class="lbl" id="heroRoastLbl">Sangrai</span>
+            <div class="join" role="radiogroup" aria-labelledby="heroRoastLbl">
+              <input class="join-item btn btn-sm" type="radio" name="heroRoast" value="terang" aria-label="Terang">
+              <input class="join-item btn btn-sm" type="radio" name="heroRoast" value="sedang" aria-label="Sedang" checked>
+              <input class="join-item btn btn-sm" type="radio" name="heroRoast" value="gelap" aria-label="Gelap">
+            </div>
+          </div>
+          <label class="flex items-center gap-2 font-semibold text-sm cursor-pointer">
+            <span>Panas</span>
+            <input type="checkbox" class="toggle toggle-primary" id="heroIced" aria-label="Sajikan dengan es">
+            <span>Es</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FITUR -->
+  <section class="sec" id="keunggulan">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Kenapa Kopiloka</span><h2>Segar, jujur asal-usulnya, enak diseduh di rumah.</h2></div>
+        <p class="muted">Setiap kantong mencantumkan nama petani, ketinggian kebun, proses pascapanen, dan tanggal sangrai. Tanpa campuran, tanpa biji tua yang lama tersimpan di gudang.</p>
+      </div>
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <article class="card bg-base-100 border border-base-300 shadow-sm feat"><div class="card-body">
+          <div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21c-4-2-7-6-7-11a7 7 0 0 1 14 0c0 5-3 9-7 11Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <h3 class="card-title">Langsung dari kebun</h3><p class="muted text-sm">Kami membeli 30–60% di atas harga pasar dari 48 kebun mitra, kontrak tiga tahun.</p>
+          <div class="card-actions mt-2"><span class="badge badge-accent badge-soft">Fair trade</span></div>
+        </div></article>
+        <article class="card bg-base-100 border border-base-300 shadow-sm feat"><div class="card-body">
+          <div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c2 3 5 5 5 9a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-8Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+          <h3 class="card-title">Batch kecil 12 kg</h3><p class="muted text-sm">Profil sangrai dicatat per batch. Konsisten dari kantong pertama sampai ke-seratus.</p>
+          <div class="card-actions mt-2"><span class="badge badge-primary badge-soft">Senin &amp; Kamis</span></div>
+        </div></article>
+        <article class="card bg-base-100 border border-base-300 shadow-sm feat"><div class="card-body">
+          <div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="7" cy="18" r="2" fill="currentColor"/><circle cx="17" cy="18" r="2" fill="currentColor"/></svg></div>
+          <h3 class="card-title">Tiba dalam 72 jam</h3><p class="muted text-sm">Kantong berkatup satu arah, dikirim ke 300+ kota. Gratis ongkir mulai Rp 150.000.</p>
+          <div class="card-actions mt-2"><span class="badge badge-info badge-soft">Seluruh Indonesia</span></div>
+        </div></article>
+        <article class="card bg-base-100 border border-base-300 shadow-sm feat"><div class="card-body">
+          <div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h12v5a6 6 0 0 1-12 0z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 3v3M13 3v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <h3 class="card-title">Resep seduh personal</h3><p class="muted text-sm">Pilih alat seduhmu, kami cetak rasio, suhu, dan ukuran gilingan di setiap kantong.</p>
+          <div class="card-actions mt-2"><span class="badge badge-warning badge-soft">Gratis</span></div>
+        </div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- RACIK 3D -->
+  <section class="sec racik" id="racik">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Racik 3D</span><h2>Racik secangkirmu, lihat hasilnya langsung.</h2></div>
+        <p class="muted">Setiap kontrol di panel adalah komponen daisyUI asli yang menggerakkan adegan three.js: tema mengubah warna keramik dan meja, tingkat sangrai mewarnai biji, susu mengubah warna dan tinggi kopi, dan sakelar es mengganti cangkir dengan gelas berisi es batu.</p>
+      </div>
+      <div class="racik-grid">
+        <div class="stage" id="cfgStage">
+          <canvas id="cfgCanvas" role="img" aria-label="Konfigurator 3D minuman kopi: cangkir atau gelas es, biji kopi, gula batu, dan meja yang mengikuti tema warna"></canvas>
+          <div class="fallback" aria-hidden="true"></div>
+          <div class="stage-top">
+            <span class="chip glass" id="cfgChip">Kopi susu panas</span>
+            <span class="chip glass drag-hint">Seret untuk memutar</span>
+          </div>
+        </div>
+        <div class="card bg-base-100 border border-base-300 shadow-sm panel">
+          <div class="card-body">
+            <div>
+              <h3 id="themeLbl">Tema warna</h3>
+              <div class="join wrap-ok tight" role="radiogroup" aria-labelledby="themeLbl">
+                <input type="radio" name="theme-buttons" class="btn btn-sm join-item theme-controller" aria-label="Susu" value="kopiloka">
+                <input type="radio" name="theme-buttons" class="btn btn-sm join-item theme-controller" aria-label="Espresso" value="espresso">
+                <input type="radio" name="theme-buttons" class="btn btn-sm join-item theme-controller" aria-label="Retro" value="retro">
+                <input type="radio" name="theme-buttons" class="btn btn-sm join-item theme-controller" aria-label="Senja" value="sunset">
+              </div>
+            </div>
+            <div>
+              <h3 id="roastLbl">Tingkat sangrai</h3>
+              <div class="join tight" role="radiogroup" aria-labelledby="roastLbl">
+                <input class="join-item btn btn-sm" type="radio" name="cfgRoast" value="terang" aria-label="Terang">
+                <input class="join-item btn btn-sm" type="radio" name="cfgRoast" value="sedang" aria-label="Sedang" checked>
+                <input class="join-item btn btn-sm" type="radio" name="cfgRoast" value="gelap" aria-label="Gelap">
+              </div>
+            </div>
+            <div>
+              <div class="row"><h3 style="margin:0"><label for="milk">Susu</label></h3><span class="badge badge-ghost num" id="milkOut">35%</span></div>
+              <input type="range" id="milk" min="0" max="100" step="5" value="35" class="range range-primary range-sm w-full mt-2">
+              <div class="range-ticks" aria-hidden="true"><span>Hitam</span><span>Kopi susu</span><span>Latte</span></div>
+            </div>
+            <div>
+              <div class="row"><h3 style="margin:0"><label for="sugar">Gula batu</label></h3><span class="badge badge-ghost num" id="sugarOut">1 butir</span></div>
+              <input type="range" id="sugar" min="0" max="3" step="1" value="1" class="range range-secondary range-sm w-full mt-2">
+              <div class="range-ticks" aria-hidden="true"><span>0</span><span>1</span><span>2</span><span>3</span></div>
+            </div>
+            <div class="row">
+              <label class="flex items-center gap-3 font-semibold cursor-pointer" for="cfgIced"><input type="checkbox" class="toggle toggle-primary" id="cfgIced"> Sajikan dengan es</label>
+              <div class="flex gap-1 flex-wrap" id="notes"></div>
+            </div>
+            <div class="stats stats-horizontal border border-base-300 bg-base-200/60">
+              <div class="stat"><div class="stat-title">Harga</div><div class="stat-value num" id="sPrice">Rp 32rb</div></div>
+              <div class="stat"><div class="stat-title">Kafein</div><div class="stat-value num" id="sCaf">120</div><div class="stat-desc">mg</div></div>
+              <div class="stat"><div class="stat-title">Kalori</div><div class="stat-value num" id="sCal">96</div><div class="stat-desc">kkal</div></div>
+            </div>
+            <div class="row">
+              <div><h3 style="margin:0 0 6px">Nilai racikanmu</h3>
+                <div class="rating rating-md" id="mixRating" role="radiogroup" aria-label="Nilai racikan">
+                  <input type="radio" name="mixRate" class="mask mask-star-2 bg-warning" aria-label="1 bintang" value="1">
+                  <input type="radio" name="mixRate" class="mask mask-star-2 bg-warning" aria-label="2 bintang" value="2">
+                  <input type="radio" name="mixRate" class="mask mask-star-2 bg-warning" aria-label="3 bintang" value="3">
+                  <input type="radio" name="mixRate" class="mask mask-star-2 bg-warning" aria-label="4 bintang" value="4" checked>
+                  <input type="radio" name="mixRate" class="mask mask-star-2 bg-warning" aria-label="5 bintang" value="5">
+                </div>
+              </div>
+              <div class="flex gap-2 flex-wrap">
+                <button class="btn btn-primary" type="button" id="addMix">Pesan racikan ini</button>
+                <button class="btn btn-ghost" type="button" id="resetMix">Atur ulang</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERITA GULIR ISOMETRIK -->
+  <section class="story" id="perjalanan" aria-label="Perjalanan biji kopi Kopiloka">
+    <div class="story-stage">
+      <canvas id="storyCanvas" role="img" aria-label="Peta isometrik perjalanan biji kopi: tokoh biji kopi berjalan mengikuti jalur oranye dari kebun, panen, sangrai, seduh, hingga cangkir saat halaman digulir"></canvas>
+      <div class="story-fallback" aria-hidden="true">
+        <svg viewBox="0 0 900 360" id="storySvg">
+          <path d="M80 250 L250 130 L450 250 L650 130 L820 250" fill="none" stroke="#e8743f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="14 12"/>
+          <g><circle class="node on" cx="80" cy="250" r="34"/><circle class="node" cx="250" cy="130" r="34"/><circle class="node" cx="450" cy="250" r="34"/><circle class="node" cx="650" cy="130" r="34"/><circle class="node" cx="820" cy="250" r="34"/></g>
+        </svg>
+      </div>
+      <div class="story-ui">
+        <div class="wrap">
+          <div class="story-head">
+            <span class="eyebrow">Perjalanan biji</span>
+            <h2>Dari lereng kebun sampai ke cangkirmu.</h2>
+            <p class="muted" style="margin-top:8px;font-size:.95rem">Gulir untuk mengikuti si Biji melewati lima pemberhentian.</p>
+          </div>
+          <div class="story-card" id="storyCard">
+            <ul class="steps" id="storySteps" aria-hidden="true">
+              <li class="step step-primary"><span class="slbl">Kebun</span></li><li class="step"><span class="slbl">Panen</span></li><li class="step"><span class="slbl">Sangrai</span></li><li class="step"><span class="slbl">Seduh</span></li><li class="step"><span class="slbl">Cangkir</span></li>
+            </ul>
+            <ol class="scene-steps" style="list-style:none;margin:0;padding:0" aria-live="polite">
+              <li class="scene-step on"><div class="n">01</div><h3>Kebun di 1.400 mdpl</h3><p class="muted">Arabika tumbuh di bawah naungan pohon lamtoro di lereng Gayo. Ceri dipetik saat merah sempurna.</p></li>
+              <li class="scene-step"><div class="n">02</div><h3>Panen &amp; jemur</h3><p class="muted">Ceri dipilah tangan, difermentasi, lalu dijemur di para-para bambu selama 18–25 hari.</p></li>
+              <li class="scene-step"><div class="n">03</div><h3>Sangrai batch kecil</h3><p class="muted">Di Bandung, biji hijau disangrai 12 kg per batch dengan profil yang dicatat suhu demi suhu.</p></li>
+              <li class="scene-step"><div class="n">04</div><h3>Seduh sesuai alatmu</h3><p class="muted">Kami cetak resep: rasio 1:15, air 92 °C, gilingan sedang untuk dripper keramik.</p></li>
+              <li class="scene-step"><div class="n">05</div><h3>Secangkir di mejamu</h3><p class="muted">Kurang dari seminggu setelah sangrai, aroma karamel dan cokelat masih penuh.</p></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUK (tabs) -->
+  <section class="sec" id="produk">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Toko</span><h2>Pilih biji, alat, atau paket hadiah.</h2></div>
+        <p class="muted">Semua biji tersedia dalam kemasan 200 g dan 1 kg, utuh atau digiling sesuai alat seduhmu.</p>
+      </div>
+      <div role="tablist" class="tabs tabs-box tabs-sm sm:tabs-md w-fit max-w-full">
+        <input type="radio" name="shop" role="tab" class="tab" aria-label="Biji kopi" checked>
+        <div role="tabpanel" class="tab-content">
+          <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <article class="card bg-base-100 border border-base-300"><div class="pouch" style="background:color-mix(in oklab,#b5653d 22%,var(--color-base-200));color:#b5653d"><svg><use href="#pouch"/></svg></div><div class="card-body p-5">
+              <div class="flex gap-1 flex-wrap"><span class="badge badge-sm badge-primary">Terlaris</span><span class="badge badge-sm badge-outline">Natural</span></div>
+              <h3 class="card-title text-base">Gayo Wine</h3><p class="text-sm muted">Aceh · 1.500 mdpl. Anggur merah, nanas, cokelat hitam.</p>
+              <div class="card-actions items-center justify-between mt-1"><b class="num">Rp 98.000</b><button class="btn btn-sm btn-primary" type="button" data-order="Gayo Wine">Pesan</button></div></div></article>
+            <article class="card bg-base-100 border border-base-300"><div class="pouch" style="background:color-mix(in oklab,#5f8550 22%,var(--color-base-200));color:#5f8550"><svg><use href="#pouch"/></svg></div><div class="card-body p-5">
+              <div class="flex gap-1 flex-wrap"><span class="badge badge-sm badge-accent">Baru</span><span class="badge badge-sm badge-outline">Honey</span></div>
+              <h3 class="card-title text-base">Kintamani Jeruk</h3><p class="text-sm muted">Bali · 1.350 mdpl. Jeruk keprok, gula aren, teh hitam.</p>
+              <div class="card-actions items-center justify-between mt-1"><b class="num">Rp 89.000</b><button class="btn btn-sm btn-primary" type="button" data-order="Kintamani Jeruk">Pesan</button></div></div></article>
+            <article class="card bg-base-100 border border-base-300"><div class="pouch" style="background:color-mix(in oklab,#3b4a6b 22%,var(--color-base-200));color:#3b4a6b"><svg><use href="#pouch"/></svg></div><div class="card-body p-5">
+              <div class="flex gap-1 flex-wrap"><span class="badge badge-sm badge-outline">Giling basah</span></div>
+              <h3 class="card-title text-base">Toraja Sapan</h3><p class="text-sm muted">Sulawesi · 1.600 mdpl. Rempah, kayu manis, body tebal.</p>
+              <div class="card-actions items-center justify-between mt-1"><b class="num">Rp 94.000</b><button class="btn btn-sm btn-primary" type="button" data-order="Toraja Sapan">Pesan</button></div></div></article>
+            <article class="card bg-base-100 border border-base-300"><div class="pouch" style="background:color-mix(in oklab,#a8823c 24%,var(--color-base-200));color:#a8823c"><svg><use href="#pouch"/></svg></div><div class="card-body p-5">
+              <div class="flex gap-1 flex-wrap"><span class="badge badge-sm badge-outline">Full wash</span></div>
+              <h3 class="card-title text-base">Flores Bajawa</h3><p class="text-sm muted">NTT · 1.450 mdpl. Karamel, kacang mete, manis bersih.</p>
+              <div class="card-actions items-center justify-between mt-1"><b class="num">Rp 86.000</b><button class="btn btn-sm btn-primary" type="button" data-order="Flores Bajawa">Pesan</button></div></div></article>
+          </div>
+        </div>
+        <input type="radio" name="shop" role="tab" class="tab" aria-label="Alat seduh">
+        <div role="tabpanel" class="tab-content">
+          <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <article class="card bg-base-100 border border-base-300"><div class="card-body"><span class="badge badge-sm badge-ghost">Pour over</span><h3 class="card-title">Dripper keramik</h3><p class="text-sm muted">Keramik buatan perajin Plered, Purwakarta. Termasuk 100 lembar kertas saring.</p><div class="card-actions items-center justify-between"><b class="num">Rp 185.000</b><button class="btn btn-sm btn-outline" type="button" data-order="Dripper keramik">Pesan</button></div></div></article>
+            <article class="card bg-base-100 border border-base-300"><div class="card-body"><span class="badge badge-sm badge-ghost">Gilingan</span><h3 class="card-title">Gilingan manual baja</h3><p class="text-sm muted">Mata giling konikal 38 mm, 40 tingkat kehalusan, cukup untuk tubruk hingga espresso.</p><div class="card-actions items-center justify-between"><b class="num">Rp 640.000</b><button class="btn btn-sm btn-outline" type="button" data-order="Gilingan manual">Pesan</button></div></div></article>
+            <article class="card bg-base-100 border border-base-300"><div class="card-body"><span class="badge badge-sm badge-ghost">Ketel</span><h3 class="card-title">Ketel leher angsa</h3><p class="text-sm muted">600 ml dengan termometer, aliran air tipis dan stabil untuk seduh manual.</p><div class="card-actions items-center justify-between"><b class="num">Rp 420.000</b><button class="btn btn-sm btn-outline" type="button" data-order="Ketel leher angsa">Pesan</button></div></div></article>
+          </div>
+        </div>
+        <input type="radio" name="shop" role="tab" class="tab" aria-label="Paket hadiah">
+        <div role="tabpanel" class="tab-content">
+          <div class="grid gap-5 md:grid-cols-2">
+            <article class="card card-side bg-base-100 border border-base-300 flex-col sm:flex-row"><div class="card-body"><span class="badge badge-sm badge-secondary">Hadiah</span><h3 class="card-title">Kotak Tiga Pulau</h3><p class="text-sm muted">Gayo, Kintamani, Flores masing-masing 100 g, kartu cicip, dan kartu ucapan tulisan tangan.</p><div class="card-actions items-center justify-between"><b class="num">Rp 165.000</b><button class="btn btn-sm btn-primary" type="button" data-order="Kotak Tiga Pulau">Pesan</button></div></div></article>
+            <article class="card card-side bg-base-100 border border-base-300 flex-col sm:flex-row"><div class="card-body"><span class="badge badge-sm badge-secondary">Kantor</span><h3 class="card-title">Paket Rapat Pagi</h3><p class="text-sm muted">1 kg biji pilihan, dripper keramik, ketel, dan sesi seduh daring 45 menit untuk timmu.</p><div class="card-actions items-center justify-between"><b class="num">Rp 890.000</b><button class="btn btn-sm btn-primary" type="button" data-order="Paket Rapat Pagi">Pesan</button></div></div></article>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS + TESTIMONI -->
+  <section class="sec" id="testimoni" style="padding-top:0">
+    <div class="wrap">
+      <div class="stats stats-vertical sm:stats-horizontal w-full border border-base-300 bg-base-100 shadow-sm mb-14" id="stats">
+        <div class="stat"><div class="stat-title">Kebun mitra</div><div class="stat-value num" data-count="48">0</div><div class="stat-desc">di 7 provinsi</div></div>
+        <div class="stat"><div class="stat-title">Pelanggan aktif</div><div class="stat-value num" data-count="12400" data-suffix="+">0</div><div class="stat-desc">naik 38% tahun ini</div></div>
+        <div class="stat"><div class="stat-title">Ton disangrai</div><div class="stat-value num" data-count="86">0</div><div class="stat-desc">sepanjang 2025</div></div>
+        <div class="stat"><div class="stat-title">Rata-rata ulasan</div><div class="stat-value num">4,9</div><div class="stat-desc">dari 3.200 ulasan</div></div>
+      </div>
+      <div class="grid gap-5 lg:grid-cols-3">
+        <figure class="card bg-base-100 border border-base-300"><div class="card-body gap-4">
+          <div class="rating rating-sm" role="img" aria-label="Rating 5 dari 5"><div class="mask mask-star-2 bg-warning"></div><div class="mask mask-star-2 bg-warning"></div><div class="mask mask-star-2 bg-warning"></div><div class="mask mask-star-2 bg-warning"></div><div class="mask mask-star-2 bg-warning" aria-current="true"></div></div>
+          <blockquote>“Tanggal sangrainya selalu tiga hari sebelum paket datang. Gayo Wine-nya bikin saya berhenti beli kopi kekinian.”</blockquote>
+          <figcaption class="flex items-center gap-3 mt-auto"><div class="avatar avatar-placeholder"><div class="bg-primary text-primary-content w-11 rounded-full"><span>RA</span></div></div><div><b class="block text-sm">Rani Ayuningtyas</b><span class="text-xs muted">Pelanggan sejak 2023, Surabaya</span></div></figcaption>
+        </div></figure>
+        <figure class="card bg-base-100 border border-base-300"><div class="card-body gap-4">
+          <div class="rating rating-sm" role="img" aria-label="Rating 5 dari 5"><div class="mask mask-star-2 bg-warning"></div><div class="mask mask-star-2 bg-warning"></div><div class="mask mask-star-2 bg-warning"></div><div class="mask mask-star-2 bg-warning"></div><div class="mask mask-star-2 bg-warning" aria-current="true"></div></div>
+          <blockquote>“Kami pakai paket kantor untuk 40 orang. Resep seduhnya tercetak jelas, jadi siapa pun di pantry bisa bikin kopi yang sama enaknya.”</blockquote>
+          <figcaption class="flex items-center gap-3 mt-auto"><div class="avatar avatar-placeholder"><div class="bg-secondary text-secondary-content w-11 rounded-full"><span>BP</span></div></div><div><b class="block text-sm">Bima Prasetyo</b><span class="text-xs muted">Kepala operasional, Jakarta</span></div></figcaption>
+        </div></figure>
+        <figure class="card bg-base-100 border border-base-300"><div class="card-body gap-4">
+          <div class="rating rating-sm" role="img" aria-label="Rating 4 dari 5"><div class="mask mask-star-2 bg-warning"></div><div class="mask mask-star-2 bg-warning"></div><div class="mask mask-star-2 bg-warning"></div><div class="mask mask-star-2 bg-warning" aria-current="true"></div><div class="mask mask-star-2 bg-warning"></div></div>
+          <blockquote>“Saya suka bisa tahu nama petaninya. Kintamani Jeruk diseduh dingin semalam rasanya seperti jus jeruk berkafein.”</blockquote>
+          <figcaption class="flex items-center gap-3 mt-auto"><div class="avatar avatar-placeholder"><div class="bg-accent text-accent-content w-11 rounded-full"><span>ML</span></div></div><div><b class="block text-sm">Made Lestari</b><span class="text-xs muted">Barista rumahan, Denpasar</span></div></figcaption>
+        </div></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- LANGGANAN / HARGA -->
+  <section class="sec bg-base-200" id="langganan">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="eyebrow">Langganan</span><h2>Biji segar datang sendiri, tiap bulan.</h2></div>
+        <p class="muted">Ganti asal biji, jeda, atau berhenti kapan saja dari WhatsApp. Bayar per 3 bulan untuk hemat 10%.</p>
+      </div>
+      <div class="flex justify-center mb-8">
+        <div class="join" role="radiogroup" aria-label="Periode tagihan">
+          <input class="join-item btn" type="radio" name="period" value="1" aria-label="Bulanan" checked>
+          <input class="join-item btn" type="radio" name="period" value="3" aria-label="Per 3 bulan −10%">
+        </div>
+      </div>
+      <div class="grid gap-5 lg:grid-cols-3 items-stretch">
+        <article class="card bg-base-100 border border-base-300 plan"><div class="card-body gap-5">
+          <div><h3 class="card-title">Ngopi Santai</h3><p class="text-sm muted mt-1">Untuk satu orang, secangkir tiap pagi.</p></div>
+          <div class="price"><b data-price="89000">Rp 89.000</b><span class="muted text-sm">/ bulan</span></div>
+          <ul><li><svg><use href="#i-check"/></svg>250 g biji pilihan roaster</li><li><svg><use href="#i-check"/></svg>Kartu resep seduh</li><li><svg><use href="#i-check"/></svg>Gratis ongkir Jawa–Bali</li></ul>
+          <button class="btn btn-outline mt-auto" type="button" data-order="Langganan Ngopi Santai">Pilih Ngopi Santai</button>
+        </div></article>
+        <article class="card bg-base-100 border border-base-300 plan hot shadow-xl"><div class="card-body gap-5">
+          <div class="flex items-center justify-between gap-2 flex-wrap"><h3 class="card-title">Pecinta Seduh</h3><span class="badge badge-primary">Paling dipilih</span></div>
+          <p class="text-sm muted -mt-3">Dua asal berbeda tiap bulan untuk dibandingkan.</p>
+          <div class="price"><b data-price="159000">Rp 159.000</b><span class="muted text-sm">/ bulan</span></div>
+          <ul><li><svg><use href="#i-check"/></svg>2 × 250 g single origin</li><li><svg><use href="#i-check"/></svg>Digiling sesuai alatmu</li><li><svg><use href="#i-check"/></svg>Gratis ongkir seluruh Indonesia</li><li><svg><use href="#i-check"/></svg>Akses rilis mikro-lot lebih awal</li></ul>
+          <button class="btn btn-primary mt-auto" type="button" data-order="Langganan Pecinta Seduh">Pilih Pecinta Seduh</button>
+        </div></article>
+        <article class="card bg-base-100 border border-base-300 plan"><div class="card-body gap-5">
+          <div><h3 class="card-title">Pantry Kantor</h3><p class="text-sm muted mt-1">Untuk tim 10–50 orang.</p></div>
+          <div class="price"><b data-price="449000">Rp 449.000</b><span class="muted text-sm">/ bulan</span></div>
+          <ul><li><svg><use href="#i-check"/></svg>2 kg biji, jadwal kirim fleksibel</li><li><svg><use href="#i-check"/></svg>Pelatihan seduh untuk tim</li><li><svg><use href="#i-check"/></svg>Faktur pajak bulanan</li></ul>
+          <button class="btn btn-outline mt-auto" type="button" data-order="Langganan Pantry Kantor">Pilih Pantry Kantor</button>
+        </div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec" id="faq">
+    <div class="wrap grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)]">
+      <div><span class="eyebrow">FAQ</span><h2 class="serif text-4xl mt-3" style="line-height:1.08">Pertanyaan yang sering mampir.</h2><p class="muted mt-4">Belum terjawab? Kirim pesan ke tim roastery, kami balas di hari kerja sebelum pukul 17.00.</p></div>
+      <div class="grid gap-3">
+        <div class="collapse collapse-arrow bg-base-100 border border-base-300"><input type="radio" name="faq" checked aria-label="Berapa lama biji kopi tetap segar?"><div class="collapse-title font-semibold">Berapa lama biji kopi tetap segar?</div><div class="collapse-content text-sm muted">Paling enak diseduh 5–30 hari setelah tanggal sangrai. Simpan di kantong aslinya, tutup rapat, jauh dari sinar matahari, dan jangan di kulkas.</div></div>
+        <div class="collapse collapse-arrow bg-base-100 border border-base-300"><input type="radio" name="faq" aria-label="Bisakah kopinya digiling dulu?"><div class="collapse-title font-semibold">Bisakah kopinya digiling dulu?</div><div class="collapse-content text-sm muted">Bisa. Pilih alat seduhmu saat memesan: tubruk, dripper, French press, moka pot, atau espresso. Kami giling tepat sebelum dikemas.</div></div>
+        <div class="collapse collapse-arrow bg-base-100 border border-base-300"><input type="radio" name="faq" aria-label="Bagaimana cara menjeda langganan?"><div class="collapse-title font-semibold">Bagaimana cara menjeda langganan?</div><div class="collapse-content text-sm muted">Balas pesan pengingat WhatsApp kami dengan kata JEDA paling lambat H-3 sebelum tanggal sangrai. Tidak ada biaya pembatalan.</div></div>
+        <div class="collapse collapse-arrow bg-base-100 border border-base-300"><input type="radio" name="faq" aria-label="Apakah melayani pesanan kafe atau grosir?"><div class="collapse-title font-semibold">Apakah melayani pesanan kafe atau grosir?</div><div class="collapse-content text-sm muted">Ya, mulai 5 kg per bulan dengan harga khusus, profil sangrai yang bisa disesuaikan, dan kunjungan barista kami untuk kalibrasi.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="wrap" id="pesan">
+    <div class="cta">
+      <svg class="beans" viewBox="0 0 200 200" aria-hidden="true"><g fill="currentColor"><ellipse cx="60" cy="60" rx="30" ry="42" transform="rotate(-30 60 60)"/><ellipse cx="140" cy="90" rx="26" ry="36" transform="rotate(25 140 90)"/><ellipse cx="90" cy="150" rx="28" ry="38" transform="rotate(-60 90 150)"/></g></svg>
+      <div>
+        <h2>Cicipi tiga asal, gratis ongkir.</h2>
+        <p class="mt-3" style="opacity:.88;max-width:30em">Paket perkenalan 3 × 100 g untuk pelanggan baru. Pilih gilinganmu, kami kirim di batch sangrai berikutnya.</p>
+      </div>
+      <form class="grid gap-3" id="newsForm" novalidate>
+        <label class="text-sm font-semibold" for="newsMail">Email untuk kode diskon</label>
+        <div class="join w-full">
+          <input class="input join-item w-full min-w-0 text-base-content" type="email" id="newsMail" placeholder="nama@email.com" required autocomplete="email">
+          <button class="btn btn-neutral join-item" type="submit">Kirim</button>
+        </div>
+        <button class="btn btn-outline border-current text-current w-fit" type="button" data-order="Paket perkenalan">Langsung pesan paket</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap footer sm:footer-horizontal py-14 gap-10">
+    <aside class="max-w-xs">
+      <a class="brand" href="#top"><svg style="color:var(--color-primary)"><use href="#logo"/></svg><span>Kopiloka<small>Roastery · Nusantara</small></span></a>
+      <p class="muted mt-3">Jl. Cikapundung Timur No. 12, Bandung. Kedai &amp; roastery buka setiap hari 08.00–20.00.</p>
+    </aside>
+    <nav aria-label="Toko"><h6 class="footer-title">Toko</h6><a class="link link-hover" href="#produk">Biji kopi</a><a class="link link-hover" href="#produk">Alat seduh</a><a class="link link-hover" href="#langganan">Langganan</a></nav>
+    <nav aria-label="Roastery"><h6 class="footer-title">Roastery</h6><a class="link link-hover" href="#perjalanan">Kebun mitra</a><a class="link link-hover" href="#keunggulan">Cara kami menyangrai</a><a class="link link-hover" href="#faq">FAQ</a></nav>
+    <nav aria-label="Kontak"><h6 class="footer-title">Kontak</h6><a class="link link-hover" href="#pesan">WhatsApp roastery</a><a class="link link-hover" href="#pesan">halo@kopiloka.test</a></nav>
+  </div>
+  <div class="wrap flex flex-wrap justify-between gap-3 py-6 border-t border-base-300 text-sm muted">
+    <span>© 2026 Kopiloka. Merek fiktif untuk contoh template.</span>
+    <span>Dibangun dengan daisyUI 5 + Tailwind CSS v4 + three.js</span>
+  </div>
+</footer>
+
+<!-- MODAL PESAN -->
+<dialog id="orderModal" class="modal modal-bottom sm:modal-middle" aria-labelledby="orderTitle">
+  <div class="modal-box">
+    <form method="dialog"><button class="btn btn-sm btn-circle btn-ghost absolute right-3 top-3" aria-label="Tutup">✕</button></form>
+    <h3 class="serif text-2xl" id="orderTitle">Pesan dari roastery</h3>
+    <p class="text-sm muted mt-1">Isi data singkat, tim kami konfirmasi lewat WhatsApp.</p>
+    <form id="orderForm" class="grid gap-3 mt-5" novalidate>
+      <fieldset class="fieldset">
+        <label class="fieldset-legend" for="oName">Nama</label>
+        <input class="input w-full" id="oName" name="nama" required autocomplete="name" placeholder="Nama lengkap">
+      </fieldset>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <fieldset class="fieldset">
+          <label class="fieldset-legend" for="oPhone">Nomor WhatsApp</label>
+          <input class="input w-full" id="oPhone" name="wa" type="tel" required pattern="[0-9+ ]{9,16}" autocomplete="tel" placeholder="0812 3456 7890">
+        </fieldset>
+        <fieldset class="fieldset">
+          <label class="fieldset-legend" for="oQty">Jumlah</label>
+          <input class="input w-full num" id="oQty" name="qty" type="number" min="1" max="20" value="1" required>
+        </fieldset>
+      </div>
+      <fieldset class="fieldset">
+        <label class="fieldset-legend" for="oItem">Produk</label>
+        <select class="select w-full" id="oItem" name="item">
+          <option>Gayo Wine</option><option>Kintamani Jeruk</option><option>Toraja Sapan</option><option>Flores Bajawa</option><option>Paket perkenalan</option><option>Racikan 3D</option>
+        </select>
+      </fieldset>
+      <fieldset class="fieldset">
+        <label class="fieldset-legend" for="oGrind">Gilingan</label>
+        <select class="select w-full" id="oGrind" name="grind">
+          <option>Biji utuh</option><option>Tubruk (halus)</option><option>Dripper (sedang)</option><option>French press (kasar)</option><option>Espresso (sangat halus)</option>
+        </select>
+      </fieldset>
+      <fieldset class="fieldset">
+        <label class="fieldset-legend" for="oNote">Catatan (opsional)</label>
+        <textarea class="textarea w-full" id="oNote" name="note" rows="2" placeholder="Contoh: kirim setelah tanggal 10"></textarea>
+      </fieldset>
+      <label class="label text-sm gap-2 cursor-pointer whitespace-normal"><input type="checkbox" class="checkbox checkbox-primary checkbox-sm" required id="oAgree"> Saya setuju dihubungi lewat WhatsApp.</label>
+      <div class="modal-action mt-2">
+        <button class="btn btn-ghost" type="button" id="orderCancel">Batal</button>
+        <button class="btn btn-primary" type="submit">Kirim pesanan</button>
+      </div>
+    </form>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button aria-label="Tutup dialog">tutup</button></form>
+</dialog>
+
+<div class="toast toast-end toast-bottom" id="toasts" aria-live="polite"></div>
+
+<template id="cupFallback">
+  <svg viewBox="0 0 400 320" width="80%" role="presentation">
+    <ellipse cx="200" cy="262" rx="150" ry="26" fill="var(--color-base-300)"/>
+    <ellipse cx="200" cy="248" rx="118" ry="20" fill="var(--color-base-100)" stroke="var(--color-base-300)" stroke-width="3"/>
+    <path d="M118 120h164l-14 104a26 26 0 0 1-26 22h-84a26 26 0 0 1-26-22z" fill="var(--color-base-100)" stroke="var(--color-base-300)" stroke-width="3"/>
+    <path d="M280 140c40 0 44 60 4 64" fill="none" stroke="var(--color-primary)" stroke-width="12" stroke-linecap="round"/>
+    <ellipse cx="200" cy="122" rx="82" ry="14" fill="#7a4a28"/><path d="M200 112c-12-10-26 2-12 12l12 8 12-8c14-10 0-22-12-12z" fill="#f1e3cf"/>
+    <g fill="none" stroke="var(--color-base-content)" stroke-opacity=".25" stroke-width="5" stroke-linecap="round"><path d="M170 90c-12-16 12-24 0-44"/><path d="M200 84c-12-16 12-24 0-44"/><path d="M230 90c-12-16 12-24 0-44"/></g>
+  </svg>
+</template>
+
+<script type="module">
+/* ================= UI (daisyUI) ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const rmq = matchMedia('(prefers-reduced-motion: reduce)');
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const fmtRp = n => 'Rp ' + Math.round(n).toLocaleString('id-ID');
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const bus = new EventTarget();
+window.__kopiloka = { bus };
+
+/* --- tema: theme-controller daisyUI + tombol terang/gelap --- */
+const root = document.documentElement;
+const PAIR = { kopiloka: 'espresso', espresso: 'kopiloka', retro: 'sunset', sunset: 'retro' };
+const DARK = { espresso: 1, sunset: 1 };
+const META = { kopiloka: '#f7efe4', espresso: '#1f1813', retro: '#ece3ca', sunset: '#121c22' };
+const themeRadios = $$('input.theme-controller');
+const themeBtn = $('#themeBtn');
+function setTheme(t, save = true){
+  if (!PAIR[t]) t = 'kopiloka';
+  root.setAttribute('data-theme', t);
+  themeRadios.forEach(r => r.checked = r.value === t);
+  themeBtn.classList.toggle('swap-active', !!DARK[t]);
+  $('meta[name="theme-color"]').content = META[t];
+  if (save) try { localStorage.setItem('kopiloka-theme', t); } catch (e) {}
+  bus.dispatchEvent(new CustomEvent('theme', { detail: t }));
+}
+setTheme(root.getAttribute('data-theme'), false);
+themeRadios.forEach(r => r.addEventListener('change', () => r.checked && setTheme(r.value)));
+themeBtn.addEventListener('click', () => setTheme(PAIR[root.getAttribute('data-theme')] || 'espresso'));
+
+/* --- menu seluler --- */
+const mm = $('#mobileMenu');
+$$('#mobileMenu a, #mobileMenu button').forEach(a => a.addEventListener('click', () => mm.open = false));
+document.addEventListener('click', e => { if (mm.open && !mm.contains(e.target)) mm.open = false; });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && mm.open) { mm.open = false; mm.querySelector('summary').focus(); } });
+
+/* --- toast --- */
+function toast(msg, kind = 'success'){
+  const el = document.createElement('div');
+  el.className = `alert alert-${kind} shadow-lg`; el.setAttribute('role', 'status');
+  el.innerHTML = `<span>${esc(msg)}</span>`;
+  $('#toasts').append(el);
+  setTimeout(() => { el.style.transition = 'opacity .4s'; el.style.opacity = '0'; setTimeout(() => el.remove(), 400); }, 4200);
+}
+
+/* --- modal pesan --- */
+const dlg = $('#orderModal'), oItem = $('#oItem');
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-order]'); if (!t) return;
+  const v = t.dataset.order;
+  if (v) { const opt = [...oItem.options].find(o => o.text === v || v.includes(o.text)); if (opt) oItem.value = opt.value; else { const o = new Option(v, v, true, true); oItem.add(o); } }
+  dlg.showModal();
+});
+$('#orderCancel').addEventListener('click', () => dlg.close());
+$('#orderForm').addEventListener('submit', e => {
+  e.preventDefault(); const f = e.target;
+  if (!f.checkValidity()) { f.reportValidity(); return; }
+  const nama = f.nama.value.trim().split(/\s+/)[0];
+  dlg.close(); toast(`Terima kasih, ${nama}! Pesanan ${f.item.value} (${f.qty.value}×) kami konfirmasi lewat WhatsApp.`); f.reset();
+});
+$('#newsForm').addEventListener('submit', e => {
+  e.preventDefault(); const m = $('#newsMail');
+  if (!m.checkValidity()) { m.reportValidity(); return; }
+  toast(`Kode KOPILOKA10 dikirim ke ${m.value}.`, 'info'); e.target.reset();
+});
+
+/* --- langganan: periode --- */
+$$('input[name="period"]').forEach(r => r.addEventListener('change', () => {
+  const k = r.value === '3' ? .9 : 1;
+  $$('[data-price]').forEach(b => b.textContent = fmtRp(Math.round(Number(b.dataset.price) * k / 1000) * 1000));
+}));
+
+/* --- angka statistik --- */
+const statIO = new IntersectionObserver(es => es.forEach(en => {
+  if (!en.isIntersecting) return; statIO.unobserve(en.target);
+  $$('[data-count]', en.target).forEach(el => {
+    const end = Number(el.dataset.count), suf = el.dataset.suffix || '';
+    const show = v => el.textContent = Math.round(v).toLocaleString('id-ID') + suf;
+    if (rmq.matches) return show(end);
+    const t0 = performance.now(); const step = now => { const p = Math.min(1, (now - t0) / 1400); show(end * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); }; requestAnimationFrame(step);
+  });
+}), { threshold: .3 });
+statIO.observe($('#stats'));
+
+/* --- state racikan (dipakai hero + konfigurator) --- */
+const state = { roast: 'sedang', milk: 35, sugar: 1, iced: false };
+const DEFAULTS = { ...state };
+const ROAST = { terang: { label: 'terang', notes: ['Jeruk', 'Teh', 'Bunga'], caf: 135 }, sedang: { label: 'sedang', notes: ['Karamel', 'Cokelat'], caf: 120 }, gelap: { label: 'gelap', notes: ['Dark chocolate', 'Rempah'], caf: 105 } };
+function drinkName(){ const m = state.milk; const base = m === 0 ? 'Kopi hitam' : m < 45 ? 'Kopi susu' : 'Latte'; return base + (state.iced ? ' es' : ' panas'); }
+function readouts(){
+  const price = 26000 + (state.milk > 0 ? 4000 + state.milk * 40 : 0) + (state.iced ? 3000 : 0);
+  const cal = Math.round(5 + state.milk * 1.6 + state.sugar * 16);
+  $('#sPrice').textContent = 'Rp ' + Math.round(price / 1000) + 'rb';
+  $('#heroPrice').textContent = fmtRp(Math.round(price / 1000) * 1000);
+  $('#sCaf').textContent = ROAST[state.roast].caf; $('#sCal').textContent = cal;
+  $('#milkOut').textContent = state.milk + '%';
+  $('#sugarOut').textContent = state.sugar === 0 ? 'Tanpa' : state.sugar + ' butir';
+  $('#heroChip').textContent = 'Gayo · sangrai ' + ROAST[state.roast].label;
+  $('#cfgChip').textContent = drinkName();
+  $('#notes').innerHTML = ROAST[state.roast].notes.map(n => `<span class="badge badge-sm badge-outline">${esc(n)}</span>`).join('');
+}
+function emit(){ readouts(); bus.dispatchEvent(new CustomEvent('state', { detail: state })); }
+function syncControls(){
+  $$('input[name="heroRoast"], input[name="cfgRoast"]').forEach(r => r.checked = r.value === state.roast);
+  $('#heroIced').checked = $('#cfgIced').checked = state.iced;
+  $('#milk').value = state.milk; $('#sugar').value = state.sugar;
+}
+$$('input[name="heroRoast"], input[name="cfgRoast"]').forEach(r => r.addEventListener('change', () => { if (r.checked) { state.roast = r.value; syncControls(); emit(); } }));
+['#heroIced', '#cfgIced'].forEach(s => $(s).addEventListener('change', e => { state.iced = e.target.checked; syncControls(); emit(); }));
+$('#milk').addEventListener('input', e => { state.milk = Number(e.target.value); emit(); });
+$('#sugar').addEventListener('input', e => { state.sugar = Number(e.target.value); emit(); });
+$('#resetMix').addEventListener('click', () => { Object.assign(state, DEFAULTS); syncControls(); emit(); toast('Racikan dikembalikan ke pengaturan awal.', 'info'); });
+$('#addMix').addEventListener('click', () => { oItem.value = 'Racikan 3D'; $('#oNote').value = `${drinkName()}, sangrai ${state.roast}, susu ${state.milk}%, gula ${state.sugar}`; dlg.showModal(); });
+$$('input[name="mixRate"]').forEach(r => r.addEventListener('change', () => toast(`Terima kasih! Racikanmu dinilai ${r.value} dari 5 bintang.`, 'info')));
+syncControls(); readouts();
+
+/* warna tema daisyUI (oklch) -> rgb untuk three.js, lewat kanvas 1×1 */
+const probe = document.createElement('i'); probe.style.display = 'none'; document.body.append(probe);
+const pc = document.createElement('canvas'); pc.width = pc.height = 1; const pctx = pc.getContext('2d', { willReadFrequently: true });
+function themeColor(v){
+  probe.style.color = `var(${v})`; const c = getComputedStyle(probe).color;
+  pctx.clearRect(0, 0, 1, 1); pctx.fillStyle = '#888'; pctx.fillStyle = c; pctx.fillRect(0, 0, 1, 1);
+  const d = pctx.getImageData(0, 0, 1, 1).data; return `rgb(${d[0]},${d[1]},${d[2]})`;
+}
+
+/* ================= 3D ================= */
+function webglOK(){ try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch (e) { return false; } }
+function showFallbacks(){
+  const tpl = $('#cupFallback');
+  ['#heroStage', '#cfgStage'].forEach(s => { const st = $(s); st.classList.add('no-webgl'); const fb = st.querySelector('.fallback'); if (!fb.firstChild) fb.append(tpl.content.cloneNode(true)); });
+  $('#perjalanan').classList.add('no-webgl');
+}
+let THREE, OrbitControls, RoundedBoxGeometry;
+try {
+  if (!webglOK()) throw new Error('no-webgl');
+  THREE = await import('three');
+  ({ OrbitControls } = await import('three/addons/controls/OrbitControls.js'));
+  ({ RoundedBoxGeometry } = await import('three/addons/geometries/RoundedBoxGeometry.js'));
+} catch (err) { showFallbacks(); }
+
+const storySec = $('#perjalanan');
+function storyProgress(){ const r = storySec.getBoundingClientRect(); return clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1); }
+
+if (THREE) {
+  const DPR = () => Math.min(window.devicePixelRatio || 1, 2);
+  const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+  const coarse = matchMedia('(pointer: coarse)').matches;
+  const frames = window.__kopiloka.frames = {};
+
+  /* loop render: berhenti saat di luar layar / tab tersembunyi; sesuai permintaan saat reduced-motion */
+  function createLoop(el, frame, continuous){
+    let visible = false, raf = 0, last = 0, pending = true, aliveUntil = 0;
+    const L = { request(){ pending = true; kick(); }, keepAlive(ms){ aliveUntil = Math.max(aliveUntil, performance.now() + ms); kick(); } };
+    const run = () => visible && !document.hidden;
+    function tick(now){
+      if (!run()) { raf = 0; last = 0; return; }
+      raf = -1;
+      const dt = last ? Math.min((now - last) / 1000, .05) : .016; last = now; pending = false;
+      frames[el.id] = (frames[el.id] || 0) + 1;
+      frame(dt, now / 1000);
+      if (continuous() || pending || now < aliveUntil) raf = requestAnimationFrame(tick); else { raf = 0; last = 0; }
+    }
+    function kick(){ if (!raf && run()) raf = requestAnimationFrame(tick); }
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) { pending = true; kick(); } }, { rootMargin: '80px' }).observe(el);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) { pending = true; kick(); } });
+    rmq.addEventListener('change', () => L.request());
+    return L;
+  }
+  function makeRenderer(canvas, alpha){
+    const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: !!alpha, powerPreference: 'high-performance' });
+    r.setPixelRatio(DPR()); r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+    r.toneMapping = THREE.ACESFilmicToneMapping; r.outputColorSpace = THREE.SRGBColorSpace;
+    if (alpha) r.setClearColor(0x000000, 0);
+    return r;
+  }
+  function watchSize(el, renderer, onSize){
+    const apply = () => { const w = Math.max(1, el.clientWidth), h = Math.max(1, el.clientHeight); renderer.setPixelRatio(DPR()); renderer.setSize(w, h, false); onSize(w, h); };
+    new ResizeObserver(apply).observe(el); apply();
+  }
+  const std = (c, rough = .8, extra = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: rough, metalness: 0, ...extra });
+  function rng(seed){ return () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+
+  /* geometri biji kopi: elipsoid dengan alur berbentuk S di sisi datar */
+  function beanGeometry(){
+    const g = new THREE.SphereGeometry(1, 28, 18), p = g.attributes.position;
+    for (let i = 0; i < p.count; i++) {
+      let x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+      if (z > 0) { const cx = x - .12 * Math.sin(y * 2.6); z = z * .55 - .42 * Math.exp(-(cx * cx) / .01) * Math.min(1, z * 3); }
+      p.setXYZ(i, x * .72, y, z * .62);
+    }
+    g.computeVertexNormals(); return g;
+  }
+  const BEAN_GEO = beanGeometry();
+  const ROAST_COL = { terang: '#a86c3c', sedang: '#6e4024', gelap: '#3a2216' };
+  const ROAST_ROUGH = { terang: .75, sedang: .55, gelap: .32 };
+
+  function softTexture(){
+    const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d');
+    const g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, 'rgba(255,255,255,.9)'); g.addColorStop(.45, 'rgba(255,255,255,.35)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+    x.fillStyle = g; x.fillRect(0, 0, 64, 64); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+  }
+  const SOFT = softTexture();
+
+  /* permukaan kopi: crema + latte art sesuai jumlah susu */
+  const C_ESP = new THREE.Color('#3b2316'), C_MILK = new THREE.Color('#d8b892'), C_FOAM = new THREE.Color('#f3e6d3');
+  function coffeeColor(s, out = new THREE.Color()){
+    const roastShift = { terang: .12, sedang: 0, gelap: -.08 }[s.roast];
+    out.copy(C_ESP).lerp(new THREE.Color('#7a4a28'), clamp(.35 + roastShift, 0, 1)).lerp(C_MILK, Math.pow(s.milk / 100, .8) * .85);
+    return out;
+  }
+  function drawSurface(ctx, s){
+    const W = 256, base = coffeeColor(s), edge = base.clone().lerp(new THREE.Color('#b07a45'), .45);
+    ctx.clearRect(0, 0, W, W);
+    const g = ctx.createRadialGradient(128, 128, 20, 128, 128, 128);
+    g.addColorStop(0, '#' + base.getHexString()); g.addColorStop(.82, '#' + base.clone().lerp(edge, .5).getHexString()); g.addColorStop(1, '#' + edge.getHexString());
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, W);
+    if (s.milk >= 20) { // hati latte art
+      const k = .5 + s.milk / 160;
+      ctx.save(); ctx.translate(128, 136); ctx.scale(k, k); ctx.fillStyle = '#' + C_FOAM.getHexString(); ctx.globalAlpha = .92;
+      ctx.beginPath(); ctx.moveTo(0, 60); ctx.bezierCurveTo(-90, 0, -70, -80, 0, -38); ctx.bezierCurveTo(70, -80, 90, 0, 0, 60); ctx.fill();
+      ctx.globalAlpha = 1; ctx.strokeStyle = '#' + base.getHexString(); ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(0, -60); ctx.lineTo(0, 52); ctx.stroke(); ctx.restore();
+    }
+  }
+
+  function buildCupScene(){
+    const root = new THREE.Group();
+    const M = {
+      ceramic: new THREE.MeshPhysicalMaterial({ color: '#f6efe6', roughness: .32, clearcoat: .6, clearcoatRoughness: .25, side: THREE.DoubleSide }),
+      accent: std('#a0522d', .45),
+      table: std('#e6d7c3', .9),
+      bean: new THREE.MeshPhysicalMaterial({ color: ROAST_COL.sedang, roughness: .55, clearcoat: .3 }),
+      glass: new THREE.MeshPhysicalMaterial({ color: '#ffffff', roughness: .05, metalness: 0, transparent: true, opacity: .22, side: THREE.DoubleSide, depthWrite: false, clearcoat: 1 }),
+      ice: new THREE.MeshPhysicalMaterial({ color: '#e9f6ff', roughness: .12, transparent: true, opacity: .62, clearcoat: 1, depthWrite: false }),
+      sugar: std('#fbf8f2', .95),
+    };
+    // meja bundar (menerima bayangan, warna ikut tema)
+    const table = new THREE.Mesh(new THREE.CylinderGeometry(3.4, 3.4, .16, 72), M.table); table.position.y = -.08; table.receiveShadow = true; root.add(table);
+
+    // tatakan
+    const saucerPts = [[0, 0], [.7, 0], [.78, .03], [1.25, .07], [1.5, .15], [1.58, .2], [1.54, .22], [1.3, .13], [.8, .1], [.62, .1], [0, .1]].map(([r, y]) => new THREE.Vector2(r, y));
+    const saucer = new THREE.Mesh(new THREE.LatheGeometry(saucerPts, 72), M.ceramic); saucer.castShadow = saucer.receiveShadow = true; root.add(saucer);
+
+    // cangkir keramik
+    const cup = new THREE.Group(); cup.position.y = .1; root.add(cup);
+    const inner = [[0, .14], [.5, .15], [.72, .3], [.86, .58], [.93, .9], [.95, 1.12]];
+    const outline = [...inner, [.975, 1.16], [1.0, 1.13], [.985, .9], [.92, .56], [.78, .25], [.6, .06], [.56, 0], [.4, 0], [0, 0]].map(([r, y]) => new THREE.Vector2(r, y));
+    const cupMesh = new THREE.Mesh(new THREE.LatheGeometry(outline, 72), M.ceramic); cupMesh.castShadow = true; cupMesh.receiveShadow = true; cup.add(cupMesh);
+    const band = new THREE.Mesh(new THREE.TorusGeometry(.955, .022, 8, 72), M.accent); band.rotation.x = Math.PI / 2; band.position.y = .96; cup.add(band);
+    const handle = new THREE.Mesh(new THREE.TorusGeometry(.3, .075, 14, 32, Math.PI * 1.25), M.ceramic);
+    handle.rotation.z = -Math.PI * .625; handle.position.set(.98, .64, 0); handle.castShadow = true; cup.add(handle);
+    const innerR = y => { for (let i = 1; i < inner.length; i++) if (y <= inner[i][1]) { const [r0, y0] = inner[i - 1], [r1, y1] = inner[i]; return r0 + (r1 - r0) * (y - y0) / (y1 - y0); } return inner[inner.length - 1][0]; };
+    const surfCanvas = document.createElement('canvas'); surfCanvas.width = surfCanvas.height = 256; const surfCtx = surfCanvas.getContext('2d');
+    const surfTex = new THREE.CanvasTexture(surfCanvas); surfTex.colorSpace = THREE.SRGBColorSpace;
+    const liquid = new THREE.Mesh(new THREE.CircleGeometry(1, 64), new THREE.MeshStandardMaterial({ map: surfTex, roughness: .25 }));
+    liquid.rotation.x = -Math.PI / 2; cup.add(liquid);
+
+    // gelas es
+    const glassG = new THREE.Group(); glassG.position.y = .1; root.add(glassG);
+    const glass = new THREE.Mesh(new THREE.CylinderGeometry(.82, .68, 2.1, 48, 1, true), M.glass); glass.position.y = 1.05; glass.renderOrder = 3; glassG.add(glass);
+    const glassBase = new THREE.Mesh(new THREE.CylinderGeometry(.68, .7, .12, 48), M.glass); glassBase.position.y = .06; glassG.add(glassBase);
+    const iceLiquidGeo = new THREE.CylinderGeometry(.77, .65, 1, 48, 12);
+    iceLiquidGeo.translate(0, .5, 0);
+    iceLiquidGeo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(iceLiquidGeo.attributes.position.count * 3), 3));
+    const iceLiquid = new THREE.Mesh(iceLiquidGeo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: .3, transparent: true, opacity: .96 }));
+    iceLiquid.position.y = .13; glassG.add(iceLiquid);
+    const ices = [];
+    for (let i = 0; i < 5; i++) { const m = new THREE.Mesh(new RoundedBoxGeometry(.42, .42, .42, 3, .08), M.ice); m.renderOrder = 2; glassG.add(m); ices.push({ m, a: i * 1.3, r: i === 4 ? 0 : .34, ph: i * 1.7 }); }
+    const straw = new THREE.Mesh(new THREE.CylinderGeometry(.045, .045, 2.6, 12), M.accent); straw.position.set(.25, 1.6, -.1); straw.rotation.z = -.22; straw.rotation.x = .12; glassG.add(straw);
+    glassG.scale.setScalar(.001); glassG.visible = false;
+
+    // gula batu di tatakan
+    const sugars = [];
+    for (let i = 0; i < 3; i++) { const s = new THREE.Mesh(new RoundedBoxGeometry(.22, .2, .22, 2, .03), M.sugar); s.position.set(-1.18 + i * .05, .21, .45 + i * .27); s.rotation.y = i * .5; s.castShadow = true; root.add(s); sugars.push(s); }
+    // sendok kecil
+    const spoon = new THREE.Group(); spoon.position.set(.55, .14, 1.05); spoon.rotation.y = -.5; root.add(spoon);
+    const spH = new THREE.Mesh(new THREE.BoxGeometry(1.1, .035, .08), std('#b9b2a8', .3, { metalness: .9 })); spH.position.x = .45; spoon.add(spH);
+    const spB = new THREE.Mesh(new THREE.SphereGeometry(.14, 16, 8), std('#b9b2a8', .3, { metalness: .9 })); spB.scale.set(1.2, .25, .9); spoon.add(spB); spH.castShadow = spB.castShadow = true;
+
+    // biji yang mengorbit
+    const orbit = new THREE.Group(); orbit.position.y = 1.0; orbit.rotation.set(.32, 0, -.12); root.add(orbit);
+    const beans = []; const r = rng(5);
+    for (let i = 0; i < 16; i++) { const b = new THREE.Mesh(BEAN_GEO, M.bean); const s = .13 + r() * .05; b.scale.setScalar(s); b.castShadow = true;
+      const a = i / 16 * Math.PI * 2, rad = 2.05 + (r() - .5) * .5; b.userData = { a, rad, y: (r() - .5) * .5, spin: .6 + r() * 1.2, ax: new THREE.Vector3(r() - .5, r() - .5, r() - .5).normalize() };
+      b.rotation.set(r() * 6, r() * 6, r() * 6); orbit.add(b); beans.push(b); }
+
+    // uap
+    const steam = [];
+    const steamMat = new THREE.SpriteMaterial({ map: SOFT, color: '#ffffff', transparent: true, depthWrite: false, opacity: .5 });
+    for (let i = 0; i < 26; i++) { const sp = new THREE.Sprite(steamMat.clone()); sp.userData = { t: i / 26, x: (r() - .5) * .42, z: (r() - .5) * .42, ph: r() * 6 }; root.add(sp); steam.push(sp); }
+
+    return { root, M, cup, liquid, innerR, surfCtx, surfTex, glassG, iceLiquid, ices, sugars, orbit, beans, steam, table };
+  }
+
+  function createCupView(canvas, stageEl, opts){
+    const renderer = makeRenderer(canvas, true);
+    const scene = new THREE.Scene();
+    const S = buildCupScene(); scene.add(S.root);
+    const hemi = new THREE.HemisphereLight('#fff6ea', '#8a6a50', 1.5); scene.add(hemi);
+    renderer.toneMappingExposure = 1.2;
+    const key = new THREE.DirectionalLight('#fff1dc', 2.6); key.position.set(4, 7, 3.5); key.castShadow = true; key.shadow.mapSize.set(1024, 1024);
+    Object.assign(key.shadow.camera, { left: -4, right: 4, top: 4, bottom: -4, near: 1, far: 20 }); key.shadow.bias = -.0005; key.shadow.normalBias = .02; scene.add(key);
+    const rim = new THREE.DirectionalLight('#ffd2a0', 1.2); rim.position.set(-5, 3, -4); scene.add(rim);
+    const camera = new THREE.PerspectiveCamera(34, 1, .1, 100);
+    const target = new THREE.Vector3(0, 1.0, 0);
+    let aspect = 1, mix = 0, mixTarget = 0, sugarShown = [1, 0, 0], controls = null;
+    const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+    const tmpC = new THREE.Color(), milkC = new THREE.Color();
+    const dist = () => (aspect < .75 ? 9.2 : aspect < 1.05 ? 7.8 : 7.0);
+
+    function applyTheme(){
+      S.M.ceramic.color.set(themeColor('--color-base-100'));
+      S.M.accent.color.set(themeColor('--color-primary'));
+      S.M.table.color.set(themeColor('--color-base-300'));
+      hemi.color.set(themeColor('--color-base-100')); hemi.groundColor.set(themeColor('--color-base-300'));
+      const dark = !!DARK[root.getAttribute('data-theme')];
+      hemi.intensity = dark ? 1.0 : 1.5; key.intensity = dark ? 2.4 : 2.8;
+      S.steam.forEach(s => s.material.color.set(dark ? '#f3e6d3' : '#ffffff'));
+      loop.request();
+    }
+    function apply(s){
+      S.M.bean.color.set(ROAST_COL[s.roast]); S.M.bean.roughness = ROAST_ROUGH[s.roast];
+      drawSurface(S.surfCtx, s); S.surfTex.needsUpdate = true;
+      const lvl = .72 + s.milk * .0021; S.liquid.position.y = lvl; S.liquid.scale.setScalar(S.innerR(lvl) - .005);
+      // gelas es: kopi di bawah, susu di atas
+      const h = .95 + s.milk * .006; S.iceLiquid.scale.y = h;
+      coffeeColor({ ...s, milk: 0 }, tmpC); milkC.copy(C_MILK).lerp(C_FOAM, .4);
+      const pos = S.iceLiquid.geometry.attributes.position, col = S.iceLiquid.geometry.attributes.color, mk = s.milk / 100;
+      for (let i = 0; i < pos.count; i++) { const y = pos.getY(i); const w = smooth(1 - mk - .12, 1 - mk + .12, y) * (mk > 0 ? 1 : 0); const c = tmpC.clone().lerp(milkC, w); col.setXYZ(i, c.r, c.g, c.b); }
+      col.needsUpdate = true;
+      mixTarget = s.iced ? 1 : 0; S.sugarN = s.sugar;
+      loop.keepAlive(1400); loop.request();
+    }
+
+    if (!opts.hero && !coarse) {
+      controls = new OrbitControls(camera, canvas);
+      Object.assign(controls, { enableDamping: true, dampingFactor: .08, enableZoom: false, enablePan: false, minPolarAngle: .45, maxPolarAngle: 1.42, rotateSpeed: .7 });
+      controls.target.copy(target); controls.addEventListener('change', () => loop.request()); controls.addEventListener('start', () => loop.keepAlive(1500));
+    }
+    if (opts.hero) {
+      stageEl.addEventListener('pointermove', e => { const b = stageEl.getBoundingClientRect(); pointer.tx = ((e.clientX - b.left) / b.width - .5) * 2; pointer.ty = ((e.clientY - b.top) / b.height - .5) * 2; loop.request(); });
+      stageEl.addEventListener('pointerleave', () => { pointer.tx = pointer.ty = 0; loop.request(); });
+    }
+    function placeCamera(){ camera.position.set(Math.sin(.55) * dist(), 3.3, Math.cos(.55) * dist()); if (controls) { controls.target.copy(target); controls.update(); } else camera.lookAt(target); }
+
+    const loop = createLoop(canvas, (dt, t) => {
+      const still = rmq.matches;
+      const k = still ? 1 : 1 - Math.exp(-dt * 6);
+      mix += (mixTarget - mix) * k; if (Math.abs(mixTarget - mix) < .002) mix = mixTarget; else loop.request();
+      const e = mix * mix * (3 - 2 * mix);
+      S.cup.scale.setScalar(Math.max(.001, 1 - e)); S.cup.visible = e < .999;
+      S.glassG.scale.setScalar(Math.max(.001, e)); S.glassG.visible = e > .001;
+      S.sugars.forEach((m, i) => { const goal = i < (S.sugarN ?? 1) ? 1 : 0; sugarShown[i] += (goal - sugarShown[i]) * k; if (Math.abs(goal - sugarShown[i]) > .003) loop.request(); else sugarShown[i] = goal; m.scale.setScalar(Math.max(.001, sugarShown[i])); m.visible = sugarShown[i] > .01; });
+      const T = still ? 0 : t;
+      S.orbit.rotation.y = T * .25;
+      S.beans.forEach(b => { const u = b.userData; b.position.set(Math.cos(u.a) * u.rad, u.y + Math.sin(T * 1.2 + u.a * 3) * .08, Math.sin(u.a) * u.rad); if (!still) b.rotateOnAxis(u.ax, dt * u.spin); });
+      S.ices.forEach((c, i) => { c.m.position.set(Math.cos(c.a + T * .3) * c.r, .13 + S.iceLiquid.scale.y - .12 - (i % 2) * .22 + Math.sin(T * 1.6 + c.ph) * .03, Math.sin(c.a + T * .3) * c.r); c.m.rotation.set(c.ph + T * .2, c.a, i * .4); });
+      const steamOn = 1 - e;
+      S.steam.forEach(sp => { const u = sp.userData; const life = still ? u.t : (u.t + T * .16) % 1;
+        const y = 1.15 + life * 2.1; sp.position.set(u.x * (1 + life) + Math.sin(T * 1.3 + u.ph + life * 4) * .25 * life, y, u.z * (1 + life));
+        const sc = .22 + life * .62; sp.scale.set(sc, sc, sc); sp.material.opacity = steamOn * .34 * Math.sin(Math.PI * life) * (still ? .8 : 1); sp.visible = steamOn > .01; });
+      if (opts.hero) {
+        const kk = 1 - Math.exp(-dt * 3); pointer.x += (pointer.tx - pointer.x) * kk; pointer.y += (pointer.ty - pointer.y) * kk;
+        const a = .55 + (still ? 0 : Math.sin(t * .2) * .22) + pointer.x * .35;
+        camera.position.set(Math.sin(a) * dist(), 3.3 - pointer.y * .8, Math.cos(a) * dist()); camera.lookAt(target);
+      } else if (controls) { controls.update(); } else camera.lookAt(target);
+      renderer.render(scene, camera);
+      if (!stageEl.classList.contains('ready')) stageEl.classList.add('ready');
+    }, () => !rmq.matches);
+
+    watchSize(stageEl, renderer, (w, h) => { aspect = w / h; camera.aspect = aspect; camera.fov = aspect < .8 ? 40 : 34; camera.updateProjectionMatrix(); target.y = opts.hero ? (aspect < .8 ? .45 : .75) : (aspect < .8 ? .8 : 1.0); placeCamera(); loop.request(); });
+    applyTheme(); apply(state);
+    return { apply, applyTheme, loop, renderer, scene, camera };
+  }
+
+  let heroV = null, cfgV = null;
+  try {
+    heroV = createCupView($('#heroCanvas'), $('#heroStage'), { hero: true });
+    cfgV = createCupView($('#cfgCanvas'), $('#cfgStage'), { hero: false });
+    bus.addEventListener('state', e => { heroV.apply(e.detail); cfgV.apply(e.detail); });
+    bus.addEventListener('theme', () => requestAnimationFrame(() => { heroV.applyTheme(); cfgV.applyTheme(); }));
+  } catch (e) { console.warn('WebGL gagal dimulai', e); showFallbacks(); }
+
+  /* ================= Cerita isometrik: perjalanan biji ================= */
+  function createStory(){
+    const stage = $('.story-stage', storySec), canvas = $('#storyCanvas');
+    const renderer = makeRenderer(canvas, false);
+    const scene = new THREE.Scene();
+    const cam = new THREE.OrthographicCamera(-10, 10, 10, -10, -100, 200);
+    const camDir = new THREE.Vector3(1, 1.1, 1).normalize(), camTarget = new THREE.Vector3();
+    const hemi = new THREE.HemisphereLight('#fff7ec', '#c9b79f', 1.3); scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff1dc', 2.5); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+    Object.assign(sun.shadow.camera, { left: -18, right: 18, top: 18, bottom: -18, near: 1, far: 80 }); sun.shadow.bias = -.0005; sun.shadow.normalBias = .03;
+    scene.add(sun, sun.target);
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(160, 90), std('#efe7da', 1)); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+    let grid = null;
+
+    const CLAY = new THREE.Color('#ece3d6');
+    const SP = [[-16, 4], [-6, -4], [3, 4], [12, -4], [21, 4]];
+    const stations = [];
+    const smat = c => { const m = std(c, .8); m.userData.target = new THREE.Color(c); m.color.copy(CLAY); return m; };
+    function add(g, mats, geo, c, x, y, z, rot){ const m = smat(c); mats.push(m); const me = new THREE.Mesh(geo, m); me.position.set(x, y, z); if (rot) me.rotation.set(rot[0] || 0, rot[1] || 0, rot[2] || 0); me.castShadow = me.receiveShadow = true; g.add(me); return me; }
+    const B = (w, h, d) => new THREE.BoxGeometry(w, h, d), C = (rt, rb, h, s = 20) => new THREE.CylinderGeometry(rt, rb, h, s), Sph = (r, s = 12) => new THREE.SphereGeometry(r, s, Math.max(6, s * .6 | 0)), Ico = r => new THREE.IcosahedronGeometry(r, 0);
+    const smoke = [];
+    SP.forEach(([x, z], i) => {
+      const g = new THREE.Group(); g.position.set(x - 1.4, 0, z - 2.6); scene.add(g);
+      const mats = [];
+      add(g, mats, C(2.8, 2.9, .26, 44), '#f2cfa8', 0, .13, 0);
+      const inner = new THREE.Group(); inner.position.y = .26; g.add(inner);
+      const r = rng(31 + i);
+      if (i === 0) { // kebun
+        add(inner, mats, C(2.2, 2.5, .5, 30), '#88a865', 0, .25, 0);
+        [[-.9, -.5], [.8, -.7], [.1, .9]].forEach(([px, pz], k) => {
+          add(inner, mats, C(.07, .1, .8, 6), '#7a5a40', px, .9, pz);
+          [0, 1, 2].forEach(l => add(inner, mats, Ico(.62 - l * .14), k % 2 ? '#3f6b3a' : '#4f7d45', px, 1.25 + l * .4, pz, [l, l * 2, 0]));
+          for (let c = 0; c < 6; c++) { const a = c * 1.05 + k; add(inner, mats, Sph(.09, 8), '#c8402e', px + Math.cos(a) * .5, 1.15 + (c % 3) * .3, pz + Math.sin(a) * .5); }
+        });
+        add(inner, mats, C(.12, .16, 2.6, 6), '#7a5a40', 1.5, 1.8, 1.2); add(inner, mats, Ico(1.0), '#6f9a5a', 1.5, 3.3, 1.2);
+      } else if (i === 1) { // panen & jemur
+        [[-1, -1], [1, -1], [-1, .6], [1, .6]].forEach(([px, pz]) => add(inner, mats, B(.1, .7, .1), '#8c6a4f', px, .35, pz));
+        add(inner, mats, B(2.4, .08, 2.0), '#c9a36b', 0, .74, -.2);
+        for (let c = 0; c < 46; c++) add(inner, mats, Sph(.08, 6), c % 3 ? '#b23a2a' : '#7d3a22', -1 + r() * 2, .82, -1.1 + r() * 1.8);
+        add(inner, mats, C(.42, .34, .55, 16), '#9a7448', -1.4, .28, 1.4); for (let c = 0; c < 8; c++) add(inner, mats, Sph(.1, 6), '#c8402e', -1.4 + (r() - .5) * .5, .58, 1.4 + (r() - .5) * .5);
+        add(inner, mats, Sph(.5, 12), '#d9c7a3', 1.3, .42, 1.4).scale.set(1, 1.15, .8);
+      } else if (i === 2) { // sangrai
+        add(inner, mats, B(1.6, 1.3, 1.2), '#3a3631', -.2, .65, -.3);
+        add(inner, mats, C(.55, .55, 1.4, 24), '#b87333', -.2, 1.35, .05, [0, 0, Math.PI / 2]).material.metalness = .4;
+        add(inner, mats, C(.45, .08, .6, 16), '#a7a59f', -.5, 2.3, -.3);
+        add(inner, mats, C(.1, .1, 1.8, 10), '#55575a', .45, 2.4, -.6);
+        add(inner, mats, C(.85, .85, .18, 28), '#55575a', 1.2, .55, .9); add(inner, mats, C(.1, .1, .5, 8), '#3a3631', 1.2, .25, .9);
+        for (let c = 0; c < 26; c++) add(inner, mats, Sph(.07, 6), '#5a3420', 1.2 + (r() - .5) * 1.3, .67, .9 + (r() - .5) * 1.3);
+        for (let c = 0; c < 4; c++) { const s = new THREE.Mesh(Sph(.22, 10), new THREE.MeshStandardMaterial({ color: '#bdb6ad', transparent: true, opacity: .6, roughness: 1 })); s.position.set(.45, 3.4, -.6); inner.add(s); smoke.push({ s, ph: c / 4 }); }
+      } else if (i === 3) { // seduh
+        add(inner, mats, B(2.8, .9, 1.4), '#a0703f', 0, .45, -.2); add(inner, mats, B(3.0, .1, 1.6), '#efe6d8', 0, .95, -.2);
+        add(inner, mats, C(.28, .32, .5, 16), '#d8e7ee', -.4, 1.25, -.2).material.opacity = .9;
+        add(inner, mats, C(.36, .1, .4, 16), '#f6f1ea', -.4, 1.7, -.2);
+        add(inner, mats, C(.3, .34, .55, 16), '#2b2622', .7, 1.28, -.3); add(inner, mats, C(.04, .04, .7, 6), '#2b2622', .32, 1.55, -.3, [0, 0, .9]);
+        add(inner, mats, new THREE.TorusGeometry(.2, .04, 6, 12, Math.PI), '#2b2622', 1.0, 1.35, -.3, [0, 0, -Math.PI / 2]);
+        add(inner, mats, B(.4, .55, .4), '#55575a', -1.15, 1.28, -.4); add(inner, mats, C(.16, .2, .3, 12), '#a7a59f', -1.15, 1.7, -.4);
+        add(inner, mats, B(.7, .5, .5), '#c9643a', 1.4, .25, 1.2);
+      } else { // cangkir di meja kafe
+        add(inner, mats, C(1.1, 1.1, .1, 30), '#efe6d8', 0, 1.1, 0); add(inner, mats, C(.08, .12, 1.05, 8), '#3a3631', 0, .55, 0); add(inner, mats, C(.5, .55, .06, 16), '#3a3631', 0, .03, 0);
+        add(inner, mats, C(.32, .38, .04, 20), '#ffffff', -.2, 1.18, .1); add(inner, mats, C(.24, .16, .3, 20), '#ffffff', -.2, 1.35, .1); add(inner, mats, C(.2, .2, .02, 16), '#7a4a28', -.2, 1.5, .1);
+        add(inner, mats, new THREE.TorusGeometry(.09, .03, 6, 12), '#ffffff', .05, 1.36, .1);
+        [[-1.5, .6, .4], [1.4, -.7, -2.6]].forEach(([px, pz, ry]) => { const ch = new THREE.Group(); ch.position.set(px, 0, pz); ch.rotation.y = ry; inner.add(ch); add(ch, mats, B(.7, .08, .7), '#c9643a', 0, .65, 0); add(ch, mats, B(.7, .8, .08), '#c9643a', 0, 1.05, -.31); [[-.3, -.3], [.3, -.3], [-.3, .3], [.3, .3]].forEach(([lx, lz]) => add(ch, mats, B(.06, .65, .06), '#3a3631', lx, .32, lz)); });
+        add(inner, mats, B(.1, 2.2, .1), '#3a3631', 1.7, 1.1, 1.2); add(inner, mats, B(1.4, .7, .1), '#e8743f', 1.7, 2.3, 1.2);
+        add(inner, mats, C(.3, .24, .5, 12), '#f6f1ea', -1.6, .25, -1.3); add(inner, mats, Ico(.5), '#4f7d45', -1.6, .85, -1.3);
+      }
+      stations.push({ g, mats, inner, lit: 0 });
+    });
+
+    // jalur oranye (manhattan dengan sudut membulat)
+    const pts = [[-16, 4], [-11, 4], [-11, -4], [-6, -4], [-1, -4], [-1, 4], [3, 4], [7.5, 4], [7.5, -4], [12, -4], [16.5, -4], [16.5, 4], [21, 4]].map(([x, z]) => new THREE.Vector3(x, .3, z));
+    const path = new THREE.CurvePath(); const rad = 1.4; let cur = pts[0].clone();
+    for (let i = 1; i < pts.length - 1; i++) {
+      const p = pts[i], dIn = p.clone().sub(pts[i - 1]).normalize(), dOut = pts[i + 1].clone().sub(p).normalize();
+      if (dIn.dot(dOut) > .999) continue;
+      const a = p.clone().addScaledVector(dIn, -rad), b = p.clone().addScaledVector(dOut, rad);
+      path.add(new THREE.LineCurve3(cur.clone(), a)); path.add(new THREE.QuadraticBezierCurve3(a, p.clone(), b)); cur = b;
+    }
+    path.add(new THREE.LineCurve3(cur, pts[pts.length - 1].clone()));
+    const TS = 700, RS = 6;
+    const baseMat = std('#d8cbb7', .9);
+    const baseTube = new THREE.Mesh(new THREE.TubeGeometry(path, TS, .12, RS, false), baseMat); baseTube.receiveShadow = true; scene.add(baseTube);
+    const progTube = new THREE.Mesh(new THREE.TubeGeometry(path, TS, .2, RS, false), new THREE.MeshStandardMaterial({ color: '#e8743f', emissive: '#e8743f', emissiveIntensity: .35, roughness: .5 }));
+    progTube.geometry.setDrawRange(0, 0); scene.add(progTube);
+    SP.forEach(([x, z]) => { const d = new THREE.Mesh(new THREE.CylinderGeometry(.42, .42, .08, 20), std('#e8743f', .6)); d.position.set(x, .05, z); scene.add(d); });
+
+    // pemandangan: pohon dan semak jauh dari jalur
+    { const r = rng(11), trunkM = std('#8c6a4f', .9, { flatShading: true }), leafA = std('#6f9a5a', .9, { flatShading: true }), leafB = std('#93b37b', .9, { flatShading: true });
+      for (let x = -28; x <= 32; x += 2.6) for (const zb of [-11, 11.5]) {
+        if (r() < .3) continue; const px = x + (r() - .5) * 1.6, pz = zb + (r() - .5) * 3;
+        if (r() < .55) { const h = 1.2 + r() * 1.4; const t = new THREE.Mesh(new THREE.CylinderGeometry(.12, .16, h, 6), trunkM); t.position.set(px, h / 2, pz); t.castShadow = true; scene.add(t);
+          const c = new THREE.Mesh(new THREE.IcosahedronGeometry(.8 + r() * .5, 0), r() > .5 ? leafA : leafB); c.position.set(px, h + .5, pz); c.castShadow = true; scene.add(c); }
+        else { const b = new THREE.Mesh(new THREE.IcosahedronGeometry(.45 + r() * .4, 0), r() > .5 ? leafA : leafB); b.position.set(px, .35, pz); b.castShadow = true; scene.add(b); }
+      } }
+
+    const samples = 1200, stationU = SP.map(([x, z]) => { let best = 0, bd = 1e9; for (let s = 0; s <= samples; s++) { const q = path.getPointAt(s / samples); const d = (q.x - x) ** 2 + (q.z - z) ** 2; if (d < bd) { bd = d; best = s / samples; } } return best; });
+    stationU[0] = 0; stationU[stationU.length - 1] = 1;
+
+    // tokoh: si Biji (berubah warna: ceri merah -> biji hijau -> sangrai -> gelap)
+    const chr = new THREE.Group(); chr.scale.setScalar(1.25); scene.add(chr);
+    const bodyMat = new THREE.MeshPhysicalMaterial({ color: '#c8402e', roughness: .5, clearcoat: .4 });
+    const body = new THREE.Mesh(BEAN_GEO, bodyMat); body.scale.set(.62, .78, .62); body.rotation.y = Math.PI; body.position.y = 1.35; body.castShadow = true; chr.add(body);
+    const white = std('#ffffff', .4), black = std('#1d1512', .4), limbMat = std('#2b2018', .8);
+    [-.17, .17].forEach(ex => { const e = new THREE.Mesh(new THREE.SphereGeometry(.11, 12, 8), white); e.position.set(ex, 1.55, -.3); e.scale.z = .6; chr.add(e); const p = new THREE.Mesh(new THREE.SphereGeometry(.055, 10, 6), black); p.position.set(ex, 1.55, -.37); chr.add(p); });
+    const smile = new THREE.Mesh(new THREE.TorusGeometry(.09, .022, 6, 12, Math.PI), black); smile.position.set(0, 1.36, -.36); smile.rotation.z = Math.PI; chr.add(smile);
+    function limb(w, h, x, y){ const piv = new THREE.Group(); piv.position.set(x, y, 0); const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, w), limbMat); m.position.y = -h / 2; m.castShadow = true; piv.add(m); chr.add(piv); return piv; }
+    const legL = limb(.12, .62, -.18, .7), legR = limb(.12, .62, .18, .7), armL = limb(.09, .5, -.48, 1.4), armR = limb(.09, .5, .48, 1.4);
+    armL.rotation.z = -.35; armR.rotation.z = .35;
+    chr.rotation.order = 'YXZ';
+    const BODY_COLS = ['#c8402e', '#b9b27a', '#8a5530', '#5a3420', '#4a2a18'].map(c => new THREE.Color(c));
+
+    let lastT = 0, targetU = 0, shownU = 0, walkPhase = 0, step = -1, lastPos = new THREE.Vector3(), halfW = 10, halfH = 10, aspect = 1;
+    const sceneSteps = $$('.scene-step', storySec), dsSteps = $$('#storySteps .step');
+    function mapProgress(p){ const n = SP.length - 1, u = clamp(p, 0, 1) * n, i = Math.min(n - 1, Math.floor(u)), f = u - i, w = smooth(.22, .82, f); return { u: stationU[i] + (stationU[i + 1] - stationU[i]) * w, step: w < .5 ? i : i + 1 }; }
+    function setProgress(p){
+      const m = mapProgress(p); targetU = m.u;
+      if (m.step !== step) { step = m.step; sceneSteps.forEach((s, k) => s.classList.toggle('on', k === step)); dsSteps.forEach((s, k) => s.classList.toggle('step-primary', k <= step)); }
+      loop.request();
+    }
+    function themeColors(){
+      const bg = themeColor('--color-base-200'), b3 = themeColor('--color-base-300'), dark = !!DARK[root.getAttribute('data-theme')];
+      scene.background = new THREE.Color(bg);
+      ground.material.color.set(bg).lerp(new THREE.Color(b3), .25);
+      if (grid) { scene.remove(grid); grid.geometry.dispose(); grid.material.dispose(); }
+      grid = new THREE.GridHelper(160, 80, b3, b3); grid.material.transparent = true; grid.material.opacity = .7; grid.position.y = .01; scene.add(grid);
+      CLAY.set(themeColor('--color-base-300')).lerp(new THREE.Color(dark ? '#cbbfae' : '#ffffff'), dark ? .35 : .35);
+      baseMat.color.set(b3).lerp(new THREE.Color(dark ? '#ffffff' : '#000000'), .12);
+      hemi.intensity = dark ? .8 : 1.3; sun.intensity = dark ? 1.9 : 2.5;
+      stations.forEach(s => s.lit === 0 && s.mats.forEach(m => m.color.copy(CLAY)));
+      loop.request();
+    }
+    const loop = createLoop(canvas, (dt, t) => {
+      const still = rmq.matches, camDt = Math.min(.12, (performance.now() - (lastT || performance.now())) / 1000 || dt); lastT = performance.now();
+      const k = still ? 1 : 1 - Math.exp(-camDt * 5);
+      shownU += (targetU - shownU) * k; if (Math.abs(targetU - shownU) > 1e-4) loop.request(); else shownU = targetU;
+      const pos = path.getPointAt(clamp(shownU, 0, 1)), tan = path.getTangentAt(clamp(shownU, 0, .9999));
+      const moved = pos.distanceTo(lastPos); lastPos.copy(pos); walkPhase += moved * 3.4;
+      const moving = clamp(moved * 25, 0, 1);
+      chr.position.set(pos.x, Math.abs(Math.sin(walkPhase)) * .1 * moving, pos.z);
+      if (moved > 1e-4) chr.rotation.y = Math.atan2(-tan.x, -tan.z);
+      const sw = Math.sin(walkPhase) * .75 * moving; legL.rotation.x = sw; legR.rotation.x = -sw; armL.rotation.x = -sw * .8; armR.rotation.x = sw * .8;
+      // warna tubuh sesuai posisi di jalur
+      let si = 0; while (si < stationU.length - 2 && shownU > stationU[si + 1]) si++;
+      const f = clamp((shownU - stationU[si]) / Math.max(1e-6, stationU[si + 1] - stationU[si]), 0, 1);
+      bodyMat.color.copy(BODY_COLS[si]).lerp(BODY_COLS[si + 1], smooth(.3, .9, f));
+      progTube.geometry.setDrawRange(0, Math.floor(shownU * TS) * RS * 6);
+      stations.forEach((s, i) => {
+        const goal = shownU >= stationU[i] - .004 ? 1 : 0, prev = s.lit;
+        s.lit += (goal - s.lit) * (still ? 1 : Math.min(1, dt * 4)); if (Math.abs(goal - s.lit) > .002) loop.request(); else s.lit = goal;
+        if (prev !== s.lit) s.mats.forEach(m => m.color.copy(CLAY).lerp(m.userData.target, s.lit));
+        s.inner.scale.setScalar(.82 + .18 * s.lit);
+      });
+      if (!still) { smoke.forEach(o => { const l = (o.ph + t * .25) % 1; o.s.position.set(.45 + Math.sin(l * 6) * .15, 3.4 + l * 1.6, -.6); o.s.scale.setScalar(.6 + l * 1.4); o.s.material.opacity = .55 * (1 - l) * stations[2].lit; }); loop.request(); }
+      const desired = new THREE.Vector3(pos.x, 0, pos.z);
+      if (aspect >= .9) desired.addScaledVector(new THREE.Vector3(1, 0, -1).normalize(), -halfW * .3);
+      if (camTarget.lengthSq() === 0) camTarget.copy(desired);
+      camTarget.lerp(desired, still ? 1 : 1 - Math.exp(-camDt * 3.5)); if (camTarget.distanceTo(desired) > .01) loop.request();
+      cam.position.copy(camTarget).addScaledVector(camDir, 60); cam.lookAt(camTarget);
+      sun.position.copy(camTarget).add(new THREE.Vector3(14, 26, 8)); sun.target.position.copy(camTarget);
+      renderer.render(scene, cam);
+    }, () => false);
+
+    /* Layar sempit: tokoh dibingkai di ruang kosong ANTARA kartu judul (atas) dan kartu langkah (bawah),
+       diukur dari DOM, memakai frustum ortografis asimetris. */
+    const head = stage.querySelector('.story-head'), card = stage.querySelector('#storyCard');
+    let frameY = .5;
+    function applyFrame(){
+      frameY = .5;
+      if (aspect < .9) {
+        const r = stage.getBoundingClientRect(), a = head.getBoundingClientRect().bottom - r.top, b = card.getBoundingClientRect().top - r.top;
+        if (r.height > 0 && b > a) frameY = clamp(((a + b) / 2 + 30) / r.height, .2, .8); // +30 px: titik pusat di kaki, tubuh setinggi ~60 px
+      }
+      Object.assign(cam, { left: -halfW, right: halfW, top: 2 * halfH * frameY, bottom: -2 * halfH * (1 - frameY) }); cam.updateProjectionMatrix();
+    }
+    watchSize(stage, renderer, (w, h) => { aspect = w / h; halfH = aspect < .9 ? 10.5 : 8.6; halfW = halfH * aspect; applyFrame(); loop.request(); });
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(head);
+    new ResizeObserver(() => { applyFrame(); loop.request(); }).observe(card);
+    if (document.fonts) document.fonts.ready.then(() => { applyFrame(); loop.request(); });
+    themeColors(); bus.addEventListener('theme', () => requestAnimationFrame(themeColors));
+    return { setProgress, loop, renderer, scene, cam, chr, frame: () => frameY };
+  }
+
+  let story = null;
+  try { story = createStory(); } catch (e) { console.warn('Cerita 3D gagal', e); storySec.classList.add('no-webgl'); }
+  window.__kopiloka.views = { heroV, cfgV, story };
+  if (story) { const upd = () => story.setProgress(storyProgress()); addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd(); }
+}
+
+/* fallback tanpa WebGL: teks cerita tetap mengikuti gulir */
+if (!window.__kopiloka.views || !window.__kopiloka.views.story) {
+  const nodes = $$('#storySvg .node'), sceneSteps = $$('.scene-step', storySec), dsSteps = $$('#storySteps .step');
+  const upd = () => { const n = Math.round(storyProgress() * 4); sceneSteps.forEach((s, k) => s.classList.toggle('on', k === n)); dsSteps.forEach((s, k) => s.classList.toggle('step-primary', k <= n)); nodes.forEach((c, k) => c.classList.toggle('on', k <= n)); };
+  addEventListener('scroll', upd, { passive: true }); upd();
+}
+</script>
+</body>
+</html>
