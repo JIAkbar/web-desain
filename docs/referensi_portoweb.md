@@ -52,7 +52,7 @@ Tidak berlaku untuk proyek ini — tidak ada halaman yang membaca berkas data (`
 | `app-bridge.js` + meta `shopify-api-key` | ❌ | tidak dibutuhkan untuk menggambar di halaman lepas (uji 26 Okt 2026) | sesi ini, dengan bukti uji; bisa dibalik Johan |
 | Paket React lama `Shopify/polaris` (MIT, diarsipkan) | ❌ | cadangan, tidak dibutuhkan karena web components jalan | sesi ini |
 
-## Pustaka CDN landing & galeri 3D — antrean #28, #30, #31 (27–28 Okt 2026)
+## Pustaka CDN landing & galeri 3D — antrean #28, #30, #31, #32 (27–28 Okt 2026)
 
 Semua dimuat live dari CDN dengan versi dikunci; tidak ada kode pustaka yang disalin ke repo. Dicek `curl` = 200 saat dibangun.
 
@@ -71,6 +71,12 @@ Semua dimuat live dari CDN dengan versi dikunci; tidak ada kode pustaka yang dis
 | PatternFly | 6.6.1 | MIT | `https://cdn.jsdelivr.net/npm/@patternfly/patternfly@6.6.1/patternfly.min.css` (6.7.0 baru 13 hari, sengaja tidak dipakai) | 135-awannusa |
 | daisyUI (+ Tailwind browser 4.1.11) | 5.0.43 | MIT | `https://cdn.jsdelivr.net/npm/daisyui@5.0.43/` | 136-kopiloka |
 | Bulma | 1.0.4 | MIT | `https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css` | 137-sekolahku |
+| GOV.UK Frontend | 5.14.0 | MIT (mahkota, wordmark GOV.UK, dan font GDS Transport TIDAK termasuk lisensi → tidak dipakai) | `https://cdn.jsdelivr.net/npm/govuk-frontend@5.14.0/dist/govuk/` | 138-laporwarga |
+| U.S. Web Design System | 3.14.0 | CC0/MIT (banner situs resmi & bendera tidak dipakai) | `https://cdn.jsdelivr.net/npm/@uswds/uswds@3.14.0/dist/` | 139-sigap |
+| UIkit | 3.25.26 | MIT | `https://cdn.jsdelivr.net/npm/uikit@3.25.26/dist/` | 140-lensa |
+| Pico CSS | 2.1.1 | MIT | `https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/` | 141-catatku |
+| Ant Design (+ React/ReactDOM 18.3.1 UMD, dayjs 1.11.13) | 5.29.3 | MIT | `https://cdn.jsdelivr.net/npm/antd@5.29.3/dist/antd.min.js` | 142-gudangku |
+| SAP UI5 Web Components (+ fiori) | 2.27.2 | Apache-2.0 | `https://cdn.jsdelivr.net/npm/@ui5/webcomponents@2.27.2/` (modul ES lewat importmap) | 143-pabrikita |
 | GSAP + ScrollTrigger | 3.12.5 | lisensi standar GreenSock (gratis untuk situs) | `https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/` | 130-ruang, 131-rapatin |
 | Google Fonts tambahan | — | OFL | Space Grotesk (pengganti fon mono di 48 template), Roboto, Manrope, IBM Plex Sans, Geist, dan fon isi landing 3D | template |
 
@@ -81,6 +87,8 @@ Fon angka: semua fon di atas bernol polos; Space Grotesk diuji raster 27 Okt 202
 Tidak berlaku — belum pernah ada penggantian sumber, jahitan data, atau ruas yang sengaja dilewatkan di proyek ini. Proyek murni template statis, tidak ada angka/data sensitif yang berasal dari sumber luar.
 
 ## Riwayat
+
+- 2026-10-28 — tambah 6 pustaka design system untuk landing 3D 138–143 (#32).
 
 - 2026-10-28 — tambah 6 pustaka design system untuk landing 3D 132–137 (#31).
 
