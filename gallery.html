@@ -487,6 +487,9 @@
     .card-theme.card-3d { background: var(--signal); border-color: var(--signal); color: #fff; }
     .sidebar-item-3d:not(.active) .sidebar-count { color: var(--signal); font-weight: 700; }
     .card-preview img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+
+    /* Ganti tema: matikan semua transisi sesaat supaya seluruh halaman berganti warna serempak dalam satu frame */
+    html.theme-switching, html.theme-switching *, html.theme-switching *::before, html.theme-switching *::after { transition: none !important; }
   </style>
 </head>
 <body>
@@ -1254,6 +1257,14 @@ render();
 const html        = document.documentElement;
 const themeToggle = document.getElementById('themeToggle');
 
+// Matikan transisi sesaat, ganti tema, lalu nyalakan lagi sesudah warna baru tergambar
+function withoutTransitions(fn) {
+  const root = document.documentElement;
+  root.classList.add('theme-switching');
+  fn();
+  void root.offsetHeight; // paksa gaya baru diterapkan sebelum transisi kembali aktif
+  requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('theme-switching')));
+}
 function setTheme(theme) {
   html.dataset.theme = theme;
   themeToggle.innerHTML = theme === 'dark'
@@ -1264,7 +1275,7 @@ function setTheme(theme) {
 }
 
 themeToggle.addEventListener('click', () => {
-  setTheme(html.dataset.theme === 'dark' ? 'light' : 'dark');
+  withoutTransitions(() => setTheme(html.dataset.theme === 'dark' ? 'light' : 'dark'));
 });
 
 let savedTheme = 'light';
