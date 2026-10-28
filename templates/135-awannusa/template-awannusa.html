@@ -757,10 +757,10 @@ statIO.observe($('#stats'));
 
 /* ---------- shared scene state ---------- */
 const REGIONS = {
-  jkt: { name: 'Jakarta', code: 'jkt-1', base: .62, lat: 4, pos: [0, 0], accent: '#0066cc' },
-  btm: { name: 'Batam', code: 'btm-1', base: .48, lat: 11, pos: [0, -34], accent: '#5e40be' },
-  sby: { name: 'Surabaya', code: 'sby-1', base: .55, lat: 12, pos: [34, 0], accent: '#37a3a3' },
-  mks: { name: 'Makassar', code: 'mks-1', base: .38, lat: 19, pos: [34, -34], accent: '#f0772b' }
+  jkt: { name: 'Jakarta', code: 'jkt-1', base: .62, lat: 4, pos: [0, 0], accent: '#0066cc', yaw: 0 },
+  btm: { name: 'Batam', code: 'btm-1', base: .48, lat: 11, pos: [0, -34], accent: '#5e40be', yaw: -.42 },
+  sby: { name: 'Surabaya', code: 'sby-1', base: .55, lat: 12, pos: [34, 0], accent: '#37a3a3', yaw: .38 },
+  mks: { name: 'Makassar', code: 'mks-1', base: .38, lat: 19, pos: [34, -34], accent: '#f0772b', yaw: -.2 }
 };
 const TRAFFIC = [{ name: 'Sepi', mul: .5, rps: 420 }, { name: 'Normal', mul: .8, rps: 1240 }, { name: 'Puncak', mul: 1.12, rps: 3860 }];
 const state = { region: 'jkt', traffic: 1, heat: false, nodes: 14, incident: null };
@@ -948,7 +948,7 @@ if (THREE) {
     const bb = new THREE.MeshStandardMaterial({ color: '#f0772b', emissive: '#f0772b', emissiveIntensity: .3, roughness: .5, transparent: true, opacity: .55 });
     [['jkt', 'btm'], ['jkt', 'sby'], ['sby', 'mks'], ['btm', 'mks']].forEach(([a, b]) => { const A = REGIONS[a].pos, B = REGIONS[b].pos; const p = new THREE.LineCurve3(V(A[0] + 8.4, 6.6, A[1] - 5.5), V(B[0] + 8.4, 6.6, B[1] - 5.5)); world.add(new THREE.Mesh(new THREE.TubeGeometry(p, 20, .06, 5, false), bb)); });
     const target = new THREE.Vector3(), want = new THREE.Vector3(), tmp = new THREE.Vector3(), col = new THREE.Color(), o = new THREE.Object3D();
-    let aspect = 1, halfW = 14, halfH = 12, heat = 0, ledT = 0, first = true;
+    let aspect = 1, halfW = 14, halfH = 12, heat = 0, ledT = 0, first = true, yaw = 0;
     const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
     stageEl.addEventListener('pointermove', e => { const r = stageEl.getBoundingClientRect(); pointer.tx = ((e.clientX - r.left) / r.width - .5) * 2; pointer.ty = ((e.clientY - r.top) / r.height - .5) * 2; });
     stageEl.addEventListener('pointerleave', () => { pointer.tx = 0; pointer.ty = 0; });
@@ -963,7 +963,8 @@ if (THREE) {
       want.set(R.pos[0] - .4, aspect < 1 ? .4 : 2.6, R.pos[1] - 1.4);
       target.lerp(want, k);
       pointer.x += (pointer.tx - pointer.x) * (RM ? 1 : .05); pointer.y += (pointer.ty - pointer.y) * (RM ? 1 : .05);
-      const sway = RM ? 0 : Math.sin(time * .22) * .05 + pointer.x * .07;
+      yaw += (R.yaw - yaw) * k;
+      const sway = yaw + (RM ? 0 : Math.sin(time * .22) * .05 + pointer.x * .07);
       tmp.copy(camDir).applyAxisAngle(V(0, 1, 0), sway);
       cam.position.copy(target).addScaledVector(tmp, 90); cam.position.y -= pointer.y * 2.5 * (RM ? 0 : 1); cam.lookAt(target);
       sun.position.copy(target).add(V(12, 26, 10)); sun.target.position.copy(target);
