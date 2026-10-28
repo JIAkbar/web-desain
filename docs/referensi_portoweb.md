@@ -52,7 +52,7 @@ Tidak berlaku untuk proyek ini — tidak ada halaman yang membaca berkas data (`
 | `app-bridge.js` + meta `shopify-api-key` | ❌ | tidak dibutuhkan untuk menggambar di halaman lepas (uji 26 Okt 2026) | sesi ini, dengan bukti uji; bisa dibalik Johan |
 | Paket React lama `Shopify/polaris` (MIT, diarsipkan) | ❌ | cadangan, tidak dibutuhkan karena web components jalan | sesi ini |
 
-## Pustaka CDN landing & galeri 3D — antrean #28 dan #30 (27–28 Okt 2026)
+## Pustaka CDN landing & galeri 3D — antrean #28, #30, #31 (27–28 Okt 2026)
 
 Semua dimuat live dari CDN dengan versi dikunci; tidak ada kode pustaka yang disalin ke repo. Dicek `curl` = 200 saat dibangun.
 
@@ -65,6 +65,12 @@ Semua dimuat live dari CDN dengan versi dikunci; tidak ada kode pustaka yang dis
 | Tailwind CSS browser | 4.1.13 | MIT | `https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.13` (token gaya shadcn/ui ditulis sendiri) | 129-nalar |
 | Shoelace | 2.20.1 | MIT | `https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/` | 130-ruang |
 | Fluent UI web components | 3.1.3 (+ `@fluentui/tokens` 1.0.0-alpha.24) | MIT | `https://cdn.jsdelivr.net/npm/@fluentui/web-components@3.1.3/dist/web-components-all.min.js` | 131-rapatin |
+| GitHub Primer CSS | 21.5.1 | MIT | `https://cdn.jsdelivr.net/npm/@primer/css@21.5.1/dist/primer.min.css` | 132-kodekita |
+| Adobe Spectrum Web Components (bundle) | 1.12.4 | Apache-2.0 | `https://esm.sh/@spectrum-web-components/bundle@1.12.4` | 133-kanvas |
+| Ionic (`@ionic/core`) | 8.8.19 | MIT | `https://cdn.jsdelivr.net/npm/@ionic/core@8.8.19/` | 134-jalanin |
+| PatternFly | 6.6.1 | MIT | `https://cdn.jsdelivr.net/npm/@patternfly/patternfly@6.6.1/patternfly.min.css` (6.7.0 baru 13 hari, sengaja tidak dipakai) | 135-awannusa |
+| daisyUI (+ Tailwind browser 4.1.11) | 5.0.43 | MIT | `https://cdn.jsdelivr.net/npm/daisyui@5.0.43/` | 136-kopiloka |
+| Bulma | 1.0.4 | MIT | `https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css` | 137-sekolahku |
 | GSAP + ScrollTrigger | 3.12.5 | lisensi standar GreenSock (gratis untuk situs) | `https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/` | 130-ruang, 131-rapatin |
 | Google Fonts tambahan | — | OFL | Space Grotesk (pengganti fon mono di 48 template), Roboto, Manrope, IBM Plex Sans, Geist, dan fon isi landing 3D | template |
 
@@ -75,6 +81,8 @@ Fon angka: semua fon di atas bernol polos; Space Grotesk diuji raster 27 Okt 202
 Tidak berlaku — belum pernah ada penggantian sumber, jahitan data, atau ruas yang sengaja dilewatkan di proyek ini. Proyek murni template statis, tidak ada angka/data sensitif yang berasal dari sumber luar.
 
 ## Riwayat
+
+- 2026-10-28 — tambah 6 pustaka design system untuk landing 3D 132–137 (#31).
 
 - 2026-10-28 — tambah pustaka CDN landing baru (#28) dan 6 landing 3D × design system (#30); fon mono template diganti Space Grotesk (#29).
 
